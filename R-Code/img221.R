@@ -1,3 +1,6 @@
+library(tidyverse)
+
+
 d <- tibble(toss = c("w", "l", "w", "w", "w", "l", "w", "l", "w"))
 
 

@@ -1,12 +1,14 @@
+
+
 globe_qa_18 <-
-  quap(
+  rethinking::quap(
     alist(
       w ~ dbinom(9 * 2, p),
       p ~ dunif(0, 1)
     ), data = list(w = 6 * 2))
 
 globe_qa_36 <-
-  quap(
+  rethinking::quap(
     alist(
       w ~ dbinom(9 * 4, p),
       p ~ dunif(0, 1)
