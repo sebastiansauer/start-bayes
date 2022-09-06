@@ -1,6 +1,15 @@
 # Globusversuch
 
-![Bayes:Start!](img/Golem_hex.png){width=5%}
+
+![Bayes:Start](img/Golem_hex.png){width=5%}
+
+
+```{r}
+#| include: false
+library(tidyverse)
+library(patchwork)
+```
+
 
 ## Von Welten und Golems
 
@@ -8,9 +17,9 @@
 
 Bekanntlich segelte Kolumbus 1492 los, und entdeckte Amerika. Das war aber ein glücklicher Zufall, denn auf seinem Globus existierte Amerika gar nicht. Vielleicht sah sein Globus so aus wie der von Behaim, s. Abb @fig-behaim.
 
-![Behaims Globus: Kein Amerika](img/Behaim.jpg)
+![Behaims Globus: Kein Amerika](img/Behaim.jpg){#fig-behaim}
 
-[Quelle](https://de.wikipedia.org/wiki/Martin_Behaims_Erdapfel#/media/Datei:RavensteinBehaim.jpg)
+
 
 Die *kleine Welt des Modells* entsprach hier nicht *der großen Welt, der echten Erdkugel*.
 
@@ -36,6 +45,7 @@ Was in der kleinen Welt funktioniert, muss nicht in der großen Welt funktionier
 
 
 
+
 ### Der Golem von Prag
 
 ![Der Golem von Prag](img/170px-Golem_and_Loew.jpg)
@@ -52,7 +62,7 @@ Bei unüberlegter Verwendung wird er jedoch großen Schaden anrichten.
 
 **Golem**
 
-![](img/Golem_hex.png)]{width=25%}
+![](img/Golem_hex.png){width=25%}
 
 -   Besteht aus Lehm
 -   Belebt durch "Wahrheit"
@@ -89,6 +99,10 @@ Wir bauen Golems.
 
 ## Ein erster Versuch: Wir werfen den Globus
 
+
+
+
+
 ### Welcher Anteil der Erdoberfläche ist mit Wasser bedeckt?
 
 Unsere Hypothese bzw. unsere Forschungsfrage lautet, mit welchem Anteil die Erde wohl mit Wasser bedeckt ist?
@@ -105,8 +119,6 @@ $$W \quad L \quad W \quad W \quad W \quad L \quad W \quad L \quad W$$
 
 🏋️️ Besorgen Sie sich einen Globus (zur Not eine Münze) und stellen Sie den Versuch nach!
 
-
-
 ### Wie entstanden die Daten?
 
 Der physikalische Prozess, der zur Entstehung der Daten führt, nennt man den *den datengenierende Prozess*.
@@ -122,15 +134,8 @@ In diesem Fall kann man ihn so beschreiben:
 
 
 
-### Wissen updaten: Wir füttern Daten in das Modell
 
-```{r QM2-Thema2-kleineModelle-19}
-#| echo: false
-#| out.width="100%"
-source("R-Code/img221.R")
-```
 
-Unser Golem (das Modell) lernt. Ob das Modell nützlich ist (präzise Vorhersagen liefert), steht auf einem anderen Blatt.
 
 ### Ein paar Fachbegriffe
 
@@ -138,23 +143,17 @@ Unser Golem (das Modell) lernt. Ob das Modell nützlich ist (präzise Vorhersage
 
 -   Für jede Hypothese (d.h. jeden *Parameterwert* $p$) möchten wir wie wahrscheinlich die Daten sind (unter der Annahme, dass die Hypothese richtig ist). Das gibt uns den *Likelihood*.
 
--   Dann gewichten wir den Likelihood mit dem Vorabwissen, so dass wir die *Posteriori-Verteilung*[^globusversuch-1] bekommen.
-
-[^globusversuch-1]: Anstatt von *Priori* liest man auch *Prior*; anstatt *Posteriori* auch *Posterior*
+-   Dann gewichten wir den Likelihood mit dem Vorabwissen, so dass wir die *Posteriori-Verteilung*^[ Anstatt von *Priori* liest man auch *Prior*; anstatt *Posteriori* auch *Posterior*] bekommen.
 
 ![Updating mit Bayes](img/bayesupdate.png)
 
-### WDie Binomialverteilung
+### Die Binomialverteilung
 
-Wir nehmen an, dass die Daten unabhängig voneinander entstehen und sich der Parameterwert nicht zwischenzeitlich ändert[^globusversuch-2].
-
-[^globusversuch-2]: Die sog. "iid-Annahme", wie *i*ndependently and *i*dentically distributed: Jeder Wurf der Globusballes ist eine Realisation der gleichen Zufallsvariablen
+Wir nehmen an, dass die Daten unabhängig voneinander entstehen und sich der Parameterwert nicht zwischenzeitlich ändert^[Die sog. "iid-Annahme", *i*ndependently and *i*dentically distributed: Jeder Wurf der Globusballes ist eine Realisation der gleichen Zufallsvariablen].
 
 Dann kann man die Wahrscheinlichkeit ($Pr$), $W$ mal Wasser und $L$ mal Land zu beobachten, wenn die Wahrscheinlichkeit für Wasser $p$ beträgt, mit der *Binomialverteilung* berechnen.
 
-Die Binomialverteilung zeigt die Verteilung der Häufigkeit (Wahrscheinlichkeit) der Ereignisse (z.B. 2 Mal Kopf) beim wiederholten Münzwurf (und allen vergleichbaren Zufallsexperimenten)[^globusversuch-3].
-
-[^globusversuch-3]: "Münzwurfverteilung"
+Die Binomialverteilung zeigt die Verteilung der Häufigkeit (Wahrscheinlichkeit) der Ereignisse (z.B. 2 Mal Kopf) beim wiederholten Münzwurf (und allen vergleichbaren Zufallsexperimenten): "Münzwurfverteilung"
 
 $$Pr(W,L|p) = \frac{(W+L)!}{W!L!}p^W(1-p)^L$$
 
@@ -174,9 +173,7 @@ dbinom(x = 9, size = 9, prob = 1/2)
 
 ### Beispiele zur Berechnung einer binomial verteilten Wahrscheinlichkeit
 
-Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen. Wie groß ist die Wahrscheinlichkeit, durch bloßes Münze werfen genau 15 Fragen richtig zu raten?[^globusversuch-4]
-
-[^globusversuch-4]: Hey, endlich mal was für echte Leben!
+Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen. Wie groß ist die Wahrscheinlichkeit, durch bloßes Münze werfen genau 15 Fragen richtig zu raten?^[Hey, endlich mal was für echte Leben!].
 
 ```{r QM2-Thema2-kleineModelle-23, echo = TRUE}
 dbinom(x = 15, size = 20, prob = .5)
@@ -201,6 +198,15 @@ Unser Vorab-Wissen zu $p$ sei, dass uns alle Werte gleich plausibel erscheinen (
 $$p \sim \text{Unif}(0,1).$$
 
 Lies: "$p$ ist gleich (uniform) verteilt mit der Untergrenze 0 und der Obergrenze 1".
+
+
+
+
+
+
+
+
+
 
 ### So sehen die Verteilungen aus
 
@@ -300,9 +306,30 @@ $$Pr(H|D) = \frac{Pr(D|H) Pr(H)}{Pr(D)}$$
 
 $$\text{Posteriori} = \frac{\text{Likelihood} \times \text{Priori}}{\text{Evidenz}}$$
 
-```{r QM2-Thema2-kleineModelle-27}
-source("R-Code/img241.R")
+
+
+![Prior mal Likelihood = Post](img/img241.png)
+
+
+
+
+
+
+
+### Wissen updaten: Wir füttern Daten in das Modell
+
+```{r}
+#| echo: false
+#source("R-Code/img221.R")
 ```
+
+
+![Unser Golem lernt](img/img221.png)
+
+
+Unser Golem (das Modell) lernt. Ob das Modell nützlich ist (präzise Vorhersagen liefert), steht auf einem anderen Blatt.
+
+
 
 ## Bayes berechnen mit mit der Gitter-Methode
 
@@ -337,8 +364,9 @@ d <-
 So sehen unsere "Gitterdaten" aus:
 
 ```{r QM2-Thema2-kleineModelle-29}
+# | echo: false
 d %>% 
-  kbl(digits = 2)
+  knitr::kable(digits = 2)
 ```
 
 🏋️ Was wohl mit *Post* passiert, wenn wir *Priori* ändern?
@@ -347,17 +375,21 @@ d %>%
 
 Die Posteriori-Verteilung (Kurz: "Post-Verteilung"), $Pr_{Post}$, zeigt, wie plausibel wir jeden Wert von $p$ halten.
 
-```{r QM2-Thema2-kleineModelle-30}
-source("R-Code/img242.R")
-```
+![Je mehr Gittewerte, desto genauer wird die Verteilung wiedergegeben.](img/img242.png)
 
 Mehr Gitterwerte glätten die Annäherung.
 
 Je größer die Stichprobe ($N$), desto zuverlässiger wird unsere Berechnung.
 
-```{r QM2-Thema2-kleineModelle-32, out.width="100%"}
-source("R-Code/img243.R")
-```
+
+::: calout-important
+Die Post-Verteilung ist sowas wie das Ziel all Ihrer Träume (falls Sie es noch nicht gewusst haben):
+Aus der Post-Verteilung können Sie ablesen,
+wie wahrscheinlich Ihre Hypothese (Ihr Lieblings-Parameterwert) ist. Und noch einiges mehr, aber das ist Thema des nächsten Kapitels.
+:::
+
+
+
 
 ### Zusammenfassung
 
@@ -369,4 +401,6 @@ source("R-Code/img243.R")
 
 -   Unser Modell bildet die kleine Welt ab; ob es in der großen Welt nützlich ist, steht auf einem anderen Blatt.
 
-\includegraphics[width=1em]{../img/weight.pdf} Wenn Sie auf einen Prozentwert für $W$ tippen müssten, welchen würden Sie nehmen, laut dem Modell (und gegeben der Daten)?
+🏋️ Wenn Sie auf einen Prozentwert für $W$ tippen müssten, welchen würden Sie nehmen, laut dem Modell (und gegeben der Daten)?
+
+
