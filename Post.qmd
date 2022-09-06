@@ -2,6 +2,9 @@
 # Die Post befragen
 
 
+
+![Bayes:Start!](img/Golem_hex.png){width=5%}
+
 ```{r}
 #| include: false
 library(tidyverse)
@@ -57,7 +60,7 @@ Abb. @fig-post1 zeigt die resultierende Post-Verteilung.
 
 ```{r plot-post-d}
 #| echo: false
-#| label :fig-post1
+#| label: fig-post1
 #| fig-cap: Die Postverteilung für W=6, N=9, k=10
 d %>% 
   ggplot() +
@@ -174,7 +177,7 @@ samples$p_grid[1:100] %>% round(2)
 ```
 
 
-So sieht die Post-Verteilung auf Basis von Stichproben dann aus, s. Abb. @fig-samples.
+So sieht die Post-Verteilung auf Basis von Stichproben dann aus, s. Abb. @fig-samples1.
 
 ```{r QM2-Thema3-Teil1-3}
 #| echo: false
@@ -284,9 +287,13 @@ Wir können viele nützliche Fragen an sie stellen.
 
 Es gibt zwei Arten von Fragen:
 
-1. nach Wahrscheinlichkeit
-2. nach Parameterwerten
+1. nach Wahrscheinlichkeit (p)
+2. nach Parameterwerten (Quantilen, q)
 
+
+Der Unterschied zwischen beiden Arten von Fragen ist in Abb. @fig-p-vs-q illustriert.
+
+![Fragen nach p vs. Fragen nach q](img/p-vs-q.png){#fig-p-vs-q}
 
 
 ### Fragen zu Wahrscheinlichkeiten
@@ -416,9 +423,11 @@ Solche Fragen lassen sich mit Hilfe von *Quantilen* beantworten.
 
 ### Zur Erinnerung: Quantile
 
-Beispiel: Wie groß sind die Studentis ([Quelle des Datensatzes](https://rdrr.io/cran/openintro/man/speed_gender_height.html)? Das Quantil von z.B. 25% zeigt die Körpergröße der 25% kleinsten Studentis an, analog für 50%, 75%:
+Beispiel: Wie groß sind die Studentis ([Quelle des Datensatzes](https://rdrr.io/cran/openintro/man/speed_gender_height.html))? Das Quantil von z.B. 25% zeigt die Körpergröße der 25% kleinsten Studentis an, analog für 50%, 75%:
 
 ```{r QM2-Thema3-Teil1-5}
+#| message: false
+#| echo: true
 speed_gender_height <- read_csv("https://raw.githubusercontent.com/rpruim/OpenIntro/master/data/speed_gender_height.csv")
 
 height_summary <- 
@@ -434,6 +443,9 @@ height_summary
 Visualisierung der Quantile:
 
 ```{r QM2-Thema3-Teil1-6}
+#| echo: false
+#| warning: false
+#| message: false
 p1 <- speed_gender_height %>% 
   ggplot() +
   aes(x = 1, y = height) +
@@ -483,7 +495,7 @@ Angenommen, wir wollen wissen, welcher Wasseranteil mit 90% Wahrscheinlichkeit n
 samples %>% 
   arrange(p_grid) %>%   # sortiere
   slice_head(n = 9000) %>%  # nur die ersten 90000, also die obersten 1000 abschneiden
-  summarise(max(p_grid))
+  summarise(p90 = max(p_grid))
 ```
 
 
@@ -739,6 +751,12 @@ Je symmetrischer die Verteilung, desto näher liegen die Punktschätzer aneinand
 
 ## Der zwielichte Dozent: Stichproben-Vert. vs. Post-Vert.
 
+In einer dunklen Gasse fordert Sie ein Statistik-Dozent zu einem Glücksspiel heraus: Münzwurf; wenn er gewinnt, müssen Sie 10 Euro zahlen. Gewinnen Sie, bekommen Sie 11 Euro. Klingt nach einer guten Partie, nicht war? Natürlich nehmen Sie sofort an. 
+
+Sie spielen also Münzwurf; der Dozent setzt auf Zahl. Sie spielen 10 Runden. Leider gewinnt der Dozent 9 von 10 Mal^[was er mit lautem Gelächter quittiert].
+
+Wütend (und mit leeren Taschen) ziehen Sie von dannen.
+
 
 Daten: 9 von 10 Treffern beim Münzwurf. Ist die Münze fair?
 
@@ -801,5 +819,288 @@ Die *Posteriori-Verteilung* gibt die Wahrscheinlichkeit jedes Parameterwerts $p$
 
 
 Die meisten Forschungsfragen lassen sich mit der Post-Verteilung beantworten, nicht mit der Stichprobenverteilung.
+
+
+
+## Mit Stichproben neue Beobachtungen simulieren
+
+
+### Wir simulieren die Wasserzahl bei Globuswürfen
+
+Likelihood (L): Wahrscheinlichkeit für $w=0,1,2$ bei $N=2$ und $p = 0.7$:
+
+```{r QM2-Thema3-Post-befragen-23}
+L <- dbinom(0:2, size = 2, prob = 0.7)
+L
+```
+
+
+Wir simulieren $n=1$ neuen Globusversuch mit $N=2, p=0.7$ und zählen die (Wasser-)Treffer:
+
+```{r QM2-Thema3-Post-befragen-25}
+set.seed(42)  # Zufallszahlen festlegen
+rbinom(n = 1, size = 2, prob = .7)  # 0 Treffer (Wasser)
+```
+
+Warum nicht $n=10$ neue Globusversuche simulieren:
+
+```{r QM2-Thema3-Post-befragen-27, echo = TRUE}
+rbinom(n = 10, size = 2, prob = 0.7)
+```
+
+
+Diese Versuche geben Aufschluss, welche Daten (wie oft Wasser) man bei einem bestimmten Modell, $p,N$, erwarten kann. 
+
+
+
+### Never trust a Golem
+
+
+<a href="https://imgflip.com/i/5qmhmo"><img src="https://i.imgflip.com/5qmhmo.jpg" title="made at imgflip.com"/></a><div><a href="https://imgflip.com/memegenerator">from Imgflip Meme Generator</a></div>
+
+
+Quelle: https://imgflip.com/i/5qmhmo
+
+
+
+
+### Traue niemals einem Golem (einem Modell)
+
+Immer prüfen und wachsam bleiben:
+
+- (Inwieweit) decken sich die simulierten Daten mit den tatsächlichen Beobachtungen?
+- Wie realistisch sind die Modellannahmen?
+- Kann man das Modell aus verschiedenen Perspektiven prüfen?
+
+
+
+## Mit guten Simulationen kommt man den wahren Werten nahe
+
+
+Warum nicht $n=10^6$ neue Globusversuche simulieren:
+
+```{r QM2-Thema3-Post-befragen-28, echo = TRUE}
+draws <- 
+  tibble(
+    draws = 
+      rbinom(1e6, 
+             size = 2, 
+             prob = .7))
+draws %>% 
+  count(draws) %>% 
+  mutate(proportion = 
+           n / nrow(d))
+```
+
+Diese simulierten Häufigkeiten sind sehr ähnlich zu den theoretisch bestimmten Häufigkeiten mit `dbinom`: Unser Modell liefert plausible Vorhersagen.
+
+```{r QM2-Thema3-Post-befragen-29, echo = TRUE}
+dbinom(0:2, size = 2, prob = .7)
+```
+
+
+## Stichprobenverteilung
+
+Wir ziehen viele ($n=10^6$) Stichproben für den Versuch $N=9$ Globuswürfe mit $p=0.7$. 
+
+Wie viele Wasser (W) erhalten wir wohl typischerweise?
+
+
+```{r QM2-Thema3-Post-befragen-30, echo = TRUE, results = "hide", eval = FALSE}
+n_draws <- 1e6
+
+draws <- 
+  tibble(draws = 
+           rbinom(
+             n_draws, 
+             size = 9, 
+             prob = .7
+           ))
+
+plot1 <- 
+  draws %>% 
+  ggplot(aes(x = draws)) +
+  geom_histogram() 
+```
+
+
+
+```{r QM2-Thema3-Post-befragen-31}
+n_draws <- 1e6
+draws <- tibble(draws = rbinom(n_draws, 
+                               size = 9, 
+                               prob = .7))
+
+# the histogram
+draws %>% 
+  ggplot(aes(x = draws)) +
+  geom_histogram(binwidth = 1, center = 0,
+                 color = "grey92", size = 1/10) +
+  scale_x_continuous("Anzahl Wasser (W) pro Versuch",
+                     breaks = seq(from = 0, to = 9, by = 2)) +
+  scale_y_continuous("Häufigkeit",
+                     labels = scales::scientific) +
+  coord_cartesian(xlim = c(0, 9)) +
+  theme(panel.grid = element_blank())
+```
+
+Die *Stichprobenverteilung* zeigt, welche Stichprobendaten laut unserem Modell (einem bestimmten Parameterwert) zu erwarten sind. Wir können jetzt prüfen, ob die echten Daten zu den Vorhersagen des Modells passen.
+
+
+
+### Visualisierung der PPV
+
+```{r QM2-Thema3-Post-befragen-36}
+#| echo: false
+knitr::include_graphics("https://github.com/sebastiansauer/QM2-Folien/raw/main/img/ppv.png")
+```
+
+Quelle: @mcelreath_statistical_2020
+
+
+
+## So viele Verteilungen... 
+
+
+
+
+- Die *Posteriori-Verteilung* gibt Aufschluss zur Häufigkeit (Wahrscheinlichkeit) von Parameterwerten:
+    - Wie wahrscheinlich ist es, dass "in Wirklichkeit" der Wasseranteil 70% beträgt, also $\pi=.7$
+    - In der Wissenschaft ist man meist an den Parametern interessiert.
+    
+- Die *PPV* gibt Aufschluss zur Häufigkeit von neuen Beobachtungen:
+    - Welche Beobachtungen (wie viele Wasser/Treffer) sind in Zukunft, bei erneuter Durchführung, zu erwarten.
+    - Für die Praxis kann das eine interessante Frage sein.
+    
+- Der *Likelihood* gibt Aufschluss, wie gut eine bestimmte Hypothese die Datenlage erklärt.
+    - Wie gut passt die Hypothese $\pi=0.7$ auf die Datenlage 6 von 9 Treffern beim Globusversuch?
+    - Der Likelihood kann aus der Stichprobenverteilung herausgelesen werden. 
+
+```{r QM2-Thema3-Post-befragen-33}
+#| echo: false
+n_draws <- 1e5
+
+simulate_binom <- function(probability) {
+  set.seed(3)
+  rbinom(n_draws, size = 9, prob = probability) 
+}
+
+d_small <-
+  tibble(probability = seq(from = .1, to = .9, by = .1)) %>% 
+  mutate(draws = purrr::map(probability, simulate_binom)) %>% 
+  unnest(draws) %>% 
+  mutate(label = str_c("p = ", probability))
+```
+
+```{r PP2}
+ppv2_plot <- 
+d_small %>%
+  ggplot(aes(x = draws)) +
+  geom_histogram(binwidth = 1, center = 0,
+                 color = "grey92", linewidth = 1/10) +
+  scale_x_continuous("Wasser", breaks = seq(from = 0, to = 9, by = 3)) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  labs(subtitle = "Stichprobenverteilungen") +
+  coord_cartesian(xlim = c(0, 9)) +
+  theme(panel.grid = element_blank()) +
+  facet_wrap(~ label, ncol = 9) 
+```
+
+
+## PPV berechnen
+
+
+```{r pp-plot1, echo = TRUE, eval = TRUE}
+ppv <- 
+  rbinom(1e4, 
+         size = 9, 
+         prob = samples$p_grid) %>% 
+  as_tibble()
+
+ppv_plot2 <-
+  ppv %>% 
+  ggplot() +
+  aes(x = value) +
+  geom_bar() +
+  scale_x_continuous(
+    breaks = 0:9)
+```
+
+
+
+```{r QM2-Thema3-Teil2-2, fig.width = 4, fig.asp = 1}
+ppv_plot2
+```
+
+
+
+
+
+
+
+- Die PPV unseres Modells zeigt uns, dass wir in künftigen Versuchen zumeist 6 Treffer zu erwarten haben. 
+- Aber ein relativer breiter Bereich an Treffern ist ebenfalls gut laut unserer PPV erwartbar.
+
+
+## Vorhersagen sind schwierig
+
+
+... gerade wenn sie die Zukunft betreffen, so ein Sprichtwort.
+
+Das zeigt uns die PPV: Der PPV unseres Modells gelingt es zwar, der theoretisch wahrscheinlichste Parameterwert ist auch der häufigste in unseren Stichproben, aber die Vorhersagen haben eine große Streuung, birgt also hohe Ungewissheit.
+
+Die PPV zeigt also, welche Beobachtungen laut unserem Modell künftig zu erwarten sind.
+
+```{r QM2-Thema3-Post-befragen-37}
+#| echo: false
+ppv_plot2
+```
+
+Würde man die Vorhersagen nur anhand eines bestimmten Parameterwertes (z.B $p=0.6$) vornehmen, hätten die Vorhersagen zu wenig Streuung, würden also die Ungewissheit nicht ausreichend abbilden (Übergewissheit, Overconfidence).
+
+
+
+
+
+
+## Zwei Arten von Ungewissheit in Vorhersagen von Modellen
+
+
+1. *Ungewissheit innerhalb des Modells*: Auch wenn der (oder die) Modellparameter eines Modells mit Sicherheit bekannt sind, so bleibt Unsicherheit, welche Beobachtung eintreten wird: Auch wenn man sicher weiß, dass $p=1/4$ Murmeln blau sind, so kann man nicht sicher sagen, welche Farbe die nächste Murmel haben wird (Ausnahme: $p=1$ oder $p=0$).
+
+2. *Ungewissheit in den Modellparametern*: Wir sind uns nicht sicher, welchen Wert $p$ (bzw. die Modellparameter) haben. Diese Unsicherheit ist in der Post-Verteilung dargestellt. 
+
+Um zu realistischen Vorhersagen zu kommen, möchte man beide Arten von Ungewissheit berücksichtigen: Das macht die *Posteriori-Prädiktiv-Verteilung (PPV)*.
+
+
+
+Die PPV zeigt, welche Daten das Modell vorhersagt (prädiktiv) und mit welcher Häufigkeit, basierend auf der Post-Verteilung.
+
+
+
+## Vergleich der Verteilungen
+
+
+
+
+```{r QM2-Thema3-Post-befragen-38}
+#| echo: false
+img_file <- paste0("https://github.com/sebastiansauer/QM2-Folien/raw/main/img/post-pred-ppv-anim.gif")
+knitr::include_graphics(img_file)
+```
+
+
+- Links - *Posterior-Verteilung*: Wahrscheinlichkeiten der Parameterwerte
+- Mitte - *Stichprobenverteilung*: Wahrscheinlichkeiten der Beobachtungen gegeben eines bestimmten Parameterwertes
+- Rechts - *Posterior-Prädiktiv-Verteilung*: Wahrscheinlichkeiten der Beobachtungen unter Berücksichtigung der Unsicherheit der Posteriori-Verteilung
+
+[Bild](https://sebastiansauer.github.io/QM2-Folien/Themen/QM2-Thema3-Post-befragen.html#1)
+
+[Quelle: R. McElreath](https://twitter.com/rlmcelreath/status/1448978045247893505)
+
+
+
+
+
 
 
