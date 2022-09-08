@@ -1,0 +1,411 @@
+# Forschungsfragen mit metrischer AV
+
+
+
+Benötigte R-Pakete für dieses Thema:
+
+```{r}
+#| message: false
+#| results: "hide"
+library(rstanarm)
+library(tidyverse)
+library(easystats)
+```
+
+
+
+## Wissenschaft als Gerechtigkeitsprojekt
+
+### Meinungen als Grundlage der Konfliktlösung ?
+
+
+Contra:
+
+- "Ich find Masken doof!"
+- "Impfen ist schädlich!"
+- "Corona gibt's gar nicht!"
+
+
+```{r}
+icon_style(fontawesome("angry", style = "solid"), scale = 5, fill = "red")
+```
+
+
+Pro:
+
+- "Ich find Masken gut!"
+- "Impfen ist nützlich!"
+- "Corona ist gefährlich!"
+
+
+```{r}
+icon_style(fontawesome("tired", style = "solid"), scale = 5, fill = "red")
+
+```
+
+Meinungen kennen kein richtig und kein falsch. Konflikte können auf Basis von Meinungen nur schwer gelöst werden.
+
+
+
+
+
+### Fakten als Grundlage der Konfliktlösung
+
+Wissenschaft produziert Fakten.
+
+
+Da Fakten universell sind (sein können), ist Wissenschaft potenziell ein Weg zur Konfliktlösung.
+
+Warum helfen Fakten bei Konflikten
+
+
+Fakten sind neutral gegenüber Personen.
+Fakten bieten daher eine Chance zur fairen Einigung.
+
+
+Wann ist ein Fakt ein Fakt?
+
+
+ Fakten müssen vor allem nachprüfbar sein (Daten, Analyse und Bericht müssen offen zugänglich sein).
+
+
+
+### Beispiel Corona: Datenlage spricht zugunsten der Covid19-Impfung
+
+
+
+
+>    The effectiveness of full messenger RNA (mRNA) vaccination (≥14 days after the second dose) was 89% (95% confidence interval [CI], 87 to 91) against laboratory-confirmed SARS-CoV-2 infection leading to hospitalization, 90% (95% CI, 86 to 93) against infection leading to an ICU admission, and 91% (95% CI, 89 to 93) against infection leading to an emergency department or urgent care clinic visit.
+
+@thompson_effectiveness_2021; vgl. auch @nasreen_effectiveness_2021; @pormohammad_efficacy_2021
+
+
+
+Drei Anforderungen an die Qualität von Studien:
+
+1. *handwerklich gut*:  z.B. vergleichbare Gruppen, genaue Messinstrumente
+2. *bescheiden*: die Forschungsfrage wird nur dann selbstbewusst beantwortet, wenn es die handwerkliche Qualität der Studie zulässt. Gibt es eine Vielzahl weiterer Studien mit abweichenden Ergebnissen, wird dies bei der Beantwortung der Forschungsfrage berücksichtigt. 
+3. *transparent*: Das Vorgehen, die Hintergründe und Ziele werden offengelegt. Das betrifft auch möglich Befangenheit oder Interessenskonflikte der Autoren und Autorinnen
+
+
+
+### Psychologische Intervention zur Erhöhung der Impfquote
+
+
+```{r out.width="100%"}
+#| echo: false
+knitr::include_graphics("https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41586-021-03843-2/MediaObjects/41586_2021_3843_Fig2_HTML.png")
+```
+
+[Quelle/Volltext](https://www.nature.com/articles/s41586-021-03843-2)
+
+@dai_behavioural_2021
+
+
+
+
+### Was heißt "ist effektiv"?
+
+@nasreen_effectiveness_2021  definieren *effectivity*, $e$, so:
+
+
+
+$$e = 1 - C; C= \frac{n_{vacc|pos}}{n_{vacc|neg}}$$
+
+
+- $C$ nennt man das *Chancenverhältnis* (*odds ratio*), es beschreibt einen Bruchterm: $\frac{x}{y}$.
+- $n_{vacc|pos}$: Anzahl der geimpften Personen unter allen Personen mit positiver Corona-Diagnose
+- $n_{vacc|neg}$: Anzahl der geimpften Personen unter allen Personen mit negativer Corona-Diagnose
+
+
+*Beispiel*: Von den 100 Personen mit *positiver* Corona-Diagnose sind 10 geimpft, $n_{vacc|pos}=10$. Von den 100 Personen mit *negativer* Corona-Diagnose sind 90 geimpft, $n_{vacc|neg}=90$
+
+$$C= \frac{10}{90} = \frac{1}{9}; e = 1 - \frac{1}{9} = \frac{8}{9} \approx 0.88$$
+
+
+In diesem Beispiel liegt die Effektvitität $e$ bei knapp 90%.
+
+
+## Arten von Forschungsfragen
+
+
+### Deskriptiv (beschreibend)
+
+- Wie stark ist der (lineare) Zusammenhang $r$ von Größe und Gewicht?
+- Wie stark ist der (lineare) Zusammenhang $b$ von Lernzeit und Note?
+- Bevorzugen unsere Kunden Webshop A oder B?
+
+
+
+### Prädiktiv (prognostisch, vorhersagend)
+
+- Wie schwer ist ein deutscher Mann der Größe 1,80m im Schnitt?
+- Welche Note kann man erwarten, wenn man nichts für die Klausur lernt?
+- Wieviel wird ein Kunde ausgeben, wenn er sich in dieser Variante des Webshops aufhält?
+
+
+
+### Präskriptiv (erklärend, kausal)
+
+- Ist Größe eine Ursache von Gewicht (bei deutschen Männern)?
+- Wenn ich 100 Stunden lerne, welche Note schreibe ich dann?
+- Hat die Art des Webshops einen Einfluss auf unseren Umsatz?
+
+
+
+### Metrische AV
+
+- Wir konzentrieren uns im Folgenden auf Forschungsfragen auf Basis von Regressionsmodellen mit *metrischer* AV.
+- Für die UV(s) sind nominale und metrische Skalenniveaus erlaubt. 
+- Modelle mit mehreren UV (und mehreren Stufen an UV) sind erlaubt.
+
+
+
+
+## 1 binäre UV
+
+
+
+### Forschungsfrage
+
+*Hintergrund:*
+
+Eine Psychologin, die im öffentlichen Dienst arbeitet, versucht herauszufinden, warum einige Kinder intelligenter sind als andere. Dazu wurdn in einer aufwändigen Studie die Intelligenz vieler Kinder gemessen. Zusätzliche wurden verschiedene Korrelate erhoben, in der Hoffnung, "Risikofaktoren" für geringere Intelligenz zu entdecken.
+
+
+
+
+*Forschungsfrage:* 
+
+
+>    Unterscheidet sich der mittlere IQ-Wert (`kid_score`) von Kindern in Abhängigkeit davon, ob ihre jeweilige Mutter über einen Schlusabschluss (`mom_hs`) verfügt? (ceteris paribus)
+
+
+
+
+### IQ von Kindern, binärer Prädiktor
+
+
+```{r echo = TRUE, results = "hide"}
+#| results: "hide"
+data("kidiq")  # Paket rstanarm
+m10.1 <- stan_glm(
+  kid_score ~ mom_hs, 
+  data = kidiq)
+```
+
+Alternativ können Sie die Daten [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/kidiq.csv) herunterladen.
+
+Mit `parameters(m10.1)` bekommt man die Parameter des Modells:
+
+
+```{r echo = TRUE}
+#| echo: falses
+display(parameters(m10.1))
+```
+
+]
+
+
+
+.pull-right[
+
+```{r}
+ggplot(kidiq) +
+  aes(x = mom_hs, y = kid_score) +
+  geom_jitter(width = 0.1, alpha = .5) +
+  geom_abline(slope = coef(m10.1)[2],
+              intercept = coef(m10.1)[1])  +
+  scale_x_continuous(breaks = c(0, 1))
+```
+
+]
+
+---
+
+## Interpretation von `m10.1`
+
+`m10.1: kid_score = 78 + 12*mom_hs + error`
+
+- Der *Achsensabschnitt* (intercept, $\alpha$) ist der mittlere (bzw. vorhergesagte) IQ-Wert von Kindern, deren Mütter über keinen Schulabschluss verfügen:
+
+`kid_score = 78 + 0*12 + error`
+
+- Das *Regressionsgewicht* (slope, $\beta$) ist der Unterschied im IQ-Wert von Kindern mit Mütter mit Schlulabschluss (im Vergleich zum IQ-Wert von Kindern mit Mütter ohne Schlusabschluss). Dieser Unterschied entspricht der Steigung der Regressionsgerade.
+
+`kid_score = 78 + 1*12 + error = 90 + error`
+
+- Die *Streuung* (sigma) der IQ-Wert um ihren Mittelwert zeigt, wie genau die Schätzung (Vorhersage) ist bzw. wie stark Prädiktor (UV) und Kriterium (AV) zusammenhängen.
+
+---
+
+## `m10.1` als Mittelwertsdifferenz 
+
+
+- UV: binär (zweistufig nominal/kategorial)
+- AV: metrisch (quantitativ)
+
+.pull-left[
+```{r echo = TRUE}
+kidiq %>% 
+  group_by(mom_hs) %>% 
+  summarise(kid_score_avg = 
+              mean(kid_score))
+```
+
+]
+
+
+.pull-right[
+- In der klassischen Statistik untersucht man diese Datensituation mit einem *t-Test*.
+- Der t-Test ist ein inferenzstatistisches Verfahren, dass prüft, ob die Mittelwertsdifferenz (in der Population) $\mu_d$ Null ist: $\mu_d = 0$.
+- In der Bayes-Statistik betrachtet man dazu die Posteriori-Verteilung (z.B. mit 95%PI).
+]
+
+Der mittlere (average, avg) IQ-Wert unterscheidet sich um ca. 12 Punkte (89.4-77.6), zugunsten der Kinder von Müttern mit Abschluss. Allerdings gibt es viel Streuung um die Mittelwerte herum.
+
+---
+
+## Antwort auf die Forschungsfrage, `m10.1`
+
+
+.pull-left[
+```{r echo = TRUE}
+m10.1_post <-
+  m10.1 %>% 
+  as_tibble() 
+
+dim(m10.1_post)
+```
+
+
+```{r}
+m10.1_post %>% 
+  slice_sample(n=5) %>% 
+  gt() %>% 
+  fmt_number(1:3, decimals = 1) %>% 
+  tab_header("Stichprobe aus der Post-Verteilung")
+```
+
+
+]
+
+
+.pull-right[
+
+```{r echo = TRUE}
+pi_mom_hs <-
+  m10.1_post %>% 
+  summarise(
+    pi_95 = quantile(
+      mom_hs, 
+      c(.025, .975)))
+```
+
+
+
+
+Mit 95% Wahrscheinlichkeit liegt der Unterschied im mittleren IQ-Wert zwischen Kindern von Müttern mit bzw. ohne Schulabschluss im Bereich von 7 bis 14 IQ-Punkten, laut unserem Modell: $95\%PI: [7,14]$.
+
+Die Hypothese, dass es keinen  Unterschied oder einen Unterschied in die andere Richtung geben sollte, ist vor diesem Hintergrund als unwahrscheinlich abzulehnen.
+
+]
+
+
+---
+
+## Visualisierung der Mittelwertsdifferenz
+
+
+.pull-left[
+
+
+
+```{r echo = TRUE}
+library(bayesplot)
+plot(m10.1, 
+     pars = "mom_hs")
+```
+
+[Im Standard](https://mc-stan.org/bayesplot/reference/MCMC-intervals.html) werden 50%- und 90%-PI gezeigt.
+]
+
+
+.pull-right[
+
+```{r echo = TRUE}
+plot(m10.1, 
+     pars = "mom_hs",
+     plotfun = "mcmc_hist") +
+  geom_vline(
+    xintercept = 
+      pi_mom_hs$pi_95) +
+  labs(
+    title = "95%-PI"
+  )
+```
+
+]
+
+
+---
+
+## Nullhypothesen sind praktisch immer falsch
+
+
+.pull-left[
+
+
+
+[](<a href="https://imgflip.com/i/5v5531"><img src="https://i.imgflip.com/5v5531.jpg" title="made at imgflip.com"/></a><div><a href="https://imgflip.com/memegenerator">from Imgflip Meme Generator</a></div>)
+
+<!-- https://imgflip.com/i/5v5531 -->
+
+
+
+```{r}
+knitr::include_graphics("https://i.imgflip.com/5v5531.jpg")
+```
+
+[Quelle: Imgflip Meme Generator](https://imgflip.com/i/5v5531)
+
+
+]
+
+
+
+.pull-right[
+
+>   We do not generally use null hypothesis significance testing in our own work. In the fields in which we work, we do not generally think null hyptheses can be true: in social science and public health, just about every treatment one might consider will have *some* effect, and no comparison or regression coefficient of interest will be exactly zero. We do not find it particularly helpful to formulate and test null hypothess that we knowe ahead of time cannot be true.
+
+
+`r RefManageR::Citet(bib, "gelman_regression_2021")`
+
+
+
+]
+
+---
+
+
+## Alternativen zu Nullhypothesen
+
+
+- Nullhypothesen, $H_0$, sind z.B.: $\rho=0$, $\rho_1 = rho_2$, $\mu_1 = \mu_2$, $\mu=0$, $\beta_1=0$.
+
+- Nullhypothesen zu testen, ist sehr verbreitet.
+
+- Ein Grund ist, dass in der Frequentistischen Statistik keine andere Art von Hypothesentest möglich ist.
+
+- Ein anderer Grund ist vermutlich, ... wir haben es schon immer so gemacht.
+
+- Alternativen zum Testen von Nullhypothesen:
+    - Posteriori-Intervalle (PI oder HDI)  berichten
+    - Rope-Konzept `r RefManageR::Citep(bib, "kruschke_rejecting_2018")`
+    - Wahrscheinlichkeit von inhaltlich bedeutsamen Hypothesen quantifizieren.
+    - Wahrscheinlichkeit quantifizieren, dass der Effekt ein positives bzw. ein negatives Vorzeichen hat.
+
+---
+
+
+
