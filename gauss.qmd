@@ -242,7 +242,7 @@ knitr::include_graphics("https://raw.githubusercontent.com/sebastiansauer/QM2-Fo
 ```{r Kung-4, message=FALSE, results="hide"}
 m41 <- stan_glm(height ~ 1, data = d2, refresh = 0)
 m41_post <- as_tibble(m41)
-names(m41_post) <- c("mu", "sigma")
+names(m41_post) <- c("mu", "sigma")  # schönere Namen für die Spalten
 ```
 
 
@@ -352,9 +352,7 @@ m41_post %>%
 
 ```{r Kung-23, echo = TRUE, eval = FALSE}
 #| eval: false
-
 library(rstanarm)  # Paket muss gestartet sein.
-
 
 # berechnet Post.-Vert.:
 stan_glm(
@@ -392,7 +390,8 @@ parameters(m41)  # aus Paket easystats
 
 
 ```{r Kung-6}
-parameters(m41)
+#| echo: false
+parameters(m41) %>% display()
 ```
 
 
@@ -481,6 +480,17 @@ m41 %>%
 ```
 
 
+
+
+Seeing is believing:
+
+```{r}
+m41 %>% 
+  parameters() %>% 
+  plot(show_intercept = TRUE)
+```
+
+
 Das Modell ist sich recht sicher: die Ungewissheit der mittleren Körpergröße liegt bei nicht viel mehr als einem Zentimeter (95%-CI).
 
 
@@ -488,6 +498,8 @@ Was ist der mediane Schätzwert der mittleren Körpergröße, sozusagen der "Bes
 
 
 `parameters(m41)` hat uns die Antwort schon gegeben: Ca. 155 cm.
+
+
 
 
 

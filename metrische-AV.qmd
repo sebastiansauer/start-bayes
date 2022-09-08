@@ -1,3 +1,4 @@
+
 # Forschungsfragen mit metrischer AV
 
 
@@ -5,13 +6,25 @@
 Benötigte R-Pakete für dieses Thema:
 
 ```{r}
+suppressPackageStartupMessages("rstanarm")
 #| message: false
 #| results: "hide"
+#| warnings: false
 library(rstanarm)
 library(tidyverse)
 library(easystats)
 ```
 
+
+
+```{r libs-hidden}
+#| include: false
+library(icons)
+library(gt)
+library(ggridges)
+library(plotly)
+library(patchwork)
+```
 
 
 ## Wissenschaft als Gerechtigkeitsprojekt
@@ -27,7 +40,8 @@ Contra:
 
 
 ```{r}
-icon_style(fontawesome("angry", style = "solid"), scale = 5, fill = "red")
+#| echo: false
+icon_style(fontawesome("angry", style = "solid"), scale = 3, fill = "red")
 ```
 
 
@@ -39,11 +53,11 @@ Pro:
 
 
 ```{r}
-icon_style(fontawesome("tired", style = "solid"), scale = 5, fill = "red")
-
+#| echo: false
+icon_style(fontawesome("tired", style = "solid"), scale = 3, fill = "red")
 ```
 
-Meinungen kennen kein richtig und kein falsch. Konflikte können auf Basis von Meinungen nur schwer gelöst werden.
+Meinungen kennen kein richtig und kein falsch: Meinungen sind keine Fakten. Konflikte können auf Basis von Meinungen nur schwer gelöst werden.
 
 
 
@@ -52,11 +66,8 @@ Meinungen kennen kein richtig und kein falsch. Konflikte können auf Basis von M
 ### Fakten als Grundlage der Konfliktlösung
 
 Wissenschaft produziert Fakten.
-
-
 Da Fakten universell sind (sein können), ist Wissenschaft potenziell ein Weg zur Konfliktlösung.
-
-Warum helfen Fakten bei Konflikten
+Warum helfen Fakten bei Konflikten?
 
 
 Fakten sind neutral gegenüber Personen.
@@ -170,7 +181,7 @@ In diesem Beispiel liegt die Effektvitität $e$ bei knapp 90%.
 
 *Hintergrund:*
 
-Eine Psychologin, die im öffentlichen Dienst arbeitet, versucht herauszufinden, warum einige Kinder intelligenter sind als andere. Dazu wurdn in einer aufwändigen Studie die Intelligenz vieler Kinder gemessen. Zusätzliche wurden verschiedene Korrelate erhoben, in der Hoffnung, "Risikofaktoren" für geringere Intelligenz zu entdecken.
+Eine Psychologin, die im öffentlichen Dienst arbeitet, versucht herauszufinden, warum einige Kinder intelligenter sind als andere. Dazu wurden in einer aufwändigen Studie die Intelligenz vieler Kinder gemessen. Zusätzliche wurden verschiedene Korrelate der Intelligenz erhoben, in der Hoffnung, "Risikofaktoren" für geringere Intelligenz zu entdecken.
 
 
 
@@ -200,15 +211,11 @@ Mit `parameters(m10.1)` bekommt man die Parameter des Modells:
 
 
 ```{r echo = TRUE}
-#| echo: falses
+#| echo: false
 display(parameters(m10.1))
 ```
 
-]
 
-
-
-.pull-right[
 
 ```{r}
 ggplot(kidiq) +
@@ -219,33 +226,29 @@ ggplot(kidiq) +
   scale_x_continuous(breaks = c(0, 1))
 ```
 
-]
 
----
-
-## Interpretation von `m10.1`
+### Interpretation von `m10.1`
 
 `m10.1: kid_score = 78 + 12*mom_hs + error`
 
-- Der *Achsensabschnitt* (intercept, $\alpha$) ist der mittlere (bzw. vorhergesagte) IQ-Wert von Kindern, deren Mütter über keinen Schulabschluss verfügen:
+- Der *Achsensabschnitt* (intercept, $\beta_0$ oder auch mit $\alpha$ bezeichnet) ist der mittlere (bzw. vorhergesagte) IQ-Wert von Kindern, deren Mütter über keinen Schulabschluss (`mom_hs = 0`) verfügen:
 
 `kid_score = 78 + 0*12 + error`
 
-- Das *Regressionsgewicht* (slope, $\beta$) ist der Unterschied im IQ-Wert von Kindern mit Mütter mit Schlulabschluss (im Vergleich zum IQ-Wert von Kindern mit Mütter ohne Schlusabschluss). Dieser Unterschied entspricht der Steigung der Regressionsgerade.
+- Das *Regressionsgewicht* (slope, $\beta$) ist der Unterschied im IQ-Wert von Kindern mit Mütter mit Schlulabschluss (im Vergleich zum IQ-Wert von Kindern mit Mütter ohne Schlusabschluss). Dieser Unterschied entspricht der Steigung der Regressionsgeraden.
 
 `kid_score = 78 + 1*12 + error = 90 + error`
 
-- Die *Streuung* (sigma) der IQ-Wert um ihren Mittelwert zeigt, wie genau die Schätzung (Vorhersage) ist bzw. wie stark Prädiktor (UV) und Kriterium (AV) zusammenhängen.
+- Die Größer der Konfidenzintervalle zeigt, wie genau die Schätzung (Vorhersage) ist bzw. wie stark Prädiktor (UV) und Kriterium (AV) zusammenhängen.
 
----
 
-## `m10.1` als Mittelwertsdifferenz 
+
+### `m10.1` als Mittelwertsdifferenz 
 
 
 - UV: binär (zweistufig nominal/kategorial)
 - AV: metrisch (quantitativ)
 
-.pull-left[
 ```{r echo = TRUE}
 kidiq %>% 
   group_by(mom_hs) %>% 
@@ -253,33 +256,27 @@ kidiq %>%
               mean(kid_score))
 ```
 
-]
 
-
-.pull-right[
 - In der klassischen Statistik untersucht man diese Datensituation mit einem *t-Test*.
 - Der t-Test ist ein inferenzstatistisches Verfahren, dass prüft, ob die Mittelwertsdifferenz (in der Population) $\mu_d$ Null ist: $\mu_d = 0$.
 - In der Bayes-Statistik betrachtet man dazu die Posteriori-Verteilung (z.B. mit 95%PI).
-]
+
 
 Der mittlere (average, avg) IQ-Wert unterscheidet sich um ca. 12 Punkte (89.4-77.6), zugunsten der Kinder von Müttern mit Abschluss. Allerdings gibt es viel Streuung um die Mittelwerte herum.
 
----
 
-## Antwort auf die Forschungsfrage, `m10.1`
+### Antwort auf die Forschungsfrage, `m10.1`
 
 
-.pull-left[
 ```{r echo = TRUE}
 m10.1_post <-
   m10.1 %>% 
   as_tibble() 
-
-dim(m10.1_post)
 ```
 
 
 ```{r}
+#| echo: false
 m10.1_post %>% 
   slice_sample(n=5) %>% 
   gt() %>% 
@@ -288,124 +285,1869 @@ m10.1_post %>%
 ```
 
 
-]
-
-
-.pull-right[
 
 ```{r echo = TRUE}
 pi_mom_hs <-
   m10.1_post %>% 
-  summarise(
-    pi_95 = quantile(
-      mom_hs, 
-      c(.025, .975)))
+  summarise(pi_95 = quantile(mom_hs, c(.025, .975)))
+
+pi_mom_hs
 ```
 
 
 
 
-Mit 95% Wahrscheinlichkeit liegt der Unterschied im mittleren IQ-Wert zwischen Kindern von Müttern mit bzw. ohne Schulabschluss im Bereich von 7 bis 14 IQ-Punkten, laut unserem Modell: $95\%PI: [7,14]$.
+Mit 95% Wahrscheinlichkeit liegt der Unterschied im mittleren IQ-Wert zwischen 
+Kindern von Müttern mit bzw. ohne Schulabschluss im Bereich von 7 bis 14 IQ-Punkten, 
+laut unserem Modell: $95\%PI: [7,16]$.
 
-Die Hypothese, dass es keinen  Unterschied oder einen Unterschied in die andere Richtung geben sollte, ist vor diesem Hintergrund als unwahrscheinlich abzulehnen.
+Die Hypothese, dass es keinen  Unterschied oder einen Unterschied in die andere Richtung geben sollte, 
+ist vor diesem Hintergrund als unwahrscheinlich abzulehnen.
 
-]
+Visualisieren wir abschließend die Posteriori-Verteilung.
 
-
----
-
-## Visualisierung der Mittelwertsdifferenz
-
-
-.pull-left[
-
-
-
-```{r echo = TRUE}
-library(bayesplot)
-plot(m10.1, 
-     pars = "mom_hs")
+```{r}
+plot(hdi(m10.1))
 ```
 
-[Im Standard](https://mc-stan.org/bayesplot/reference/MCMC-intervals.html) werden 50%- und 90%-PI gezeigt.
-]
 
-
-.pull-right[
-
-```{r echo = TRUE}
-plot(m10.1, 
-     pars = "mom_hs",
-     plotfun = "mcmc_hist") +
-  geom_vline(
-    xintercept = 
-      pi_mom_hs$pi_95) +
-  labs(
-    title = "95%-PI"
-  )
-```
-
-]
-
-
----
 
 ## Nullhypothesen sind praktisch immer falsch
 
 
-.pull-left[
 
-
-
-[](<a href="https://imgflip.com/i/5v5531"><img src="https://i.imgflip.com/5v5531.jpg" title="made at imgflip.com"/></a><div><a href="https://imgflip.com/memegenerator">from Imgflip Meme Generator</a></div>)
-
-<!-- https://imgflip.com/i/5v5531 -->
 
 
 
 ```{r}
+#| echo: false
 knitr::include_graphics("https://i.imgflip.com/5v5531.jpg")
 ```
 
 [Quelle: Imgflip Meme Generator](https://imgflip.com/i/5v5531)
 
 
-]
 
 
 
-.pull-right[
+
 
 >   We do not generally use null hypothesis significance testing in our own work. In the fields in which we work, we do not generally think null hyptheses can be true: in social science and public health, just about every treatment one might consider will have *some* effect, and no comparison or regression coefficient of interest will be exactly zero. We do not find it particularly helpful to formulate and test null hypothess that we knowe ahead of time cannot be true.
 
 
-`r RefManageR::Citet(bib, "gelman_regression_2021")`
+@gelman_regression_2021
 
 
 
-]
-
----
 
 
-## Alternativen zu Nullhypothesen
+
+### Alternativen zu Nullhypothesen
 
 
 - Nullhypothesen, $H_0$, sind z.B.: $\rho=0$, $\rho_1 = rho_2$, $\mu_1 = \mu_2$, $\mu=0$, $\beta_1=0$.
 
 - Nullhypothesen zu testen, ist sehr verbreitet.
 
-- Ein Grund ist, dass in der Frequentistischen Statistik keine andere Art von Hypothesentest möglich ist.
+- Ein Grund ist, dass in der Frequentistischen Statistik keine andere Art von Hypothesentest möglich ist^[Mittlerweile gibt es Ansätze für einem Verfahren ähnlich dem ROPE-Ansatz, der weiter unten vorgestellt wird.]
 
 - Ein anderer Grund ist vermutlich, ... wir haben es schon immer so gemacht.
 
 - Alternativen zum Testen von Nullhypothesen:
     - Posteriori-Intervalle (PI oder HDI)  berichten
-    - Rope-Konzept `r RefManageR::Citep(bib, "kruschke_rejecting_2018")`
+    - Rope-Konzept, @kruschke_rejecting_2018
     - Wahrscheinlichkeit von inhaltlich bedeutsamen Hypothesen quantifizieren.
     - Wahrscheinlichkeit quantifizieren, dass der Effekt ein positives bzw. ein negatives Vorzeichen hat.
 
----
+
+
+
+
+
+## Eine metrische plus eine nominale UV 
+
+
+
+
+### Forschungsfrage
+
+
+>    Wie stark ist der Zusammenhang von jeweils Schulabschluss der Mutter (`mom_hs`) und  IQ der Mutter (`mom_iq`)  auf den IQ des Kindes (`kid_score`) ?
+
+
+```{r Thema6-Teil2-1, echo = TRUE, results="hide"}
+data("kidiq")  # Paket rstanarm, alternativ über CSV einlesen
+describe_distribution(kidiq)
+```
+
+
+```{r Thema6-Teil2-2}
+#| echo: false
+describe_distribution(kidiq) %>% 
+  display()
+```
+
+
+
+[Datenquelle](https://raw.githubusercontent.com/sebastiansauer/2021-wise/main/Data/kidiq.csv)
+
+
+
+
+### 1 metrischer Prädiktor
+
+
+```{r Thema6-Teil2-3, results = "hide"}
+#| results: "hide"
+m10.2 <-
+  stan_glm(kid_score ~ mom_iq, data = kidiq)
+
+m10.2 %>% 
+  parameters()
+```
+
+
+```{r}
+#| echo: false
+m10.2 %>% 
+  parameters() %>% 
+  display()
+```
+
+
+`kid_score = 26 + 0.6 * mom_iq + error`
+
+
+```{r Thema6-Teil2-4, fig.asp = 1}
+kidiq %>% 
+  ggplot(aes(x = mom_iq, y = kid_score)) +
+  geom_point(alpha = .7) +
+  geom_abline(slope = coef(m10.2)[2],
+              intercept = coef(m10.2)[1],
+              color = "blue")
+```
+
+Die Linie zeigt die vorhergesagten IQ-Werte der Kinder für verschiedene IQ-Werte der Mütter.
+Vergleicht man Teilpopulationen von Müttern mit mittleren Unterschied von einem IQ-Punkt, so findet man 0.6 IQ-Punkte Unterschied bei ihren Kindern *im Durchschnitt*.
+Der Achsenabschnitt hilft uns nicht weiter, da es keine Menschen mit einem IQ von 0 gibt.
+
+
+
+
+### Beide Prädiktoren, `m10.3`
+
+
+`m10.3: kid_score = 26 + mom_hs + 0.6*mom_iq + error`
+
+
+```{r m10-3, echo = TRUE}
+m10.3 <- 
+  stan_glm(
+    kid_score ~ mom_hs + mom_iq, 
+    refresh = 0,
+    data = kidiq)
+```
+
+
+
+Will man nur schnell die Punktschätzer (Median) zu den Modellparametern (auch als Koeffizienten bezeichnet), so kann man anstelle von `parameters()` auch schreiben:
+
+```{r}
+coef(m10.3)
+```
+
+
+Möchte man nur z.B. den 3. Wert aus diesem Vektor, so kann man schreiben:
+
+```{r}
+coef(m10.3)[3]
+```
+
+
+```{r Thema6-Teil2-5, fig.asp = 0.62}
+kidiq %>% 
+  mutate(mom_hs = factor(mom_hs)) %>%  
+  ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
+  geom_point(alpha = .7) +
+  geom_abline(slope = coef(m10.3)[3],  # den 3. Wert aus dem Vector, den `coef()` zurückgibt
+              intercept = 26,
+              linewidth = 1,
+              color = "blue") +
+  geom_abline(slope = coef(m10.3)[3],
+              intercept = 32,
+              color = "red",
+              linewidth = 2) +
+  scale_color_manual(values = c("blue", "red")) +
+  theme(legend.position = "bottom")
+```
+
+
+- *Achsenabschnitt*: Hat das Kind eine Mutter mit einem IQ von 0 und ohne Schulabschluss, dann schätzt das Modell den IQ-Wert des Kindes auf 26.
+- *Koeffizient zum mütterlichen Schulabschluss*: Vergleicht man Kinder von Müttern gleicher Intelligenz, aber mit Unterschied im Schulabschluss, so sagt das Modell einen Unterschied von 6 Punkten im IQ voraus.
+- *Koeffizient zur mütterlichen IQ*: Vergleicht man Kinder von Müttern mit gleichem Wert im Schulabschluss, aber mit 1 IQ-Punkt Unterschied, so sagt das Modell einen Unterschied von 0.6 IQ-Punkten bei den Kindern voraus.
+
+
+
+
+
+## Interaktion
+
+In `m10.3` hat das Modell die Regressionsgeraden gezwungen, parallel zu sein. 
+Betrachtet man das Streudiagramm, so sieht man, das nicht-parallele Geraden besser passen.
+Sind die Regressionsgeraden nicht parallel, so spricht man von einer Interaktion (synonym: Interaktionseffekt, Moderation).
+
+:::callout-important
+Liegt eine Interaktion vor, so unterscheidet sich die Steigung der Geraden in den Gruppen.
+:::
+
+```{r m10-4, echo = TRUE}
+m10.4 <- 
+  stan_glm(kid_score ~ mom_hs + mom_iq + mom_hs:mom_iq, 
+                  data = kidiq, refresh = 0)
+
+coef(m10.4)
+```
+
+
+```{r Thema6-Teil2-6, fig.asp = .3, fig.width=8}
+#| echo: false
+kidiq %>% 
+  mutate(mom_hs = factor(mom_hs)) %>%  
+  ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
+  geom_point(alpha = .7) +
+  geom_abline(slope = coef(m10.4)[3],
+              intercept = coef(m10.4)[1],
+              size = 1,
+              color = "blue") +
+  geom_abline(slope = coef(m10.4)[3]+coef(m10.4)[3]*coef(m10.4)[4],
+              intercept = coef(m10.4)[1] + coef(m10.4)[2],
+              size = 2,
+              color = "red") +
+  scale_color_manual(values = c("blue", "red")) 
+```
+
+
+
+
+### Interpretation von `m10.4`
+
+- *Achsenabschnitt:* IQ-Schätzwerte für Kinder mit Mütter ohne Abschluss und mit einem IQ von 0. Kaum zu interpretieren.
+- `mom_hs`: Unterschied der IQ-Schätzwerte zwischen Kindern mit Mutter ohne bzw. mit Schulabschluss und jeweils mit einem IQ von 0. Puh.
+- `mom_iq`: Unterschied der IQ-Schätzwerte zwischen Kindern mit Müttern, die sich um einen IQ-Punkt unterscheiden aber jeweils ohne Schulabschluss.
+- *Interaktion*: Der Unterschied in den Steigungen der Regressiongeraden, also der Unterschied des Koeffizienten für `mom_iq` zwischen Mütter mit bzw. ohne Schulabschluss.
+
+```
+mom_hs=0:
+kid_score = -11 + 51*0 + 1.1* mom_iq + 0.5*0*mom_iq
+
+          = -11 + 1.1*mom_iq
+
+
+mom_hs=1: 
+kid_score = -11 + 51*1 + 1.1* mom_iq + 0.5*1*mom_iq
+
+          = 40 + 0.6*mom_iq
+```
+
+@gelman_regression_2021, Kap. 10.3
+
+
+
+
+
+### Nach der Interpretation von 20 unzentrierten Koeffizienten
+
+
+<iframe src="https://giphy.com/embed/Zaej3GIZTzCI8" width="480" height="306" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/muppets-rachel-maddow-kermit-Zaej3GIZTzCI8">via GIPHY</a></p>
+
+
+
+
+
+
+## Zentrieren von Prädiktoren
+
+- Unter *Zentrieren* (to center) versteht man das Bilden der Differenz eines Messwerts zu seinem Mittelwert.
+- Zentrierte Werte geben also an, wie weit ein Messwert vom mittleren (typischen) Messwert entfernt ist.
+- Mit zentrierten Werten ist eine Regression einfacher zu interpretieren.
+
+```{r Thema6-Teil2-7, echo = TRUE}
+kidiq <-
+  kidiq %>% 
+  mutate(mom_iq_c = mom_iq - mean(mom_iq),
+         mom_hs_c = mom_hs - mean(mom_hs))
+```
+
+
+
+```{r m10-5, echo = TRUE}
+m10.5 <- stan_glm(kid_score ~ mom_hs + mom_iq_c + mom_hs:mom_iq_c, 
+                  data = kidiq, 
+                  refresh = 0)
+coef(m10.5)
+```
+
+
+
+
+### Interpretation von `m10.5`
+
+- Der *Achsenabschnitt* (`Intercept`) gibt den geschätzten IQ des Kindes an, wenn man eine Mutter *mittlerer* Intelligenz und *ohne* Schulabschluss betrachtet.
+- `mom_hs` gibt den Unterschied im geschätzten IQ des Kindes an, wenn man Mütter mittlerer Intelligenz aber mit bzw. ohne Schlusabschluss vergleicht.
+- `mom_iq_c` gibt den Unterschied im geschätzten IQ des Kindes an, wenn man Mütter ohne Schlusabschluss aber mit einem IQ-Punkt Unterschied vergleicht.
+- `mom_hs:mom_iq_c` gibt den Unterschied in den Koeffizienten für `mom_iq_c` an zwischen den beiden Grupen von `mom_hs`.
+
+
+
+```{r plot-m10-5, fig.asp = .4, fig.width=8}
+#| echo: false
+kidiq %>% 
+  mutate(mom_hs = factor(mom_hs)) %>%  
+  ggplot(aes(x = mom_iq_c, y = kid_score, color = mom_hs)) +
+  geom_point(alpha = .7) +
+  geom_abline(slope = coef(m10.5)[3],
+              intercept = coef(m10.5)[1],
+              size = 1,
+              color = "blue") +
+  geom_abline(slope = coef(m10.5)[3]+coef(m10.5)[3]*coef(m10.5)[4],
+              intercept = coef(m10.5)[1] + coef(m10.5)[2],
+              size = 2,
+              color = "red") +
+  scale_color_manual(values = c("blue", "red")) +
+  theme(legend.position = "bottom",
+        axis.title = element_text(size = 8),
+        legend.title = element_text(size = 6))
+```
+
+
+
+
+### Zentrieren ändert nichts an den Vorhersagen
+
+`m10.4`: 
+
+```{r Thema6-Teil2-8, echo = TRUE}
+new <- tibble(mom_hs = 0, mom_iq = mean(kidiq$mom_iq))
+pred_new <- posterior_predict(m10.4, newdata = new)
+mean(pred_new)
+```
+
+`m10.5`: 
+
+```{r Thema6-Teil2-9, echo = TRUE}
+new <- tibble(mom_hs = 0, mom_iq_c = 0)
+pred_new <- posterior_predict(m10.5, newdata = new)
+mean(pred_new)
+```
+
+Auch die Streuungen der vorhergesagten Werte unterscheiden sich nicht (wirklich): $\sigma_{m10.4}= `r round(sigma(m10.4))`$; $\sigma_{m10.5}= `r round(sigma(m10.5))`$.
+
+
+Das Zentrieren ändert auch nicht die Regressionskoeffizienten, da die Streuungen der Prädiktoren nicht verändert wurden.
+
+
+
+
+
+### Perzentilintervalle aus der Posterori-Verteilung
+
+```{r}
+eti(m10.5)
+```
+
+
+
+Highest Density (Posterior) Intervalle (HDI oder HDPI) kann man sich  komfortabel ausgeben lassen mit `hdi(m10.5)`:
+
+```{r Thema6-Teil2-11}
+hdi(m10.5)
+```
+
+Im Falle symmetrischer Posteriori-Verteilungen (wie hier) kommen beide Arten von Intervallen zu gleichen Ergebnissen.
+
+
+
+### Beantworten der Forschungsfrage
+
+>   Das Model zeigt keine Belege, dass sich die mittlere Intelligenz von Kindern bei Müttern mit bzw. ohne Schlusabluss unterscheidet (95%PI: [-2.0, 7.8]). Hingegen fand sich ein Effekt der mütterlichen Intelligenz; pro Punkt Unterschied in müttlerlichem IQ fand sich ein Unterschied von 0.7 bis 1.3 IQ-Punkte (95%PI). Außerdem fand sich ein Beleg, dass der Zusammenhang des IQ zwischen Mutter und Kind durch den Schulabschluss moderiert wird: Bei Mütter mit Schulabschluss war der Zusammenhang zwischen Mutter-IQ und Kind-IQ geringer (95%PI: [-0.80, -0.17]).
+
+</br>
+</br>
+
+`r icons::icon_style(icons::fontawesome("bomb", style = "solid"), scale = 2, fill = "red")` Das Modell macht *keine* kausalen Aussagen. Es werden lediglich Unterschiede bzw. Zusammenhänge beschrieben.
+
+
+
+
+### Relevanz von Prädiktoren
+
+
+
+
+
+![Made at imgflip.com](https://i.imgflip.com/5sps62.jpg){width=50%}
+
+
+Betrachten wir `m10.3` noch einmal.
+
+Welcher Prädiktor, `mom_hs` oder `mom_hs` ist wichtiger, im Sinne von stärker mit AV `kid_score` verbunden?
+
+
+```{r}
+#| echo: false
+hdi(m10.3)
+```
+
+
+
+
+
+Das Problem ist, dass die Prädiktoren auf verschiedenen Skalen gemessen wurden, so dass sie nicht direkt vergleichbar sind.
+Man könnte 
+
+- die Skalierungen der Prädiktoren angleichen
+- Vorhersagegüte verschiedener Modelle vergleichen (Modell mit einem vs. Modell mit beiden Prädiktoren)
+- ...
+- Dazu später mehr 🤓
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Eine nominale UV mit mehreren Stufen
+
+
+
+
+### Forschungsfrage
+
+*Hintergrund*:
+
+Nach Ihrem Studium haben Sie bei einem aufstrebenden Online-Händler angeheuert
+Sie sind für alles zuständig, 
+was nach Wissenschaft oder Analyse aussieht oder sonst den Anschein erweckt,
+kompliziert zu sein. 
+Aus irgendwelchen Gründen liebt Ihre Chefin Diamanten,
+so dass Ihre erste Aufgabe darin besteht, Diamantenpreise zu analysieren. 
+Das Ziel Ihrer Chefin liegt darin, 
+zu erkennen, was ein Preis ist, 
+für den ein Diamant gut verkauft werden kann. Kennt man diesen Preis, 
+kann man sich auf die Suche machen, 
+ob man den Diamant irgendwo günstiger findet. 
+Wenn ja, macht man Gewinn. 
+Gutes Geschäftsmodell, meint Ihre Chefin.
+
+</br>
+
+
+> Unterscheiden sich mittlere Diamantenpreise in Abhängigkeit von ihrer Schliffart? (Datensatz `diamonds`)
+
+
+
+
+
+
+### Alle Mittelwerte sind gleich (?)
+
+- Formal: $\mu_1 = \mu_2 = \ldots = \mu_k$ mit $k$ verschiedenen Gruppen von Schliffart.
+
+- Hypothesen, die keinen (Null) Unterschied zwischen Gruppen oder keinen Zusammenhang zwischen Variablen postulieren, kann man als *Nullhypothesen* bezeichnen.
+
+- Moment. Dass sich *alle* Mittelwerte um 0,00000000 unterscheiden, ist wohl nicht zu vermuten. Wer glaubt sowas? 🤔 Daher ist die bessere Forschungsfrage:
+
+> *Wie sehr* unterscheiden sich mittlere Diamantenpreise in Abhängigkeit von ihrer Schliffart?
+
+Oder wir prüfen die Hypothese, ob die Mittelwerte "praktisch" gleich sind, also sich "kaum" unterscheiden. Der Grenzwert für "praktisch gleich" bzw. "kaum unterschiedlich" ist subjektiv.
+
+
+
+### Erster Blick in den Datensatz `diamonds`
+
+[Datenquelle](https://vincentarelbundock.github.io/Rdatasets/csv/ggplot2/diamonds.csv), [Beschreibung des Datensatzes](https://vincentarelbundock.github.io/Rdatasets/doc/ggplot2/diamonds.html)
+
+```{r echo = TRUE}
+diamonds_url <- "https://tinyurl.com/up84jp5c"
+```
+
+```{r echo = TRUE, results = "hide"}
+#| results: "hide"
+#| message: false
+set.seed(42)  # Zufallszahlen für `sample()` festlegen
+diamonds <- 
+  read_csv(diamonds_url) %>% 
+  sample_n(1000) %>%  # um etwas Rechenzeit zu sparen
+  select(-1) # 1. Spalte nur laufende Nummer
+```
+
+```{r}
+diamonds %>% 
+  select(price, cut) %>% 
+  group_by(cut) %>% 
+  # nehmen wir die robusten Statistiken, da Preis sehr schief ist:
+  describe_distribution(range = FALSE, iqr = FALSE)
+```
+
+
+
+
+
+
+### Ein Überblick über die metrischen Variablen
+
+
+
+... aufgeteilt in die Stufen von `cut`:
+
+```{r echo = FALSE, eval = TRUE}
+#| echo: false
+diamonds %>% 
+  select(price, cut) %>% 
+  group_by(cut) %>% 
+  # nehmen wir die robusten Statistiken, da Preis sehr schief ist:
+  describe_distribution() %>% 
+  display()
+```
+
+
+Was fällt Ihnen auf?
+
+
+
+### Visualisierung (EDA)
+
+
+
+
+```{r}
+#| echo: false
+diamonds %>% 
+  drop_na(cut, price) %>% 
+  group_by(cut) %>% 
+  summarise(price_md =
+              median(price),
+            price_iqr = 
+              IQR(price)) %>%
+  gt() %>% 
+  fmt_number(columns = 2:3,
+             decimals = 0)
+```
+
+
+
+```{r}
+#| echo: false
+diamonds %>% 
+  ggplot(aes(x=cut, y=price)) +
+  geom_violin() +
+  geom_jitter(width = 0.1, alpha = .1)
+```
+
+
+```{r fig.asp = .3, fig.width=7}
+#| echo: false
+ggplot(diamonds) +
+  aes(x = price, y = cut) +
+  geom_density_ridges()
+```
+
+
+
+
+
+### Mittlere Preisunterschiede in der Population
+
+
+
+```{r m106, echo = TRUE}
+options(mc.cores = parallel::detectCores())  # Turbo einschalten
+
+m10.6 <- stan_glm(price ~ cut, data = diamonds, refresh = 0)
+# refresh=0 unterdrückt Ausgabe der Posteriori-Stichproben
+```
+
+
+
+```{r}
+#| eval: false
+m10.6 %>% 
+  parameters()
+```
+
+```{r}
+#| echo: false
+m10.6 %>% 
+  parameters() %>% 
+  display()
+```
+
+
+
+
+### Interpretation von `m10.6`
+
+- `cut` hat fünf verschiedene Werte (Stufen, Faktorstufen, Ausprägungen), aber es werden nur vier angezeigt. 
+- Die fünfte (`Fair`, nicht ausgegeben) ist die *Vergleichs- oder Referenzkategorie* (baseline) und ist im Achsenabschnitt ausgedrückt.
+- Die Koeffizienten für `cut` geben jeweils den Unterschied zur Vergleichskategorie wieder.
+- Diamanten der Schliffart `Fair` haben laut Modell einen mittleren Preis von ca. 4300$.
+- Diamanten der Schliffart `Good` sind laut Modell im Mittel gut 400$ billiger als Diamanten der Schliffart `Fair`, etc.
+
+
+```{r fig.asp = .33}
+plot(hdi(m10.6))
+```
+
+
+
+
+### Schätzbereiche für die Modellparameter
+
+
+```{r}
+m10.6 %>% 
+  hdi()
+```
+
+
+
+
+
+### Glauben wir jetzt an Preisunterschiede?
+
+... zwischen den Preis-Mittelwerten in der Population?
+
+- Teilweise, denn einige Schätzintervalle (für die Preisunterschiede) waren im Modell `m10.6` weit von der Null entfernt, andere nicht.
+
+- Auf Basis unseres Modells schließen wir also (mit hoher Sicherheit) aus, dass *alle* Preise im Mittelwert *exakt* identisch sind.
+
+- Ehrlicherweise hätte sowieso niemand geglaubt, dass die *exakte Nullhypothese* $\mu_1 = \mu_2 = \ldots = \mu_k$ bis in die letzte Dezimale gilt. Anders gesagt: Die Wahrscheinlichkeit eines bestimmten Wertes einer stetigen Zufallsvariable ist praktisch Null.
+
+- Aber: Viele Forscheris prüfen gerne die Nullhypothese, daher taucht der Begriff hier auf.
+
+- Das Verfahren der Frequentistischen Statistik, um die Nullhypothese $\mu_1 = \mu_2 = \ldots = \mu_k$ zu testen, nennt man *Varianzanalyse* (analysis of variance, kurz *ANOVA*).
+
+- In der Bayes-Statistik nutzt man - wie immer - primär die Post-Verteilung, um Fragen der Inferenz (z.B. Gruppenunterschiede dieser Art) zu inferenzstatistisch zu beurteilen.
+
+
+
+
+
+### Modellkoeffizienten von `m10.6`
+
+Die Regressionsoeffizienten pro Stufen von `cut`entsprechen den Mittelwerten $\hat{y_i}$ aus der Posteriori-Verteilung. Mit `coef(m10.6)` kann man sie sich bequem ausgeben lassen.
+
+```{r echo = TRUE}
+coef(m10.6)
+```
+
+
+- $\hat{y}_{Fair} = `r round(coef(m10.6)[1])`$
+- $\hat{y}_{Good} = `r round(coef(m10.6)[2])`$
+- etc.
+
+
+
+
+
+
+
+
+
+## Priori-Werte
+
+Unser Modell `m10.6` hat schwach informierte (weakly informative) Priors.
+Für Achsenabschnitt und die Regressionskoeffizienten werden Normalverteilungen angenommen mit Mittelwert entsprechend den Stichprobendaten und Streuung, die der 2.5-fachen der Streuung in der Stichprobe entspricht.
+Mehr Infos kann man sich so ausgeben lassen: `prior_summary(m10.6)`.
+Wo man man über mehr inhaltliches Wissen verfügt, so wird man die Priors anpassen wollen, z.B.:
+
+```{r echo = TRUE}
+m10.6b <- stan_glm(price ~ cut, data = diamonds, refresh = 0,
+                   prior = normal(location = c(100, 100, 100, 100),
+                                  scale = c(100, 100, 100, 100)),
+                   prior_intercept = normal(3000, 500))
+coef(m10.6b)
+```
+
+
+Die Streuung des Modells, $\sigma$, kann man sich mit `sigma(modell)` ausgeben lassen:
+
+```{r}
+sigma(m10.6b)
+```
+
+
+Implizit bekommt man diese Informationen mitgeteilt durch die Größe der Konfidenzintervalle.
+
+
+
+### Wechsel der Referenzkategorie
+
+- `cut` ist eine nominale Variable, da passt in R der Typ `factor` (Faktor) am besten. Aktuell ist der Typ noch `character` (Text):
+
+```{r echo = TRUE}
+diamonds <- diamonds %>% 
+  mutate(cut = factor(cut))
+```
+
+
+- Im Standard sortiert R die Faktorstufen alphabetisch, aber man kann die Reihenfolge ändern. 
+
+```{r echo = TRUE}
+levels(diamonds$cut)
+```
+
+Setzen wir `Ideal` als Referenzkategorie und lassen die restliche Reihenfolge, wie sie ist:
+
+```{r echo = TRUE}
+library(forcats)
+diamonds <- diamonds %>% 
+  mutate(cut = factor(cut),
+    cut = fct_relevel(cut, "Ideal"))
+```
+
+```{r}
+levels(diamonds$cut)
+```
+
+
+
+
+
+
+
+
+
+### Wechsel der Referenzkategorie ändert nichts Wesentliches am Modell
+
+```{r echo = TRUE}
+m10.6a <- stan_glm(price ~ cut, data = diamonds, refresh = 0)
+hdi(m10.6a)
+```
+
+
+
+
+
+
+
+
+
+
+
+## Modellgüte mit R-Quadrat bestimmen
+
+### Modellgüte mit $R^2$ bestimmen
+
+
+
+- $R^2$ gibt den Anteil der Gesamtvarianz (der AV) an, den das Modell erklärt.
+- Höhere Wert von $R^2$ bedeuten, dass das Modell die Daten besser erklärt.
+- $R^2$ wird normalerweise auf Basis eines Punktschätzers definiert.
+- Solch eine Definition lässt aber viel Information - über die Ungewissheit der Schätzung - außen vor.
+- Daher ist es wünschenswert, diese Information in $R^2$ einfließen zu lassen: *Bayes-R-Quadrat*.
+- mit `bayes_r2()` kann man sich die Verteilung berechnen lassen.
+
+
+
+<!-- R^2_{Bayes} = \frac{\text{erklärte Varianz}}{\text{erkärte Varianz + Residualvarianz}} = \frac{var_{fit}}{var_{fit}+var_{res}} -->
+
+<!-- - $var_{fit}$ ist die Varianz der vorhergesagten Schätzwerte $\hat{y}_i$. -->
+
+
+
+```{r echo = TRUE}
+r2(m10.6)
+```
+
+
+Möchte man es ausführlicher, und im Komfort einer Bayes-Analyse schwelgen,
+so kann man sich die Posteriori-Verteilung von $R2$ ausgeben lassen:
+
+```{r}
+m10.6_r2 <-
+m10.6 %>% 
+  r2_posterior() %>% 
+  as_tibble()
+
+hdi(m10.6_r2) %>% 
+  plot()
+```
+
+
+
+
+## Definition vom "klassischen" $R^2$
+
+
+
+
+- Wie genau sind die Vorhersagen des Modells? $\sigma$ (Vorhersagefehler) quantifiziert die Streuung der Residuen $r_i = y_i - X_i\hat{\beta}$, mit $\hat{y}_i = X_i\hat{\beta}$. 
+- Anders gesagt: $\hat{y} = \beta_0 + \beta_1x_1 + \beta_2x_2 + \cdots = X\hat{\beta}$.
+- Anders gesagt gibt $\sigma$ die "typische" Abweichung einer Beobachtung vom vorhergesagten Wert an.
+- Es ist nützlich, $\sigma$ in Bezug zu setzen zur Streuung der AV, $sd_y=s_y$:
+- $R^2 = 1- (\hat{\sigma}^2/s^2_y)$.
+- $R2$ gibt damit den Anteil der vom Modell erklärten Varianz, $V$, an.
+- Berechnet man das Modell mit der Methode der kleinsten Quadrate (nicht mit Bayes), dann ist der obige Ausdruck äquivalent zu:
+- $R^2=V_{i=1}^n \hat{y}_i/s_y^2$
+- Die beiden obigen Ausdrücke nehmen $\hat{y}_i$ als fix (sicher) an und vernachlässigen Ungewissheit; sie sind übergewiss aus Bayes-Sicht.
+
+
+
+
+## Bayes' $R^2$
+
+- Besser ist es (aus Bayes-Sicht), die Ungewissheit der Vorhersagen bei der Berechnung der Modellgüte miteinzubeziehen:
+- $\text{Bayes }R^2 = \frac{\text{erkärte Varianz}}{\text{Erklärte Varianz + Residualvarianz}}= \frac{V_{mod}}{V_{mod} + V_{res}}$
+- $V_{mod}$ ist die Varianz in der PPV mit $s = 1, \ldots, S$ simulierten Stichproben, $V(\hat{y}_i)$ und $V_{res}$ ist die Residualvarianz im Modell.
+- Für jede Stichprobe $s$ berechnet man die vorhergesagten Werte, $\hat{y}_i^s$, die Residualvarianz $\sigma^2_s$ und den Anteil der erklärten Varianz:
+- $\text{Bayes }R^2_s = \frac{V(\hat{y}_i^s)}{V(\hat{y}_i^s+\sigma_s^2)}$
+
+
+@gelman_r_squared_2019, @gelman_regression_2021, Kap. 11.7
+
+
+
+
+
+
+
+
+
+## "Praktisch" kein Unterschied
+
+
+
+- Sagen wir, wenn sich zwei Preismittelwerte um höchstens $d=100$€ unterscheiden, gilt dieser Unterschied für uns als "praktisch gleich", "praktisch kein Unterschied" bzw. vernachlässigbar.
+- Nimmt man (praktisch) keinen Unterschied/Zusammenhang/Effekt an, spricht man von einer *Nullhypothese*: $H_0$.
+- Die Wahl von $d$ ist *subjektiv* in dem Sinne als sie von inhaltlichen Überlegungen geleitet sein sollte.
+- Diesen Bereich bezeichnen wir den *Indifferenzbereich* (Äquivalenzzone, Bereich eines vernachlässigbaren Unterschieds oder *Region of practical equivalence*, Rope). 
+- Jetzt prüfen wir, ob ein "Großteil" der Posteriori-Stichproben im Rope liegt.
+- Unter "Großteil" wird häufig das *95%-HDI* verstanden.
+
+*Entscheidungsregel*:
+
+- Großteil liegt *innerhalb* von Rope  ➡️ *Annahme* der Nullhypothese "praktisch kein Effekt", $H_0$
+- Großteil liegt *außerhalb* von Rope  ➡️ *Ablehnung* der Nullhypothese "praktisch kein Effekt", $H_0$
+- Ansonsten  ➡️  keine Entscheidung 
+
+@kruschke_rejecting_2018
+
+
+
+
+### HDI-Rope-Entscheidungsregel visualisiert
+
+```{r out.width="70%"}
+#| echo: false
+knitr::include_graphics("https://github.com/sebastiansauer/QM2-Folien/raw/main/img/Kruschke-2018-Fig1.png")
+```
+
+@kruschke_rejecting_2018, Abbildung 1, S. 272
+
+
+
+### Rope berechnen
+
+
+```{r}
+rope(m10.6)
+```
+
+Alle Faktorstufen von `cut` haben doch einen beträchtlichen Teil ihrer Wahrscheinlichkeitsmasse der Posteriori-Verteilung im ROPE. 
+
+Wir können daher für keinen der Unterschiede das ROPE verwerfen.
+
+Das hört sich abstrakt an? Dann lassen Sie uns das lieber visualisieren.
+
+:::callout-note
+Die angegebenen Prozentwerte beziehen sich nicht auf die 100% der Post-Verteilung, sondern (in der Voreinstellung) auf das 95%-ETI, s. `help(rope)`.
+:::
+
+
+### Visualisierung unserer Rope-Werte, m10.6
+
+- Ein Großteil der Posteriori-Masse von `m10.6` liegt  *nicht* innerhalb des Rope. 
+- Aber können wir umgekehrt sagen, dass ein Großteil außerhalb liegt? Das erkennt man optisch ganz gut.
+
+```{r fig.asp = .5}
+rope(m10.6) %>% plot()
+```
+
+
+Das ROPE druchkreuzt die "Berge" der Posteriori-Verteilung doch recht deutlich.
+Wir knönen das Rope nicht verwerfen.
+
+
+
+
+### Genaue Rope-Werte
+
+
+```{r echo = TRUE, results="hide"}
+library(bayestestR)
+rope(m10.6, range = c(-100, 100))
+```
+
+</br>
+
+
+
+
+
+Im Standard werden 95%-HDI berichtet, das kann man so ändern, wenn man möchte:
+
+```{r echo=TRUE, eval = FALSE}
+rope(m10.6, range, c(-100,100), ci = .89, ci_method = "ETI")
+```
+
+`ETI` (equal tails interval) steht für ein PI.
+
+
+
+```{r echo = TRUE, out.width="70%"}
+plot(rope(m10.6, range = c(-100, 100)))
+```
+
+
+
+
+### Beantwortung der Forschungsfrage
+
+>    Nur das 95%-HDI für Schliffart "Ideal" schloss den Indifferenzbereich von ±100€ aus, die übrigen Mittelwertsdifferenzen nicht. Für die übrigen Differenzen ist keine klare inferenzstatistische Aussage hinsichtlich eines Indifferenzbereichs möglich: Es ist plauibel, laut dem Modell, dass es einen praktisch bedeutsamen Unterschied gibt, aber es ist auch plausibel, dass es keinen praktisch bedeutsamen Unterschied gibt.
+
+>   Die 95%HDI für die Mittelwertsdifferenzen waren wie folgt: cutGood: [-2040, 953], cutIdeal: [-2645, -4], cutPremium: [-965, 1732], cutVeryGood: [-2102, 627]. Das Modell erklärte im Median ca. 3% der Varianz, also nur einen kleinen Teil.
+
+
+
+
+
+
+
+
+
+
+## Mehrere metrische UV
+
+
+
+
+### Forschungsfrage
+
+>   Stehen sowohl der IQ der Mutter als auch, unabhängig davon, das Alter der Mutter im Zusammenhang mit dem IQ des Kindes?
+
+
+- Das ist wieder eine *deskriptive* Forschungsfrage. *Keine* Kausalwirkung (etwa "IQ der Mutter ist die Ursache zum IQ des Kindes") wird impliziert. 
+- Es geht rein darum, Zusammenhänge in den Daten - bzw. in der Population - aufzuzeigen.
+- Viele Forschungsfagen gehen allerdings weiter und haben explizit Kausalwirkungen im Fokus. Für solche Fragen ist eine deskriptive Untersuchung nicht geeignet, sondern eine Kausalanalyse ist nötig.
+
+
+[Datenquelle](https://raw.githubusercontent.com/sebastiansauer/Lehre/data/main/Data/kidiq.csv) als CSV-Datei oder alternativ:
+
+```{r echo = TRUE}
+library(rstanarm)
+data("kidiq")
+```
+
+
+
+### Was heißt, X hängt mit Y zusammen?
+
+
+- Der Begriff "Zusammenhang" ist nicht exakt.
+- Häufig wird er (für metrische Variablen) verstanden als
+    - lineare Korrelation $\rho$ bzw. $r$ 
+    - lineare Regression $\beta$, bzw. $b$ 
+
+
+- Der Regressionskoeffizient 
+    - misst die *Steigung* der Regressionsgerade
+    - zeigt, wie groß der vorhergesagte Unterschied in Y, wenn man zwei Personen (Beobachtungseinheiten) vergleicht, die sich um eine Einheit in X unterscheiden
+    - wird manchmal mit dem "Effekt von X auf Y" übersetzt. Vorsicht: "Effekt" klingt nach Kausalzusammenhang. Eine Regression ist keine hinreichende Begründung für einen Kausalzusammenhang. 
+    
+- Der Korrelationskoeffizient
+    - misst eine Art der Stärke des linearen Zusammenhangs
+    - zeigt, wie klein die Vorhersagefehler der zugehörigen Regrssion im Schnitt sind.
+    - [Korrelation ist nicht (automatisch) Kausation.](https://xkcd.com/552/)
+    
+
+
+
+
+### Korrelationen zur Forschungsfrage
+
+
+```{r echo = TRUE, eval = FALSE}
+kidiq %>% 
+  correlation()
+```
+
+```{r}
+#| echo: false
+kidiq %>% 
+  correlation() 
+```
+
+
+Oder als Korrelationsmatrix:
+
+```{r}
+kidiq %>% 
+  correlation() %>% 
+  summary()
+```
+
+
+
+
+```{r echo = TRUE}
+kidiq %>% 
+  correlation() %>% 
+  summary() %>% 
+  plot()
+```
+
+
+
+
+### Univariate Regressionen
+
+```{r echo = TRUE}
+m10.7 <- stan_glm(kid_score ~ mom_iq, data = kidiq, refresh = 0)
+m10.8 <- stan_glm(kid_score ~ mom_age, data = kidiq, refresh = 0)
+```
+
+
+```{r echo = TRUE}
+coef(m10.7)
+```
+
+
+
+```{r echo = TRUE}
+coef(m10.8)
+```
+
+
+
+
+### Visualisierung der univariaten Regressionen
+
+
+
+`m10.7`
+
+Steigung: `r round(coef(m10.7)[2], 1)`
+```{r}
+kidiq %>% 
+  ggplot(aes(x = mom_iq, y = kid_score)) +
+  geom_point() +
+  geom_abline(intercept = coef(m10.7)[1],
+              slope = coef(m10.7)[2],
+              color = "blue")
+```
+
+
+
+`m10.8`
+
+Steigung: `r round(coef(m10.8)[2], 1)`
+```{r}
+kidiq %>% 
+  ggplot(aes(x = mom_age, y = kid_score)) +
+  geom_point() +
+  geom_abline(intercept = coef(m10.8)[1],
+              slope = coef(m10.8)[2],
+              color = "blue")
+```
+
+
+### Multiples Modell (beide Prädiktoren), m10.9
+
+```{r echo = TRUE}
+#| message: false
+m10.9 <- stan_glm(kid_score ~ mom_iq + mom_age, 
+                  data = kidiq, 
+                  refresh = 0)
+coef(m10.9)
+```
+
+
+:::callout-important
+Die Regressionsgewichte unterscheiden sich zu den von den jeweiligen univariaten Regressionen.
+:::
+
+
+- Bei einer multiplen Regression ist ein Regressionsgewicht jeweils "bereinigt" vom Zusammenhang mit dem (oder den) anderen Regressionsgewicht.
+- Das bedeutet, man betrachtet den den Zusammenhang eines Prädiktors mit der AV, wobei man gleichzeitig den anderen Prädiktor konstant hält.
+
+```{r echo = TRUE}
+coef(m10.9)
+```
+
+
+
+
+### 3D-Visualisierung eines Modells mit zwei Prädiktoren 1
+
+
+```{r out.width = "100%", fig.align="center"}
+#| echo: false
+lm1_coef <- coef(m10.9)
+x1_seq <- seq(min(kidiq$mom_iq), max(kidiq$mom_iq), length.out = 25)
+x2_seq <- seq(min(kidiq$mom_age), max(kidiq$mom_age), length.out = 25)
+
+z <- t(outer(x1_seq, x2_seq, 
+              function(x,y) lm1_coef[1]+lm1_coef[2]*x+lm1_coef[3]*y))
+
+library(plotly)
+plot_ly(width = 800, height = 500,
+  x=~x1_seq, y=~x2_seq, z=~z,type="surface") %>%
+  add_trace(data=kidiq, 
+            x=~mom_iq, y=~mom_age, z=~kid_score, 
+            mode="markers", 
+            type="scatter3d",
+            marker = list(color="#00998a", 
+                          opacity=0.7, 
+                          size = 1,
+                          symbol=105)) %>% 
+  layout(scene = list(
+    aspectmode = "manual", 
+    aspectratio = list(x=1, y=1, z=1),
+    xaxis = list(title = "mom_iq"),
+    yaxis = list(title = "mom_age"),
+    zaxis = list(title = "kid_score")))
+```
+
+
+
+
+
+### Visualisierung mit Farbe statt 3. Dimension
+
+```{r fig.asp = .5}
+#| echo: false
+kidiq <-
+  kidiq %>%
+  mutate(pred_m10.9 = predict(m10.9))
+
+grid1 <- expand_grid(mom_iq = x1_seq, mom_age =  x2_seq) %>% 
+  mutate(pred_m10.9 = predict(m10.9, newdata = data.frame(mom_iq,
+                                                              mom_age)))
+
+ggplot(aes(x = mom_iq, y = mom_age), data = grid1) +
+  geom_raster(aes(fill = pred_m10.9)) +
+ # geom_point(aes(color = kid_score_pred)) +
+  scale_fill_viridis_c() +
+  scale_color_viridis_c() +
+  geom_point(data = kidiq,  alpha = .3, size = .7)
+```
+
+
+Auf der Achse von mom_iq erkennt man deutlich (anhand der Farbänderung) die Veränderung für die AV (kid_score). Auf der Achse für `mom_age` sieht man, dass sich die AV kaum ändert, wenn sich `mom_age` ändert.
+
+
+
+
+### Visualisierung in 10 Dimensionen
+
+
+```{r out.width="50%"}
+#| fig-align: "center"
+ggplot(data.frame(x=NA, y=NA)) +
+  theme(panel.background = element_rect(fill = 'lightblue'))
+```
+
+Leider macht mein Hirn hier nicht mit. Unsere Schwächen, eine große Zahl an Dimensionen zu visualisieren, ist der Grund, warum wir mathematische Modelle brauchen.
+
+Daher kann man ein Modell verstehen als eine einfache Zusammenfassung eines (ggf. hochdimensionalen) Variablenraumes.
+
+
+
+
+
+
+
+### Relevanz der Prädiktoren
+
+- Welcher Prädiktor ist nun "wichtiger" oder "stärker" in Bezug auf den Zusammenhang mit der AV, `mom_iq` oder `mom_age`?
+
+- `mom_iq` hat den größeren Koeffizienten.
+- `mom_age` hat weniger Streuung.
+
+
+- Um die Relevanz der Prädiktoren vergleichen zu können, müsste man vielleicht die Veränderung von `kid_score` betrachten, wenn man von kleinsten zum größten Prädiktorwert geht.
+- Allerdings sind Extremwerte meist instabil (da sie von einer einzigen Beobachtung bestimmt werden).
+- Sinnvoller ist es daher, die Veränderung in der AV zu betrachten, wenn man den Prädiktor von "unterdurchschittlich" auf "überdurchschnittlich" ändert.
+- Das kann man mit *z-Standardisierung* erreichen.
+
+
+
+
+
+
+
+### z-Standardisierung
+
+
+
+
+- *z-Standardisierung* bedeutet, eine Variable so zu transformieren, dass sie über einen Mittelwert von 0 und eine SD von 1 verfügt:
+
+$$z = \frac{x - \bar{x}}{sd(x)}$$
+
+```{r echo = TRUE}
+data("kidiq")
+kidiq2 <- 
+  kidiq %>% 
+  mutate(mom_iq_z = ((mom_iq - mean(mom_iq)) / sd(mom_iq)))  %>% 
+  select(mom_iq, mom_iq_z) %>% 
+  head()
+```
+
+
+
+
+
+### Statistiken zu den z-transformierten Variablen
+
+```{r}
+#| echo: false
+rstatix::get_summary_stats(kidiq, type = "mean_sd") %>% 
+  gt() 
+```
+
+</br>
+So kann man auch die z-Transformation ("Skalierung") durchführen:
+
+
+```{r}
+kidiq <- 
+  standardize(kidiq, append = TRUE)
+
+head(kidiq)
+```
+
+
+Der Schalter `append = TRUE` sorgt dafür, dass die ursprünglichen Variablen beim Z-Standardisieren nicht überschrieben werden, sondern angehängt werden (mit einem Suffix `_z`).
+
+
+Man kann auch nur einzelne Variablen standardisieren
+```{r}
+#| eval: false
+kidiq %>% 
+  standardize(select = c("mom_iq", "mom_age", "kid_score"))
+```
+
+
+
+Man kann das Standardisieren auch von Hand machen, ohne ein Extra-Paket:
+
+```{r echo = TRUE}
+#data(kidiq)
+kidiq %>% 
+  mutate(mom_iq_z2 = scale(mom_iq),
+         mom_age_z2 = scale(mom_age),
+         kid_score_z2 = scale(kid_score)) %>% 
+  head()
+```
+
+
+
+### Modell mit standardisierten Prädiktoren, `m10.10`
+
+Das Standardisieren der AV, `kid_score` ist nicht nötig, um den Effekt der Prädiktoren (UV) auf die AV zu untersuchen.
+Standardisiert man die AV, so liefern die Regressionskoeffizienten (Betas) Aussage darüber,
+um wie viele *SD-*Einheiten sich die AV verändert, wenn sich ein Prädiktor um eine *SD-*Einheit verändert.
+
+```{r echo = TRUE}
+m10.10 <- stan_glm(kid_score_z ~ mom_iq_z + mom_age_z, data = kidiq, refresh = 0)
+coef(m10.10)
+```
+
+
+- Der *Achsenabschnitt* gibt den Mittelwert der AV (`kid_score`) an, da `kid_score_z = 0` identisch ist zum Mittelwert von  `kid_score`.
+- Der Koeffizient für `mom_iq_z` gibt an, um wie viele SD-Einheiten sich `kid_score` (die AV) ändert, wenn sich `mom_iq` um eine SD-Einheit ändert. 
+- Der Koeffizient für `mom_age_z` gibt an, um wie viele SD-Einheiten sich `kid_score` (die AV) ändert, wenn sich `mom_age` um eine SD-Einheit ändert.
+
+
+
+Jetzt sind die Prädiktoren in ihrer Relevanz (Zusammenhang mit der AV) vergleichbar: 
+
+- Man sieht, dass die Intelligenz der Mutter *deutlich wichtiger* ist das Alter der Mutter (im Hinblick auf die Vorhersage bzw. den Zusammenhang mit mit der AV).
+
+
+
+
+### 95%-PI
+
+
+
+```{r echo = TRUE}
+#| eval: false
+parameters(m10.10) 
+```
+
+```{r}
+#| echo: false
+parameters(m10.10) %>% display()
+```
+
+
+
+```{r}
+plot(hdi(m10.10))
+```
+
+
+
+
+### Was ist ein kleiner, was ein großer Effekt?
+
+- @cohen_statistical_1988 definiert Effektstärken in Bezug auf Mittelwertsvergleiche anhand von $d=(\mu_1 - \mu_o) / \sigma$.
+- Für kleine, mittlere und große Werte gab er folgende Richtwerte:
+    - klein: $d \approx 0.2$
+    - mittel: $d \approx 0.5$
+    - groß: $d \approx 0.8$
+- Auf dieser Basis schlägt @kruschke_rejecting_2018 einen Rope von $\pm0.1$ vor.
+- Fällt ein Intervall (mit vorab definierter Sicherheit, z.B. 95%) komplett in das Rope, so gilt der Effekt als "praktisch null".
+- Richtlinien für Effektstärken sind nur Notlösungen, die durch  Sachverstand ersetzt werden sollen, wo immer möglich.
+- Man kann Effektstärken ineinander überführen, s. [hier](https://www.escal.site/), z.B. von Korrelation (*r*) zu Cohens *d* oder $R^2$.
+
+
+
+
+### Vernachlässigbarer Regressionseffekt
+
+@kruschke_rejecting_2018 schlägt vor, einen Regressionskoeffizienten unter folgenden Umständen als "praktisch Null" zu bezeichnen:
+
+- Wenn eine Veränderung über "praktisch den ganzen Wertebereich" von $x$ nur einen vernachlässigbaren Effekt auf $y$ hat.
+- Ein vernachlässigbarer Effekt ist dabei $\hat{y}= \pm 0.1 sd_y$.
+- Der "praktisch ganze Wertebereich" von $x$ sei $\bar{x} \pm 2 sd_x$.
+- Resultiert der Vergleich von $\bar{x} -2 sd$ mit $\bar{x}+2sd$ nur eine Veränderung in $\hat{y}$ von $\bar{y} - 0.1sd_y$ auf $\bar{y} + 0.1 sd_y$, so ist der Regressionskoeffizient praktisch Null, der Effekt also vernachlässigbar.
+- Das impliziert Rope-Grenzen von $\beta_x = \pm 0.05$ für z-standardisierte Variablen.
+
+
+
+
+
+
+
+
+
+
+
+### Verwandtheit von Korrelation und Regression
+
+
+- Sind X und Y *z-standardisiert*, so sind Korrelation und Regression identisch.
+
+
+$$b = r \frac{sd_x}{sd_y}$$
+
+```{r echo = TRUE}
+m10.11 <- 
+  stan_glm(kid_score_z ~ mom_iq_z , data = kidiq, refresh = 0)
+coef(m10.11)
+```
+
+
+```{r}
+kidiq %>% 
+  select(kid_score, mom_iq, kid_score_z, mom_iq_z) %>% 
+  correlation()
+```
+
+
+
+### Modellgüte
+
+```{r}
+r2(m10.10)
+```
+
+
+Ist dieser Wert von $R2$ "gut"?
+Diese Frage ist ähnlich zur Frage "Ist das viel Geld?"; 
+man kann die Frage nur im Kontext beantworten.
+
+Eine einfache Lösung ist immer, Modelle zu vergleichen.
+Dann kann man angeben, welches Modell die Daten am besten erklärt,
+z.B. auf Basis von $R^2$.
+
+Zu beachten ist, dass das Modell theoretisch fundiert sein sollte.
+Vergleicht man viele Modelle aufs Geratewohl, so muss man von zufällig hohen Werten der Modellgüte im Einzelfall ausgehen.
+
+
+Wenn Sie aber unbedingt eine "objektive" Antwort auf die Frage "wie viel ist viel?" haben wollen,
+ziehen wir Herrn Cohen zu Rate:
+
+
+```{r}
+interpret_r2(0.2)  # aus `easystats`
+```
+
+Danke, Herr Cohen!
+
+
+### Priori-Verteilung für `m10.10` und Modelldefinition
+
+```{r}
+prior_summary(m10.10)  # aus rstanarm
+```
+
+
+
+<!-- $$\begin{align} -->
+<!-- \text{kid_score} &\sim \mathcal{N}(0,2.5)\\ -->
+<!-- \mu_i &= \alpha + \beta_1\text{mom_iq}_i + \beta_2\text{mom_age}_i \\ -->
+<!-- \alpha &\sim \mathcal{N}(0,2.5)\\ -->
+<!-- \beta_1 &\sim \mathcal{N}(0,2.5)\\ -->
+<!-- \beta_2 &\sim \mathcal{N}(0,2.5)\\ -->
+<!-- \sigma &\sim \mathcal{E}(1) -->
+<!-- \end{align}$$ -->
+
+
+
+$$
+\text{kid_score} \sim \mathcal{N}(0,2.5)\\
+\mu_i = \alpha + \beta_1\text{mom_iq}_i + \beta_2\text{mom_age}_i \\
+\alpha \sim \mathcal{N}(0,2.5)\\
+\beta_1 \sim \mathcal{N}(0,2.5)\\
+\beta_2 \sim \mathcal{N}(0,2.5)\\
+\sigma \sim \mathcal{E}(1)
+$$
+
+Schreibt man einen Bericht, so bietet es sich an, die Modelldefinition zumindest im Anhang aufzuführen.
+
+
+### Beantwortung der Forschungsfrage
+
+
+
+>   Das Modell spricht sich klar für einen statistischen, linearen Effekt von Intelligenz der Mutter auf die Intelligenz des Kindes aus, wenn das Alter der Mutter statistisch kontrolliert wird (95%PI: [0.38, 0.51]). Hingegen zeigt das Modell, dass das Alter der Mutter statistisch eher keine Rolle spielt (95%PI: [-0.02, 0.12]). Alle Variablen wurden z-transformiert. Insgesamt erkärt das Modell im Median einen Anteil von ca. 0.2 an der Varianz der Kinderintelligenz. Das Modell griff auf die Standard-Priori-Werte aus dem R-Paket rstanarm [@goodrich_rstanarm_2020] zurück (s. Anhang für Details).
+
+
+Hier wird von einem "statistischen Effekt" gesprochen, um klar zu machen, dass es sich lediglich um assoziative Zusammenhänge, und nicht um kausale Zusammenhänge, handelt.
+Kausale Zusammenhänge dürfen wir nur verkünden, 
+wenn wir sie a) explizit untersuchen, b) sich in der Literatur Belege dafür finden oder c) wir ein  Experiment fachgerecht durchgeführt haben.
+
+
+
+
+
+
+
+## Vertiefung
+
+
+🏎️VERTIEFUNG🏎️
+
+
+
+### Prüfen der Linearitätsannahme
+
+
+Zentrale Annahme: Die AV ist eine *lineare* Funktion der einzelnen Prädiktoren: 
+
+$$y= \alpha + \beta_1x_1 + \beta_2 x_2 + \cdots .$$ 
+
+Hingegen ist es weniger, dass die AV (y) normalverteilt ist.
+Zwar nimmt die Regression häufig normalverteilte Residuen an, aber diese Annahme ist nicht wichtig, wenn es nur darum geht, die Regressionskoeffizienten zu schätzen [@gelman_regression_2021].
+
+
+
+
+
+Ist die Linearitätsannahme erfüllt, so sollte der Residualplot nur *zufällige* Streuung um $y=0$ herum zeigen.
+
+
+Ein Residuum $e$ ist der Vorhersagefehler, also die Differenz zwischen vorhergesagtem und tatsächlichem Wert:
+
+
+$e_i = y_i - \hat{y}_i$
+
+```{r}
+kidiq <-
+  kidiq %>% 
+  mutate(m10.10_pred = predict(m10.10),  # vorhergesagten Werte
+         m10.10_resid = resid(m10.10))  # Residuen
+```
+
+
+
+```{r fig.asp = .5}
+kidiq %>% 
+  ggplot(aes(x = m10.10_pred, y = m10.10_resid)) +
+  geom_hline(color="white", yintercept = 0, size = 2) +
+  geom_hline(color = "grey40", 
+             yintercept = c(-1,1), 
+             size = 1, 
+             linetype = "dashed") +
+  geom_point(alpha = .7) +
+  geom_smooth()
+```
+
+Hier erkennt man keine größeren Auffälligkeiten.
+
+
+
+
+
+
+
+### Modellprüfung mit der PPV
+
+
+```{r echo = TRUE, fig.asp = .5}
+pp_check(m10.10)
+```
+
+Unser Modell - bzw. die Stichproben unserer Posteriori-Verteilung, $y_{rep}$ verfehlt den Mittelwert von $y$ leider recht häufig.
+
+
+
+
+
+### Visualisierung der bereinigten Regressionskoeffizienten
+
+
+```{r}
+set.seed(42)
+data(kidiq)
+kidiq3 <- 
+  kidiq %>% 
+  standardize(append = TRUE) %>% 
+  sample_n(size = 300)
+
+#| results: "hide"
+m10.10a <- stan_glm(mom_age_z ~ mom_iq_z, data = kidiq3, refresh = 0, chains = 1)
+m10.10b <- stan_glm(mom_iq_z ~ mom_age_z, data = kidiq3, refresh = 0, chains = 1)
+
+kidiq3 <-
+  kidiq3 %>% 
+  mutate(mom_age_resid = resid(m10.10a)) %>% 
+  mutate(mom_iq_resid = resid(m10.10b))
+
+
+m10.10c <- stan_glm(kid_score_z ~ mom_age_resid, data = kidiq3, refresh = 0, chains = 1)
+m10.10d <- stan_glm(kid_score_z ~ mom_iq_resid, data = kidiq3, refresh = 0, chains = 1)
+
+
+kidiq3 <-
+  kidiq3 %>% 
+  mutate(m10.10c_resid = resid(m10.10c)) %>% 
+  mutate(m10.10d_resid = resid(m10.10d))
+```
+
+
+```{r comp-resid-lm-plot-kidiq3}
+#| echo: false
+m10.10a_plot <-
+  kidiq3 %>% 
+  ggplot() +
+  aes(x = mom_iq_z, y = mom_age_z) +
+  geom_point(alpha = .5) +
+  geom_abline(slope = coef(m10.10a)[2],
+              intercept = coef(m10.10a)[1],
+              color = "blue") +
+  geom_segment(aes(y = predict(m10.10a),
+                   x = mom_iq_z,
+                   xend = mom_iq_z,
+                   yend = mom_age_z),
+               color = "skyblue3",
+               alpha = .1) +
+  scale_x_continuous(limits = c(-3, 3)) +
+  scale_y_continuous(limits = c(-2, 2))
+
+
+m10.10b_plot <-
+  kidiq3 %>% 
+  ggplot() +
+  aes(y = mom_iq_z, x = mom_age_z) +
+  geom_point(alpha = .5) +
+  geom_abline(slope = coef(m10.10b)[2],
+              intercept = coef(m10.10b)[1],
+              color = "blue") +
+  geom_segment(aes(y = predict(m10.10b),
+                   x = mom_age_z,
+                   xend = mom_age_z,
+                   yend = mom_iq_z),
+               color = "skyblue3",
+               alpha = .1)  +
+  scale_x_continuous(limits = c(-3, 3)) +
+  scale_y_continuous(limits = c(-2, 2))
+
+
+m10.10c_plot <-
+  kidiq3 %>%
+  ggplot() +
+  aes(x = mom_age_resid, y = kid_score_z) +
+  geom_point(alpha = .5) +
+  geom_abline(slope = coef(m10.10c)[2],
+              intercept = coef(m10.10c)[1],
+              color = "blue")   +
+  scale_x_continuous(limits = c(-3, 3)) +
+  scale_y_continuous(limits = c(-2, 2))
+
+
+
+m10.10d_plot <-
+  kidiq3 %>% 
+  ggplot() +
+  aes(x = mom_iq_resid, y = kid_score_z) +
+  geom_point(alpha = .5) +
+  geom_abline(slope = coef(m10.10d)[2],
+              intercept = coef(m10.10d)[1],
+              color = "blue")  +
+  scale_x_continuous(limits = c(-3, 3)) +
+  scale_y_continuous(limits = c(-2, 2))
+
+```
+
+
+```{r resid-lm-plot, fig.asp = .619}
+#(m10.10a_plot + m10.10b_plot) / (m10.10c_plot + m10.10d_plot)
+plots(m10.10a_plot, m10.10b_plot, m10.10c_plot, m10.10d_plot, n_rows = 2, tags = "A",
+      guides = "collect")
+```
+
+
+
+
+
+
+
+Die vertikalen Balken zeigen die Residuen.
+
+
+
+
+
+
+- Obere Reihe: Regression eines Prädiktors auf den anderen Prädiktor.
+- Untere Reihe: Regression der Residuen der oberen Reihe auf die AV, `kid-score_z`. 
+- Unten links (C): Die Residuen von `mom_iq_c` sind kaum mit der AV assoziiert. Das heißt, nutzt man den Teil von `mom_age_z`, der nicht mit `mom_iq_z` zusammenhängt, um `kid_score` vorher zusagen, findet man keinen (*kaum*) Zusammenhang.
+- Unten rechts (D): Die Residuen von `mom_age_c` sind *stark* mit der AV assoziiert. Das heißt, nutzt man den Teil von `mom_iq_z`, der nicht mit `mom_age_z` zusammenhängt, um `kid_score` vorher zusagen, findet man einen starken Zusammenhang.
+
+
+
+Eine multiple Regression liefert die gleichen Regressionskoeffizienten wie die Modelle aus Teildiagrammen (C) und (D).
+
+
+```{r}
+#| echo: false
+parameters(m10.10) %>% display
+```
+
+
+
+
+
+
+
+
+
+### Bereinigte Regressionskoeffizienten für mtcars
+
+
+
+
+
+```{r}
+#| results: "hide"
+
+mtcars2 <-
+  mtcars %>% 
+  standardize()
+
+m12a <- stan_glm(disp ~ wt, data = mtcars2, refresh = 0, chains = 1)
+m12b <- stan_glm(wt ~ disp, data = mtcars2, refresh = 0, chains = 1)
+
+mtcars2 <-
+  mtcars %>% 
+  mutate(m12a_resid = resid(m12a)) %>% 
+  mutate(m12b_resid = resid(m12b))
+
+
+m12c <- stan_glm(mpg ~ m12a_resid, data = mtcars2, refresh = 0, chains = 1)
+m12d <- stan_glm(mpg ~ m12b_resid, data = mtcars2, refresh = 0, chains = 1)
+
+
+mtcars2 <-
+  mtcars2 %>% 
+  mutate(m12c_resid = resid(m12c)) %>% 
+  mutate(m12d_resid = resid(m12d))
+```
+
+
+```{r comp-resid-lm-plot}
+#| echo: false
+m12a_plot <-
+  mtcars2 %>% 
+  ggplot() +
+  aes(x = wt, y = disp) +
+  geom_point(alpha = .5) +
+  geom_abline(slope = coef(m12a)[2],
+              intercept = coef(m12a)[1],
+              color = "blue") +
+  geom_segment(aes(y = predict(m12a),
+                   x = wt,
+                   xend = wt,
+                   yend = disp),
+               color = "skyblue3")
+
+
+
+m12b_plot <- 
+mtcars2 %>% 
+  ggplot() +
+  aes(y = wt, x = disp) +
+  geom_point(alpha = .5) +
+  geom_abline(slope = coef(m12b)[2],
+              intercept = coef(m12b)[1],
+              color = "blue") +
+  geom_segment(aes(y = predict(m12b),
+                   x = disp,
+                   xend = disp,
+                   yend = wt),
+               color = "skyblue3")
+
+m12c_plot <-
+  mtcars2 %>%
+  ggplot() +
+  aes(x = m12a_resid, y = mpg) +
+  geom_point(alpha = .5) +
+  geom_abline(slope = coef(m12c)[2],
+              intercept = coef(m12c)[1],
+              color = "blue")  +
+  scale_x_continuous(limits = c(-1,1))
+
+
+
+m12d_plot <-
+  mtcars2 %>% 
+  ggplot() +
+  aes(x = m12b_resid, y = mpg) +
+  geom_point(alpha = .5) +
+  geom_abline(slope = coef(m12d)[2],
+              intercept = coef(m12d)[1],
+              color = "blue")   +
+  scale_x_continuous(limits = c(-1,1))
+
+```
+
+
+```{r resid-lm-plot-mtcars, fig.asp = .619}
+#| echo: false
+plots(m12a_plot, m12b_plot, m12c_plot, m12d_plot, n_rows = 2, tags = "A",
+      guides = "collect")
+```
+
+
+Übrigens liefern `stan_glm()` und `lm` oft ähnliche Parameterwerte (bei schwach informativen Prioriwerten):
+
+```{r}
+stan_glm(mpg ~ hp + cyl, data = mtcars, refresh = 0) %>% coef()
+```
+
+
+```{r}
+lm(mpg ~ hp + cyl, data = mtcars) %>% coef()
+```
+
+
+:::callout-important
+Wenn auch die  Parameterwerte eines Frequentistischen und Bayes-Modell numerisch ähnlich sein können, so ist doch die Interpretation grundverschieden. 
+Bayesmodelle erlauben Wahrscheinlichkeitsaussagen zu den Parametern, Frequentistische Modelle nicht.
+:::
+
+
+
+
+
+
+
+
+## Ausblick: Binäre AV
+
+
+>    *Forschungsfrage:* Kann man anhand des Spritverbrauchs vorhersagen, ob ein Auto eine Automatik- bzw. ein manuelle Schaltung hat? Anders gesagt: Hängen Spritverbrauch und Getriebeart? (Datensatz `mtcars`)
+
+
+
+
+```{r echo = TRUE}
+data(mtcars)
+mtcars2 <-
+  mtcars %>% 
+  standardize(append = TRUE)
+```
+
+```{r echo = TRUE, results = "show"}
+m13 <-
+  stan_glm(am ~ mpg_z, 
+           data = mtcars2, 
+           refresh = 0)
+coef(m13)
+```
+
+Ab  `mpg_z = `r round(coef(m13),2)`` sagt das Modell `am=1` (manuell) vorher. Ganz ok.
+
+
+
+
+```{r}
+mtcars2 %>% 
+  ggplot(aes(x = mpg_z, y = am)) +
+  geom_hline(yintercept = 0.5, color = "white", size = 2) +
+  geom_point() +
+  geom_abline(intercept = coef(m13)[1],
+              slope = coef(m13)[2],
+              color = "blue") 
+```
+
+
+```{r}
+neg_am <- predict(m13, newdata = tibble(mpg_z = -1.3))
+```
+
+
+Für kleine Werte von `mpg_z` (<1.3) sagt unser Modell *negative* Werte für `am` voraus. Das macht keinen Sinn. Müssen wir mal bei Gelegenheit besser machen.
+
+
+
+
+
+
+
+## Wir waren fleißig
+
+
+```{r}
+#| echo: false
+knitr::include_graphics("https://media.giphy.com/media/XIqCQx02E1U9W/giphy.gif")
+```
+
+[Quelle](https://giphy.com/gifs/XIqCQx02E1U9W)
+
+
+Genug für heute 👍 
+
+
+
+
+
 
 
 
