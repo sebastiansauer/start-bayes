@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.168">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Start:Bayes! - 12&nbsp; Abschluss</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./kausal.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Keine Treffer",
+    "search-matching-documents-text": "Treffer",
+    "search-copy-link-title": "Link in die Suche kopieren",
+    "search-hide-matches-text": "Zusätzliche Treffer verbergen",
+    "search-more-match-text": "weitere Treffer in diesem Dokument",
+    "search-more-matches-text": "weitere Treffer in diesem Dokument",
+    "search-clear-button-title": "Zurücksetzen",
+    "search-detached-cancel-button-title": "Abbrechen",
+    "search-submit-button-title": "Abschicken"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Abschluss</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Start:Bayes!</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Hinweise</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Pruefung.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prüfung</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Inferenz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inferenz</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Wskt.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Wahrscheinlichkeit</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Verteilungen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Verteilungen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Globusversuch.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Globusversuch</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Post.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Die Post befragen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ppv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Vorhersage-Verteilung</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gauss.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Gauss-Modelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lineare-modelle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Lineare Modelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./metrische-AV.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Forschungsfragen mit metrischer AV</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kausal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Kausalinferenz</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./abschluss.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Abschluss</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Inhaltsverzeichnis</h2>
+   
+  <ul>
+  <li><a href="#lieblinglingsfehler" id="toc-lieblinglingsfehler" class="nav-link active" data-scroll-target="#lieblinglingsfehler"><span class="toc-section-number">12.1</span>  Lieblinglingsfehler</a></li>
+  <li><a href="#post-präd-verteilung-ppv-und-post-verteilung-verwechseln" id="toc-post-präd-verteilung-ppv-und-post-verteilung-verwechseln" class="nav-link" data-scroll-target="#post-präd-verteilung-ppv-und-post-verteilung-verwechseln"><span class="toc-section-number">12.2</span>  Post-Präd-Verteilung (PPV) und Post-Verteilung verwechseln 🤷</a></li>
+  <li><a href="#quantile-und-verteilungsfuntion-verwechseln" id="toc-quantile-und-verteilungsfuntion-verwechseln" class="nav-link" data-scroll-target="#quantile-und-verteilungsfuntion-verwechseln"><span class="toc-section-number">12.3</span>  Quantile und Verteilungsfuntion verwechseln 🤷</a>
+  <ul class="collapse">
+  <li><a href="#quantil-für-p" id="toc-quantil-für-p" class="nav-link" data-scroll-target="#quantil-für-p"><span class="toc-section-number">12.3.1</span>  Quantil für <span class="math inline">\(p\)</span></a></li>
+  <li><a href="#verteilungsfunktion-f" id="toc-verteilungsfunktion-f" class="nav-link" data-scroll-target="#verteilungsfunktion-f"><span class="toc-section-number">12.3.2</span>  Verteilungsfunktion <span class="math inline">\(F\)</span></a></li>
+  </ul></li>
+  <li><a href="#interaktion-falsch-interpretieren" id="toc-interaktion-falsch-interpretieren" class="nav-link" data-scroll-target="#interaktion-falsch-interpretieren"><span class="toc-section-number">12.4</span>  Interaktion falsch interpretieren 🤷</a></li>
+  <li><a href="#kochrezepte" id="toc-kochrezepte" class="nav-link" data-scroll-target="#kochrezepte"><span class="toc-section-number">12.5</span>  Kochrezepte 🍲</a>
+  <ul class="collapse">
+  <li><a href="#kochrezept-forschungsfrage-untersuchen" id="toc-kochrezept-forschungsfrage-untersuchen" class="nav-link" data-scroll-target="#kochrezept-forschungsfrage-untersuchen"><span class="toc-section-number">12.5.1</span>  Kochrezept: Forschungsfrage untersuchen</a></li>
+  <li><a href="#parameter-schätzen-vs.-hypothesen-prüfen" id="toc-parameter-schätzen-vs.-hypothesen-prüfen" class="nav-link" data-scroll-target="#parameter-schätzen-vs.-hypothesen-prüfen"><span class="toc-section-number">12.5.2</span>  Parameter schätzen vs.&nbsp;Hypothesen prüfen</a></li>
+  <li><a href="#formalisierung-von-forschungsfragen" id="toc-formalisierung-von-forschungsfragen" class="nav-link" data-scroll-target="#formalisierung-von-forschungsfragen"><span class="toc-section-number">12.5.3</span>  Formalisierung von Forschungsfragen</a></li>
+  </ul></li>
+  <li><a href="#kerngedanken-bayes" id="toc-kerngedanken-bayes" class="nav-link" data-scroll-target="#kerngedanken-bayes"><span class="toc-section-number">12.6</span>  Kerngedanken Bayes</a>
+  <ul class="collapse">
+  <li><a href="#zentraler-kennwert-der-bayes-statistik-post-verteilung" id="toc-zentraler-kennwert-der-bayes-statistik-post-verteilung" class="nav-link" data-scroll-target="#zentraler-kennwert-der-bayes-statistik-post-verteilung"><span class="toc-section-number">12.6.1</span>  Zentraler Kennwert der Bayes-Statistik: Post-Verteilung</a></li>
+  <li><a href="#posteriori-als-produkt-von-priori-und-likelihood" id="toc-posteriori-als-produkt-von-priori-und-likelihood" class="nav-link" data-scroll-target="#posteriori-als-produkt-von-priori-und-likelihood"><span class="toc-section-number">12.6.2</span>  Posteriori als Produkt von Priori und Likelihood</a></li>
+  </ul></li>
+  <li><a href="#beispiele-für-prüfungsaufgaben" id="toc-beispiele-für-prüfungsaufgaben" class="nav-link" data-scroll-target="#beispiele-für-prüfungsaufgaben"><span class="toc-section-number">12.7</span>  Beispiele für Prüfungsaufgaben</a>
+  <ul class="collapse">
+  <li><a href="#geben-sie-den-korrekten-begriff-an" id="toc-geben-sie-den-korrekten-begriff-an" class="nav-link" data-scroll-target="#geben-sie-den-korrekten-begriff-an"><span class="toc-section-number">12.7.1</span>  Geben Sie den korrekten Begriff an!</a></li>
+  <li><a href="#dag-mit-doppelter-konfundierung" id="toc-dag-mit-doppelter-konfundierung" class="nav-link" data-scroll-target="#dag-mit-doppelter-konfundierung"><span class="toc-section-number">12.7.2</span>  DAG mit doppelter Konfundierung</a></li>
+  <li><a href="#dag-mit-vielen-variablen" id="toc-dag-mit-vielen-variablen" class="nav-link" data-scroll-target="#dag-mit-vielen-variablen"><span class="toc-section-number">12.7.3</span>  DAG mit vielen Variablen</a></li>
+  <li><a href="#ein-kausalmodell-der-schizophrenie-van-kampen-2014" id="toc-ein-kausalmodell-der-schizophrenie-van-kampen-2014" class="nav-link" data-scroll-target="#ein-kausalmodell-der-schizophrenie-van-kampen-2014"><span class="toc-section-number">12.7.4</span>  Ein Kausalmodell der Schizophrenie, van Kampen (2014)</a></li>
+  <li><a href="#dag-von-van-kampen-2014-zu-den-symptomen-der-schizophrenie" id="toc-dag-von-van-kampen-2014-zu-den-symptomen-der-schizophrenie" class="nav-link" data-scroll-target="#dag-von-van-kampen-2014-zu-den-symptomen-der-schizophrenie"><span class="toc-section-number">12.7.5</span>  DAG von van Kampen (2014) zu den Symptomen der Schizophrenie</a></li>
+  <li><a href="#modelle-berechnen" id="toc-modelle-berechnen" class="nav-link" data-scroll-target="#modelle-berechnen"><span class="toc-section-number">12.7.6</span>  Modelle berechnen</a></li>
+  </ul></li>
+  <li><a href="#viel-erfolg-bei-der-prüfung" id="toc-viel-erfolg-bei-der-prüfung" class="nav-link" data-scroll-target="#viel-erfolg-bei-der-prüfung"><span class="toc-section-number">12.8</span>  Viel Erfolg bei der Prüfung!</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Abschluss</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>In diesem Kapitel benötigen Sie folgende R-Pakete.</p>
+<div class="cell" data-hash="abschluss_cache/html/unnamed-chunk-1_9b48faab58e3aacf94404ceb14592c30">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(easystats)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="abschluss_cache/html/libs-hidden_cfbe752029cbd225f177407b84536aad">
+
+</div>
+<section id="lieblinglingsfehler" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="lieblinglingsfehler"><span class="header-section-number">12.1</span> Lieblinglingsfehler</h2>
+<p>Lieblingsfehler im Überblick 🤷:</p>
+<ol type="1">
+<li>Post-Präd-Verteilung (PPV) und Post-Verteilung verwechseln</li>
+<li>Quantile und Verteilungsfunktion verwechseln</li>
+<li>Prädiktoren nicht zentrieren, wenn es einen Interaktionsterm gibt</li>
+<li>Interaktion falsch interpretieren 5.Regressionskoeffizienten kausal interpretieren, wenn es keine kausale Fundierung gibt</li>
+</ol>
+</section>
+<section id="post-präd-verteilung-ppv-und-post-verteilung-verwechseln" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="post-präd-verteilung-ppv-und-post-verteilung-verwechseln"><span class="header-section-number">12.2</span> Post-Präd-Verteilung (PPV) und Post-Verteilung verwechseln 🤷</h2>
+<p>Berechen wir das Standard-mtcars-Modell: <code>mpg ~ hp</code>.</p>
+<div class="cell" data-hash="abschluss_cache/html/m1_9c340dd7ec7689dc416fb3091a6abfab">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(mpg <span class="sc">~</span> hp, <span class="at">data =</span> mtcars, <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Die Post-Verteilung zeigt Stichproben zu den Parameterwerten.</p>
+<div class="cell" data-hash="abschluss_cache/html/unnamed-chunk-2_d72ab39294c96c5ceadd0db5bc0cc5ba">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>post_verteilung <span class="ot">&lt;-</span> m1 <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(post_verteilung)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: right;">(Intercept)</th>
+<th style="text-align: right;">hp</th>
+<th style="text-align: right;">sigma</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">29.46483</td>
+<td style="text-align: right;">-0.0726772</td>
+<td style="text-align: right;">4.065667</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">30.28192</td>
+<td style="text-align: right;">-0.0646532</td>
+<td style="text-align: right;">3.496495</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">32.41463</td>
+<td style="text-align: right;">-0.0747690</td>
+<td style="text-align: right;">4.647087</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">28.34458</td>
+<td style="text-align: right;">-0.0653787</td>
+<td style="text-align: right;">3.833117</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">28.75310</td>
+<td style="text-align: right;">-0.0641837</td>
+<td style="text-align: right;">3.798706</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">30.57290</td>
+<td style="text-align: right;">-0.0720035</td>
+<td style="text-align: right;">3.729606</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Die Posterior-Prädiktiv-Verteilung (PPV) zeigt die Vorhersagen, also keine Parameterwerte, sondern Beobachtungen.</p>
+<div class="cell" data-hash="abschluss_cache/html/unnamed-chunk-3_919c826bd79706469e931fb37b576d13">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">name</th>
+<th style="text-align: right;">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Mazda RX4</td>
+<td style="text-align: right;">15.12744</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mazda RX4 Wag</td>
+<td style="text-align: right;">26.18068</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Datsun 710</td>
+<td style="text-align: right;">22.60418</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hornet 4 Drive</td>
+<td style="text-align: right;">16.04017</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hornet Sportabout</td>
+<td style="text-align: right;">18.41473</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="quantile-und-verteilungsfuntion-verwechseln" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="quantile-und-verteilungsfuntion-verwechseln"><span class="header-section-number">12.3</span> Quantile und Verteilungsfuntion verwechseln 🤷</h2>
+<section id="quantil-für-p" class="level3" data-number="12.3.1">
+<h3 data-number="12.3.1" class="anchored" data-anchor-id="quantil-für-p"><span class="header-section-number">12.3.1</span> Quantil für <span class="math inline">\(p\)</span></h3>
+<p>Ein <span class="math inline">\(p\)</span>-Quantil teilt eine Verteilung in zwei Teile, und zwar so, dass mind. <span class="math inline">\(p\)</span> kleiner oder gleich dem <span class="math inline">\(p\)</span>-Quantil sind.</p>
+<div class="cell" data-hash="abschluss_cache/html/quantil-plot_ec0be55a8560e29a649962fed1c4f68c">
+<div class="cell-output-display">
+<p><img src="abschluss_files/figure-html/quantil-plot-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Das 50%-Quantil (.5-Quantil) beträgt <span class="math inline">\(x=0\)</span>. Mind ein Anteil <span class="math inline">\(1-p\)</span> ist größer oder gleich dem <span class="math inline">\(p\)</span>-Quantil.</p>
+</section>
+<section id="verteilungsfunktion-f" class="level3" data-number="12.3.2">
+<h3 data-number="12.3.2" class="anchored" data-anchor-id="verteilungsfunktion-f"><span class="header-section-number">12.3.2</span> Verteilungsfunktion <span class="math inline">\(F\)</span></h3>
+<p><span class="math inline">\(F(x)\)</span> gibt die Wahrscheinlichkeit an der Stelle <span class="math inline">\(x\)</span> an, dass <span class="math inline">\(X\)</span> einen Wert kleiner oder gleich <span class="math inline">\(x\)</span> annimmt.</p>
+<div class="cell" data-hash="abschluss_cache/html/f-plot_7b082bf7d6f7b16b32c60d1f061b2e53">
+<div class="cell-output-display">
+<p><img src="abschluss_files/figure-html/f-plot-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><span class="math inline">\(F(0)=1/2\)</span>, die Wahrscheinlichkeit beträgt hier 50%, dass <span class="math inline">\(x\)</span> nicht größer ist als 0.</p>
+</section>
+</section>
+<section id="interaktion-falsch-interpretieren" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="interaktion-falsch-interpretieren"><span class="header-section-number">12.4</span> Interaktion falsch interpretieren 🤷</h2>
+<p>Berechnen wir ein einfaches Interaktionsmodell: <code>mpg ~ hp*vs</code>.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Zur Erinnerung: <code>mpg ~ hp*vs</code> ist synonym zu (aber kürzer als) <code>mpg ~ hp + vs + hp:vs</code>.</p>
+</div>
+</div>
+<div class="cell" data-hash="abschluss_cache/html/m2_90ec28d86153598eca075b0c4e89c5e7">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(mpg <span class="sc">~</span> hp<span class="sc">*</span>vs, <span class="at">data =</span> mtcars)  <span class="co"># mit Interaktionseffekt</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Modellkoeffizienten:</p>
+<div class="cell" data-hash="abschluss_cache/html/unnamed-chunk-4_fc988f5012018df95fb2dd7ca856cbe7">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parameters</span>(m2)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 3%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 5%">
+<col style="width: 11%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 13%">
+<col style="width: 10%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: right;">Median</th>
+<th style="text-align: right;">CI</th>
+<th style="text-align: right;">CI_low</th>
+<th style="text-align: right;">CI_high</th>
+<th style="text-align: right;">pd</th>
+<th style="text-align: right;">ROPE_Percentage</th>
+<th style="text-align: right;">Rhat</th>
+<th style="text-align: right;">ESS</th>
+<th style="text-align: left;">Prior_Distribution</th>
+<th style="text-align: right;">Prior_Location</th>
+<th style="text-align: right;">Prior_Scale</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">24.5850953</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">19.2689378</td>
+<td style="text-align: right;">29.8246251</td>
+<td style="text-align: right;">1.00000</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">1.001311</td>
+<td style="text-align: right;">2558.345</td>
+<td style="text-align: left;">normal</td>
+<td style="text-align: right;">20.09062</td>
+<td style="text-align: right;">15.0673701</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">hp</td>
+<td style="text-align: right;">-0.0418830</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">-0.0685393</td>
+<td style="text-align: right;">-0.0146628</td>
+<td style="text-align: right;">0.99825</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">1.000711</td>
+<td style="text-align: right;">2557.510</td>
+<td style="text-align: left;">normal</td>
+<td style="text-align: right;">0.00000</td>
+<td style="text-align: right;">0.2197599</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">vs</td>
+<td style="text-align: right;">13.9078702</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">5.3600215</td>
+<td style="text-align: right;">22.7633775</td>
+<td style="text-align: right;">0.99925</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">1.003683</td>
+<td style="text-align: right;">1594.565</td>
+<td style="text-align: left;">normal</td>
+<td style="text-align: right;">0.00000</td>
+<td style="text-align: right;">29.8946190</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">hp:vs</td>
+<td style="text-align: right;">-0.1109452</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">-0.1903810</td>
+<td style="text-align: right;">-0.0306736</td>
+<td style="text-align: right;">0.99800</td>
+<td style="text-align: right;">0.3928947</td>
+<td style="text-align: right;">1.002989</td>
+<td style="text-align: right;">1732.584</td>
+<td style="text-align: left;">normal</td>
+<td style="text-align: right;">0.00000</td>
+<td style="text-align: right;">0.3094788</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-hash="abschluss_cache/html/unnamed-chunk-5_f597667b51b4c41f73d07fa9facab84a">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">parameters</span>(m2))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="abschluss_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><strong>Falsch 😈</strong> Der Unterschied im Verbrauch zwischen den beiden Gruppen <code>vs=0</code> und <code>vs=1</code> beträgt ca. -0.11.</p>
+<p><strong>Richtig 👼</strong> Der Unterschied im Verbrauch zwischen den beiden Gruppen <code>vs=0</code> und <code>vs=1</code> beträgt ca. -0.11 – <em>wenn</em> <code>hp=0</code>.</p>
+<p>Da <code>hp=0</code> kein realistischer Wert ist, ist das Modell schwer zu interpretieren. Zentrierte Prädiktoren wären hier eine sinnvolle Lösung.</p>
+<p><span class="citation" data-cites="gelman_regression_2021">Gelman, Hill, und Vehtari (<a href="references.html#ref-gelman_regression_2021" role="doc-biblioref">2021</a>)</span>,Kap. 10, <span class="citation" data-cites="mcelreath_statistical_2020">McElreath (<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref">2020</a>)</span>, Kap. 8</p>
+</section>
+<section id="kochrezepte" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="kochrezepte"><span class="header-section-number">12.5</span> Kochrezepte 🍲</h2>
+<section id="kochrezept-forschungsfrage-untersuchen" class="level3" data-number="12.5.1">
+<h3 data-number="12.5.1" class="anchored" data-anchor-id="kochrezept-forschungsfrage-untersuchen"><span class="header-section-number">12.5.1</span> Kochrezept: Forschungsfrage untersuchen</h3>
+<p><em>Theoretische Phase</em> 1. Staunen über ein Phänomen, <span class="math inline">\(y\)</span>, Kausalfrage finden 2. Literatur wälzen, um mögliche Ursachen <span class="math inline">\(x\)</span> von <span class="math inline">\(y\)</span> zu lernen 3. Forschungsfrage, Hypothese präzisieren 4. Modell präzisieren (DAG(s), Prioris)</p>
+<p><em>Empirische Phase</em></p>
+<ol start="5" type="1">
+<li>Versuch planen</li>
+<li>Daten erheben</li>
+</ol>
+<p><em>Analytische Phase</em></p>
+<ol start="7" type="1">
+<li>Daten aufbereiten</li>
+<li>Modell berechnen anhand eines oder mehrerer DAGs</li>
+<li>Modell prüfen/kritisieren</li>
+<li>Forschungsfrage beantworten</li>
+</ol>
+<p>Yeah! Fertig.</p>
+</section>
+<section id="parameter-schätzen-vs.-hypothesen-prüfen" class="level3" data-number="12.5.2">
+<h3 data-number="12.5.2" class="anchored" data-anchor-id="parameter-schätzen-vs.-hypothesen-prüfen"><span class="header-section-number">12.5.2</span> Parameter schätzen vs.&nbsp;Hypothesen prüfen</h3>
+<p>Quantitative Studien haben oft einen von zwei (formalen) Zielen: Hypothesen testen oder Parameter schätzen. Beispiel Hypothesenprüfung: “Frauen parken im Durchschnitt schneller ein als Männer”. Beispiel Parameterschätzung: “Wie groß ist der mittlere Unterschied in der Ausparkzeit zwischen Frauen und Männern?”</p>
+<p>Je ausgereifter ein Forschungsfeld, desto <em>kühnere</em> Hypothesen lassen sich formulieren: - stark ausgereift: - Die nächste totale Sonnenfinsternis in Deutschland wird am 27.7.2082 um 14.47h stattfinden, <a href="https://www.solar-eclipse.info/de/eclipse/country/DE/">Quelle</a> - gering ausgereift: - Die nächste Sonnenfinsternis wird in den nächsten 100 Jahren stattfinden. - Lernen bringt mehr als Nicht-Lernen für den Klausurerfolg. Kühne Hypothesen sind wünschenswert 🦹</p>
+</section>
+<section id="formalisierung-von-forschungsfragen" class="level3" data-number="12.5.3">
+<h3 data-number="12.5.3" class="anchored" data-anchor-id="formalisierung-von-forschungsfragen"><span class="header-section-number">12.5.3</span> Formalisierung von Forschungsfragen</h3>
+<p>Der Mittelwert in Gruppe A ist höher als in Gruppe B (der Unterschied, <span class="math inline">\(d\)</span>, im Mittelwert ist größer als Null):</p>
+<p><span class="math display">\[\mu_1 &gt; \mu_2 \Leftrightarrow \mu_1 - \mu_2 &gt; 0 \Leftrightarrow \mu_d &gt; 0\]</span></p>
+</section>
+</section>
+<section id="kerngedanken-bayes" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="kerngedanken-bayes"><span class="header-section-number">12.6</span> Kerngedanken Bayes</h2>
+<section id="zentraler-kennwert-der-bayes-statistik-post-verteilung" class="level3" data-number="12.6.1">
+<h3 data-number="12.6.1" class="anchored" data-anchor-id="zentraler-kennwert-der-bayes-statistik-post-verteilung"><span class="header-section-number">12.6.1</span> Zentraler Kennwert der Bayes-Statistik: Post-Verteilung</h3>
+<p>Berechnen wir wieder ein einfaches<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Modell: <code>mpg ~ hp</code>.</p>
+<div class="cell" data-hash="abschluss_cache/html/m3_163c1cb5f61c5fa51ef2f58757963c59">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(mpg <span class="sc">~</span> hp, <span class="at">data =</span> mtcars)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Und schauen wir uns die Post-Verteilung an, mit eingezeichnetem HDI:</p>
+<div class="cell" data-fig.asp="0.9" data-hash="abschluss_cache/html/unnamed-chunk-6_3bb1dedc8236eb5f2f621fd352889a10">
+<div class="cell-output-display">
+<p><img src="abschluss_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Ein Zusammenfassen der Posterior-Verteilung (z.B. zu einem 95%-PI) ist möglich und oft sinnvoll. Verschiedene Arten des Zusammenfassens der Post-Verteilung sind möglich, z.B. zu Mittelwert oder SD oder einem einem HD-Intervall. Allerdings übermittelt nur die gesamte Post-Verteilung alle Informationen. Daher empfiehlt es sich (oft), die Post-Verteilung zu visualisieren.</p>
+</section>
+<section id="posteriori-als-produkt-von-priori-und-likelihood" class="level3" data-number="12.6.2">
+<h3 data-number="12.6.2" class="anchored" data-anchor-id="posteriori-als-produkt-von-priori-und-likelihood"><span class="header-section-number">12.6.2</span> Posteriori als Produkt von Priori und Likelihood</h3>
+<p><span class="math display">\[\text{Posteriori} = \frac{\text{Likelihood} \times \text{Priori}}{\text{Evidenz}}\]</span></p>
+</section>
+</section>
+<section id="beispiele-für-prüfungsaufgaben" class="level2" data-number="12.7">
+<h2 data-number="12.7" class="anchored" data-anchor-id="beispiele-für-prüfungsaufgaben"><span class="header-section-number">12.7</span> Beispiele für Prüfungsaufgaben</h2>
+<section id="geben-sie-den-korrekten-begriff-an" class="level3" data-number="12.7.1">
+<h3 data-number="12.7.1" class="anchored" data-anchor-id="geben-sie-den-korrekten-begriff-an"><span class="header-section-number">12.7.1</span> Geben Sie den korrekten Begriff an!</h3>
+<p>🌬🚙🙋️👨⬅️Hans 👧⬅️Anna 👩⬅️Lise</p>
+<p>Puh, wie erstelle ich für alle Studis ein anderes Rätsel<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>?</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In einer Open-Book-Prüfung bekommen alle Studentis eine eigene, jeweils andere Prüfung. Teamarbeit bleibt natürlich trotzdem untersagt.</p>
+</div>
+</div>
+</section>
+<section id="dag-mit-doppelter-konfundierung" class="level3" data-number="12.7.2">
+<h3 data-number="12.7.2" class="anchored" data-anchor-id="dag-mit-doppelter-konfundierung"><span class="header-section-number">12.7.2</span> DAG mit doppelter Konfundierung</h3>
+<div class="cell" data-hash="abschluss_cache/html/dag2_15b41de40895a548cbc4779b3dfad5f1">
+<div class="cell-output-display">
+<p><img src="abschluss_files/figure-html/dag2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>❓Geben Sie die minimale Adjustierungsmenge (minimal adjustment set) an, um den totalen (gesamten) Effekt von <em>E</em> auf <em>D</em> zu bestimmen!</p>
+<p>❗ Entweder ist die Menge {A,Z} zu adjustieren oder die Menge {B,Z}.</p>
+</section>
+<section id="dag-mit-vielen-variablen" class="level3" data-number="12.7.3">
+<h3 data-number="12.7.3" class="anchored" data-anchor-id="dag-mit-vielen-variablen"><span class="header-section-number">12.7.3</span> DAG mit vielen Variablen</h3>
+<div class="cell" data-fig.asp="0.5" data-hash="abschluss_cache/html/dag3_41199dc503c19adf1a846046f0450a05">
+<div class="cell-output-display">
+<p><img src="abschluss_files/figure-html/dag3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Minimale Adjustierungsmenge, um den Effekt von E auf D zu identifizieren: {7}, {8}.</p>
+</section>
+<section id="ein-kausalmodell-der-schizophrenie-van-kampen-2014" class="level3" data-number="12.7.4">
+<h3 data-number="12.7.4" class="anchored" data-anchor-id="ein-kausalmodell-der-schizophrenie-van-kampen-2014"><span class="header-section-number">12.7.4</span> Ein Kausalmodell der Schizophrenie, van Kampen (2014)</h3>
+<p><em>The SSQ model of schizophrenic prodromal unfolding revised:</em></p>
+<p><em>An analysis of its causal chains based on the language of directed graphs</em></p>
+<p>D. van Kampen</p>
+<p>Lesen Sie <a href="https://www.cambridge.org/core/journals/european-psychiatry/article/abs/ssq-model-of-schizophrenic-prodromal-unfolding-revised-an-analysis-of-its-causal-chains-based-on-the-language-of-directed-graphs/F2E7BBFC1B392616DB894AFBFABE7818">hier den Abstract</a>.</p>
+<p>Folgende Symptome der Schizophrenie wurden gemessen:</p>
+<p>Social Anxiety (<em>SAN</em>), Active Isolation (<em>AIS</em>), Affective Flattening (<em>AFF</em>), Suspiciousness (<em>SUS</em>), Egocentrism (<em>EGC</em>), Living in a Fantasy World (<em>FTW</em>), Alienation (<em>ALN</em>), Apathy (<em>APA</em>), Hostility (<em>HOS</em>), Cognitive Derailment (<em>CDR</em>), Perceptual Aberrations (<em>PER</em>), and Delusional Thinking (<em>DET</em>)</p>
+<p><span class="citation" data-cites="van_kampen_ssq_2014">Kampen (<a href="references.html#ref-van_kampen_ssq_2014" role="doc-biblioref">2014</a>)</span></p>
+<p>UV: <em>SUS</em>, AV: <em>EGC</em></p>
+<p>Berechnen Sie die minimale Adjustierungsmenge, um den kausalen Effekt der UV auf die AV zu identifizieren!</p>
+</section>
+<section id="dag-von-van-kampen-2014-zu-den-symptomen-der-schizophrenie" class="level3" data-number="12.7.5">
+<h3 data-number="12.7.5" class="anchored" data-anchor-id="dag-von-van-kampen-2014-zu-den-symptomen-der-schizophrenie"><span class="header-section-number">12.7.5</span> DAG von van Kampen (2014) zu den Symptomen der Schizophrenie</h3>
+<div class="cell" data-fig.asp="0.5" data-hash="abschluss_cache/html/dag-van-kampen_d0321f15c01b56cdf86799c9796c2fe8">
+<div class="cell-output-display">
+<p><img src="abschluss_files/figure-html/dag-van-kampen-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Minimales Adjustment-Set für den totalen Kausaleffekt: {AIS, ALN}</p>
+</section>
+<section id="modelle-berechnen" class="level3" data-number="12.7.6">
+<h3 data-number="12.7.6" class="anchored" data-anchor-id="modelle-berechnen"><span class="header-section-number">12.7.6</span> Modelle berechnen</h3>
+<p>Stellen Sie sich auf Aufgaben ein, in denen Sie Modellparameter berechnen sollen. Orientieren Sie sich an den Aufgaben und Inhalten des Unterrichts.</p>
+<p>Prüfungsfragen zu Modellen könnten z.B. sein:</p>
+<ul>
+<li>Geben Sie den Punktschätzer (Median) für den Prädiktor X im Modell Y an!</li>
+<li>Geben Sie ein 89%-HDI für den Parameter X im Modell Y an!</li>
+<li>Geben Sie R-Quadrat an.</li>
+<li>Formulieren Sie ein Interaktionsmodell!</li>
+<li>Welches Modell ist korrekt, um den kausalen Effekt zu modellieren?</li>
+<li>Formulieren Sie ein Modell mit folgenden Prioris …</li>
+<li>Liegt der Effekt X noch im ROPE ?</li>
+<li>Unterscheidet sich die Breite des CI von der Breite des HDI für den Prädiktor X im Modell Y?</li>
+<li>Was verändert sich an den Parametern, wenn Sie die Prädiktoren zentrieren/z-standardisieren?</li>
+<li>…</li>
+</ul>
+</section>
+</section>
+<section id="viel-erfolg-bei-der-prüfung" class="level2" data-number="12.8">
+<h2 data-number="12.8" class="anchored" data-anchor-id="viel-erfolg-bei-der-prüfung"><span class="header-section-number">12.8</span> Viel Erfolg bei der Prüfung!</h2>
+<p>🥳🏆</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-gelman_regression_2021" class="csl-entry" role="doc-biblioentry">
+Gelman, Andrew, Jennifer Hill, und Aki Vehtari. 2021. <em>Regression and other stories</em>. Analytical methods for social research. Cambridge: Cambridge University Press.
+</div>
+<div id="ref-van_kampen_ssq_2014" class="csl-entry" role="doc-biblioentry">
+Kampen, D. van. 2014. <span>„The <span>SSQ</span> Model of Schizophrenic Prodromal Unfolding Revised: An Analysis of Its Causal Chains Based on the Language of Directed Graphs“</span>. <em>European Psychiatry</em> 29 (7): 437–48. <a href="https://doi.org/10.1016/j.eurpsy.2013.11.001">https://doi.org/10.1016/j.eurpsy.2013.11.001</a>.
+</div>
+<div id="ref-mcelreath_statistical_2020" class="csl-entry" role="doc-biblioentry">
+McElreath, Richard. 2020. <em>Statistical rethinking: a Bayesian course with examples in R and Stan</em>. 2. Aufl. <span>CRC</span> texts in statistical science. Boca Raton: Taylor; Francis, <span>CRC</span> Press.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>langweiliges<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Fahr-Hier-Hans-Anna-Lise: Varianzanalyse<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Kopiert");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./kausal.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Kausalinferenz</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
