@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.168">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Start:Bayes! - 8&nbsp; Gauss-Modelle</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./lineare-modelle.html" rel="next">
+<link href="./ppv.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Keine Treffer",
+    "search-matching-documents-text": "Treffer",
+    "search-copy-link-title": "Link in die Suche kopieren",
+    "search-hide-matches-text": "Zusätzliche Treffer verbergen",
+    "search-more-match-text": "weitere Treffer in diesem Dokument",
+    "search-more-matches-text": "weitere Treffer in diesem Dokument",
+    "search-clear-button-title": "Zurücksetzen",
+    "search-detached-cancel-button-title": "Abbrechen",
+    "search-submit-button-title": "Abschicken"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Gauss-Modelle</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Start:Bayes!</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Hinweise</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Pruefung.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Prüfung</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Inferenz.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inferenz</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Wskt.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Wahrscheinlichkeit</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Verteilungen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Verteilungen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Globusversuch.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Globusversuch</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Post.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Die Post befragen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ppv.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Vorhersage-Verteilung</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gauss.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Gauss-Modelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lineare-modelle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Lineare Modelle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./metrische-AV.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Forschungsfragen mit metrischer AV</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kausal.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Kausalinferenz</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Inhaltsverzeichnis</h2>
+   
+  <ul>
+  <li><a href="#software" id="toc-software" class="nav-link active" data-scroll-target="#software"><span class="toc-section-number">8.1</span>  Software</a></li>
+  <li><a href="#wie-groß-sind-die-kung-san" id="toc-wie-groß-sind-die-kung-san" class="nav-link" data-scroll-target="#wie-groß-sind-die-kung-san"><span class="toc-section-number">8.2</span>  Wie groß sind die !Kung San?</a>
+  <ul class="collapse">
+  <li><a href="#kung-san" id="toc-kung-san" class="nav-link" data-scroll-target="#kung-san"><span class="toc-section-number">8.2.1</span>  !Kung San</a></li>
+  <li><a href="#kung-data" id="toc-kung-data" class="nav-link" data-scroll-target="#kung-data"><span class="toc-section-number">8.2.2</span>  !Kung Data</a></li>
+  <li><a href="#wir-gehen-apriori-von-normalverteilter-größe-der-kung-aus" id="toc-wir-gehen-apriori-von-normalverteilter-größe-der-kung-aus" class="nav-link" data-scroll-target="#wir-gehen-apriori-von-normalverteilter-größe-der-kung-aus"><span class="toc-section-number">8.2.3</span>  Wir gehen apriori von normalverteilter Größe Der !Kung aus</a></li>
+  <li><a href="#unser-gauss-modell-der-kung" id="toc-unser-gauss-modell-der-kung" class="nav-link" data-scroll-target="#unser-gauss-modell-der-kung"><span class="toc-section-number">8.2.4</span>  Unser Gauss-Modell der !Kung</a></li>
+  </ul></li>
+  <li><a href="#priori-gewichtet-mit-likelihood-ergibt-posteriori" id="toc-priori-gewichtet-mit-likelihood-ergibt-posteriori" class="nav-link" data-scroll-target="#priori-gewichtet-mit-likelihood-ergibt-posteriori"><span class="toc-section-number">8.3</span>  Priori gewichtet mit Likelihood ergibt Posteriori</a>
+  <ul class="collapse">
+  <li><a href="#likelihood" id="toc-likelihood" class="nav-link" data-scroll-target="#likelihood"><span class="toc-section-number">8.3.1</span>  Likelihood</a></li>
+  <li><a href="#prioris" id="toc-prioris" class="nav-link" data-scroll-target="#prioris"><span class="toc-section-number">8.3.2</span>  Prioris</a></li>
+  </ul></li>
+  <li><a href="#zufällige-motivationsseite" id="toc-zufällige-motivationsseite" class="nav-link" data-scroll-target="#zufällige-motivationsseite"><span class="toc-section-number">8.4</span>  Zufällige Motivationsseite</a></li>
+  <li><a href="#posteriori-verteilung-des-größen-modells-m41" id="toc-posteriori-verteilung-des-größen-modells-m41" class="nav-link" data-scroll-target="#posteriori-verteilung-des-größen-modells-m41"><span class="toc-section-number">8.5</span>  Posteriori-Verteilung des Größen-Modells, <code>m41</code></a>
+  <ul class="collapse">
+  <li><a href="#hallo-posteriori-verteilung" id="toc-hallo-posteriori-verteilung" class="nav-link" data-scroll-target="#hallo-posteriori-verteilung"><span class="toc-section-number">8.5.1</span>  Hallo, Posteriori-Verteilung</a></li>
+  <li><a href="#posteriori-stichproben-mit-stan_glm-berechnen" id="toc-posteriori-stichproben-mit-stan_glm-berechnen" class="nav-link" data-scroll-target="#posteriori-stichproben-mit-stan_glm-berechnen"><span class="toc-section-number">8.5.2</span>  Posteriori-Stichproben mit <code>stan_glm()</code> berechnen</a></li>
+  <li><a href="#ausgabe-von-stan_glm" id="toc-ausgabe-von-stan_glm" class="nav-link" data-scroll-target="#ausgabe-von-stan_glm"><span class="toc-section-number">8.5.3</span>  Ausgabe von <code>stan_glm()</code></a></li>
+  </ul></li>
+  <li><a href="#wie-tickt-stan_glm" id="toc-wie-tickt-stan_glm" class="nav-link" data-scroll-target="#wie-tickt-stan_glm"><span class="toc-section-number">8.6</span>  Wie tickt <code>stan_glm()</code>?</a>
+  <ul class="collapse">
+  <li><a href="#stichproben-aus-der-posteriori-verteilung-ziehen" id="toc-stichproben-aus-der-posteriori-verteilung-ziehen" class="nav-link" data-scroll-target="#stichproben-aus-der-posteriori-verteilung-ziehen"><span class="toc-section-number">8.6.1</span>  Stichproben aus der Posteriori-Verteilung ziehen</a></li>
+  <li><a href="#antworten-von-der-posteriori-verteilung" id="toc-antworten-von-der-posteriori-verteilung" class="nav-link" data-scroll-target="#antworten-von-der-posteriori-verteilung"><span class="toc-section-number">8.6.2</span>  Antworten von der Posteriori-Verteilung</a></li>
+  <li><a href="#standard-prioriwerte-bei-stan_glm" id="toc-standard-prioriwerte-bei-stan_glm" class="nav-link" data-scroll-target="#standard-prioriwerte-bei-stan_glm"><span class="toc-section-number">8.6.3</span>  Standard-Prioriwerte bei <code>stan_glm()</code></a></li>
+  <li><a href="#visualisierung-verschiedener-exponentialverteilungen" id="toc-visualisierung-verschiedener-exponentialverteilungen" class="nav-link" data-scroll-target="#visualisierung-verschiedener-exponentialverteilungen"><span class="toc-section-number">8.6.4</span>  Visualisierung verschiedener Exponentialverteilungen</a></li>
+  </ul></li>
+  <li><a href="#modell-m42-unsere-priori-werte" id="toc-modell-m42-unsere-priori-werte" class="nav-link" data-scroll-target="#modell-m42-unsere-priori-werte"><span class="toc-section-number">8.7</span>  Modell <code>m42</code>: unsere Priori-Werte</a>
+  <ul class="collapse">
+  <li><a href="#posteriori-verteilung-und-parameter-plotten" id="toc-posteriori-verteilung-und-parameter-plotten" class="nav-link" data-scroll-target="#posteriori-verteilung-und-parameter-plotten"><span class="toc-section-number">8.7.1</span>  Posteriori-Verteilung und Parameter plotten</a></li>
+  </ul></li>
+  <li><a href="#fazit" id="toc-fazit" class="nav-link" data-scroll-target="#fazit"><span class="toc-section-number">8.8</span>  Fazit</a></li>
+  <li><a href="#wahl-der-priori-werte" id="toc-wahl-der-priori-werte" class="nav-link" data-scroll-target="#wahl-der-priori-werte"><span class="toc-section-number">8.9</span>  Wahl der Priori-Werte</a>
+  <ul class="collapse">
+  <li><a href="#welche-beobachtungen-sind-auf-basis-unseres-modells-zu-erwarten" id="toc-welche-beobachtungen-sind-auf-basis-unseres-modells-zu-erwarten" class="nav-link" data-scroll-target="#welche-beobachtungen-sind-auf-basis-unseres-modells-zu-erwarten"><span class="toc-section-number">8.9.1</span>  Welche Beobachtungen sind auf Basis unseres Modells zu erwarten?</a></li>
+  <li><a href="#priori-werte-prüfen-mit-der-priori-prädiktiv-verteilung" id="toc-priori-werte-prüfen-mit-der-priori-prädiktiv-verteilung" class="nav-link" data-scroll-target="#priori-werte-prüfen-mit-der-priori-prädiktiv-verteilung"><span class="toc-section-number">8.9.2</span>  Priori-Werte prüfen mit der Priori-Prädiktiv-Verteilung</a></li>
+  <li><a href="#vorhersagen-der-priori-werte" id="toc-vorhersagen-der-priori-werte" class="nav-link" data-scroll-target="#vorhersagen-der-priori-werte"><span class="toc-section-number">8.9.3</span>  Vorhersagen der Priori-Werte</a></li>
+  <li><a href="#extrem-vage-priori-verteilung-für-die-streuung" id="toc-extrem-vage-priori-verteilung-für-die-streuung" class="nav-link" data-scroll-target="#extrem-vage-priori-verteilung-für-die-streuung"><span class="toc-section-number">8.9.4</span>  Extrem vage Priori-Verteilung für die Streuung?</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Gauss-Modelle</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/Golem_hex.png" class="img-fluid figure-img" style="width:10.0%"></p>
+<p></p><figcaption class="figure-caption">Bayes:Start!</figcaption><p></p>
+</figure>
+</div>
+<section id="software" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="software"><span class="header-section-number">8.1</span> Software</h2>
+<p>Für dieses Thema benötigen Sie einige R-Pakete, die Sie wie folgt installieren können:</p>
+<div class="cell" data-hash="gauss_cache/html/install-libs_d44708dd0d07ecabdb1e844118f9472d">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pakete <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"rstanarm"</span>, <span class="st">"easystats"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(pakete)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Für <code>rstanarm</code> wird <a href="https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started">weitere Software</a> benötigt.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Software, und das sind R-Pakete, müssen Sie nur einmalig installieren. Aber bei jedem Start von R bzw. RStudio müssen Sie die (benötigten!) Pakete starten.</p>
+</div>
+</div>
+<div class="cell" data-hash="gauss_cache/html/load-libs-non-hidden_14b66b01ac17a58fa8ef2f8f6070bb9a">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(easystats)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="wie-groß-sind-die-kung-san" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="wie-groß-sind-die-kung-san"><span class="header-section-number">8.2</span> Wie groß sind die !Kung San?</h2>
+<p>Dieser Abschnitt basiert auf <span class="citation" data-cites="mcelreath_statistical_2020">McElreath (<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref">2020</a>)</span>, Kap. 4.3.</p>
+<section id="kung-san" class="level3" data-number="8.2.1">
+<h3 data-number="8.2.1" class="anchored" data-anchor-id="kung-san"><span class="header-section-number">8.2.1</span> !Kung San</h3>
+<div class="cell" data-hash="gauss_cache/html/Kung-1_9c6421e449389d51f350b5876de7aa62">
+<div class="cell-output-display">
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Wandering_hunters_%28Masarwa_bushmen%29%2C_North_Kalahari_Desert.jpg" class="img-fluid"></p>
+</div>
+</div>
+<p><a href="https://upload.wikimedia.org/wikipedia/commons/b/b5/Wandering_hunters_%28Masarwa_bushmen%29%2C_North_Kalahari_Desert.jpg">Quelle</a> Internet Archive Book Images, No restrictions, via Wikimedia Commons]</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-2_6e2239eb169aadf174d4992a1a5b4f25">
+<div class="cell-output-display">
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/KhoisanLanguagesModernDistribution.png/1024px-KhoisanLanguagesModernDistribution.png" class="img-fluid"></p>
+</div>
+</div>
+<p>By Andrewwik.0 - Own work, CC BY-SA 4.0, <a href="https://commons.wikimedia.org/w/index.php?curid=79801340">Quelle</a>]</p>
+</section>
+<section id="kung-data" class="level3" data-number="8.2.2">
+<h3 data-number="8.2.2" class="anchored" data-anchor-id="kung-data"><span class="header-section-number">8.2.2</span> !Kung Data</h3>
+<p><a href="https://raw.githubusercontent.com/sebastiansauer/2021-wise/main/Data/Howell1a.csv">Datenquelle</a></p>
+<div class="cell" data-hash="gauss_cache/html/Post-Regression-3_46efaf36422ee29459ef6784b06ceb42">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Kung_path <span class="ot">&lt;-</span>  </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv"</span>  </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(Kung_path)  </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(d)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: right;">height</th>
+<th style="text-align: right;">weight</th>
+<th style="text-align: right;">age</th>
+<th style="text-align: right;">male</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">151.765</td>
+<td style="text-align: right;">47.82561</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">139.700</td>
+<td style="text-align: right;">36.48581</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">136.525</td>
+<td style="text-align: right;">31.86484</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">156.845</td>
+<td style="text-align: right;">53.04191</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">145.415</td>
+<td style="text-align: right;">41.27687</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">163.830</td>
+<td style="text-align: right;">62.99259</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Wir interessieren uns für die Größe der erwachsenen !Kung:</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-5_e523b35e1c11466858955ce1c88aa16c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="ot">&lt;-</span> d <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(age <span class="sc">&gt;=</span> <span class="dv">18</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><span class="math inline">\(N=352\)</span>.</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-7_24758a814cb0f5b57a0a46109a1cde74">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describe_distribution</span>(d2)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="gauss_cache/html/Kung-7a_4371545a4649fbf1d844193d664414e4">
+<div class="cell-output-display">
+
+<div id="ionakbtmik" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#ionakbtmik) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#ionakbtmik) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#ionakbtmik) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#ionakbtmik) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#ionakbtmik) .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#ionakbtmik) .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#ionakbtmik) .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#ionakbtmik) .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#ionakbtmik) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#ionakbtmik) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#ionakbtmik) .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#ionakbtmik) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+:where(#ionakbtmik) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+:where(#ionakbtmik) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#ionakbtmik) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#ionakbtmik) .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#ionakbtmik) .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#ionakbtmik) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#ionakbtmik) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#ionakbtmik) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#ionakbtmik) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+:where(#ionakbtmik) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#ionakbtmik) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#ionakbtmik) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#ionakbtmik) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+:where(#ionakbtmik) .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+:where(#ionakbtmik) .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#ionakbtmik) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#ionakbtmik) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#ionakbtmik) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#ionakbtmik) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#ionakbtmik) .gt_left {
+  text-align: left;
+}
+
+:where(#ionakbtmik) .gt_center {
+  text-align: center;
+}
+
+:where(#ionakbtmik) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#ionakbtmik) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#ionakbtmik) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#ionakbtmik) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#ionakbtmik) .gt_super {
+  font-size: 65%;
+}
+
+:where(#ionakbtmik) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#ionakbtmik) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#ionakbtmik) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#ionakbtmik) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#ionakbtmik) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#ionakbtmik) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#ionakbtmik) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Variable</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">Mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">SD</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">IQR</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">Min</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">Max</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">Skewness</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">Kurtosis</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">n</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">n_Missing</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">height</td>
+<td class="gt_row gt_right">154.59709</td>
+<td class="gt_row gt_right">7.74</td>
+<td class="gt_row gt_right">12.06</td>
+<td class="gt_row gt_right">136.53</td>
+<td class="gt_row gt_right">179.07</td>
+<td class="gt_row gt_right">0.15</td>
+<td class="gt_row gt_right">−0.48</td>
+<td class="gt_row gt_right">352.00</td>
+<td class="gt_row gt_right">0.00</td></tr>
+    <tr><td class="gt_row gt_left">weight</td>
+<td class="gt_row gt_right">44.99049</td>
+<td class="gt_row gt_right">6.46</td>
+<td class="gt_row gt_right">9.19</td>
+<td class="gt_row gt_right">31.07</td>
+<td class="gt_row gt_right">62.99</td>
+<td class="gt_row gt_right">0.13</td>
+<td class="gt_row gt_right">−0.51</td>
+<td class="gt_row gt_right">352.00</td>
+<td class="gt_row gt_right">0.00</td></tr>
+    <tr><td class="gt_row gt_left">age</td>
+<td class="gt_row gt_right">41.13849</td>
+<td class="gt_row gt_right">15.97</td>
+<td class="gt_row gt_right">23.00</td>
+<td class="gt_row gt_right">18.00</td>
+<td class="gt_row gt_right">88.00</td>
+<td class="gt_row gt_right">0.67</td>
+<td class="gt_row gt_right">−0.21</td>
+<td class="gt_row gt_right">352.00</td>
+<td class="gt_row gt_right">0.00</td></tr>
+    <tr><td class="gt_row gt_left">male</td>
+<td class="gt_row gt_right">0.46875</td>
+<td class="gt_row gt_right">0.50</td>
+<td class="gt_row gt_right">1.00</td>
+<td class="gt_row gt_right">0.00</td>
+<td class="gt_row gt_right">1.00</td>
+<td class="gt_row gt_right">0.13</td>
+<td class="gt_row gt_right">−2.00</td>
+<td class="gt_row gt_right">352.00</td>
+<td class="gt_row gt_right">0.00</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="wir-gehen-apriori-von-normalverteilter-größe-der-kung-aus" class="level3" data-number="8.2.3">
+<h3 data-number="8.2.3" class="anchored" data-anchor-id="wir-gehen-apriori-von-normalverteilter-größe-der-kung-aus"><span class="header-section-number">8.2.3</span> Wir gehen apriori von normalverteilter Größe Der !Kung aus</h3>
+<div class="cell" data-hash="gauss_cache/html/Kung-8_50e3ed42a17a5d1b50c021fa68a7605b">
+<div class="cell-output-display">
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/8/83/SVG_Human_Silhouette.svg" class="img-fluid" style="width:25.0%"></p>
+</div>
+</div>
+<p>Own alterations andFile:SVG_Human_With_All_Organs.svg by Madhero88, CC BY-SA 3.0 <a href="https://creativecommons.org/licenses/by-sa/3.0" class="uri">https://creativecommons.org/licenses/by-sa/3.0</a>, via Wikimedia Commons</p>
+<p><span class="math display">\[\mu \sim \mathcal{N}(178, 20)\]</span></p>
+<p>Warum 178 cm? Kein besonderer Grund. Hier wollen wir den Effekt verschiedener Priori-Werte untersuchen. In einer echten Untersuchung sollte man immer einen inhaltlichen Grund für einen Priori-Wert haben. <em>Oder</em> man wählt “schwach informative” Prioris, wie das <code>{rstanarm}</code> tut: Damit lässt man kaum Vorab-Information in das Modell einfließen, aber man verhindert extreme Prioris, die meistens unsinnig sind (so wie eine SD von 100 Metern in diesem Fall).</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-9_f7cf36afa792cc87e79c3303f55850db">
+
+</div>
+</section>
+<section id="unser-gauss-modell-der-kung" class="level3" data-number="8.2.4">
+<h3 data-number="8.2.4" class="anchored" data-anchor-id="unser-gauss-modell-der-kung"><span class="header-section-number">8.2.4</span> Unser Gauss-Modell der !Kung</h3>
+<p>Wir nehmen an, dass <span class="math inline">\(\mu\)</span> und <span class="math inline">\(h_i\)</span> normalverteilt sind und <span class="math inline">\(\sigma\)</span> exponentialverteilt (da notwendig positiv) ist:</p>
+<p>Likelihood:</p>
+<p><span class="math inline">\(h_i \sim \mathcal{N}(\mu, \sigma)\)</span></p>
+<p>Prior für <span class="math inline">\(\mu\)</span>:</p>
+<p><span class="math inline">\(\mu \sim \mathcal{N}(178, 20)\)</span></p>
+<p>Prior für <span class="math inline">\(\sigma\)</span>:</p>
+<p><span class="math inline">\(\sigma \sim \mathcal{E}(0, 0.1)\)</span></p>
+<p><br> <br></p>
+<p><span class="math inline">\(95\%KI( \mu):\)</span></p>
+<p><span class="math inline">\(178 \pm 40\)</span></p>
+<p>Hier sind unsere Priori-Verteilungen visualisiert:</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-10_96d8114bb3db27ca0f014b550c0e99b7">
+<div class="cell-output-display">
+<p><img src="gauss_files/figure-html/Kung-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="priori-gewichtet-mit-likelihood-ergibt-posteriori" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="priori-gewichtet-mit-likelihood-ergibt-posteriori"><span class="header-section-number">8.3</span> Priori gewichtet mit Likelihood ergibt Posteriori</h2>
+<p>Zu Erinnerung: Die Posteriori-Wahrscheinlichkeit ist das Ergebnis von Priori-Wahrscheinlichkeit und Likelihood.</p>
+<section id="likelihood" class="level3" data-number="8.3.1">
+<h3 data-number="8.3.1" class="anchored" data-anchor-id="likelihood"><span class="header-section-number">8.3.1</span> Likelihood</h3>
+<p>Die Körpergrößen der einzelnen Personen <span class="math inline">\(h_i\)</span> sind normalverteilt mit Mittelwert <span class="math inline">\(\mu\)</span> und Streuung <span class="math inline">\(\sigma\)</span>:</p>
+<p><span class="math display">\[h_i \sim \mathcal{N}(\color{blue}{\mu},\color{green}{\sigma})\]</span></p>
+</section>
+<section id="prioris" class="level3" data-number="8.3.2">
+<h3 data-number="8.3.2" class="anchored" data-anchor-id="prioris"><span class="header-section-number">8.3.2</span> Prioris</h3>
+<p>Mittelwert der Größe ist normalverteilt mit <span class="math inline">\(\mu=178\)</span> und <span class="math inline">\(\sigma=20\)</span>:</p>
+<p><span class="math display">\[\color{blue}{\mu \sim \mathcal{N}(178, 20)}\]</span></p>
+<p>Die Streuung <span class="math inline">\(\sigma\)</span> der Größen ist exponentialverteil mit <span class="math inline">\(\lambda = 0.1\)</span>.</p>
+<p><span class="math display">\[\color{green}{\sigma \sim \mathcal{E}(0.1)}\]</span></p>
+</section>
+</section>
+<section id="zufällige-motivationsseite" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="zufällige-motivationsseite"><span class="header-section-number">8.4</span> Zufällige Motivationsseite</h2>
+<div class="cell" data-hash="gauss_cache/html/Kung-18_d26185aefd0d549719fc2f35d2ca689d">
+<div class="cell-output-display">
+<p><img src="https://raw.githubusercontent.com/sebastiansauer/QM2-Folien/main/img/pretty_good.gif" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="posteriori-verteilung-des-größen-modells-m41" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="posteriori-verteilung-des-größen-modells-m41"><span class="header-section-number">8.5</span> Posteriori-Verteilung des Größen-Modells, <code>m41</code></h2>
+<div class="cell" data-hash="gauss_cache/html/Kung-4_7df48ca58ea6917ca05112939fa39489">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>m41 <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(height <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> d2, <span class="at">refresh =</span> <span class="dv">0</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>m41_post <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(m41)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(m41_post) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mu"</span>, <span class="st">"sigma"</span>)  <span class="co"># schönere Namen für die Spalten</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Das Argument <code>refresh = 0</code> verhindert, dass die Dateils zum Ziehen der Stichproben am Bildschirm ausgegeben werden. Ich finde diese Ausgabe meist nicht informativ, so dass ich sie lieber unterdrücke.</p>
+<p>Für das Modell <code>m41</code> haben wir <em>keine</em> Prioris spezifiziert. Wir greifen damit auf die Voreinstellung der Prioris von <code>rstanarm</code> zurück. Das ist ok, aber wenn Sie Vorab-Wissen haben, sollten Sie das an <code>rstanarm</code> weitergeben, weil es ja schade wäre, wenn Sie Wissen haben, das von Ihrem Modell nicht genutzt wird.</p>
+<p>Plotten wir mal die Posteriori-Verteilung von <code>m41</code>:</p>
+<div class="cell" data-hash="gauss_cache/html/echo- true_99f026da160088855822d0ccc97a1bea">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>m41_post <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> mu, <span class="at">y =</span> sigma) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hex</span>() <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>() </span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gauss_files/figure-html/echo-%20true-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Da das Modell zwei Parameter hat, können wir auch beide gleichzeitig plotten. Wie man sieht, sind die beiden Parameter unkorreliert. In anderen Modellen können die Parameter korreliert sein.</p>
+<p>Hier noch eine andere Visualisierung:</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-5-bis_7d8eb9f2ba59fbf3239100f8a9225907">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>p_m41_post <span class="ot">&lt;-</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  m41_post <span class="sc">%&gt;%</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> mu, <span class="at">y =</span> sigma) <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> .<span class="dv">1</span>) </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>ggExtra<span class="sc">::</span><span class="fu">ggMarginal</span>(p_m41_post, <span class="at">type =</span> <span class="st">"density"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gauss_files/figure-html/Kung-5-bis-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Natürlich können wir auch nur einen Parameter plotten:</p>
+<div class="cell" data-hash="gauss_cache/html/unnamed-chunk-1_50ea76d0d0ca412fd6a204a209802ab4">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>m41_post <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mu)) <span class="sc">+</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gauss_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<ul>
+<li><p>Wir bekommen eine Wahrscheinlichkeitsverteilung für <span class="math inline">\(\mu\)</span> und eine für <span class="math inline">\(\sigma\)</span> (bzw. eine zweidimensionale Verteilung, für die <span class="math inline">\(\mu,\sigma\)</span>-Paare).</p></li>
+<li><p>Trotz des eher vagen Priors ist die Streuung Posteriori-Werte für <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span> klein: Die große Stichprobe hat die Priori-Werte überstimmt.</p></li>
+<li><p>Ziehen wir Stichproben aus der Posteriori-Verteilung, so können wir interessante Fragen stellen.</p></li>
+</ul>
+<section id="hallo-posteriori-verteilung" class="level3" data-number="8.5.1">
+<h3 data-number="8.5.1" class="anchored" data-anchor-id="hallo-posteriori-verteilung"><span class="header-section-number">8.5.1</span> Hallo, Posteriori-Verteilung</h3>
+<p>… wir hätten da mal ein paar Fragen an Sie. 🕵</p>
+<ol type="1">
+<li>Mit welcher Wahrscheinlichkeit ist die mittlere !Kung-Person größer als 1,55m?</li>
+<li>Welche mittlere Körpergröße wird mit 95% Wahrscheinlichkeit nicht überschritten, laut dem Modell?</li>
+<li>In welchem 90%-PI liegt <span class="math inline">\(\mu\)</span> vermutlich?</li>
+<li>Mit welcher Unsicherheit ist die Schätzung der mittleren Körpergröße behaftet?</li>
+<li>Was ist der mediane Schätzwert der mittleren Körpergröße, sozusagen der “Best Guess”?</li>
+</ol>
+<p>Antworten folgen etwas weiter unten.</p>
+<p>Abschlißend, eigentlich nur Spielerei, noch eine andere Visualisierung der Post-Verteilung von <span class="math inline">\(\mu\)</span> und von <span class="math inline">\(\sigma\)</span>:</p>
+<div class="cell" data-fig.asp="1" data-hash="gauss_cache/html/Kung-22_01849c282e5fc56d19ebda3dee655668">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>m41_post <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(mu<span class="sc">:</span>sigma) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"grey33"</span>) <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="cn">NULL</span>, <span class="at">breaks =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> name, <span class="at">scales =</span> <span class="st">"free"</span>, </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">labeller =</span> label_parsed,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">nrow =</span> <span class="dv">2</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gauss_files/figure-html/Kung-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="posteriori-stichproben-mit-stan_glm-berechnen" class="level3" data-number="8.5.2">
+<h3 data-number="8.5.2" class="anchored" data-anchor-id="posteriori-stichproben-mit-stan_glm-berechnen"><span class="header-section-number">8.5.2</span> Posteriori-Stichproben mit <code>stan_glm()</code> berechnen</h3>
+<ul>
+<li>Mit <code>stan_glm()</code> können wir komfortabel die Posteriori-Verteilung berechnen.</li>
+<li>Die Gittermethode wird nicht verwendet, aber die Ergebnisse sind - in bestimmten Situationen - ähnlich.</li>
+<li>Es werden aber auch viele Stichproben simuliert (sog. MCMC-Methode).</li>
+<li>Gibt man keine Priori-Werte an, so greift die Funktion auf Standardwerte zurück.</li>
+</ul>
+<div class="cell" data-hash="gauss_cache/html/Kung-23_71a8681a5d58b1fbf92ccb76d3dd1ade">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm)  <span class="co"># Paket muss gestartet sein.</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># berechnet Post.-Vert.:</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">stan_glm</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># modelldefinition:</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  AV <span class="sc">~</span> UV,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Datensatz:</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> meine_daten</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Modelldefinition:</p>
+<p><span class="math inline">\(h_i \sim \mathcal{N}(\mu, \sigma)\)</span>, Likelihood</p>
+<p><span class="math inline">\(\mu \sim \mathcal{N}(155, 19)\)</span>, Prior Größenmittelwert</p>
+<p><span class="math inline">\(\sigma \sim \mathcal{E}(0.13)\)</span>, Prior Streuung der Größen</p>
+</section>
+<section id="ausgabe-von-stan_glm" class="level3" data-number="8.5.3">
+<h3 data-number="8.5.3" class="anchored" data-anchor-id="ausgabe-von-stan_glm"><span class="header-section-number">8.5.3</span> Ausgabe von <code>stan_glm()</code></h3>
+<div class="cell" data-hash="gauss_cache/html/Kung-24_17c3abf544e3acf3e0b209c90f8f9fc8">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>m41 <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(height <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> d2, <span class="at">refresh =</span> <span class="dv">0</span>)  <span class="co"># aus Paket rstanarm</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">parameters</span>(m41)  <span class="co"># aus Paket easystats</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="gauss_cache/html/Kung-6_12de70b1c804c4c1216fb1e914815047">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<caption>Fixed effects</caption>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 8%">
+<col style="width: 18%">
+<col style="width: 6%">
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: center;">Median</th>
+<th style="text-align: center;">95% CI</th>
+<th style="text-align: center;">pd</th>
+<th style="text-align: center;">% in ROPE</th>
+<th style="text-align: center;">Rhat</th>
+<th style="text-align: center;">ESS</th>
+<th style="text-align: center;">Prior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">154.60</td>
+<td style="text-align: center;">(153.80, 155.42)</td>
+<td style="text-align: center;">100%</td>
+<td style="text-align: center;">0%</td>
+<td style="text-align: center;">1.000</td>
+<td style="text-align: center;">2891.00</td>
+<td style="text-align: center;">Normal (154.60 +- 19.36)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="wie-tickt-stan_glm" class="level2" data-number="8.6">
+<h2 data-number="8.6" class="anchored" data-anchor-id="wie-tickt-stan_glm"><span class="header-section-number">8.6</span> Wie tickt <code>stan_glm()</code>?</h2>
+<div class="cell" data-hash="gauss_cache/html/Kung-7-bis_29d911202ac8b55e29b1148a0e88a261">
+<div class="cell-output-display">
+<p><img src="https://mc-stan.org/rstanarm/reference/figures/stanlogo.png" class="img-fluid" style="width:10.0%"></p>
+</div>
+</div>
+<p><a href="https://mc-stan.org/">Quelle</a></p>
+<ul>
+<li><em>Stan</em> ist eine Software zur Berechnung von Bayesmodellen; das Paket <code>rstanarm</code> stellt Stan für uns bereit.</li>
+<li><code>stan_glm()</code> ist für die Berechnung von Regressionsmodellen ausgelegt.</li>
+<li>Will man nur die Verteilung einer Variablen (wie <code>heights</code>) schätzen, so hat man man … eine Regression ohne Prädiktor.</li>
+<li>Eine Regression ohne Prädiktor schreibt man auf Errisch so: <code>y ~ 1</code>. Die <code>1</code> steht also für die nicht vorhandene UV; <code>y</code> meint die AV (<code>height</code>).</li>
+<li><code>MAD_SD</code> ist eine robuste Version der Streuung, mit inhaltlich gleicher Aussage</li>
+<li><code>(Intercept)</code> (Achsenabschnitt) gibt den Mittelwert an.</li>
+</ul>
+<p><a href="https://mc-stan.org/rstanarm/">Dokumentation RstanArm</a></p>
+<section id="stichproben-aus-der-posteriori-verteilung-ziehen" class="level3" data-number="8.6.1">
+<h3 data-number="8.6.1" class="anchored" data-anchor-id="stichproben-aus-der-posteriori-verteilung-ziehen"><span class="header-section-number">8.6.1</span> Stichproben aus der Posteriori-Verteilung ziehen</h3>
+<p>Hier die ersten paar Zeilen von <code>post_m41</code>:</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-26_b551a7d2af245a3ea36a5f8c9363c90a">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>post_m41 <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(m41)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(post_m41)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: right;">(Intercept)</th>
+<th style="text-align: right;">sigma</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">154.8693</td>
+<td style="text-align: right;">7.958684</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">154.0783</td>
+<td style="text-align: right;">7.832770</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">154.4619</td>
+<td style="text-align: right;">7.773516</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">154.8380</td>
+<td style="text-align: right;">7.826417</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">154.4832</td>
+<td style="text-align: right;">7.762225</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">154.6501</td>
+<td style="text-align: right;">7.664231</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Mit welcher Wahrscheinlichkeit ist <span class="math inline">\(\mu&gt;155\)</span>?</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-28_e04ee35338c0847d771a8fce889b84e5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(post_m41) <span class="ot">&lt;-</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"mu"</span>, <span class="st">"sigma"</span>)  <span class="co"># den Namen "(Intercept)" durch "mu" ersetzen, ist kürzher</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>post_m41 <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(mu <span class="sc">&gt;</span> <span class="dv">155</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n<span class="sc">/</span><span class="fu">sum</span>(n))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">mu &gt; 155</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">3327</td>
+<td style="text-align: right;">0.83175</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">673</td>
+<td style="text-align: right;">0.16825</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="antworten-von-der-posteriori-verteilung" class="level3" data-number="8.6.2">
+<h3 data-number="8.6.2" class="anchored" data-anchor-id="antworten-von-der-posteriori-verteilung"><span class="header-section-number">8.6.2</span> Antworten von der Posteriori-Verteilung</h3>
+<p>Welche mittlere Körpergröße wird mit 95% Wahrscheinlichkeit nicht überschritten, laut dem Modell <code>m41</code>?</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-29_07d28d9817915bf028b8394057a3403c">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>post_m41 <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">q95 =</span> <span class="fu">quantile</span>(mu, .<span class="dv">95</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: right;">q95</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">155.2874</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>In welchem 90%-PI liegt <span class="math inline">\(\mu\)</span> vermutlich?</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-30_393983429803d815c9bd8ae6d40a4729">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>post_m41 <span class="sc">%&gt;%</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">pi_90 =</span> <span class="fu">quantile</span>(mu, <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>)))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: right;">pi_90</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">153.8988</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">155.2874</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Mit welcher Unsicherheit ist die Schätzung der mittleren Körpergröße behaftet?</p>
+<div class="cell" data-hash="gauss_cache/html/unnamed-chunk-2_5313037b26ec30aa0aa976cfbae54316">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>m41 <span class="sc">%&gt;%</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">parameters</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 3%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 2%">
+<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 14%">
+<col style="width: 11%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: right;">Median</th>
+<th style="text-align: right;">CI</th>
+<th style="text-align: right;">CI_low</th>
+<th style="text-align: right;">CI_high</th>
+<th style="text-align: right;">pd</th>
+<th style="text-align: right;">ROPE_Percentage</th>
+<th style="text-align: right;">Rhat</th>
+<th style="text-align: right;">ESS</th>
+<th style="text-align: left;">Prior_Distribution</th>
+<th style="text-align: right;">Prior_Location</th>
+<th style="text-align: right;">Prior_Scale</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">154.5982</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">153.7981</td>
+<td style="text-align: right;">155.4165</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.000277</td>
+<td style="text-align: right;">2890.841</td>
+<td style="text-align: left;">normal</td>
+<td style="text-align: right;">154.5971</td>
+<td style="text-align: right;">19.35583</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Seeing is believing:</p>
+<div class="cell" data-hash="gauss_cache/html/unnamed-chunk-3_2e67d6d009a5fd7c624db3972f178418">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>m41 <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">parameters</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">show_intercept =</span> <span class="cn">TRUE</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gauss_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Das Modell ist sich recht sicher: die Ungewissheit der mittleren Körpergröße liegt bei nicht viel mehr als einem Zentimeter (95%-CI).</p>
+<p>Was ist der mediane Schätzwert der mittleren Körpergröße, sozusagen der “Best Guess”?</p>
+<p><code>parameters(m41)</code> hat uns die Antwort schon gegeben: Ca. 155 cm.</p>
+<p>🏋️ Ähnliche Fragen bleiben als Übung für die Lesis 🤓.</p>
+</section>
+<section id="standard-prioriwerte-bei-stan_glm" class="level3" data-number="8.6.3">
+<h3 data-number="8.6.3" class="anchored" data-anchor-id="standard-prioriwerte-bei-stan_glm"><span class="header-section-number">8.6.3</span> Standard-Prioriwerte bei <code>stan_glm()</code></h3>
+<div class="cell" data-hash="gauss_cache/html/Kung-8-bis_5240d013c8ef2c6d993b2319ee7f4c10">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prior_summary</span>(m41)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Priors for model 'm41' </span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="do">## ------</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Intercept (after predictors centered)</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="do">##   Specified prior:</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="do">##     ~ normal(location = 155, scale = 2.5)</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="do">##   Adjusted prior:</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="do">##     ~ normal(location = 155, scale = 19)</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Auxiliary (sigma)</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="do">##   Specified prior:</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="do">##     ~ exponential(rate = 1)</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="do">##   Adjusted prior:</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="do">##     ~ exponential(rate = 0.13)</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="do">## ------</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="do">## See help('prior_summary.stanreg') for more details</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<ul>
+<li><p><code>stan_glm()</code> verwendet (in der Voreinstellung) <em>schwach informative</em> Priori-Werte, die nur wenig Vorabwissen in das Modell geben.</p></li>
+<li><p>Es werden dafür die Stichproben-Daten als Priori-Daten verwendet.</p></li>
+<li><p>Man sollte diese Standardwerte als Minimalvorschlag sehen. Kennt man sich im Sachgebiet aus, kann man meist bessere Prioris finden.</p></li>
+<li><p>Die Voreinstellung hat keinen tiefen Hintergrund; andere Werte wären auch denkbar.</p></li>
+<li><p><code>Intercept</code>: <span class="math inline">\(\mu\)</span>, der Mittelwert der Verteilung <span class="math inline">\(Y\)</span></p>
+<ul>
+<li><span class="math inline">\(\mu \sim \mathcal{N}(\bar{Y}, sd(Y)\cdot 2.5)\)</span></li>
+<li>als Streuung von <span class="math inline">\(\mu\)</span> wird die 2.5-fache Streuung der Stichprobe (für <span class="math inline">\(Y\)</span>) angenommen.</li>
+</ul></li>
+<li><p><code>Auxiliary (sigma)</code>: <span class="math inline">\(\sigma\)</span>, die Streuung der Verteilung <span class="math inline">\(Y\)</span></p>
+<ul>
+<li><span class="math inline">\(\sigma \sim \mathcal{E}(\lambda=1/sd(Y))\)</span></li>
+<li>als “Streuung”, d.h. <span class="math inline">\(\lambda\)</span> von <span class="math inline">\(h_i\)</span> wird <span class="math inline">\(\frac{1}{sd(Y)}\)</span> angenommen.</li>
+</ul></li>
+</ul>
+</section>
+<section id="visualisierung-verschiedener-exponentialverteilungen" class="level3" data-number="8.6.4">
+<h3 data-number="8.6.4" class="anchored" data-anchor-id="visualisierung-verschiedener-exponentialverteilungen"><span class="header-section-number">8.6.4</span> Visualisierung verschiedener Exponentialverteilungen</h3>
+<p>Um ein Gefühl zu bekommen, wieviel Ungewissheit in Exponentialverteilugnen mit verschiedener Streuung liegt, sind hier mal ein paar Varianten dargestellt.</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-9-bis_7a0a39980f2a7c33ef97638dde545359">
+
+</div>
+<div class="cell" data-hash="gauss_cache/html/Kung-10-bis_0987c0e523c1fc603c749de1f649fe62">
+
+</div>
+<div class="cell" data-hash="gauss_cache/html/Kung-11_08e148b332bc0b2cfb633cecfc5589df">
+
+</div>
+<div class="cell" data-hash="gauss_cache/html/Kung-12-bis_a672e8ae0087386694d1e4796ea2b5eb">
+
+</div>
+<div class="cell" data-hash="gauss_cache/html/Kung-13-bis_2c9db2e225b815a2db86e09243fb665d">
+<div class="cell-output-display">
+<p><img src="gauss_files/figure-html/Kung-13-bis-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Eine sinnvolle Strategie ist, einen Prior so zu wählen, dass man nicht übergewiss ist, also nicht zu sicher Dinge behauptet, die dann vielleicht doch passieren (also die Ungewissheit zu gering spezifiziert), andererseits sollte man extreme, unplausible Werte ausschleßen.</p>
+<p><span class="math inline">\(\lambda \approx 0.1\)</span> scheint eine sinnvolle Ungewissheit anzugeben.</p>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Bei der Wahl der Prioris gibt es nicht die eine, richtige Wahl. Die beste Entscheidung ist auf transparente Art den Stand der Forschung einfließen zu lassen und eigene Entscheidungen zu begründen. Häufig sind mehrere Entscheidungen möglich. Möchte man lieber vorsichtig sein, weil man wenig über den Gegenstand weiß, dann könnte man z.B. auf die Voreinstellung von <code>rstanarm</code> vertrauen, die “schwachinformativ” ist, also nur wenig Priori-Information ind das Modell einfließen lässt.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="modell-m42-unsere-priori-werte" class="level2" data-number="8.7">
+<h2 data-number="8.7" class="anchored" data-anchor-id="modell-m42-unsere-priori-werte"><span class="header-section-number">8.7</span> Modell <code>m42</code>: unsere Priori-Werte</h2>
+<p>Im Modell <code>m41</code> haben wir auf die Priori-Werte der Voreinstellung von <code>rstanarm</code> vertraut. Jetzt lassen wir mal unsere eigenen Priori-Werte einfließen, im Modell <code>m42</code>.</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-14-bis_b0b3e8714c72c66e4f0faf90cecdac74">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="ot">&lt;-</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  d2 <span class="sc">%&gt;%</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">height_c =</span> height <span class="sc">-</span> <span class="fu">mean</span>(height))  <span class="co"># zentrieren</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="gauss_cache/html/Kung-15-bis_74c4572c1fc67f68e3cbedda7c2128ea">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>m42 <span class="ot">&lt;-</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stan_glm</span>(height <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">prior_intercept =</span> <span class="fu">normal</span>(<span class="dv">178</span>, <span class="dv">20</span>),  <span class="co"># mu</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">prior_aux =</span> <span class="fu">exponential</span>(<span class="fl">0.1</span>),  <span class="co"># sigma</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">refresh =</span> <span class="cn">FALSE</span>,  <span class="co"># bitte nicht so viel Ausgabe drucken</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> d2)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">parameters</span>(m42)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 3%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 2%">
+<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 14%">
+<col style="width: 11%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: right;">Median</th>
+<th style="text-align: right;">CI</th>
+<th style="text-align: right;">CI_low</th>
+<th style="text-align: right;">CI_high</th>
+<th style="text-align: right;">pd</th>
+<th style="text-align: right;">ROPE_Percentage</th>
+<th style="text-align: right;">Rhat</th>
+<th style="text-align: right;">ESS</th>
+<th style="text-align: left;">Prior_Distribution</th>
+<th style="text-align: right;">Prior_Location</th>
+<th style="text-align: right;">Prior_Scale</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">154.5993</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">153.8103</td>
+<td style="text-align: right;">155.4192</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.9996511</td>
+<td style="text-align: right;">2829.642</td>
+<td style="text-align: left;">normal</td>
+<td style="text-align: right;">178</td>
+<td style="text-align: right;">20</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Wir haben noch nicht alle Informationen kennengelernt, die hier ausgegeben werden. Im Zweifel: Einfach ignorieren. Wichtige Fähigkeit im Studium 🤓.</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-16-bis_1d364c0e6a1338f3e55de27eddd09ad4">
+
+</div>
+<section id="posteriori-verteilung-und-parameter-plotten" class="level3" data-number="8.7.1">
+<h3 data-number="8.7.1" class="anchored" data-anchor-id="posteriori-verteilung-und-parameter-plotten"><span class="header-section-number">8.7.1</span> Posteriori-Verteilung und Parameter plotten</h3>
+<div class="cell" data-hash="gauss_cache/html/unnamed-chunk-4_52b8fafcdca088b77df4fb54e6fd07ee">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>m42 <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gauss_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Wie man sieht, sind sich die Post-Verteilungen von <code>m41</code> und <code>m42</code> ziemlich ähnlich, kommen also zu dem gleichen Schluss, was die mittlere Körpergröße betrifft. Das ist ein Beispiel für eine Situation, wo eine ausreichend große Stichprobe die Wahl der Prioris (sofern nicht extrem) aussticht.</p>
+<p>Ein Vergleich mehererer Priori-Werte wäre auch nützlich, um ein skeptisches Publikum von der Wahl (bzw. der Indifferenz) der gewählten Priori-Werte zu überzeugen.</p>
+</section>
+</section>
+<section id="fazit" class="level2" data-number="8.8">
+<h2 data-number="8.8" class="anchored" data-anchor-id="fazit"><span class="header-section-number">8.8</span> Fazit</h2>
+<ul>
+<li>Wir haben die Posteriori-Verteilung für ein Gauss-Modell berechnet.</li>
+<li>Dabei hatten wir ein einfaches Modell mit metrischer Zielvariablen, ohne Prädiktoren, betrachtet.</li>
+<li>Die Zielvariable, Körpergröße (<code>height</code>), haben wir als normalverteilt mit den Parametern <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span> angenommen.</li>
+<li>Für <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span> haben wir jeweils keinen einzelnen (fixen) Wert angenommen, sondern eine Wahrscheinlichkeitsverteilung, der mit der Priori-Verteilung für <span class="math inline">\(\mu\)</span> bzw. <span class="math inline">\(\sigma\)</span> festgelegt ist.</li>
+</ul>
+<p>🧡 Bleiben Sie dran! <br></p>
+<div class="cell" data-hash="gauss_cache/html/Kung-33_4d3ac3a3c99e4e6360639f3cf0c7438c">
+<div class="cell-output-display">
+<p><img src="https://github.com/sebastiansauer/QM2-Folien/raw/main/img/chicken_standard_deviation.jpg" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="wahl-der-priori-werte" class="level2" data-number="8.9">
+<h2 data-number="8.9" class="anchored" data-anchor-id="wahl-der-priori-werte"><span class="header-section-number">8.9</span> Wahl der Priori-Werte</h2>
+<p>🏎️ Dieser Abschnitt ist eine VERTIEFUNG. 🏎</p>
+<section id="welche-beobachtungen-sind-auf-basis-unseres-modells-zu-erwarten" class="level3" data-number="8.9.1">
+<h3 data-number="8.9.1" class="anchored" data-anchor-id="welche-beobachtungen-sind-auf-basis-unseres-modells-zu-erwarten"><span class="header-section-number">8.9.1</span> Welche Beobachtungen sind auf Basis unseres Modells zu erwarten?</h3>
+<div class="cell" data-hash="gauss_cache/html/prior-pred_70d59a4a65dc61efcdacb756f36c6262">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fl">1e4</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">sample_mu  =</span> </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rnorm</span>(n, </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mean =</span> <span class="dv">178</span>, </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd   =</span> <span class="dv">20</span>),</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample_sigma =</span> </span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rexp</span>(n, </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">rate =</span> <span class="fl">0.1</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">height  =</span> </span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rnorm</span>(n, </span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">mean =</span> sample_mu, </span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd   =</span> sample_sigma))</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>height_sim_sd <span class="ot">&lt;-</span> </span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sd</span>(sim<span class="sc">$</span>height) <span class="sc">%&gt;%</span> <span class="fu">round</span>()</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>height_sim_mean <span class="ot">&lt;-</span> </span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(sim<span class="sc">$</span>height) <span class="sc">%&gt;%</span> <span class="fu">round</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>💭 Was denkt der Golem (<code>m41</code>) <em>apriori</em> von der Größe der !Kung?</p>
+<p>🦾 Ziehen wir mal ein paar Stichproben auf Basis des Modells. Voilà:</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-12_7ae94bd5ab79e4c58bbf68c43688c26e">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  sim <span class="sc">%&gt;%</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> height)) <span class="sc">+</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"grey33"</span>) <span class="sc">+</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">178-3</span><span class="sc">*</span>height_sim_sd, <span class="dv">178</span>, <span class="dv">178</span><span class="sc">+</span><span class="dv">3</span><span class="sc">*</span>height_sim_sd)) <span class="sc">+</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="cn">NULL</span>, <span class="at">breaks =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"height ~ dnorm(mu, sigma)"</span>,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"X-Achse zeigt MW±3SD"</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Größe"</span>) <span class="sc">+</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>()) </span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>p3</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gauss_files/figure-html/Kung-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><a href="https://bookdown.org/content/4857/geocentric-models.html#a-gaussian-model-of-height">Quellcode</a></p>
+</section>
+<section id="priori-werte-prüfen-mit-der-priori-prädiktiv-verteilung" class="level3" data-number="8.9.2">
+<h3 data-number="8.9.2" class="anchored" data-anchor-id="priori-werte-prüfen-mit-der-priori-prädiktiv-verteilung"><span class="header-section-number">8.9.2</span> Priori-Werte prüfen mit der Priori-Prädiktiv-Verteilung</h3>
+<ul>
+<li>Die Priori-Prädiktiv-Verteilung (<code>sim</code>) simuliert Beobachtungen (nur) auf Basis der Priori-Annahmen: <span class="math inline">\(h_i \sim \mathcal{N}(\mu, \sigma),\)</span> <span class="math inline">\(\mu \sim \mathcal{N}(178, 20),\)</span> <span class="math inline">\(\sigma \sim \mathcal{E}(0.1)\)</span></li>
+<li>So können wir prüfen, ob die Priori-Werte vernünftig sind.</li>
+</ul>
+<p>Die Priori-Prädiktiv-Verteilung zeigt, dass unsere Priori-Werte ziemlich vage sind, also einen zu breiten Bereich an Größenwerten zulassen:</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-13_69c5e0ecaefd2de900e847c067065325">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>p3</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gauss_files/figure-html/Kung-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Anteil <span class="math inline">\(h_i &gt; 200\)</span>:</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-14_a854149db5cab363c8882fd2d71ee522">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>anteil_großer_kung <span class="ot">&lt;-</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">%&gt;%</span> </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>( height <span class="sc">&gt;</span> <span class="dv">200</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n<span class="sc">/</span><span class="fu">sum</span>(n))</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>anteil_großer_kung</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">height &gt; 200</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">8263</td>
+<td style="text-align: right;">0.8263</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">1737</td>
+<td style="text-align: right;">0.1737</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>🤔 Sehr große Buschleute? 17 Prozent sind größer als 2 Meter. Das ist diskutabel, muss aber nicht zwangsläufig ein schlechter Prior sein.</p>
+</section>
+<section id="vorhersagen-der-priori-werte" class="level3" data-number="8.9.3">
+<h3 data-number="8.9.3" class="anchored" data-anchor-id="vorhersagen-der-priori-werte"><span class="header-section-number">8.9.3</span> Vorhersagen der Priori-Werte</h3>
+<div class="cell" data-hash="gauss_cache/html/Kung-15_242a52385589080b005e045ddaae32a5">
+<div class="cell-output-display">
+<p><img src="gauss_files/figure-html/Kung-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="extrem-vage-priori-verteilung-für-die-streuung" class="level3" data-number="8.9.4">
+<h3 data-number="8.9.4" class="anchored" data-anchor-id="extrem-vage-priori-verteilung-für-die-streuung"><span class="header-section-number">8.9.4</span> Extrem vage Priori-Verteilung für die Streuung?</h3>
+<p><span class="math display">\[\sigma \sim \mathcal{E}(\lambda=0.01)\]</span></p>
+<div class="cell" data-hash="gauss_cache/html/Kung-16_5dec1d389641cf0a82e811a29b9420a2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>sim2 <span class="ot">&lt;-</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">sample_mu    =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">178</span>, <span class="at">sd =</span> <span class="dv">100</span>),</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">sample_sigma =</span> <span class="fu">rexp</span>(n, <span class="at">rate =</span> .<span class="dv">01</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">height =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> sample_mu, <span class="at">sd =</span> sample_sigma))</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co"># compute the values we'll use to break on our x axis</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>breaks <span class="ot">&lt;-</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fu">mean</span>(sim2<span class="sc">$</span>height) <span class="sc">-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sd</span>(sim2<span class="sc">$</span>height), <span class="dv">0</span>, <span class="fu">mean</span>(sim2<span class="sc">$</span>height), <span class="fu">mean</span>(sim2<span class="sc">$</span>height) <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sd</span>(sim2<span class="sc">$</span>height)) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="at">digits =</span> <span class="dv">0</span>)</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="co"># this is just for aesthetics</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>text <span class="ot">&lt;-</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">height =</span> <span class="dv">272</span> <span class="sc">-</span> <span class="dv">25</span>,</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">y      =</span> .<span class="dv">0013</span>,</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">label  =</span> <span class="st">"größter Mann"</span>,</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">angle  =</span> <span class="dv">90</span>)</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>  sim2 <span class="sc">%&gt;%</span> </span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> height)) <span class="sc">+</span></span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"grey92"</span>) <span class="sc">+</span></span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">272</span>, <span class="at">color =</span> <span class="st">"grey92"</span>, <span class="at">linetype =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> text,</span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">y =</span> y, <span class="at">label =</span> label, <span class="at">angle =</span> angle),</span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"grey92"</span>) <span class="sc">+</span></span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> breaks, </span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">400</span>, <span class="dv">700</span>)) <span class="sc">+</span></span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="cn">NULL</span>, <span class="at">breaks =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"height ~ dnorm(mu, sigma)</span><span class="sc">\n</span><span class="st">mu ~ dnorm(178, 100)</span><span class="sc">\n</span><span class="st">sigma ~ E(0.01)"</span>,</span>
+<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Größe"</span>,</span>
+<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"X-Achse zeigt MW±3SD"</span>) <span class="sc">+</span></span>
+<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>()) </span>
+<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a>p4</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gauss_files/figure-html/Kung-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Die Streuung der Größen ist weit:</p>
+<div class="cell" data-hash="gauss_cache/html/Kung-3_eedcd29dba0bd6f2b179eaa0cb9ea876">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">75</span>, <span class="at">by =</span>.<span class="dv">01</span>),</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="fu">dexp</span>(x, <span class="at">rate =</span> .<span class="dv">01</span>))</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(x,y)) <span class="sc">+</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="gauss_files/figure-html/Kung-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell" data-hash="gauss_cache/html/Kung-17_600c14e882136f5620768a5751de32c2">
+
+</div>
+<p>🤔 Das Modell geht apriori von ein paar Prozent Menschen mit <em>negativer</em> Größe aus. Ein Haufen Riesen 👹 werden auch erwartet.</p>
+<p>🤯 Vage (flache, informationslose, “neutrale”, “objektive”) Priori-Werte machen oft keinen Sinn, weil sie extreme, unplausible Werte zulassen.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-mcelreath_statistical_2020" class="csl-entry" role="doc-biblioentry">
+McElreath, Richard. 2020. <em>Statistical rethinking: a Bayesian course with examples in R and Stan</em>. 2. Aufl. <span>CRC</span> texts in statistical science. Boca Raton: Taylor; Francis, <span>CRC</span> Press.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Kopiert");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./ppv.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Vorhersage-Verteilung</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./lineare-modelle.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Lineare Modelle</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
