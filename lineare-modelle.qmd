@@ -1,8 +1,8 @@
 # Lineare Modelle
 
 
+In diesem Kapitel benötigen Sie folgende R-Pakete.
 
-## Benötigte R-Pakete
 
 ```{r}
 #| message: false
@@ -14,9 +14,11 @@ library(rstanarm)
 
 ```{r libs-hidden}
 #| include: false
-library(latex2exp)
+library("latex2exp")
 library("patchwork")
 library("gt")
+
+theme_set(theme_modern())
 ```
 
 
@@ -28,13 +30,14 @@ library("gt")
 
 
 
-- Die (einfache) Regression prüft, inwieweit zwei Variablen, $Y$ und $X$ linear zusammenhängen.
-- Je mehr sie zusammenhängen, desto besser kann man $X$ nutzen, um $Y$ vorherzusagen (und umgekehrt).
-- Hängen $X$ und $Y$ zusammen, heißt das nicht (unbedingt), dass es einen *kausalen* Zusammenhang zwische $X$ und $Y$ gibt.
-- Linear bedeutet, der Zusammenhang ist additiv und konstant: wenn $X$ um eine Einheit steigt, steigt $Y$ immer um $b$ Einheiten (nicht kausal, sondern deskriptiv gemeint).
+Die (einfache) Regression prüft, inwieweit zwei Variablen, $Y$ und $X$ linear zusammenhängen.
+Je mehr sie zusammenhängen, desto besser kann man $X$ nutzen, um $Y$ vorherzusagen (und umgekehrt).
+Hängen $X$ und $Y$ zusammen, heißt das nicht (unbedingt), dass es einen *kausalen* Zusammenhang zwischen $X$ und $Y$ gibt.
+Linear bedeutet, der Zusammenhang ist additiv und konstant: wenn $X$ um eine Einheit steigt, steigt $Y$ immer um $b$ Einheiten (nicht kausal, sondern deskriptiv gemeint).
 
 [Datenquelle](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv), @mcelreath_statistical_2020.
 
+Laden wir die Daten und visualisieren wir uns den Zusammenhang.
 
 
 ```{r Post-Regression-2}
@@ -108,7 +111,7 @@ plot_condition <-
        aes(x = weight, y = height)) +
   geom_point(alpha = .7) +
   geom_smooth(method = "lm") +
-  geom_point(data = d_pred, color = "red", size = 5, alpha = .5) 
+  geom_point(data = d_pred, color = "red", size = 5, alpha = .5) +
   scale_x_continuous(limits = c(0, 70))
 ```
 
@@ -233,7 +236,7 @@ p1
 [Datenquelle](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv)
 
 
-
+Hier sind die zentralen deskriptiven Statistiken zum !Kung-Datensatz.
 
 ```{r Post-Regression-3}
 #| echo: true
@@ -264,9 +267,9 @@ Das mittlere Körpergewicht (`weight`) liegt bei ca. 45kg (sd 7 kg).
 ### Etwas mehr EDA
 
 
-Das Paket `DataExplorer` hat ein paar nette Hilfen zur explorativen Datenanylse.
 
-Wir brauchen das hier nicht wirklich, aber es ist praktisch:
+
+Wir brauchen die EDA hier nicht wirklich, aber es ist praktisch. Das Paket `DataExplorer` hat ein paar nette Hilfen zur explorativen Datenanalyse.
 
 
 ```{r}
@@ -307,7 +310,7 @@ d2 %>% plot_correlation()
 
 #### Bonus
 
-Probieren Sie mal diese Funktion aus:
+Probieren Sie mal diese Funktion aus, die Ihnen einen Bericht zur EDA erstellt.
 
 ```{r}
 #| eval: false
@@ -349,10 +352,10 @@ create_report(d2)
 
 
 
-- Zieht man von jedem Gewichtswert den Mittelwert ab, so bekommt man die Abweichung des Gewichts vom Mittelwert (Prädiktor "zentrieren").
-- Wenn man den Prädiktor (`weight`) zentriert hat, ist der Achsenabschnitt, $\alpha$, einfacher zu verstehen.
-- In einem Modell mit zentriertem Prädiktor (`weight`) gibt der Achsenabschnitt die Größe einer Person mit durchschnittlichem Gewicht an. 
-- Würde man `weight` nicht zentrieren, gibt der Achsenabschnitt die Größe einer Person mit `weight=0` an, was nicht wirklich sinnvoll zu interpretieren ist.
+Zieht man von jedem Gewichtswert den Mittelwert ab, so bekommt man die Abweichung des Gewichts vom Mittelwert (Prädiktor "zentrieren").
+Wenn man den Prädiktor (`weight`) zentriert hat, ist der Achsenabschnitt, $\alpha$, einfacher zu verstehen.
+In einem Modell mit zentriertem Prädiktor (`weight`) gibt der Achsenabschnitt die Größe einer Person mit durchschnittlichem Gewicht an. 
+Würde man `weight` nicht zentrieren, gibt der Achsenabschnitt die Größe einer Person mit `weight=0` an, was nicht wirklich sinnvoll zu interpretieren ist.
 
 
 
@@ -388,11 +391,12 @@ d3 %>%
 ```
 
 
-Wie man sieht, bleibt die Form der Verteilung gleich, aber sie ist "zur Seite geschoben": Der Mittelwert liegt jetzt eben bei 0.
+Wie man sieht, ist die Verteilung "zur Seite geschoben": Der Mittelwert liegt jetzt eben bei 0.
 
 
 
 ```{r Post-Regression-9, fig.asp=0.4}
+#| echo: false
 d3 %>% 
   select(weight, weight_c) %>% 
   pivot_longer(everything()) %>% 
@@ -532,7 +536,7 @@ $$
 - Was denkt [wir](https://media.giphy.com/media/Aausss8uUBIe3bZ3d2/giphy.gif) bzw. unser Golem *apriori* über den Zusammenhang von Größe und Gewicht?
 - Um diese Frage zu beantworten ziehen wir Stichproben aus den Priori-Verteilungen des Modells, also für $\alpha$, $\beta$ und $\sigma$.
 
-.pull-left[
+
 
 ```{r m43-prior-pred}
 m43_prior_pred <-
@@ -861,7 +865,15 @@ auch hier ist sich das Modell ziemlich sicher, da dass zugehörige 95%-CI keine 
 ### m43a
 
 
-Sagen wir, auf Basis gut geprüfter Evidenz haben wir folgendes Modell festgelegt:
+Sagen wir, auf Basis gut geprüfter Evidenz haben wir folgendes Modell festgelegt: `height ~ weight_c`.
+
+Prioris:
+
+$$
+\beta_1 \sim N(5,3) \\
+\beta_0 \sim N(178, 20) \\
+\sigma \sim E(0.1)
+$$
 
 
 
@@ -1227,7 +1239,7 @@ Die Wahrscheinlichkeit beträgt `r wskt_klein`.
 
 <!-- ... als Histogramme visualisiert -->
 
-<!-- .pull-left[ -->
+<!--  -->
 
 <!-- ### Achsenabschnitt -->
 
@@ -1496,7 +1508,7 @@ d2 %>%
 ```
 
 
-Also: Je dicker die Violine, desto wahrscheinlicher $\mu|{\text{weight_c}_i}$.
+Also: Je dicker die Violine, desto wahrscheinlicher $\mu | w_i}$.
 
 
 
