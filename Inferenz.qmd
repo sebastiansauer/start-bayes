@@ -1,5 +1,13 @@
 # Inferenz
 
+```{r}
+#| echo: false
+#| message: false
+library(tidyverse)
+theme_set(theme_minimal())
+```
+
+
 
 ![Bayes:Start!](img/Golem_hex.png){width=10%}
 
@@ -127,7 +135,7 @@ In der Grundgesamtheit ist der Anteil der R-Fans auch 42%, $\pi=0.42$.
 
 ### Deskriptiv- vs. Inferenzstatistik
 
-Statistik gibt es in zwei Geschmacksrichtigungen könnte man sagen: Deskriptiv- und Inferenzstatistik, s. Abb. @fig-inf1.
+Statistik gibt es in zwei Geschmacksrichtungen könnte man sagen: Deskriptiv- und Inferenzstatistik, s. Abb. @fig-inf1.
 Einteilungen in Schubladen existieren nicht auf der Welt,
 sondern in unserem Kopf:
 Sie besitzen keine ontologische Realität, sondern eine epistemologische.
@@ -183,7 +191,8 @@ x <- tribble(
 kable(x, escape = FALSE, booktabs = TRUE, format = "simple") 
 ```
 
-Für Statistiken (Stichprobe) verwendet man lateinische Buchstaben; für Parameter (Population) verwendet man griechische Buchstaben.
+Für Statistiken (Daten einer Stichprobe) verwendet man lateinische Buchstaben; 
+für Parameter (Population) verwendet man griechische Buchstaben.
 
 🏋️ Geben Sie die griechischen Buchstaben für typische Statistiken an!
 
@@ -538,6 +547,8 @@ plot2 <-
            alpha = .5,
            size = 5)
 plot2
+
+
 ```
 
 
@@ -579,6 +590,8 @@ ggplot(mtcars) +
            color = "red",
            alpha = .5,
            size = 5)
+
+
 
 ```
 
@@ -640,17 +653,17 @@ Ein Konfidenzintervall gibt einen Schätzbereich plausibler Werte für den gesuc
 
 #### Frequentismus
 
--   zentrale Statistik: *p-Wert*
+Die zentrale Statistik heißt der *p-Wert*
 
--   "Wie wahrscheinlich ist der Wert der Teststatistik (oder noch extremere Werte), vorausgesetzt die Nullhypothese gilt und man wiederholt den Versuch unendlich oft (mit gleichen Bedingungen, aber zufällig verschieden und auf Basis unseres Modells)?"
+Der p-Wert ist so definiert: "Wie wahrscheinlich ist der Wert der Teststatistik (oder noch extremere Werte), vorausgesetzt die Nullhypothese gilt und man wiederholt den Versuch unendlich oft (mit gleichen Bedingungen, aber zufällig verschieden und auf Basis unseres Modells)?"
 
-- Findet man $p<.05$ (oder einen anderen Prozentwert, aber meistens wird 5% hergenommen), so spricht man von "(statistischer) Signifikanz" und nimmt dies als Beleg, dass man einen Effekt gefunden hat, die Hypothese eines Nulleffekts (z.B. kein Zusammenhang von X und Y) also verwerfen kann.
+Findet man $p<.05$ (oder einen anderen Prozentwert, aber meistens wird 5% hergenommen), so spricht man von "(statistischer) Signifikanz" und nimmt dies als Beleg, dass man einen Effekt gefunden hat, die Hypothese eines Nulleffekts (z.B. kein Zusammenhang von X und Y) also verwerfen kann.
 
 #### Bayes-Statistik
 
--   zentrale Statistik: *Posteriori-Verteilung*
+Die zentrale Statistik ist die *Posteriori-Verteilung*.
 
--   "Wie wahrscheinlich ist die Forschungshypothese, jetzt, nachdem wir die Daten kennen, auf Baiss unseres Modells?"
+Die Posteriori-Verteilung beantwortet uns die Frage: "Wie wahrscheinlich ist die Forschungshypothese, jetzt, nachdem wir die Daten kennen, auf Baiss unseres Modells?"
 
 🏋 Recherchieren Sie eine Definition des p-Werts und lesen Sie sie genau.
 
@@ -677,21 +690,20 @@ Ein Konfidenzintervall gibt einen Schätzbereich plausibler Werte für den gesuc
 
 ### Beispiel zum Nutzen von Apriori-Wissen 1
 
--   Ein Betrunkener behauptet, er könne hellsehen.
+Ein Betrunkener behauptet, er könne hellsehen.
+Er wirft eine Münze 10 Mal und sagt jedes Mal korrekt vorher, welche Seite oben landen wird.
 
--   Er wirft eine Münze 10 Mal und sagt jedes Mal korrekt vorher, welche Seite oben landen wird.
+ Die Wahrscheinlichkeit dieses Ergebnisses ist sehr gering ($2^{-10}$) unter der Hypothese, dass die Münze fair ist, dass Ergebnis also "zufällig" ist.
 
--   Die Wahrscheinlichkeit dieses Ergebnisses ist sehr gering ($2^{-10}$) unter der Hypothese, dass die Münze fair ist, dass Ergebnis also "zufällig" ist.
-
--   Unser Vorwissen lässt uns allerdings trotzdem an der Hellsichtigkeit des Betrunkenen zweifeln, so dass die meisten von uns die Hypothese von der Zufälligkeit des Ergebnisses wohl nicht verwerfen.
+Unser Vorwissen lässt uns allerdings trotzdem an der Hellsichtigkeit des Betrunkenen zweifeln, so dass die meisten von uns die Hypothese von der Zufälligkeit des Ergebnisses wohl nicht verwerfen.
 
 ### Beispiel zum Nutzen von Apriori-Wissen 2
 
--   Eine Studie fand einen "großen Effekt" auf das Einkommen von Babies, eine Stunde pro Woche während zwei Jahren an einem psychosozialen Entwicklungsprogramm teilnahmen (im Vergleich zu einer Kontrollgruppe), $n=127$.
+Eine Studie (vgl. @gelman_regression_2021) fand einen "großen Effekt" auf das Einkommen von Babies, eine Stunde pro Woche während zwei Jahren an einem psychosozialen Entwicklungsprogramm teilnahmen (im Vergleich zu einer Kontrollgruppe), $n=127$.
 
--   Nach 20 Jahren war das mittlere Einkommen der Experimentalgruppe um 42% höher (als in der Kontrollgruppe) mit einem Konfidenzintervall von \[+2%,+98%\].
+Nach 20 Jahren war das mittlere Einkommen der Experimentalgruppe um 42% höher (als in der Kontrollgruppe) mit einem Konfidenzintervall von \[+2%,+98%\].
 
--   Allerdings lässt uns unser Vorwissen vermuten, dass so ein Treatment das Einkommen nach 20 Jahren kaum verdoppeln lässt. Wir würden den Effekt lieber in einem konservativeren Intervall schätzen (enger um Null).
+Allerdings lässt uns unser Vorwissen vermuten, dass so ein Treatment das Einkommen nach 20 Jahren kaum verdoppeln lässt. Wir würden den Effekt lieber in einem konservativeren Intervall schätzen (enger um Null).
 
 
 
