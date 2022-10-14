@@ -2,6 +2,7 @@
 
 
 
+
 ## Lernsteuerung
 
 
@@ -23,21 +24,44 @@ Sie können ...
 ### Prüfungsrelevanter Stoff
 
 
-Lesen Sie dazu @bourier_2018, folgende Abschnitte:
+Lesen Sie zusätzlich zum Stoff dieses Kapitels noch @bourier_2018, folgende Abschnitte:
 
 - Kap. 6.1 (Zum Begriff Zufallsvariable)
 - Kap. 6.3 (Stetige Zufallsvariablen)
+- Kap. 7.1.1 (Binomialverteilung)
 - Kap. 7.2.1 (Gleichverteilung) und 7.2.3 (Normalverteilung)
 
 Lösen Sie auch die Übungsaufgaben dazu.
 
 
-Weitere Übungsaufgaben finden Sie im dazu gehörigen Übungsbuch, @bourier_statistik-ubungen_2022.
-
-## Zentrale Begriffe
+Weitere Übungsaufgaben finden Sie im dazugehörigen Übungsbuch, @bourier_statistik-ubungen_2022.
 
 
-### Eigenschaften von Zufallsvariablen
+### Benötigte R-Pakete
+
+```{r}
+#| message: false
+library(patchwork)
+library(tidyverse)
+```
+
+
+```{r}
+#| include: false
+library(gt)
+library(patchwork)
+library(faux)
+library(openintro)
+library(easystats)
+```
+
+
+
+
+### Zentrale Begriffe
+
+
+#### Eigenschaften von Zufallsvariablen
 
 - Zufallsvariable (random variable)
 - Diskret vs. stetig
@@ -45,8 +69,1033 @@ Weitere Übungsaufgaben finden Sie im dazu gehörigen Übungsbuch, @bourier_stat
 - Wahrscheinlichkeitsfunktion (kumulierte Wahrscheinlichkeit, Wahrscheinlichkeitsmasse)
 
 
-### Verteilungen
+#### Verteilungen
 
 - Gleichverteilung
 - Normalverteilung
 - Standardnormalverteilung
+
+
+
+
+## Verteilungen
+
+
+
+
+### Häufigkeitsverteilung
+
+
+  
+Die Häufigkeitsverteilung eines *diskreten* Merkmals $X$ mit $k$ Ausprägungen zeigt, 
+wie häufig die einzelnen Ausprägungen sind.
+So hat die Variable *Zylinder* (in einem Datensatz) etwa die Ausprägungen 4,6 und 8.
+  
+  
+```{r Normalverteilung-1, echo = TRUE}
+data(mtcars)
+  mtcars %>% 
+    count(cyl)
+```
+  
+
+  
+Ein *stetiges* Merkmal lässt sich durch Klassenbildung diskretisieren:
+    
+```{r Normalverteilung-2}
+mtcars %>% 
+  ggplot(aes(x = hp)) +
+  geom_histogram()
+```
+  
+
+
+
+### Wahrscheinlichkeitsverteilung
+
+Warhscheinlichkeitverteilungen dienen dazu, Ereignissen eines Zufallsexperiments eine Wahrschenlichkeit zuzuordnen.
+
+
+Eine *diskrete* Wahrscheinlichkeitsverteilung der (diskreten) Zufallsvariablen $X$ ordnet jeder der $k$ Ausprägungen $X=x$ eine Wahrscheinlichkeit $p$ zu. So hat die Variable *Geschlecht eines Babies* die beiden Ausprägungen *Mädchen* und *Junge* mit den Wahrscheinlichkeiten $p_M = 51.2\%$ bzw. $p_J = 48.8\%$ [@gelman_regression_2021].
+
+Bei *stetigen* Zufallsvarialben $X$ geht man von unendlich vielen Ausprägungen aus; die Wahrscheinlichkeit einer bestimmten Ausprägung ist (praktisch) Null: $p(X=x_j)=0, \quad j=1,...,+\infty$. 
+So ist die Wahrscheinlichkeit, dass eine Person exakt 166,66666666... cm groß ist, (praktisch) Null.
+Man gibt stattdessen die *Dichte* der Wahrscheinlichkeit an: Das ist die Wahrscheinlichkeit(smasse) pro  Einheit von $X$.
+
+
+
+
+
+## Gleichverteilung
+
+### Indifferenz als Grundlage
+
+Eine Gleichverteilung nimmt an, dass jeder Wert im Ergebnisraum der zugehörigen Zufallsvariable gleichwahrscheinlich ist.
+Wenn man keinen hinreichenden Grund hat, eine Realisation einer Zufallsvariablen für plausibler als einen anderen zu halten,
+ist eine Gleichverteilung eine passende Verteilung.
+Gleichverteilungen gibt es im diskreten und im stetigen Fall.
+
+Abb. @fig-uniform zeigt zwei Beispiele für (stetige) Gleichverteilungen.
+
+
+```{r Normalverteilung-4, fig.asp = 0.5}
+#| echo: false
+#| fig-cap: 
+#|   - "Gleichverteilung min=-1, max=1"
+#|   - "Gleichverteilung min=0, max=3"
+#| label: "fig-uniform"
+#
+#source: https://dk81.github.io/dkmathstats_site/rmath-uniform-plots.html
+
+uniform_Plot <- function(a, b){
+  xvals <- data.frame(x = c(a, b)) #Range for x-values
+  
+  ggplot(data.frame(x = xvals), 
+         aes(x = x)) + xlim(c(a, b)) + ylim(0, 1/(b - a)) +
+    stat_function(fun = dunif, args = list(min = a, max = b), 
+                  geom = "area", 
+                  fill = "green", alpha = 0.35) + 
+    stat_function(fun = dunif, args = list(min = a, max = b)) +
+    labs(x = "X", y = "Dichte")  +
+    geom_vline(xintercept = a, linetype = "dashed", colour = "red") +
+    geom_vline(xintercept = b, linetype = "dashed", colour = "red")
+  
+}
+
+uniform_Plot(-1, 1)
+uniform_Plot(0, 3)
+```
+
+
+
+
+Bei $X=0$ hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von 50% bzw. 33%.
+
+
+Definierendes Kennzeichen einer Gleichverteilung ist die konstante Dichte.
+
+
+
+### Simulation
+
+
+Möchte man die Verteilungsfunktion einer stetigen Zufallsvariablen berechnen,
+kann das ganz schön kompliziert werden, schließlich muss man Integrale lösen.
+Aber es gibt einen Trick, wie man die Sache stark vereinfachen kann: 
+man simuliert die Verteilung. Was bedeutet das?
+
+
+Angenommen, die Wartezeit auf einen Bus ist gleichverteilt (engl. *uniform distribution*); 
+der Bus kommt regelmäßig und püunktlich alle 10 Minuten. 
+Die minimale Wartezeit beträgt also 0 Minuten und die maximale 10 Minuten.
+Nennen wir die zugehörige Zufallsvariable $X$, das ist schön kurz.
+
+Dann schreibt man auch:
+
+$$X \sim Unif(0,10).$$
+
+
+
+Ja, das sieht fancy aus, aber wo ist der versprochene Trick zum Vereinfachen?
+Kommt gleich, Moment.
+
+Eine Frage könnte nun lauten, wie groß ist die Wahrscheinlichkeit, dass man zwischen 3 und 5 Minuten auf den Bus warten muss?
+
+
+Der Trick ist, dass wir Integralrechnung gegen stumpfes Zählen eintauschen.
+
+Computer (und damit R) haben eingebaut Funktionen, die eine beliebige Zufallszahl ziehen können,
+zum Beispiel gleichverteilt
+
+Auf Errisch heißt das Zauberwort `runif()`:
+
+```{r}
+#| eval: false
+runif(n = 1, min = 0, max = 10)
+```
+
+
+```{r}
+#| echo: false
+set.seed(42)
+runif(n = 1, min = 0, max = 10)
+```
+
+Auf Deutsch heißt das: "Hey R, ich hätte gerne eine (daher `n = 1`) Zufallszahl *r* wie *random*,
+die gleichverteilt ist (*uniform*) mit `min = 0` und `max = 10`.
+
+(Zu) anschaulich gesprochen: R hat den Bus kommen lassen und es hat gut 9.1 Minuten gedauert,
+bis er da war.
+
+Achtung, jetzt kommt's: Jetzt lassen wir R mal $10^5$ (`1e5` auf Computersprech) Busse vorfahren. 
+R soll jedes Mal notieren, wie lange man auf den Bus warten musste.^[Machen Sie das mal ohne Computer, wenn Sie ein Wochenende Langeweile haben.]
+
+
+```{r}
+#| eval: false
+x_simu <- runif(n = 1e5, min = 0, max = 10)
+```
+
+
+```{r}
+#| echo: false
+n <- 1e5
+set.seed(42)
+x_simu <- runif(n = n, min = 0, max = 10)  # gibt Vektor zurück
+
+x_simu_df <-
+  tibble(id = 1:n,
+         x = x_simu)
+```
+
+
+Schauen wir uns die Verteilung an:
+
+```{r}
+ggplot(x_simu_df) +
+  aes(x = x_simu) +
+  geom_histogram(bins = 50)
+```
+
+Okay, unsere Verteilung sieht nicht *exakt* gleichverteilt, aber einigermaßen. 
+Gut genug für unsere Zwecke!
+
+So, und jetzt kommt das Ernten.
+Wir können jetzt nämlich einfach zählen (`count()`), um die Antwort auf unsere Frage (der Wartezeit 3-5 Min.) zu erhalten.
+
+
+```{r}
+x_simu_df %>% 
+  count(Schnittmenge = x > 3 & x < 5)
+```
+
+
+Das Zeichen `&` ist das logische UND, also die Schnittmenge der zwei Mengen $A := \{x|x>3\}$ und $B := \{x|x<5\}$, 
+also $A \cap B$.
+
+Wie man sieht, fallen ca. 20% der Stichproben in den entsprechenden Bereich. 
+
+
+Da viele Probleme, wenn sie komplexer werden, kaum noch analytisch (wie Integrieren) ausrechenbar sind,
+greift man in der modernen (Analyse-)Welt oft lieber auf Simulationsverfahren zurück - Dank sei den schnellen Rechnern.
+Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen zurückgeführt.
+
+
+
+
+
+
+
+## Binomialverteilung
+
+Die Binomialverteilung lässt sich gut als "Münzwurf-Verteilung" auffassen.
+
+Werfen wir eine Münze und sehen wir, was passiert.
+
+
+```{r}
+sample(x = c(0, 1), size = 1)
+```
+
+
+Mit `sample()` ziehen wir eine Stichprobe aus dem Ereignisraum `x`, hier 0 und 1. 
+Dabei vereinbaren wir (willkürlich), dass 0 für "Kopf" steht und 1 für "Zahl".
+`size = 1` bedeutet, wir werfen die Münze ein Mal (d.h. Stichprobengröße *size* ist 1).
+
+Okay, noch an Bord? Dann werfen wir die Münze 10 Mal:
+
+
+```{r}
+sample(x = c(0, 1), size = 10, replace = TRUE)
+```
+
+`replace = TRUE` heißt, wir legen die Münze wieder zurück auf den Tisch, wenn wir sie geworfen haben.
+Oder anders ausgedrückt: *Ziehen mit Zurücklegen*.
+
+
+
+R, mach dich bereit, wirf die Münze 1000 ($n=10^3$ oder `1e3`) Mal^[R meckert nicht bei langweiligen Aufgaben.]:
+
+
+```{r}
+n <- 1e3
+
+muenze_oft <- 
+  sample(x = c(0, 1), size = n, replace = TRUE) 
+
+
+muenze_oft %>% 
+  sum()
+```
+
+
+Mit `sum()` nach dem Pfeifensymbol `%>%` haben wir aus dem Vektor `muenze_oft`, der aus der ersten Zeile resultiert,
+die Summe ausgerechnet. 
+
+Jetzt wissen wir, wie oft die Münze "Zahl" gezeigt hat, nämlich `r sum(muenze_oft)` Mal.
+
+
+
+::: callout-note
+Wenn Sie einen Zufallsversuch wiederholen, muss nicht jedes Mal das gleiche Ergebnis resultieren. Entsprechend wird bei wiederholten Ausführung der Funktion `sample()` nicht immer das gleiche Ergebnis resultieren. Wundern Sie sich also nicht, wenn bei Ihrem Computer eine ähnliche, aber nicht gleiche, Zahl herauskommt.
+:::
+
+
+Visualisieren wir mal unsere Münzwürfe. Dazu erstellen wir zuerst eine geeignete Tabelle:
+
+
+```{r}
+muenz_tab <-
+  tibble(
+    id = 1:n,
+    x = muenze_oft,
+    x_cumsum = cumsum(x) / id  # gibt Anteil von "Zahl" wieder
+  )
+
+head(muenz_tab)
+```
+
+
+Und hier der Anteil von "Zahl" im Verlauf unserer Münzwürfe:
+
+
+```{r}
+muenz_tab %>% 
+  slice_head(n = 1e3) %>% 
+  ggplot() +
+  aes(x = id, y = x_cumsum) +
+  geom_line()
+```
+
+
+Grob gesagt scheint sich ein Münzwurf nach, naja, vielleicht 500 Würfen "einigermaßen" zu stabilisieren.^[Was "einigermaßen" bedeuten soll, ist kein statistischer Begriff, sondern einer, der im echten Leben von den Menschen beantwortet werden muss, die eine Entscheidung zu treffen haben.]
+
+
+
+::: callout-important
+Das Gesetz der großen Zahl
+
+Zieht man (zufällig) immer mehr Werte aus einer Verteilung (mit endlichem Mittelwert), nähert sich der Mittelwert der Stichprobe immer mehr mit dem Mittelwert (oft als Erwartungswert bezeichnet) der Verteilung an 
+:::
+
+
+
+```{r lln, out.width = "100%", fig.align="center", fig.asp = .5}
+#| eval: false
+source(paste0(here::here(),"/R-Code/img15.R"))
+```
+
+
+
+<!-- 3b1b hat ein [nettes Video zu diesem Thema](https://youtu.be/8idr1WZ1A7Q), das sich als Vertiefung eignet. -->
+
+
+
+
+## Normalverteilung
+
+
+
+
+
+Beispiel: Wie groß sind Studentis ([Quelle des Datensatzes](https://rdrr.io/cran/openintro/man/speed_gender_height.html))? 
+
+Das Quantil von z.B. 25% zeigt die Körpergröße der 25% kleinsten Studentis an, analog für 50%, 75%:
+
+```{r QM2-Thema3-Teil1-5, echo = FALSE}
+data(speed_gender_height)
+
+height_summary <- 
+  speed_gender_height %>% 
+  drop_na(height) %>% 
+  mutate(height = height * 2.54) %>% 
+  summarise(q25 = quantile(height, prob = .25),
+            q50 = quantile(height, prob = .5),
+            q75 = quantile(height, prob = .75))
+
+height_summary %>% 
+  gt()
+```
+
+Visualisierung der Quantile:
+
+```{r QM2-Thema3-Teil1-6}
+#| echo: false
+#| results: hold
+#| fig-width: 12
+
+speed_gender_height <-
+  speed_gender_height %>% 
+  mutate(height_cm = height * 2.54)
+
+p1 <- 
+  speed_gender_height %>% 
+  ggplot() +
+  aes(x = 1, y = height_cm) +
+  geom_boxplot() +
+  labs(x = "",
+       y = "Größe in cm",
+       title = "Die Box zeigt das 25%-, 50%- und 75%-Quantil")
+
+height_summary_long <- 
+  height_summary %>% 
+  pivot_longer(everything(),
+               names_to = "q",
+               values_to = "height_cm")
+
+p2 <- 
+  speed_gender_height %>% 
+  ggplot() +
+  aes(x = height_cm) +
+  geom_histogram() +
+  geom_vline(data = height_summary_long,
+             aes(xintercept = height_cm)) +
+  geom_text(data = height_summary_long,
+             aes(x = height_cm+1,
+                 y = 0,
+                 label = paste0(q, ": ",height_cm)),
+             angle = 90,
+            hjust = 0,
+            color = "white"
+             ) +
+  labs(title = "Die vertikalen Striche zeigen die Quantile",
+       y = "Häufigkeit")
+
+plots(p1, p2)
+```
+
+
+::: callout-note
+Das 25%-Quantil nennt man *1. Quartil*, das 50%-Quantil auch *2. Quartil*, das 75%-Quantil das *3. Quartil*, und das 100%-Quantil (Maximalwert) das *4. Quartil*.
+:::
+
+
+
+
+
+
+
+
+### Normal auf dem Fußballfeld
+
+Sie und 100 Ihrer besten Freunde stehen auf der Mittellinie eines Fußballfelds. Auf Kommando werfen alle jeweils eine Münze; bei Kopf geht man einen Schritt nach links, bei Zahl nach rechts. Das wird 16 Mal wiederholt. Wie wird die Verteilung der Positionen wohl aussehen?
+
+
+```{r Normalverteilung-6, fig.asp = .45, fig.width=7}
+#| echo: false
+source(paste0(here::here(),"/R-Code/img13.R"))
+```
+
+[@mcelreath_statistical_2020]
+
+
+
+
+
+
+
+### Normal durch Addieren
+
+Die Summe vieler (gleich starker) Zufallswerte (aus der gleichen Verteilung) erzeugt eine Normalverteilung; egal aus welcher Verteilung die Zufallswerte kommen (Zentraler Grenzwertsatz), vgl. @fig-fussball.
+
+
+```{r Normalverteilung-7, out.width="100%", fig.asp = 0.5, fig.align="center", fig.width=7}
+#| echo: false
+#| fig-cap: "Entstehen einer Normalverteilung durch Addition vieler unabhgängiger Ereignisse"
+#| label: fig-fussball
+source(paste0(here::here(),"/R-Code/img14.R"))
+```
+
+
+
+Nicht verwechseln:
+
+
+```{r Normalverteilung-8, echo = FALSE, out.width="30%", fig.align='center'}
+knitr::include_graphics("https://github.com/sebastiansauer/QM2-Folien/raw/main/img/ch33910f1.jpg")
+```
+
+
+
+
+
+
+### Normalverteilung vs. randlastige Verteilungen
+
+
+```{r Normalverteilung-9, fig.asp=0.5}
+#| echo: false
+ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1), color = "blue") +
+  labs(y = "Dichte", x = "Merkmal, X") +
+  stat_function(fun = dt, n = 101, args = list(df = 1, ncp =0), color = "red") +
+  labs(caption = "Blau: Normalverteilung\nRot: randlastige Verteilung (t-Verteilung mit df=1)")
+```
+
+
+Bei randlastigen Verteilungen ("fat tails") kommen Extremereignisse viel häufiger vor als bei Normalverteilungen. Deshalb ist es wichtig sein, zu wissen, ob eine Normalverteilung oder eine randlastige Verteilung vorliegt. Viele statistische Methoden sind nicht zuverlässig bei (stark) randlastigen Methoden.
+
+
+
+
+### Beispiele für Normal- und randlastige Verteilungen
+
+
+
+Normal verteilt:
+
+- Größe 
+- Münzwürfe
+- Gewicht
+- IQ
+- Blutdruck
+- Ausschuss einer Maschine
+
+
+Randlastig verteilt:
+
+- Vermögen
+- Verkaufte Bücher
+- Ruhm
+- Aktienkurse
+- Erdbeben
+- Pandemien
+- Kriege
+- Erfolg auf Tinder
+- Meteroritengröße
+- Stadtgrößen
+
+
+
+### Formel der Normalverteilung
+
+Vereinfacht ausgedrückt lässt die Normalverteilung $\mathcal{N}$ durch Exponenzieren einer Quadratfunktion beschreiben:
+
+$$\mathcal{N} \propto e^{-x^2}$$
+
+mit $e=2.71...$, der Eulerschen Zahl.^[Das Zeichen $y \propto x$ bedeutet "x ist proportional zu y", also $y = mx$.]
+
+
+
+
+
+```{r norm, eval = FALSE, echo = TRUE}
+d <-
+  tibble(
+    x = seq(-3, 3, 
+            length.out = 100),
+    y = exp(-x^2)
+  )
+
+d %>% 
+  ggplot() +
+  aes(x = x, y = y) +
+  geom_line()
+```
+
+
+
+```{r Normalverteilung-10, echo = FALSE, ref.label = "norm"}
+```
+
+
+Eine Normalverteilung mit $\mu=0$ und $\sigma=1$ nennt man auch *Standardnormalverteilung* und 
+man schreibt:
+
+
+$$IQ \sim \mathcal{N}(0,1)$$
+
+Die Normalverteilung wird auch *[Gauss](https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F)-Verteilung* oder *Glockenkurve* genannt.
+
+
+
+
+
+### Simulation einer Normalverteilung
+
+
+
+
+
+Eine Zufallszahl (*r*andom number), die *norm*alverteilt ist, mit $\mu=0$ und $\sigma=1$ kann man in R so erzeugen:
+
+
+```{r}
+rnorm(n = 1, mean = 0, sd = 1)
+```
+
+
+
+Ein Fallbeispiel: Der Inhalt einer Tüte mit Zucker, $X$, sei normalverteilt mit $\mu = 10002$ g und $\sigma=1.5$ g. Aus vertragsrechtlichen Gründen darf das Füllgewicht von 1000g nicht unterschritten werden, sonst drohen Konventionalstrafen.
+
+Wie groß ist die Wahrscheinlichkeit, dass 1000g unterschritten werden?
+
+
+Simulieren wir uns 1e4 Zuckertüten!
+
+```{r}
+n <- 1e4
+d <- 
+  tibble(
+    id = 1:n,
+    x = rnorm(n = n, mean = 1004, sd = 1.5)
+  )
+
+head(d)
+```
+
+
+Zählen wir, viele der Zuckertüten ein Gewicht von weniger als 1000g aufweisen:
+
+
+```{r}
+d %>% 
+  count(x < 1000)
+```
+
+
+Ein ziemlich^["Ziemlich" ist natürlich subjektiv; je nach Situation kann es zu viel oder nicht zu viel sein.] kleiner Anteil. Rechnen wir uns noch die Anteile (*prop*ortion) aus:
+
+```{r}
+d %>% 
+  count(x < 1000) %>% 
+  mutate(prop = n/1e4)
+```
+
+
+
+
+
+
+
+### IQ-Verteilung
+
+Die Verteilung der Zufallsvariablen IQ ist normalverteilt mit einem Mittelwert von 100 und einer Streuung von 15:
+
+$IQ \sim \mathcal{N}(100,15)$
+
+- Wie schlau muss man sein, um zu den unteren 75%, 50%, 25%, 5%, 1% zu gehören?
+- Anders gesagt: Welcher IQ-Wert wird von 75%, 50%, ... der Leute nicht überschritten?
+
+
+
+Ziehen wir zufällig $1e4$ Stichproben aus $\mathcal{N}(100,15)$ und berechen die Quantile:
+
+```{r echo = TRUE}
+d <-
+  tibble(
+  iq = rnorm(n = 1e4, 
+             mean = 100, 
+             sd = 15))
+
+probs <- c(0.75,.5,.25,.05,.01)
+
+d_summary <- d %>% 
+  summarise(p = probs,
+            q = quantile(iq, probs))
+```
+
+
+
+```{r}
+#| echo: false
+d_summary %>% 
+  gt() %>% 
+  fmt_number(p, decimals = 2) %>% 
+  fmt_number(q, decimals = 0)
+```
+
+Das *Quantil* $q$ zur kumulierten Wahrscheinlichkeit $p=75$ ist 110, etc. 
+
+
+
+
+
+
+Umgekehrt können wir uns auch fragen: Gegeben einer Realisation der Zufallsvariablen (z.B. IQ), was ist die zugehörige Wahrscheinlichkeit (Wert der Verteilungsfunktion?)
+
+
+- Welcher Anteil der Fläche unter der Kurve $p$ gehört zu den IQ-Werten 75, 100, 115, 130?
+- Anders gesagt: Welcher Anteil der Wahrscheinlichkeitsmasse der Verteilung liegt unter IQ=75, IQ=100, etc.?
+
+
+Ziehen wir Stichproben aus $\mathcal{N}(100,15)$:
+
+```{r echo = TRUE, eval = FALSE}
+d <-
+  tibble(
+    iq = rnorm(1e4, 
+               mean = 100, 
+               sd = 15)) %>% 
+  mutate(iq = round(iq))
+
+qs <- c(75,100,115,130)
+
+d %>% 
+  count(p_100 = iq < 100) %>% 
+  mutate(prop = n / sum(n)) 
+```
+
+
+
+```{r echo = FALSE, eval = TRUE}
+d <-
+  tibble(
+    iq = rnorm(1e4, 
+               mean = 100, 
+               sd = 15)) %>% 
+  mutate(iq = round(iq))
+
+qs <- c(75,100,115,130)
+
+d %>% 
+  count(p_100 = iq < 100) %>% 
+  mutate(prop = n / sum(n)) %>% 
+  gt() %>% 
+  fmt_number(columns = 3)
+```
+
+Anstelle von `iq < 100` kann man `iq < 115` einsetzen, etc.
+ 
+```{r eval= FALSE}
+#| echo: false
+d %>% 
+  mutate(prop = percent_rank(iq)) %>% 
+  filter(iq %in% qs) %>% 
+  distinct(iq, .keep_all = TRUE)
+```
+
+Die *Verteilungsfunktion* (der Anteil der Wahrscheinlichkeitsmasse), `p`, für IQ-Werte nicht größer als 100,  $IQ\le100$, ist 50%, etc. 
+
+
+
+### Quantile der Normalverteilung 
+
+
+
+
+
+- *Quantile* teilen eine Verteilung so ein, dass ein Anteil $p$ kleiner oder gleich und der andere Teil $1-p$ größer  dem Quantil $q$ ist.
+    - *Beispiel*: "50%-Quantil = 100" meint, dass 50% der Elemente der Verteilung einen Wert kleiner oder gleich als 100 haben.
+    
+- Die *Verteilungsfunktion F* für einen Wert $x$ gibt die Wahrscheinlichkeit an, dass die zugehörige Zufallsvariable $X$ höchstens so groß wie $x$ annimt Sie zeigt also die kumulierte Wahrscheinlichkeit $[-\infty, q)$.
+    - *Beispiel*: "F(100) = 50%" meint: Die Wahrscheinlichkeit für eine Ausprägung von höchstens als 100 beträgt 50%.
+
+
+Schauen wir uns die Quartile der Normalverteilung einmal näher an.
+Wir gehen von einer Normalverteilung aus, wie sie zur Beschreibung von Intelligenz (IQ) verwendet wird.
+
+
+```{r fig.asp = .618}
+#| echo: false
+  ggplot(NULL, aes(c(60,145))) +
+  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 100)) +
+  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
+  labs(x = "X", y = "Dichte",
+       title = "50%-Quantil: 100;    Verteilungsfunktion von 100:50%") +
+  scale_y_continuous(breaks = NULL)
+
+```
+
+$$IQ \sim \mathcal{N}(100, 15)$$
+Mit R kann man sich die beiden Größen komfortabel berechnen lassen:
+
+```{r echo = TRUE, eval = FALSE}
+qnorm(.50, mean = 100, sd = 15)  # 50%-Quantil
+pnorm(100, mean = 100, sd = 15)  # Verteilungsfunktion für IQ=100
+```
+
+
+Betrachten wir einige wichtigen Quantile:
+
+```{r}
+#| echo: false
+q_p50 <-
+  ggplot(NULL, aes(c(60,145))) +
+  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 100)) +
+  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
+  labs(x = "IQ", y = "Dichte",
+       title = "50%-Quantil: 100") +
+  scale_y_continuous(breaks = NULL)
+```
+
+
+```{r}
+#| echo: false
+q_inv <- .25
+q_p <- qnorm(q_inv, mean = 100, sd= 15)
+p_q <- pnorm(q_p, mean = 100, sd= 15)
+
+q_p25 <-
+  ggplot(NULL, aes(c(60,145))) +
+  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
+  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
+  labs(x = "IQ", y = "Dichte",
+       title = paste0(q_inv,"-Quantil: ",round(q_p)),
+       caption = "MW-0.68sd") +
+  scale_y_continuous(breaks = NULL)
+```
+
+
+```{r}
+#| echo: false
+q_inv <- .95
+q_p <- qnorm(q_inv, mean = 100, sd= 15)
+
+q_p95 <-
+  ggplot(NULL, aes(c(60,145))) +
+  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
+  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
+  labs(x = "IQ", y = "Dichte",
+       title = paste0(q_inv,"-Quantil: ",round(q_p)),
+       caption = "MW+1.64sd") +
+  scale_y_continuous(breaks = NULL)
+```
+
+
+
+```{r}
+#| echo: false
+q_inv <- .975
+q_p <- qnorm(q_inv, mean = 100, sd= 15)
+#pnorm(115, mean= 100, sd = 15)
+
+q_p975 <-
+  ggplot(NULL, aes(c(60,145))) +
+  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
+  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
+  labs(x = "IQ", y = "Dichte",
+       title = paste0(q_inv,"-Quantil: ",round(q_p)),
+       caption = "MW+2SD") +
+  scale_y_continuous(breaks = NULL)
+```
+
+
+
+
+
+```{r}
+#| echo: false
+q_inv <- .84
+q_p <- qnorm(q_inv, mean = 100, sd= 15)
+#pnorm(115, mean= 100, sd = 15)
+
+q_p84 <-
+  ggplot(NULL, aes(c(60,145))) +
+  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
+  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
+  labs(x = "IQ", y = "Dichte",
+       title = paste0(q_inv,"-Quantil: ",round(q_p)),
+       caption = "MW+1sd") +
+  scale_y_continuous(breaks = NULL)
+```
+
+```{r}
+#| echo: false
+q_inv <- .69
+q_p <- qnorm(q_inv, mean = 100, sd= 15)  # halbe SD
+#pnorm(107.5, mean= 100, sd = 15)
+
+q_p69 <-
+  ggplot(NULL, aes(c(60,145))) +
+  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
+  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
+  labs(x = "IQ", y = "Dichte",
+       title = paste0(q_inv,"-Quantil: ",round(q_p)),
+       caption = "MW+0.5sd") +
+  scale_y_continuous(breaks = NULL)
+```
+
+
+
+```{r fig.asp = .5}
+#| echo: false
+(q_p50 + q_p25 + q_p69) / (q_p95 + q_p975 + q_p84)
+```
+
+
+### Standardnormalverteilung
+
+
+```{r Normalverteilung-3}
+#| echo: false
+ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1)) +
+  labs(y = "Dichte", x = "Merkmal, X") +
+  ggtitle("Normalverteilung mit Mittelwert 0 und SD 1")
+```
+
+Bei $X=0$:
+
+- hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von 40% (Wahrscheinlichkeitsdichte)
+- sind 50% der Wahrscheinlichkeitsmasse (Fläche unter der Kurve) kleiner als dieser Wert (Verteilungsfunktion).
+
+In Summe liegen 100% der Wahrscheinlichkeitsmasse unter der Kurve.
+
+
+### Normalverteilung als konservative Wahl
+
+
+
+```{r Normalverteilung-1-bis, echo = FALSE }
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/f/f8/10_Deutsche_Mark_-_detail.png")
+```
+
+Uni Greifswald, Public domain, via Wikimedia Commons
+
+
+::: callout-note
+*Ontologische Begründung*
+
+- Wirken viele, gleichstarke Einflüsse additiv zusammen, entsteht eine Normalverteilung  [@mcelreath_statistical_2020], Kap. 4.1.4.
+
+*Epistemologische Begründung*
+
+- Wenn wir nur wissen, dass eine Variable über einen endlichen Mittelwert und eine endliche Varianz verfügt und wir keine weiteren Annahmen treffen bzw. über kein weiteres Vorwissen verfügen, dann ist die Normalverteilung die plausibelste Verteilung (maximale Entropie) [@mcelreath_statistical_2020], Kap. 7 und 10.
+:::
+
+
+<!-- ### Zweidimensionale Normalverteilung, unkorreliert -->
+
+
+<!-- ```{r Normalverteilung-11, out.width="70%", fig.align="center"} -->
+<!-- #| echo: false -->
+<!-- knitr::include_graphics("https://github.com/sebastiansauer/QM2-Folien/raw/main/img/mult-norm.png") -->
+<!-- ``` -->
+
+
+<!-- [Quelle](https://tex.stackexchange.com/questions/31708/draw-a-bivariate-normal-distribution-in-tikz) -->
+
+<!-- [Vgl. auch dieses Diagramm](http://ballistipedia.com/index.php?title=File:Bivariate.png)] -->
+
+
+
+
+<!-- ### 2D-Normalverteilung mit R, unkorreliert -->
+
+<!-- $r(X,Y) = 0$ -->
+
+
+
+
+<!-- ```{r norm-plot1} -->
+<!-- #| echo: false -->
+<!-- #| eval: false -->
+<!-- #| fig-asp: 1 -->
+<!-- #| out-width: "50%" -->
+<!-- d1 <-  -->
+<!--   tibble(  -->
+<!--     x=rnorm(1e4),  -->
+<!--     y=rnorm(1e4) -->
+<!--   ) -->
+
+<!-- ggplot(d1) + -->
+<!--   aes(x, y) + -->
+<!--   geom_hex()  -->
+
+<!-- ggplot(d1) + -->
+<!--   aes(x, y) + -->
+<!--   geom_density2d() -->
+<!-- ``` -->
+
+<!-- [[ggplot-Referenz](https://ggplot2.tidyverse.org/reference/geom_density_2d.html), [Quellcode](https://www.r-graph-gallery.com/2d-density-plot-with-ggplot2.html)] -->
+
+<!-- Mit `scale_fill_continuous(type = "viridis")`kann man die Farbpalette der Füllfarbe ändern. Nicht so wichtig. -->
+
+
+<!-- ```{r Normalverteilung-2-bis} -->
+<!-- #| echo: false -->
+<!-- #| eval: true -->
+<!-- #| fig-asp: 1 -->
+<!-- #| out-width: "50%" -->
+<!-- d1 <-  -->
+<!--   tibble(  -->
+<!--     x=rnorm(1e4),  -->
+<!--     y=rnorm(1e4) -->
+<!--   ) -->
+
+<!-- ggplot(d1) + -->
+<!--   aes(x, y) + -->
+<!--   geom_hex() + -->
+<!--   scale_fill_viridis_c() + -->
+<!--   theme(legend.position = "bottom") -->
+
+<!-- ggplot(d1) + -->
+<!--   aes(x, y) + -->
+<!--   geom_density2d() -->
+<!-- ``` -->
+
+
+
+<!-- ### 2D-Normalverteilung mit R, korreliert, r=0.7 -->
+
+
+
+<!-- Die ersten paar Zeilen der Daten: -->
+
+<!-- ```{r Normalverteilung-3-bis, echo = FALSE} -->
+<!-- d2 <- rnorm_multi( -->
+<!--   n = 1e4, -->
+<!--   mu = c(0,0), -->
+<!--   sd = c(1, 1), -->
+<!--   r = (0.7) -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- ```{r Normalverteilung-4-bis} -->
+<!-- #| echo: false -->
+<!-- d2 %>%  -->
+<!--   head(n=3) %>%  -->
+<!--   gt() %>%  -->
+<!--   fmt_number(columns = everything()) -->
+<!-- ``` -->
+
+<!-- Berechnen wir die Korrelation `r`: -->
+
+<!-- ```{r Normalverteilung-5-bis, echo = TRUE, eval = FALSE} -->
+<!-- d2 %>%  -->
+<!--   summarise( -->
+<!--     r = cor(X1,X2), -->
+<!--     n = n() -->
+<!--   ) -->
+<!-- ``` -->
+
+<!-- ```{r Normalverteilung-6-bis} -->
+<!-- #| echo: false -->
+<!-- d2 %>%  -->
+<!--   summarise( -->
+<!--     r = cor(X1,X2), -->
+<!--     n = n() -->
+<!--   ) %>%  -->
+<!--   gt() %>%  -->
+<!--   fmt_number(columns = everything()) -->
+<!-- ``` -->
+
+
+
+
+<!-- ```{r Normalverteilung-7-bis} -->
+<!-- #| echo: false -->
+<!-- ggplot(d2) + -->
+<!--   aes(X1, X2) + -->
+<!--   geom_hex() + -->
+<!--   scale_fill_viridis_c() + -->
+<!--   theme(legend.position = "bottom") -->
+
+<!-- ggplot(d2) + -->
+<!--   aes(X1, X2) + -->
+<!--   geom_density2d() -->
+<!-- ``` -->
+
+
+
+
+
+
+
+
+
+
+
+
+
