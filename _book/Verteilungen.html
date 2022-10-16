@@ -272,7 +272,11 @@ div.csl-indent {
   <li><a href="#indifferenz-als-grundlage" id="toc-indifferenz-als-grundlage" class="nav-link" data-scroll-target="#indifferenz-als-grundlage"><span class="toc-section-number">4.3.1</span>  Indifferenz als Grundlage</a></li>
   <li><a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation"><span class="toc-section-number">4.3.2</span>  Simulation</a></li>
   </ul></li>
-  <li><a href="#binomialverteilung" id="toc-binomialverteilung" class="nav-link" data-scroll-target="#binomialverteilung"><span class="toc-section-number">4.4</span>  Binomialverteilung</a></li>
+  <li><a href="#binomialverteilung" id="toc-binomialverteilung" class="nav-link" data-scroll-target="#binomialverteilung"><span class="toc-section-number">4.4</span>  Binomialverteilung</a>
+  <ul class="collapse">
+  <li><a href="#rechnen-mit-r" id="toc-rechnen-mit-r" class="nav-link" data-scroll-target="#rechnen-mit-r"><span class="toc-section-number">4.4.1</span>  Rechnen mit R</a></li>
+  <li><a href="#simulieren" id="toc-simulieren" class="nav-link" data-scroll-target="#simulieren"><span class="toc-section-number">4.4.2</span>  Simulieren</a></li>
+  </ul></li>
   <li><a href="#normalverteilung" id="toc-normalverteilung" class="nav-link" data-scroll-target="#normalverteilung"><span class="toc-section-number">4.5</span>  Normalverteilung</a>
   <ul class="collapse">
   <li><a href="#normal-auf-dem-fußballfeld" id="toc-normal-auf-dem-fußballfeld" class="nav-link" data-scroll-target="#normal-auf-dem-fußballfeld"><span class="toc-section-number">4.5.1</span>  Normal auf dem Fußballfeld</a></li>
@@ -532,38 +536,108 @@ div.csl-indent {
 </section>
 <section id="binomialverteilung" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="binomialverteilung"><span class="header-section-number">4.4</span> Binomialverteilung</h2>
-<p>Die Binomialverteilung lässt sich gut als “Münzwurf-Verteilung” auffassen.</p>
-<p>Werfen wir eine Münze und sehen wir, was passiert.</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-9_75c82545d348d8eaefff32998e5e2fa9">
+<section id="rechnen-mit-r" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="rechnen-mit-r"><span class="header-section-number">4.4.1</span> Rechnen mit R</h3>
+<p>Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen.</p>
+<div id="exm-binom" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.1 (Beispiel zur Binomialverteilung) </strong></span>In einer Pumpstation arbeiten 7 Motoren, die wir als identisch annehmen. Mit einer Wahrscheinlichkeit von 5% fällt ein Motor aus und ist für den Rest des Tages nicht einsatzbereit. Der Betrieb kann aufrecht erhalten werden, solange mindestens 5 Motoren arbeiten. Wie groß ist die Wahrscheinlichkeit, dass die Pumpstation aus dem Betrieb fällt?</p>
+<p><span class="math inline">\(P(X=k)\)</span> (oder kurz: <span class="math inline">\(P(k)\)</span>) gibt die Wahrscheinlichkeit (Wahrscheinlichkeitsfunktion) an für das Ereignis, dass <em>k</em> Motoren arbeiten.</p>
+<p>Lassen wir R mal <span class="math inline">\(P(X=5)\)</span> ausrechnen.</p>
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-9_085e1c4b887cb118092f2318a529223a">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> <span class="dv">1</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 1</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">5</span>, <span class="at">size =</span> <span class="dv">7</span>, <span class="at">prob =</span> .<span class="dv">95</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 0.0406235</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Es gilt also <span class="math inline">\(P(X=5) \approx .04\)</span>.</p>
+<p><code>dbinom()</code> steht für die Wahrscheinlichkeits<em>d</em>ichte (im diskreten Fall, also hier, Wahrscheinlichkeitsfunktion genannt) und <code>binom</code> für die Binomialverteilung. <code>x</code> gibt die Anzahl der Treffer an (das gesuchte Ereignis, hier 5 Motoren arbeiten); <code>size</code> gibt die Stichprobengröße an (hier 7 Motoren).</p>
+<p>Damit gilt:</p>
+<p><span class="math inline">\(P(X\ge 5) = P(X=5) + P(X=6) + P(X=7)\)</span></p>
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-10_4fbe1b7dd5dad318944057546691d467">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>p_5 <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">5</span>, <span class="at">size =</span> <span class="dv">7</span>, <span class="at">prob =</span> .<span class="dv">95</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>p_6 <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">6</span>, <span class="at">size =</span> <span class="dv">7</span>, <span class="at">prob =</span> .<span class="dv">95</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>p_7 <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">7</span>, <span class="at">size =</span> <span class="dv">7</span>, <span class="at">prob =</span> .<span class="dv">95</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>p_mind_5 <span class="ot">&lt;-</span> p_5 <span class="sc">+</span> p_6 <span class="sc">+</span> p_7</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>p_mind_5</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 0.996243</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Die Wahrscheinlichkeit, dass mind. 5 Motoren arbeiten beträgt also 0.9962.</p>
+<p>Das Komplement zu diesem Ereignis ist, dass <em>nicht</em> mind. 5 Motoren arbeiten, also höchstens 4 und es daher zu einem Ausfall kommt.</p>
+<p>Natürlich gilt <span class="math inline">\(P(\bar{X}) = 1- P(X)\)</span>.</p>
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-11_e6f609e859f3bbde0f181cb5befd325d">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>p_weniger_als_4 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> p_mind_5</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>p_weniger_als_4</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 0.003757043</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Alternativ kann man mit der Verteilungsfunktion rechnen: <span class="math inline">\(P(X \le 4)\)</span>.</p>
+<p>In R kann man dafür die Funktion <code>pbinom()</code> nutzen (p für (kumulierte) Wahrscheinlichkeit).</p>
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-12_dd0ece7329e67e413d46d308dc25edc3">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbinom</span>(<span class="at">q =</span> <span class="dv">4</span>, <span class="at">size =</span> <span class="dv">7</span>, <span class="at">prob =</span> .<span class="dv">95</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 0.003757043</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><code>q = 4</code> steht für <span class="math inline">\(X \le 4\)</span>, also für höchstens 4 Treffer (arbeitende Motoren); <code>size = 7</code> meint die Stichprobengröße, hier 7 Motoren.</p>
+</div>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Die Funktion, die die Wahrscheinlichkeit dafür angibt, dass die diskrete Zufallsvariable <span class="math inline">\(X\)</span> eine Realisation annimmt, die kleiner oder gleich (höchstens) einem Wert <span class="math inline">\(X=x\)</span> ist, heißt <em>Verteilungsfunktion</em>.</p>
+<p><span class="math inline">\(F(X=x) = P(X \le x)\)</span></p>
+</div>
+</div>
+</section>
+<section id="simulieren" class="level3" data-number="4.4.2">
+<h3 data-number="4.4.2" class="anchored" data-anchor-id="simulieren"><span class="header-section-number">4.4.2</span> Simulieren</h3>
+<p>Die Binomialverteilung lässt sich gut als “Münzwurf-Verteilung” auffassen.</p>
+<p>Werfen wir eine Münze und sehen wir, was passiert.</p>
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-13_d844ef1e4cb0a5c720fd4ec63b1bbff6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> <span class="dv">1</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 1</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Mit <code>sample()</code> ziehen wir eine Stichprobe aus dem Ereignisraum <code>x</code>, hier 0 und 1. Dabei vereinbaren wir (willkürlich), dass 0 für “Kopf” steht und 1 für “Zahl”. <code>size = 1</code> bedeutet, wir werfen die Münze ein Mal (d.h. Stichprobengröße <em>size</em> ist 1).</p>
 <p>Okay, noch an Bord? Dann werfen wir die Münze 10 Mal:</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-10_47e971a649ed0991a38d553bccef6591">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-14_dd321de7a9a6b38da9580f9ac1ddfbd9">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> <span class="dv">10</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="do">##  [1] 0 1 1 1 1 0 0 1 0 1</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> <span class="dv">10</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="do">##  [1] 0 1 1 1 1 0 0 1 0 1</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p><code>replace = TRUE</code> heißt, wir legen die Münze wieder zurück auf den Tisch, wenn wir sie geworfen haben. Oder anders ausgedrückt: <em>Ziehen mit Zurücklegen</em>.</p>
 <p>R, mach dich bereit, wirf die Münze 1000 (<span class="math inline">\(n=10^3\)</span> oder <code>1e3</code>) Mal<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>:</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-11_cd9f31f3cfd4cc784b89ba1af54cf6fd">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-15_03c37984630331665387e1961bdd352f">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fl">1e3</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>muenze_oft <span class="ot">&lt;-</span> </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> n, <span class="at">replace =</span> <span class="cn">TRUE</span>) </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>muenze_oft <span class="sc">%&gt;%</span> </span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>()</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 539</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fl">1e3</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>muenze_oft <span class="ot">&lt;-</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">size =</span> n, <span class="at">replace =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>muenze_oft <span class="sc">%&gt;%</span> </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>()</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 539</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Mit <code>sum()</code> nach dem Pfeifensymbol <code>%&gt;%</code> haben wir aus dem Vektor <code>muenze_oft</code>, der aus der ersten Zeile resultiert, die Summe ausgerechnet.</p>
@@ -582,17 +656,17 @@ Hinweis
 </div>
 </div>
 <p>Visualisieren wir mal unsere Münzwürfe. Dazu erstellen wir zuerst eine geeignete Tabelle:</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-12_19c63a37979e51c3141f4578ba9cb588">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-16_7e4f04631988a0acb3ac813b53027984">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>muenz_tab <span class="ot">&lt;-</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> muenze_oft,</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_cumsum =</span> <span class="fu">cumsum</span>(x) <span class="sc">/</span> id  <span class="co"># gibt Anteil von "Zahl" wieder</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(muenz_tab)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>muenz_tab <span class="ot">&lt;-</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> muenze_oft,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_cumsum =</span> <span class="fu">cumsum</span>(x) <span class="sc">/</span> id  <span class="co"># gibt Anteil von "Zahl" wieder</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(muenz_tab)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -641,17 +715,17 @@ Hinweis
 </div>
 </div>
 <p>Und hier der Anteil von “Zahl” im Verlauf unserer Münzwürfe:</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-13_3034c9b494a11ea54b5d67af50706143">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-17_89c629b1458b9d788cce4dbeb3c62d21">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>muenz_tab <span class="sc">%&gt;%</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fl">1e3</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> id, <span class="at">y =</span> x_cumsum) <span class="sc">+</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>muenz_tab <span class="sc">%&gt;%</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fl">1e3</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> id, <span class="at">y =</span> x_cumsum) <span class="sc">+</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Verteilungen_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<p><img src="Verteilungen_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Grob gesagt scheint sich ein Münzwurf nach, naja, vielleicht 500 Würfen “einigermaßen” zu stabilisieren.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
@@ -669,13 +743,11 @@ Wichtig
 <p>Zieht man (zufällig) immer mehr Werte aus einer Verteilung (mit endlichem Mittelwert), nähert sich der Mittelwert der Stichprobe immer mehr mit dem Mittelwert (oft als Erwartungswert bezeichnet) der Verteilung an</p>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-fig.asp="0.5" data-hash="Verteilungen_cache/html/lln_79a532cf441b6f7a678b057d36f54861">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">paste0</span>(here<span class="sc">::</span><span class="fu">here</span>(),<span class="st">"/R-Code/img15.R"</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="cell" data-layout-align="center" data-fig.asp="0.5" data-hash="Verteilungen_cache/html/lln_5a5ecdfa02e0974c941f611fec6d14f8">
+
 </div>
 <!-- 3b1b hat ein [nettes Video zu diesem Thema](https://youtu.be/8idr1WZ1A7Q), das sich als Vertiefung eignet. -->
+</section>
 </section>
 <section id="normalverteilung" class="level2" data-number="4.5">
 <h2 data-number="4.5" class="anchored" data-anchor-id="normalverteilung"><span class="header-section-number">4.5</span> Normalverteilung</h2>
@@ -1204,17 +1276,17 @@ Hinweis
 <div class="cell" data-hash="Verteilungen_cache/html/norm_fb558b70cea276cfa686657c97c4881c">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">length.out =</span> <span class="dv">100</span>),</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y) <span class="sc">+</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">length.out =</span> <span class="dv">100</span>),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y) <span class="sc">+</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell" data-hash="Verteilungen_cache/html/Normalverteilung-10_db846095dd0af3d93c14fd157a154cdb">
@@ -1229,27 +1301,27 @@ Hinweis
 <section id="simulation-einer-normalverteilung" class="level3" data-number="4.5.6">
 <h3 data-number="4.5.6" class="anchored" data-anchor-id="simulation-einer-normalverteilung"><span class="header-section-number">4.5.6</span> Simulation einer Normalverteilung</h3>
 <p>Eine Zufallszahl (<em>r</em>andom number), die <em>norm</em>alverteilt ist, mit <span class="math inline">\(\mu=0\)</span> und <span class="math inline">\(\sigma=1\)</span> kann man in R so erzeugen:</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-14_d48e9e5922f57219d9475c41bed258e0">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-18_3f5a9a1a96f9a0525528bc11b3b34114">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">1</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 0.2664096</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">1</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 0.2664096</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Ein Fallbeispiel: Der Inhalt einer Tüte mit Zucker, <span class="math inline">\(X\)</span>, sei normalverteilt mit <span class="math inline">\(\mu = 10002\)</span> g und <span class="math inline">\(\sigma=1.5\)</span> g. Aus vertragsrechtlichen Gründen darf das Füllgewicht von 1000g nicht unterschritten werden, sonst drohen Konventionalstrafen.</p>
 <p>Wie groß ist die Wahrscheinlichkeit, dass 1000g unterschritten werden?</p>
 <p>Simulieren wir uns 1e4 Zuckertüten!</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-15_a2b89c142a762dccd3ed0b96be26b4b0">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-19_52965b2a80b60b3e5e7aa859d954b727">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fl">1e4</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> </span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">1004</span>, <span class="at">sd =</span> <span class="fl">1.5</span>)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(d)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fl">1e4</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">1004</span>, <span class="at">sd =</span> <span class="fl">1.5</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(d)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -1291,11 +1363,11 @@ Hinweis
 </div>
 </div>
 <p>Zählen wir, viele der Zuckertüten ein Gewicht von weniger als 1000g aufweisen:</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-16_6949ebffb3ca4dbd0e5fc8e7e5662aa1">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-20_88de400952e6a5627c68706cc91b2240">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(x <span class="sc">&lt;</span> <span class="dv">1000</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(x <span class="sc">&lt;</span> <span class="dv">1000</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -1321,12 +1393,12 @@ Hinweis
 </div>
 </div>
 <p>Ein ziemlich<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> kleiner Anteil. Rechnen wir uns noch die Anteile (<em>prop</em>ortion) aus:</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-17_46c9d5f65caff2796dea5b4e8a988c48">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-21_14d1b9eccd8d8c42383a70ec7c644e48">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(x <span class="sc">&lt;</span> <span class="dv">1000</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n<span class="sc">/</span><span class="fl">1e4</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(x <span class="sc">&lt;</span> <span class="dv">1000</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n<span class="sc">/</span><span class="fl">1e4</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -1364,23 +1436,23 @@ Hinweis
 <li>Anders gesagt: Welcher IQ-Wert wird von 75%, 50%, … der Leute nicht überschritten?</li>
 </ul>
 <p>Ziehen wir zufällig <span class="math inline">\(1e4\)</span> Stichproben aus <span class="math inline">\(\mathcal{N}(100,15)\)</span> und berechen die Quantile:</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-18_f671c4d6ad7a578f4d2d319809f23c87">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-22_3bebce0d69ece38060558c667f600d42">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">iq =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="fl">1e4</span>, </span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">mean =</span> <span class="dv">100</span>, </span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">sd =</span> <span class="dv">15</span>))</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.75</span>,.<span class="dv">5</span>,.<span class="dv">25</span>,.<span class="dv">05</span>,.<span class="dv">01</span>)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>d_summary <span class="ot">&lt;-</span> d <span class="sc">%&gt;%</span> </span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">p =</span> probs,</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">q =</span> <span class="fu">quantile</span>(iq, probs))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">iq =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="fl">1e4</span>, </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">mean =</span> <span class="dv">100</span>, </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">sd =</span> <span class="dv">15</span>))</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.75</span>,.<span class="dv">5</span>,.<span class="dv">25</span>,.<span class="dv">05</span>,.<span class="dv">01</span>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>d_summary <span class="ot">&lt;-</span> d <span class="sc">%&gt;%</span> </span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">p =</span> probs,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">q =</span> <span class="fu">quantile</span>(iq, probs))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-19_bda9737ab5c8f89f20e15cfc268db395">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-23_fea7e427bbdfcc5ccdf3d76206571dfa">
 <div class="cell-output-display">
 
 <div id="bjztboonsi" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -1821,24 +1893,24 @@ Hinweis
 <li>Anders gesagt: Welcher Anteil der Wahrscheinlichkeitsmasse der Verteilung liegt unter IQ=75, IQ=100, etc.?</li>
 </ul>
 <p>Ziehen wir Stichproben aus <span class="math inline">\(\mathcal{N}(100,15)\)</span>:</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-20_d229c391cc6a292d5a3b6134f8f93aa4">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-24_cdd3c500dd99e27e3f2be958f2e5551b">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">iq =</span> <span class="fu">rnorm</span>(<span class="fl">1e4</span>, </span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">mean =</span> <span class="dv">100</span>, </span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">sd =</span> <span class="dv">15</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">iq =</span> <span class="fu">round</span>(iq))</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>qs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">75</span>,<span class="dv">100</span>,<span class="dv">115</span>,<span class="dv">130</span>)</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="at">p_100 =</span> iq <span class="sc">&lt;</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n)) </span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">iq =</span> <span class="fu">rnorm</span>(<span class="fl">1e4</span>, </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">mean =</span> <span class="dv">100</span>, </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">sd =</span> <span class="dv">15</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">iq =</span> <span class="fu">round</span>(iq))</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>qs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">75</span>,<span class="dv">100</span>,<span class="dv">115</span>,<span class="dv">130</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="at">p_100 =</span> iq <span class="sc">&lt;</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n)) </span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-21_1612be1eccc41375c043610ba7fb522d">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-25_b869ff08a2e0c003cf99e66570e0ce42">
 <div class="cell-output-display">
 
 <div id="cqzqjsyohe" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -2270,7 +2342,7 @@ Hinweis
 </div>
 </div>
 <p>Anstelle von <code>iq &lt; 100</code> kann man <code>iq &lt; 115</code> einsetzen, etc.</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-22_0a83632dd45daab0368c15e1dc6be225">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-26_2de4321075efc51d5170907be2b83fde">
 
 </div>
 <p>Die <em>Verteilungsfunktion</em> (der Anteil der Wahrscheinlichkeitsmasse), <code>p</code>, für IQ-Werte nicht größer als 100, <span class="math inline">\(IQ\le100\)</span>, ist 50%, etc.</p>
@@ -2288,41 +2360,41 @@ Hinweis
 </ul></li>
 </ul>
 <p>Schauen wir uns die Quartile der Normalverteilung einmal näher an. Wir gehen von einer Normalverteilung aus, wie sie zur Beschreibung von Intelligenz (IQ) verwendet wird.</p>
-<div class="cell" data-fig.asp="0.618" data-hash="Verteilungen_cache/html/unnamed-chunk-23_7a6717eb1b92a8e2fb4cb60bfda22169">
+<div class="cell" data-fig.asp="0.618" data-hash="Verteilungen_cache/html/unnamed-chunk-27_c25218dff5e6bdfa3e567cfc39cbf980">
 <div class="cell-output-display">
-<p><img src="Verteilungen_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+<p><img src="Verteilungen_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p><span class="math display">\[IQ \sim \mathcal{N}(100, 15)\]</span> Mit R kann man sich die beiden Größen komfortabel berechnen lassen:</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-24_9288e4a58337b218829089de38fdfd76">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-28_dd41e893607914c471ef7cdc9960bc5b">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(.<span class="dv">50</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">15</span>)  <span class="co"># 50%-Quantil</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">100</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">15</span>)  <span class="co"># Verteilungsfunktion für IQ=100</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(.<span class="dv">50</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">15</span>)  <span class="co"># 50%-Quantil</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">100</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">15</span>)  <span class="co"># Verteilungsfunktion für IQ=100</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Betrachten wir einige wichtigen Quantile:</p>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-25_7521b93ee7151e8da22b7d5b67406faa">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-29_052de2dc310520950d0281403eaa0b56">
 
 </div>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-26_6bed3bfaf3e9c932f6dc0b50e7d644aa">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-30_37693e8b320f49f8114081519cf62a4f">
 
 </div>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-27_daf78d06b020b0737a69e0c9ae7c0324">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-31_87554fbc47185e28506638e88ad2e72b">
 
 </div>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-28_9750ac361db4df1f460f9ec568912f3a">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-32_6708cad5908ac111b0609068d4d0ab28">
 
 </div>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-29_9d0f6226600aa2bd54950da45e651316">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-33_fc59d44203085807e82e81ea992544eb">
 
 </div>
-<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-30_206ea389bc6b22842c783f738fcdcac4">
+<div class="cell" data-hash="Verteilungen_cache/html/unnamed-chunk-34_d90a72f9600b6e9a9546f8ccb005967c">
 
 </div>
-<div class="cell" data-fig.asp="0.5" data-hash="Verteilungen_cache/html/unnamed-chunk-31_7bb2381abc6e5ac04e7d5af655031296">
+<div class="cell" data-fig.asp="0.5" data-hash="Verteilungen_cache/html/unnamed-chunk-35_d64055e46fd231c928a095724a5ca9a2">
 <div class="cell-output-display">
-<p><img src="Verteilungen_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
+<p><img src="Verteilungen_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>

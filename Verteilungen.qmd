@@ -288,6 +288,90 @@ Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen z
 
 ## Binomialverteilung
 
+
+### Rechnen mit R
+
+
+Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen.
+
+
+::: {#exm-binom}
+
+## Beispiel zur Binomialverteilung
+
+In einer Pumpstation arbeiten 7 Motoren, die wir als identisch annehmen. Mit einer Wahrscheinlichkeit von 5% fällt ein Motor aus und ist für den Rest des Tages nicht einsatzbereit. Der Betrieb kann aufrecht erhalten werden, solange mindestens 5 Motoren arbeiten. Wie groß ist die Wahrscheinlichkeit, dass die Pumpstation aus dem Betrieb fällt?
+
+$P(X=k)$ (oder kurz: $P(k)$) gibt die Wahrscheinlichkeit (Wahrscheinlichkeitsfunktion) an für das Ereignis, dass *k* Motoren arbeiten.
+
+Lassen wir R mal $P(X=5)$ ausrechnen.
+
+
+```{r}
+dbinom(x = 5, size = 7, prob = .95)
+```
+
+
+Es gilt also $P(X=5) \approx .04$.
+
+
+`dbinom()` steht für die Wahrscheinlichkeits*d*ichte (im diskreten Fall, also hier, Wahrscheinlichkeitsfunktion genannt) und `binom` für die Binomialverteilung. `x` gibt die Anzahl der Treffer an (das gesuchte Ereignis, hier 5 Motoren arbeiten); `size` gibt die Stichprobengröße an (hier 7 Motoren).
+
+Damit gilt:
+
+$P(X\ge 5) = P(X=5) + P(X=6) + P(X=7)$
+
+```{r}
+p_5 <- dbinom(x = 5, size = 7, prob = .95)
+p_6 <- dbinom(x = 6, size = 7, prob = .95)
+p_7 <- dbinom(x = 7, size = 7, prob = .95)
+
+p_mind_5 <- p_5 + p_6 + p_7
+
+p_mind_5
+```
+
+Die Wahrscheinlichkeit, dass mind. 5 Motoren arbeiten beträgt also `r round(p_mind_5, 4)`.
+
+
+Das Komplement zu diesem Ereignis ist, dass *nicht* mind. 5 Motoren arbeiten, also höchstens 4 und es daher zu einem Ausfall kommt.
+
+Natürlich gilt $P(\bar{X}) = 1- P(X)$.
+
+```{r}
+p_weniger_als_4 <- 1 - p_mind_5
+p_weniger_als_4
+```
+
+
+Alternativ kann man mit der Verteilungsfunktion rechnen: $P(X \le 4)$.
+
+
+
+
+In R kann man dafür die Funktion `pbinom()` nutzen (p für (kumulierte) Wahrscheinlichkeit).
+
+```{r}
+pbinom(q = 4, size = 7, prob = .95)
+```
+
+`q = 4` steht für $X \le 4$, also für höchstens 4 Treffer (arbeitende Motoren); `size = 7` meint die Stichprobengröße, hier 7 Motoren.
+
+:::
+
+
+:::callout-important
+
+Die Funktion, die die Wahrscheinlichkeit dafür angibt, dass die diskrete Zufallsvariable $X$ eine Realisation annimmt, die kleiner oder gleich (höchstens) einem Wert $X=x$ ist, heißt *Verteilungsfunktion*.
+
+$F(X=x) = P(X \le x)$
+
+:::
+
+
+
+### Simulieren
+
+
 Die Binomialverteilung lässt sich gut als "Münzwurf-Verteilung" auffassen.
 
 Werfen wir eine Münze und sehen wir, was passiert.
@@ -382,6 +466,7 @@ Zieht man (zufällig) immer mehr Werte aus einer Verteilung (mit endlichem Mitte
 
 ```{r lln, out.width = "100%", fig.align="center", fig.asp = .5}
 #| eval: false
+#| echo: false
 source(paste0(here::here(),"/R-Code/img15.R"))
 ```
 
