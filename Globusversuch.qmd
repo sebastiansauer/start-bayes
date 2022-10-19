@@ -42,7 +42,7 @@ theme_set(theme_modern())
 
 ### Kleine Welt, große Welt
 
-Bekanntlich segelte Kolumbus 1492 los, und entdeckte Amerika. Das war aber ein glücklicher Zufall, denn auf seinem Globus existierte Amerika gar nicht. Vielleicht sah sein Globus so aus wie der von Behaim, s. Abb @fig-behaim.
+Bekanntlich segelte Kolumbus 1492 los, und entdeckte Amerika^[wenn auch nicht als Erster]. Das war aber ein glücklicher Zufall, denn auf seinem Globus existierte Amerika gar nicht. Vielleicht sah sein Globus so aus wie der von Behaim, s. Abb @fig-behaim.
 
 ![Behaims Globus: Kein Amerika](img/Behaim.jpg){#fig-behaim}
 
@@ -51,6 +51,8 @@ Bekanntlich segelte Kolumbus 1492 los, und entdeckte Amerika. Das war aber ein g
 Die *kleine Welt des Modells* entsprach hier nicht *der großen Welt, der echten Erdkugel*.
 
 Das ist ein Beispiel, das zeigt, wie Modellieren schiefgehen kann. Es ist aber auch ein Beispiel für, sagen wir, die Komplexität wissenschaftlicher (und sonstiger) Erkenntnis. Einfach gesagt: Glück gehört halt auch dazu.
+
+
 ::: callout-note
 Behaims Globus ist nicht gleich der Erde. Die kleine Welt ist nicht die große Welt.
 :::
@@ -108,7 +110,7 @@ X --> Y
 -   Missbrauch leicht möglich
 -   Nicht einmal falsch
 
-::: callout-important
+::: callout-note
 Wir bauen Golems.
 :::
 
@@ -145,13 +147,13 @@ Vergleichen wir die kleine Welt unserer Modellen, wie Behaims Globus, mit der Gr
 
 Unsere Hypothese bzw. unsere Forschungsfrage lautet, mit welchem Anteil die Erde wohl mit Wasser bedeckt ist?
 
-![Der Erdball](img/earth.png){width="50%"}
+![Die Erde](img/earth.png){width="50%"}
 
 [Quelle](https://pngimg.com/image/25340) CC 4.0 BY-NC
 
 Sie werden einen Globus-Ball in die Luft und fangen in wieder auf. Sie notieren dann, ob die Stelle unter Ihrem Zeigefinger Wasser zeigt (W) oder Land (L). Den Versuch wiederholen Sie 9 Mal.
 
-So sah mein Ergebnis aus:
+So sah *mein*^[*Ihr* Ergebnis kann anders aussehen, schließlich ist es ja Zufall.] Ergebnis aus:
 
 $$W \quad L \quad W \quad W \quad W \quad L \quad W \quad L \quad W$$
 
@@ -159,7 +161,7 @@ $$W \quad L \quad W \quad W \quad W \quad L \quad W \quad L \quad W$$
 
 ### Wie entstanden die Daten?
 
-Der physikalische Prozess, der zur Entstehung der Daten führt, nennt man den *den datengenierende Prozess*.
+Der physikalische Prozess, der zur Entstehung der Daten führt, nennt man den  *datengenierenden Prozess*.
 
 In diesem Fall kann man ihn so beschreiben:
 
@@ -194,24 +196,28 @@ Diese Wahrscheinlichkeit - $(Pr(W,L | p))$ - kann man mit der *Binomialverteilun
 
 Möchte man die Wahrscheinlichkeit ansprechen für das Ereignis "5 mal Wasser und 2 mal Land, wenn wir von einem Wasseranteil von 70% ausgehen", so würden wir kurz schreiben: $Pr(W=5, L=2 | p=.7)$.
 
-Die Binomialverteilung zeigt die Verteilung der Häufigkeit (Wahrscheinlichkeit) der Ereignisse (z.B. 2 Mal Kopf) beim wiederholten Münzwurf (und allen vergleichbaren Zufallsexperimenten): "Münzwurfverteilung"
+Die Binomialverteilung zeigt die Verteilung der Häufigkeit (Wahrscheinlichkeit) der Ereignisse (z.B. 2 Mal Kopf) beim wiederholten Münzwurf (und allen vergleichbaren Zufallsexperimenten): "Münzwurfverteilung", s. Kap. @sec-bin-distrib.
 
-$$Pr(W,L|p) = \frac{(W+L)!}{W!L!}p^W(1-p)^L$${#eq-binomial}
+$$Pr(W,L|p) = \frac{(W+L)!}{W!L!}p^W(1-p)^L = k \cdot P(A)$${#eq-binomial}
 
 
 Formel @eq-binomial kann wie folgt auf Deutsch übersetzen:
 
 >   Die Wahrscheinlichkeit für das Ereignis "W,L" gegeben p berechnet als Produkt von zwei Termen. Erstens der Quotient von der Fakultät von W plus L im Zähler und im Nenner das Produkt von erstens der Fakultät von W mit zweitens der Fakultät von L. Der zweite Term ist das Produkt von p hoch W mal der komplementären Wahrscheinlichkeit von p hoch L.
 
+Oder noch kürzer:
 
-Puh, Formeln sind vielleicht doch ganz praktisch. 
+>    Die Wahrscheinlichkeit für das Ereignis "W,L" gegeben p berechnet als Produkt von zwei Termen. Erstens der Anzahl der günstigen Pfade, k und zweitens der Wahrscheinlichkeit für einen günstigen Pfad, P(A).
+
+
+Puh, Formeln sind vielleicht doch ganz praktisch, wenn man sich diese lange Übersetzung der Formel in Prosa duchliest.
 Noch praktischer ist es aber, dass es Rechenmaschinen gibt, die die Formel kennen und für uns ausrechnen. 
 Los, R, mach mal.
 
 ### Binomialverteilung mit R
 
 
-Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (Wahrscheinlichkeit), um 2 mal $W$ bei $N=W+L=3$ Würfen zu bekommen, wenn wir von $p=1/2$ ausgehen?^[Allgemeiner spricht man auch von 2 Treffern bei 3 Würfen (d.h. 1 "Nicht-Treffer", den wir als "Niete" bezeichnen). Treffer werden oft mit `1`  und Niten mit `0` bezeichnet].
+Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (Wahrscheinlichkeit), um 2 mal $W$ bei $N=W+L=3$ Würfen zu bekommen, wenn wir von $p=1/2$ ausgehen?^[Allgemeiner spricht man auch von 2 Treffern bei 3 Würfen (d.h. 1 "Nicht-Treffer", den wir als "Niete" bezeichnen). Treffer werden oft mit `1`  und Nieten mit `0` bezeichnet].
 
 
 ```{r QM2-Thema2-kleineModelle-21a, echo = TRUE}
@@ -220,7 +226,7 @@ dbinom(x = 2, size = 3, prob = 1/2)
 
 
 Von den 8 Endkonten bzw. Pfaden sind 3 günstig. 
-Demnach ist die Wahrscheinlichkeit des gesuchten Ereignis (2 Treffer bei 3 Würfen, binomialverteilt) gleich 3 von 8.
+Demnach ist die Wahrscheinlichkeit des gesuchten Ereignis (2 Treffer bei 3 Würfen, binomialverteilt) gleich 3 von 8 (alle Pfade sind gleich wahrscheinlich).
 
 
 
@@ -228,7 +234,7 @@ Demnach ist die Wahrscheinlichkeit des gesuchten Ereignis (2 Treffer bei 3 Würf
 
 ```{mermaid}
 %%| echo: false
-%%| ref-label: fig-binom1
+%%| label: fig-binom1
 %%| fig-cap: Wir werfen den Globus (oder eine Münze) 3 Mal
 flowchart TD
   A[A - Start] -. 1/2 .-> B[B - 0]
@@ -279,7 +285,7 @@ kommen aber bei größeren Daten schnell an ihre Grenze.
 
 ```{r}
 #| echo: false
-#| ref-label: fig-binom2
+#| label: fig-binom2
 #| fig-cap: Wir werfen den Globus (oder eine Münze) 3 Mal
 my_tree <- tidygraph::create_tree(511, 2, mode = "out")
 
@@ -294,7 +300,12 @@ my_tree %>%
 ```
 
 
-Geb
+Jetzt folgen einige Beispiele.
+
+
+::: {#exm-globus2}
+
+## Globus mit 9 Treffern bei 9 Würfen
 
 Was ist die Wahrscheinlichkeit für $W=9$ bei $N=9$ und $p=1/2$?
 
@@ -302,7 +313,13 @@ Was ist die Wahrscheinlichkeit für $W=9$ bei $N=9$ und $p=1/2$?
 dbinom(x = 9, size = 9, prob = 1/2)
 ```
 
-### Beispiele zur Berechnung einer binomial verteilten Wahrscheinlichkeit
+:::
+
+
+
+::: {#exm-globus3}
+
+## Klausur mit 20-Richtig-Falsch-Fragen
 
 Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen. Wie groß ist die Wahrscheinlichkeit, durch bloßes Münze werfen genau 15 Fragen richtig zu raten?^[Hey, endlich mal was für echte Leben!].
 
@@ -310,11 +327,24 @@ Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen. Wie groß ist die
 dbinom(x = 15, size = 20, prob = .5)
 ```
 
+
+:::
+
+
+
+::: {#exm-globus4}
+
+## 3 Münzwürfe mit 3 Treffern
+
 Was ist die Wahrscheinlichkeit bei 3 Münzwürfen (genau) 3 Treffer (Kopf) zu erzielen?
 
 ```{r QM2-Thema2-kleineModelle-24, echo = TRUE}
 dbinom(3, 3, 1/2)
 ```
+
+:::
+
+
 
 ### Unser Modell ist geboren
 
@@ -330,6 +360,8 @@ $$p \sim \text{Unif}(0,1).$$
 
 Lies: "$p$ ist gleich (uniform) verteilt mit der Untergrenze 0 und der Obergrenze 1".
 
+Man könnte auch sagen: Wir haben praktisch kein Vorwissen, wir sind erstmal (aprior) indifferent,
+jeder Parameterwert erscheint uns erstmal gleich wahrscheinlich.
 
 
 
@@ -339,14 +371,15 @@ Lies: "$p$ ist gleich (uniform) verteilt mit der Untergrenze 0 und der Obergrenz
 
 
 
-### So sehen die Verteilungen aus
 
-Abb. @fig-bin zeigt die Binomialverteilung.
+### Visualisierungen
+
+Abb. @fig-bin zeigt die Binomialverteilung $X \sim Bin(9, 1/2)$.
 
 ```{r QM2-Thema2-kleineModelle-25}
 #| echo: false
 #| label: fig-bin
-#| fig-cap: Ein Beispiel für eine Binomialverteilung
+#| fig-cap: Ein Beispiel für eine Binomialverteilung mit Parametern N=9 und p=1/2.
 dbinom(0:9, 9, 1/2) %>% 
   tibble(Wahrscheinlichkeit = .,
          Treffer = seq(0,9)) %>% 
@@ -357,13 +390,13 @@ dbinom(0:9, 9, 1/2) %>%
 
 ```
 
-$N=9, p = 1/2$
 
-Abb. @fig-unif zeigt ein Beispiel für eine Gleichverteilung (uniform distribution).
+
+Abb. @fig-unif zeigt ein Beispiel für eine Gleichverteilung (uniform distribution), $X \sim U(0,1)$.
 
 ```{r QM2-Thema2-kleineModelle-26}
 #| echo: false
-#| fig-cap: Gleichverteilung
+#| fig-cap: Gleichverteilung mit Parametern min=0 und max=1
 #| label: fig-unif
 
 
@@ -385,7 +418,7 @@ uniform_Plot <- function(a, b){
 uniform_Plot(0, 1)
 ```
 
-$Min = 0, Max = 1$
+
 
 🏋️️ Was fällt Ihnen bei der Binomialverteilung auf? Ist sie symmetrisch? Verändert sich die Wahrscheinlichkeit linear? Was fällt Ihnen bei der Gleichverteilung auf?
 
@@ -393,7 +426,7 @@ $Min = 0, Max = 1$
 
 ### Herleitung Bayes' Theorem 1/2: Gemeinsame Wahrscheinlichkeit
 
-Die Wahrscheinlichkeit für *Regen* und *kalt* ist gleich der Wahrscheinlihckeit von *Regen*, *gegeben kalt* mal der Wahrscheinlicht von *kalt*. Entsprechend gilt: Die Wahrscheinlichkeit von $W$, $L$ und $p$ ist das Produkt von $Pr(W,L|p)$ und der Prior-Wahrscheinlichkeit $Pr(p)$:
+Die Wahrscheinlichkeit für *Regen* und *kalt* ist gleich der Wahrscheinlichkeit von *Regen*, *gegeben kalt* mal der Wahrscheinlichkeit von *kalt*. Entsprechend gilt: Die Wahrscheinlichkeit von $W$, $L$ und $p$ ist das Produkt von $Pr(W,L|p)$ und der Prior-Wahrscheinlichkeit $Pr(p)$:
 
 $$Pr(W,L,p) = Pr(W,L|p) \cdot Pr(p)$$
 
@@ -415,7 +448,7 @@ $Pr(W,L)$ nennt man die *mittlere Wahrscheinlichkeit der Daten* oder *Evidenz*. 
 
 ### Bayes' Theorem als Formel
 
-$$Pr(H|D) = \frac{Pr(D|H) Pr(H)}{Pr(D)}$$
+$$Pr(H|D) = \frac{Pr(D|H) Pr(H)}{Pr(D)} = \frac{\text{Likelihood}  \cdot \text{Priori}}{\text{Evidenz}}$$
 
 -   Bestandteile:
 

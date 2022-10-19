@@ -81,6 +81,13 @@ library(easystats)
 ## Verteilungen
 
 
+:::callout-important
+Eine *Verteilung* zeigt, welche Ausprägungen eine Variable aufweist und wie häufig bzw. wahrscheinlich diese sind. 
+Einfach gesprochen, veranschaulicht eine Balken- oder Histogramm eine Verteilung. Man unterscheidet Häufigkeitsverteilungen (s. Abb. @fig-mtcars-freq) von Wahrscheinlichkeitsverteilungen (Abb. @fig-uniform).
+:::
+
+
+
 
 
 ### Häufigkeitsverteilung
@@ -98,14 +105,31 @@ data(mtcars)
     count(cyl)
 ```
   
+  
+Abb. @fig-mtcars-freq visualisiert die Häufigkeitsverteilung von `cyl`.
+
+```{r}
+#| echo: false
+#| fig-cap: Häufigkeitsverteilung von `cyl`
+#| label: fig-mtcars-freq
+
+mtcars %>% 
+  ggplot(aes(x = cyl)) +
+  geom_bar()
+```
 
   
-Ein *stetiges* Merkmal lässt sich durch Klassenbildung diskretisieren:
+
+  
+Ein *stetiges* Merkmal, wie `hp` (PS-Zahl), lässt sich durch Klassenbildung diskretisieren, s. Abb. @fig-mtcars-hp.
     
 ```{r Normalverteilung-2}
+#| fig-cap: Häufigkeitsverteilng einer stetigen Variablen, diskretisiert in 10 "Körbe" oder Gruppen
+#| label: fig-mtcars-hp
+#| echo: false
 mtcars %>% 
   ggplot(aes(x = hp)) +
-  geom_histogram()
+  geom_histogram(bins=10)
 ```
   
 
@@ -113,7 +137,7 @@ mtcars %>%
 
 ### Wahrscheinlichkeitsverteilung
 
-Warhscheinlichkeitverteilungen dienen dazu, Ereignissen eines Zufallsexperiments eine Wahrschenlichkeit zuzuordnen.
+Warhscheinlichkeitsverteilungen dienen dazu, Ereignissen einer Zufallsvariable eine Wahrscheinlichkeit zuzuordnen.
 
 
 Eine *diskrete* Wahrscheinlichkeitsverteilung der (diskreten) Zufallsvariablen $X$ ordnet jeder der $k$ Ausprägungen $X=x$ eine Wahrscheinlichkeit $p$ zu. So hat die Variable *Geschlecht eines Babies* die beiden Ausprägungen *Mädchen* und *Junge* mit den Wahrscheinlichkeiten $p_M = 51.2\%$ bzw. $p_J = 48.8\%$ [@gelman_regression_2021].
@@ -130,12 +154,12 @@ Man gibt stattdessen die *Dichte* der Wahrscheinlichkeit an: Das ist die Wahrsch
 
 ### Indifferenz als Grundlage
 
-Eine Gleichverteilung nimmt an, dass jeder Wert im Ergebnisraum der zugehörigen Zufallsvariable gleichwahrscheinlich ist.
+Eine Gleichverteilung nimmt an, dass jeder Wert im Ergebnisraum der zugehörigen Zufallsvariable *gleichwahrscheinlich* ist.
 Wenn man keinen hinreichenden Grund hat, eine Realisation einer Zufallsvariablen für plausibler als einen anderen zu halten,
 ist eine Gleichverteilung eine passende Verteilung.
 Gleichverteilungen gibt es im diskreten und im stetigen Fall.
 
-Abb. @fig-uniform zeigt zwei Beispiele für (stetige) Gleichverteilungen.
+Abb. @fig-uniform zeigt ein Beispiel für eine (stetige) Gleichverteilung.
 
 
 ```{r Normalverteilung-4, fig.asp = 0.5}
@@ -143,7 +167,7 @@ Abb. @fig-uniform zeigt zwei Beispiele für (stetige) Gleichverteilungen.
 #| fig-cap: 
 #|   - "Gleichverteilung min=-1, max=1"
 #|   - "Gleichverteilung min=0, max=3"
-#| label: "fig-uniform"
+#| label: fig-uniform
 #
 #source: https://dk81.github.io/dkmathstats_site/rmath-uniform-plots.html
 
@@ -163,16 +187,16 @@ uniform_Plot <- function(a, b){
 }
 
 uniform_Plot(-1, 1)
-uniform_Plot(0, 3)
+#uniform_Plot(0, 3)
 ```
 
 
 
 
-Bei $X=0$ hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von 50% bzw. 33%.
+Bei $X=0$ hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von 50%.
 
 
-Definierendes Kennzeichen einer Gleichverteilung ist die konstante Dichte.
+Definierendes Kennzeichen einer Gleichverteilung ist die *konstante Dichte*.
 
 
 
@@ -286,13 +310,27 @@ Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen z
 
 
 
-## Binomialverteilung
+## Binomialverteilung {#sec-bin-distrib}
+
+:::callout-important
+Die Binomialverteilung dient zur Darstellung der Wahrscheinlichkeit der Ergebnisse eines wiederholten binomialen Zufallexperiments,
+eines Zufallsexperiments mit *zwei* Ergebnissen also. Typisches Beispiel ist ein Münzwurf.
+Bei jeder Wiederholung des Zufallexperiments bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (Ziehen mit Zurücklegen). Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit eines bestimmten Ergebnisses im zweiten Wurf, etc. 
+:::
 
 
-###Veranschaulichung
+
+
+### Veranschaulichung
+
+Stellen wir uns eine Kistchen^[In den Lehrbüchern häufig als Urne bezeichnet, was den bösen Spott von "Friedhofsstatistik" nach sich zog.] mit 5 Losen vor, darunter 2 *T*reffer (Gewinn) und 3 *N*ieten, s. Abb. @fig-urne.
+Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut.
+
 
 
 ```{r echo = FALSE}
+#| fig-cap: Ein Kästchen mit 5 Losen, darunter 2 Treffer und 3 Nieten.
+#| label: fig-urne
 d <- 
   tibble(id = 1:5,
          event = c("T", "T", "N", "N", "N"))
@@ -302,11 +340,63 @@ ggplot(d) +
   aes(x = id) +
   theme_minimal() +
   annotate("rect", xmin = 0, xmax = 6, ymin = 0, ymax = 2, fill = "grey80", alpha = .8) +
-  geom_point(size = 10, y = 1, aes(color = event))+
+  geom_point(size = 10, y = 1, aes(color = event) )+
   geom_text(aes(label = event), y = 1) +
   theme(axis.text = element_blank()) +
   labs(x = "", fill = "")
 ```
+
+
+
+Wie groß ist die Wahrscheinlichkeit von $A^{\prime}$, d.h. bei $n=4$ Zügen $x=2$ Treffer zu erzielen?
+
+Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen  (Multiplikationssatz), s. @fig-3muenzen.
+Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit, $W$ (Additionssatz).
+Das ist einfach, dauert aber.
+
+In diesem Fall ist die Wahrscheinlichkeit eines (günstigen) Pfades, $A$:
+
+$P(A) = P(T)^2 \cdot P(N)^2 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right) ^2$.
+
+```{r}
+p_a = (2/5)^2 * (3/5)^2
+p_a
+```
+
+Etwas mühevolles Zählen der Pfade würde uns zeigen, dass es $k=6$ Pfade gibt, die alle die gleiche Wahrscheinlichkeit, $P(A)$, aufweisen.
+
+Damit beträgt die Wahrscheinlichkeit des gesuchten Ereignisses $A^{\prime}$ (2 Treffer bei 4 Zügen):
+
+$P(A^{\prime}) = 6 \cdot P(A)$.
+
+```{r}
+p_a_strich = 6 * p_a
+p_a_strich
+```
+
+
+Mithilfe der Formel der Binomialverteilung lässt sich das Ergebnis, die Wahrscheinlichkeit von $A^{\prime}$  schneller ausrechnen. Einfach gesprochen sieht sie so aus:
+
+
+
+$$P(A^{\prime}) = k \cdot P(A)$$
+Dabei steht $k$ für die Anzahl der günstigen Pfade und $P(A)$ für die Wahrscheinlichkeit eines günstigen Pfades (d.h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit. 
+
+Die Anzahl der Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt:
+
+$\tbinom{n}{k}$
+
+Lies: "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige Ereignisse (günstige Pfade).
+
+Auf Errisch geht das so:
+
+```{r}
+choose(4,2)
+```
+
+
+
+
 
 
 ### Rechnen mit R
@@ -314,10 +404,17 @@ ggplot(d) +
 
 Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen.
 
+Die Wahrscheinlichkeit, bei 4 Zügen 2 Treffer zu erzielen mit $p=2/5$ unter der Annahme einer Binomialverteilung lässt sich so mit R berechnen:
+
+```{r}
+dbinom(x = 2, size = 4, prob = 2/5)
+```
+
+
 
 ::: {#exm-binom}
 
-## Beispiel zur Binomialverteilung
+## Pumpstation-Beispiel zur Binomialverteilung
 
 In einer Pumpstation arbeiten 7 Motoren, die wir als identisch annehmen. Mit einer Wahrscheinlichkeit von 5% fällt ein Motor aus und ist für den Rest des Tages nicht einsatzbereit. Der Betrieb kann aufrecht erhalten werden, solange mindestens 5 Motoren arbeiten. Wie groß ist die Wahrscheinlichkeit, dass die Pumpstation aus dem Betrieb fällt?
 
@@ -331,7 +428,7 @@ dbinom(x = 5, size = 7, prob = .95)
 ```
 
 
-Es gilt also $P(X=5) \approx .04$.
+Es gilt also $P(X=5) \approx .04$. Die Wahrscheinlichkeit, dass (nur) 5 Motoren laufen an einem beliebigen Tag ist relativ gering^[wobei "gering" subjektiv ist, die Betreiberfirma findet diese Wahrscheinlichkeit, dass 2 Pumpen ausfallen, wohl viel zu hoch.]. 
 
 
 `dbinom()` steht für die Wahrscheinlichkeits*d*ichte (im diskreten Fall, also hier, Wahrscheinlichkeitsfunktion genannt) und `binom` für die Binomialverteilung. `x` gibt die Anzahl der Treffer an (das gesuchte Ereignis, hier 5 Motoren arbeiten); `size` gibt die Stichprobengröße an (hier 7 Motoren).
