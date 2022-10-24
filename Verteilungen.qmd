@@ -597,7 +597,12 @@ source(paste0(here::here(),"/R-Code/img15.R"))
 ## Normalverteilung
 
 
+Normalverteilungen haben eine charakteristische Glockenform.
+Normalverteilungen können sich unterscheiden  in ihrem Mittelwert $\mu$ und ihrer Streuung, $\sigma$.
+Diese beiden Größen ("Parameter") determinieren den Graphen einer bestimmten Normalverteilungsfunktion, s. @fig-norms.
+Sind diese beiden Parameter bekannt, so ist die Dichte jedes beliebigen Datenpunkts (aus dieser Normalverteilung) bestimmt.
 
+![Beispiele von Normalverteilungen mit verschiedenen Mittelwerten und Streuungen, Quelle: Wikipedia](img/normals.png){#fig-norms}
 
 
 Beispiel: Wie groß sind Studentis ([Quelle des Datensatzes](https://rdrr.io/cran/openintro/man/speed_gender_height.html))? 
@@ -816,6 +821,19 @@ Die Normalverteilung wird auch *[Gauss](https://de.wikipedia.org/wiki/Carl_Fried
 ### Simulation einer Normalverteilung
 
 
+R hat eine Funktion eingebaut zur Erzeugung von Zufallszahlen (Zufallszahlengenerator), z.B. normalverteilte.
+Man übergibt dieser Funktion den gewünschten Mittelwert und die gewünschte Streuung und die Funktion zieht dann zufällig Werte aus dieser Verteilung.
+
+Diesen Zufallszahlengenerator kann man mit einem Duschkopf vergleichen, s. @fig-shower.
+An diesem Duschkopf kann man einen Schwenker einstellen, der den Duschkopf
+ausrichtet, also steuert, ob die Wassertropfen weit in die eine oder die andere
+Richtugn fallen.
+Zweitens hat unser Duschkopf noch einen Streuregler,
+der den Wasserstrahl entweder eng bündelt^[Massagedusche, behauptet der Hersteller] oder weit auseinanderfächert. Im ersten Fall fällt der Wasserstrahl eng und schmal aus. Im zweiten Fall fällt der Wasserstrahl breit aus.
+
+![Zufallszahlengenerator als Duschkopf](img/shower-data.png){#fig-shower}
+
+[[Quelle](https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models): John Kruschke]
 
 
 
@@ -840,7 +858,7 @@ n <- 1e4
 d <- 
   tibble(
     id = 1:n,
-    x = rnorm(n = n, mean = 1004, sd = 1.5)
+    x = rnorm(n = n, mean = 1002, sd = 1.5)
   )
 
 head(d)
@@ -872,7 +890,7 @@ d %>%
 
 ### IQ-Verteilung
 
-Die Verteilung der Zufallsvariablen IQ ist normalverteilt mit einem Mittelwert von 100 und einer Streuung von 15:
+Die Verteilung der Zufallsvariablen IQ ist normalverteilt mit einem Mittelwert von 100 und einer Streuung von 15, s. @fig-norm-100-15:
 
 $IQ \sim \mathcal{N}(100,15)$
 
@@ -880,8 +898,12 @@ $IQ \sim \mathcal{N}(100,15)$
 - Anders gesagt: Welcher IQ-Wert wird von 75%, 50%, ... der Leute nicht überschritten?
 
 
+![Visualisierung der theoretischen IQ-Verteilung](img/norm-100-15.png){#fig-norm-100-15}
 
-Ziehen wir zufällig $1e4$ Stichproben aus $\mathcal{N}(100,15)$ und berechen die Quantile:
+[[Quelle:](https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models): John Kruschke]
+
+
+Ziehen wir zufällig $1e4$ Stichproben aus $\mathcal{N}(100,15)$ und berechnen die Quantile:
 
 ```{r echo = TRUE}
 d <-
@@ -980,7 +1002,7 @@ Die *Verteilungsfunktion* (der Anteil der Wahrscheinlichkeitsmasse), `p`, für I
 - *Quantile* teilen eine Verteilung so ein, dass ein Anteil $p$ kleiner oder gleich und der andere Teil $1-p$ größer  dem Quantil $q$ ist.
     - *Beispiel*: "50%-Quantil = 100" meint, dass 50% der Elemente der Verteilung einen Wert kleiner oder gleich als 100 haben.
     
-- Die *Verteilungsfunktion F* für einen Wert $x$ gibt die Wahrscheinlichkeit an, dass die zugehörige Zufallsvariable $X$ höchstens so groß wie $x$ annimt Sie zeigt also die kumulierte Wahrscheinlichkeit $[-\infty, q)$.
+- Die *Verteilungsfunktion F* (für einen Wert $x$) gibt die Wahrscheinlichkeit an, dass die zugehörige Zufallsvariable $X$ einen Wert höchstens so groß wie $x$ annimmt. Sie zeigt also die kumulierte Wahrscheinlichkeit $[-\infty, q)$.
     - *Beispiel*: "F(100) = 50%" meint: Die Wahrscheinlichkeit für eine Ausprägung von höchstens als 100 beträgt 50%.
 
 
