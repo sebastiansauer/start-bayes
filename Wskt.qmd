@@ -5,6 +5,9 @@
 #| include: false
 library(tidyverse)
 library(easystats)
+library(lubridate)
+library(gmp)
+library(titanic)
 theme_set(theme_modern())
 ```
 
@@ -388,8 +391,6 @@ Können wir Unabhängigkeit nachweisen, haben wir also eine starke Aussage getä
 
 ```{r}
 #| echo: false
-library(titanic)
-
 data("titanic_train")
 
 
@@ -413,7 +414,7 @@ titanic_train %>%
 
 
 
-library(gmp)
+
 
 plottitanic3 <-
   titanic_train %>%
@@ -477,6 +478,7 @@ Sind die Ereignisse *Tod durch Covid*  bzw. *Impfquote* ($A$) und *Land*^[hier m
 #| fig-cap: Impfquote und Sterblichkeit sind voneinander abhängig (bezogen auf Covid, auf Basis vorliegender Daten)
 #| label: fig-covid1
 
+
 # source: https://ourworldindata.org/covid-vaccinations
 # access date: 2021-09-24
 # licence: https://ourworldindata.org/covid-vaccinations#licence
@@ -485,7 +487,7 @@ Sind die Ereignisse *Tod durch Covid*  bzw. *Impfquote* ($A$) und *Land*^[hier m
 
 dfile <- "data/owid-covid-data.csv"
 
-library(lubridate)
+
 
 d <- read_csv(dfile)
 
@@ -528,22 +530,15 @@ plot_covid2 <-
   geom_col()+
   labs(title = "Corona-Tote pro Million",
        subtitle = "2021-09-23")
-```
-
-Ja, da in beiden Diagrammen gilt: $P(A|B) \ne Pr(A) \ne Pr(A|\neg B)$.
 
 
-```{r plotcovid1}
-#| echo: false
 plot_covid1
-```
 
 
-```{r plotcovid2}
-#| echo: false
 plot_covid2
 ```
 
+Ja, da in beiden Diagrammen gilt: $P(A|B) \ne Pr(A) \ne Pr(A|\neg B)$.
 
 
 Daten von [Our World in Data](https://ourworldindata.org/covid-deaths).
@@ -671,7 +666,7 @@ Und jetzt ziehen wir. Hier ist das Baumdiagramm, s. Abb. @fig-baum-abh.
 
 
 ```{mermaid}
-%%| fig-cap: Baumdiagramm für ein ein zweistufiges Zufallsereignis, wobei der 2. Zug (Stufe) abhängig ist vom 1. Zug.
+%%| fig-cap: "Baumdiagramm für ein ein zweistufiges Zufallsereignis, wobei der 2. Zug (Stufe) abhängig ist vom 1. Zug."
 %%| label: fig-baum-abh
 flowchart LR
   A[Start] -->|4/5|B[1. Zug: R]
@@ -791,6 +786,19 @@ Das [Video zu Bayes von 3b1b](https://youtu.be/HZGCoVF3YvM) verdeutlicht das Vor
 
 
 
+
+
+
+## Aufgaben
+
+
+Zusätzlich zu den Aufgaben im Buch:
+
+- [mtcars-abhaengig](https://datenwerk.netlify.app/posts/mtcars-abhaengig/mtcars-abhaengig.html)
+- [voll-normal](https://datenwerk.netlify.app/posts/voll-normal/voll-normal.html)
+- [corona-blutgruppe](https://datenwerk.netlify.app/posts/corona-blutgruppe/corona-blutgruppe.html)
+- [Bed-Wskt2](https://datenwerk.netlify.app/posts/bed-wskt2/bed-wskt2)
+- [Gem-Wskt1](https://datenwerk.netlify.app/posts/gem-wskt1/gem-wskt1)
 
 
 
