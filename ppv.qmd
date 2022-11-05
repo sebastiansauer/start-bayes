@@ -16,6 +16,34 @@ library(easystats)
 
 
 
+## Lernsteuerung
+
+
+### Lernziele
+
+Nach Absolvieren des jeweiligen Kapitel sollen folgende Lernziele erreicht sein.
+
+Sie können ...
+
+- erläutern, was eine Posteriori-Prädiktiv-Verteilung (PPV) ist, und inwiefern Sie vor Übergewissheit schützt
+- eine informelle Modellprüfung für das Beispiel aus dem Unterricht anhand der Posteriori-Prädiktiv-Verteilung durchführen
+
+
+
+### Benötigte R-Pakete
+
+
+
+
+
+```{r}
+library(tidyverse)
+```
+
+
+
+
+
 ```{r QM2-Thema2-kleineModelle-28}
 #| echo: false
 n <- 10
@@ -45,17 +73,31 @@ samples <-
 
 ## Der zwielichte Dozent: Stichproben-Vert. vs. Post-Vert.
 
-In einer dunklen Gasse fordert Sie ein Statistik-Dozent zu einem Glücksspiel heraus: Münzwurf; wenn er gewinnt, müssen Sie 10 Euro zahlen. Gewinnen Sie, bekommen Sie 11 Euro. Klingt nach einer guten Partie, nicht war? Natürlich nehmen Sie sofort an. 
+In einer dunklen Gasse fordert Sie ein Statistik-Dozent zu einem Glücksspiel heraus^[Hier bräuchte es ein passendes Meme; Vorschläge bitte an mich.]. Münzwurf; wenn er gewinnt, müssen Sie 10 Euro zahlen. Gewinnen Sie, bekommen Sie 11 Euro. Klingt nach einer guten Partie, nicht war? Natürlich nehmen Sie sofort an. 
 
 Sie spielen also Münzwurf; der Dozent setzt auf Zahl. Sie spielen 10 Runden. Leider gewinnt der Dozent 9 von 10 Mal^[was er mit lautem Gelächter quittiert].
+
+*Ist die Münze fair oder zieht der mich über den Tisch?*, das ist die Frage, 
+die Ihnen brennend durch den Kopf zieht.
+
+"Sind 9 von 10 Treffern noch realistisch erwartbar, wenn es mit rechten Dingen zugeht,
+oder beweist das Ergebnis, dass die Münze gezinkt ist?"
 
 Wütend (und mit leeren Taschen) ziehen Sie von dannen.
 
 
-Daten: 9 von 10 Treffern beim Münzwurf. Ist die Münze fair?
+Zusammengefasst: Daten: 9 von 10 Treffern beim Münzwurf. Forschungsfrage: Ist die Münze fair?
+
+
+Schauen wir uns zunächst einmal an, wie wahrscheinlich 9 von 10 Treffern sind,
+*wenn* die Münze fair ist, @fig-stiprovert.
 
 
 ```{r QM2-Thema3-Post-befragen-21}
+#| echo: false
+#| fig-cap: Stichprobenverteilung einer fairen Münze
+#| label: fig-stripovert
+
 tibble(
   Trefferzahl = rbinom(n = 1e4, size = 10, prob = 1/2)
 ) %>% 
@@ -69,13 +111,32 @@ tibble(
   labs(title = "Stichprobenverteilung für p=0.5")
 ```
 
-Die *Stichprobenverteilung* zeigt, wie Wahrscheinlich der empirischen Daten $D$ (z.B. 9 von 10 Treffer) ist *gegeben* eines Parameterwerts $p$ (z.B. $p=0.5$): $Pr(D|p)$.
+Die *Stichprobenverteilung* zeigt, wie wahrscheinlich die empirischen Daten $D$ (z.B. 9 von 10 Treffer) sind, *gegeben* eines Parameterwerts $\pi$ (z.B. $p=0.5$): $Pr(D|\pi)$^[Das griechische kleine p wird "pi" genannt und $\pi$ geschrieben. Zur Erinnerung: Parameter- oder Populationskennwerte werden in der Statistik häufig mit griechischen Buchstaben benannt, um sie von Stichprobenkennwerten abzugrenzen.].
 
+Anders gesagt, die Stichprobenverteilung zeigt die Verteilung der Likelihoods eines bestimmten Parameterwerts.
+
+:::callout-note
+*Der p-Wert*
+
+Der p-Wert ist die zentrale Statistik der Inferenzstatistik.
+Er wird genutzt, um über die Ablehnung einer Hypothese zu entscheiden.
+In diesem Fall entspricht der p-Wert dem türkis markierten Flächenanteil in @fig-stripovert.
+Ist dieser Anteil kleiner als 5% (der Gesamtfläche im Balkendiagramm),
+so wird die Hypothese (hier: faire Münze) verworfen.
+Allgemeiner gesprochne berechnet sich der p-Wert als Summe der Likelihoods, 
+die mindestens so extrem sind wie das beobachtete empirische Ergebnis.
+:::
+
+
+In der Bayes-Statistik ist die Post-Verteilung Dreh- und Angelpunkt der Entscheidung über eine Hypothese.
+In @fig-post-zwielicht ist die Posteriori-Verteilung für die Daten zum zwielichten Dozent dargestellt.
 
 
 
 ```{r zwielicht-daten}
-#| echo: false
+#| echo: true
+
+# Post-Verteilung:
 d_zwielicht <-
   tibble(
     p_grid = seq( from=0 , to=1 , length.out=100),
@@ -98,15 +159,19 @@ samples_zwielicht <-
 
 ```{r QM2-Thema3-Post-befragen-22}
 #| echo: false
+#| fig-cap: Post-Verteilung zu den Daten des zwielichten Dozenten (9 von 10 Treffern im wiederholten Münzwurf)
+#| label: fig-post-zwielicht
 samples_zwielicht %>% 
   ggplot() +
   aes(x = gewinnchance_muenze) +
-  geom_histogram(fill = "grey60", bins = 30) +
-  geom_vline(xintercept = 0.9) +
+  geom_histogram(fill = "grey60", bins = 20) +
+  #geom_vline(xintercept = 0.9) +
   #geom_label(x = 0.8, y= 0, label = "Emp. Ergebnis") +
   labs(title = "Posteriori-Verteilung",
-       subtitle = "Vertikale Linie: Emp. Ergebnis (9/10 Treffer)",
-       x = "Gewinnchance der Münze (50%: faire Münze)")
+       subtitle = "Priori: Gleichverteilung; Daten: 9 von 10 Treffern, binomialverteilt",
+       caption = "Das Dreieck zeigt die Wskt. eines Treffers bei einer fairen Münze",
+       x = "Gewinnchance der Münze") +
+  annotate("point", x = .5, y = 0, size = 5, color = "grey40", shape = 17)
 ```
 
 Die *Posteriori-Verteilung* gibt die Wahrscheinlichkeit jedes Parameterwerts $p$ wider, gegeben der empirischen Daten $D$: $Pr(p|D)$. 
@@ -115,20 +180,111 @@ Die *Posteriori-Verteilung* gibt die Wahrscheinlichkeit jedes Parameterwerts $p$
 Die meisten Forschungsfragen lassen sich mit der Post-Verteilung beantworten, nicht mit der Stichprobenverteilung.
 
 
+Jetzt können wir wieder die Post-Verteilung auslesen,
+um die Hypothese zu beantworten.
+Schauen wir uns einige Beispiel dazu an.
+
+
+::: {#exm-zwielicht1}
+
+### Einigermaßen fair?
+
+Wie wahrscheinlich ist es, dass die Münze "einigermaßen" fair ist,
+sagen wir, eine Trefferwahrscheinlichkeit $0.45 < \pi < 0.55$^[zwischen 45% und 55% mit anderen Worten] aufweist?
+
+
+```{r}
+samples_zwielicht %>% 
+  count(gewinnchance_muenze > 0.45 & gewinnchance_muenze < 0.55) %>% 
+  mutate(prop = n/sum(n))
+```
+
+Die Wahrscheinlichkeit für eine "einigermaßen faire" Münze ist klein, etwa 5%!
+
+:::
+
+
+::: {#exm-zwielicht2}
+
+### Münze gezinkt?
+
+Schauen wir uns an, wie wahrscheinlich es ist - gegeben der Daten und unserem Modell -
+dass die Münze massiv gezinkt ist. "Massiv" definieren wir dabei mit "mindestens 70% Trefferwahrscheinlichkeit"^[ja, das ist subjektiv], also $\pi >= .7$^[Führende Nullen bei Anteilen werden oft weggelassen, man schreibt also oft .7 wenn man 0.7 bzw. 70% meint. Das ist nicht nur kürzer, sondern man weiß auch direkt dass es sich um einen Anteil handelt. Behält man die führende Null bei, etwa 0.77, so würde das signalisieren, dass die Zahl auch größer als Null sein könnte.].
+
+```{r}
+samples_zwielicht %>% 
+  count(gewinnchance_muenze > .7) %>% 
+  mutate(prop = n / sum(n))
+```
+
+Wir finden eine recht hohe Wahrscheinlichkeit für eine "massive" Manipulation der Münze.
+
+:::
+
+
+:::callout-important
+Ist es nicht einfach und schön, wie wir mit Hilfe des Stichprobenziehens allerlei Forschungsfragen beantworten können?
+Eine Post-Verteilung aus Stichproben erlaubt uns, viele Fragen mit einfachen Methoden,
+nämlich schlichtes Zählen, zu beantworten.
+:::
+
+Natürlich könnte (und sollte?) man unser Modell kritisieren.
+Ist es wirklich sinnvoll, die Trefferwahrscheinlichkeit apriori als gleichverteilt anzunehmen?
+Das heißt ja, wir glauben, dass eine Trefferwahrscheinlichkeit von 99,99999% genauso wahrscheinlich ist wie 50,55555%.
+Auf der anderen Seite: Der Charme einer Gleichverteilung ist, dass sie objektiv ist,
+in dem Sinne, dass wir keinerlei Information einfließen lassen.
+Wir sind indifferent gegenüber dem Parameter $\pi$, der Trefferwahrscheinlichkeit.
+
+
+
+:::callout-note
+In einem zweiten Versuch könnten wir jetzt unsere Post-Verteilung als Priori-Verteilung 
+nutzen. 
+Das Ergebnis des ersten Versuchs wird dann hergenommen als Ausgangspunkt für 
+einen zweiten Versuch.
+Damit wird das Wissen der Wissenschaft weitergegeben^[übrigens auf mathematisch gesehen ideale Art und Weise.], so wie es sein sollte.
+:::
+
+
 
 ## Mit Stichproben neue Beobachtungen simulieren
 
 
-### Wir simulieren die Wasserzahl bei Globuswürfen
-
-Likelihood (L): Wahrscheinlichkeit für $w=0,1,2$ bei $N=2$ und $p = 0.7$:
+Zur Erinnerung: Der Likelihood (L) zeigt die Wahrscheinlichkeit eine Trefferzahl gegeben eines bestimmten Parameterwerts.
+In unseren Beispiel könnten wir z.B. die drei Likelihoods für $w=0,1,2$ ausrechnen, gegeben $N=2$ und $p = 0.5$:
 
 ```{r QM2-Thema3-Post-befragen-23}
-L <- dbinom(0:2, size = 2, prob = 0.7)
+L <- dbinom(0:2, size = 2, prob = 0.5)
 L
 ```
 
 
+Ah, die Wahrscheinlichkeit für 0 oder 2 Treffer beträgt 50%, wenn $pi=1/2$; für 1 Treffer beträgt sie entsprechend 50%^[das sollte uns bekannt vorkommen].
+
+
+
+### Wir simulieren die Wasserzahl bei Globuswürfen {#sec-rbinom}
+
+Zurück zu unserem Globusversuch!
+
+Wir könnten uns jetzt Globusbälle basteln mit verschiedenen Wasseranteilen, 
+und diese oft hochwerfen.
+Damit könnten wir herausfinden, welche Trefferzahlen sich bei verschiedenen Wasseranteilen finden lassen würden.
+
+Wer gerne bastelt, freut sich darauf. Kritischere Geister^[oder weniger bastelfreundliche] würden den Aufwand bemängeln und die Frage nach dem Zweck der Übung stellen^[bravo!].
+
+:::callout-important
+Wenn wir wissen, welche Trefferzahlen laut einem Modell zu erwarten sind,
+können wir die *echten* (beobachteten) Trefferzahlen mit den laut Modell zu erwartenden vergleichen.
+Damit haben wir eine Methode, mit dem wir ein Modell auf Herz und Nieren prüfen können.
+Ein schlechtes Modell wird mit seinen Vorhersagen an der Realität scheitern: Erwartung des Modells und beobachtete Daten passen nicht zusammen.
+Sagt ein Modell etwa $W=9$ vorher bei $N=9$, aber wir finden $W=0$,
+so wird unser Vertrauen in das Modell erschüttert sein.
+Simulation von Trefferzahlen sind also ein Modell, um die Glaubwürdigkeit unseres Golems zu prüfen. (Nicht nur) bei Golems gilt: Vertrauen ist gut, Kontrolle ist besser.
+:::
+
+
+Los geht's: 
 Wir simulieren $n=1$ neuen Globusversuch mit $N=2, p=0.7$ und zählen die (Wasser-)Treffer:
 
 ```{r QM2-Thema3-Post-befragen-25}
@@ -136,15 +292,37 @@ set.seed(42)  # Zufallszahlen festlegen
 rbinom(n = 1, size = 2, prob = .7)  # 0 Treffer (Wasser)
 ```
 
-Warum nicht $n=10$ neue Globusversuche simulieren:
+
+Das geht wie man sieht mit `rbinom`: *r* wie *random* (zufällig) und *binom* wie binomial verteilt,
+die Münzwurfverteilung.
+
+Hier sind die Argumente der Funktion `rbinom` noch etwas näher erklärt:
+
+```{r}
+#| eval: false
+
+rbinom(n = Wie oft soll der Versuch wiederholt werden?,
+       size = Wie viele Globuswürfe pro Versuch (Stichprobengröße),
+       prob = Wie hoch ist die Wahrscheinlichkeit für Wasser (bzw. für einen Treffer))
+```
+
+
+Weiter: Warum nicht $n=10$ neue Globusversuche simulieren?
 
 ```{r QM2-Thema3-Post-befragen-27, echo = TRUE}
 rbinom(n = 10, size = 2, prob = 0.7)
 ```
 
 
-Diese Versuche geben Aufschluss, welche Daten (wie oft Wasser) man bei einem bestimmten Modell, $p,N$, erwarten kann. 
+"Simulieren" heißt hier, wir lassen den Computer den Globus werfen,
+ganz anschaulich gesprochen.
+Natürlich wirft der Computer nicht in Wirklichkeit einen Globus oder eine Münze,
+sondern er zieht aus der Menge `{0,1}` eine Zahl, und wir geben die Wahrscheinlichkeit für jedes der beiden Elemente vor, z.B. jeweils 50%.^[Übrigens können Computer nicht echten Zufall erzeugen (das kann vermutlich niemand), aber durch gewisse verzwickte Rechnungen sind die Zahlen, die der Computer uns präsentiert, nicht oder kaum vom "Zufall" zu unterscheiden, also z.B. gleichverteilt ohne besondere Muster.].
 
+:::callout-important
+Simulationsdaten geben Aufschluss, welche Daten (wie oft Wasser) man bei einem bestimmten Modell, $p,N$, erwarten kann. 
+Münzwürfe - und analoge Versuche, wie Globuswürfe - kann man in R mit `rbinom` erstellen (simulieren).
+:::
 
 
 
@@ -172,7 +350,7 @@ Immer prüfen und wachsam bleiben:
 ## Mit guten Simulationen kommt man den wahren Werten nahe
 
 
-Warum nicht $n=10^6$ neue Globusversuche simulieren:
+Warum nicht $n=10^6$ neue Globusversuche simulieren^[Wer R nicht mag, ist eingeladen, diesen Versuch von Hand mit selbstgebastelten Globusbällen zu wiederholen.]:
 
 ```{r QM2-Thema3-Post-befragen-28, echo = TRUE}
 draws <- 
@@ -181,11 +359,10 @@ draws <-
 
 draws %>% 
   count(draws) %>% 
-  mutate(proportion = 
-           n / nrow(d))
+  mutate(prop = n / sum(n))
 ```
 
-Diese simulierten Häufigkeiten sind sehr ähnlich zu den theoretisch bestimmten Häufigkeiten mit `dbinom`: Unser Modell liefert plausible Vorhersagen.
+Diese simulierten Häufigkeiten sind sehr ähnlich zu den theoretisch bestimmten Häufigkeiten mit `dbinom`: Unser Modell liefert plausible Vorhersagen^[Braver Golem!].
 
 ```{r QM2-Thema3-Post-befragen-29, echo = TRUE}
 dbinom(0:2, size = 2, prob = .7)
@@ -194,9 +371,10 @@ dbinom(0:2, size = 2, prob = .7)
 
 ## Stichprobenverteilung
 
-Wir ziehen viele ($n=10^6$) Stichproben für den Versuch $N=9$ Globuswürfe mit $p=0.7$. 
+Wir ziehen viele ($n=10^6$) Stichproben für unseren typischen Globusversuch: $N=9$ Globuswürfe mit $p=0.7$. 
 
-Wie viele Wasser (W) erhalten wir wohl typischerweise?
+Wie viele Wasser (W) erhalten wir wohl typischerweise in diesem Versuch?
+Die Verteilung der zu erwartenden Treffer ist in @fig-globus-striprovert dargestellt.
 
 
 ```{r QM2-Thema3-Post-befragen-30, echo = TRUE, results = "hide", eval = FALSE}
@@ -214,6 +392,9 @@ plot1 <-
 
 
 ```{r QM2-Thema3-Post-befragen-31}
+#| echo: false
+#| label: fig-globus-striprovert
+#| fig-cap: Anteile (Wahrscheinlichkeit), die man für jede Wasserzahl in unserem Globusversuch erwarten kann
 n_draws <- 1e6
 draws <- tibble(draws = rbinom(n_draws, 
                                size = 9, 
@@ -225,7 +406,7 @@ draws %>%
   geom_histogram(binwidth = 1, center = 0,
                  color = "grey92", size = 1/10) +
   scale_x_continuous("Anzahl Wasser (W) pro Versuch",
-                     breaks = seq(from = 0, to = 9, by = 2)) +
+                     breaks = seq(from = 0, to = 9, by = 1)) +
   scale_y_continuous("Häufigkeit",
                      labels = scales::scientific) +
   coord_cartesian(xlim = c(0, 9)) +
@@ -235,20 +416,232 @@ draws %>%
 
 Die *Stichprobenverteilung* zeigt, welche Stichprobendaten laut unserem Modell (einem bestimmten Parameterwert) zu erwarten sind. Wir können jetzt prüfen, ob die echten Daten zu den Vorhersagen des Modells passen.
 
+:::callout-note
+Die Stichprobenverteilung ist keine empirische Verteilung: Wir führen diese vielen Versuche nicht wirklich durch^[Nur die extremen Bastelfreunde machen das], wir simulieren sie nur am Computer.
+:::
+
+
+
+## Die Posterior-Prädiktiv-Verteilung (PPV)
+
+
+### Was ist die PPV und wozu ist sie gut?
+
+
+Unsere Stichprobenverteilung zeigt, welche Trefferzahlen bei einem bestimmten Parameterwert, z.B. $\pi=.7$ in welchen Anteilen zu erwarten sind.
+Allerdings sind wir uns ja nicht sicher, dass der Wasseranteil genau 70% beträgt.
+Unser (Un-)Wissen über den Wasseranteil wird ja gerade in der Post-Verteilung gespeichert.
+
+Um eine ehrliche(re) Antwort auf die Frage zu erhalten, wie viele Treffer^[Im Globusversuch ist Wasser der "Treffer"; in einem Münzwurf-Versuch könnte "Kopf" der Treffer und die Anzahl der geworfenen Köpfe die Trefferzahl sein] zu erhalten ist, müssen wir die Post-Verteilung berücksichtigen.
+
+Wir brauche ein Stichprobenverteilung für *jeden* Wert der Post-Verteilung.
+Wenn wir dann die resultierenden Strichprobenverteilungen mitteln,
+haben wir einen ehrlichen Überblick über die zu erwartenden Trefferzahlen.
+Dabei sollten wir natürlich wahrscheinliche Parameterwerte höher gewichten als unwahrscheinliche.
+So sollte etwa der (hoch wahrscheinliche) Wasseranteil von 70% ein hohes Gewicht beim Mitteln der Stichprobenverteilung erhalten;
+der sehr unwahrscheinliche Wasseranteil^[zumindest laut unserer Post-Verteilung] von 1% Wasser, sollte entsprechend weniger gewichtet werden, beim Zusammenfassen (d.h. Mittelwert bilden) der Stichprobenverteilungen.
+
+Die resultierende Verteilung - gemittelte Stichprobenverteilungen über alle Werte der Post-Verteilungen - nennt man *Posterior-Prädiktiv-Verteilung* (PPV).
+
+
+:::callout-important
+
+Die PPV entsteht als gewichteter Mittelwert der Stichprobenverteilungen. Die Gewichte sind die Wahrscheinlichkeiten (bzw. Wahrscheinlichkeitsdichten) der Post-Verteilung.
+:::
+
+
+
+
+
 
 
 ### Visualisierung der PPV
 
-```{r QM2-Thema3-Post-befragen-36}
-#| echo: false
-knitr::include_graphics("https://github.com/sebastiansauer/QM2-Folien/raw/main/img/ppv.png")
-```
+Der Prozess des gewichteten Zusammenfassens der Stichprobenverteilungen ist in @fig-ppv dargestellt.
+
+![PPV als gewichtetes Kombinieren der Stichprobenverteilungen](img/ppv.png){#fig-ppv}
 
 Quelle: @mcelreath_statistical_2020
 
 
 
-## So viele Verteilungen... 
+### PPV berechnen
+
+Die PPV für unseren Standard-Globusversuch ($N=9$) berechnen wir so:
+
+Wir berechnen viele (z.B. $10^4$) Stichprobenverteilungen.
+Dabei müssen wir jedes Mal fragen, wie groß die Wahrscheinlichkeit $\pi$ für Wasser^[d.h. einen Treffer] ist.
+Wasseranteile $\pi$,  die laut Post-Verteilung *wahrscheinlich* sind,
+müssen wir entsprechend *oft* als Parameterwert ($\pi$) der Stichprobenverteilung verwenden;
+umgekehrt dürfen  wir nur wenige Stichprobenverteilungen für unwahrscheinliche Parameterwerte erstellen.
+
+Beispielsweise würden wir *viele* Stichprobenverteilungen für $\pi=.7$ erstellen;
+für $\pi=0.01$ würden wir *wenige* Stichprobenverteilungen erstellen, s. @fig-ppv.
+
+Glücklicherweise spiegelt unsere Stichproben-Postverteilung `samples` wahrscheinlichere Parameterwerte wieder, indem wahrscheinlichere Parameterwerte häufiger vorkommen.
+
+
+::: callout-note
+Wahrscheinliche Parameterwerte kommen in der Stichproben-Postverteilung `samples` häufiger vor.
+Die Häufigkeit der Parameterwerte spiegelt die Wahrscheinlichkeit der jeweiligen Parameterwerte in der (theoretischen) Postverteilung wider.
+:::
+
+
+Schauen Sie sich vielleicht zur Erinnerung noch einmal die Definition von `samples` an,  s. @lst-post-sample. 
+Tabelle `samples`, die aus Stichproben aus der Post-Verteilung besteht, ist (in Auszügen) in @tbl-postsample1 dargestellt. 
+Wie die Post-Verteilung auf Basis von Stichproben dann aussieht sieht man in @fig-samples1.
+Globusversuche kann man mit `rbinom` simulieren, s. @sec-rbinom.
+
+
+
+Wir simulieren also viele (z.B $10^4$) Globusversuche, jeweils mit $N=9$ Würfen.
+Wahrscheinliche Parameterwerte, etwa $\pi=7$, sollen häufiger verwendet werden (bei unseren vielen Globusversuchen) als unwahrscheinliche.
+
+Praktischerweise sind die Werte in der Spalte `p_grid` in `samples` so häufig vertreten, wie ihre Wahrscheinlichkeit es erwarten lässt. Hier ist ein Auszug aus `samples`:
+
+```{r}
+samples %>% 
+  select(p_grid) %>% 
+  slice_head(n = 10)
+```
+
+Wie man sieht, sind wahrscheinliche Parameterwerte häufiger vertreten.^[An dieser Stelle sollten Sie sichd die ganze Spalte `p_grid` anschauen, um sich von dieser Behauptung mit eigenen Augen zu überzeugen.]
+
+
+
+`p_grid` ist also eine Liste^[technisch in R ein *Vektor*] von Parameterwerten, deren Häufigkeit die Wahrscheinlichkeit der Parameterwerte gewichtet.
+
+Auf dieser Basis können wir die PPV erstellen:
+
+
+
+
+
+```{r ppv1, echo = TRUE, eval = TRUE}
+ppv <- 
+  rbinom(1e4, 
+         size = 9, 
+         prob = samples$p_grid) %>% 
+  as_tibble()
+
+head(ppv)
+```
+
+
+Schauen wir uns ein Histogramm aller Trefferzahlen an, s. @fig-ppv2.^[Es kann auch dem Verständnis helfen, dass Sie sich alle Werte der Tabelle `ppv` selber in Ruhe anschauen, um sich zu überzeugen, welche Wasserzahlen (Trefferzahlen) häufiger und welche seltener vorkommen.]
+
+```{r}
+#| fig-cap: Die PPV für unseren Standard-Globusversuch (N=9)
+#| label: fig-ppv2
+#| echo: false
+ppv_plot2 <-
+  ppv %>% 
+  ggplot() +
+  aes(x = value) +
+  geom_bar() +
+  scale_x_continuous(
+    breaks = 0:9)
+
+ppv_plot2
+```
+
+
+
+
+
+Die PPV unseres Modells zeigt uns, dass wir in künftigen Versuchen zumeist 6 Treffer zu erwarten haben. 
+Aber ein relativer breiter Bereich an Treffern ist ebenfalls gut laut unserer PPV erwartbar.
+
+
+:::callout-important
+Die PPV zeigt, welche Beobachtungen laut unserem Modell häufig und welche selten sind.
+Die PPV zeigt keine Parameterwerte, sondern welche Daten (Beobachtungen, Wasserzahlen) wir in künftigen Versuchen wie häufig erwarten können.
+:::
+
+
+:::{exm-ppv1}
+
+## "Der nächste Planet wird sicher 6 von 9 Wassertreffer erzielen!"
+
+Nur zum Spaß spulen wir kurz die Zeit im Universum vor, sagen wir so $10^{99}$ Jahre.
+Sie arbeiten bei einer Raumfahrtbehörde, die nach neuen Planeten sucht.
+Nun wurde ein aussichtsreicher Planet gesichtet. 
+Ihre Behörde hat eine Studie gestartet, im Rahmen derer 9 Sonden zu diesem (weit entfernten) Planeten geschossen sind. Von den 9 Sonden sind 6 im Wasser gelandet,
+was aus Gründen intergalaktischer Wasserknappheit eine gute Nachricht ist.
+
+Jetzt plant Ihre Behörde den Versuch zu wiederholen: Wieder sollen 9 Sonden zu diesem Planeten geschossen werden.
+Dis Presse-Chefi^[In der Zeit dieses Beispiels ist es üblich, kein fixes Geschlecht zu haben] tönt vollmundig: "Ich bin sicher, dass wir wieder 6 von 9 Treffer, also 6 von 9 Mal Wasser, haben werden!".
+
+Kann man diese Aussage mit (hoher) Sicherheit leisten? Perfekte Sicherheit gibt es bekanntlich nur, was Tod und Steuern betrifft, aber kann diese Aussage mit zumindest hoher Sicherheit geleistet werden?
+
+Nein, die PPV zeigt deutlich, dass unser Wissen nicht ausreicht, um präzise Vorhersagen über künftige Ausgänge des Versuchs zu leisten. So sind auch 5 oder 7 Treffer gut möglich. Auch 4 oder 8 Treffer sind nicht so selten. Sogar 9 Treffer sind nicht super selten.
+
+Dis Presse-Chefi Ihrer Behörde sollte also den Mund nicht so voll nehmen.
+
+:::
+
+
+
+## Fazit
+
+
+### Vorhersagen sind schwierig
+
+
+... gerade wenn sie die Zukunft betreffen, so ein Sprichwort.
+
+Das zeigt uns die PPV: Der PPV unseres Modells gelingt es zwar, der theoretisch wahrscheinlichste Parameterwert ist auch der häufigste in unseren Stichproben, aber die Vorhersagen haben eine große Streuung, bergen also recht hohe Ungewissheit.
+Die PPV zeigt also, welche Beobachtungen laut unserem Modell künftig zu erwarten sind, s. @fig-ppv2.
+
+Würde man die Vorhersagen nur anhand eines bestimmten Parameterwertes (z.B $p=0.6$) vornehmen, hätten die Vorhersagen *zu wenig Streuung* in den Vorhersagen, würden also die Ungewissheit nicht ausreichend abbilden. Es würde *Übergewissheit* (Overconfidence, Overfitting) resultieren.
+
+[Wir brauchen die PPV](https://imgflip.com/i/6zm1hh. Ohne die PPV können wir nicht seriös abschätzen, wie viel Ungewissheit in unseren Vorhersagen steckt.
+
+
+
+
+
+
+### Zwei Arten von Ungewissheit in Vorhersagen von Modellen
+
+
+1. *Ungewissheit innerhalb des Modells*: Auch wenn der (oder die) Modellparameter eines Modells mit Sicherheit bekannt sind, so bleibt Unsicherheit, welche Beobachtung eintreten wird: Auch wenn man sicher weiß, dass $p=1/4$ Murmeln blau sind, so kann man nicht sicher sagen, welche Farbe die nächste Murmel haben wird (Ausnahme: $p=1$ oder $p=0$).
+
+2. *Ungewissheit in den Modellparametern*: Wir sind uns nicht sicher, welchen Wert $p$ (bzw. die Modellparameter) haben. Diese Unsicherheit ist in der Post-Verteilung dargestellt. 
+
+Um zu realistischen Vorhersagen zu kommen, möchte man beide Arten von Ungewissheit berücksichtigen: Das macht die *Posteriori-Prädiktiv-Verteilung (PPV)*.
+
+
+
+Die PPV zeigt, welche Daten das Modell vorhersagt (prädiktiv) und mit welcher Häufigkeit, basierend auf der Post-Verteilung.
+
+
+
+### Vergleich der Verteilungen
+
+@fig-post-pred-ppv-anim stellt die in diesem Kapitel diskutierten Verteilungen gegenüber:
+
+
+
+- Links - *Posterior-Verteilung*: Wahrscheinlichkeiten der Parameterwerte
+- Mitte - *Stichprobenverteilung*: Wahrscheinlichkeiten der Beobachtungen gegeben eines bestimmten Parameterwertes
+- Rechts - *Posterior-Prädiktiv-Verteilung*: Wahrscheinlichkeiten der Beobachtungen unter Berücksichtigung der Unsicherheit der Posteriori-Verteilung
+
+![Post- vs. Stichproben- vs. PP-Verteilunge](img/post-pred-ppv-anim.gif){#fig-post-pred-ppv-anim}
+
+
+
+
+
+
+[Quelle: R. McElreath](https://twitter.com/rlmcelreath/status/1448978045247893505)
+
+
+
+
+
+
+### So viele Verteilungen... 
 
 
 
@@ -282,11 +675,12 @@ d_small <-
 ```
 
 ```{r PP2}
+#| echo: false
 ppv2_plot <- 
 d_small %>%
   ggplot(aes(x = draws)) +
   geom_histogram(binwidth = 1, center = 0,
-                 color = "grey92", linewidth = 1/10) +
+                 color = "grey92") +
   scale_x_continuous("Wasser", breaks = seq(from = 0, to = 9, by = 3)) +
   scale_y_continuous(NULL, breaks = NULL) +
   labs(subtitle = "Stichprobenverteilungen") +
@@ -296,104 +690,20 @@ d_small %>%
 ```
 
 
-## PPV berechnen
 
-Für einen bestimmten Parameterwert sind verschiedene Stichprobenwerte möglich.
-Das Spektrum dieser Möglichkeiten ist in einer Stichprobenverteilung (gegeben eines bestimmten Parameterwerts) dargestellt.
+## Aufgaben
 
 
-
-```{r pp-plot1, echo = TRUE, eval = TRUE}
-ppv <- 
-  rbinom(1e4, 
-         size = 9, 
-         prob = samples$p_grid) %>% 
-  as_tibble()
-
-ppv_plot2 <-
-  ppv %>% 
-  ggplot() +
-  aes(x = value) +
-  geom_bar() +
-  scale_x_continuous(
-    breaks = 0:9)
-```
-
-
-
-```{r QM2-Thema3-Teil2-2, fig.width = 4, fig.asp = 1}
-ppv_plot2
-```
-
-
-
-
-
-
-
-- Die PPV unseres Modells zeigt uns, dass wir in künftigen Versuchen zumeist 6 Treffer zu erwarten haben. 
-- Aber ein relativer breiter Bereich an Treffern ist ebenfalls gut laut unserer PPV erwartbar.
-
-
-## Vorhersagen sind schwierig
-
-
-... gerade wenn sie die Zukunft betreffen, so ein Sprichtwort.
-
-Das zeigt uns die PPV: Der PPV unseres Modells gelingt es zwar, der theoretisch wahrscheinlichste Parameterwert ist auch der häufigste in unseren Stichproben, aber die Vorhersagen haben eine große Streuung, birgt also hohe Ungewissheit.
-
-Die PPV zeigt also, welche Beobachtungen laut unserem Modell künftig zu erwarten sind.
-
-```{r QM2-Thema3-Post-befragen-37}
-#| echo: false
-ppv_plot2
-```
-
-Würde man die Vorhersagen nur anhand eines bestimmten Parameterwertes (z.B $p=0.6$) vornehmen, hätten die Vorhersagen zu wenig Streuung, würden also die Ungewissheit nicht ausreichend abbilden (Übergewissheit, Overconfidence).
-
-
-
-
-
-
-## Zwei Arten von Ungewissheit in Vorhersagen von Modellen
-
-
-1. *Ungewissheit innerhalb des Modells*: Auch wenn der (oder die) Modellparameter eines Modells mit Sicherheit bekannt sind, so bleibt Unsicherheit, welche Beobachtung eintreten wird: Auch wenn man sicher weiß, dass $p=1/4$ Murmeln blau sind, so kann man nicht sicher sagen, welche Farbe die nächste Murmel haben wird (Ausnahme: $p=1$ oder $p=0$).
-
-2. *Ungewissheit in den Modellparametern*: Wir sind uns nicht sicher, welchen Wert $p$ (bzw. die Modellparameter) haben. Diese Unsicherheit ist in der Post-Verteilung dargestellt. 
-
-Um zu realistischen Vorhersagen zu kommen, möchte man beide Arten von Ungewissheit berücksichtigen: Das macht die *Posteriori-Prädiktiv-Verteilung (PPV)*.
-
-
-
-Die PPV zeigt, welche Daten das Modell vorhersagt (prädiktiv) und mit welcher Häufigkeit, basierend auf der Post-Verteilung.
-
-
-
-## Vergleich der Verteilungen
-
-
-
-
-```{r QM2-Thema3-Post-befragen-38}
-#| echo: false
-img_file <- paste0("https://github.com/sebastiansauer/QM2-Folien/raw/main/img/post-pred-ppv-anim.gif")
-knitr::include_graphics(img_file)
-```
-
-
-- Links - *Posterior-Verteilung*: Wahrscheinlichkeiten der Parameterwerte
-- Mitte - *Stichprobenverteilung*: Wahrscheinlichkeiten der Beobachtungen gegeben eines bestimmten Parameterwertes
-- Rechts - *Posterior-Prädiktiv-Verteilung*: Wahrscheinlichkeiten der Beobachtungen unter Berücksichtigung der Unsicherheit der Posteriori-Verteilung
-
-[Bild](https://sebastiansauer.github.io/QM2-Folien/Themen/QM2-Thema3-Post-befragen.html#1)
-
-[Quelle: R. McElreath](https://twitter.com/rlmcelreath/status/1448978045247893505)
-
-
-
-
+1. [Zwielichter Dozent-Bayes](Zwielichter-Dozent-Bayes)
+2. [Warum Bayes?](https://datenwerk.netlify.app/posts/warum-bayes/warum-bayes)
+3. [subjektiv-Bayes](https://datenwerk.netlify.app/posts/subjektiv-bayes/subjektiv-bayes)
+4. [Likelihood2](https://datenwerk.netlify.app/posts/likelihood2/likelihood2)
+5. [Anteil-Apple](https://datenwerk.netlify.app/posts/anteil-apple/anteil-apple)
+6. [ReThink3m1](https://datenwerk.netlify.app/posts/rethink3m1/rethink3m1)
+7. [ReThink3m2](https://datenwerk.netlify.app/posts/rethink3m2/rethink3m2)
+7. [ReThink3m3](https://datenwerk.netlify.app/posts/rethink3m3/rethink3m3)
+7. [ReThink3m4](https://datenwerk.netlify.app/posts/rethink3m4/rethink3m4)
+7. [ReThink3m5](https://datenwerk.netlify.app/posts/rethink3m5/rethink3m5)
 
 
 
