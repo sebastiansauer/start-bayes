@@ -331,6 +331,9 @@ div.csl-indent {
 <section id="benötigte-r-pakete" class="level3" data-number="6.1.2">
 <h3 data-number="6.1.2" class="anchored" data-anchor-id="benötigte-r-pakete"><span class="header-section-number">6.1.2</span> Benötigte R-Pakete</h3>
 <div class="cell">
+
+</div>
+<div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -342,9 +345,9 @@ div.csl-indent {
 <h2 data-number="6.2" class="anchored" data-anchor-id="mit-stichproben-die-post-verteilung-zusammenfassen"><span class="header-section-number">6.2</span> Mit Stichproben die Post-Verteilung zusammenfassen</h2>
 <section id="zur-erinnerung-gitterwerte-in-r-berechnen" class="level3" data-number="6.2.1">
 <h3 data-number="6.2.1" class="anchored" data-anchor-id="zur-erinnerung-gitterwerte-in-r-berechnen"><span class="header-section-number">6.2.1</span> Zur Erinnerung: Gitterwerte in R berechnen</h3>
-<p>Berechnen wir mit der Gittermethoden die Postverteilung für den Globusversuch.</p>
+<p>Berechnen wir mit der Gittermethode (“Bayes-Box”) die Postverteilung für den Globusversuch.</p>
 <p>Die Gittermethode ist ein Weg, die Posteriori-Verteilung zu berechnen. Die Posteriori-Verteilung birgt viele nützliche Informationen.</p>
-<p>Modell: <span class="math inline">\(W=6\)</span> Wasser, <span class="math inline">\(N=9\)</span> Würfen und <span class="math inline">\(k=10\)</span> Gitterwerten.</p>
+<p>Modell: <span class="math inline">\(W=6\)</span> Wasser, <span class="math inline">\(N=9\)</span> Würfen und <span class="math inline">\(k=10\)</span> Gitterwerten, also mit 10 Wasseranteilswerten zwischen 0 und 1.</p>
 <p>Abb. <a href="#fig-post1">Abbildung&nbsp;<span>6.1</span></a> zeigt die resultierende Post-Verteilung.</p>
 <div class="cell">
 <details>
@@ -488,7 +491,7 @@ div.csl-indent {
 </section>
 <section id="bayes-box-für-komplexe-modelle" class="level3" data-number="6.2.3">
 <h3 data-number="6.2.3" class="anchored" data-anchor-id="bayes-box-für-komplexe-modelle"><span class="header-section-number">6.2.3</span> Bayes-Box für komplexe Modelle</h3>
-<p>Bisher, für einfache Fragestellungen hat unsere Bayes-Box, das heißt die Gittermethode bestens funktioniert: einfach, robust, formschön<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Allerdings: Funktioniert sie auch bei komplexeren Modellen? Schließlich wollen wir ja auch irgendwann Regressionsmodelle berechnen. Angenommen, wir haben ein Regressionsmodell mit 1 Prädiktor, dann haben wir folgende drei Größen<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> zu schätzen: <span class="math inline">\(\beta_0, \beta_1, \sigma\)</span>. Hört sich gar nicht so viel an. Aber Moment, wir müssten dann z.B. die Frage beantworten, wie wahrscheinlich die Daten aposteriori sind, wenn z.B. <span class="math inline">\(\beta_0 = -3.14\)</span> und <span class="math inline">\(\beta_1 = 2.71\)</span> und <span class="math inline">\(\sigma = 0.70\)</span>. Demnach müssen wir alle Ausprägungen (“Gitterwerte”) der Variablen multiplizieren. Puh, das wird eine große Zahl. Wenn wir für die drei Größen jeweils 10 Ausprägungen annehmen, was wenig ist, kämen wir <span class="math inline">\(10\cdot10\cdot10= 1000=10^3\)</span> Kombinationen. Bei 100 Ausprägungen wären es schon <span class="math inline">\(100^3=10^6\)</span> Kombitationen. Das wäre doch eine recht lange Tabelle.</p>
+<p>Bisher, für einfache Fragestellungen hat unsere Bayes-Box, das heißt die Gittermethode bestens funktioniert: einfach, robust, formschön<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Allerdings: Funktioniert sie auch bei komplexeren Modellen? Schließlich wollen wir ja auch irgendwann Regressionsmodelle berechnen. Angenommen, wir haben ein Regressionsmodell mit 1 Prädiktor, dann haben wir folgende drei Größen<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> zu schätzen: <span class="math inline">\(\beta_0, \beta_1, \sigma\)</span>. Hört sich gar nicht so viel an. Aber Moment, wir müssten dann z.B. die Frage beantworten, wie wahrscheinlich die Daten aposteriori sind, wenn z.B. <span class="math inline">\(\beta_0 = -3.14\)</span> und <span class="math inline">\(\beta_1 = 2.71\)</span> und <span class="math inline">\(\sigma = 0.70\)</span>. Demnach müssen wir alle Ausprägungen (“Gitterwerte”) der Variablen multiplizieren. Puh, das wird eine große Zahl. Wenn wir für die drei Größen jeweils 10 Ausprägungen annehmen, was wenig ist, kämen wir <span class="math inline">\(10\cdot10\cdot10= 1000=10^3\)</span> Kombinationen. Bei 100 Ausprägungen wären es schon <span class="math inline">\(100^3=10^6\)</span> Kombinationen. Das wäre doch eine recht lange Tabelle.</p>
 <p>Bei einer multiplen Regression mit sagen wir 10 Prädiktoren mit jeweils 100 Ausprägungen rechnet das arme R bis zum jüngsten Tag: $10^{100}. Nein, das können wir R nicht zumuten. Wir brauchen eine andere Lösung!</p>
 </section>
 <section id="wir-arbeiten-jetzt-mit-häufigkeit-nicht-mit-wahrscheinlichkeit" class="level3" data-number="6.2.4">
@@ -497,7 +500,7 @@ div.csl-indent {
 <p>Glücklicherweiße gibt es einen Trick, der die Sache nicht nur rechnerisch, sondern auch konzeptionell viel einfacher macht.</p>
 <p>Dieser Trick lautet: Wir arbeiten nicht mehr mit Wahrscheinlichkeiten, sondern mit <em>Häufigkeiten.</em></p>
 <p>Praktischerweise werden wir in Kürze einen R-Golem kennenlernen, der das für uns erledigt. Dieser Golem liefert uns Stichproben aus der Post-Verteilung zurück.</p>
-<p>Lernen wir jetz also, wie man mit solchen Stichproben umgeht.</p>
+<p>Lernen wir jetzt also, wie man mit solchen Stichproben umgeht.</p>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -508,7 +511,7 @@ Wichtig
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Die Post-Verteilung in Stichprobenform ist viel einfach zu handbaben als das direkte Arbeiten mit Wahrscheinlichkeiten. Daher sind viele R-Funktionen für Bayes auf Stichproben eingestellt.</p>
+<p>Die Post-Verteilung in Stichprobenform ist viel einfach zu handhaben als das direkte Arbeiten mit Wahrscheinlichkeiten. Daher sind viele R-Funktionen für Bayes auf Stichproben eingestellt.</p>
 </div>
 </div>
 <p>Die Grid-Methode ist bei größeren Datensätzen (oder größeren Modellen) zu rechenintensiv. In der Praxis werden daher andere, schnellere Verfahren verwendet, sog. Monte-Carlo-Markov-Ketten (MCMC). Wie diese Verfahren funktionieren sind aber nicht mehr Gegenstand dieses Kurses. Wir wenden Sie einfach an, freuen uns und lassen es damit gut sein<span class="citation" data-cites="mcelreath_statistical_2020">(Eine gute Einführung in die Hintergründe findet sich bei <a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref">McElreath 2020</a>.)</span></p>
@@ -536,12 +539,12 @@ Wichtig
 <div class="cell-output-display">
 <div id="tbl-postsample1" class="anchored">
 
-<div id="zecnocafdz" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="bdnwetwqie" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#zecnocafdz) .gt_table {
+:where(#bdnwetwqie) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -566,7 +569,7 @@ Wichtig
   border-left-color: #D3D3D3;
 }
 
-:where(#zecnocafdz) .gt_heading {
+:where(#bdnwetwqie) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -578,7 +581,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#zecnocafdz) .gt_title {
+:where(#bdnwetwqie) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -590,7 +593,7 @@ Wichtig
   border-bottom-width: 0;
 }
 
-:where(#zecnocafdz) .gt_subtitle {
+:where(#bdnwetwqie) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -602,13 +605,13 @@ Wichtig
   border-top-width: 0;
 }
 
-:where(#zecnocafdz) .gt_bottom_border {
+:where(#bdnwetwqie) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#zecnocafdz) .gt_col_headings {
+:where(#bdnwetwqie) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -623,7 +626,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#zecnocafdz) .gt_col_heading {
+:where(#bdnwetwqie) .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -643,7 +646,7 @@ Wichtig
   overflow-x: hidden;
 }
 
-:where(#zecnocafdz) .gt_column_spanner_outer {
+:where(#bdnwetwqie) .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -655,15 +658,15 @@ Wichtig
   padding-right: 4px;
 }
 
-:where(#zecnocafdz) .gt_column_spanner_outer:first-child {
+:where(#bdnwetwqie) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#zecnocafdz) .gt_column_spanner_outer:last-child {
+:where(#bdnwetwqie) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#zecnocafdz) .gt_column_spanner {
+:where(#bdnwetwqie) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -675,7 +678,7 @@ Wichtig
   width: 100%;
 }
 
-:where(#zecnocafdz) .gt_group_heading {
+:where(#bdnwetwqie) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -700,7 +703,7 @@ Wichtig
   vertical-align: middle;
 }
 
-:where(#zecnocafdz) .gt_empty_group_heading {
+:where(#bdnwetwqie) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -715,15 +718,15 @@ Wichtig
   vertical-align: middle;
 }
 
-:where(#zecnocafdz) .gt_from_md > :first-child {
+:where(#bdnwetwqie) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#zecnocafdz) .gt_from_md > :last-child {
+:where(#bdnwetwqie) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#zecnocafdz) .gt_row {
+:where(#bdnwetwqie) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -742,7 +745,7 @@ Wichtig
   overflow-x: hidden;
 }
 
-:where(#zecnocafdz) .gt_stub {
+:where(#bdnwetwqie) .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -755,7 +758,7 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#zecnocafdz) .gt_stub_row_group {
+:where(#bdnwetwqie) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -769,11 +772,11 @@ Wichtig
   vertical-align: top;
 }
 
-:where(#zecnocafdz) .gt_row_group_first td {
+:where(#bdnwetwqie) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#zecnocafdz) .gt_summary_row {
+:where(#bdnwetwqie) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -783,16 +786,16 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#zecnocafdz) .gt_first_summary_row {
+:where(#bdnwetwqie) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#zecnocafdz) .gt_first_summary_row.thick {
+:where(#bdnwetwqie) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#zecnocafdz) .gt_last_summary_row {
+:where(#bdnwetwqie) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -802,7 +805,7 @@ Wichtig
   border-bottom-color: #D3D3D3;
 }
 
-:where(#zecnocafdz) .gt_grand_summary_row {
+:where(#bdnwetwqie) .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -812,7 +815,7 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#zecnocafdz) .gt_first_grand_summary_row {
+:where(#bdnwetwqie) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -822,11 +825,11 @@ Wichtig
   border-top-color: #D3D3D3;
 }
 
-:where(#zecnocafdz) .gt_striped {
+:where(#bdnwetwqie) .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#zecnocafdz) .gt_table_body {
+:where(#bdnwetwqie) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -835,7 +838,7 @@ Wichtig
   border-bottom-color: #D3D3D3;
 }
 
-:where(#zecnocafdz) .gt_footnotes {
+:where(#bdnwetwqie) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -849,7 +852,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#zecnocafdz) .gt_footnote {
+:where(#bdnwetwqie) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -858,7 +861,7 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#zecnocafdz) .gt_sourcenotes {
+:where(#bdnwetwqie) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -872,7 +875,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#zecnocafdz) .gt_sourcenote {
+:where(#bdnwetwqie) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -880,64 +883,64 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#zecnocafdz) .gt_left {
+:where(#bdnwetwqie) .gt_left {
   text-align: left;
 }
 
-:where(#zecnocafdz) .gt_center {
+:where(#bdnwetwqie) .gt_center {
   text-align: center;
 }
 
-:where(#zecnocafdz) .gt_right {
+:where(#bdnwetwqie) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#zecnocafdz) .gt_font_normal {
+:where(#bdnwetwqie) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#zecnocafdz) .gt_font_bold {
+:where(#bdnwetwqie) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#zecnocafdz) .gt_font_italic {
+:where(#bdnwetwqie) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#zecnocafdz) .gt_super {
+:where(#bdnwetwqie) .gt_super {
   font-size: 65%;
 }
 
-:where(#zecnocafdz) .gt_footnote_marks {
+:where(#bdnwetwqie) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#zecnocafdz) .gt_asterisk {
+:where(#bdnwetwqie) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#zecnocafdz) .gt_indent_1 {
+:where(#bdnwetwqie) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#zecnocafdz) .gt_indent_2 {
+:where(#bdnwetwqie) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#zecnocafdz) .gt_indent_3 {
+:where(#bdnwetwqie) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#zecnocafdz) .gt_indent_4 {
+:where(#bdnwetwqie) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#zecnocafdz) .gt_indent_5 {
+:where(#bdnwetwqie) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -953,21 +956,21 @@ Wichtig
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_right">0.667</td>
-<td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.273</td>
-<td class="gt_row gt_right">3 × 10<sup style="font-size: 65%;">−1</sup></td>
-<td class="gt_row gt_right">0.303</td></tr>
     <tr><td class="gt_row gt_right">0.778</td>
 <td class="gt_row gt_right">1</td>
 <td class="gt_row gt_right">0.204</td>
 <td class="gt_row gt_right">2 × 10<sup style="font-size: 65%;">−1</sup></td>
 <td class="gt_row gt_right">0.227</td></tr>
-    <tr><td class="gt_row gt_right">0.667</td>
+    <tr><td class="gt_row gt_right">0.778</td>
 <td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.273</td>
-<td class="gt_row gt_right">3 × 10<sup style="font-size: 65%;">−1</sup></td>
-<td class="gt_row gt_right">0.303</td></tr>
+<td class="gt_row gt_right">0.204</td>
+<td class="gt_row gt_right">2 × 10<sup style="font-size: 65%;">−1</sup></td>
+<td class="gt_row gt_right">0.227</td></tr>
+    <tr><td class="gt_row gt_right">0.444</td>
+<td class="gt_row gt_right">1</td>
+<td class="gt_row gt_right">0.111</td>
+<td class="gt_row gt_right">1 × 10<sup style="font-size: 65%;">−1</sup></td>
+<td class="gt_row gt_right">0.123</td></tr>
   </tbody>
   
   
@@ -979,13 +982,13 @@ Wichtig
 <p>Wenn Sie jetzt denken: “Warum machen wir das jetzt? Brauchen wir doch gar nicht!” - Dann haben Sie Recht. Künftig werden wir aber, wenn wir mit komplexeren Modellen zu tun haben, nur noch mit Post-Verteilungen auf Stichprobenbasis arbeiten, weil es damit viel einfacher ist.</p>
 <p>Hier erstmal die ersten 100 gesampelten Gitterwerte (<code>p_grid</code>):</p>
 <div class="cell">
-<pre><code>##   [1] 0.67 0.78 0.67 0.33 0.67 0.67 0.67 0.78 0.44 0.22 0.56 0.44 0.67 0.78 0.78
-##  [16] 0.67 0.56 0.56 0.56 0.56 0.56 0.56 0.56 0.67 0.67 0.44 0.67 0.67 0.89 0.89
-##  [31] 0.67 0.44 0.67 0.56 0.67 0.78 0.89 0.67 0.56 0.56 0.67 0.89 0.67 0.44 0.44
-##  [46] 0.67 0.56 0.67 0.67 0.67 0.67 0.78 0.78 0.44 0.44 0.67 0.89 0.44 0.56 0.67
-##  [61] 0.44 0.56 0.56 0.67 0.56 0.67 0.67 0.67 0.67 0.56 0.44 0.78 0.78 0.67 0.78
-##  [76] 0.67 0.56 0.56 0.67 0.67 0.78 0.67 0.78 0.56 0.67 0.56 0.56 0.44 0.78 0.56
-##  [91] 0.56 0.67 0.44 0.67 0.44 0.78 0.44 0.56 0.56 0.56</code></pre>
+<pre><code>##   [1] 0.78 0.78 0.44 0.78 0.56 0.78 0.89 0.56 0.67 0.67 0.44 0.44 0.56 0.44 0.56
+##  [16] 0.78 0.78 0.67 0.56 0.56 0.67 0.44 0.89 0.44 0.89 0.56 0.56 0.78 0.67 0.78
+##  [31] 0.44 0.67 0.67 0.89 0.78 0.67 0.67 0.67 0.67 0.67 0.56 0.67 0.67 0.33 0.56
+##  [46] 0.56 0.78 0.33 0.67 0.67 0.78 0.44 0.56 0.44 0.44 0.78 0.56 0.67 0.44 0.67
+##  [61] 0.67 0.44 0.67 0.67 0.56 0.78 0.44 0.44 0.44 0.67 0.44 0.56 0.78 0.67 0.56
+##  [76] 0.67 0.89 0.44 0.44 0.89 0.56 0.44 0.78 0.78 0.67 0.33 0.67 0.78 0.67 0.67
+##  [91] 0.56 0.67 0.44 0.56 0.89 0.56 0.78 0.78 0.56 0.78</code></pre>
 </div>
 <p>Wie sieht diese Tabelle wohl als Histogramm<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> aus?</p>
 <p>So sieht die Post-Verteilung auf Basis von Stichproben dann aus, s. <a href="#fig-samples1">Abbildung&nbsp;<span>6.2</span></a>.</p>
@@ -1126,11 +1129,11 @@ Wichtig
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">8322</td>
+<td style="text-align: right;">8357</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">1678</td>
+<td style="text-align: right;">1643</td>
 </tr>
 </tbody>
 </table>
@@ -1183,11 +1186,11 @@ Wichtig
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">4574</td>
+<td style="text-align: right;">4641</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">5426</td>
+<td style="text-align: right;">5359</td>
 </tr>
 </tbody>
 </table>
@@ -1213,12 +1216,12 @@ Wichtig
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">0.4574</td>
-<td style="text-align: right;">45.74</td>
+<td style="text-align: right;">0.4641</td>
+<td style="text-align: right;">46.41</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">0.5426</td>
-<td style="text-align: right;">54.26</td>
+<td style="text-align: right;">0.5359</td>
+<td style="text-align: right;">53.59</td>
 </tr>
 </tbody>
 </table>
@@ -1245,8 +1248,8 @@ Wichtig
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">0.5426</td>
-<td style="text-align: right;">54.26</td>
+<td style="text-align: right;">0.5359</td>
+<td style="text-align: right;">53.59</td>
 </tr>
 </tbody>
 </table>
@@ -1332,7 +1335,7 @@ Wichtig
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Post_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<p><img src="Post_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Was ist das <em>mittlere</em> Intervall, das mit 90% Wahrscheinlichkeit den Parameterwert enthält, laut dem Modell?</p>
@@ -1530,12 +1533,12 @@ Wichtig
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="ebsyzqyrhq" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="iibogvoklq" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#ebsyzqyrhq) .gt_table {
+:where(#iibogvoklq) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1560,7 +1563,7 @@ Wichtig
   border-left-color: #D3D3D3;
 }
 
-:where(#ebsyzqyrhq) .gt_heading {
+:where(#iibogvoklq) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1572,7 +1575,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#ebsyzqyrhq) .gt_title {
+:where(#iibogvoklq) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1584,7 +1587,7 @@ Wichtig
   border-bottom-width: 0;
 }
 
-:where(#ebsyzqyrhq) .gt_subtitle {
+:where(#iibogvoklq) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1596,13 +1599,13 @@ Wichtig
   border-top-width: 0;
 }
 
-:where(#ebsyzqyrhq) .gt_bottom_border {
+:where(#iibogvoklq) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#ebsyzqyrhq) .gt_col_headings {
+:where(#iibogvoklq) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1617,7 +1620,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#ebsyzqyrhq) .gt_col_heading {
+:where(#iibogvoklq) .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1637,7 +1640,7 @@ Wichtig
   overflow-x: hidden;
 }
 
-:where(#ebsyzqyrhq) .gt_column_spanner_outer {
+:where(#iibogvoklq) .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1649,15 +1652,15 @@ Wichtig
   padding-right: 4px;
 }
 
-:where(#ebsyzqyrhq) .gt_column_spanner_outer:first-child {
+:where(#iibogvoklq) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#ebsyzqyrhq) .gt_column_spanner_outer:last-child {
+:where(#iibogvoklq) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#ebsyzqyrhq) .gt_column_spanner {
+:where(#iibogvoklq) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1669,7 +1672,7 @@ Wichtig
   width: 100%;
 }
 
-:where(#ebsyzqyrhq) .gt_group_heading {
+:where(#iibogvoklq) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1694,7 +1697,7 @@ Wichtig
   vertical-align: middle;
 }
 
-:where(#ebsyzqyrhq) .gt_empty_group_heading {
+:where(#iibogvoklq) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1709,15 +1712,15 @@ Wichtig
   vertical-align: middle;
 }
 
-:where(#ebsyzqyrhq) .gt_from_md > :first-child {
+:where(#iibogvoklq) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#ebsyzqyrhq) .gt_from_md > :last-child {
+:where(#iibogvoklq) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#ebsyzqyrhq) .gt_row {
+:where(#iibogvoklq) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1736,7 +1739,7 @@ Wichtig
   overflow-x: hidden;
 }
 
-:where(#ebsyzqyrhq) .gt_stub {
+:where(#iibogvoklq) .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1749,7 +1752,7 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#ebsyzqyrhq) .gt_stub_row_group {
+:where(#iibogvoklq) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1763,11 +1766,11 @@ Wichtig
   vertical-align: top;
 }
 
-:where(#ebsyzqyrhq) .gt_row_group_first td {
+:where(#iibogvoklq) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#ebsyzqyrhq) .gt_summary_row {
+:where(#iibogvoklq) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1777,16 +1780,16 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#ebsyzqyrhq) .gt_first_summary_row {
+:where(#iibogvoklq) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#ebsyzqyrhq) .gt_first_summary_row.thick {
+:where(#iibogvoklq) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#ebsyzqyrhq) .gt_last_summary_row {
+:where(#iibogvoklq) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1796,7 +1799,7 @@ Wichtig
   border-bottom-color: #D3D3D3;
 }
 
-:where(#ebsyzqyrhq) .gt_grand_summary_row {
+:where(#iibogvoklq) .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1806,7 +1809,7 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#ebsyzqyrhq) .gt_first_grand_summary_row {
+:where(#iibogvoklq) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1816,11 +1819,11 @@ Wichtig
   border-top-color: #D3D3D3;
 }
 
-:where(#ebsyzqyrhq) .gt_striped {
+:where(#iibogvoklq) .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#ebsyzqyrhq) .gt_table_body {
+:where(#iibogvoklq) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1829,7 +1832,7 @@ Wichtig
   border-bottom-color: #D3D3D3;
 }
 
-:where(#ebsyzqyrhq) .gt_footnotes {
+:where(#iibogvoklq) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1843,7 +1846,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#ebsyzqyrhq) .gt_footnote {
+:where(#iibogvoklq) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1852,7 +1855,7 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#ebsyzqyrhq) .gt_sourcenotes {
+:where(#iibogvoklq) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1866,7 +1869,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#ebsyzqyrhq) .gt_sourcenote {
+:where(#iibogvoklq) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1874,64 +1877,64 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#ebsyzqyrhq) .gt_left {
+:where(#iibogvoklq) .gt_left {
   text-align: left;
 }
 
-:where(#ebsyzqyrhq) .gt_center {
+:where(#iibogvoklq) .gt_center {
   text-align: center;
 }
 
-:where(#ebsyzqyrhq) .gt_right {
+:where(#iibogvoklq) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#ebsyzqyrhq) .gt_font_normal {
+:where(#iibogvoklq) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#ebsyzqyrhq) .gt_font_bold {
+:where(#iibogvoklq) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#ebsyzqyrhq) .gt_font_italic {
+:where(#iibogvoklq) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#ebsyzqyrhq) .gt_super {
+:where(#iibogvoklq) .gt_super {
   font-size: 65%;
 }
 
-:where(#ebsyzqyrhq) .gt_footnote_marks {
+:where(#iibogvoklq) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#ebsyzqyrhq) .gt_asterisk {
+:where(#iibogvoklq) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#ebsyzqyrhq) .gt_indent_1 {
+:where(#iibogvoklq) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#ebsyzqyrhq) .gt_indent_2 {
+:where(#iibogvoklq) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#ebsyzqyrhq) .gt_indent_3 {
+:where(#iibogvoklq) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#ebsyzqyrhq) .gt_indent_4 {
+:where(#iibogvoklq) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#ebsyzqyrhq) .gt_indent_5 {
+:where(#iibogvoklq) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1946,30 +1949,30 @@ Wichtig
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_right">0.62</td>
+    <tr><td class="gt_row gt_right">0.98</td>
 <td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.24</td>
-<td class="gt_row gt_right">0.24</td></tr>
-    <tr><td class="gt_row gt_right">0.91</td>
+<td class="gt_row gt_right">0.94</td>
+<td class="gt_row gt_right">0.94</td></tr>
+    <tr><td class="gt_row gt_right">0.83</td>
 <td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.75</td>
-<td class="gt_row gt_right">0.75</td></tr>
-    <tr><td class="gt_row gt_right">0.84</td>
+<td class="gt_row gt_right">0.57</td>
+<td class="gt_row gt_right">0.57</td></tr>
+    <tr><td class="gt_row gt_right">0.89</td>
 <td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.59</td>
-<td class="gt_row gt_right">0.59</td></tr>
-    <tr><td class="gt_row gt_right">0.97</td>
+<td class="gt_row gt_right">0.70</td>
+<td class="gt_row gt_right">0.70</td></tr>
+    <tr><td class="gt_row gt_right">0.77</td>
 <td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.91</td>
-<td class="gt_row gt_right">0.91</td></tr>
-    <tr><td class="gt_row gt_right">0.95</td>
+<td class="gt_row gt_right">0.46</td>
+<td class="gt_row gt_right">0.46</td></tr>
+    <tr><td class="gt_row gt_right">0.72</td>
 <td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.86</td>
-<td class="gt_row gt_right">0.86</td></tr>
-    <tr><td class="gt_row gt_right">0.75</td>
+<td class="gt_row gt_right">0.37</td>
+<td class="gt_row gt_right">0.37</td></tr>
+    <tr><td class="gt_row gt_right">0.92</td>
 <td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.42</td>
-<td class="gt_row gt_right">0.42</td></tr>
+<td class="gt_row gt_right">0.78</td>
+<td class="gt_row gt_right">0.78</td></tr>
   </tbody>
   
   
@@ -2031,7 +2034,7 @@ Wichtig
 <p>Intervalle höchster Dichte (Highest density Intervals, HDI oder HDPI) sind definiert als die <em>schmälsten</em> Intervalle, die den gesuchten Parameter enthalten.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="Post_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<p><img src="Post_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Der wahrscheinlichste Parameterwert (1) <em>ist</em> im Intervall enthalten, was Sinn macht. Bei einem HDI sind die abgeschnitten Ränder nicht mehr gleich groß, im Sinne von enthalten nicht (zwangsläufig) die gleiche Wahrscheinlichkeitsmasse.</p>
@@ -2128,7 +2131,7 @@ Hinweis
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">0.6369667</td>
+<td style="text-align: right;">0.6382222</td>
 <td style="text-align: right;">0.6666667</td>
 </tr>
 </tbody>
@@ -2158,7 +2161,7 @@ Hinweis
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">0.1405461</td>
+<td style="text-align: right;">0.1400451</td>
 <td style="text-align: right;">0.2222222</td>
 <td style="text-align: right;">0.1647333</td>
 </tr>
@@ -2179,7 +2182,8 @@ Hinweis
 <li><a href="https://datenwerk.netlify.app/posts/iq04/iq04.html">iq04</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/iq05/iq05.html">iq05</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/iq06/iq06.html">iq06</a></li>
-<li><a href="https://datenwerk.netlify.app/posts/iq07/iq07.html">iq07</a>88. <a href="https://datenwerk.netlify.app/posts/iq08/iq08.html">iq08</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/iq07/iq07.html">iq07</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/iq08/iq08.html">iq08</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/fattails01/fattails01.html">fattails1</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/fattails02/fattails02.html">fattails2</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/rethink3e1-7/rethink3e1-7">ReThink3e1-7</a></li>

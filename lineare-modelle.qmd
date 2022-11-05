@@ -1,6 +1,23 @@
 # Lineare Modelle
 
 
+## Lernsteuerung
+
+
+### Lernziele
+
+Nach Absolvieren des jeweiligen Kapitel sollen folgende Lernziele erreicht sein.
+
+Sie können ...
+
+
+
+- die Post-Verteilung für einfache lineare Modelle in R berechnen
+- zentrale Informationen zu Modellparametern - wie Lage- oder Streuungsmaße und auch Schätzintervalle - aus der Post-Verteilung herauslesen
+- künftige, laut Modell zu erwartende Beobachtungen mit der PPV simulieren
+
+### Benötigte R-Pakete
+
 In diesem Kapitel benötigen Sie folgende R-Pakete.
 
 
@@ -21,6 +38,8 @@ library("gt")
 theme_set(theme_modern())
 ```
 
+
+Da wir in diesem Kapitel immer mal wieder eine Funktion aus dem R-Paket `{easystats}` verwenden: [Hier](https://easystats.github.io/easystats/articles/list_of_functions.html) finden Sie eine Übersicht aller Funktionen des Pakets.^[Da es viele Funktionen sind, bietet es sich an mit *Strg-F* auf der Webseite nach Ihrem Lieblingsbefehl zu suchen.]
 
 
 ## Post-Verteilung der Regression
@@ -66,9 +85,9 @@ d2 %>%
 ### Bei jedem Prädiktorwert eine Post-Verteilung für $\mu$
 
 
-Unser Modell erlaubt uns für jeden beliebigen Wert des Prädiktors eine Post-Verteilung (von $mu$) zu berechnen.
+Unser Modell erlaubt uns für jeden beliebigen Wert des Prädiktors eine Post-Verteilung (von $\mu$) zu berechnen.
 
-Hier am Beispiel von `m42`: 
+Hier am Beispiel von `m42`, s. @fig-post42.
 
 ```{r m42-read-from-disk, echo = FALSE}
 #| echo: false
@@ -84,6 +103,8 @@ names(m42_post) <- c("mu", "sigma")
 
 ```{r Post-Regression-10}
 #| echo: false
+#| label: fig-post42
+#| fig-cap: Für jeden beliebigen Prädiktorwert kann man eine Post-Verteilung bekommen
 plot_post_42 <- 
   m42_post %>% 
   ggplot() +
@@ -525,8 +546,9 @@ $$
 
 ### Moment
 
-   - 🤔 Moment. Dieser Prior, $\beta$ in `m43` erachtet positive und negative Zusammenhang als gleich wahrscheinlich?!
-   - Sind wir wirklich indifferent, ob der Zusammenhang von Gewicht und Größe positiv oder negativ ist? [Nein, sind wir nicht.](https://media.giphy.com/media/daPCSjwus6UR2JxRX1/giphy.gif) 
+ 🤔 Moment. Dieser Prior, $\beta$ in `m43` erachtet positive und negative Zusammenhang als gleich wahrscheinlich?!
+
+Sind wir wirklich indifferent, ob der Zusammenhang von Gewicht und Größe positiv oder negativ ist? [Nein, sind wir nicht.](https://media.giphy.com/media/daPCSjwus6UR2JxRX1/giphy.gif) 
     
 
 
@@ -534,8 +556,8 @@ $$
 
 
 
-- Was denkt [wir](https://media.giphy.com/media/Aausss8uUBIe3bZ3d2/giphy.gif) bzw. unser Golem *apriori* über den Zusammenhang von Größe und Gewicht?
-- Um diese Frage zu beantworten ziehen wir Stichproben aus den Priori-Verteilungen des Modells, also für $\alpha$, $\beta$ und $\sigma$.
+Was denkt [wir](https://media.giphy.com/media/Aausss8uUBIe3bZ3d2/giphy.gif) bzw. unser Golem *apriori* über den Zusammenhang von Größe und Gewicht?
+Um diese Frage zu beantworten ziehen wir Stichproben aus den Priori-Verteilungen des Modells, also für $\alpha$, $\beta$ und $\sigma$.
 
 
 
@@ -561,6 +583,7 @@ m43_prior_pred_draws <-
 
 
 ```{r}
+#| echo: false
 m43_prior_pred_draws %>% 
   slice_head(n=5) %>% 
   gt() %>% 
@@ -839,9 +862,20 @@ m43a <-
 
 
 ```{r}
+#| eval: false
 m43a %>% 
   parameters()
 ```
+
+
+
+```{r}
+#| echo: false
+m43a %>% 
+  parameters() %>% 
+  display()
+```
+
 
 
 Unser Modell `m43a` schätzt die typische Körpergröße einer !Kung-Person *mittleren Gewichts* (`weight_c = 0`) auf knapp 155 cm, und ist sich dieses Werts ziemlich sicher.
@@ -872,10 +906,13 @@ Prioris:
 
 $$
 \beta_1 \sim N(5,3) \\
+
 \beta_0 \sim N(178, 20) \\
+
 \sigma \sim E(0.1)
 $$
 
+Wir nennen es `m43a`^[Wer ist hier für die Namensgebung zuständig? Besoffen oder was?].
 
 
 ```{r m43a, echo = TRUE}
@@ -893,7 +930,6 @@ m43a <-
 ```
 
 
-Wir nennen es `m43a`^[Wer ist hier für die Namensgebung zuständig?].
 
 
 ### Mittelwerte von $\alpha$ und $\beta$ aus der Post-Verteilung
@@ -982,7 +1018,13 @@ d2 %>%
     color = "blue")
 ```
 
+Einfacher ist die Syntax, wenn man die Funktion `estimate_expectation` benutzt.
+Mit "expectation" sind hier die erwarteten Werte, also die Regressionsgerade, gemeint.
 
+```{r}
+m43_expect <- estimate_expectation(m43a)
+plot(m43_expect)
+```
 
 
 
@@ -1002,8 +1044,17 @@ Hier folgen einige Beispiele an Fragen, die wir an unser Modell bzw. die Post-Ve
 - Was ist der wahrscheinlichste Wert für z.B: $\beta_1$?
 
 ```{r Post-Regression-befragen-7, echo = TRUE}
+#| eval: false
 m43a %>% 
   parameters()
+```
+
+
+```{r Post-Regression-befragen-7a}
+#| exho: false
+m43a %>% 
+  parameters() %>% 
+  display()
 ```
 
 
@@ -1025,13 +1076,22 @@ Wie wir gesehen haben, nutzen wir diese Tabeller der Post-Verteilung immer wiede
 Speichern wir uns sie also als ein Objekt ab, `m43_post`.
 
 
+Jetzt haben wir wieder eine schöne Tabelle mit Stichproben aus der Post-Verteilung,
+die wir wie gewohnt befragen können.
+
 
 ![Typischer Bayes-Nutzer, der ein Ungewissheitsintervall berechnet. Bildquelle: Easystats, bayestestR](https://easystats.github.io/bayestestR/reference/figures/bayesianMaster.jpg)
 
 [Quelle](https://easystats.github.io/bayestestR/articles/bayestestR.html)
 
+Eine Visualisierung zeigt gut sowohl Lage- als auch Streuungsmaße der Parameter, zumindest grob.,
 
-Eine Visualisierung zeigt gut sowohl Lage- als auch Streuungsmaße der Parameter, zumindest grob:
+
+
+
+
+Oder man erstellt selber ein Diagramm mit `ggplot`.
+
 
 
 
@@ -1102,7 +1162,8 @@ auf ein 90%- oder 89%-Intervall auszuweichen, aufgrund der besseren numerischen 
 
 
 
-Die ersten 10 Stichproben
+Die ersten 10 Stichproben:
+
 ```{r Post-Regression-befragen-10, echo = TRUE}
 d2 %>% 
   ggplot(aes(x = weight_c, 
@@ -1117,7 +1178,8 @@ d2 %>%
 ```
 
 
-Die ersten 100 Stichproben
+Die ersten 100 Stichproben:
+
 ```{r Post-Regression-befragen-11-ersten-1000, echo = TRUE}
 d2 %>% 
   ggplot(aes(x = weight_c, 
@@ -1132,7 +1194,8 @@ d2 %>%
 ```
 
 
-Die ersten `1e3` Stichproben
+Die ersten `1e3` Stichproben:
+
 ```{r Post-Regression-befragen-11-die-ersten-1000, echo = TRUE}
 d2 %>% 
   ggplot(aes(x = weight_c, 
@@ -1147,7 +1210,17 @@ d2 %>%
 ```
 
 
+
+
 Die ersten 1000000 ... okay, lassen wir es gut sein^[Im Standard beschert uns `stan_glm()` 4000 Stichproben.].
+
+
+
+Einfacher ist die Visualisierung mit `estimate_expectation`:
+
+```{r}
+estimate_expectation(m43a) %>% plot()
+```
 
 
 ### Fragen zu Quantilen des Achsenabschnitts 
@@ -1156,7 +1229,7 @@ Die ersten 1000000 ... okay, lassen wir es gut sein^[Im Standard beschert uns `s
 Zur Erinnerung: Bei einem zentrierten Prädiktor misst der Achsenabschnitt die mittlere Größe.
 :::
 
-- Welche mittlere Größe mit zu 50%, 90% Wskt. nicht überschritten?
+- Welche mittlere Größe wird mit zu 50%, 90% bzw. 95% Wahrscheinlichkeit nicht überschritten?
 - Welche mittlere Größe mit zu 95% Wskt. nicht unterschritten?
 - Von wo bis wo reicht der innere 50%-Schätzbereich der mittleren Größe?
 
@@ -1164,19 +1237,20 @@ Zur Erinnerung: Bei einem zentrierten Prädiktor misst der Achsenabschnitt die m
 
 Quantile:
 
+
 ```{r quantile-post}
 m43a_post %>% 
   summarise(
     q_50 = quantile(`(Intercept)`, prob = .5),
     q_90 = quantile(`(Intercept)`, prob = .9),
-    q_05 = quantile(`(Intercept)`, prob = .05))
+    q_05 = quantile(`(Intercept)`, prob = .95))
 ```
 
 50%-PI:
 
 ```{r}
-m43a_post %>% 
-  summarise(pi_50 = quantile(`(Intercept)`, prob = c(.25, .75)))
+m43a %>% 
+  eti(ci = .5)
 ```
 
 
@@ -1282,6 +1356,7 @@ $\mu|\text{weight}=45$
 
 
 45 kg entspricht genau dem Mittelwert von `weight`. Geht man von zentrierten Prädiktorwerten aus, gilt in dem Fall `weight_c = 0`.
+Erstellen wir uns dazu eine Tabelle:
 
 
 ```{r mu-at-45, echo = TRUE}
@@ -1290,6 +1365,7 @@ mu_at_45 <-
   mutate(mu_at_45 = `(Intercept)`)
 ```
 
+Und plotten diese:
 
 ```{r Post-Regression-befragen-15, echo = TRUE, eval = FALSE}
 #| eval: false
@@ -1301,7 +1377,7 @@ mu_at_45 %>%
 
 
 ```{r Post-Regression-befragen-17}
-# | echo: false
+#| echo: false
 mu_at_45 %>% 
   ggplot(aes(x = mu_at_45)) +
   geom_density() +
@@ -1315,13 +1391,13 @@ Analog können wir fragen,
 wie groß wohl eine Person mit 50 kg im Mittelwert sein wird und wie (un)gewiss wir uns über diesen Mittelwert sind.
 
 
-50 kg, das sind 5 über dem Mittelwert, in zentrierten Einheiten ausgedrückt also `weight_c = 5`.
+50 kg, das sind 5 über dem Mittelwert, in zentrierten Einheiten ausgedrückt also `weight_c = 5`. Auch dazu erstellen wir uns eine Tabelle:
 
 
 
 ```{r mu-at-50, echo = TRUE}
 mu_at_50 <-
-  m43a_post %>% 
+  mu_at_45 %>% 
   mutate(mu_at_50 = `(Intercept)` + 5 * weight_c)
 ```
 
@@ -1360,10 +1436,10 @@ Was ist das 90% PI für $\mu|w=50$ ?
 
 ```{r Post-Regression-befragen-19, echo = TRUE}
 mu_at_50 %>% 
-  summarise(pi = quantile(mu_at_50, prob = c(0.05, .95)))
+  eti(mu_at_50, ci = .9)
 ```
 
-Die mittlere Größe - gegeben $w=50$ - liegt mit 90% Wahrscheinlichkeit zwischen den beiden Werten.
+Die mittlere Größe - gegeben $w=50$ - liegt mit 90% Wahrscheinlichkeit zwischen den beiden Werten (ca.) 159cm und 160cm.
 
 
 
@@ -1405,7 +1481,7 @@ brauchen wir die PPV.
 ### Perzentil-Intervalle für verschiedenen Prädiktor-Werte
 
 
-Wir erstellen uns eine Sequenz an Prädiktorwerten, die uns interessieren:
+Wir erstellen uns eine Sequenz an Prädiktorwerten, die uns interessieren, `weight_df`:
 
 ```{r echo = TRUE}
 weight_df <- tibble(weight_c = seq(-20,20, by = 5))
@@ -1457,6 +1533,7 @@ mus %>%
 
 
 ```{r}
+#| echo: false
 mus <- 
   mus %>% 
   mutate(height = 154.6 + 0.9*weight_c)
@@ -1509,7 +1586,7 @@ d2 %>%
 ```
 
 
-Also: Je dicker die Violine, desto wahrscheinlicher $\mu | w_i}$.
+Also: Je dicker die Violine, desto wahrscheinlicher $\mu | w_i$.
 
 
 
@@ -1520,24 +1597,21 @@ Gerade eben haben wir bedingte PPVen angeschaut: Also eine PPV für einen bestim
 Wir können auch den Mittelwert über alle bedingten PPV anschauen, sozusagen die "Master-PPV" oder "unbedingte PPV" oder schlicht PPV.
 
 
-Vergleichen wir die echten Werte für `height`, $h$, mit den von der PPV simulierten Werten für `height`, $h_{sim}$.
+Vergleichen wir die echten Werte für `height`, $y$, mit den von der PPV simulierten Werten für `height`, $y_{rep}$.
 
-```{r ppv-plot1, eval = FALSE, echo = TRUE}
-library(bayesplot)
-h <- d2$height
-h_sim <- 
-  posterior_predict(m43a, 
-                    draws = 50)
-ppc_dens_overlay(
-  h, h_sim)
+```{r ppv-plot1}
+
+check_predictions(m43a)
+
 ```
 
-`?posterior_predict` zeigt Hilfe für diese Funktion. 
+`?check_predictions` zeigt Hilfe für diese Funktion. 
 Die Funktion zeigt die Vorhersagen für die AV laut der Posteriori-Verteilung.
 
 
 
-Die zwei Gipfel hat unser Modell nicht mitgekriegt, ansonsten decken sich die Vorhersagen der PPV gut mit den echten Daten.
+Die zwei Gipfel hat unser Modell nicht mitgekriegt, 
+ansonsten decken sich die Vorhersagen der PPV gut mit den echten Daten.
 
 
 
@@ -1550,6 +1624,9 @@ PPV berechnen (lassen):
 
 ```{r Post-Regression-befragen-27, echo = TRUE}
 set.seed(42)
+
+x <- posterior_predictive_check(m43a)
+x
 ppv_m43a <- posterior_predict(
   m43a,
   newdata = weight_df,
@@ -1600,3 +1677,7 @@ ppv_m43a %>%
 ```
 
 
+## Aufgaben
+
+
+(kommen noch)

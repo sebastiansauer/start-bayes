@@ -3,6 +3,11 @@
 
 
 
+## Lernsteuerung
+
+
+### R-Pakete
+
 Benötigte R-Pakete für dieses Thema:
 
 ```{r}
@@ -28,6 +33,18 @@ library(patchwork)
 theme_set(theme_modern())
 
 ```
+
+
+### Lernziele
+
+Nach Absolvieren des jeweiligen Kapitel sollen folgende Lernziele erreicht sein.
+
+Sie können... 
+
+- typische, deskriptive Forschungsfragen spezifizieren als Regression
+- Forschungsfragen in Regressionsterme übersetzen
+- typische Forschungsfragen auswerten
+
 
 
 ## Wissenschaft als Gerechtigkeitsprojekt
@@ -143,7 +160,9 @@ In diesem Beispiel liegt die Effektvitität $e$ bei knapp 90%.
 ## Arten von Forschungsfragen
 
 
-### Deskriptiv (beschreibend)
+### Nach dem Erkenntnisziel
+
+*Deskriptiv* (beschreibend)
 
 - Wie stark ist der (lineare) Zusammenhang $r$ von Größe und Gewicht?
 - Wie stark ist der (lineare) Zusammenhang $b$ von Lernzeit und Note?
@@ -151,7 +170,7 @@ In diesem Beispiel liegt die Effektvitität $e$ bei knapp 90%.
 
 
 
-### Prädiktiv (prognostisch, vorhersagend)
+*Prädiktiv* (prognostisch, vorhersagend)
 
 - Wie schwer ist ein deutscher Mann der Größe 1,80m im Schnitt?
 - Welche Note kann man erwarten, wenn man nichts für die Klausur lernt?
@@ -159,24 +178,27 @@ In diesem Beispiel liegt die Effektvitität $e$ bei knapp 90%.
 
 
 
-### Präskriptiv (erklärend, kausal)
+*Präskriptiv* (erklärend, kausal)
 
 - Ist Größe eine Ursache von Gewicht (bei deutschen Männern)?
 - Wenn ich 100 Stunden lerne, welche Note schreibe ich dann?
 - Hat die Art des Webshops einen Einfluss auf unseren Umsatz?
 
 
-
-### Metrische AV
-
-- Wir konzentrieren uns im Folgenden auf Forschungsfragen auf Basis von Regressionsmodellen mit *metrischer* AV.
-- Für die UV(s) sind nominale und metrische Skalenniveaus erlaubt. 
-- Modelle mit mehreren UV (und mehreren Stufen an UV) sind erlaubt.
+### Nach dem Skalenniveau
 
 
 
 
-## 1 binäre UV
+Wir konzentrieren uns im Folgenden auf Forschungsfragen auf Basis von Regressionsmodellen mit *metrischer* AV. Andere Skalenniveaus bei der AV klammern wir aus.
+
+Für die UV(s) sind nominale und metrische Skalenniveaus erlaubt. 
+Modelle mit mehreren UV (und mehreren Stufen an UV) sind erlaubt.
+
+
+
+
+## Eine binäre UV
 
 
 
@@ -756,24 +778,42 @@ Man könnte
 
 *Hintergrund*:
 
-Nach Ihrem Studium haben Sie bei einem aufstrebenden Online-Händler angeheuert
-Sie sind für alles zuständig, 
-was nach Wissenschaft oder Analyse aussieht oder sonst den Anschein erweckt,
-kompliziert zu sein. 
-Aus irgendwelchen Gründen liebt Ihre Chefin Diamanten,
-so dass Ihre erste Aufgabe darin besteht, Diamantenpreise zu analysieren. 
-Das Ziel Ihrer Chefin liegt darin, 
-zu erkennen, was ein Preis ist, 
-für den ein Diamant gut verkauft werden kann. Kennt man diesen Preis, 
-kann man sich auf die Suche machen, 
-ob man den Diamant irgendwo günstiger findet. 
-Wenn ja, macht man Gewinn. 
-Gutes Geschäftsmodell, meint Ihre Chefin.
+
+Nach Ihrem Studium wurden Sie reich als Unternehmensberater:in;
+Ihre Kompetenz als Wirtschaftspsychologi war heiß begehrt.
+Von Statistik wollte niemand etwas wissen...
+Doch nach einiger Zeit kamen Sie in eine Sinnkrise.
+Sie warfen Ihre Job hin und beschlossen, in die Wissenschaft zu gehen.
+Kurz entschlossen bewarben Sie sich auf das erste Stellenangebot
+als Nachwuchswissenschaftler:in.
+
+Ihr Forschungsprojekt führte Sie in die Antarktis...
+Nun, das war zumindest ein Gegenentwurf zu Ihrem bisherigen Jet-Set-Leben.
+
+
+Ihre Aufgabe bestand nun darin, Pinguine zu untersuchen.
+Genauer gesagt ging es um Größenunterschiede zwischen drei Pinguinarten.
+Ja, stimmt, an so ein Forschungsprojekt hatten Sie vorher nie auch nur nur im Traum gedacht.
+
+
+<!-- Nach Ihrem Studium haben Sie bei einem aufstrebenden Online-Händler angeheuert -->
+<!-- Sie sind für alles zuständig,  -->
+<!-- was nach Wissenschaft oder Analyse aussieht oder sonst den Anschein erweckt, -->
+<!-- kompliziert zu sein.  -->
+<!-- Aus irgendwelchen Gründen liebt Ihre Chefin Diamanten, -->
+<!-- so dass Ihre erste Aufgabe darin besteht, Diamantenpreise zu analysieren.  -->
+<!-- Das Ziel Ihrer Chefin liegt darin,  -->
+<!-- zu erkennen, was ein Preis ist,  -->
+<!-- für den ein Diamant gut verkauft werden kann. Kennt man diesen Preis,  -->
+<!-- kann man sich auf die Suche machen,  -->
+<!-- ob man den Diamant irgendwo günstiger findet.  -->
+<!-- Wenn ja, macht man Gewinn.  -->
+<!-- Gutes Geschäftsmodell, meint Ihre Chefin. -->
 
 </br>
 
 
-> Unterscheiden sich mittlere Diamantenpreise in Abhängigkeit von ihrer Schliffart? (Datensatz `diamonds`)
+> Unterscheiden sich die mittleren Körpergewichte der drei Pinguinarten?
 
 
 
@@ -788,35 +828,32 @@ Gutes Geschäftsmodell, meint Ihre Chefin.
 
 - Moment. Dass sich *alle* Mittelwerte um 0,00000000 unterscheiden, ist wohl nicht zu vermuten. Wer glaubt sowas? 🤔 Daher ist die bessere Forschungsfrage:
 
-> *Wie sehr* unterscheiden sich mittlere Diamantenpreise in Abhängigkeit von ihrer Schliffart?
+> *Wie sehr* unterscheiden sich mittlere Körpergewichte in Abhängigkeit von der Pinguinart?
 
 Oder wir prüfen die Hypothese, ob die Mittelwerte "praktisch" gleich sind, also sich "kaum" unterscheiden. Der Grenzwert für "praktisch gleich" bzw. "kaum unterschiedlich" ist subjektiv.
 
 
 
-### Erster Blick in den Datensatz `diamonds`
+### Erster Blick in den Datensatz `penguins`
 
-[Datenquelle](https://vincentarelbundock.github.io/Rdatasets/csv/ggplot2/diamonds.csv), [Beschreibung des Datensatzes](https://vincentarelbundock.github.io/Rdatasets/doc/ggplot2/diamonds.html)
+[Datenquelle](https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv), [Beschreibung des Datensatzes](https://vincentarelbundock.github.io/Rdatasets/doc/palmerpenguins/penguins.html)
 
 ```{r echo = TRUE}
-diamonds_url <- "https://tinyurl.com/up84jp5c"
+penguins_url <- "https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv"
 ```
 
 ```{r echo = TRUE, results = "hide"}
 #| results: "hide"
 #| message: false
 set.seed(42)  # Zufallszahlen für `sample()` festlegen
-diamonds <- 
-  read_csv(diamonds_url) %>% 
-  sample_n(1000) %>%  # um etwas Rechenzeit zu sparen
-  select(-1) # 1. Spalte nur laufende Nummer
+penguins <- 
+  read_csv(penguins_url)
 ```
 
 ```{r}
-diamonds %>% 
-  select(price, cut) %>% 
-  group_by(cut) %>% 
-  # nehmen wir die robusten Statistiken, da Preis sehr schief ist:
+penguins %>% 
+  select(body_mass_g, species) %>% 
+  group_by(species) %>% 
   describe_distribution(range = FALSE, iqr = FALSE)
 ```
 
@@ -829,15 +866,14 @@ diamonds %>%
 
 
 
-... aufgeteilt in die Stufen von `cut`:
+... aufgeteilt in die Stufen von `species`:
 
 ```{r echo = FALSE, eval = TRUE}
 #| echo: false
-diamonds %>% 
-  select(price, cut) %>% 
-  group_by(cut) %>% 
-  # nehmen wir die robusten Statistiken, da Preis sehr schief ist:
-  describe_distribution() %>% 
+penguins %>% 
+  select(body_mass_g, species) %>% 
+  group_by(species) %>% 
+  describe_distribution(range = FALSE, iqr = FALSE) %>% 
   display()
 ```
 
@@ -853,24 +889,8 @@ Was fällt Ihnen auf?
 
 ```{r}
 #| echo: false
-diamonds %>% 
-  drop_na(cut, price) %>% 
-  group_by(cut) %>% 
-  summarise(price_md =
-              median(price),
-            price_iqr = 
-              IQR(price)) %>%
-  gt() %>% 
-  fmt_number(columns = 2:3,
-             decimals = 0)
-```
-
-
-
-```{r}
-#| echo: false
-diamonds %>% 
-  ggplot(aes(x=cut, y=price)) +
+penguins %>% 
+  ggplot(aes(x = species, y = body_mass_g, fill = species)) +
   geom_violin() +
   geom_jitter(width = 0.1, alpha = .1)
 ```
@@ -878,9 +898,15 @@ diamonds %>%
 
 ```{r fig.asp = .3, fig.width=7}
 #| echo: false
-ggplot(diamonds) +
-  aes(x = price, y = cut) +
+ggplot(penguins) +
+  aes(x = body_mass_g, y = species) +
   geom_density_ridges()
+```
+
+```{r}
+penguins %>% 
+  ggplot(aes(x = species, y = body_mass_g, fill = species)) +
+  geom_violindot(fill_dots = "black")
 ```
 
 
@@ -894,7 +920,7 @@ ggplot(diamonds) +
 ```{r m106, echo = TRUE}
 options(mc.cores = parallel::detectCores())  # Turbo einschalten
 
-m10.6 <- stan_glm(price ~ cut, data = diamonds, refresh = 0)
+m10.6 <- stan_glm(body_mass_g ~ species, data = penguins, refresh = 0)
 # refresh=0 unterdrückt Ausgabe der Posteriori-Stichproben
 ```
 
@@ -918,14 +944,18 @@ m10.6 %>%
 
 ### Interpretation von `m10.6`
 
-- `cut` hat fünf verschiedene Werte (Stufen, Faktorstufen, Ausprägungen), aber es werden nur vier angezeigt. 
-- Die fünfte (`Fair`, nicht ausgegeben) ist die *Vergleichs- oder Referenzkategorie* (baseline) und ist im Achsenabschnitt ausgedrückt.
-- Die Koeffizienten für `cut` geben jeweils den Unterschied zur Vergleichskategorie wieder.
-- Diamanten der Schliffart `Fair` haben laut Modell einen mittleren Preis von ca. 4300$.
-- Diamanten der Schliffart `Good` sind laut Modell im Mittel gut 400$ billiger als Diamanten der Schliffart `Fair`, etc.
+- Die UV hat drei verschiedene Stufen (Werte, Ausprägungen), aber es werden nur zwei angezeigt (also eine weniger)
+- Die fehlende Stufe (`Adelie`, nicht ausgegeben) ist die *Vergleichs- oder Referenzkategorie* (baseline) und ist im Achsenabschnitt ausgedrückt (Intercept).
+- Die Koeffizienten für `species` geben jeweils den Unterschied zur Vergleichskategorie wieder.
+- Diamanten der Schliffart `Adelie` haben laut Modell ein mittleres Gewicht von ca. 3700$.
+- Pinguine der Spezies Gentoo sind laut Modell im Mittel gut 1000g schwerer als Pinguine der Spezies `Adelie`, etc.
 
+
+Der Unterschied im mittleren Gewicht von den Gruppen Chinstrap und Gentoo zur Referenzgruppe (Adelie) ist in @fig-m106-params verdeutlicht.
 
 ```{r fig.asp = .33}
+#| fig-cap: "Effekt der UV: Unterschiede zur Referenzgruppe"
+#| label: fig-m106-params
 plot(hdi(m10.6))
 ```
 
@@ -944,38 +974,45 @@ m10.6 %>%
 
 
 
-### Glauben wir jetzt an Preisunterschiede?
+### Glauben wir jetzt an Gruppeneffekte?
 
-... zwischen den Preis-Mittelwerten in der Population?
+Glauben wir jetzt, auf Basis der Modellparameter,
+an Unterschiede (hinsichtlich der AV) zwischen den Gruppen (UV)?
 
-- Teilweise, denn einige Schätzintervalle (für die Preisunterschiede) waren im Modell `m10.6` weit von der Null entfernt, andere nicht.
+Es scheinen sich nicht alle Gruppen voneinander zu unterscheidne. So ist der Mittelwert der Gruppe `Gentoo` deutlich höher als der der beiden anderen Gruppen. Umgekehrt sind sich `Adelie` und `Chinstrap` in ihren Mittelwerten ziemlich ähnlich.
 
-- Auf Basis unseres Modells schließen wir also (mit hoher Sicherheit) aus, dass *alle* Preise im Mittelwert *exakt* identisch sind.
-
-- Ehrlicherweise hätte sowieso niemand geglaubt, dass die *exakte Nullhypothese* $\mu_1 = \mu_2 = \ldots = \mu_k$ bis in die letzte Dezimale gilt. Anders gesagt: Die Wahrscheinlichkeit eines bestimmten Wertes einer stetigen Zufallsvariable ist praktisch Null.
-
-- Aber: Viele Forscheris prüfen gerne die Nullhypothese, daher taucht der Begriff hier auf.
-
-- Das Verfahren der Frequentistischen Statistik, um die Nullhypothese $\mu_1 = \mu_2 = \ldots = \mu_k$ zu testen, nennt man *Varianzanalyse* (analysis of variance, kurz *ANOVA*).
-
-- In der Bayes-Statistik nutzt man - wie immer - primär die Post-Verteilung, um Fragen der Inferenz (z.B. Gruppenunterschiede dieser Art) zu inferenzstatistisch zu beurteilen.
+Wie in @fig-m106-params ersichtlich,
+überlappt sich der Schätzbereich für den Parameter von Gentoo *nicht* mit der Null;
+hingegen überlappt sich der Schätzbereich des Parameters für Chinstrap deutlich mit der Nullinie.
 
 
 
+Auf Basis unseres Modells schließen wir also (mit hoher Sicherheit) aus, dass *alle* Mittelwerte   *exakt* identisch sind.
+
+Ehrlicherweise hätte sowieso niemand geglaubt, dass die *exakte Nullhypothese* $\mu_1 = \mu_2 = \ldots = \mu_k$ bis in die letzte Dezimale gilt. Anders gesagt: Die Wahrscheinlichkeit eines bestimmten Wertes einer stetigen Zufallsvariable ist praktisch Null.
+
+Aber: Viele Forscheris prüfen gerne die Nullhypothese, daher taucht der Begriff hier auf.
+
+Das Verfahren der Frequentistischen Statistik, um die Nullhypothese $\mu_1 = \mu_2 = \ldots = \mu_k$ zu testen, nennt man *Varianzanalyse* (analysis of variance, kurz *ANOVA*).
+
+In der Bayes-Statistik nutzt man - wie immer - primär die Post-Verteilung, um Fragen der Inferenz (z.B. Gruppenunterschiede dieser Art) zu inferenzstatistisch zu beurteilen.
 
 
-### Modellkoeffizienten von `m10.6`
-
-Die Regressionsoeffizienten pro Stufen von `cut`entsprechen den Mittelwerten $\hat{y_i}$ aus der Posteriori-Verteilung. Mit `coef(m10.6)` kann man sie sich bequem ausgeben lassen.
-
-```{r echo = TRUE}
-coef(m10.6)
-```
 
 
-- $\hat{y}_{Fair} = `r round(coef(m10.6)[1])`$
-- $\hat{y}_{Good} = `r round(coef(m10.6)[2])`$
-- etc.
+
+<!-- ### Modellkoeffizienten von `m10.6` -->
+
+<!-- Die Regressionsoeffizienten pro Stufe der UV entsprechen den Mittelwerten $\hat{y_i}$ aus der Posteriori-Verteilung. Mit `coef(m10.6)` kann man sie sich bequem ausgeben lassen. -->
+
+<!-- ```{r echo = TRUE} -->
+<!-- coef(m10.6) -->
+<!-- ``` -->
+
+
+<!-- - $\hat{y}_{Fair} = `r round(coef(m10.6)[1])`$ -->
+<!-- - $\hat{y}_{Good} = `r round(coef(m10.6)[2])`$ -->
+<!-- - etc. -->
 
 
 
@@ -1014,31 +1051,36 @@ Implizit bekommt man diese Informationen mitgeteilt durch die Größe der Konfid
 
 ### Wechsel der Referenzkategorie
 
-- `cut` ist eine nominale Variable, da passt in R der Typ `factor` (Faktor) am besten. Aktuell ist der Typ noch `character` (Text):
+- `species` ist eine nominale Variable, da passt in R der Typ `factor` (Faktor) am besten. Aktuell ist der Typ noch `character` (Text):
 
 ```{r echo = TRUE}
-diamonds <- diamonds %>% 
-  mutate(cut = factor(cut))
+penguins <- penguins %>% 
+  mutate(species = factor(species))
 ```
 
 
-- Im Standard sortiert R die Faktorstufen alphabetisch, aber man kann die Reihenfolge ändern. 
+Im Standard sortiert R die Faktorstufen alphabetisch, aber man kann die Reihenfolge ändern. 
 
 ```{r echo = TRUE}
-levels(diamonds$cut)
+levels(penguins$species)
 ```
 
-Setzen wir `Ideal` als Referenzkategorie und lassen die restliche Reihenfolge, wie sie ist:
+Setzen wir `Gentoo` als Referenzkategorie und lassen die restliche Reihenfolge, wie sie ist:
 
 ```{r echo = TRUE}
 library(forcats)
-diamonds <- diamonds %>% 
-  mutate(cut = factor(cut),
-    cut = fct_relevel(cut, "Ideal"))
+penguins <- penguins %>% 
+  mutate(species = factor(species),
+    species = fct_relevel(species, "Gentoo"))
 ```
+
+Beachten Sie, dass dazu das Paket `forcats` verfügbar sein muss.
+
+Jetzt haben wir die Referenzkategorie geändert:
+
 
 ```{r}
-levels(diamonds$cut)
+levels(penguins$species)
 ```
 
 
@@ -1049,10 +1091,10 @@ levels(diamonds$cut)
 
 
 
-### Wechsel der Referenzkategorie ändert nichts Wesentliches am Modell
+Der Wechsel der Referenzkategorie ändert nichts Wesentliches am Modell:
 
 ```{r echo = TRUE}
-m10.6a <- stan_glm(price ~ cut, data = diamonds, refresh = 0)
+m10.6a <- stan_glm(body_mass_g ~ species, data = penguins, refresh = 0)
 hdi(m10.6a)
 ```
 
@@ -1072,12 +1114,13 @@ hdi(m10.6a)
 
 
 
-- $R^2$ gibt den Anteil der Gesamtvarianz (der AV) an, den das Modell erklärt.
+$R^2$ gibt den Anteil der Gesamtvarianz (der AV) an, den das Modell erklärt.
 - Höhere Wert von $R^2$ bedeuten, dass das Modell die Daten besser erklärt.
-- $R^2$ wird normalerweise auf Basis eines Punktschätzers definiert.
-- Solch eine Definition lässt aber viel Information - über die Ungewissheit der Schätzung - außen vor.
-- Daher ist es wünschenswert, diese Information in $R^2$ einfließen zu lassen: *Bayes-R-Quadrat*.
-- mit `bayes_r2()` kann man sich die Verteilung berechnen lassen.
+$R^2$ wird normalerweise auf Basis eines Punktschätzers definiert.
+Solch eine Definition lässt aber viel Information - über die Ungewissheit der Schätzung - außen vor.
+Daher ist es wünschenswert, diese Information in $R^2$ einfließen zu lassen: *Bayes-R-Quadrat*.
+
+
 
 
 
@@ -1113,26 +1156,26 @@ hdi(m10.6_r2) %>%
 
 
 
-- Wie genau sind die Vorhersagen des Modells? $\sigma$ (Vorhersagefehler) quantifiziert die Streuung der Residuen $r_i = y_i - X_i\hat{\beta}$, mit $\hat{y}_i = X_i\hat{\beta}$. 
-- Anders gesagt: $\hat{y} = \beta_0 + \beta_1x_1 + \beta_2x_2 + \cdots = X\hat{\beta}$.
-- Anders gesagt gibt $\sigma$ die "typische" Abweichung einer Beobachtung vom vorhergesagten Wert an.
-- Es ist nützlich, $\sigma$ in Bezug zu setzen zur Streuung der AV, $sd_y=s_y$:
-- $R^2 = 1- (\hat{\sigma}^2/s^2_y)$.
-- $R2$ gibt damit den Anteil der vom Modell erklärten Varianz, $V$, an.
-- Berechnet man das Modell mit der Methode der kleinsten Quadrate (nicht mit Bayes), dann ist der obige Ausdruck äquivalent zu:
-- $R^2=V_{i=1}^n \hat{y}_i/s_y^2$
-- Die beiden obigen Ausdrücke nehmen $\hat{y}_i$ als fix (sicher) an und vernachlässigen Ungewissheit; sie sind übergewiss aus Bayes-Sicht.
+Wie genau sind die Vorhersagen des Modells? $\sigma$ (Vorhersagefehler) quantifiziert die Streuung der Residuen $r_i = y_i - X_i\hat{\beta}$, mit $\hat{y}_i = X_i\hat{\beta}$. 
+Anders gesagt: $\hat{y} = \beta_0 + \beta_1x_1 + \beta_2x_2 + \cdots = X\hat{\beta}$.
+Anders gesagt gibt $\sigma$ die "typische" Abweichung einer Beobachtung vom vorhergesagten Wert an.
+Es ist nützlich, $\sigma$ in Bezug zu setzen zur Streuung der AV, $sd_y=s_y$:
+$R^2 = 1- (\hat{\sigma}^2/s^2_y)$.
+$R2$ gibt damit den Anteil der vom Modell erklärten Varianz, $V$, an.
+Berechnet man das Modell mit der Methode der kleinsten Quadrate (nicht mit Bayes), dann ist der obige Ausdruck äquivalent zu:
+$R^2=V_{i=1}^n \hat{y}_i/s_y^2$
+Die beiden obigen Ausdrücke nehmen $\hat{y}_i$ als fix (sicher) an und vernachlässigen Ungewissheit; sie sind übergewiss aus Bayes-Sicht.
 
 
 
 
 ## Bayes' $R^2$
 
-- Besser ist es (aus Bayes-Sicht), die Ungewissheit der Vorhersagen bei der Berechnung der Modellgüte miteinzubeziehen:
-- $\text{Bayes }R^2 = \frac{\text{erkärte Varianz}}{\text{Erklärte Varianz + Residualvarianz}}= \frac{V_{mod}}{V_{mod} + V_{res}}$
-- $V_{mod}$ ist die Varianz in der PPV mit $s = 1, \ldots, S$ simulierten Stichproben, $V(\hat{y}_i)$ und $V_{res}$ ist die Residualvarianz im Modell.
-- Für jede Stichprobe $s$ berechnet man die vorhergesagten Werte, $\hat{y}_i^s$, die Residualvarianz $\sigma^2_s$ und den Anteil der erklärten Varianz:
-- $\text{Bayes }R^2_s = \frac{V(\hat{y}_i^s)}{V(\hat{y}_i^s+\sigma_s^2)}$
+Besser ist es (aus Bayes-Sicht), die Ungewissheit der Vorhersagen bei der Berechnung der Modellgüte miteinzubeziehen:
+$\text{Bayes }R^2 = \frac{\text{erkärte Varianz}}{\text{Erklärte Varianz + Residualvarianz}}= \frac{V_{mod}}{V_{mod} + V_{res}}$
+$V_{mod}$ ist die Varianz in der PPV mit $s = 1, \ldots, S$ simulierten Stichproben, $V(\hat{y}_i)$ und $V_{res}$ ist die Residualvarianz im Modell.
+Für jede Stichprobe $s$ berechnet man die vorhergesagten Werte, $\hat{y}_i^s$, die Residualvarianz $\sigma^2_s$ und den Anteil der erklärten Varianz:
+$\text{Bayes }R^2_s = \frac{V(\hat{y}_i^s)}{V(\hat{y}_i^s+\sigma_s^2)}$
 
 
 @gelman_r_squared_2019, @gelman_regression_2021, Kap. 11.7
@@ -1149,18 +1192,18 @@ hdi(m10.6_r2) %>%
 
 
 
-- Sagen wir, wenn sich zwei Preismittelwerte um höchstens $d=100$€ unterscheiden, gilt dieser Unterschied für uns als "praktisch gleich", "praktisch kein Unterschied" bzw. vernachlässigbar.
-- Nimmt man (praktisch) keinen Unterschied/Zusammenhang/Effekt an, spricht man von einer *Nullhypothese*: $H_0$.
-- Die Wahl von $d$ ist *subjektiv* in dem Sinne als sie von inhaltlichen Überlegungen geleitet sein sollte.
-- Diesen Bereich bezeichnen wir den *Indifferenzbereich* (Äquivalenzzone, Bereich eines vernachlässigbaren Unterschieds oder *Region of practical equivalence*, Rope). 
-- Jetzt prüfen wir, ob ein "Großteil" der Posteriori-Stichproben im Rope liegt.
-- Unter "Großteil" wird häufig das *95%-HDI* verstanden.
+Sagen wir, wenn sich zwei Preismittelwerte um höchstens $d=100$€ unterscheiden, gilt dieser Unterschied für uns als "praktisch gleich", "praktisch kein Unterschied" bzw. vernachlässigbar.
+Nimmt man (praktisch) keinen Unterschied/Zusammenhang/Effekt an, spricht man von einer *Nullhypothese*: $H_0$.
+Die Wahl von $d$ ist *subjektiv* in dem Sinne als sie von inhaltlichen Überlegungen geleitet sein sollte.
+Diesen Bereich bezeichnen wir den *Indifferenzbereich* (Äquivalenzzone, Bereich eines vernachlässigbaren Unterschieds oder *Region of practical equivalence*, Rope). 
+Jetzt prüfen wir, ob ein "Großteil" der Posteriori-Stichproben im Rope liegt.
+Unter "Großteil" wird häufig das *95%-HDI* verstanden.
 
 *Entscheidungsregel*:
 
-- Großteil liegt *innerhalb* von Rope  ➡️ *Annahme* der Nullhypothese "praktisch kein Effekt", $H_0$
-- Großteil liegt *außerhalb* von Rope  ➡️ *Ablehnung* der Nullhypothese "praktisch kein Effekt", $H_0$
-- Ansonsten  ➡️  keine Entscheidung 
+Großteil liegt *innerhalb* von Rope  ➡️ *Annahme* der Nullhypothese "praktisch kein Effekt", $H_0$
+Großteil liegt *außerhalb* von Rope  ➡️ *Ablehnung* der Nullhypothese "praktisch kein Effekt", $H_0$
+Ansonsten  ➡️  keine Entscheidung 
 
 @kruschke_rejecting_2018
 
@@ -1180,14 +1223,18 @@ knitr::include_graphics("https://github.com/sebastiansauer/QM2-Folien/raw/main/i
 
 ### Rope berechnen
 
+Den Rope berechnet man mit `rope(model)`.
+
 
 ```{r}
 rope(m10.6)
 ```
 
-Alle Faktorstufen von `cut` haben doch einen beträchtlichen Teil ihrer Wahrscheinlichkeitsmasse der Posteriori-Verteilung im ROPE. 
+Die Faktorstufe `Chinstrap` von `species` hat doch einen beträchtlichen Teil ihrer Wahrscheinlichkeitsmasse der Posteriori-Verteilung im ROPE. 
 
-Wir können daher für keinen der Unterschiede das ROPE verwerfen.
+Wir können daher für diese Gruppe  das ROPE *nicht* verwerfen.
+
+Aber: `Gentoo` liegt zu 0% im Rope. Für Gentoo können wir das Rope verwerfen.
 
 Das hört sich abstrakt an? Dann lassen Sie uns das lieber visualisieren.
 
@@ -1206,21 +1253,26 @@ rope(m10.6) %>% plot()
 ```
 
 
-Das ROPE druchkreuzt die "Berge" der Posteriori-Verteilung doch recht deutlich.
-Wir knönen das Rope nicht verwerfen.
+Das ROPE druchkreuzt die "Berge" der Posteriori-Verteilung für Chinstrap deutlich.
+Wir knönen das Rope für Chinstrap nicht verwerfen.
+Gentoo hingegen wird vom vom Rope nicht durchkreuzt, es ist weit entfernt vom "blauen Fluss" des Rope.
 
 
 
 
-### Genaue Rope-Werte
+### Finetuning des Rope
+
+Wir können festlegen, was wir unter "praktischer Äquivalenz" verstehen,
+also die Grenzen des Ropes verändern.
+Sagen wir, 100 Gramm sind unsere Grenze für einen vernachlässigbaren Effekt, s. @fig-rope-range.
 
 
 ```{r echo = TRUE, results="hide"}
-library(bayestestR)
+#| label: fig-rope-range
+#| fig-cap: ROPE mit selber eingestellter Grenze von ±100 (Gramm)
 rope(m10.6, range = c(-100, 100))
 ```
 
-</br>
 
 
 
@@ -1229,25 +1281,23 @@ rope(m10.6, range = c(-100, 100))
 Im Standard werden 95%-HDI berichtet, das kann man so ändern, wenn man möchte:
 
 ```{r echo=TRUE, eval = FALSE}
-rope(m10.6, range, c(-100,100), ci = .89, ci_method = "ETI")
+rope(m10.6, range = c(-100,100), ci = .89, ci_method = "ETI")
 ```
 
 `ETI` (equal tails interval) steht für ein PI.
+Jetzt wird berichtet, welcher Teil eines 89%-CI sich im Rope befindet.
 
 
-
-```{r echo = TRUE, out.width="70%"}
-plot(rope(m10.6, range = c(-100, 100)))
-```
 
 
 
 
 ### Beantwortung der Forschungsfrage
 
->    Nur das 95%-HDI für Schliffart "Ideal" schloss den Indifferenzbereich von ±100€ aus, die übrigen Mittelwertsdifferenzen nicht. Für die übrigen Differenzen ist keine klare inferenzstatistische Aussage hinsichtlich eines Indifferenzbereichs möglich: Es ist plauibel, laut dem Modell, dass es einen praktisch bedeutsamen Unterschied gibt, aber es ist auch plausibel, dass es keinen praktisch bedeutsamen Unterschied gibt.
 
->   Die 95%HDI für die Mittelwertsdifferenzen waren wie folgt: cutGood: [-2040, 953], cutIdeal: [-2645, -4], cutPremium: [-965, 1732], cutVeryGood: [-2102, 627]. Das Modell erklärte im Median ca. 3% der Varianz, also nur einen kleinen Teil.
+Für die Spezeis *Gentoo* wurde ein substanzieller Gewichtsunterschied zur Referenzgruppe, Adelie, vom Modell entdeckt. Für *Chinstrap* hingegen  ist keine klare inferenzstatistische Aussage hinsichtlich eines Indifferenzbereichs möglich: Es ist plauibel, laut dem Modell, dass es einen praktisch bedeutsamen Unterschied gibt, aber es ist auch plausibel, dass es keinen praktisch bedeutsamen Unterschied gibt.
+
+
 
 
 
@@ -1316,7 +1366,8 @@ kidiq %>%
 ```{r}
 #| echo: false
 kidiq %>% 
-  correlation() 
+  correlation() %>% 
+  display()
 ```
 
 
@@ -1343,16 +1394,21 @@ kidiq %>%
 
 ### Univariate Regressionen
 
+Wir berechnen jeweils eine univariate Regression, pro Prädiktor,
+also eine für `mom_iq` und eine für `mom_age`.
+
 ```{r echo = TRUE}
 m10.7 <- stan_glm(kid_score ~ mom_iq, data = kidiq, refresh = 0)
 m10.8 <- stan_glm(kid_score ~ mom_age, data = kidiq, refresh = 0)
 ```
 
+Hier die Ergebnisse für `mom_iq`:
 
 ```{r echo = TRUE}
 coef(m10.7)
 ```
 
+Hier die Ergebnisse für `mom_age`:
 
 
 ```{r echo = TRUE}
@@ -1741,12 +1797,14 @@ prior_summary(m10.10)  # aus rstanarm
 
 
 $$
-\text{kid_score} \sim \mathcal{N}(0,2.5)\\
-\mu_i = \alpha + \beta_1\text{mom_iq}_i + \beta_2\text{mom_age}_i \\
-\alpha \sim \mathcal{N}(0,2.5)\\
-\beta_1 \sim \mathcal{N}(0,2.5)\\
-\beta_2 \sim \mathcal{N}(0,2.5)\\
-\sigma \sim \mathcal{E}(1)
+\begin{aligned}
+\text{kid_score}  &\sim \mathcal{N}(0,2.5)\\
+\mu_i& = \alpha + \beta_1\text{mom_iq}_i + \beta_2\text{mom_age}_i \\
+\alpha &\sim \mathcal{N}(0,2.5)\\
+\beta_1 &\sim \mathcal{N}(0,2.5)\\
+\beta_2 &\sim \mathcal{N}(0,2.5)\\
+\sigma &\sim \mathcal{E}(1)
+\end{aligned}
 $$
 
 Schreibt man einen Bericht, so bietet es sich an, die Modelldefinition zumindest im Anhang aufzuführen.
