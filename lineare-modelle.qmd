@@ -52,15 +52,18 @@ Da wir in diesem Kapitel immer mal wieder eine Funktion aus dem R-Paket `{easyst
 Die (einfache) Regression prüft, inwieweit zwei Variablen, $Y$ und $X$ linear zusammenhängen.
 Je mehr sie zusammenhängen, desto besser kann man $X$ nutzen, um $Y$ vorherzusagen (und umgekehrt).
 Hängen $X$ und $Y$ zusammen, heißt das nicht (unbedingt), dass es einen *kausalen* Zusammenhang zwischen $X$ und $Y$ gibt.
-Linear bedeutet, der Zusammenhang ist additiv und konstant: wenn $X$ um eine Einheit steigt, steigt $Y$ immer um $b$ Einheiten (nicht kausal, sondern deskriptiv gemeint).
+*Linear* ist ein Zusammenhang, wenn der Zuwachs in $Y$ relativ zu $X$ konstant ist: wenn $X$ um eine Einheit steigt, steigt $Y$ immer um $b$ Einheiten (nicht kausal, sondern deskriptiv gemeint).
 
 [Datenquelle](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv), @mcelreath_statistical_2020.
 
-Laden wir die Daten und visualisieren wir uns den Zusammenhang.
+Laden wir die !Kung-Daten und visualisieren wir uns den Zusammenhang zwischen Gewicht (X) und Größe (Y), @fig-kung-zshg.
 
 
 ```{r Post-Regression-2}
 #| fig-asp: 0.5
+#| message: false
+#| label: fig-kung-zshg
+#| fig-cap: Der Zusammenhang von Größe und Gewicht im !Kung-Datensatz
 Kung_path <- "https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv"
 
 d <- read_csv(Kung_path)  
@@ -70,8 +73,6 @@ d2 <-
   filter(age > 18) 
 
 d2 %>% 
-  #select(weight, height) %>% 
-  #drop_na() %>% 
   ggplot(
        aes(x = weight, y = height)) +
   geom_point(alpha = .7) +
@@ -85,7 +86,7 @@ d2 %>%
 ### Bei jedem Prädiktorwert eine Post-Verteilung für $\mu$
 
 
-Unser Modell erlaubt uns für jeden beliebigen Wert des Prädiktors eine Post-Verteilung (von $\mu$) zu berechnen.
+Komfort pur: Unser Modell erlaubt uns für jeden beliebigen Wert des Prädiktors eine Post-Verteilung (von $\mu$) zu berechnen.
 
 Hier am Beispiel von `m42`, s. @fig-post42.
 
@@ -103,8 +104,7 @@ names(m42_post) <- c("mu", "sigma")
 
 ```{r Post-Regression-10}
 #| echo: false
-#| label: fig-post42
-#| fig-cap: Für jeden beliebigen Prädiktorwert kann man eine Post-Verteilung bekommen
+
 plot_post_42 <- 
   m42_post %>% 
   ggplot() +
@@ -116,7 +116,7 @@ plot_post_42 <-
 ```
 
 
-```{r Post-Regression-11}
+```{r Plot-condition}
 #| echo: false
 lm1 <- lm(height ~ weight, data = d2)
 
@@ -124,6 +124,24 @@ d_pred <-
   tibble(weight = c(40, 45, 50, 55),
          height = predict(lm1, newdata = data.frame(weight)))
 
+
+
+
+
+vertical_norm <- function(x, y, k = 3, sigma_norm = 1) {
+  
+  norm_dens <-
+    tibble(
+      x_raw = seq(-k*sigma_norm, k * sigma_norm, length.out = 100),
+      y_raw = dnorm(x_raw, mean = 0, sigma_norm) / dnorm(0, 0, sigma_norm) * 3,
+      x = x_raw + x,
+      y = y_raw - k * sigma_norm, 
+      xend = x,
+      yend = y_raw + k * sigma_norm)
+  
+  return(norm_dens)
+}
+  
 plot_condition <- 
   d2 %>% 
   #select(weight, height) %>% 
@@ -133,12 +151,14 @@ plot_condition <-
   geom_point(alpha = .7) +
   geom_smooth(method = "lm") +
   geom_point(data = d_pred, color = "red", size = 5, alpha = .5) +
-  scale_x_continuous(limits = c(0, 70))
+  geom_path(aes(y, x), data = vertical_norm(x = 40, y = 150), 
+            color = "green")
 ```
 
 ```{r m3}
 #| echo: false
 #| results: "hide"
+#| cache: true
 
 d2 <-
   d2 %>% 
@@ -181,7 +201,7 @@ m43a_prior_pred <-
 
 
 
-```{r eval = FALSE}
+```{r objects-m43-m43a-to-disk, eval = FALSE}
 #| eval: false
 #| echo: false
 print(m43)
@@ -195,6 +215,7 @@ write_rds(m43a, "objects/m43a.rds")
 
 ```{r m43-plot}
 #| echo: false
+
 nd <- tibble(
   weight_c = c(-5, 0, +5, 10)
 )
@@ -244,8 +265,11 @@ post_at_plot <-
 
 ```{r Post-Regression-12, out.width="100%", fig.width=7}
 #| echo: false
-p1 <- (plot_condition) / post_at_plot
-p1
+#| label: fig-post42
+#| fig-cap: Für jeden beliebigen Prädiktorwert kann man eine Post-Verteilung bekommen
+
+
+plots(plot_condition, post_at_plot, n_rows = 2, tags = "A")
 ```
 
 
@@ -900,24 +924,18 @@ auch hier ist sich das Modell ziemlich sicher, da dass zugehörige 95%-CI keine 
 ### m43a
 
 
-Sagen wir, auf Basis gut geprüfter Evidenz haben wir folgendes Modell festgelegt: `height ~ weight_c`.
+Sagen wir, auf Basis gut geprüfter Evidenz haben wir folgendes Modell festgelegt: `height ~ weight_c`, s. @eq-m43a.
 
 Prioris:
 
-$$
-\beta_1 \sim N(5,3) \\
-
+$$\beta_1 \sim N(5,3) \\
 \beta_0 \sim N(178, 20) \\
+\sigma \sim E(0.1)$${#eq-m43a}
 
-\sigma \sim E(0.1)
-$$
-
-Wir nennen es `m43a`^[Wer ist hier für die Namensgebung zuständig? Besoffen oder was?].
+Wir nennen das Modell `m43a`^[Wer ist hier für die Namensgebung zuständig? Besoffen oder was?].
 
 
 ```{r m43a, echo = TRUE}
-# Zufallszahlen festlegen:
-set.seed(42)  
 # Posteriori-Vert. berechnen:
 m43a <-
   stan_glm(
@@ -926,6 +944,7 @@ m43a <-
     prior_intercept = normal(178, 20),  # mu
     prior_aux = exponential(0.1),  # sigma
     refresh = 0,  # zeig mir keine Details
+    seed = 42,  # lege die Zufallszahlen fest für Reproduzierbarkeit
     data = d2)
 ```
 
@@ -948,7 +967,7 @@ m43a %>%
   fmt_number(columns = 2:4, decimals = 1)
 ```
 
-
+Hier sind die Zusammenfassungen der Stichproben aus der Post-Verteilung, komfortabel zu erhalten mit dem Befehle `parameters`:
 
 ```{r Post-Regression-befragen-4, echo = TRUE}
 #| echo: true
@@ -972,10 +991,12 @@ dass der Effekt positiv (also größer als Null) oder negativ ist (jenachdem ob 
 Damit ist er so etwas (grob!) Ähnliches wie der p-Wert in der Frequentistischen Statistik [@makowski_indices_2019].
 
 
-Am besten das Diagramm dazu anschauen:
+Am besten das Diagramm dazu anschauen, s @fig-pd1.
 
 
 ```{r}
+#| fig-cap: Diagramm zur Probability of Direction, Modell m43a
+#| label: fig-pd1
 plot(p_direction(m43a))
 ```
 
@@ -992,7 +1013,8 @@ Wir werden uns aber mit diesen beiden Kennwerten nicht weiter beschäftigen in d
 
 
 Zur Erinnerung: Die Bayes-Analyse liefert uns viele Stichproben zu den gesuchten Parametern,
-hier $\beta_0$, $\beta_1$ und $\sigma$:
+hier $\beta_0$, $\beta_1$ und $\sigma$.
+Überzeugen wir uns mit einem Blick in die Post-Verteilung von `m43a`:
 
 
 
@@ -1018,10 +1040,12 @@ d2 %>%
     color = "blue")
 ```
 
-Einfacher ist die Syntax, wenn man die Funktion `estimate_expectation` benutzt.
+Einfacher ist die Syntax vielleicht, wenn man die Funktion `estimate_expectation` benutzt, s. @fig-expect-m43a.
 Mit "expectation" sind hier die erwarteten Werte, also die Regressionsgerade, gemeint.
 
 ```{r}
+#| fig-cap: Erwartete Werte des Modell m43a, sprich, die Regressionsgerade
+#| label: fig-expect-m43a
 m43_expect <- estimate_expectation(m43a)
 plot(m43_expect)
 ```
@@ -1043,6 +1067,9 @@ Hier folgen einige Beispiele an Fragen, die wir an unser Modell bzw. die Post-Ve
 - Was ist der Schätzwert für Ungewissheit in der Schätzung der Größe? ($\sigma$)
 - Was ist der wahrscheinlichste Wert für z.B: $\beta_1$?
 
+
+Eine nützliche Zusammenfassung der Post-Verteilung bekommt man mit `parameters(modell)`:
+
 ```{r Post-Regression-befragen-7, echo = TRUE}
 #| eval: false
 m43a %>% 
@@ -1051,14 +1078,14 @@ m43a %>%
 
 
 ```{r Post-Regression-befragen-7a}
-#| exho: false
+#| echo: false
 m43a %>% 
   parameters() %>% 
   display()
 ```
 
 
-Wandelt man das Ausgabe-Objekt der Bayes-Regression mit `as_tibble()` in eine Tabelle um,
+Wandelt man das Ausgabe-Objekt der Bayes-Regression, d.h. `m43a`, mit `as_tibble()` in eine Tabelle um,
 so bekommt man eine Tabelle mit den Stichproben der Post-Verteilung:
 
 
@@ -1072,7 +1099,7 @@ m43a_post %>%
 ```
 
 
-Wie wir gesehen haben, nutzen wir diese Tabeller der Post-Verteilung immer wieder.
+Wie wir gesehen haben, nutzen wir diese Tabelle der Post-Verteilung immer wieder.
 Speichern wir uns sie also als ein Objekt ab, `m43_post`.
 
 
@@ -1080,9 +1107,6 @@ Jetzt haben wir wieder eine schöne Tabelle mit Stichproben aus der Post-Verteil
 die wir wie gewohnt befragen können.
 
 
-![Typischer Bayes-Nutzer, der ein Ungewissheitsintervall berechnet. Bildquelle: Easystats, bayestestR](https://easystats.github.io/bayestestR/reference/figures/bayesianMaster.jpg)
-
-[Quelle](https://easystats.github.io/bayestestR/articles/bayestestR.html)
 
 Eine Visualisierung zeigt gut sowohl Lage- als auch Streuungsmaße der Parameter, zumindest grob.,
 
@@ -1138,6 +1162,7 @@ plot(m43a_hdi)
 ```
 
 Ergänzt man bei `plot()` noch `show_intercept = TRUE` wird auch der Achsenabschnitt angezeigt.
+
 
 
 
@@ -1339,6 +1364,17 @@ Die Wahrscheinlichkeit beträgt `r wskt_klein`.
 <!-- ] -->
 
 
+
+### Typischer Bayes-Nutzer in Aktion
+
+![Typischer Bayes-Nutzer, der ein Ungewissheitsintervall berechnet. Bildquelle: Easystats, bayestestR](https://easystats.github.io/bayestestR/reference/figures/bayesianMaster.jpg)
+
+[Quelle](https://easystats.github.io/bayestestR/articles/bayestestR.html)
+
+
+
+
+
 ## Post-Verteilung bedingt auf einen Prädiktorwert
 
 
@@ -1501,7 +1537,7 @@ mus <-
 
 Um die Perzentilintervalle zu erstellen, wird von `predictive_interval()` für jeden Prädiktorwert eine Posteriori-Verteilung erstellt und das 5%- sowie 95%-Quantil berechnet. 
 
-Wir sehen etwa, dass wir bei einer Person mittleren Gewichts, eine Körpergrö0e von ca. 146 cm bis 163 cm zu erwarten haben (95%-KI).
+Wir sehen etwa, dass wir bei einer Person mittleren Gewichts, eine Körpergröße von ca. 146 cm bis 163 cm zu erwarten haben (95%-KI).
 Hoppla! Das ist ja viel ungenauer, als die Angaben der Post-Verteilung oben.
 Ja, denn die Post-Verteilung hat die Ungewissheit zum *Mittelwert* ausgedrückt;
 die PPV gibt die Ungewissheit *tatsächlicher* beobachtbarer Körpergrößen aus,
@@ -1600,9 +1636,7 @@ Wir können auch den Mittelwert über alle bedingten PPV anschauen, sozusagen di
 Vergleichen wir die echten Werte für `height`, $y$, mit den von der PPV simulierten Werten für `height`, $y_{rep}$.
 
 ```{r ppv-plot1}
-
 check_predictions(m43a)
-
 ```
 
 `?check_predictions` zeigt Hilfe für diese Funktion. 
@@ -1613,38 +1647,6 @@ Die Funktion zeigt die Vorhersagen für die AV laut der Posteriori-Verteilung.
 Die zwei Gipfel hat unser Modell nicht mitgekriegt, 
 ansonsten decken sich die Vorhersagen der PPV gut mit den echten Daten.
 
-
-
-
-
-### PPV plotten, von Hand
-
-
-PPV berechnen (lassen):
-
-```{r Post-Regression-befragen-27, echo = TRUE}
-set.seed(42)
-
-x <- posterior_predictive_check(m43a)
-x
-ppv_m43a <- posterior_predict(
-  m43a,
-  newdata = weight_df,
-  draws = 100) %>% 
-  as_tibble() %>% 
-  pivot_longer(
-    cols = everything(),
-    names_to = "weight_condition",
-    values_to = "height")
-```
-
-Und plotten:
-
-```{r ppv-regr, echo = TRUE, eval = FALSE, fig.asp = .4}
-ppv_m43a %>% 
-  ggplot(aes(x = height)) +
-  geom_density()
-```
 
 
 
@@ -1673,7 +1675,7 @@ Was ist der 50% Bereich der Körpergröße?
 
 ```{r Post-Regression-befragen-30, echo = TRUE}
 ppv_m43a %>% 
-  summarise(pi_50 = quantile(height,prob = c(.25, .75)))
+  eti(ci = .5)
 ```
 
 

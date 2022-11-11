@@ -83,7 +83,7 @@ d <-
 ```
 
 
-Voilà, die Post-Verteilung als Tabelle, auch "Bayes-Box" genannt: s. @tbl-post1.
+Voilà, die Post-Verteilung als Tabelle, auch "Bayes-Box" (oder Bayes-Gitter) genannt: s. @tbl-post1.
 
 
 ```{r QM2-Thema3-Teil1-1}
@@ -209,7 +209,8 @@ samples <-
   slice_sample(  # Ziehe daraus eine Stichprobe,
     n = 1e4,  # mit insgesamt n=10000 Zeilen,
     weight_by = post,  # Gewichte nach Post-Wskt.,
-    replace = T)  # Ziehe mit Zurücklegen
+    replace = T)  # Ziehe mit Zurücklegen %>% 
+  select(p_grid)
 ```
 
 
@@ -223,12 +224,18 @@ samples <-
   slice_sample(  # Ziehe daraus eine Stichprobe,
     n = 1e4,  # mit insgesamt n=10000 Zeilen,
     weight_by = post,  # Gewichte nach Post-Wskt.,
-    replace = T)  # Ziehe mit Zurücklegen
+    replace = T)  # Ziehe mit Zurücklegen %>% 
+  select(p_grid)
 ```
 
-Die Wahrscheinlichkeit, einen bestimmten Parameterwert aus Tabelle `d` zu ziehen, ist proportional zur Posteriori-Wahrscheinlichkeit (`post`) dieses Werts. 
+Die Wahrscheinlichkeit, einen bestimmten Parameterwert (d.h. aus der Spalte `p_grid`) aus Tabelle `d` zu ziehen, 
+ist proportional zur Posteriori-Wahrscheinlichkeit (`post`) dieses Werts. 
 Ziehen mit Zurücklegen hält die Wahrscheinlichkeiten während des Ziehens konstant.
 Das Argument `weight_by` legt die Wahrscheinlichkeit fest, mit der eine Zeile gezogen wird.
+
+Wir begnügen uns mit der Spalte mit den Wasseranteilswerten (Parameterwerten), `p_grid`, 
+die anderen Spalten brauchen wir nicht.
+
 
 Das Ergebnis, Tabelle `samples`, die aus Stichproben aus der Post-Verteilung besteht, ist (in Auszügen) in @tbl-postsample1 dargestellt.
 
@@ -388,16 +395,28 @@ Die Stichproben-Post-Verteilung hat jetzt "glattere" Ränder.
 Mehr Stichproben und mehr Gitterwerte glätten die Verteilung.
 :::
 
-Jetzt noch mal mit mehr Stichproben: $n=10^6$ Stichproben bei $k=100$ Gitterwerten aus der Posteriori-Verteilung.
+Jetzt noch mal mit mehr Stichproben: $n=10^6$ Stichproben bei $k=100$ Gitterwerten aus der Posteriori-Verteilung, s. @fig-post-dk100.
 
 ```{r QM2-Thema3-Post-befragen-5}
 #| echo: false
-d_k100 %>% 
-  slice_sample(n = 1e6, weight_by = post, replace = T) %>% 
-  ggplot(aes(x = p_grid)) +
-  geom_density(fill = "black") +
+#| label: fig-post-dk100
+#| fig-cap: "Post-Verteilung mit vielen Stichproben und vielen Parameterwerten (Gitterwerten): schön 'glatt'. Mittelwert (MW), Modus und Median (Md) liegen eng nebeneinander, da die Verteilung recht symmetrisch ist."
+
+mode <- map_estimate(d_k100_samples$p_grid) %>% round(2)
+avg <- mean(d_k100_samples$p_grid) %>% round(2)
+md <- median(d_k100_samples$p_grid) %>% round(2)
+
+d_k100_samples <- 
+  d_k100 %>% 
+  slice_sample(n = 1e6, weight_by = post, replace = T) 
+
+d_k100_samples %>%   
+ggplot(aes(x = p_grid)) +
+  geom_density(fill = "grey40") +
   scale_x_continuous("Anteil Wasser (p)", limits = c(0, 1)) +
-  labs(y = "")
+  labs(y = "",
+       caption = paste0("Modus: ", mode, "; MW: ", avg, "; Md: ", md)) +
+  geom_vline(xintercept = c(mode, avg, md))
 ```
 
 
@@ -518,16 +537,47 @@ Laut unserem Modell ist es also sehr unwahrscheinlich, dass der Wasseranteil der
 
 :::
 
+
+Wir können auch fragen, welcher Parameterwert am wahrscheinlichsten ist;
+dieser Wert entspricht dem "Gipfel" des Berges, s.  @fig-post-dk100.
+
+
+Für unsere Stichproben-Postverteilung, `samples`, s. @fig-samples1, lässt sich der Modus so berechnen:
+
+
+```{r}
+map_estimate(samples$p_grid)  
+```
+
+
+Dabei steht `map` für [Maximum Aposteriori](https://easystats.github.io/bayestestR/reference/map_estimate.html), also das Maximum der Post-Verteilung.
+
+
+Bei der Gelegenheit könnten wir folgende, ähnliche Fragen stellen:
+
+- Was ist der mittlere Schätzwert (Mittelwert) zum Wasseranteil laut Post-Verteilung?
+- Was ist der mediane Schätzwert (Median)?
+
+
+Auf Errisch:
+
+```{r}
+samples %>% 
+  summarise(mean(p_grid),
+            median(p_grid))
+```
+
+
 ### Fragen nach Parameterwerten
 
 ::: callout-important
-Schätzbereiche von Parameterwerten nennt man auch *Konfidenz- oder Vertrauensintervall*^[Tatsächlich gibt es eine Vielzahl an Begriffen, die in der Literatur nicht immer konsistent verwendet werden, etwa Kompatibilitätsintervall, Ungewissheitsintervall, Passungsbereich.]
+Schätzbereiche von Parameterwerten nennt man auch *Konfidenz- oder Vertrauensintervall*^[Tatsächlich gibt es eine Vielzahl an Begriffen, die in der Literatur nicht immer konsistent verwendet werden, etwa Kompatibilitätsintervall, Ungewissheitsintervall, Passungsbereich.].
 :::
 
 
 
 Welcher Parameterwert wird mit 90% Wahrscheinlichkeit nicht überschritten, laut unserem Modell? (Gesucht sind also die unteren 90% der Posteriori-Wahrscheinlichkeit)
-Wir möchten also ziemlich sicher, was die Obergrenze an Wasser auf diesem Planeten ist^[Vieleicht damit es genug Berge zum Schifahren gibt.].
+Wir möchten also ziemlich sicher, was die Obergrenze an Wasser auf diesem Planeten ist^[Vielleicht damit es genug Berge zum Schifahren gibt.].
 
 
 ```{r QM2-Thema3-Post-befragen-11}
@@ -556,8 +606,9 @@ Dafür "schneiden" wir links und rechts die 5% der Stichproben mit den extremste
 ```{r QM2-Thema3-Post-befragen-12, echo = TRUE}
 samples %>% 
   summarise(
-    quant_10 = quantile(p_grid, 0.05),
-    quant_90 = quantile(p_grid, 0.95))
+    quant_05 = quantile(p_grid, 0.05),
+    quant_95 = quantile(p_grid, 0.95))
+
 ```
 
 
@@ -828,8 +879,8 @@ Je symmetrischer die Verteilung, desto näher liegen die Punktschätzer aneinand
 
 ```{r pointestimators}
 #| echo: false
-#| label: Visualisierung der Punktschätzer bei einer schiefen Post-Verteilung
-#| fig-cap: fig-post-pointestimates
+#| fig-cap: Visualisierung der Punktschätzer bei einer schiefen Post-Verteilung
+#| label: fig-post-pointestimates
 #| message: false
 
 point_estimates <-
@@ -920,6 +971,14 @@ Anstelle der Streuungsparameter ist es aber üblicher, ein HDI oder PI anzugeben
 
 
 
+:::callout-important
+Alles Wasser oder was?
+Im Beispiel dieses Kapitels haben wir unser gefragt, was wohl der Wasseranteil auf dem Planeten Erde ist. 
+Halten Sie sich klar vor Augen: Der Wasseranteil ist ein Beispiel für einen *Parameter*, einer unbekannten Größes eines Modells.
+:::
+
+
+
 
 
 ## Aufgaben
@@ -933,6 +992,7 @@ Anstelle der Streuungsparameter ist es aber üblicher, ein HDI oder PI anzugeben
 6. [iq06](https://datenwerk.netlify.app/posts/iq06/iq06.html)
 7. [iq07](https://datenwerk.netlify.app/posts/iq07/iq07.html)
 8. [iq08](https://datenwerk.netlify.app/posts/iq08/iq08.html)
+8. [iq10](https://datenwerk.netlify.app/posts/iq10/iq10.html)
 9. [fattails1](https://datenwerk.netlify.app/posts/fattails01/fattails01.html)
 10. [fattails2](https://datenwerk.netlify.app/posts/fattails02/fattails02.html)
 11. [ReThink3e1-7](https://datenwerk.netlify.app/posts/rethink3e1-7/rethink3e1-7)
