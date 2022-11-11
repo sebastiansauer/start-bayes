@@ -366,7 +366,7 @@ div.csl-indent {
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">post =</span> unstand_post <span class="sc">/</span> <span class="fu">sum</span>(unstand_post))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Voilà, die Post-Verteilung als Tabelle, auch “Bayes-Box” genannt: s. <a href="#tbl-post1">Tabelle&nbsp;<span>6.1</span></a>.</p>
+<p>Voilà, die Post-Verteilung als Tabelle, auch “Bayes-Box” (oder Bayes-Gitter) genannt: s. <a href="#tbl-post1">Tabelle&nbsp;<span>6.1</span></a>.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div class="kable-table">
@@ -528,23 +528,25 @@ Wichtig
 <span id="lst-post-sample-3"><a href="#lst-post-sample-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_sample</span>(  <span class="co"># Ziehe daraus eine Stichprobe,</span></span>
 <span id="lst-post-sample-4"><a href="#lst-post-sample-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fl">1e4</span>,  <span class="co"># mit insgesamt n=10000 Zeilen,</span></span>
 <span id="lst-post-sample-5"><a href="#lst-post-sample-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">weight_by =</span> post,  <span class="co"># Gewichte nach Post-Wskt.,</span></span>
-<span id="lst-post-sample-6"><a href="#lst-post-sample-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">replace =</span> T)  <span class="co"># Ziehe mit Zurücklegen</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="lst-post-sample-6"><a href="#lst-post-sample-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">replace =</span> T)  <span class="sc">%&gt;%</span>  <span class="co"># Ziehe mit Zurücklegen</span></span>
+<span id="lst-post-sample-7"><a href="#lst-post-sample-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(p_grid)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 
 </div>
-<p>Die Wahrscheinlichkeit, einen bestimmten Parameterwert aus Tabelle <code>d</code> zu ziehen, ist proportional zur Posteriori-Wahrscheinlichkeit (<code>post</code>) dieses Werts. Ziehen mit Zurücklegen hält die Wahrscheinlichkeiten während des Ziehens konstant. Das Argument <code>weight_by</code> legt die Wahrscheinlichkeit fest, mit der eine Zeile gezogen wird.</p>
+<p>Die Wahrscheinlichkeit, einen bestimmten Parameterwert (d.h. aus der Spalte <code>p_grid</code>) aus Tabelle <code>d</code> zu ziehen, ist proportional zur Posteriori-Wahrscheinlichkeit (<code>post</code>) dieses Werts. Ziehen mit Zurücklegen hält die Wahrscheinlichkeiten während des Ziehens konstant. Das Argument <code>weight_by</code> legt die Wahrscheinlichkeit fest, mit der eine Zeile gezogen wird.</p>
+<p>Wir begnügen uns mit der Spalte mit den Wasseranteilswerten (Parameterwerten), <code>p_grid</code>, die anderen Spalten brauchen wir nicht.</p>
 <p>Das Ergebnis, Tabelle <code>samples</code>, die aus Stichproben aus der Post-Verteilung besteht, ist (in Auszügen) in <a href="#tbl-postsample1">Tabelle&nbsp;<span>6.2</span></a> dargestellt.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="tbl-postsample1" class="anchored">
 
-<div id="bdnwetwqie" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="asamjvvqap" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#bdnwetwqie) .gt_table {
+:where(#asamjvvqap) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -569,7 +571,7 @@ Wichtig
   border-left-color: #D3D3D3;
 }
 
-:where(#bdnwetwqie) .gt_heading {
+:where(#asamjvvqap) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -581,7 +583,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#bdnwetwqie) .gt_title {
+:where(#asamjvvqap) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -593,7 +595,7 @@ Wichtig
   border-bottom-width: 0;
 }
 
-:where(#bdnwetwqie) .gt_subtitle {
+:where(#asamjvvqap) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -605,13 +607,13 @@ Wichtig
   border-top-width: 0;
 }
 
-:where(#bdnwetwqie) .gt_bottom_border {
+:where(#asamjvvqap) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#bdnwetwqie) .gt_col_headings {
+:where(#asamjvvqap) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -626,7 +628,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#bdnwetwqie) .gt_col_heading {
+:where(#asamjvvqap) .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -646,7 +648,7 @@ Wichtig
   overflow-x: hidden;
 }
 
-:where(#bdnwetwqie) .gt_column_spanner_outer {
+:where(#asamjvvqap) .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -658,15 +660,15 @@ Wichtig
   padding-right: 4px;
 }
 
-:where(#bdnwetwqie) .gt_column_spanner_outer:first-child {
+:where(#asamjvvqap) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#bdnwetwqie) .gt_column_spanner_outer:last-child {
+:where(#asamjvvqap) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#bdnwetwqie) .gt_column_spanner {
+:where(#asamjvvqap) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -678,7 +680,7 @@ Wichtig
   width: 100%;
 }
 
-:where(#bdnwetwqie) .gt_group_heading {
+:where(#asamjvvqap) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -703,7 +705,7 @@ Wichtig
   vertical-align: middle;
 }
 
-:where(#bdnwetwqie) .gt_empty_group_heading {
+:where(#asamjvvqap) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -718,15 +720,15 @@ Wichtig
   vertical-align: middle;
 }
 
-:where(#bdnwetwqie) .gt_from_md > :first-child {
+:where(#asamjvvqap) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#bdnwetwqie) .gt_from_md > :last-child {
+:where(#asamjvvqap) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#bdnwetwqie) .gt_row {
+:where(#asamjvvqap) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -745,7 +747,7 @@ Wichtig
   overflow-x: hidden;
 }
 
-:where(#bdnwetwqie) .gt_stub {
+:where(#asamjvvqap) .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -758,7 +760,7 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#bdnwetwqie) .gt_stub_row_group {
+:where(#asamjvvqap) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -772,11 +774,11 @@ Wichtig
   vertical-align: top;
 }
 
-:where(#bdnwetwqie) .gt_row_group_first td {
+:where(#asamjvvqap) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#bdnwetwqie) .gt_summary_row {
+:where(#asamjvvqap) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -786,16 +788,16 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#bdnwetwqie) .gt_first_summary_row {
+:where(#asamjvvqap) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#bdnwetwqie) .gt_first_summary_row.thick {
+:where(#asamjvvqap) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#bdnwetwqie) .gt_last_summary_row {
+:where(#asamjvvqap) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -805,7 +807,7 @@ Wichtig
   border-bottom-color: #D3D3D3;
 }
 
-:where(#bdnwetwqie) .gt_grand_summary_row {
+:where(#asamjvvqap) .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -815,7 +817,7 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#bdnwetwqie) .gt_first_grand_summary_row {
+:where(#asamjvvqap) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -825,11 +827,11 @@ Wichtig
   border-top-color: #D3D3D3;
 }
 
-:where(#bdnwetwqie) .gt_striped {
+:where(#asamjvvqap) .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#bdnwetwqie) .gt_table_body {
+:where(#asamjvvqap) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -838,7 +840,7 @@ Wichtig
   border-bottom-color: #D3D3D3;
 }
 
-:where(#bdnwetwqie) .gt_footnotes {
+:where(#asamjvvqap) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -852,7 +854,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#bdnwetwqie) .gt_footnote {
+:where(#asamjvvqap) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -861,7 +863,7 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#bdnwetwqie) .gt_sourcenotes {
+:where(#asamjvvqap) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -875,7 +877,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#bdnwetwqie) .gt_sourcenote {
+:where(#asamjvvqap) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -883,64 +885,64 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#bdnwetwqie) .gt_left {
+:where(#asamjvvqap) .gt_left {
   text-align: left;
 }
 
-:where(#bdnwetwqie) .gt_center {
+:where(#asamjvvqap) .gt_center {
   text-align: center;
 }
 
-:where(#bdnwetwqie) .gt_right {
+:where(#asamjvvqap) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#bdnwetwqie) .gt_font_normal {
+:where(#asamjvvqap) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#bdnwetwqie) .gt_font_bold {
+:where(#asamjvvqap) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#bdnwetwqie) .gt_font_italic {
+:where(#asamjvvqap) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#bdnwetwqie) .gt_super {
+:where(#asamjvvqap) .gt_super {
   font-size: 65%;
 }
 
-:where(#bdnwetwqie) .gt_footnote_marks {
+:where(#asamjvvqap) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#bdnwetwqie) .gt_asterisk {
+:where(#asamjvvqap) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#bdnwetwqie) .gt_indent_1 {
+:where(#asamjvvqap) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#bdnwetwqie) .gt_indent_2 {
+:where(#asamjvvqap) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#bdnwetwqie) .gt_indent_3 {
+:where(#asamjvvqap) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#bdnwetwqie) .gt_indent_4 {
+:where(#asamjvvqap) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#bdnwetwqie) .gt_indent_5 {
+:where(#asamjvvqap) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -949,28 +951,14 @@ Wichtig
   <thead class="gt_col_headings">
     <tr>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">p_grid</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">prior</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">likelihood</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">unstand_post</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">post</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_right">0.778</td>
-<td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.204</td>
-<td class="gt_row gt_right">2 × 10<sup style="font-size: 65%;">−1</sup></td>
-<td class="gt_row gt_right">0.227</td></tr>
-    <tr><td class="gt_row gt_right">0.778</td>
-<td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.204</td>
-<td class="gt_row gt_right">2 × 10<sup style="font-size: 65%;">−1</sup></td>
-<td class="gt_row gt_right">0.227</td></tr>
-    <tr><td class="gt_row gt_right">0.444</td>
-<td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.111</td>
-<td class="gt_row gt_right">1 × 10<sup style="font-size: 65%;">−1</sup></td>
-<td class="gt_row gt_right">0.123</td></tr>
+    <tr><td class="gt_row gt_right">0.778</td></tr>
+    <tr><td class="gt_row gt_right">0.667</td></tr>
+    <tr><td class="gt_row gt_right">0.556</td></tr>
+    <tr><td class="gt_row gt_right">0.778</td></tr>
+    <tr><td class="gt_row gt_right">0.444</td></tr>
   </tbody>
   
   
@@ -982,13 +970,13 @@ Wichtig
 <p>Wenn Sie jetzt denken: “Warum machen wir das jetzt? Brauchen wir doch gar nicht!” - Dann haben Sie Recht. Künftig werden wir aber, wenn wir mit komplexeren Modellen zu tun haben, nur noch mit Post-Verteilungen auf Stichprobenbasis arbeiten, weil es damit viel einfacher ist.</p>
 <p>Hier erstmal die ersten 100 gesampelten Gitterwerte (<code>p_grid</code>):</p>
 <div class="cell">
-<pre><code>##   [1] 0.78 0.78 0.44 0.78 0.56 0.78 0.89 0.56 0.67 0.67 0.44 0.44 0.56 0.44 0.56
-##  [16] 0.78 0.78 0.67 0.56 0.56 0.67 0.44 0.89 0.44 0.89 0.56 0.56 0.78 0.67 0.78
-##  [31] 0.44 0.67 0.67 0.89 0.78 0.67 0.67 0.67 0.67 0.67 0.56 0.67 0.67 0.33 0.56
-##  [46] 0.56 0.78 0.33 0.67 0.67 0.78 0.44 0.56 0.44 0.44 0.78 0.56 0.67 0.44 0.67
-##  [61] 0.67 0.44 0.67 0.67 0.56 0.78 0.44 0.44 0.44 0.67 0.44 0.56 0.78 0.67 0.56
-##  [76] 0.67 0.89 0.44 0.44 0.89 0.56 0.44 0.78 0.78 0.67 0.33 0.67 0.78 0.67 0.67
-##  [91] 0.56 0.67 0.44 0.56 0.89 0.56 0.78 0.78 0.56 0.78</code></pre>
+<pre><code>##   [1] 0.78 0.67 0.56 0.78 0.44 0.56 0.67 0.78 0.44 0.44 0.44 0.89 0.44 0.78 0.67
+##  [16] 0.56 0.67 0.67 0.67 0.67 0.67 0.89 0.44 0.89 0.78 0.78 0.44 0.44 0.67 0.44
+##  [31] 0.44 0.78 0.67 0.67 0.44 0.56 0.44 0.56 0.44 0.78 0.67 0.67 0.44 0.78 0.44
+##  [46] 0.67 0.44 0.67 0.44 0.56 0.89 0.67 0.78 0.56 0.33 0.33 0.67 0.56 0.44 0.78
+##  [61] 0.56 0.67 0.56 0.56 0.44 0.67 0.78 0.56 0.89 0.56 0.67 0.56 0.89 0.44 0.67
+##  [76] 0.44 0.44 0.78 0.67 0.78 0.56 0.89 0.44 0.78 0.67 0.78 0.44 0.78 0.33 0.67
+##  [91] 0.44 0.67 0.67 0.44 0.56 0.44 0.67 0.56 0.78 0.89</code></pre>
 </div>
 <p>Wie sieht diese Tabelle wohl als Histogramm<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> aus?</p>
 <p>So sieht die Post-Verteilung auf Basis von Stichproben dann aus, s. <a href="#fig-samples1">Abbildung&nbsp;<span>6.2</span></a>.</p>
@@ -1068,10 +1056,15 @@ Hinweis
 <p>Mehr Stichproben und mehr Gitterwerte glätten die Verteilung.</p>
 </div>
 </div>
-<p>Jetzt noch mal mit mehr Stichproben: <span class="math inline">\(n=10^6\)</span> Stichproben bei <span class="math inline">\(k=100\)</span> Gitterwerten aus der Posteriori-Verteilung.</p>
+<p>Jetzt noch mal mit mehr Stichproben: <span class="math inline">\(n=10^6\)</span> Stichproben bei <span class="math inline">\(k=100\)</span> Gitterwerten aus der Posteriori-Verteilung, s. <a href="#fig-post-dk100">Abbildung&nbsp;<span>6.4</span></a>.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="Post_files/figure-html/QM2-Thema3-Post-befragen-5-1.png" class="img-fluid" width="672"></p>
+<div id="fig-post-dk100" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Post_files/figure-html/fig-post-dk100-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;6.4: Post-Verteilung mit vielen Stichproben und vielen Parameterwerten (Gitterwerten): schön ‘glatt’. Mittelwert (MW), Modus und Median (Md) liegen eng nebeneinander, da die Verteilung recht symmetrisch ist.</figcaption><p></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -1097,14 +1090,14 @@ Wichtig
 <li>nach Wahrscheinlichkeiten (p)</li>
 <li>nach Parameterwerten (Quantilen, q)</li>
 </ol>
-<p>Der Unterschied zwischen beiden Arten von Fragen ist in <a href="#fig-p-vs-q">Abbildung&nbsp;<span>6.4</span></a> illustriert.</p>
+<p>Der Unterschied zwischen beiden Arten von Fragen ist in <a href="#fig-p-vs-q">Abbildung&nbsp;<span>6.5</span></a> illustriert.</p>
 <div id="fig-p-vs-q" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="img/p-vs-q.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Abbildung&nbsp;6.4: Fragen nach p vs.&nbsp;Fragen nach q</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;6.5: Fragen nach p vs.&nbsp;Fragen nach q</figcaption><p></p>
 </figure>
 </div>
-<p>Im linken Teildiagramm von <a href="#fig-p-vs-q">Abbildung&nbsp;<span>6.4</span></a> fragen wir: “Wie wahrscheinlich ist ein Wasseranteil von höchstens 80%?”. Im rechten Teildiagramm fragen wir: “Welcher Wasseranteil wird mit einer Wahrscheinlichkeit von 78% nicht überschritten?”.</p>
+<p>Im linken Teildiagramm von <a href="#fig-p-vs-q">Abbildung&nbsp;<span>6.5</span></a> fragen wir: “Wie wahrscheinlich ist ein Wasseranteil von höchstens 80%?”. Im rechten Teildiagramm fragen wir: “Welcher Wasseranteil wird mit einer Wahrscheinlichkeit von 78% nicht überschritten?”.</p>
 <section id="fragen-nach-wahrscheinlichkeiten" class="level3" data-number="6.3.1">
 <h3 data-number="6.3.1" class="anchored" data-anchor-id="fragen-nach-wahrscheinlichkeiten"><span class="header-section-number">6.3.1</span> Fragen nach Wahrscheinlichkeiten</h3>
 <p>Sagen wir, dass sei unsere Forschungsfrage: <em>Wie groß ist die Wahrscheinlichkeit, dass der Wasseranteil unter 50% liegt?</em></p>
@@ -1129,11 +1122,11 @@ Wichtig
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">8357</td>
+<td style="text-align: right;">8277</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">1643</td>
+<td style="text-align: right;">1723</td>
 </tr>
 </tbody>
 </table>
@@ -1186,11 +1179,11 @@ Wichtig
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">4641</td>
+<td style="text-align: right;">4554</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">5359</td>
+<td style="text-align: right;">5446</td>
 </tr>
 </tbody>
 </table>
@@ -1216,12 +1209,12 @@ Wichtig
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">0.4641</td>
-<td style="text-align: right;">46.41</td>
+<td style="text-align: right;">0.4554</td>
+<td style="text-align: right;">45.54</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">0.5359</td>
-<td style="text-align: right;">53.59</td>
+<td style="text-align: right;">0.5446</td>
+<td style="text-align: right;">54.46</td>
 </tr>
 </tbody>
 </table>
@@ -1248,8 +1241,8 @@ Wichtig
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">0.5359</td>
-<td style="text-align: right;">53.59</td>
+<td style="text-align: right;">0.5446</td>
+<td style="text-align: right;">54.46</td>
 </tr>
 </tbody>
 </table>
@@ -1285,6 +1278,48 @@ Wichtig
 </div>
 <p>Laut unserem Modell ist es also sehr unwahrscheinlich, dass der Wasseranteil der Erde mind. 90% beträgt.</p>
 </div>
+<p>Wir können auch fragen, welcher Parameterwert am wahrscheinlichsten ist; dieser Wert entspricht dem “Gipfel” des Berges, s. <a href="#fig-post-dk100">Abbildung&nbsp;<span>6.4</span></a>.</p>
+<p>Für unsere Stichproben-Postverteilung, <code>samples</code>, s. <a href="#fig-samples1">Abbildung&nbsp;<span>6.2</span></a>, lässt sich der Modus so berechnen:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map_estimate</span>(samples<span class="sc">$</span>p_grid)  </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="do">## MAP Estimate: 0.67</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Dabei steht <code>map</code> für <a href="https://easystats.github.io/bayestestR/reference/map_estimate.html">Maximum Aposteriori</a>, also das Maximum der Post-Verteilung.</p>
+<p>Bei der Gelegenheit könnten wir folgende, ähnliche Fragen stellen:</p>
+<ul>
+<li>Was ist der mittlere Schätzwert (Mittelwert) zum Wasseranteil laut Post-Verteilung?</li>
+<li>Was ist der mediane Schätzwert (Median)?</li>
+</ul>
+<p>Auf Errisch:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">mean</span>(p_grid),</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">median</span>(p_grid))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: right;">mean(p_grid)</th>
+<th style="text-align: right;">median(p_grid)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.6345667</td>
+<td style="text-align: right;">0.6666667</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </section>
 <section id="fragen-nach-parameterwerten" class="level3" data-number="6.3.2">
 <h3 data-number="6.3.2" class="anchored" data-anchor-id="fragen-nach-parameterwerten"><span class="header-section-number">6.3.2</span> Fragen nach Parameterwerten</h3>
@@ -1298,15 +1333,15 @@ Wichtig
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Schätzbereiche von Parameterwerten nennt man auch <em>Konfidenz- oder Vertrauensintervall</em><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p>Schätzbereiche von Parameterwerten nennt man auch <em>Konfidenz- oder Vertrauensintervall</em><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
 </div>
 </div>
 <p>Welcher Parameterwert wird mit 90% Wahrscheinlichkeit nicht überschritten, laut unserem Modell? (Gesucht sind also die unteren 90% der Posteriori-Wahrscheinlichkeit) Wir möchten also ziemlich sicher, was die Obergrenze an Wasser auf diesem Planeten ist<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">quantil90 =</span> <span class="fu">quantile</span>(p_grid, <span class="at">p =</span> .<span class="dv">9</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">quantil90 =</span> <span class="fu">quantile</span>(p_grid, <span class="at">p =</span> .<span class="dv">9</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -1330,12 +1365,12 @@ Wichtig
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p_grid)) <span class="sc">+</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p_grid)) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="Post_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<p><img src="Post_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Was ist das <em>mittlere</em> Intervall, das mit 90% Wahrscheinlichkeit den Parameterwert enthält, laut dem Modell?</p>
@@ -1343,18 +1378,18 @@ Wichtig
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">quant_10 =</span> <span class="fu">quantile</span>(p_grid, <span class="fl">0.05</span>),</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">quant_90 =</span> <span class="fu">quantile</span>(p_grid, <span class="fl">0.95</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">quant_05 =</span> <span class="fu">quantile</span>(p_grid, <span class="fl">0.05</span>),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">quant_95 =</span> <span class="fu">quantile</span>(p_grid, <span class="fl">0.95</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="table table-sm table-striped">
 <thead>
 <tr class="header">
-<th style="text-align: right;">quant_10</th>
-<th style="text-align: right;">quant_90</th>
+<th style="text-align: right;">quant_05</th>
+<th style="text-align: right;">quant_95</th>
 </tr>
 </thead>
 <tbody>
@@ -1376,20 +1411,20 @@ Wichtig
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>speed_gender_height <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/rpruim/OpenIntro/master/data/speed_gender_height.csv"</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>height_summary <span class="ot">&lt;-</span> </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  speed_gender_height <span class="sc">%&gt;%</span> </span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">height_cm =</span> height<span class="sc">*</span><span class="fl">2.54</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">height_inch =</span> height, height_cm) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"Einheit"</span>, <span class="at">values_to =</span> <span class="st">"Messwert"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Einheit) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">q25 =</span> <span class="fu">quantile</span>(Messwert, <span class="at">prob =</span> .<span class="dv">25</span>),</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">q50 =</span> <span class="fu">quantile</span>(Messwert, <span class="at">prob =</span> .<span class="dv">5</span>),</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">q75 =</span> <span class="fu">quantile</span>(Messwert, <span class="at">prob =</span> .<span class="dv">75</span>))</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>height_summary</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>speed_gender_height <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/rpruim/OpenIntro/master/data/speed_gender_height.csv"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>height_summary <span class="ot">&lt;-</span> </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  speed_gender_height <span class="sc">%&gt;%</span> </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">height_cm =</span> height<span class="sc">*</span><span class="fl">2.54</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">height_inch =</span> height, height_cm) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"Einheit"</span>, <span class="at">values_to =</span> <span class="st">"Messwert"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Einheit) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">q25 =</span> <span class="fu">quantile</span>(Messwert, <span class="at">prob =</span> .<span class="dv">25</span>),</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">q50 =</span> <span class="fu">quantile</span>(Messwert, <span class="at">prob =</span> .<span class="dv">5</span>),</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">q75 =</span> <span class="fu">quantile</span>(Messwert, <span class="at">prob =</span> .<span class="dv">75</span>))</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>height_summary</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -1421,13 +1456,13 @@ Wichtig
 </div>
 </div>
 <p>Das 25%-Quantil nennt man auch 1. Quartil; das 50%-Quantil (Median) auch 2. Quartil und das 75%-Quantil auch 3. Quartil.</p>
-<p><a href="#fig-stud-height">Abbildung&nbsp;<span>6.5</span></a> visualisiert die Quantile und die Häufigkeitsverteilung.</p>
+<p><a href="#fig-stud-height">Abbildung&nbsp;<span>6.6</span></a> visualisiert die Quantile und die Häufigkeitsverteilung.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-stud-height" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="Post_files/figure-html/fig-stud-height-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Abbildung&nbsp;6.5: Größenverteilung von 1325 amerikanischen Studentis</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;6.6: Größenverteilung von 1325 amerikanischen Studentis</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1445,10 +1480,10 @@ Wichtig
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(p_grid) <span class="sc">%&gt;%</span>   <span class="co"># sortiere</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">9000</span>) <span class="sc">%&gt;%</span>  <span class="co"># nur die ersten 90000, also die obersten 1000 abschneiden</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">p90 =</span> <span class="fu">max</span>(p_grid))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(p_grid) <span class="sc">%&gt;%</span>   <span class="co"># sortiere</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">9000</span>) <span class="sc">%&gt;%</span>  <span class="co"># nur die ersten 90000, also die obersten 1000 abschneiden</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">p90 =</span> <span class="fu">max</span>(p_grid))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -1471,8 +1506,8 @@ Wichtig
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">q90 =</span> <span class="fu">quantile</span>(p_grid, .<span class="dv">9</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">q90 =</span> <span class="fu">quantile</span>(p_grid, .<span class="dv">9</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -1494,13 +1529,13 @@ Wichtig
 </section>
 <section id="visualisierung-der-intervalle" class="level3" data-number="6.3.5">
 <h3 data-number="6.3.5" class="anchored" data-anchor-id="visualisierung-der-intervalle"><span class="header-section-number">6.3.5</span> Visualisierung der Intervalle</h3>
-<p>Intervalle (Bereiche), die die “abzuschneidende” Wahrscheinlichkeitsmasse hälftig auf die beiden Ränder aufteilen, nennen wir <em>Perzentilintervalle</em> oder <em>Equal-Tails-Intervalle</em> (ETI), s. Abb. <a href="#fig-eti">Abbildung&nbsp;<span>6.6</span></a>, rechtes Teildiagramm.</p>
+<p>Intervalle (Bereiche), die die “abzuschneidende” Wahrscheinlichkeitsmasse hälftig auf die beiden Ränder aufteilen, nennen wir <em>Perzentilintervalle</em> oder <em>Equal-Tails-Intervalle</em> (ETI), s. Abb. <a href="#fig-eti">Abbildung&nbsp;<span>6.7</span></a>, rechtes Teildiagramm.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-eti" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="Post_files/figure-html/fig-eti-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Abbildung&nbsp;6.6: Perzintilintervalle</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;6.7: Perzintilintervalle</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1515,30 +1550,30 @@ Wichtig
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>d_33 <span class="ot">&lt;-</span> </span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">p_grid =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>, <span class="at">by =</span>.<span class="dv">01</span>),</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">prior =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">3</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">prob =</span> p_grid)) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">unstand_post =</span> likelihood <span class="sc">*</span> prior) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">post_33  =</span> unstand_post <span class="sc">/</span> <span class="fu">sum</span>(unstand_post)) </span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>samples_33 <span class="ot">&lt;-</span> </span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  d_33 <span class="sc">%&gt;%</span> </span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="fl">1e4</span>, </span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>                 <span class="at">weight_by =</span> post_33, </span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>                 <span class="at">replace =</span> T)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>d_33 <span class="ot">&lt;-</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">p_grid =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>, <span class="at">by =</span>.<span class="dv">01</span>),</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">prior =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">3</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">prob =</span> p_grid)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">unstand_post =</span> likelihood <span class="sc">*</span> prior) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">post_33  =</span> unstand_post <span class="sc">/</span> <span class="fu">sum</span>(unstand_post)) </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>samples_33 <span class="ot">&lt;-</span> </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  d_33 <span class="sc">%&gt;%</span> </span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="fl">1e4</span>, </span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>                 <span class="at">weight_by =</span> post_33, </span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>                 <span class="at">replace =</span> T)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>So sehen die ersten paar Zeilen der Post-Verteilung, <code>samples_33</code>, aus.</p>
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="iibogvoklq" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="wkzhqgnxoq" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#iibogvoklq) .gt_table {
+:where(#wkzhqgnxoq) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1563,7 +1598,7 @@ Wichtig
   border-left-color: #D3D3D3;
 }
 
-:where(#iibogvoklq) .gt_heading {
+:where(#wkzhqgnxoq) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1575,7 +1610,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#iibogvoklq) .gt_title {
+:where(#wkzhqgnxoq) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1587,7 +1622,7 @@ Wichtig
   border-bottom-width: 0;
 }
 
-:where(#iibogvoklq) .gt_subtitle {
+:where(#wkzhqgnxoq) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1599,13 +1634,13 @@ Wichtig
   border-top-width: 0;
 }
 
-:where(#iibogvoklq) .gt_bottom_border {
+:where(#wkzhqgnxoq) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#iibogvoklq) .gt_col_headings {
+:where(#wkzhqgnxoq) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1620,7 +1655,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#iibogvoklq) .gt_col_heading {
+:where(#wkzhqgnxoq) .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1640,7 +1675,7 @@ Wichtig
   overflow-x: hidden;
 }
 
-:where(#iibogvoklq) .gt_column_spanner_outer {
+:where(#wkzhqgnxoq) .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1652,15 +1687,15 @@ Wichtig
   padding-right: 4px;
 }
 
-:where(#iibogvoklq) .gt_column_spanner_outer:first-child {
+:where(#wkzhqgnxoq) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#iibogvoklq) .gt_column_spanner_outer:last-child {
+:where(#wkzhqgnxoq) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#iibogvoklq) .gt_column_spanner {
+:where(#wkzhqgnxoq) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1672,7 +1707,7 @@ Wichtig
   width: 100%;
 }
 
-:where(#iibogvoklq) .gt_group_heading {
+:where(#wkzhqgnxoq) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1697,7 +1732,7 @@ Wichtig
   vertical-align: middle;
 }
 
-:where(#iibogvoklq) .gt_empty_group_heading {
+:where(#wkzhqgnxoq) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1712,15 +1747,15 @@ Wichtig
   vertical-align: middle;
 }
 
-:where(#iibogvoklq) .gt_from_md > :first-child {
+:where(#wkzhqgnxoq) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#iibogvoklq) .gt_from_md > :last-child {
+:where(#wkzhqgnxoq) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#iibogvoklq) .gt_row {
+:where(#wkzhqgnxoq) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1739,7 +1774,7 @@ Wichtig
   overflow-x: hidden;
 }
 
-:where(#iibogvoklq) .gt_stub {
+:where(#wkzhqgnxoq) .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1752,7 +1787,7 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#iibogvoklq) .gt_stub_row_group {
+:where(#wkzhqgnxoq) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1766,11 +1801,11 @@ Wichtig
   vertical-align: top;
 }
 
-:where(#iibogvoklq) .gt_row_group_first td {
+:where(#wkzhqgnxoq) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#iibogvoklq) .gt_summary_row {
+:where(#wkzhqgnxoq) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1780,16 +1815,16 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#iibogvoklq) .gt_first_summary_row {
+:where(#wkzhqgnxoq) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#iibogvoklq) .gt_first_summary_row.thick {
+:where(#wkzhqgnxoq) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#iibogvoklq) .gt_last_summary_row {
+:where(#wkzhqgnxoq) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1799,7 +1834,7 @@ Wichtig
   border-bottom-color: #D3D3D3;
 }
 
-:where(#iibogvoklq) .gt_grand_summary_row {
+:where(#wkzhqgnxoq) .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1809,7 +1844,7 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#iibogvoklq) .gt_first_grand_summary_row {
+:where(#wkzhqgnxoq) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1819,11 +1854,11 @@ Wichtig
   border-top-color: #D3D3D3;
 }
 
-:where(#iibogvoklq) .gt_striped {
+:where(#wkzhqgnxoq) .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#iibogvoklq) .gt_table_body {
+:where(#wkzhqgnxoq) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1832,7 +1867,7 @@ Wichtig
   border-bottom-color: #D3D3D3;
 }
 
-:where(#iibogvoklq) .gt_footnotes {
+:where(#wkzhqgnxoq) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1846,7 +1881,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#iibogvoklq) .gt_footnote {
+:where(#wkzhqgnxoq) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1855,7 +1890,7 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#iibogvoklq) .gt_sourcenotes {
+:where(#wkzhqgnxoq) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1869,7 +1904,7 @@ Wichtig
   border-right-color: #D3D3D3;
 }
 
-:where(#iibogvoklq) .gt_sourcenote {
+:where(#wkzhqgnxoq) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1877,64 +1912,64 @@ Wichtig
   padding-right: 5px;
 }
 
-:where(#iibogvoklq) .gt_left {
+:where(#wkzhqgnxoq) .gt_left {
   text-align: left;
 }
 
-:where(#iibogvoklq) .gt_center {
+:where(#wkzhqgnxoq) .gt_center {
   text-align: center;
 }
 
-:where(#iibogvoklq) .gt_right {
+:where(#wkzhqgnxoq) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#iibogvoklq) .gt_font_normal {
+:where(#wkzhqgnxoq) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#iibogvoklq) .gt_font_bold {
+:where(#wkzhqgnxoq) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#iibogvoklq) .gt_font_italic {
+:where(#wkzhqgnxoq) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#iibogvoklq) .gt_super {
+:where(#wkzhqgnxoq) .gt_super {
   font-size: 65%;
 }
 
-:where(#iibogvoklq) .gt_footnote_marks {
+:where(#wkzhqgnxoq) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#iibogvoklq) .gt_asterisk {
+:where(#wkzhqgnxoq) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#iibogvoklq) .gt_indent_1 {
+:where(#wkzhqgnxoq) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#iibogvoklq) .gt_indent_2 {
+:where(#wkzhqgnxoq) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#iibogvoklq) .gt_indent_3 {
+:where(#wkzhqgnxoq) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#iibogvoklq) .gt_indent_4 {
+:where(#wkzhqgnxoq) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#iibogvoklq) .gt_indent_5 {
+:where(#wkzhqgnxoq) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1949,30 +1984,30 @@ Wichtig
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_right">0.98</td>
+    <tr><td class="gt_row gt_right">0.59</td>
 <td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.94</td>
-<td class="gt_row gt_right">0.94</td></tr>
-    <tr><td class="gt_row gt_right">0.83</td>
+<td class="gt_row gt_right">0.21</td>
+<td class="gt_row gt_right">0.21</td></tr>
+    <tr><td class="gt_row gt_right">0.93</td>
 <td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.57</td>
-<td class="gt_row gt_right">0.57</td></tr>
-    <tr><td class="gt_row gt_right">0.89</td>
+<td class="gt_row gt_right">0.80</td>
+<td class="gt_row gt_right">0.80</td></tr>
+    <tr><td class="gt_row gt_right">0.85</td>
 <td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.70</td>
-<td class="gt_row gt_right">0.70</td></tr>
-    <tr><td class="gt_row gt_right">0.77</td>
+<td class="gt_row gt_right">0.61</td>
+<td class="gt_row gt_right">0.61</td></tr>
+    <tr><td class="gt_row gt_right">0.90</td>
 <td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.46</td>
-<td class="gt_row gt_right">0.46</td></tr>
-    <tr><td class="gt_row gt_right">0.72</td>
+<td class="gt_row gt_right">0.73</td>
+<td class="gt_row gt_right">0.73</td></tr>
+    <tr><td class="gt_row gt_right">0.41</td>
 <td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.37</td>
-<td class="gt_row gt_right">0.37</td></tr>
-    <tr><td class="gt_row gt_right">0.92</td>
+<td class="gt_row gt_right">0.07</td>
+<td class="gt_row gt_right">0.07</td></tr>
+    <tr><td class="gt_row gt_right">0.97</td>
 <td class="gt_row gt_right">1</td>
-<td class="gt_row gt_right">0.78</td>
-<td class="gt_row gt_right">0.78</td></tr>
+<td class="gt_row gt_right">0.91</td>
+<td class="gt_row gt_right">0.91</td></tr>
   </tbody>
   
   
@@ -1983,13 +2018,13 @@ Wichtig
 <p>Mit dieser “schiefen” Post-Verteilung können wir gut die Auswirkungen auf das Perzentil- und das Höchste-Dichte-Intervall anschauen.</p>
 <section id="perzentil-intervall" class="level3" data-number="6.4.1">
 <h3 data-number="6.4.1" class="anchored" data-anchor-id="perzentil-intervall"><span class="header-section-number">6.4.1</span> 50%-Perzentil-Intervall</h3>
-<p>Hier z.B. ein 50%-Perzentilintervall, s. Abb. <a href="#fig-schief-pi">Abbildung&nbsp;<span>6.7</span></a>.</p>
+<p>Hier z.B. ein 50%-Perzentilintervall, s. Abb. <a href="#fig-schief-pi">Abbildung&nbsp;<span>6.8</span></a>.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-schief-pi" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="Post_files/figure-html/fig-schief-pi-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Abbildung&nbsp;6.7: Ein Perzentilintervall kann, wenn es dumm läuft, den wahrscheinlichsten Parameterwert nicht enthalten, diesen Wert also plausiblen Wert also zurückweisen. Das ist nicht so toll.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;6.8: Ein Perzentilintervall kann, wenn es dumm läuft, den wahrscheinlichsten Parameterwert nicht enthalten, diesen Wert also plausiblen Wert also zurückweisen. Das ist nicht so toll.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1998,11 +2033,11 @@ Wichtig
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(easystats)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>samples_33 <span class="sc">%&gt;%</span> </span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(p_grid) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">eti</span>(<span class="at">ci =</span> .<span class="dv">5</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(easystats)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>samples_33 <span class="sc">%&gt;%</span> </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(p_grid) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">eti</span>(<span class="at">ci =</span> .<span class="dv">5</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -2034,17 +2069,17 @@ Wichtig
 <p>Intervalle höchster Dichte (Highest density Intervals, HDI oder HDPI) sind definiert als die <em>schmälsten</em> Intervalle, die den gesuchten Parameter enthalten.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="Post_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<p><img src="Post_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Der wahrscheinlichste Parameterwert (1) <em>ist</em> im Intervall enthalten, was Sinn macht. Bei einem HDI sind die abgeschnitten Ränder nicht mehr gleich groß, im Sinne von enthalten nicht (zwangsläufig) die gleiche Wahrscheinlichkeitsmasse.</p>
-<p>Je symmetrischer die Verteilung, desto näher liegen die Punktschätzer aneinander (und umgekehrt), s. Abb. <span class="quarto-unresolved-ref">?fig-post-pointestimates</span>.</p>
+<p>Je symmetrischer die Verteilung, desto näher liegen die Punktschätzer aneinander (und umgekehrt), s. Abb. <a href="#fig-post-pointestimates">Abbildung&nbsp;<span>6.9</span></a>.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-post-pointestimates" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="Post_files/figure-html/Visualisierung%20der%20Punktschätzer%20bei%20einer%20schiefen%20Post-Verteilung-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">fig-post-pointestimates</figcaption><p></p>
+<p><img src="Post_files/figure-html/fig-post-pointestimates-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;6.9: Visualisierung der Punktschätzer bei einer schiefen Post-Verteilung</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -2053,9 +2088,9 @@ Wichtig
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(p_grid) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  bayestestR<span class="sc">::</span><span class="fu">hdi</span>(<span class="at">ci =</span> .<span class="dv">5</span>)  <span class="co"># aus dem Paket `bayestestR`</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(p_grid) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  bayestestR<span class="sc">::</span><span class="fu">hdi</span>(<span class="at">ci =</span> .<span class="dv">5</span>)  <span class="co"># aus dem Paket `bayestestR`</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -2115,10 +2150,10 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean   =</span> <span class="fu">mean</span>(p_grid),</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">median =</span> <span class="fu">median</span>(p_grid))  </span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean   =</span> <span class="fu">mean</span>(p_grid),</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">median =</span> <span class="fu">median</span>(p_grid))  </span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -2131,7 +2166,7 @@ Hinweis
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">0.6382222</td>
+<td style="text-align: right;">0.6345667</td>
 <td style="text-align: right;">0.6666667</td>
 </tr>
 </tbody>
@@ -2143,11 +2178,11 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_sd   =</span> <span class="fu">sd</span>(p_grid),</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_iqr =</span> <span class="fu">IQR</span>(p_grid),</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_mad =</span> <span class="fu">mad</span>(p_grid))  </span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_sd   =</span> <span class="fu">sd</span>(p_grid),</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_iqr =</span> <span class="fu">IQR</span>(p_grid),</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_mad =</span> <span class="fu">mad</span>(p_grid))  </span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -2161,7 +2196,7 @@ Hinweis
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">0.1400451</td>
+<td style="text-align: right;">0.1396112</td>
 <td style="text-align: right;">0.2222222</td>
 <td style="text-align: right;">0.1647333</td>
 </tr>
@@ -2171,6 +2206,19 @@ Hinweis
 </div>
 </div>
 <p>Anstelle der Streuungsparameter ist es aber üblicher, ein HDI oder PI anzugeben.</p>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Alles Wasser oder was? Im Beispiel dieses Kapitels haben wir unser gefragt, was wohl der Wasseranteil auf dem Planeten Erde ist. Halten Sie sich klar vor Augen: Der Wasseranteil ist ein Beispiel für einen <em>Parameter</em>, einer unbekannten Größes eines Modells.</p>
+</div>
+</div>
 </section>
 </section>
 <section id="aufgaben" class="level2" data-number="6.6">
@@ -2184,6 +2232,7 @@ Hinweis
 <li><a href="https://datenwerk.netlify.app/posts/iq06/iq06.html">iq06</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/iq07/iq07.html">iq07</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/iq08/iq08.html">iq08</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/iq10/iq10.html">iq10</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/fattails01/fattails01.html">fattails1</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/fattails02/fattails02.html">fattails2</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/rethink3e1-7/rethink3e1-7">ReThink3e1-7</a></li>
@@ -2203,7 +2252,7 @@ McElreath, Richard. 2020. <em>Statistical rethinking: a Bayesian course with exa
 <li id="fn2"><p>Modellparameter genannt<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>hier als Balkendiagramm, kommt fast aufs selbe raus, sieht aber etwas schöner aus in diesem Fall, da er nur wenige Balken sind<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>Tatsächlich gibt es eine Vielzahl an Begriffen, die in der Literatur nicht immer konsistent verwendet werden, etwa Kompatibilitätsintervall, Ungewissheitsintervall, Passungsbereich.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>Vieleicht damit es genug Berge zum Schifahren gibt.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Vielleicht damit es genug Berge zum Schifahren gibt.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6"><p>1 Inch entspricht 2.54cm<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>

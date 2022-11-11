@@ -1,0 +1,1791 @@
+# Lineare Modelle
+
+
+## Lernsteuerung
+
+
+### Lernziele
+
+Nach Absolvieren des jeweiligen Kapitel sollen folgende Lernziele erreicht sein.
+
+Sie können ...
+
+
+
+- die Post-Verteilung für einfache lineare Modelle in R berechnen
+- zentrale Informationen zu Modellparametern - wie Lage- oder Streuungsmaße und auch Schätzintervalle - aus der Post-Verteilung herauslesen
+- künftige, laut Modell zu erwartende Beobachtungen mit der PPV simulieren
+
+### Benötigte R-Pakete
+
+In diesem Kapitel benötigen Sie folgende R-Pakete.
+
+
+
+```{r}
+#| message: false
+library(tidyverse)
+library(easystats)
+library(rstanarm)
+```
+
+```{r libs-hidden}
+#| include: false
+library("latex2exp")
+library("patchwork")
+library("gt")
+
+theme_set(theme_modern())
+```
+
+
+
+Da wir in diesem Kapitel immer mal wieder eine Funktion aus dem R-Paket `{easystats}` verwenden: [Hier](https://easystats.github.io/easystats/articles/list_of_functions.html) finden Sie eine Übersicht aller Funktionen des Pakets.^[Da es viele Funktionen sind, bietet es sich an mit *Strg-F* auf der Webseite nach Ihrem Lieblingsbefehl zu suchen.]
+
+
+## Post-Verteilung der Regression
+
+
+### Einfache Regression
+
+
+
+Die (einfache) Regression prüft, inwieweit zwei Variablen, $Y$ und $X$ linear zusammenhängen.
+Je mehr sie zusammenhängen, desto besser kann man $X$ nutzen, um $Y$ vorherzusagen (und umgekehrt).
+Hängen $X$ und $Y$ zusammen, heißt das nicht (unbedingt), dass es einen *kausalen* Zusammenhang zwischen $X$ und $Y$ gibt.
+*Linear* ist ein Zusammenhang, wenn der Zuwachs in $Y$ relativ zu $X$ konstant ist: wenn $X$ um eine Einheit steigt, steigt $Y$ immer um $b$ Einheiten (nicht kausal, sondern deskriptiv gemeint).
+
+[Datenquelle](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv), @mcelreath_statistical_2020.
+
+Laden wir die !Kung-Daten und visualisieren wir uns den Zusammenhang zwischen Gewicht (X) und Größe (Y), @fig-kung-zshg.
+
+
+
+```{r Post-Regression-2}
+#| fig-asp: 0.5
+#| message: false
+#| label: fig-kung-zshg
+#| fig-cap: Der Zusammenhang von Größe und Gewicht im !Kung-Datensatz
+Kung_path <- "https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv"
+
+d <- read_csv(Kung_path)  
+
+d2 <- 
+  d %>% 
+  filter(age > 18) 
+
+d2 %>% 
+  ggplot(
+       aes(x = weight, y = height)) +
+  geom_point(alpha = .7) +
+  geom_smooth(method = "lm")
+```
+
+
+
+
+
+
+### Bei jedem Prädiktorwert eine Post-Verteilung für $\mu$
+
+
+Komfort pur: Unser Modell erlaubt uns für jeden beliebigen Wert des Prädiktors eine Post-Verteilung (von $\mu$) zu berechnen.
+
+Hier am Beispiel von `m42`, s. @fig-post42.
+
+
+```{r m42-read-from-disk, echo = FALSE}
+#| echo: false
+#| output: "hide"
+m42 <- read_rds(paste0(here::here(),"/objects/m42.rds"))
+
+m42_post <- as_tibble(m42)
+names(m42_post) <- c("mu", "sigma")
+```
+
+```{r Post-Regression-10}
+#| echo: false
+
+plot_post_42 <- 
+  m42_post %>% 
+  ggplot() +
+  aes(x = mu) +
+  geom_density(fill = "grey60") +
+  labs(x = expression(mu),
+       title = TeX("Posteriori-Verteilung für $\\mu$, m42")) +
+  scale_y_continuous(breaks = NULL)
+```
+
+```{r Plot-condition}
+#| echo: false
+lm1 <- lm(height ~ weight, data = d2)
+
+d_pred <-
+  tibble(weight = c(40, 45, 50, 55),
+         height = predict(lm1, newdata = data.frame(weight)))
+
+
+
+plot_condition <- 
+  d2 %>% 
+  #select(weight, height) %>% 
+  #drop_na() %>% 
+  ggplot(
+       aes(x = weight, y = height)) +
+  geom_point(alpha = .7) +
+  geom_smooth(method = "lm") +
+  geom_point(aes(color = as.factor(weight)), data = d_pred, size = 5, alpha = .5) +
+  labs(color = "Gewicht",
+       x = "Gewicht (weight)",
+       y = "Größe (height)")
+
+```
+
+```{r m3}
+#| echo: false
+#| results: "hide"
+#| cache: true
+
+d2 <-
+  d2 %>% 
+  mutate(weight_c = weight - mean(weight))
+
+m43 <- 
+  stan_glm(height ~ weight_c, 
+           prior = normal(0, 10),
+           prior_intercept = normal(178, 20),  # mu
+           prior_aux = exponential(0.1),  # sigma
+           refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
+           data = d2)
+
+m43_prior_pred <-
+    stan_glm(height ~ weight_c, 
+           prior_intercept = normal(178, 20),  # mu
+           prior_aux = exponential(0.1),  # sigma
+           refresh = FALSE, 
+           prior_PD = TRUE,
+           data = d2)
+
+stan_glm(height ~ weight_c, 
+           prior = normal(0, 10),
+           prior_intercept = normal(0, 20),  # mu
+           prior_aux = exponential(0.1),  # sigma
+           refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
+           data = d2)
+
+m43a_prior_pred <-
+    stan_glm(height ~ weight_c, 
+           prior_intercept = normal(0, 20),  # mu
+           prior_aux = exponential(0.1),  # sigma
+           refresh = FALSE, 
+           prior_PD = TRUE,
+           data = d2)
+```
+
+```{r objects-m43-m43a-to-disk, eval = FALSE}
+#| eval: false
+#| echo: false
+print(m43)
+summary(m43_prior_pred)
+write_rds(m43, "objects/m43.rds")
+write_rds(m43a, "objects/m43a.rds")
+```
+
+```{r m43-plot}
+#| echo: false
+
+nd <- tibble(
+  weight_c = c(-5, 0, +5, 10)
+)
+
+ppv_m43 <- 
+  posterior_predict(m43, , newdata = nd) %>% 
+  as_tibble() %>% 
+  pivot_longer(everything(), 
+               names_to = "weight_condition",
+               values_to = "h") %>% 
+  mutate(weight =
+           case_when(weight_condition == 1 ~ 40,
+                     weight_condition == 2 ~ 45,
+                     weight_condition == 3 ~ 50,
+                     weight_condition == 4 ~ 55
+                     )) %>% 
+  mutate(weight = as.factor(weight))
+
+
+
+ppv_m43_summary <-
+  ppv_m43 %>% 
+  group_by(weight) %>% 
+  summarise(m = mean(h),
+            s = sd(h))
+
+
+post_at_plot <-
+  ppv_m43 %>% 
+  ggplot() +
+  aes(x = h) +
+  geom_density(aes(fill = weight)) +
+  facet_wrap(~ weight, nrow = 1, scales = "free") +
+  scale_y_continuous(breaks = NULL) +
+  labs(
+       caption = "Horizontale Balken zeigen MW±2sd",
+       x = "Größe",
+       y = "Post-Wskt") +
+  geom_point(data = ppv_m43_summary,
+             aes(x = m,
+                 y = 0),
+             size = 2, color = "blue", alpha = .5) +
+  geom_segment(data = ppv_m43_summary,
+               aes(x = m-2*s,
+                   xend = m+2*s),
+               y = 0,
+               yend = 0,
+               color = "blue",
+               alpha = .5,
+               size = 2) +
+  scale_x_continuous(breaks = c(140, 160))
+```
+
+```{r Post-Regression-12, out.width="100%", fig.width=7}
+#| echo: false
+#| label: fig-post42
+#| fig-cap: Für jeden beliebigen Prädiktorwert kann man eine Post-Verteilung bekommen
+#| fig-subcap: 
+#|   - Regressionsmodell mit einigen ausgewählten Gewichtswerten
+#|   - Für jeden beliebigen Gewichtswert bekommt man eine Post-Verteilung
+
+
+plots(plot_condition, post_at_plot, n_rows = 2, tags = "A")
+```
+
+
+
+
+
+
+### Statistiken zum !Kung-Datensatz
+
+[Datenquelle](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv)
+
+
+Hier sind die zentralen deskriptiven Statistiken zum !Kung-Datensatz.
+
+
+```{r Post-Regression-3}
+#| echo: true
+#| eval: false
+Kung_path <- "https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv"  
+d <- read_csv(Kung_path)  
+
+d2 <- d %>% filter(age > 18)
+
+describe_distribution(d2)
+```
+
+```{r Post-Regression-4, echo = FALSE, eval = TRUE}
+#| echo: false
+library(rstatix)
+
+get_summary_stats(d2) %>% 
+  gt() %>% 
+  fmt_number(columns = 2:13, decimals = 1)
+```
+
+
+
+Das mittlere Körpergewicht (`weight`) liegt bei ca. 45kg (sd 7 kg).
+
+
+### Etwas mehr EDA
+
+
+
+
+Wir brauchen die EDA hier nicht wirklich, aber es ist praktisch. Das Paket `DataExplorer` hat ein paar nette Hilfen zur explorativen Datenanalyse.
+
+
+
+```{r}
+#| message: false
+library(DataExplorer)
+```
+
+
+#### Gibt es fehlende Werte?
+
+Nein, s. Abb. @fig-na.
+
+
+```{r}
+#| fig-cap: Fehlende Werte - fehlen.
+#| label: fig-na
+d2 %>% plot_missing()
+```
+
+
+#### Verteilung der numerischen Variablen
+
+
+```{r}
+d2 %>% plot_histogram()
+```
+
+
+
+
+#### Verteilung der kategorialen Variablen
+
+
+
+```{r}
+d2 %>% plot_bar()
+```
+
+
+
+
+#### Korrelationen
+
+
+
+```{r}
+d2 %>% plot_correlation()
+```
+
+
+
+#### Bonus
+
+Probieren Sie mal die folgende Funktion aus, die Ihnen einen Bericht zur EDA erstellt: `create_report(d2)`.
+
+
+
+
+
+
+<!-- ### Selbsgetrickte Visualisierung von `weight` und `height` -->
+
+
+<!-- ```{r Post-Regression-6} -->
+<!-- d2 %>%  -->
+<!--   select(weight, height) %>%  -->
+<!--   pivot_longer(everything()) %>%  -->
+<!--   ggplot(aes(x = value)) + -->
+<!--   geom_histogram() + -->
+<!--   facet_wrap(~ name, scales = "free") + -->
+<!--   geom_vline(data = d2_summary, -->
+<!--              aes(xintercept = avg)) + -->
+<!--   geom_segment(data = d2_summary, -->
+<!--               aes(x = avg-stdev, -->
+<!--                   xend = avg+stdev), -->
+<!--               y = 0, -->
+<!--               yend = 0, -->
+<!--               alpha = .7, -->
+<!--               color = "blue", -->
+<!--               size = 2) + -->
+<!--   labs(caption = "Vertikale Linie: Mittelwert\nhorizontale Linie: Standardabweichung") -->
+<!-- ``` -->
+
+
+
+
+
+### Prädiktor zentrieren 
+
+
+
+
+Zieht man von jedem Gewichtswert den Mittelwert ab, so bekommt man die Abweichung des Gewichts vom Mittelwert (Prädiktor "zentrieren").
+Wenn man den Prädiktor (`weight`) zentriert hat, ist der Achsenabschnitt, $\alpha$, einfacher zu verstehen.
+In einem Modell mit zentriertem Prädiktor (`weight`) gibt der Achsenabschnitt die Größe einer Person mit durchschnittlichem Gewicht an. 
+Würde man `weight` nicht zentrieren, gibt der Achsenabschnitt die Größe einer Person mit `weight=0` an, was nicht wirklich sinnvoll zu interpretieren ist.
+
+
+
+Vgl. @gelman_regression_2021, Kap. 10.4,  12.2.
+
+
+
+
+So kann man das Zentrieren bewerkstelligen:
+
+
+
+```{r}
+d3 <- 
+  d2 %>% 
+  center(weight)
+```
+
+
+Oder so, von Hand:
+
+
+```{r Post-Regression-7, echo = TRUE}
+d3 <-
+  d2 %>% 
+  mutate(weight_c = weight - mean(weight))
+```
+
+```{r Post-Regression-8}
+#| echo: false
+d3 %>% 
+  slice_head(n=3) %>% 
+  gt() %>% 
+  fmt_number(columns = everything(), decimals = 0)
+```
+
+
+
+Wie man sieht, ist die Verteilung "zur Seite geschoben": Der Mittelwert liegt jetzt eben bei 0.
+
+
+
+
+```{r Post-Regression-9, fig.asp=0.4}
+#| echo: false
+d3 %>% 
+  select(weight, weight_c) %>% 
+  pivot_longer(everything()) %>% 
+  ggplot(aes(x = value)) +
+  geom_histogram() +
+  facet_wrap(~ name, scales = "free")
+```
+
+
+
+
+Das schwierigste ist dabei, nicht zu vergessen, dass `d3` die Tabelle mit zentriertem Prädiktor ist, nicht `d2`.
+
+
+## Modell m43: zentrierter Prädiktor
+
+
+Einige Regressionskoeffizienten, wie der Achsenabschnitt (Intercept) sind schwer zu interpretieren:
+Bei einem (erwachsenen) Menschen mit *Gewicht 0*, was wäre wohl die Körpergröße?
+Hm, Philosophie steht heute nicht auf der Tagesordnung.
+
+Da wäre es schön, wenn wir die Daten so umformen könnten, dass der Achsenabschnitt eine sinnvolle Aussage macht.
+Zum Glück geht das leicht: Wir zentrieren den Prädiktor (Gewicht)!
+
+
+:::callout-important
+Durch Zentrieren kann man die Ergebnisse einer Regression einfacher interpretieren.
+:::
+
+
+
+
+
+### Modelldefinition von `m43`
+
+- Für jede Ausprägung des Prädiktors (`weight`), $h_i$, wird eine Post-Verteilung für die abhängige Variable (`height`) berechnet.
+- Der Mittelwert $\mu$ für jede Post-Verteilung ergibt sich aus dem linearen Modell (unserer Regressionsformel).
+- Die Post-Verteilung berechnet sich auf Basis der Priori-Werte und des Likelihood (Bayes-Formel).
+- Wir brauchen Priori-Werte für die Steigung $\beta$ und den Achsenabschnitt $\alpha$ der Regressionsgeraden.
+- Außerdem brauchen wir einen Priori-Wert, der die Streuung $\sigma$ der Größe (`height`) angibt; dieser Wert wird als exonentialverteilt angenommen.
+- Der Likelihood gibt an, wie wahrscheinlich ein Wert `height` ist, gegeben $\mu$ und $\sigma$.
+
+
+$$
+\begin{align*}
+\color{red}{\text{height}_i} & \color{red}\sim \color{red}{\operatorname{Normal}(\mu_i, \sigma)} && \color{red}{\text{Likelihood}} \\
+\color{green}{\mu_i} & \color{green}= \color{green}{\alpha + \beta\cdot \text{weight}_i}  && \color{green}{\text{Lineares Modell} } \\
+\color{blue}\alpha & \color{blue}\sim \color{blue}{\operatorname{Normal}(178, 20)} && \color{blue}{\text{Priori}} \\
+\color{blue}\beta  & \color{blue}\sim \color{blue}{\operatorname{Normal}(0, 10)}  && \color{blue}{\text{Priori}}\\
+\color{blue}\sigma & \color{blue}\sim \color{blue}{\operatorname{Exp}(0.1)}  && \color{blue}{\text{Priori}}
+\end{align*}
+$$
+
+
+
+
+### Likelihood, `m43`
+
+
+
+$$
+\begin{aligned}
+\color{red}{\text{height}_i} & \color{red}\sim \color{red}{\operatorname{Normal}(\mu_i, \sigma)} && \color{red}{\text{Likelihood}}
+\end{aligned}
+$$
+
+
+
+
+- Der Likelihood von `m43` ist ähnlich zu den vorherigen Modellen (`m41, m42`).
+- Nur gibt es jetzt ein kleines "Index-i" am $\mu$ und am $h$ (h wie `heights`).
+- Es gibt jetzt nicht mehr nur einen Mittelwert $\mu$, sondern für jede Beobachtung (Zeile) einen Mittelwert $\mu_i$.
+- Lies  etwa so:
+
+>    "Die Wahrscheinlichkeit, eine bestimmte Größe bei Person $i$ zu beobachten, gegeben $\mu$ und $\sigma$ ist normalverteilt (mit Mittelwert $\mu$ und Streuung $\sigma$)".
+
+
+
+
+
+### Regressionsformel, `m43`
+
+
+$$
+\begin{aligned}
+\color{green}{\mu_i} & \color{green}= \color{green}{\alpha + \beta\cdot \text{weight}_i}  && \color{green}{\text{Lineares Modell} } \\
+\end{aligned}
+$$
+
+
+- $\mu$ ist jetzt nicht mehr ein Parameter, der (stochastisch) geschätzt werden muss. $\mu$ wird jetzt (deterministisch) *berechnet*. Gegeben $\alpha$ und $\beta$ ist $\mu$ ohne Ungewissheit bekannt.
+- $\text{weight}_i$ ist der Prädiktorwert (`weight`) der $i$ten Beobachtung, also einer !Kung-Person (Zeile $i$ im Datensatz).
+- Lies  etwa so:
+
+>    "Der Mittelwert $\mu_i$ der $i$ten Person berechnet sich als Summe von $\alpha$ und $\beta$ mal  $\text{weight}_i$".
+
+
+- $\mu_i$ ist eine lineare Funktion von `weight`.
+- $\beta$ gibt den Unterschied in `height` zweier Beobachtung an, die sich um eine Einheit in `weight` unterscheiden (Steigung der Regressionsgeraden).
+- $\alpha$ gibt an, wie groß $\mu$ ist, wenn `weight` Null ist (Achsenabschnitt, engl. intercept).
+
+
+
+### Priori-Werte des Modells `m43`
+
+
+
+$$
+\begin{align*}
+\color{blue}\alpha & \color{blue}\sim \color{blue}{\operatorname{Normal}(178, 20)} && \color{blue}{\text{Priori Achsenabschnitt}} \\
+\color{blue}\beta  & \color{blue}\sim \color{blue}{\operatorname{Normal}(0, 10)}  && \color{blue}{\text{Priori Regressionsgewicht}}\\
+\color{blue}\sigma & \color{blue}\sim \color{blue}{\operatorname{Exp}(0.1)}  && \color{blue}{\text{Priori Sigma}}
+\end{align*}
+$$
+
+- Parameter sind hypothetische Kreaturen: Man kann sie nicht beobachten, sie existieren nicht wirklich. Ihre Verteilungen nennt man Priori-Verteilungen.
+- $\alpha$ wurde in `m41` als $\mu$ bezeichnet, da wir dort eine "Regression ohne Prädiktoren" berechnet haben.
+- $\sigma$ ist uns schon als Parameter bekannt und behält seine Bedeutung aus dem letzten Kapitel.
+- Da `height` nicht zentriert ist, der Mittelwert von $\alpha$ bei 178 und nicht 0.
+- $\beta$ fasst unser Vorwissen, ob und wie sehr der Zusammenhang zwischen Gewicht und Größe positiv (gleichsinnig) ist.
+
+
+## Vertiefung: Prior-Prädiktiv-Verteilung
+
+🏎️ VERTIEFUNG 🏎️
+
+### Moment
+
+ 🤔 Moment. Dieser Prior, $\beta$ in `m43` erachtet positive und negative Zusammenhang als gleich wahrscheinlich?!
+
+Sind wir wirklich indifferent, ob der Zusammenhang von Gewicht und Größe positiv oder negativ ist? [Nein, sind wir nicht.](https://media.giphy.com/media/daPCSjwus6UR2JxRX1/giphy.gif) 
+    
+
+
+### Priori-Prädiktiv-Verteilung für `m43`
+
+
+
+Was denkt [wir](https://media.giphy.com/media/Aausss8uUBIe3bZ3d2/giphy.gif) bzw. unser Golem *apriori* über den Zusammenhang von Größe und Gewicht?
+Um diese Frage zu beantworten ziehen wir Stichproben aus den Priori-Verteilungen des Modells, also für $\alpha$, $\beta$ und $\sigma$.
+
+
+
+
+```{r m43-prior-pred}
+m43_prior_pred <-
+    stan_glm(height ~ weight_c, 
+             prior = normal(0, 10),
+             prior_intercept = normal(178, 20),  # mu
+             prior_aux = exponential(0.1),  # sigma
+             refresh = FALSE, 
+             prior_PD = TRUE,  # Schalter für Prior-Pred-Verteilung
+             data = d2)
+
+
+m43_prior_pred_draws <- 
+  m43_prior_pred %>% 
+  as_tibble() %>% 
+  rename(a = `(Intercept)`,
+         b = weight_c) %>% 
+  slice_sample(n = 50)
+```
+
+```{r}
+#| echo: false
+m43_prior_pred_draws %>% 
+  slice_head(n=5) %>% 
+  gt() %>% 
+  fmt_number(everything(), decimals = 1)
+```
+
+
+
+
+Jede Zeile definiert eine Regressionsgerade.
+
+
+
+### Prior-Prädiktiv-Simulation für `m43` mit `stan_glm()` 
+
+
+
+
+
+```{r echo = TRUE, eval = FALSE}
+m43_prior_pred <-
+    stan_glm(height ~ weight_c, 
+             prior = normal(0, 10),  # beta
+             prior_intercept = normal(178, 20),  # alpha
+             prior_aux = exponential(0.1),  # sigma
+             refresh = FALSE, 
+             prior_PD = TRUE,  # DIESER Schalter macht's
+             data = d2)
+
+m43_prior_pred_draws <- 
+  m43_prior_pred %>% 
+  as_tibble() %>% 
+  rename(a = `(Intercept)`,
+         b = weight_c) %>% 
+  slice_sample(n = 50)
+```
+
+```{r echo = FALSE, eval = FALSE}
+m43a_prior_pred <-
+    stan_glm(height ~ weight_c, 
+             prior = normal(0, 10),  # beta
+             prior_intercept = normal(0, 20),  # alpha
+             prior_aux = exponential(0.1),  # sigma
+             refresh = FALSE, 
+             prior_PD = TRUE,  # DIESER Schalter machts
+             data = d2)
+
+m43a_prior_pred_draws <- 
+  m43a_prior_pred %>% 
+  as_tibble() %>% 
+  rename(a = `(Intercept)`,
+         b = weight_c) %>% 
+  slice_sample(n = 50)
+```
+
+
+
+
+
+
+
+
+
+
+### Visualisieren der Prior-Prädiktiv-Verteilung
+
+
+
+
+```{r prior-pv1, echo = TRUE, eval = FALSE, fig.asp = .5}
+d2 %>% ggplot() +
+  geom_point(aes(x = weight_c, y = height)) + 
+  geom_abline(data = m43_prior_pred_draws,
+aes(intercept = a, slope = b), color = "skyblue", size = 0.2) +
+  scale_y_continuous(limits = c(0, 500)) +
+  geom_hline(yintercept = 272, size = .5) +
+  geom_hline(yintercept = 0, linetype = "dashed")
+```
+
+
+
+
+🤯 Einige dieser Regressionsgeraden sind unsinnig!
+
+
+
+```{r ref.label = "prior-pv1", eval = TRUE, fig.asp = .3}
+
+```
+
+
+
+Die durchgezogene horizontale Linie gibt die Größe des [größten Menschens, Robert Pershing Wadlow](https://en.wikipedia.org/wiki/Robert_Wadlow), an.
+
+
+
+
+
+### Ein positiver Wert für $\beta$ ist plausibler
+
+
+#### Oh no
+
+Eine Normalverteilung mit viel Streuung:
+
+
+```{r Post-Regression-16, fig.asp = .5}
+#| echo: false
+d <-
+  tibble(
+    x = seq(-30,30,.1),
+    y = dnorm(x, mean = 0, sd = 10)
+  )
+
+d %>% 
+  ggplot(aes(x,y)) +
+  geom_line() +
+  scale_y_continuous(breaks = NULL) +
+  labs(title = "mu=0, s=10")
+```
+
+
+👎 $\beta=-20$ wäre mit diesem Prior gut möglich: Pro kg Gewicht sind Menschen im Schnitt 20cm kleiner, laut dem Modell. Quatsch.
+
+
+
+
+#### Oh yes
+
+Wir bräuchten eher so eine Verteilung, mit mehr Masse auf der positiven Seite (x>0):
+
+
+```{r Post-Regression-17, fig.asp=.5}
+#| echo: false
+d <-
+  tibble(
+    x = seq(-30,30,.1),
+    y = dnorm(x, mean = 3, sd = 2)
+  )
+
+d %>% 
+  ggplot(aes(x,y)) +
+  geom_line() +
+  scale_y_continuous(breaks = NULL) +
+  labs(title = "mu=5, sd = 3")
+```
+
+
+👍 Vermutlich besser: Ein Großteil der Wahrscheinlichkeitsmasse ist $X>0$. Allerdings gibt's keine Gewähr, dass unser Prior "richtig" ist.
+
+
+
+
+### Priori-Prädiktiv-Simulation, 2. Versuch
+
+
+
+
+
+
+```{r echo = TRUE}
+m43a_prior_pred <-
+    stan_glm(
+      height ~ weight_c, 
+      prior = normal(2, 2),  # Regressionsgewicht
+      prior_intercept = normal(178, 20),  # mu
+      prior_aux = exponential(0.1),  # sigma
+      refresh = FALSE, 
+      # Schalter für Prior-Pred-Verteilung:
+      prior_PD = TRUE, 
+      data = d2)
+
+
+m43a_prior_pred_draws <- 
+  m43a_prior_pred %>% 
+  as_tibble() %>% 
+  # Spaltennamen kürzen: 
+  rename(a = `(Intercept)`) %>%  
+  rename(b = weight_c,
+         s = sigma)
+```
+
+```{r}
+#| echo: false
+m43a_prior_pred_draws %>% 
+  slice_head(n=5) %>% 
+  gt() %>% 
+  fmt_number(everything(), decimals = 1)
+```
+
+
+
+
+Das Argument `prior_PD = TRUE` sorgt dafür, dass keine Posteriori-Verteilung, sondern eine Prior-Prädiktiv-Verteilung berechnet wird.
+
+
+
+
+### Visualisieren der Prior-Prädiktiv-Verteilung, `m43a`
+
+
+Unsere Priori-Werte scheinen einigermaßen vernünftige Vorhersagen zu tätigen. Allerdings erwartet unser Golem einige Riesen.
+
+
+
+```{r, eval = TRUE, fig.asp=.5}
+d2 %>% 
+  ggplot(aes(x = weight_c, y = height)) +
+  geom_point() +
+  geom_abline(data = {m43a_prior_pred_draws %>% slice_head(n=50)},
+              aes(slope = b,
+                  intercept = a),
+              color = "skyblue",
+              size = .2,
+              alpha = .7) +
+  geom_hline(yintercept = 272, size = .5) +
+  geom_hline(yintercept = 0, linetype = "dashed")+
+  scale_y_continuous(limits = c(0, 500)) 
+```
+
+
+
+Die durchgezogene horizontale Linie gibt die Größe des [größten Menschens, Robert Pershing Wadlow](https://en.wikipedia.org/wiki/Robert_Wadlow), an.
+
+
+
+
+
+
+
+
+### Moment, kann hier jeder machen, was er will?
+
+
+
+Es doch den einen, richtigen, objektiven Priori-Wert geben?!
+
+Kann denn jeder hier machen, was er will?! Wo kommen wir da hin?!
+
+
+>    This is a mistake. There is no more a uniquely correct prior than there is a uniquely correct likelihood. Statistical models are machines for inference. Many machines will work, but some work better than others. Priors can be wrong, but only in the same sense that a kind of hammer can be wrong for building a table.  
+
+@mcelreath_statistical_2020, p. 96.
+
+
+
+
+
+### Hier ist unser Modell, `m43a`
+
+
+
+
+$$
+\begin{align}
+\text{height}_i &\sim \operatorname{Normal}(\mu_i, \sigma) \\
+\mu_i &= \alpha + \beta \cdot  \text{weight}_i\\
+\alpha &\sim \operatorname{Normal}(178, 20)\\
+\beta &\sim \operatorname{Normal}(5,3)\\
+\sigma &\sim \operatorname{Exp}(0.1)
+\end{align}
+$$
+
+
+
+
+```{r Post-Regression-25, echo = TRUE}
+# Zufallszahlen festlegen:
+set.seed(42)  
+# Posteriori-Vert. berechnen:
+m43a <-
+  stan_glm(
+    height ~ weight_c,  # Regressionsformel
+    prior = normal(5, 3),  # Regressionsgewicht (beta 1)
+    prior_intercept = normal(178, 20),  # mu
+    prior_aux = exponential(0.1),  # sigma
+    refresh = 0,  # zeig mir keine Details
+    data = d2)
+```
+
+
+
+
+
+
+### Eine Zusammenfassung der Posteriori-Verteilung für `m43a`
+
+
+
+```{r}
+#| eval: false
+m43a %>% 
+  parameters()
+```
+
+```{r}
+#| echo: false
+m43a %>% 
+  parameters() %>% 
+  display()
+```
+
+
+
+
+Unser Modell `m43a` schätzt die typische Körpergröße einer !Kung-Person *mittleren Gewichts* (`weight_c = 0`) auf knapp 155 cm, und ist sich dieses Werts ziemlich sicher.
+Pro Kilogramm kommt (laut unserem Modell) ein knapper Zentimeter hinzu, typischerweise;
+auch hier ist sich das Modell ziemlich sicher, da dass zugehörige 95%-CI keine 20 Zentimenter umfasst.
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Die Post-Verteilung befragen
+
+
+### m43a
+
+
+Sagen wir, auf Basis gut geprüfter Evidenz haben wir folgendes Modell festgelegt: `height ~ weight_c`, s. @eq-m43a.
+
+Prioris:
+
+$$\beta_1 \sim N(5,3) \\
+\beta_0 \sim N(178, 20) \\
+\sigma \sim E(0.1)$${#eq-m43a}
+
+Wir nennen das Modell `m43a`^[Wer ist hier für die Namensgebung zuständig? Besoffen oder was?].
+
+
+
+```{r m43a, echo = TRUE}
+# Posteriori-Vert. berechnen:
+m43a <-
+  stan_glm(
+    height ~ weight_c,  # Regressionsformel
+    prior = normal(5, 3),  # Regressionsgewicht (beta 1)
+    prior_intercept = normal(178, 20),  # mu
+    prior_aux = exponential(0.1),  # sigma
+    refresh = 0,  # zeig mir keine Details
+    seed = 42,  # lege die Zufallszahlen fest für Reproduzierbarkeit
+    data = d2)
+```
+
+
+
+
+
+### Mittelwerte von $\alpha$ und $\beta$ aus der Post-Verteilung
+
+
+
+Die ersten paar Zeilen:
+
+
+```{r Post-Regression-befragen-3}
+#| echo: false
+m43a %>%  
+  as_tibble() %>% 
+  mutate(id = 1:nrow(.), .before = 1) %>% 
+  head(n=3) %>% 
+  gt() %>% 
+  fmt_number(columns = 2:4, decimals = 1)
+```
+
+
+Hier sind die Zusammenfassungen der Stichproben aus der Post-Verteilung, komfortabel zu erhalten mit dem Befehle `parameters`:
+
+
+```{r Post-Regression-befragen-4, echo = TRUE}
+#| echo: true
+#| results: hide
+#| message: false
+parameters(m43a)
+```
+
+```{r Post-Regression-befragen-5}
+#| echo: false
+parameters(m43a) %>% 
+  display()
+```
+
+
+
+
+Die Kennzahl  `pd` (propability of direction) gibt die Wahrscheinlichkeit an,
+dass der Effekt positiv (also größer als Null) oder negativ ist (jenachdem ob der Median des Effekts positiv oder negativ ist).
+`pd` gibt aber nicht an, wie stark der Effekt ist, nur ob er klar auf einer Seite der Null liegt.
+Damit ist er so etwas (grob!) Ähnliches wie der p-Wert in der Frequentistischen Statistik [@makowski_indices_2019].
+
+
+Am besten das Diagramm dazu anschauen, s @fig-pd1.
+
+
+
+```{r}
+#| fig-cap: Diagramm zur Probability of Direction, Modell m43a
+#| label: fig-pd1
+plot(p_direction(m43a))
+```
+
+
+
+
+`Rhat` und `ESS` sind Kennzahlen, die untersuchen, ob mit der Stichprobenziehung im Bayes-Modell alles gut funktioniert hat. Bei einfachen Modellen (die wir hier berechnen) sollte da in der Regel alles in Ordnung sein.
+`Rhat` sollte nicht (viel) größer als 1 oder 1,01 sein. `ESS` (effective sample size) gibt die Anzahl der effektiv nutzbaren Stichproben an (im Standard werden 4000 berechnet). Die Zahl sollte nicht deutlich geringer sein.
+
+Wir werden uns aber mit diesen beiden Kennwerten nicht weiter beschäftigen in diesem Kurs.
+
+
+### Visualisieren der "mittleren" Regressiongeraden
+
+
+
+Zur Erinnerung: Die Bayes-Analyse liefert uns viele Stichproben zu den gesuchten Parametern,
+hier $\beta_0$, $\beta_1$ und $\sigma$.
+Überzeugen wir uns mit einem Blick in die Post-Verteilung von `m43a`:
+
+
+
+
+```{r}
+m43a %>% 
+  as_tibble() %>% 
+  head()
+```
+
+
+Wir können z.B. ein Lagemaß wie den Median hernehmen, um die "mittlere" Regressionsgerade zu betrachten:
+
+
+
+```{r Post-Regression-befragen-6, echo = TRUE, eval = FALSE}
+#| echo: true
+#| eval: true
+d2 %>% 
+  ggplot() +
+  aes(x = weight_c, y = height) +
+  geom_point() +
+  geom_abline(
+    slope = 0.9,  # Median beta 1
+    intercept = 154,  # Median beta 0
+    color = "blue")
+```
+
+
+Einfacher ist die Syntax vielleicht, wenn man die Funktion `estimate_expectation` benutzt, s. @fig-expect-m43a.
+Mit "expectation" sind hier die erwarteten Werte, also die Regressionsgerade, gemeint.
+
+
+```{r}
+#| fig-cap: Erwartete Werte des Modell m43a, sprich, die Regressionsgerade
+#| label: fig-expect-m43a
+m43_expect <- estimate_expectation(m43a)
+plot(m43_expect)
+```
+
+
+
+
+
+### Zentrale Statistiken zu den Parametern
+
+In diesem Modell gibt es drei Parameter: $\mu, \beta, \sigma$.
+
+Hier folgen einige Beispiele an Fragen, die wir an unser Modell bzw. die Post-Verteilung stellen können.
+
+
+#### Lagemaße zu den Parametern
+
+- Was ist die mittlere Größe einer !Kung-Person? ($\beta_0$)
+- Was ist der Schätzwert für den Zusammenhang von Gewicht und Größe? ($\beta_1$)
+- Was ist der Schätzwert für Ungewissheit in der Schätzung der Größe? ($\sigma$)
+- Was ist der wahrscheinlichste Wert für z.B: $\beta_1$?
+
+
+Eine nützliche Zusammenfassung der Post-Verteilung bekommt man mit `parameters(modell)`:
+
+
+```{r Post-Regression-befragen-7, echo = TRUE}
+#| eval: false
+m43a %>% 
+  parameters()
+```
+
+```{r Post-Regression-befragen-7a}
+#| echo: false
+m43a %>% 
+  parameters() %>% 
+  display()
+```
+
+
+
+Wandelt man das Ausgabe-Objekt der Bayes-Regression, d.h. `m43a`, mit `as_tibble()` in eine Tabelle um,
+so bekommt man eine Tabelle mit den Stichproben der Post-Verteilung:
+
+
+
+```{r}
+m43a_post <- 
+  m43a %>% 
+  as_tibble()
+
+m43a_post %>% 
+  head()
+```
+
+
+
+Wie wir gesehen haben, nutzen wir diese Tabelle der Post-Verteilung immer wieder.
+Speichern wir uns sie also als ein Objekt ab, `m43_post`.
+
+
+Jetzt haben wir wieder eine schöne Tabelle mit Stichproben aus der Post-Verteilung,
+die wir wie gewohnt befragen können.
+
+
+
+Eine Visualisierung zeigt gut sowohl Lage- als auch Streuungsmaße der Parameter, zumindest grob.,
+
+
+
+
+
+Oder man erstellt selber ein Diagramm mit `ggplot`.
+
+
+
+
+
+```{r}
+m43a_post %>% 
+  ggplot(aes(x = weight_c)) +
+  geom_density(fill = "orange")
+```
+
+
+
+Das Diagramm zeigt, dass Mittelwert, Median und Modus eng zusammenliegen.
+Zur Erinnerung: Der Modus gibt den häufigsten, d.h. hier also den wahrscheinlichsten, Wert an.
+
+Der Modus wird hier auch *Maximum a Posteriori* (MAP) genannt, daher:
+
+
+
+```{r map-estimate-m43a}
+#| eval: false
+m43a_post %>% 
+  summarise(map_b1 = map_estimate(weight_c))
+```
+
+
+
+
+
+
+Hier ist die Verteilung von $\sigma$ visualisiert:
+
+
+
+```{r}
+m43a_post %>% 
+  ggplot(aes(x = sigma)) +
+  geom_density(fill = "orange")
+```
+
+
+
+Alternativ kann man sich die Verteilung eines Parameters auch so ausgeben lassen,
+gleich mit Intervallgrenzen, z.B. 95%.
+
+
+```{r}
+m43a_hdi <- hdi(m43a_post)  # analog mit eti(m43a)
+
+plot(m43a_hdi)
+```
+
+
+Ergänzt man bei `plot()` noch `show_intercept = TRUE` wird auch der Achsenabschnitt angezeigt.
+
+
+
+
+
+### Streuungsmaße zu den Parametern
+
+
+- Wie unsicher sind wir uns in den Schätzungen der Parameter?
+
+
+
+Diese Frage wird durch die Ungewissheitsintervalle in der Ausgabe beantwortet.
+
+
+:::callout-note
+An einigen Stellen wird empfohlen, anstelle eines (gebräuchlichen) 95%-Intervalls 
+auf ein 90%- oder 89%-Intervall auszuweichen, aufgrund der besseren numerischen Stabilität.
+:::
+
+
+### Ungewissheit von $\alpha$ und $\beta$ aus der Post-Verteilung visualisiert
+
+
+
+Die ersten 10 Stichproben:
+
+
+```{r Post-Regression-befragen-10, echo = TRUE}
+d2 %>% 
+  ggplot(aes(x = weight_c, 
+             y = height)) +
+  geom_point() +
+  geom_abline(
+    data = m43a_post %>% 
+      slice_head(n = 10),
+    aes(slope = weight_c,
+        intercept = `(Intercept)`),
+    alpha = .3)
+```
+
+
+
+Die ersten 100 Stichproben:
+
+
+```{r Post-Regression-befragen-11-ersten-1000, echo = TRUE}
+d2 %>% 
+  ggplot(aes(x = weight_c, 
+             y = height)) +
+  geom_point() +
+  geom_abline(
+    data = m43a_post %>% 
+      slice_head(n = 100),
+     aes(slope = weight_c,
+        intercept = `(Intercept)`),
+    alpha = .1)
+```
+
+
+
+Die ersten `1e3` Stichproben:
+
+
+```{r Post-Regression-befragen-11-die-ersten-1000, echo = TRUE}
+d2 %>% 
+  ggplot(aes(x = weight_c, 
+             y = height)) +
+  geom_point() +
+  geom_abline(
+    data = m43a_post %>% 
+      slice_head(n = 1e3),
+     aes(slope = weight_c,
+        intercept = `(Intercept)`),
+    alpha = .01)
+```
+
+
+
+
+
+Die ersten 1000000 ... okay, lassen wir es gut sein^[Im Standard beschert uns `stan_glm()` 4000 Stichproben.].
+
+
+
+Einfacher ist die Visualisierung mit `estimate_expectation`:
+
+
+```{r}
+estimate_expectation(m43a) %>% plot()
+```
+
+
+
+### Fragen zu Quantilen des Achsenabschnitts 
+
+:::callout-note
+Zur Erinnerung: Bei einem zentrierten Prädiktor misst der Achsenabschnitt die mittlere Größe.
+:::
+
+- Welche mittlere Größe wird mit zu 50%, 90% bzw. 95% Wahrscheinlichkeit nicht überschritten?
+- Welche mittlere Größe mit zu 95% Wskt. nicht unterschritten?
+- Von wo bis wo reicht der innere 50%-Schätzbereich der mittleren Größe?
+
+
+
+Quantile:
+
+
+
+```{r quantile-post}
+m43a_post %>% 
+  summarise(
+    q_50 = quantile(`(Intercept)`, prob = .5),
+    q_90 = quantile(`(Intercept)`, prob = .9),
+    q_05 = quantile(`(Intercept)`, prob = .95))
+```
+
+
+50%-PI:
+
+
+```{r}
+m43a %>% 
+  eti(ci = .5)
+```
+
+
+
+
+### Fragen zu Wahrscheinlichkeitsmassen des Achsenabschnitts 
+
+
+
+Wie wahrscheinlich ist es, dass die mittlere Größe bei mind. 155 cm liegt?
+
+
+
+```{r echo = TRUE}
+m43a_post %>% 
+  count(gross = `(Intercept)` >= 155) %>% 
+  mutate(prop = n / sum(n))
+```
+
+```{r}
+#| echo: false
+wskt_gross <- 
+  m43a_post %>% 
+  count(gross = `(Intercept)` >= 155) %>% 
+  mutate(prop = n / sum(n)) %>% 
+  pull(prop) %>% 
+  `[`(2) %>% 
+  round(2)
+```
+
+
+Die Wahrscheinlichkeit beträgt `r wskt_gross`.
+
+
+- Wie wahrscheinlich ist es, dass die mittlere Größe höchstens 154.5 cm beträgt?
+
+
+
+```{r echo = TRUE}
+m43a_post %>% 
+  count(klein = (`(Intercept)` <= 154.5)) %>% 
+  mutate(prop = n / sum(n))
+```
+
+```{r}
+#| echo: false
+wskt_klein <- 
+  m43a_post %>% 
+  count(klein = `(Intercept)` <= 154.5) %>% 
+  mutate(prop = n / sum(n)) %>% 
+  pull(prop) %>% 
+  `[`(2) %>% 
+  round(2)
+```
+
+
+
+Die Wahrscheinlichkeit beträgt `r wskt_klein`.
+
+
+
+
+
+
+<!-- ### Ungewissheit von Achsenabschnitt und Steigung  -->
+
+<!-- ... als Histogramme visualisiert -->
+
+<!--  -->
+
+<!-- ### Achsenabschnitt -->
+
+<!-- ```{r Post-Regression-befragen-13, echo = TRUE, eval = TRUE} -->
+<!-- post_m43a %>%  -->
+<!--   ggplot(aes(x = a)) + -->
+<!--   geom_density() -->
+<!-- ``` -->
+
+<!-- ] -->
+
+<!-- .pull-right[ -->
+
+<!-- ### Regressionsgewicht (Steigung) -->
+
+<!-- ```{r Post-Regression-befragen-14, echo = TRUE} -->
+<!-- post_m43a %>%  -->
+<!--   ggplot(aes(x = b)) + -->
+<!--   geom_density() -->
+<!-- ``` -->
+
+<!-- ] -->
+
+
+
+### Typischer Bayes-Nutzer in Aktion
+
+![Typischer Bayes-Nutzer, der ein Ungewissheitsintervall berechnet. Bildquelle: Easystats, bayestestR](https://easystats.github.io/bayestestR/reference/figures/bayesianMaster.jpg)
+
+[Quelle](https://easystats.github.io/bayestestR/articles/bayestestR.html)
+
+
+
+
+
+## Post-Verteilung bedingt auf einen Prädiktorwert
+
+
+### Visualisierung
+
+
+Was ist wohl die Wahrscheinlichkeit der Körpergröße bei einem bestimmten Gewicht?
+
+Angenommen wir wissen, dass das Gewicht bei, sagen wir 45 kg liegt.
+Welche Körpergröße ist (im Schnitt) zu erwarten? Wie unsicher sind wir uns über diesen Mittelwert?
+
+Etwas formaler ausgedrückt:
+
+$\mu|\text{weight}=45$
+
+
+45 kg entspricht genau dem Mittelwert von `weight`. Geht man von zentrierten Prädiktorwerten aus, gilt in dem Fall `weight_c = 0`.
+Erstellen wir uns dazu eine Tabelle:
+
+
+
+```{r mu-at-45, echo = TRUE}
+mu_at_45 <-
+  m43a_post %>% 
+  mutate(mu_at_45 = `(Intercept)`)
+```
+
+
+Und plotten diese, s. @fig-mu-at-45.
+
+
+```{r Post-Regression-befragen-15, echo = TRUE, eval = FALSE}
+#| eval: false
+#| label: fig-mu-at-45
+#| fig-cap: Post-Verteilung der Größe (laut unserem Modell) bei einem Gewicht von 45kg 
+mu_at_45 %>% 
+  ggplot(aes(x = mu_at_45)) +
+  geom_density()
+```
+
+```{r Post-Regression-befragen-17}
+#| echo: false
+mu_at_45 %>% 
+  ggplot(aes(x = mu_at_45)) +
+  geom_density() +
+  scale_y_continuous(NULL, breaks = NULL) +
+  xlab(expression(mu["height | weight = 45"])) +
+  scale_x_continuous(limits = c(150, 160))
+```
+
+
+
+Analog können wir fragen,
+wie groß wohl eine Person mit 50 kg im Mittelwert sein wird und wie (un)gewiss wir uns über diesen Mittelwert sind.
+
+
+50 kg, das sind 5 über dem Mittelwert, in zentrierten Einheiten ausgedrückt also `weight_c = 5`. Auch dazu erstellen wir uns eine Tabelle.
+
+
+
+
+```{r mu-at-50, echo = TRUE}
+mu_at_50 <-
+  mu_at_45 %>% 
+  mutate(mu_at_50 = `(Intercept)` + 5 * weight_c)
+
+head(mu_at_50)
+```
+
+
+Die Verteilung der Größe bei einem Gewicht von 50kg ist weiter rechts (Richtung höhere Größe) zentriert, s. @fig-mu-at-50.
+
+
+
+```{r Post-Regression-befragen-16, echo = TRUE, eval = FALSE}
+#| eval: false
+mu_at_50 %>% 
+  ggplot(aes(x = mu_at_50)) +
+  geom_density()
+```
+
+```{r Post-Regression-befragen-18}
+#| echo: false
+#| label: fig-mu-at-50
+#| fig-cap: Post-Verteilung der Größe (laut unserem Modell) bedingt auf ein Gewicht von 50 kg
+mu_at_50 %>% 
+  ggplot(aes(x = mu_at_50)) +
+  geom_density() +
+  scale_y_continuous(NULL, breaks = NULL) +
+  xlab(expression(mu["height | weight = 50"])) +
+  scale_x_continuous(limits = c(150, 160))
+```
+
+
+
+
+
+### Lagemaße und Streuungen
+
+Befragen wir die bedingte Post-Verteilung. Eine erste Frage zielt nach den typischen deskriptiven Statistiken, also nach Lage und Streuung der Verteilung der Körpergröße.
+
+
+
+
+Was ist das 90% PI für $\mu|w=50$ ?
+
+
+```{r Post-Regression-befragen-19, echo = TRUE}
+mu_at_50 %>% 
+  eti(mu_at_50, ci = .9)
+```
+
+
+Die mittlere Größe - gegeben $w=50$ - liegt mit 90% Wahrscheinlichkeit zwischen den beiden Werten (ca.) 159cm und 160cm.
+
+
+
+Welche mittlere Größe wird mit 95% Wahrscheinlichkeit nicht überschritten, wenn die Person 45kg wiegt?
+
+
+```{r Post-Regression-befragen-20, echo = TRUE}
+mu_at_45 %>% 
+  summarise(q_95 = quantile(mu_at_45, prob = .95))
+```
+
+
+
+
+
+## Die PPV befragen
+
+
+🏎️ VERTIEFUNG 🏎️
+
+
+
+
+
+
+
+
+Die Posterior-Prädiktiv-Verteilung (PPV) gibt uns die Möglichkeit,
+nach der Wahrscheinlichkeit *tatsächlicher* Körpergrößen zu fragen - 
+und nicht nur nach *mittleren* Körpergrößen anhand der Post-Verteilung.
+
+
+:::callout-important
+Die Post-Verteilung macht nur Aussagen zur mittleren Körpergröße,
+denn das ist was wir modellieren wollten.
+Möchten wir Aussagen zur Wahrscheinlichkeit tatsächlicher Größen treffen,
+brauchen wir die PPV.
+:::
+
+
+### Perzentil-Intervalle für verschiedenen Prädiktor-Werte
+
+
+Wir erstellen uns eine Sequenz an Prädiktorwerten, die uns interessieren, `weight_df`:
+
+
+```{r echo = TRUE}
+weight_df <- tibble(weight_c = seq(-20,20, by = 5))
+```
+
+
+
+Für diese Werte lassen wir uns dann die Perzentil-Intervalle (PI) ausgeben:
+
+
+```{r Post-Regression-befragen-21, echo = TRUE}
+mus <- 
+  predictive_interval(
+    m43a, 
+    newdata = weight_df) %>% 
+  as_tibble() %>% 
+  bind_cols(weight_df)
+```
+
+
+Um die Perzentilintervalle zu erstellen, wird von `predictive_interval()` für jeden Prädiktorwert eine Posteriori-Verteilung erstellt und das 5%- sowie 95%-Quantil berechnet. 
+
+Wir sehen etwa, dass wir bei einer Person mittleren Gewichts, eine Körpergröße von ca. 146 cm bis 163 cm zu erwarten haben (95%-KI).
+Hoppla! Das ist ja viel ungenauer, als die Angaben der Post-Verteilung oben.
+Ja, denn die Post-Verteilung hat die Ungewissheit zum *Mittelwert* ausgedrückt;
+die PPV gibt die Ungewissheit *tatsächlicher* beobachtbarer Körpergrößen aus,
+nicht nur die Ungewissheit zum Mittelwert.
+
+
+Berechnen wir die PPV für `m43a`:
+
+
+```{r}
+ppv_m43a <- posterior_predict(
+  m43a,
+  newdata = weight_df,
+  draws = 100) %>% 
+  as_tibble() %>% 
+  pivot_longer(
+    cols = everything(),
+    names_to = "weight_condition",
+    values_to = "height")
+```
+
+
+
+
+Hier ist ein Auszug aus der PPV-Tabelle:
+
+
+
+
+
+```{r Post-Regression-befragen-23}
+#| echo: false
+mus %>% 
+  head() %>% 
+  relocate(weight_c, .before = 1) %>% 
+  gt() %>% 
+  fmt_number(everything(), decimals = 1)
+```
+
+
+
+
+
+
+
+### Perzentilintervalle für verschiedenen Prädiktorwerte visualisiert
+
+
+
+
+```{r}
+#| echo: false
+mus <- 
+  mus %>% 
+  mutate(height = 154.6 + 0.9*weight_c)
+
+d2 %>% 
+  ggplot(aes(x = weight_c, y = height)) +
+  geom_point() +
+  geom_abline(slope = coef(m43a)[2], intercept = coef(m43a)[1], color = "blue") +
+  geom_errorbar(data = mus,
+                aes(ymin = `5%`,
+                    ymax = `95%`),
+                size = .5,
+                width = .5,
+                color = "firebrick")
+```
+
+
+
+Die vertikalen Balken geben die 95%-KI wieder, die wir jeweils zu erwarten haben.
+
+Noch eine andere Visualisierung, s. @fig-katzenaugen; je dicker die "Katzenaugen", desto mehr Stichproben (samples) liegen vor an der Stelle,
+und umso genauer ist die Schätzung.
+
+
+
+```{r}
+#| echo: false
+#| label: fig-katzenaugen
+#| fig-cap: Die PPV für bestimmte Gewichtswerte w, visualisiert mit Katzenaugen-Diagrammen
+ppv_m43_weight_df <-
+  posterior_predict(m43a,
+                    newdata = weight_df) %>% 
+  as_tibble() %>% 
+  pivot_longer(everything(),
+               names_to = "weight_condition",
+               values_to = "height")
+
+weight_df <-
+  weight_df %>% 
+  mutate(weight_condition = as.character(c(1:9)))
+
+ppv_m43_weight_df <- 
+  ppv_m43_weight_df %>% 
+  full_join(weight_df, by = "weight_condition")
+
+d2 %>% 
+  ggplot() +
+  geom_violin(data = ppv_m43_weight_df,
+              aes(x = weight_c, y = height, group = weight_c),
+                fill = "grey80",
+              width = 1) +
+    geom_point(aes(x = weight_c, y = height)) +
+  geom_abline(slope = coef(m43a)[2], intercept = coef(m43a)[1], color = "blue")
+```
+
+
+
+Also: Je dicker die Violine, desto wahrscheinlicher $\mu | w_i$.
+
+
+
+### Die PPV visualisiert
+
+Gerade eben haben wir bedingte PPVen angeschaut: Also eine PPV für einen bestimmten Prädiktorwert, z.B. bei einer Person mittleren Gewichts.
+
+Wir können auch den Mittelwert über alle bedingten PPV anschauen, sozusagen die "Master-PPV" oder "unbedingte PPV" oder schlicht PPV.
+
+
+Vergleichen wir die echten Werte für `height`, $y$, mit den von der PPV simulierten Werten für `height`, $y_{rep}$, s. @fig-ppv-check.
+
+
+```{r ppv-plot1}
+#| label: fig-ppv-check
+#| fig-cap: Vergleich der Vorhersagen für y (leichte, blaue Linien) mit der beobachteten Verteilung von y
+check_predictions(m43a) 
+```
+
+
+`?check_predictions` zeigt Hilfe für diese Funktion. 
+Die Funktion zeigt die Vorhersagen für die AV laut der Posteriori-Verteilung.
+
+
+
+Die zwei Gipfel hat unser Modell nicht mitgekriegt, 
+ansonsten decken sich die Vorhersagen der PPV gut mit den echten Daten.
+
+
+
+
+
+
+
+
+### Fragen an die PPV
+
+- Wie groß sind die !Kung im Schnitt?
+- Welche Größe wird von 90% der Personen nicht überschritten?
+- Wie groß sind die 10% kleinsten?
+
+
+```{r Post-Regression-befragen-29, echo = TRUE }
+ppv_m43a %>% 
+  summarise(
+    q_10 = quantile(height, prob = .1),
+    height_mean = mean(height),
+    q_50 = quantile(height, prob = .5),
+    q_90 = quantile(height, prob = .9)
+  )
+```
+
+
+
+Was ist der 50% Bereich der Körpergröße?
+
+
+```{r Post-Regression-befragen-30, echo = TRUE}
+ppv_m43a %>% 
+  eti(ci = .5)
+```
+
+
+
+## Aufgaben
+
+
+(kommen noch)
+

@@ -209,7 +209,7 @@ samples <-
   slice_sample(  # Ziehe daraus eine Stichprobe,
     n = 1e4,  # mit insgesamt n=10000 Zeilen,
     weight_by = post,  # Gewichte nach Post-Wskt.,
-    replace = T)  # Ziehe mit Zurücklegen %>% 
+    replace = T)  %>%  # Ziehe mit Zurücklegen
   select(p_grid)
 ```
 
@@ -224,7 +224,7 @@ samples <-
   slice_sample(  # Ziehe daraus eine Stichprobe,
     n = 1e4,  # mit insgesamt n=10000 Zeilen,
     weight_by = post,  # Gewichte nach Post-Wskt.,
-    replace = T)  # Ziehe mit Zurücklegen %>% 
+    replace = T)  %>%  # Ziehe mit Zurücklegen
   select(p_grid)
 ```
 
@@ -245,11 +245,10 @@ Das Ergebnis, Tabelle `samples`, die aus Stichproben aus der Post-Verteilung bes
 #| label: tbl-postsample1
 #| tbl-cap: Die ersten Zeilen der Stichproben aus der Post-Verteilung
 samples %>% 
-  slice_head(n=3) %>% 
+  slice_head(n=5) %>% 
   gt() %>% 
-  fmt_number(columns = c(1,3,5),
-             decimals = 3) %>% 
-  fmt_scientific(columns = 4, decimals = 0) 
+  fmt_number(columns = c(1),
+             decimals = 3) 
 ```
 
 
@@ -402,13 +401,15 @@ Jetzt noch mal mit mehr Stichproben: $n=10^6$ Stichproben bei $k=100$ Gitterwert
 #| label: fig-post-dk100
 #| fig-cap: "Post-Verteilung mit vielen Stichproben und vielen Parameterwerten (Gitterwerten): schön 'glatt'. Mittelwert (MW), Modus und Median (Md) liegen eng nebeneinander, da die Verteilung recht symmetrisch ist."
 
-mode <- map_estimate(d_k100_samples$p_grid) %>% round(2)
-avg <- mean(d_k100_samples$p_grid) %>% round(2)
-md <- median(d_k100_samples$p_grid) %>% round(2)
 
 d_k100_samples <- 
   d_k100 %>% 
   slice_sample(n = 1e6, weight_by = post, replace = T) 
+
+
+mode <- map_estimate(d_k100_samples$p_grid) %>% round(2)
+avg <- mean(d_k100_samples$p_grid) %>% round(2)
+md <- median(d_k100_samples$p_grid) %>% round(2)
 
 d_k100_samples %>%   
 ggplot(aes(x = p_grid)) +

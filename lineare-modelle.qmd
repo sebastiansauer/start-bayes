@@ -126,22 +126,6 @@ d_pred <-
 
 
 
-
-
-vertical_norm <- function(x, y, k = 3, sigma_norm = 1) {
-  
-  norm_dens <-
-    tibble(
-      x_raw = seq(-k*sigma_norm, k * sigma_norm, length.out = 100),
-      y_raw = dnorm(x_raw, mean = 0, sigma_norm) / dnorm(0, 0, sigma_norm) * 3,
-      x = x_raw + x,
-      y = y_raw - k * sigma_norm, 
-      xend = x,
-      yend = y_raw + k * sigma_norm)
-  
-  return(norm_dens)
-}
-  
 plot_condition <- 
   d2 %>% 
   #select(weight, height) %>% 
@@ -150,9 +134,11 @@ plot_condition <-
        aes(x = weight, y = height)) +
   geom_point(alpha = .7) +
   geom_smooth(method = "lm") +
-  geom_point(data = d_pred, color = "red", size = 5, alpha = .5) +
-  geom_path(aes(y, x), data = vertical_norm(x = 40, y = 150), 
-            color = "green")
+  geom_point(aes(color = as.factor(weight)), data = d_pred, size = 5, alpha = .5) +
+  labs(color = "Gewicht",
+       x = "Gewicht (weight)",
+       y = "Größe (height)")
+
 ```
 
 ```{r m3}
@@ -225,13 +211,20 @@ ppv_m43 <-
   as_tibble() %>% 
   pivot_longer(everything(), 
                names_to = "weight_condition",
-               values_to = "h")
+               values_to = "h") %>% 
+  mutate(weight =
+           case_when(weight_condition == 1 ~ 40,
+                     weight_condition == 2 ~ 45,
+                     weight_condition == 3 ~ 50,
+                     weight_condition == 4 ~ 55
+                     )) %>% 
+  mutate(weight = as.factor(weight))
 
 
 
 ppv_m43_summary <-
   ppv_m43 %>% 
-  group_by(weight_condition) %>% 
+  group_by(weight) %>% 
   summarise(m = mean(h),
             s = sd(h))
 
@@ -240,11 +233,11 @@ post_at_plot <-
   ppv_m43 %>% 
   ggplot() +
   aes(x = h) +
-  geom_density(fill = "grey60") +
-  facet_wrap(~ weight_condition, nrow = 1, scales = "free") +
+  geom_density(aes(fill = weight)) +
+  facet_wrap(~ weight, nrow = 1, scales = "free") +
   scale_y_continuous(breaks = NULL) +
-  labs(title = "Post-Verteilungen an verschiedenen Werten von X",
-       caption = "MW±2sd",
+  labs(
+       caption = "Horizontale Balken zeigen MW±2sd",
        x = "Größe",
        y = "Post-Wskt") +
   geom_point(data = ppv_m43_summary,
@@ -258,7 +251,8 @@ post_at_plot <-
                yend = 0,
                color = "blue",
                alpha = .5,
-               size = 2) 
+               size = 2) +
+  scale_x_continuous(breaks = c(140, 160))
 ```
 
 
@@ -267,6 +261,9 @@ post_at_plot <-
 #| echo: false
 #| label: fig-post42
 #| fig-cap: Für jeden beliebigen Prädiktorwert kann man eine Post-Verteilung bekommen
+#| fig-subcap: 
+#|   - Regressionsmodell mit einigen ausgewählten Gewichtswerten
+#|   - Für jeden beliebigen Gewichtswert bekommt man eine Post-Verteilung
 
 
 plots(plot_condition, post_at_plot, n_rows = 2, tags = "A")
@@ -1401,10 +1398,12 @@ mu_at_45 <-
   mutate(mu_at_45 = `(Intercept)`)
 ```
 
-Und plotten diese:
+Und plotten diese, s. @fig-mu-at-45.
 
 ```{r Post-Regression-befragen-15, echo = TRUE, eval = FALSE}
 #| eval: false
+#| label: fig-mu-at-45
+#| fig-cap: Post-Verteilung der Größe (laut unserem Modell) bei einem Gewicht von 45kg 
 mu_at_45 %>% 
   ggplot(aes(x = mu_at_45)) +
   geom_density()
@@ -1427,7 +1426,7 @@ Analog können wir fragen,
 wie groß wohl eine Person mit 50 kg im Mittelwert sein wird und wie (un)gewiss wir uns über diesen Mittelwert sind.
 
 
-50 kg, das sind 5 über dem Mittelwert, in zentrierten Einheiten ausgedrückt also `weight_c = 5`. Auch dazu erstellen wir uns eine Tabelle:
+50 kg, das sind 5 über dem Mittelwert, in zentrierten Einheiten ausgedrückt also `weight_c = 5`. Auch dazu erstellen wir uns eine Tabelle.
 
 
 
@@ -1435,8 +1434,11 @@ wie groß wohl eine Person mit 50 kg im Mittelwert sein wird und wie (un)gewiss 
 mu_at_50 <-
   mu_at_45 %>% 
   mutate(mu_at_50 = `(Intercept)` + 5 * weight_c)
+
+head(mu_at_50)
 ```
 
+Die Verteilung der Größe bei einem Gewicht von 50kg ist weiter rechts (Richtung höhere Größe) zentriert, s. @fig-mu-at-50.
 
 
 ```{r Post-Regression-befragen-16, echo = TRUE, eval = FALSE}
@@ -1452,6 +1454,8 @@ mu_at_50 %>%
 
 ```{r Post-Regression-befragen-18}
 #| echo: false
+#| label: fig-mu-at-50
+#| fig-cap: Post-Verteilung der Größe (laut unserem Modell) bedingt auf ein Gewicht von 50 kg
 mu_at_50 %>% 
   ggplot(aes(x = mu_at_50)) +
   geom_density() +
@@ -1464,6 +1468,8 @@ mu_at_50 %>%
 
 
 ### Lagemaße und Streuungen
+
+Befragen wir die bedingte Post-Verteilung. Eine erste Frage zielt nach den typischen deskriptiven Statistiken, also nach Lage und Streuung der Verteilung der Körpergröße.
 
 
 
@@ -1544,6 +1550,21 @@ die PPV gibt die Ungewissheit *tatsächlicher* beobachtbarer Körpergrößen aus
 nicht nur die Ungewissheit zum Mittelwert.
 
 
+Berechnen wir die PPV für `m43a`:
+
+```{r}
+ppv_m43a <- posterior_predict(
+  m43a,
+  newdata = weight_df,
+  draws = 100) %>% 
+  as_tibble() %>% 
+  pivot_longer(
+    cols = everything(),
+    names_to = "weight_condition",
+    values_to = "height")
+```
+
+
 
 Hier ist ein Auszug aus der PPV-Tabelle:
 
@@ -1589,12 +1610,14 @@ d2 %>%
 
 Die vertikalen Balken geben die 95%-KI wieder, die wir jeweils zu erwarten haben.
 
-Noch eine andere Visualisierung; je dicker die Katzenaugen, desto mehr Samples liegen vor an der Stelle,
+Noch eine andere Visualisierung, s. @fig-katzenaugen; je dicker die "Katzenaugen", desto mehr Stichproben (samples) liegen vor an der Stelle,
 und umso genauer ist die Schätzung.
 
 
 ```{r}
 #| echo: false
+#| label: fig-katzenaugen
+#| fig-cap: Die PPV für bestimmte Gewichtswerte w, visualisiert mit Katzenaugen-Diagrammen
 ppv_m43_weight_df <-
   posterior_predict(m43a,
                     newdata = weight_df) %>% 
@@ -1633,10 +1656,12 @@ Gerade eben haben wir bedingte PPVen angeschaut: Also eine PPV für einen bestim
 Wir können auch den Mittelwert über alle bedingten PPV anschauen, sozusagen die "Master-PPV" oder "unbedingte PPV" oder schlicht PPV.
 
 
-Vergleichen wir die echten Werte für `height`, $y$, mit den von der PPV simulierten Werten für `height`, $y_{rep}$.
+Vergleichen wir die echten Werte für `height`, $y$, mit den von der PPV simulierten Werten für `height`, $y_{rep}$, s. @fig-ppv-check.
 
 ```{r ppv-plot1}
-check_predictions(m43a)
+#| label: fig-ppv-check
+#| fig-cap: Vergleich der Vorhersagen für y (leichte, blaue Linien) mit der beobachteten Verteilung von y
+check_predictions(m43a) 
 ```
 
 `?check_predictions` zeigt Hilfe für diese Funktion. 
