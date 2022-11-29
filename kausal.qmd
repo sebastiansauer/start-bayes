@@ -89,7 +89,7 @@ Betrachtet man die Gesamt-Daten zur Heilung, so ist der Effekt von Geschlecht (�
 
 
 
-```{r}
+```{r dag-studie-a}
 #| echo: false
 dag_studie_a <-
   dagitty("dag{
@@ -129,7 +129,7 @@ Achtung: Das Stratifizieren ist nicht immer und nicht automatisch die richtige L
 Was raten Sie dem Arzt? Medikament einnehmen, ja oder nein?
 
 
-```{r}
+```{r dag-studie-b-table}
 #| echo: false
 #| message: false
 studie_b <- 
@@ -174,7 +174,7 @@ Sucht man innerhalb der Leute mit gesenktem Blutdruck nach Effekten, findet man 
 
 
 
-```{r}
+```{r dag-studie-b}
 #| echo: false
 dag_studie_b <-
   dagitty("dag{
@@ -208,7 +208,7 @@ Stratifizieren wäre falsch, da dann nur der toxische Effekt, aber nicht der hei
 
 
 Studie A
-```{r}
+```{r plot-dag-a-plot}
 #| echo: false
 #| message: false
 plot(dag_studie_a)
@@ -220,7 +220,7 @@ plot(dag_studie_a)
 
 
 Studie B
-```{r}
+```{r plot-dag-a}
 #| echo: false
 #| message: false
 plot(dag_studie_b)
@@ -281,7 +281,7 @@ Damit gibt es eine Mediation von Größe -> Behandlung -> Heilung.
 Darüberhinaus gibt es noch einen Einfluss von Größe der Nierensteine auf die Heilung.
 
 
-```{r}
+```{r dag-studie-c}
 #| echo: false
 dag_studie_c <-
   dagitty("dag{
@@ -347,7 +347,7 @@ d_path <- "https://vincentarelbundock.github.io/Rdatasets/csv/mosaicData/Saratog
 
 
 
-```{r echo = FALSE}
+```{r read-data, echo = FALSE}
 #| message: false
 d <- read_csv(d_path)
 ```
@@ -392,7 +392,7 @@ Das ist Angie, Data Scientistin.
 
 
 
-```{r}
+```{r d-plot-don1}
 #| echo: false
 #| message: false
 d %>% 
@@ -420,7 +420,7 @@ d %>%
 Berechnen wir das Modell:
 
 
-```{r echo = TRUE}
+```{r m1, echo = TRUE}
 m1 <- stan_glm(price ~ bedrooms,
                refresh = 0,
                data = d)
@@ -454,7 +454,7 @@ Don hofft, durch Verdopplung der Zimmerzahl den doppelten Verkaufspreis zu erzie
 Berechnen wir die Vorhersagen für Dons neues Haus (mit den durch Mauern halbierten Zimmern).
 
 
-```{r echo = TRUE}
+```{r m1-estimate-pred, echo = TRUE}
 dons_new_house <- tibble(bedrooms = 4)
 estimate_prediction(m1, dons_new_house)
 ```
@@ -467,7 +467,7 @@ Mit 4 statt 2 Schlafzimmer steigt der Wert auf 250k, laut `m1`.
 🧑
 
 
-```{r}
+```{r plot-pred-m1}
 #| echo: false
 pred <- estimate_relation(m1)
 plot(pred)
@@ -498,7 +498,7 @@ Zur Erinnerung: "4e+05" ist die Kurzform der wissenschaftlichen Schreibweise und
 Die Schätzbereiche sind in dem Fall deutlich kleiner:
 
 
-```{r}
+```{r plot-m1-dons-new-house}
 estimate_expectation(m1, dons_new_house)
 ```
 
@@ -509,7 +509,7 @@ estimate_expectation(m1, dons_new_house)
 
 Berechnen wir das Modell  `m2: price ~ bedrooms + livingArea`.
 
-```{r echo = TRUE}
+```{r m2, echo = TRUE}
 m2 <- stan_glm(price ~ bedrooms + livingArea, data = d, refresh = 0)
 
 hdi(m2)
@@ -518,7 +518,7 @@ hdi(m2)
 Was sind die Vorhersgaen des Modell? 
 
 
-```{r echo = TRUE}
+```{r m2-pred, echo = TRUE}
 estimate_prediction(m2, data = tibble(bedrooms = 4, livingArea = 1200))
 ```
 
@@ -526,7 +526,7 @@ estimate_prediction(m2, data = tibble(bedrooms = 4, livingArea = 1200))
 Andere, aber ähnliche Frage: Wieviel Haus kostet ein Haus mit sagen wir 4 Zimmer *gemittelt* über die verschiedenen Größen von `livingArea`? Stellen Sie sich alle Häuser mit 4 Zimmern vor (also mit verschiedenen Wohnflächen). Wir möchten nur wissen, was so ein Haus "im Mittel" kostet.
 Wir möchten also die Mittelwerte pro `bedroom` schätzen, gemittelt für jeden Wert von `bedroom` über `livingArea`:
 
-```{r}
+```{r m2-pred-means}
 estimate_means(m2, at = "bedrooms", length = 7)
 ```
 
@@ -629,7 +629,7 @@ A true hypothesis will pass and fail many statistical "tests" on its way to acce
 
 
 
-```{r fig.asp = .33, fig.width=9}
+```{r km1, fig.asp = .33, fig.width=9}
 #| echo: false
 #| warning: false
 km1 <- confounder_triangle(x = "bedrooms",
@@ -664,7 +664,7 @@ Wenn das Kausalmodell stimmt, dann zeigt `m2` den kausalen Effekt von `livingAre
 
 
 
-```{r fig.asp = 0.45, fig.width=9, dpi=300}
+```{r confounder-triangle, fig.asp = 0.45, fig.width=9, dpi=300}
 #| echo: false
 #| warning: false
 confounder_triangle(x = "bedrooms",
@@ -707,7 +707,7 @@ M2. it Kontrollieren der Konfundierungsvariablen
 Regressionsmodell:
 `y ~ x + group`
 
-```{r}
+```{r plot-konf2}
 #| echo: false
 p_konf2
 ```
@@ -730,7 +730,7 @@ Es wird korrekt gezeigt, dass es keine Korrelation zwischen `x` und `y` gibt, we
 
 
 
-```{r}
+```{r print-km1}
 #| echo: false
 print(km1)
 ```
@@ -764,7 +764,7 @@ Man nennt die mittlere Variable einer Wirkkette auch einen *Mediator* und den Pf
 
 
 
-```{r}
+```{r km2}
 #| echo: false
 km2 <- 
   dagify(
@@ -827,7 +827,7 @@ confounder_triangle(x = "Schoki",
 
 
 
-```{r fig.asp = 1.3, fig.width=9}
+```{r km3, fig.asp = 1.3, fig.width=9}
 #| echo: false
 km3 <- collider_triangle(x = "bedrooms",
                           y = "livingArea",
@@ -956,7 +956,7 @@ km1
 
 
 
-```{r fig.width=9}
+```{r dag-km1, fig.width=9}
 #| echo: false
 dag_km1 <-
   dagitty("dag{
@@ -1053,7 +1053,7 @@ Die Daten alleine können nie sagen, welches Kausalmodell der Fall ist in einer 
 
 ### Kein Zusammenhang von Intelligenz und Schönheit (?)
 
-```{r}
+```{r p-coll1}
 #| echo: false
 
 myf <- function(x) -x+0.75
@@ -1104,7 +1104,7 @@ Seltsamerweise beobachten Sie, dass die Menschen, die Sie daten (Ihre Dates),
 entweder schön sind oder schlau - aber seltens beides gleichzeitig (schade).
 
 
-```{r}
+```{r p-coll2}
 #| echo: false
 p_coll2 <- 
   d2 %>% 
@@ -1140,7 +1140,7 @@ Wie kann das sein?
 Dieser DAG bietet eine rettende Erklärung:
 
 
-```{r}
+```{r plot-coll-dag1}
 #| echo: false
 coll1_dag <-
   dagify(date ~ Looks + Talent)
@@ -1156,7 +1156,7 @@ p_coll_dag1
 
 
 
-```{r fig.width=9}
+```{r p-coll-dag2, fig.width=9}
 #| echo: false
 p_coll_dag2 <-
   collider_triangle(x = "Looks",
@@ -1273,7 +1273,7 @@ collider_triangle(x = "x",
 
 
 
-```{r}
+```{r coll2-dag}
 #| echo: false
 coll2_dag <- ggdag::dagify(s ~ f + iq,
                       outcome = "s",
@@ -1304,7 +1304,7 @@ Bei positiver `eignung` wird ein Studium aufgenommen (`studium = 1`) ansonsten n
 
 `eignung` (fürs Studium) sei definiert als die Summe von `iq` und `fleiss`, plus etwas Glück:
 
-```{r echo = TRUE}
+```{r d-eignung, echo = TRUE}
 set.seed(42)  # Reproduzierbarkeit
 N <- 1e03  
 
@@ -1757,7 +1757,7 @@ UV: $X$, AV: $Y$, drei Covariaten (A, B, C) und ein ungemessene Variable, U
 
 
 
-```{r out.width="50%"}
+```{r gg-fancey-dag, out.width="50%"}
 #| echo: false
 dag_coords <-
   tibble(name = c("A", "B", "C", "U", "X", "Y"),
@@ -1794,7 +1794,7 @@ Kontrollieren von $A$ oder (auch) $C$ schließt die offene Hintertür.
 
 UV: $W$, AV: $D$
 
-```{r }
+```{r bsp2}
 #| echo: false
 dag_coords <-
   tibble(name = c("A", "D", "M", "S", "W"),
@@ -1831,7 +1831,7 @@ Bedingten Unabhängigkeit zwischen zwei Variablen sind Variablen, die nicht asso
 
 `bsp2` impliziert folgende bedingte Unabhängigkeiten:
 
-```{r}
+```{r bsp2-cond-independence}
 #| echo: false
 dag_6.2 <- 
   dagitty(
