@@ -126,15 +126,22 @@ Drei Anforderungen an die Qualität von Studien:
 
 ### Psychologische Intervention zur Erhöhung der Impfquote
 
+@dai_behavioural_2021 zeigen den Effekt einer psychologischen Intervention zur Erhöhung der Impfquote, s. @fig-dai.
+
+
+>   Here we present two sequential randomized controlled trials to test the effect of behavioural interventions on the uptake of COVID-19 vaccines. ... We designed text-based reminders that make vaccination salient and easy, and delivered them to participants drawn from a healthcare system one day (first randomized controlled trial) (n = 93,354 participants; clinicaltrials number NCT04800965) and eight days (second randomized controlled trial) (n = 67,092 individuals; clinicaltrials number NCT04801524) after they received a notification of vaccine eligibility. The first reminder boosted appointment and vaccination rates within the healthcare system by 6.07 (84%) and 3.57 (26%) percentage points, respectively; the second reminder increased those outcomes by 1.65 and 1.06 percentage points, respectively. The first reminder had a greater effect when it was designed to make participants feel ownership of the vaccine dose.
+
 
 ```{r out.width="100%"}
 #| echo: false
+#| fig-cap: "a, b, Proportion of participants in each condition who scheduled an appointment for the first dose of the COVID-19 vaccine at UCLA Health between 15:00 h on the first reminder date and 23:59 h on the fifth day following the first reminder date (a) and the proportion of participants in each condition who obtained the first dose of the COVID-19 vaccine at UCLA Health within four weeks of the first reminder date (b). Error bars represent ± 1 s.e.m. The number of participants in each condition (from left to right in each panel) is 18,629, 18,592, 18,757, 18,627 and 18,749."
+#| label: fig-dai 
 knitr::include_graphics("img/41586_2021_3843_Fig2_HTML.png")
 ```
 
 [Quelle/Volltext](https://www.nature.com/articles/s41586-021-03843-2)
 
-@dai_behavioural_2021
+
 
 
 
@@ -226,7 +233,7 @@ Eine Psychologin, die im öffentlichen Dienst arbeitet, versucht herauszufinden,
 ### IQ von Kindern, binärer Prädiktor
 
 
-```{r echo = TRUE, results = "hide"}
+```{r m10-1, echo = TRUE, results = "hide"}
 #| results: "hide"
 data("kidiq")  # Paket rstanarm
 m10.1 <- stan_glm(
@@ -244,9 +251,12 @@ Mit `parameters(m10.1)` bekommt man die Parameter des Modells:
 display(parameters(m10.1))
 ```
 
+In @fig-momkid ist der Unterschied im IQ der Kinder als Funktion des Schlussabschlusses der Mutter dargestellt.
 
 
-```{r}
+```{r plot-kidiq}
+#| label: fig-momkid
+#| fig-cap: "Kinder, deren Mütter über einen Schulabschluss verfügen, haben im Mittel einen höheren Intelligenztestwert, laut dem vorliegenden Modell"
 ggplot(kidiq) +
   aes(x = mom_hs, y = kid_score) +
   geom_jitter(width = 0.1, alpha = .5) +
@@ -278,7 +288,7 @@ ggplot(kidiq) +
 - UV: binär (zweistufig nominal/kategorial)
 - AV: metrisch (quantitativ)
 
-```{r echo = TRUE}
+```{r kidqi2-sum, echo = TRUE}
 kidiq %>% 
   group_by(mom_hs) %>% 
   summarise(kid_score_avg = 
@@ -299,19 +309,24 @@ Der mittlere (average, avg) IQ-Wert unterscheidet sich um ca. 12 Punkte (89.4-77
 
 ```{r echo = TRUE}
 m10.1_post <-
+#| eval: false
   m10.1 %>% 
   as_tibble() 
+
+names(m10.1_post) <- c("Achsenabschnitt", "momhs", "sigma")  # schönere Namen
 ```
 
 
-```{r}
+
+
+```{r m10.1-post}
 #| echo: false
-# TODO: Fehler in Latex
-#m10.1_post %>% 
-#  slice_sample(n=5) %>% 
-#  gt() %>% 
-#  fmt_number(1:3, decimals = 1) %>% 
-#  tab_header("Stichprobe aus der Post-Verteilung")
+m10.1_post %>% 
+ # rename(momhs = mom_hs) %>% 
+  slice_sample(n=5) %>% 
+  gt() %>% 
+  fmt_number(1:3, decimals = 1) %>% 
+  tab_header("Stichprobe aus der Post-Verteilung")
 ```
 
 
@@ -319,7 +334,7 @@ m10.1_post <-
 ```{r echo = TRUE}
 pi_mom_hs <-
   m10.1_post %>% 
-  summarise(pi_95 = quantile(mom_hs, c(.025, .975)))
+  summarise(pi_95 = quantile(momhs, c(.025, .975)))
 
 pi_mom_hs
 ```
@@ -334,9 +349,11 @@ laut unserem Modell: $95\%PI: [7,16]$.
 Die Hypothese, dass es keinen  Unterschied oder einen Unterschied in die andere Richtung geben sollte, 
 ist vor diesem Hintergrund als unwahrscheinlich abzulehnen.
 
-Visualisieren wir abschließend die Posteriori-Verteilung.
+Visualisieren wir abschließend die Posteriori-Verteilung, s. @fig-m101hdi.
 
-```{r}
+```{r plot-hdi-m101}
+#| label: fig-m101hdi
+#| fig-cap: "Das 95% HDI zum Effekt des mütterlichen Schulabschlusses"
 plot(hdi(m10.1))
 ```
 
@@ -346,11 +363,13 @@ plot(hdi(m10.1))
 
 
 
+Nullhypothesen sind fast immer falsch, s. @fig-nullmeme.
 
 
-
-```{r}
+```{r meme-null}
 #| echo: false
+#| label: fig-nullmeme
+#| fig-cap: "Du testest Nullhypothesen?"
 knitr::include_graphics("img/5v5531.jpg")
 ```
 
@@ -454,10 +473,12 @@ m10.2 %>%
 `kid_score = 26 + 0.6 * mom_iq + error`
 
 
-Visualisieren wir uns noch das Modell:
+Visualisieren wir uns noch das Modell, s. @fig-kidiqmomiq.
 
 
 ```{r Thema6-Teil2-4, fig.asp = 1}
+#| label: fig-kidiqmomiq
+#| fig-cao: "Die Intelligenz eines Kindes als Funktion der Intelligenz der Mutter"
 kidiq %>% 
   ggplot(aes(x = mom_iq, y = kid_score)) +
   geom_point(alpha = .7) +
@@ -507,9 +528,11 @@ coef(m10.3)[3]
 ```
 
 
-Und die Visualisierung des Modells:
+Und die Visualisierung des Modells `m10.3`, s. @fig-m103.
 
 ```{r Thema6-Teil2-5, fig.asp = 0.62}
+#| label: fig-m103
+#| fig-cap: "Der Effekt von sowohl mütterlicher Intelligenz als auch mütterlichem Schulabschluss"
 kidiq %>% 
   mutate(mom_hs = factor(mom_hs)) %>%  
   ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
@@ -545,7 +568,7 @@ Sind die Regressionsgeraden nicht parallel, so spricht man von einer Interaktion
 Liegt eine Interaktion vor, so unterscheidet sich die Steigung der Geraden in den Gruppen.
 :::
 
-Wir berechnen mit m10.4 folgendes Modell: `kid_score ~ mom_hs + mom_iq + mom_hs:mom_iq`.
+Wir berechnen mit m10.4 folgendes Modell: `kid_score ~ mom_hs + mom_iq + mom_hs:mom_iq`, s. @fig-m104.
 
 ```{r m10-4, echo = TRUE}
 m10.4 <- 
@@ -559,6 +582,8 @@ coef(m10.4)
 
 ```{r Thema6-Teil2-6, fig.asp = .3, fig.width=8}
 #| echo: false
+#| label: fig-m104
+#| fig-cap: "Wie m10.3, aber mit Interaktionseffekt"
 kidiq %>% 
   mutate(mom_hs = factor(mom_hs)) %>%  
   ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
@@ -646,9 +671,14 @@ coef(m10.5)
 - `mom_hs:mom_iq_c` gibt den Unterschied in den Koeffizienten für `mom_iq_c` an zwischen den beiden Grupen von `mom_hs`.
 
 
+`m10.5` ist in @fig-m105 dargestellt.
+
 
 ```{r plot-m10-5, fig.asp = .4, fig.width=8}
 #| echo: false
+#| label: fig-m105
+#| fig-cap: "m10.5: Interaktionsmodell mit zentriertem Prädiktor für mütterlicher Intelligenz"
+
 kidiq %>% 
   mutate(mom_hs = factor(mom_hs)) %>%  
   ggplot(aes(x = mom_iq_c, y = kid_score, color = mom_hs)) +
@@ -898,10 +928,12 @@ Was fällt Ihnen auf?
 ### Visualisierung (EDA)
 
 
-
+Hier kommen die Pinguine! Wie schwer sind die Tiere in unserer Stichprobe, s. @fig-penguines1, @fig-penguines2, @fig-penguines3 ? 
 
 ```{r}
 #| echo: false
+#| label: fig-penguines1
+#| fig-cap: "Verteilung des Körpergewichts dreier Arten von Pinguinen - Geom Violine"
 penguins %>% 
   ggplot(aes(x = species, y = body_mass_g, fill = species)) +
   geom_violin() +
@@ -911,12 +943,16 @@ penguins %>%
 
 ```{r fig.asp = .3, fig.width=7}
 #| echo: false
+#| #| label: fig-penguines1
+#| fig-cap: "Verteilung des Körpergewichts dreier Arten von Pinguinen - Geom Ridges"
 ggplot(penguins) +
   aes(x = body_mass_g, y = species) +
   geom_density_ridges()
 ```
 
 ```{r}
+#| label: fig-penguines3
+#| fig-cap: "Verteilung des Körpergewichts dreier Arten von Pinguinen - Geom Violindot"
 penguins %>% 
   ggplot(aes(x = species, y = body_mass_g, fill = species)) +
   geom_violindot(fill_dots = "black")
@@ -1613,12 +1649,11 @@ kidiq2 <-
 
 ```{r}
 #| echo: false
-# TODO: Fehler in Latex
-#rstatix::get_summary_stats(kidiq, type = "mean_sd") %>% 
-#  gt() 
+describe_distribution(kidiq, type = "mean_sd") %>% 
+  gt() 
 ```
 
-</br>
+
 So kann man auch die z-Transformation ("Skalierung") durchführen:
 
 
@@ -1661,7 +1696,7 @@ Das Standardisieren der AV, `kid_score` ist nicht nötig, um den Effekt der Prä
 Standardisiert man die AV, so liefern die Regressionskoeffizienten (Betas) Aussage darüber,
 um wie viele *SD-*Einheiten sich die AV verändert, wenn sich ein Prädiktor um eine *SD-*Einheit verändert.
 
-```{r echo = TRUE}
+```{r m10-10, echo = TRUE}
 m10.10 <- stan_glm(kid_score_z ~ mom_iq_z + mom_age_z, data = kidiq, refresh = 0)
 coef(m10.10)
 ```
@@ -1683,13 +1718,15 @@ Jetzt sind die Prädiktoren in ihrer Relevanz (Zusammenhang mit der AV) vergleic
 ### 95%-PI
 
 
+Mit `parameters` können wir uns ein PI ausgeben lassen, s. @fig-m1010hdi.
+
 
 ```{r echo = TRUE}
 #| eval: false
 parameters(m10.10) 
 ```
 
-```{r}
+```{r m1010-params}
 #| echo: false
 parameters(m10.10) %>% display()
 ```
@@ -1697,6 +1734,8 @@ parameters(m10.10) %>% display()
 
 
 ```{r}
+#| label: fig-m1010hdi
+#| fig-cap: "Im Standard wird ein 95%-Intervall gezeigt bzw. berechnet"
 plot(hdi(m10.10))
 ```
 
@@ -1746,7 +1785,7 @@ plot(hdi(m10.10))
 
 $$b = r \frac{sd_x}{sd_y}$$
 
-```{r echo = TRUE}
+```{r m10-11, echo = TRUE}
 m10.11 <- 
   stan_glm(kid_score_z ~ mom_iq_z , data = kidiq, refresh = 0)
 coef(m10.11)
@@ -1763,7 +1802,7 @@ kidiq %>%
 
 ### Modellgüte
 
-```{r}
+```{r m10-10-r2}
 r2(m10.10)
 ```
 
@@ -1793,27 +1832,18 @@ Danke, Herr Cohen!
 
 ### Priori-Verteilung für `m10.10` und Modelldefinition
 
-```{r}
+```{r m10-10-prior}
 prior_summary(m10.10)  # aus rstanarm
 ```
 
 
 
-<!-- $$\begin{align} -->
-<!-- \text{kid_score} &\sim \mathcal{N}(0,2.5)\\ -->
-<!-- \mu_i &= \alpha + \beta_1\text{mom_iq}_i + \beta_2\text{mom_age}_i \\ -->
-<!-- \alpha &\sim \mathcal{N}(0,2.5)\\ -->
-<!-- \beta_1 &\sim \mathcal{N}(0,2.5)\\ -->
-<!-- \beta_2 &\sim \mathcal{N}(0,2.5)\\ -->
-<!-- \sigma &\sim \mathcal{E}(1) -->
-<!-- \end{align}$$ -->
-
 
 
 $$
 \begin{aligned}
-\text{kid_score}  &\sim \mathcal{N}(0,2.5)\\
-\mu_i &= \alpha + \beta_1\text{mom_iq}_i + \beta_2\text{mom_age}_i \\
+\text{kidscore}  &\sim \mathcal{N}(0,2.5)\\
+\mu_i &= \alpha + \beta_1\text{momiq}_i + \beta_2\text{momage}_i \\
 \alpha &\sim \mathcal{N}(0,2.5)\\
 \beta_1 &\sim \mathcal{N}(0,2.5)\\
 \beta_2 &\sim \mathcal{N}(0,2.5)\\
@@ -1863,7 +1893,7 @@ Zwar nimmt die Regression häufig normalverteilte Residuen an, aber diese Annahm
 
 
 
-Ist die Linearitätsannahme erfüllt, so sollte der Residualplot nur *zufällige* Streuung um $y=0$ herum zeigen.
+Ist die Linearitätsannahme erfüllt, so sollte der Residualplot nur *zufällige* Streuung um $y=0$ herum zeigen, s. @fig-kidiqresiduum.
 
 
 Ein Residuum $e$ ist der Vorhersagefehler, also die Differenz zwischen vorhergesagtem und tatsächlichem Wert:
@@ -1871,7 +1901,7 @@ Ein Residuum $e$ ist der Vorhersagefehler, also die Differenz zwischen vorherges
 
 $e_i = y_i - \hat{y}_i$
 
-```{r}
+```{r kidiq-def}
 kidiq <-
   kidiq %>% 
   mutate(m10.10_pred = predict(m10.10),  # vorhergesagten Werte
@@ -1881,6 +1911,8 @@ kidiq <-
 
 
 ```{r fig.asp = .5}
+#| label: fig-kidiqresiduum
+#| fig-cap: "Die Verteilung der Fehler scheint keinem starken Trend (in Abhängigkeit zum vorhergesagten Wert) zu folgen, was ein gutes Zeichen ist."
 kidiq %>% 
   ggplot(aes(x = m10.10_pred, y = m10.10_resid)) +
   geom_hline(color="white", yintercept = 0, size = 2) +
@@ -1903,7 +1935,7 @@ Hier erkennt man keine größeren Auffälligkeiten.
 ### Modellprüfung mit der PPV
 
 
-```{r echo = TRUE, fig.asp = .5}
+```{r m10-10-pp-check, echo = TRUE, fig.asp = .5}
 pp_check(m10.10)
 ```
 
@@ -1916,7 +1948,7 @@ Unser Modell - bzw. die Stichproben unserer Posteriori-Verteilung, $y_{rep}$ ver
 ### Visualisierung der bereinigten Regressionskoeffizienten
 
 
-```{r}
+```{r kidiq3}
 set.seed(42)
 data(kidiq)
 kidiq3 <- 
