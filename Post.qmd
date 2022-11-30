@@ -94,7 +94,8 @@ Voilà, die Post-Verteilung als Tabelle, auch "Bayes-Box" (oder Bayes-Gitter) ge
 #| tbl-cap: Postverteilung mit der Gittermethode berechnet
 #| label: tbl-post1
 d %>% 
-  mutate_all(round, 2)
+  mutate_all(round, 2) %>% 
+  gt::gt()
 ```
 
 
@@ -440,7 +441,7 @@ Es gibt zwei Arten von Fragen:
 
 Der Unterschied zwischen beiden Arten von Fragen ist in  @fig-p-vs-q illustriert.
 
-![Fragen nach p vs. Fragen nach q](img/p-vs-q.png){#fig-p-vs-q}
+![Fragen nach p vs. Fragen nach q](img/p-vs-q.png){#fig-p-vs-q width="50%" fig-align="center"}
 
 Im linken Teildiagramm von @fig-p-vs-q fragen wir: "Wie wahrscheinlich ist ein Wasseranteil von höchstens 80%?".
 Im rechten Teildiagramm fragen wir: "Welcher Wasseranteil wird mit einer Wahrscheinlichkeit von 78% nicht überschritten?".
@@ -588,9 +589,13 @@ samples %>%
 
 Laut unserem Modell können wir zu 90% sicher sein, dass der Wasseranteil kleiner ist als ca. 78%.
 
-Es hilft vielleicht, sich die Post-Verteilung noch einmal vor Augen zu führen:
+Es hilft vielleicht, sich die Post-Verteilung noch einmal vor Augen zu führen, s. fig-post99.
 
 ```{r}
+#| label: fig-post99
+#| fig-cap: Die Post-Verteilung im Globusversuch
+#| fig-asp: .5
+#| out-width: "50%"
 samples %>% 
   ggplot(aes(x = p_grid)) +
   geom_bar()
@@ -802,12 +807,14 @@ Mit dieser "schiefen" Post-Verteilung können wir gut die Auswirkungen auf das P
 
 ### 50%-Perzentil-Intervall
 
-Hier z.B. ein 50%-Perzentilintervall, s. Abb. @fig-schief-pi.
+Hier z.B. ein 50%-Perzentilintervall, s. Abb. @fig-schief.
+
+
 
 ```{r QM2-Thema3-Post-befragen-15}
 #| echo: false
-#| fig-cap: Ein Perzentilintervall kann, wenn es dumm läuft, den wahrscheinlichsten Parameterwert nicht enthalten, diesen Wert also plausiblen Wert also zurückweisen. Das ist nicht so toll.
-#| label: fig-schief-pi
+#| fig-cap: "Schiefe Intervalle"
+#| label: fig-schief
 
 qi_50_low <- eti(samples_33$p_grid, ci = .5)$CI_low
 qi_50_up <- eti(samples_33$p_grid, ci = .5)$CI_high
@@ -822,8 +829,34 @@ p1 <-
   geom_line() +
   scale_x_continuous(breaks = seq(from = 0, to = 1, by = .1))
 
-p1
+
+
+
+hdi_50_low <- bayestestR::hdi(samples_33$p_grid, 
+                                  ci = .5)$CI_low
+hdi_50_up <- bayestestR::hdi(samples_33$p_grid, 
+                                  ci = .5)$CI_high
+
+p2 <-
+  d_33 %>% 
+  ggplot(aes(x = p_grid, y = post_33)) +
+  geom_area(data = . %>% 
+              filter(p_grid > hdi_50_low & 
+                     p_grid < hdi_50_up),
+            fill = "grey75") +
+  geom_line()
+
+
+plots(p1, 
+      p2,
+      n_rows = 1,
+      title= c("Ein Perzentilintervall kann, wenn es dumm läuft, den wahrscheinlichsten Parameterwert nicht enthalten, diesen Wert also plausiblen Wert also zurückweisen. Das ist nicht so toll.",
+        "Ein Highest-Density-Intervall ist schmäler als der Perzintilintervall und enthält den wahrscheinlichsten Parameterwert"))
 ```
+
+
+
+
 
 Die Grenzwerte dieses ETI (oder jedes beliebig breiten) kann man sich z.B. so ausgeben lassen:
 
@@ -848,25 +881,6 @@ Das ist ein Nachteil der ETI.
 Intervalle höchster Dichte (Highest density Intervals, HDI oder HDPI) sind definiert als die *schmälsten* Intervalle, die den gesuchten Parameter enthalten.
 
 
-```{r}
-#| echo: false
-hdi_50_low <- bayestestR::hdi(samples_33$p_grid, 
-                                  ci = .5)$CI_low
-hdi_50_up <- bayestestR::hdi(samples_33$p_grid, 
-                                  ci = .5)$CI_high
-
-p2 <-
-  d_33 %>% 
-  ggplot(aes(x = p_grid, y = post_33)) +
-  geom_area(data = . %>% 
-              filter(p_grid > hdi_50_low & 
-                     p_grid < hdi_50_up),
-            fill = "grey75") +
-  geom_line()
-
-p2
-```
-
 
 
 
@@ -882,6 +896,7 @@ Je symmetrischer die Verteilung, desto näher liegen die Punktschätzer aneinand
 #| fig-cap: Visualisierung der Punktschätzer bei einer schiefen Post-Verteilung
 #| label: fig-post-pointestimates
 #| message: false
+#| fig-asp: 0.5
 
 point_estimates <-
   bind_rows(samples_33 %>% tidybayes::mean_qi(p_grid),

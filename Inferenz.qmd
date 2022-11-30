@@ -89,6 +89,7 @@ Allerdings hülfe es, wenn man andere Menschen vom Nutzen der eigenen Ideen übe
 library(kableExtra)
 library(tidyverse)
 library(knitr)
+library(easystats)
 ```
 
 
@@ -266,30 +267,39 @@ Auf die Statistik bezogen heißt das,
 dass man einen Datensatz zu zusammenfasst,
 dass man das Wesentliche erkennt.
 Was ist das "Wesentliche"? Meist interessiert man sich für die Ursachen eines Phänomens? Etwa: "Wie kommt es bloß, dass ich ohne zu lernen die Klausur so gut bestanden habe?"^[Das ist natürlich nur ein fiktives, komplett unrealistisches Beispiel, das auch unklaren Ursachen den Weg auf diese Seite gefunden hat.]
-Noch allgemeiner ist vom häufig am Zusammenhang von `X ` und `Y` interessiert, s. Abb. @fig-xy, die ein Sinnbild eines statistischen Modells widergibt.
+Noch allgemeiner ist vom häufig am Zusammenhang von `X ` und `Y` interessiert, s. @fig-xy, linker Teil, die ein Sinnbild eines statistischen Modells widergibt.
+
+
+::: {#fig-xy layout-ncol=2}
 
 ```{mermaid}
-%%| label: fig-xy
-%%| fig-cap: Sinnbild eines stastistischen Modells
+%%| fig-cap: Sinnbild eines statistischen Modells
 
 flowchart LR
 X --> Y
+
 ```
-
-
-Das Diagramm hat Sie nicht so vom Hocker?
-Okay, ein statistisches Modell kann natürlich komplexer sein, z.B. wie in Abb. @fig-xy2 dargestellt.
-
 
 
 ```{mermaid}
-%%| label: fig-xy2
-%%| fig-cap: Sinnbild eines stastistischen Modells, mit zwei Inputvariablen (Ursachen)
+%%| fig-cap: Sinnbild eines statistischen Modells, mit zwei Inputvariablen (Ursachen)
 
 flowchart LR
-X1 --> Y
-X2 --> Y
+X1 --> Y2
+X2 --> Y2
 ```
+
+
+
+Sinnbild zweier statistischer Modelle 
+:::
+
+
+
+Das Diagramm hat Sie nicht so vom Hocker?
+Okay, ein statistisches Modell kann natürlich komplexer sein, z.B. wie in Abb. @fig-xy, rechter Teil, dargestellt.
+
+
 
 
 Es hört sich zugspitzt an, aber eigentlich ist fast alles Modellieren:
@@ -310,7 +320,9 @@ Nutzen Sie die Übersetzungsfunktion Ihres Browsers, wenn Sie einen englischen T
 
 ## Regression
 
-![One regression](img/einring.jpg){width="50%"}
+Einflussreiche Leute schwören auf die Regressionsanalyse (@fig-gandalf).
+
+![One regression](img/einring.jpg){width="50%" #fig-gandalf fig-align="center"}
 
 
 
@@ -469,14 +481,14 @@ Im Rahmen der Regressionsanalyse schlägt sich die Ungewissheit an zwei Stellen 
 ### Visualisierung von Ungewissheit
 
 Gibt man nur einen Punktwert an, wie 42%, als Ergebnis einer Inferenz, spricht man von einem *Punktschätzer*.
-Punktschäter beinhalten *keine Angabe* der Schätz(un)gen auigkeit, s. Abb. @fig-punktschaetzer.
+Punktschäter beinhalten *keine Angabe* der Schätz(un)gen auigkeit, s. Abb. @fig-punktschaetzer, links.
 
 ```{r}
 #| echo: false
-#| fig-cap: Eine Punktschätzung
+#| fig-cap: "Eine Punktschätzung und ihre Ungewissheit"
 #| label: fig-punktschaetzer
 #| message: false
-#| fig-asp: 0.5
+
 lm1_glm <- lm(mpg ~ hp, data = mtcars)
 
 mtcars <-
@@ -502,16 +514,8 @@ plot1 <-
            color = "red",
            alpha = .5,
            size = 5)
-plot1
-```
-
-Rot markiert: Die Punktschätzung von `mpg` für `hp=200`.
-
-🏋 Geben Sie ein vergleichbares Beispiel an!
 
 
-```{r}
-#| echo: false
 lm1_glm <- lm(mpg ~ hp, data = mtcars)
 
 mtcars <- 
@@ -527,20 +531,6 @@ pred_interval <-
     upr = mpg + 2*3
   )
 
-```
-
-
-
-
-
-In Abb. @fig-ungewiss1 ist die Ungewissheit in den Regressionskoeffizienten visualisiert: Wie sicher sind wir uns zur Stärke des Zusammenhangs von X und Y?
-
-```{r}
-#| echo: false
-#| fig-cap: Ungewissheit in den Regressionskoeffizienten
-#| label: fig-ungewiss1
-#| message: false
-
 
 plot2 <-
   ggplot(mtcars,
@@ -552,14 +542,28 @@ plot2 <-
            color = "red",
            alpha = .5,
            size = 5)
-plot2
 
 
+plots(plot1, plot2, n_rows = 1,
+      title = c("Eine Punktschätzung mittels einer Regressionsanalyse",
+                "Ungewissheit in der Punktschätzung einer Regressionsanalyse"))
 ```
 
+Rot markiert: Die Punktschätzung von `mpg` für `hp=200`.
 
-Auch wenn wir uns *sicher* im Hinblick auf die Regressionsgewichte in Abb. @fig-ungewiss1 *bliebe eine Restungewissheit*:
-Unsere Schätzungen wären nicht sicher, nicht fehlerfrei.
+🏋 Geben Sie ein vergleichbares Beispiel an!
+
+
+
+
+
+
+In Abb. @fig-punktschaetzer, rechts, ist die Ungewissheit in den Regressionskoeffizienten visualisiert: Wie sicher sind wir uns zur Stärke des Zusammenhangs von X und Y?
+
+
+
+Auch wenn wir uns *sicher* im Hinblick auf die Regressionsgewichte in Abb. @fig-ungewiss2 *bliebe eine Restungewissheit*:
+Unsere Schätzungen wären auch dann nicht sicher, nicht fehlerfrei.
 Das liegt daran, da das Modell nicht alle Einflüsse auf Y berücksichtigt, sondern nur einen, hier als X bezeichnet.
 
 In Abb. @fig-ungewiss2 ist nicht nur die Ungewissheit durch die Regressionsgewichte, sondern auch die "Restungewissheit" dargestellt. In diesem Fall spricht man von einem "Vorhersageintervall", da man nicht nur von "typischen Fällen" auf der Regressiongeraden spricht, sondern für echte Fälle Vorhersagen (Schätzungen) tätigt, wo auch die zweite Art von Ungewissheit relevant ist.
@@ -602,11 +606,7 @@ ggplot(mtcars) +
 ```
 
 
-Wie man sieht, wird die Ungewissheit *größer*, wenn man beide Arten der Ungewissheit berücksichtigt.
-
-
-
-Das Vorhersage-Intervall berücksichtigt Ungewissheit in $\beta_0, \beta_1, \epsilon$ bei der Vorhersage von $\hat{y_i}$.
+Wie man sieht, wird die Ungewissheit *größer*, wenn man beide Arten der Ungewissheit berücksichtigt. Das Vorhersage-Intervall berücksichtigt Ungewissheit in $\beta_0, \beta_1, \epsilon$ bei der Vorhersage von $\hat{y_i}$.
 
 
 ### Konfidenzintervall
@@ -616,15 +616,9 @@ Wir sehen hier, dass ein "Ungewissheitskorridor" angegeben wird.
 Entsprechend wird nicht ein *Punktschätzer*, sondern ein *Schätzbereich* angegeben.
 Man spricht auch von einem *Konfidenzintervall* oder *Unsicherheitsbereich*^[Tatsächlich gibt es mehrere Synonyme oder ähnliche Begriffe für Konfidenzintervall. Wir kommen später darauf detaillierter zu sprechen.]
 
-Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben.
-
-Im Kontext der Bayes-Analyse ist das einfach zu interpretieren. 
-
+Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben. Im Kontext der Bayes-Analyse ist das einfach zu interpretieren. 
 Sagen wir, wir finden, dass in einem Modell ein 95%-Konfidenzintervall für den Anteil der R-Fans angegeben wird, dass sich von 40 bis 44 Prozent erstreckt.
-
-Dieser Befund läßt sich so interpretieren:
-
-"Laut Modell liegt der gesuchte Anteil mit einer Wahrscheinlichkeit von 95% im Bereich von 44 bis 44 Prozentpunkten."
+Dieser Befund läßt sich so interpretieren: "Laut Modell liegt der gesuchte Anteil mit einer Wahrscheinlichkeit von 95% im Bereich von 44 bis 44 Prozentpunkten."
 
 
 ::: callout-important
@@ -669,7 +663,7 @@ Findet man $p<.05$ (oder einen anderen Prozentwert, aber meistens wird 5% hergen
 
 Die zentrale Statistik ist die *Posteriori-Verteilung*.
 
-Die Posteriori-Verteilung beantwortet uns die Frage: "Wie wahrscheinlich ist die Forschungshypothese, jetzt, nachdem wir die Daten kennen, auf Baiss unseres Modells?"
+Die Posteriori-Verteilung beantwortet uns die Frage: "Wie wahrscheinlich ist die Forschungshypothese, jetzt, nachdem wir die Daten kennen, auf Basis unseres Modells?"
 
 🏋 Recherchieren Sie eine Definition des p-Werts und lesen Sie sie genau.
 
@@ -680,7 +674,10 @@ Die Posteriori-Verteilung beantwortet uns die Frage: "Wie wahrscheinlich ist die
 
 ### Frequentist und Bayesianer
 
-![Frequentist wettet mit Bayesianer](img/frequentists_vs_bayesians_2x.png){width=50%}
+
+Im Cartoon 1132 [von xkcd](https://xkcd.com/) wird sich über das Nicht-Berücksichtigen von Vorab-Informationen (Prior-Verteilung) lustig gemacht, s. @fig-xkcd-bayes.
+
+![Frequentist wettet mit Bayesianer](img/frequentists_vs_bayesians_2x.png){#fig-xkcd-bayes width=50%}
 
 [Quelle](https://xkcd.com/1132/)
 

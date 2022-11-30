@@ -118,38 +118,39 @@ data(mtcars)
 ```
   
   
-Abb. @fig-mtcars-freq visualisiert die Häufigkeitsverteilung von `cyl`.
+Abb. @fig-mtcars-freq, links, visualisiert die Häufigkeitsverteilung von `cyl`.
+
+
+
 
 ```{r}
 #| echo: false
-#| fig-cap: Häufigkeitsverteilung von `cyl`
+#| fig-cap: "Häufigkeitsverteilung von `cyl` und `hp` (diskretisiert in 10 Körbe oder Gruppen)"
 #| label: fig-mtcars-freq
-
-mtcars %>% 
+p1 <- 
+  mtcars %>% 
   ggplot(aes(x = cyl)) +
   geom_bar()
-```
 
-  
 
-  
-Ein *stetiges* Merkmal, wie `hp` (PS-Zahl), lässt sich durch Klassenbildung diskretisieren, s. Abb. @fig-mtcars-hp.
-    
-```{r Normalverteilung-2}
-#| fig-cap: Häufigkeitsverteilng einer stetigen Variablen, diskretisiert in 10 "Körbe" oder Gruppen
-#| label: fig-mtcars-hp
-#| echo: false
-mtcars %>% 
+p2 <- mtcars %>% 
   ggplot(aes(x = hp)) +
   geom_histogram(bins=10)
+
+plots(p1, p2, n_rows = 1)
 ```
   
+:::
 
 
+
+
+ 
+Ein *stetiges* Merkmal, wie `hp` (PS-Zahl), lässt sich durch Klassenbildung diskretisieren, s. Abb. @fig-mtcars-freq-dens, rechts.
 
 ### Wahrscheinlichkeitsverteilung
 
-Warhscheinlichkeitsverteilungen dienen dazu, Ereignissen einer Zufallsvariable eine Wahrscheinlichkeit zuzuordnen.
+Wahrscheinlichkeitsverteilungen dienen dazu, Ereignissen einer Zufallsvariable eine Wahrscheinlichkeit zuzuordnen.
 
 
 Eine *diskrete* Wahrscheinlichkeitsverteilung der (diskreten) Zufallsvariablen $X$ ordnet jeder der $k$ Ausprägungen $X=x$ eine Wahrscheinlichkeit $p$ zu. So hat die Variable *Geschlecht eines Babies* die beiden Ausprägungen *Mädchen* und *Junge* mit den Wahrscheinlichkeiten $p_M = 51.2\%$ bzw. $p_J = 48.8\%$ [@gelman_regression_2021].
@@ -852,7 +853,7 @@ Richtugn fallen.
 Zweitens hat unser Duschkopf noch einen Streuregler,
 der den Wasserstrahl entweder eng bündelt^[Massagedusche, behauptet der Hersteller] oder weit auseinanderfächert. Im ersten Fall fällt der Wasserstrahl eng und schmal aus. Im zweiten Fall fällt der Wasserstrahl breit aus.
 
-![Zufallszahlengenerator als Duschkopf](img/shower-data.png){#fig-shower}
+![Zufallszahlengenerator als Duschkopf](img/shower-data.png){#fig-shower width="50%"}
 
 [[Quelle](https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models): John Kruschke]
 
@@ -919,7 +920,7 @@ $IQ \sim \mathcal{N}(100,15)$
 - Anders gesagt: Welcher IQ-Wert wird von 75%, 50%, ... der Leute nicht überschritten?
 
 
-![Visualisierung der theoretischen IQ-Verteilung](img/norm-100-15.png){#fig-norm-100-15}
+![Visualisierung der theoretischen IQ-Verteilung](img/norm-100-15.png){#fig-norm-100-15 width="50%"}
 
 [[Quelle:](https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models): John Kruschke]
 
@@ -1028,18 +1029,34 @@ Die *Verteilungsfunktion* (der Anteil der Wahrscheinlichkeitsmasse), `p`, für I
 
 
 Schauen wir uns die Quartile der Normalverteilung einmal näher an.
-Wir gehen von einer Normalverteilung aus, wie sie zur Beschreibung von Intelligenz (IQ) verwendet wird.
+Wir gehen von einer Normalverteilung aus, wie sie zur Beschreibung von Intelligenz (IQ) verwendet wird, s. @fig-nv-quants.
 
 
-```{r fig.asp = .618}
+```{r }
 #| echo: false
+#| label: fig-nv-quants
+#| fig-cap: Quantile der Normalverteiltung
+
+  
+
+p1 <- 
   ggplot(NULL, aes(c(60,145))) +
   geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 100)) +
   geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
   labs(x = "X", y = "Dichte",
-       title = "50%-Quantil: 100;    Verteilungsfunktion von 100:50%") +
+       title = "50%-Quantil: 100; Verteilungsfunktion von 100:50%") +
   scale_y_continuous(breaks = NULL)
 
+p2 <-
+    ggplot(NULL, aes(c(60,145))) +
+  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 125)) +
+  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
+  labs(x = "X", y = "Dichte",
+       title = "95%-Quantil: 125; Verteilungsfunktion von 125:95%") +
+  scale_y_continuous(breaks = NULL)
+
+
+plots(p1, p2)
 ```
 
 $$IQ \sim \mathcal{N}(100, 15)$$
@@ -1051,7 +1068,7 @@ pnorm(100, mean = 100, sd = 15)  # Verteilungsfunktion für IQ=100
 ```
 
 
-Betrachten wir einige wichtigen Quantile:
+Betrachten wir einige wichtigen Quantile, s. @fig-nv-quants2.
 
 ```{r}
 #| echo: false
@@ -1153,8 +1170,12 @@ q_p69 <-
 
 
 
-```{r fig.asp = .5}
+```{r fig-nv-quants2}
 #| echo: false
+#| label: fig-nv-quants2
+#| fig-width: 10
+#| fig-cap: Verschiedene Quantil der Normalverteilung
+
 (q_p50 + q_p25 + q_p69) / (q_p95 + q_p975 + q_p84)
 ```
 
@@ -1183,10 +1204,11 @@ In Summe liegen 100% der Wahrscheinlichkeitsmasse unter der Kurve.
 
 
 ```{r Normalverteilung-1-bis, echo = FALSE }
+#| fig-align: "center"
 knitr::include_graphics("img/10_Deutsche_Mark_-_detail.png")
 ```
 
-Uni Greifswald, Public domain, via Wikimedia Commons
+Quelle: Uni Greifswald, Public domain, via Wikimedia Commons
 
 
 ::: callout-note

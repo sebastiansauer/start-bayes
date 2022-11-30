@@ -1,3 +1,4 @@
+
 # Kausalinferenz
 
 ## Lernsteuerung
@@ -8,7 +9,7 @@
 
 Für dieses Kapitel benötigen Sie folgende R-Pakete:
 
-```{r}
+```{r libs}
 #| warning: false
 library(dagitty)
 library(tidyverse)
@@ -47,12 +48,15 @@ Sie können ...
 
 ### Studie A: Östrogen
 
-Was raten Sie dem Arzt? Medikament einnehmen, ja oder nein?
+Mit Blick auf @tbl-studie-a: Was raten Sie dem Arzt? Medikament einnehmen, ja oder nein?
 
 </br>
 
-```{r}
+```{r tbl-studie-a}
 #| echo: false
+#| label: tbl-studie-a
+#| tbl-cap: "Daten zur Studie A"
+
 studie_a <-
   tibble::tribble(
      ~ Gruppe,      ~`Mit Medikament`,         ~`Ohne Medikament`,
@@ -71,9 +75,7 @@ studie_a %>%
 Die Daten stammen aus einer (fiktiven) klinischen Studie, $n=700$, hoher Qualität (Beobachtungsstudie).
 Bei Männern scheint das Medikament zu helfen; bei Frauen auch.
 Aber *insgesamt* (Summe von Frauen und Männern) *nicht*?!
-Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, wenn er das Geschlecht kennt?
-
-@pearl_causal_2016
+Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, wenn er das Geschlecht kennt @pearl_causal_2016?
 
 
 
@@ -83,14 +85,20 @@ Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht n
 
 
 
+In Wahrheit sehe die kausale Struktur so aus:
 Das Geschlecht (Östrogen) hat einen Einfluss (+) auf Einnahme des Medikaments und auf Heilung (-).
 Das Medikament hat einen Einfluss (+) auf Heilung.
 Betrachtet man die Gesamt-Daten zur Heilung, so ist der Effekt von Geschlecht (Östrogen) und Medikament *vermengt* (konfundiert, confounded).
+Die kausale Struktur, also welche Variable beeinflusst bzw. nicht,
+ist in @fig-dag-studie-a dargestellt.
 
 
 
 ```{r dag-studie-a}
 #| echo: false
+#| label: fig-dag-studie-a
+#| fig-cap: "Zwei direkte Effekte (gender, drug) und ein indirekter Effekt (gender über drug) auf recovery"
+#| out-width: "50%"
 dag_studie_a <-
   dagitty("dag{
           gender -> drug
@@ -118,7 +126,7 @@ Betrachtung der Gesamtdaten zeigt in diesem Fall einen *konfundierten* Effekt: G
 
 
 :::callout-important
-Achtung: Das Stratifizieren ist nicht immer und nicht automatisch die richtige Lösung:
+Achtung: Das Stratifizieren ist nicht immer und nicht automatisch die richtige Lösung.
 :::
 
 
@@ -126,12 +134,14 @@ Achtung: Das Stratifizieren ist nicht immer und nicht automatisch die richtige L
 
 ### Studie B: Blutdruck
 
-Was raten Sie dem Arzt? Medikament einnehmen, ja oder nein?
+Mit Blick auf @tbl-studie-b: Was raten Sie dem Arzt? Medikament einnehmen, ja oder nein?
 
 
 ```{r dag-studie-b-table}
 #| echo: false
 #| message: false
+#| label: tbl-studie-b
+#| tbl-cap: "Daten zur Wirksamkeit eines Medikaments (Studie B)"
 studie_b <- 
   tibble::tribble(
 ~ Gruppe,          ~`Ohne Medikament`,          ~`Mit Medikament`,
@@ -153,10 +163,7 @@ Die Daten stammen aus einer (fiktiven) klinischen Studie, $n=700$, hoher Qualit�
 Bei geringem Blutdruck scheint das Medikament zu schaden.
 Bei hohem Blutdrck scheint das Medikamenet auch zu schaden.
 Aber *insgesamt* (Summe über beide Gruppe) *nicht*, da scheint es zu nutzen?!
-Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, wenn er den Blutdruck nicht kennt???
-
-
-@pearl_causal_2016
+Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, wenn er den Blutdruck nicht kennt? @pearl_causal_2016
 
 
 ### Kausalmodell zur Studie B
@@ -170,12 +177,15 @@ Gleichzeitig hat das Medikament einen (toxischen) Effekt auf die Heilung.
 Verringerter Blutdruck hat einen positiven Einfluss auf die Heilung.
 Sucht man innerhalb der Leute mit gesenktem Blutdruck nach Effekten, findet man nur den toxischen Effekt: Gegeben diesen Blutdruck ist das Medikament schädlich aufgrund des toxischen Effekts. Der positive Effekt der Blutdruck-Senkung ist auf diese Art nicht zu sehen.
 
-
+Das Kausalmodell ist in @fig-dag-studie-b dargestellt.
 
 
 
 ```{r dag-studie-b}
 #| echo: false
+#| label: fig-dag-studie-b
+#| fig-cap: "Drug hat keinen direkten, aber zwei indirekte Effekt auf recovery, einer davon ist heilsam, einer schädlich"
+#| out-width: "50%"
 dag_studie_b <-
   dagitty("dag{
           drug -> pressure
@@ -206,30 +216,15 @@ Stratifizieren wäre falsch, da dann nur der toxische Effekt, aber nicht der hei
 ### Studie A und B: Gleiche Daten, unterschiedliches Kausalmodell
 
 
-
-Studie A
-```{r plot-dag-a-plot}
-#| echo: false
-#| message: false
-plot(dag_studie_a)
-```
+Vergleichen Sie die DAGs @fig-dag-studie-a und @fig-dag-studie-b,
+die die Kausalmodelle der Studien A und B darstellen:
+Sie sind *unterschiedlich*.
 
 
 
-
-
-
-Studie B
-```{r plot-dag-a}
-#| echo: false
-#| message: false
-plot(dag_studie_b)
-```
-
-
-
-Kausale Interpretation - und damit Entscheidungen für Handlungen - war nur möglich, wenn das Kausalmodell bekannt ist. 
+Kausale Interpretation - und damit Entscheidungen für Handlungen - war nur möglich, da das Kausalmodell bekannt ist. 
 Die Daten alleine reichen nicht.
+Gut merken.
 
 
 
@@ -240,13 +235,9 @@ Die Daten alleine reichen nicht.
 
 
 
-Statistik alleine reicht nicht für Kausalschlüsse 🧟
+Statistik alleine reicht nicht für Kausalschlüsse. 🧟
+Statistik plus Theorie erlaubt Kausalschlüsse. 📚➕📊  🟰  🤩
 
-
-
-
-
-Statistik plus Theorie erlaubt Kausalschlüsse 📚+📊=🤩
 
 
 :::callout-important
@@ -276,13 +267,24 @@ Sollte ein Patient, der nicht weiß, ob sein Nierenstein groß oder klein ist, d
 
 
 Die Größe der Nierensteine hat einen Einfluss auf die Behandlungsmethode.
-Die Behandlung hat eien Einfluss auf die Heilung.
-Damit gibt es eine Mediation von Größe -> Behandlung -> Heilung.
-Darüberhinaus gibt es noch einen Einfluss von Größe der Nierensteine auf die Heilung.
+Die Behandlung hat einen Einfluss auf die Heilung.
+Damit gibt es eine Mediation ("Kette") von Größe $\rightarrow$ Behandlung $\rightarrow$ Heilung.
+Darüber hinaus gibt es noch einen Einfluss von Größe der Nierensteine auf die Heilung.
+
+Das Kausalmodell ist in @fig-dag-studie-c dargestellt; @@fig-dag-studie-c visualisiert alternativ.
+
+Sollte man hier `size` kontrollieren,
+wenn man den Kausaleffekt von `treatment` schätzen möchte? 
+Oder lieber nicht kontrollieren?
+
+
 
 
 ```{r dag-studie-c}
 #| echo: false
+#| fig-cap: "DAG zur Nierenstein-Studie"
+#| out-width: "50%"
+#| label: fig-dag-studie-c
 dag_studie_c <-
   dagitty("dag{
          size -> recovery
@@ -294,20 +296,38 @@ dag_studie_c <-
 coordinates(dag_studie_c) <-
   list(x = c(size = 0, treatment = 0, recovery  = 1),
        y = c(size = 0, treatment = 1, recovery = 0.5))
+plot(dag_studie_c)
 
+
+```
+
+
+```{r dag-c2}
+#| echo: false
+#| fig-cap: "DAG zur Nierenstein-Studie in zweiter Darstellungsform"
+#| out-width: "50%"
+#| label: fig-dag-studie-c2
+coordinates(dag_studie_c) <-
+  list(x = c(size = 0.5, treatment = 0, recovery  = 1),
+       y = c(size = 0, treatment = 1, recovery = 1))
 plot(dag_studie_c)
 ```
+
+Ja: In diesem Fall sollte man `size` kontrollieren,
+denn man ist am Effekt des `treatments` interessiert.
+Würde man nicht `size` kontrollieren,
+bekäme man den "vermengten" Effekt von `size ` und `treatment`,
+also keine (belastbare) Aussage über den Effekt der Behandlung.
+
 
 
 
 ### Mehr Beispiele
 
-
+Nehmen Sie Bezug zu folgenden Aussagen:
 
 
 >   Studien zeigen, dass Einkommen und Heiraten (bzw. verheiratete sein) hoch korrelieren. Daher wird sich dein Einkommen erhöhen, wenn du heiratest.
-
-
 
 
 
@@ -341,7 +361,7 @@ plot(dag_studie_c)
 [Beschreibung des Datensatzes](https://vincentarelbundock.github.io/Rdatasets/doc/mosaicData/SaratogaHouses.html)
 
 
-```{r echo = TRUE}
+```{r data-saratoga, echo = TRUE}
 d_path <- "https://vincentarelbundock.github.io/Rdatasets/csv/mosaicData/SaratogaHouses.csv"
 ```
 
@@ -349,7 +369,7 @@ d_path <- "https://vincentarelbundock.github.io/Rdatasets/csv/mosaicData/Saratog
 
 ```{r read-data, echo = FALSE}
 #| message: false
-d <- read_csv(d_path)
+d <- data_read(d_path)  # aus easystats
 ```
 
 ```{r}
@@ -788,16 +808,17 @@ print(km2)
 Eine Studie fand eine starke Korrelation, $r=0.79$ zwischen (Höhe des) Schokoladenkonsums eines Landes und (Anzahl der) Nobelpreise eines Landes [@messerli_chocolate_2012].
 
 
-```{r out.width="50%"}
+```{r schoki-plot, out.width="50%"}
 #| echo: false
 #| warning: false
+#| fig-align: "center"
 knitr::include_graphics("img/correlation_550.png")
 ```
 
 
 
 :::callout-important
-💣 Korrelation ungleich Kausation!
+Korrelation ungleich Kausation!
 :::
 
 
@@ -810,10 +831,12 @@ knitr::include_graphics("img/correlation_550.png")
 
 ### Kausalmodell für die Schoki-Studie
 
+Der "Schoki-DAG" in @fig-schoki-dag zeigt den DAG für das Schokoloaden-Nobelpreis-Modell.
 
-
-```{r fig.width=7}
+```{r schok-dag, fig.width=7}
 #| echo: false
+#| label: fig-schoki-dag
+#| fig-cap: "Macht Schokolade Nobelpreise?"
 confounder_triangle(x = "Schoki",
                           y = "Nobelpreise",
                           z = "Entwicklungsstand") %>% 
@@ -825,10 +848,14 @@ confounder_triangle(x = "Schoki",
 
 ### Dons Kausalmodell, `km3`
 
+So sieht Dons Kausalmodell aus, s. @fig-km3.
 
 
-```{r km3, fig.asp = 1.3, fig.width=9}
+```{r km3, fig.width=9}
 #| echo: false
+#| out-width: "50%"
+#| label: fig-km3
+#| fig-cap: "Dons Kausalmodell"
 km3 <- collider_triangle(x = "bedrooms",
                           y = "livingArea",
                           m = "price") %>% 
@@ -863,12 +890,14 @@ d %>%
 
 ### Unabhängigkeiten laut `km1`
 
-`b`: bedrooms, `p`: price, `a` area (living area)
+`b`: bedrooms, `p`: price, `a` area (living area), s. @fig-km1.
 
 
 
 ```{r}
 #| echo: false
+#| label: fig-km1
+#| out-width: "50%"
 km1
 ```
 
@@ -997,6 +1026,8 @@ Weiß man, was die Wirkung $W$ einer Handlung $H$ (Intervention) ist,  so hat ma
 
 ```{r}
 #| echo: false
+#| fig-align: "center"
+#| out-width: "50%"
 knitr::include_graphics("img/correlation.png")
 ```
 
@@ -1053,8 +1084,18 @@ Die Daten alleine können nie sagen, welches Kausalmodell der Fall ist in einer 
 
 ### Kein Zusammenhang von Intelligenz und Schönheit (?)
 
+Gott ist gerecht (?)
+
+Zumindest findet sich in folgenden Daten kein Zusammenhang von Intelligenz (`talent`) und Schönheit (`looks`),
+wie @fig-iq-schoen illustriert.
+Für geringe Intelligenzwerte gibt es eine breites Spektrum von Schönheitswerten
+und für hohe Intelligenzwerte sieht es genauso aus.
+
 ```{r p-coll1}
 #| echo: false
+#| out-width: "50%"
+#| label: fig-iq-schoen
+#| fig-cap: "Kein Zusammenhang von Intelligenz und Schönheit in den Daten"
 
 myf <- function(x) -x+0.75
 
@@ -1084,12 +1125,7 @@ p_coll1 <-
        y = "Talent") +
     theme(legend.position = "bottom",
           axis.text = element_blank())
-```
 
-
-
-```{r}
-#| echo: false
 p_coll1
 ```
 
@@ -1101,11 +1137,15 @@ p_coll1
 ### Aber Ihre Dates sind entweder schlau oder schön
 
 Seltsamerweise beobachten Sie, dass die Menschen, die Sie daten (Ihre Dates),
-entweder schön sind oder schlau - aber seltens beides gleichzeitig (schade).
+entweder schön sind oder schlau - aber seltens beides gleichzeitig (schade),
+s. @fig-dates-beauty.
 
 
 ```{r p-coll2}
 #| echo: false
+#| label: fig-dates-beauty
+#| fig-cap: Ihre Datingpartner sind komischerweise entweder schlau oder schön (aber nicht beides), zumindest in der Tendenz.
+#| out-width: "50%"
 p_coll2 <- 
   d2 %>% 
   ggplot() +
@@ -1119,12 +1159,7 @@ p_coll2 <-
        y = "Talent") +
     theme(legend.position = "bottom",
           axis.text = element_blank())
-```
 
-
-
-```{r}
-#| echo: false
 p_coll2
 ```
 
@@ -1137,11 +1172,17 @@ Wie kann das sein?
 
 🦹 🦸
 
-Dieser DAG bietet eine rettende Erklärung:
+Der DAG in @fig-coll1-dag bietet eine rettende Erklärung.
+
+
 
 
 ```{r plot-coll-dag1}
 #| echo: false
+#| fig-cap: "Date als gemeinsame Wirkung von Schönheit und Intelligenz. Stratifiziert man die gemeinsame Wirkung (dates), so kommt es zu einer Scheinkorrelation zwischen Schönheit und Intelligenz."
+#| out-width: "50%"
+#| label: fig-coll1-dag
+
 coll1_dag <-
   dagify(date ~ Looks + Talent)
 
@@ -1154,10 +1195,12 @@ p_coll_dag1
 ```
 
 
+In ähnlicher Weise, s. @fig-coll2-dag.
 
-
-```{r p-coll-dag2, fig.width=9}
+```{r p-coll-dag22, fig.width=9}
 #| echo: false
+#| label: fig-coll2-dag
+#| fig-cap: "Durch Kontrolle der gemeinsamen Wirkung entsteht eine Scheinkorrelation zwischen den Ursachen"
 p_coll_dag2 <-
   collider_triangle(x = "Looks",
                   y = "Talent",
@@ -1171,8 +1214,11 @@ p_coll_dag2
 ```
 
 
+
+
 ```{r eval = FALSE}
 #| echo: false
+#| eval: false
 ggdag_adjust(coll1_dag, var = "date") +
   theme_dag()
 ```
@@ -1185,20 +1231,12 @@ ggdag_adjust(coll1_dag, var = "date") +
 
 Als *Kollision* (Kollisionsverzerrung, Auswahlverzerrung, engl. collider) bezeichnet man einen DAG, bei dem eine Wirkung zwei Ursachen hat (eine gemeinsame Wirkung zweier Ursachen).
 Kontrolliert man  die *Wirkung* `m`, so entsteht eine Scheinkorrelation zwischen den Ursachen `x` und `y`.
-Kontrolliert man die Wirkung nicht, so entsteht keine Scheinkorrelation zwischen den Ursachen.
+Kontrolliert man die Wirkung nicht, so entsteht keine Scheinkorrelation zwischen den Ursachen, s. @fig-coll1-dag, vgl. @rohrer_thinking_2018.
 
 
-
-```{r fig.width=9, dpi=300, fig.asp=1}
-#| echo: false
-p_coll_dag2
-```
-
-
-@rohrer_thinking_2018
-
-
+::: callout-important
 Man kann also zu viele oder falsche Prädiktoren einer Regression hinzufügen, so dass die Koeffizienten nicht die kausalen Effekte zeigen, sondern durch Scheinkorrelation verzerrte Werte.
+:::
 
 
 ### Einfaches Beispiel zur Kollision
@@ -1237,34 +1275,25 @@ Wenn ich Ihnen sage, X = 3, lernen Sie nichts über Y, da die beiden Variablen u
 Also: X und Y sind abhängig – gegeben Z: $X \not\indep Y \,|\, Z$.
 
 
-### Durch Kontrolle entsteht eine Verzerrung bei der Kollision
+### Durch Kontrollieren entsteht eine Verzerrung bei der Kollision
 
 
+@fig-coll1-dag zeigt: Durch Kontrollieren entsteht eine Kollision,
+eine Scheinkorrelation zwischen den Ursacxhen.
+
+*Kontrollieren* kann z.B. bedeuten:
+
+- *Stratifizieren*: Aufteilen von `date` in zwei Gruppen und dann Analyse des Zusammenhangs von `talent` und `looks` in jeder Teilgruppe von `date`
+- *Kontrollieren mit Regressioin*: Durch Aufnahme von `date` als Prädiktor in eine Regression zusätzlich zu `looks` mit `talent` als Prädikotr
 
 
-```{r}
-#| echo: false
-p_coll_dag1
-```
+*Ohne* Kontrolle von `date` entsteht *keine* Scheinkorrelation zwischen `Looks` und `Talent`. Der Pfad ("Fluss") von `Looks` über `date` nach `Talent` ist blockiert.
 
+Kontrolliert man `date`, so *öffnet* sich der Pfad `Looks -> date -> talent` und die Scheinkorrelation entsteht: Der Pfad ist nicht mehr "blockiert", die
+Korrelation kann "fließen" - was sie hier nicht soll,
+denn es handelt sich um Scheinkorrelation.
 
-
-
-```{r fig.width=9}
-#| echo: false
-collider_triangle(x = "x",
-                  y = "y",
-                  m = "z") %>% 
-  ggdag_dseparated(controlling_for = "m") +
-  theme_dag()
-```
-
-
-- Ohne Kontrolle von `date` entsteht keine Scheinkorrelation zwischen `Looks` und `Talent`. Der Pfad ("Fluss") von `Looks` über `date` nach `Talent` ist blockiert.
-
-- Kontrolliert man `date`, so *öffnet* sich der Pfad `Looks`->`date`-> `Talent` und die Scheinkorrelation entsteht: Der Pfad ist nicht mehr blockiert.
-
-- Das Kontrollieren von `date` geht zumeist durch Bilden einer Auswahl einer Teilgruppe von sich.
+Das Kontrollieren von `date` geht zumeist durch Bilden einer Auswahl einer Teilgruppe von sich.
 
 
 
@@ -1272,10 +1301,13 @@ collider_triangle(x = "x",
 ### IQ, Fleiss und Eignung fürs Studium
 
 
+Sagen wir, über die *Eignung* für ein Studium würden nur (die individuellen Ausprägungen) von Intelligenz (IQ) und Fleiss entscheiden, s. den DAG in @fig-coll3-dag.
 
-```{r coll2-dag}
+```{r coll32-dag}
 #| echo: false
-coll2_dag <- ggdag::dagify(s ~ f + iq,
+#| label: fig-coll3-dag
+#| fig-cap: Kollisionsstruktur im Dag zur Studiumseignung
+coll2_dag <- ggdag::dagify(s ~ d + iq,
                       outcome = "s",
                       labels = c("s" = "Studium",
                                  "iq" = "Intelligenz",
@@ -1314,7 +1346,8 @@ tibble(
   fleiss = rnorm(N),
   glueck = rnorm(N, mean = 0, sd = .1),
   eignung = 1/2 * iq + 1/2 * fleiss + glueck,
-  studium = ifelse(eignung > 0, 1, 0) # nur wer geeignet ist, studiert (in unserem Modell)
+  # nur wer geeignet ist, studiert (in unserem Modell):
+  studium = ifelse(eignung > 0, 1, 0) 
   )
 ```
 
@@ -1326,11 +1359,11 @@ Laut unserem Modell setzt sich Eignung zur Hälfte aus Intelligenz und zur Hälf
 
 Eine Studie untersucht den Zusammenhang von Intelligenz (iq) und Fleiß (f) bei Studentis (s).
 
-Ergebnis: Ein negativer Zusammenhang. 
+Ergebnis: Ein *negativer* Zusammenhang!?
 
 
 
-Berechnen wir das "Eignungsmodell", aber nur mit Studis:
+Berechnen wir das "Eignungsmodell", aber nur mit Studis (`studium == 1)`:
 
 ```{r}
 m_eignung <-
@@ -1340,18 +1373,28 @@ hdi(m_eignung)
 ```
 
 
+@fig-eignung zeigt das Modell und die Daten.
+
 ```{r}
 #| echo: false
+#| label: fig-eignung
+#| fig-cap: "Der Zusammenhang von Fleiss und IQ"
+#| out-width: "50%"
 d_eignung %>% 
   filter(studium == 1) %>% 
   ggplot(aes(x = fleiss, y = iq)) +
   geom_point(alpha = .5) +
   geom_smooth(method = "lm") +
-  labs(title = "Nativer Zusammenhang bei Studentis")
+  labs(title = "Nativer Zusammenhang von Fleiss und IQ bei Studentis",
+       subtitle = "Macht Fleiss blöd?")
 ```
 
 
-IQ ist nicht unabhängig von Fleiß in unseren Daten.
+IQ ist *nicht* unabhängig von Fleiß in unseren Daten, sondern abhängig.
+
+Nichtwissenschaftliche Berichte, etwa in einigen Medien,
+greifen gerne Befunde über Zusammenhänge auf und interpretieren die Zusammenhänge
+- oft vorschnell - als kausal.^[Ehrlicherweise muss man zugeben, dass auch wissenschaftliche Berichte Daten über Zusammenhänge gerne kausal interpretieren, oft vorschnell.]
 
 
 
@@ -1359,37 +1402,44 @@ IQ ist nicht unabhängig von Fleiß in unseren Daten.
 
 ### Kollisionsverzerrung nur bei Stratifizierung
 
-Nur durch das Stratifizieren (Aufteilen in Subgruppen, Kontrollieren, Adjustieren) tritt die Scheinkorrelation auf.
+Nur durch das Stratifizieren (Aufteilen in Subgruppen, Kontrollieren, Adjustieren) tritt die Scheinkorrelation auf, s. @fig-eignung-strat.
 
 
+:::callout-note
+*Ohne* Stratifizierung tritt *keine* Scheinkorrelation auf.
+*Mit* Stratifizierung tritt Scheinkorrelation auf.
+:::
 
-Ohne Stratifizierung tritt keine Scheinkorrelation auf
+
 
 ```{r}
 #| echo: false
-d_eignung %>% 
+#| fig-cap: "Stratifizierung und Scheinkorrelation"
+#| label: fig-eignung-strat
+p1 <- d_eignung %>% 
  ggplot(aes(x = fleiss, y = iq)) +
   geom_point(alpha = .5) +
   geom_smooth(method = "lm")
-```
 
-
-
-Mit Stratifizierung tritt Scheinkorrelation auf
-
-```{r}
-#| echo: false
+p2 <- 
 d_eignung %>% 
   mutate(studium = factor(studium)) %>% 
   ggplot(aes(x = fleiss, y = iq, color = studium)) +
   geom_point(alpha = .5) +
   geom_smooth(method = "lm")
+
+
+plots(p1, p2,
+      title = c("Kein Stratifizierung, keine Scheinkorrelation",
+               "Mit Stratifizierung gibt es Scheinkorrelation"))
 ```
 
 
-Wildes Kontrollieren einer Variablen - Aufnehmen in die Regression - kann genausogut schaden wie nützen.
 
-Nur Kenntnis des DAGs verrät die richtige Entscheidung: ob man eine Variable kontrolliert oder nicht.
+
+Wildes Kontrollieren einer Variablen - Aufnehmen in die Regression - kann genausog ut schaden wie nützen.
+
+*Nur* Kenntnis des DAGs verrät die richtige Entscheidung: ob man eine Variable kontrolliert oder nicht.
 
 
 :::callout-note
@@ -1415,7 +1465,7 @@ Wir nehmen folgende Effekte an:
 - direkter Effekt von `G` auf `K`: $G \rightarrow K$
 
 
-Wir sind v.a. interessiert an $G \rightarrow K$, dem *direkten kausalen* Effekt von Großeltern auf ihre Enkel.
+Wir sind v.a. interessiert an $G \rightarrow K$, dem *direkten kausalen* Effekt von Großeltern auf ihre Enkel, s. @fig-dag-grannies, @kurz_statistical_2021.
 
 
 
@@ -1423,6 +1473,7 @@ Wir sind v.a. interessiert an $G \rightarrow K$, dem *direkten kausalen* Effekt 
 
 ```{r}
 #| echo: false
+#| label: fig-dag-grannies
 dag_coords <-
   tibble(name = c("G", "E", "K"),
          x    = c(1, 2, 2),
@@ -1436,10 +1487,10 @@ dagify(E ~ G,
 ```
 
 
-Aber was ist, wenn wir vielleicht eine *u*nbekannte Variable übersehen haben? (S. nächste Seite 👻)
+Aber was ist, wenn wir vielleicht eine *u*nbekannte Variable übersehen haben? (S. nächster Abschnitt 👻)
 
 
-@kurz_statistical_2021
+
 
 
 
@@ -1452,9 +1503,20 @@ Aber was ist, wenn wir vielleicht eine *u*nbekannte Variable übersehen haben? (
 
 👻
 
+Es gibt "unheilbare" DAGs, nennen wir sie "Gespenster-DAGs",
+in denen es nicht möglich ist, einen (unverzerrten) Kausaleffekt zu bestimmen,
+s. @fig-dag-ghost.
+Letztlich sagt uns der DAG bzw. unsere Analyse zum DAG:
+"Deine Theorie ist nicht gut, zurück an den Schreibtisch und denk noch mal gut nach. 
+Oder sammele mehr Daten."
+
+
 
 ```{r}
 #| echo: false
+#| label: fig-dag-ghost
+#| fig-cap: "Der Gespenster-DAG: Eine Identifikation der Kausaleffekt ist nicht (vollständig) möglich."
+#| out-width: "50%"
 
 # source: https://bookdown.org/content/4857/the-haunted-dag-the-causal-terror.html#confronting-confounding
 gg_fancy_dag <- function(d, x = 1, y = 1, circle = "U") {
@@ -1469,14 +1531,8 @@ gg_fancy_dag <- function(d, x = 1, y = 1, circle = "U") {
     geom_dag_edges() + 
     scale_color_manual(values = c("steelblue", "orange")) +
     theme_dag()
-  
 }
-```
 
-
-
-```{r}
-#| echo: false
 coll4_dag <-
   dagitty("dag
           {
@@ -1496,7 +1552,7 @@ dag_coords <-
 dagify(E ~ G + U,
        K ~ E + G + U,
        coords = dag_coords) %>% 
-gg_fancy_dag(x = 2.5, y = 1.5, circle = "U")
+  gg_fancy_dag(x = 2.5, y = 1.5, circle = "U")
 ```
 
 
@@ -1510,9 +1566,7 @@ gg_fancy_dag(x = 2.5, y = 1.5, circle = "U")
 - Wenn wir `E` kontrollieren, wird es den Pfad $G \rightarrow K$ verzerren, auch wenn wir niemals `U` messen.
 
 
-Die Sache ist chancenlos. Wir müssen den DAG verloren geben. 👻
-
-@mcelreath_statistical_2020, S. 180
+Die Sache ist in diesem Fall chancenlos. Wir müssen diesen DAG verloren geben, @mcelreath_statistical_2020, S. 180.
 
 
 
@@ -1548,8 +1602,13 @@ Die Sache ist chancenlos. Wir müssen den DAG verloren geben. 👻
 UV: `b`, AV: `p`
 
 
+Das Kausalmodell ist in @fig-dag-don1 dargestellt.
+
 ```{r}
 #| echo: false
+#| label: fig-dag-don1
+#| fig-cap: "Der Preis wird sowohl von der Zimmerzahl als auch der Wohnfläche beeinflusst"
+#| out-width: "50%"
 
 
 # source: https://bookdown.org/content/4857/the-haunted-dag-the-causal-terror.html#confronting-confounding
@@ -1564,11 +1623,7 @@ gg_simple_dag <- function(d) {
     geom_dag_edges() + 
     theme_dag()
 }
-```
 
-
-```{r}
-#| echo: false
 dag_coords <-
   tibble(name = c("a", "b", "p"),
          x    = c(0, -1, 1),
@@ -1596,10 +1651,17 @@ Gäbe es nur nur den zweiten Pfad und wir würden `b` ändern, so würde sich `p
 
 ### Gute Experimente zeigen den echten kausalen Effekt
 
+@fig-dag-tuer-zu zeigt eine erfreuliche Situation:
+Die "Hintertür" zu unserer UV (Zimmerzahl) ist geschlossen!
 
+Ist die Hintertür geschlossen - führen also keine Pfeile in unserer UV -
+so kann eine Konfundierung ausgeschlossen werden.
 
 ```{r}
 #| echo: false
+#| label: fig-dag-tuer-zu
+#| fig-cap: "Unverzerrte Schätzung des kausalen Effekts unserer UV (Zimmerzahl). Das Regressionsgewicht ist hier der unverzerrte Kausaleffekt. Es spielt keine Rolle, ob der andere Prädiktor im Modell enthalten ist. Da die beiden Prädiktoren unkorreliert sind, hat die Aufnahme des einen Prädiktors keinen Einfluss auf das Regressionsgewicht des anderen."
+#| out-width: "50%"
 dag_coords <-
   tibble(name = c("a", "b", "p"),
          x    = c(0, -1, 1),
@@ -1614,34 +1676,41 @@ Die "Hintertür" der UV (`b`) ist jetzt zu!
 Der einzig verbleibende, erste Pfad ist der kausale Pfad und die Assoziation zwischen `b` und `p` ist jetzt komplett kausal.
 
 
-- Eine berühmte Lösung, den kausalen Pfad zu isolieren, ist ein (randomsiertes, kontrolliertes) Experiment.
-- Wenn wir den Häusern zufällig (randomisiert) eine Anzahl von Schlafzimmern (`b`) zuweisen könnten (unabhängig von ihrer Quadratmeterzahl, `a`), würde sich der Graph so ändern.
-- Das Experiment *entfernt* den Einfluss von `a` auf `b`.
-- Wenn wir selber die Werte von `b` einstellen im Rahmen des Experiments, so kann `a` keine Wirkung auf `b` haben.
-- Damit wird der zweite Pfad, $b \rightarrow a \rightarrow p$ geschlossen ("blockiert").
+Eine berühmte Lösung, den kausalen Pfad zu isolieren, ist ein (randomsiertes, kontrolliertes) Experiment.
+Wenn wir den Häusern zufällig (randomisiert) eine Anzahl von Schlafzimmern (`b`) zuweisen könnten (unabhängig von ihrer Quadratmeterzahl, `a`), würde sich der Graph so ändern.
+Das Experiment *entfernt* den Einfluss von `a` auf `b`.
+Wenn wir selber die Werte von `b` einstellen im Rahmen des Experiments, so kann `a` keine Wirkung auf `b` haben.
+Damit wird der zweite Pfad, $b \rightarrow a \rightarrow p$ geschlossen ("blockiert").
 
 
 
 
 ### Hintertür schließen auch ohne Experimente
 
-- Konfundierende Pfade zu blockieren zwischen der UV und der AV nennt man auch *die Hintertür schließen* (backdoor criterion).
+Konfundierende Pfade zu blockieren zwischen der UV und der AV nennt man auch *die Hintertür schließen* (backdoor criterion).
 
-- Wir wollen die Hintertüre schließen, da wir sonst nicht den wahren, kausalen Effekt bestimmen können.
+Wir wollen die Hintertüre schließen, da wir sonst nicht den wahren, kausalen Effekt bestimmen können.
 
-- Zum Glück gibt es neben Experimenten noch andere Wege, die Hintertür zu schließen, wie die Konfundierungsvariable `a` in eine Regression mit aufzunehmen.
+Zum Glück gibt es neben Experimenten noch andere Wege, die Hintertür zu schließen, wie die Konfundierungsvariable `a` in eine Regression mit aufzunehmen.
 
-- Warum blockt das Kontrollieren von `a`den Pfad $b \leftarrow a \rightarrow p$?
-- Stellen Sie sich den Pfad als eigenen Modell vor.
-- Sobald Sie `a` kennen, bringt Ihnen Kenntnis über `b` kein zusätzliches Wissen über `p`.
-- Wissen Sie hingegen nichts über `a`, lernen Sie bei Kenntnis von `b` auch etwas über `p`.
-- Konditionieren ist wie "gegeben, dass Sie `a` schon kennen...".
+Warum blockt das Kontrollieren von `a`den Pfad $b \leftarrow a \rightarrow p$?
+Stellen Sie sich den Pfad als eigenen Modell vor.
+Sobald Sie `a` kennen, bringt Ihnen Kenntnis über `b` kein zusätzliches Wissen über `p`.
+Wissen Sie hingegen nichts über `a`, lernen Sie bei Kenntnis von `b` auch etwas über `p`.
+Konditionieren ist wie "gegeben, dass Sie `a` schon kennen...".
 
-- $b \indep p \,|\,a$
+$b \indep p \,|\,a$
 
 
 
 ### Die vier Atome der Kausalanalyse
+
+
+@fig-four-atoms stellt die vier "Atome" der Kausalinferenz dar.
+Mehr gibt es nicht!
+Kennen Sie diese vier Grundbausteine,
+so können Sie jedes beliebige Kausalsystem (DAG) entschlüsseln.
+
 
 
 
@@ -1698,6 +1767,9 @@ p_desc <-
 
 ```{r}
 #| echo: false
+#| label: fig-four-atoms
+#| fig-cap: Die vier Atome der Kausalinferenz
+#| fig-width: 9
 plots(p_conf, p_med, p_coll, p_desc, n_rows = 2)
 ```
 
@@ -1707,32 +1779,46 @@ plots(p_conf, p_med, p_coll, p_desc, n_rows = 2)
 
 ### Mediation
 
+Die *Mediation* (Wirkkette, Rohr, Kette, chain) beschreibt Pfade, in der die Kanten gleiche Wirkrichtung haben: $x \rightarrow m \rightarrow y$. 
+Anders gesagt: Eine Mediation, auch "Kette" oder "Wirkkette" genannt, ist eine Kausalabfolge der Art $x \rightarrow m \rightarrow y$, s. @fig-med1.
+Die Variable in der Mitte $m$ der Kette wird auch *Mediator* genannt,
+weil sei die Wirkung von X auf Y "vermittelt" oder übeträgt.
+Die Erforschung von Mediation spielt eine recht wichtige Rolle in einigen Wissenschaften,
+wie der Psychologie.
 
 ```{r}
 #| echo: false
+#| label: fig-med1
+#| fig-cap: Das Kausalmodell der Mediation.
 p_med
 ```
 
 
-Die *Mediation* (Wirkkette, Rohr, Kette, chain) beschreibt Pfade, in der die Kanten gleiche Wirkrichtung haben: $x \rightarrow m \rightarrow y$.
 
-- Ohne Kontrollieren ist der Pfad offen: Die Assoziation "fließt" den Pfad entlang (in beide Richtungen).
-- Kontrollieren blockt (schließt) die Kette (genau wie bei der Gabel).
+
+Ohne Kontrollieren ist der Pfad offen: Die Assoziation "fließt" den Pfad entlang (in beide Richtungen).
+Kontrollieren blockt (schließt) die Kette (genau wie bei der Gabel).
 
 
 ## Der Nachfahre
 
 
-```{r}
-#| echo: false
-p_desc
-```
 
-
-Ein *Nachfahre* (descendent) ist eine Variable die von einer anderen Variable beeinflusst wird.
+Ein *Nachfahre* (descendent) ist eine Variable die von einer anderen Variable beeinflusst wird, s. fig-dag-nachfahre.
 Kontrolliert man einen Nachfahren `d`, so kontrolliert man damit zum Teil den Vorfahren (die Ursache), `m`.
 Der Grund ist, dass `d` Information beinhaltet über `m`.
 Hier wird das Kontrollieren von `d` den Pfad von `x` nach `y` teilweise öffnen, da `m` eine Kollisionsvariable ist.
+
+
+
+```{r}
+#| echo: false
+#| label: fig-dag-nachfahre
+#| fig-cap: "Ein Nachfahre verhält sich ähnlich wie sein Vorfahre..."
+#| out-width: "50%"
+p_desc
+```
+
 
 
 ### Kochrezept zur Analyse von DAGs
@@ -1759,6 +1845,8 @@ UV: $X$, AV: $Y$, drei Covariaten (A, B, C) und ein ungemessene Variable, U
 
 ```{r gg-fancey-dag, out.width="50%"}
 #| echo: false
+#| label: fig-dag-fancy
+#| fig-cap: "Puh, ein schon recht komplizierter DAG"
 dag_coords <-
   tibble(name = c("A", "B", "C", "U", "X", "Y"),
          x    = c(2, 2, 3, 1, 1, 3),
@@ -1775,7 +1863,7 @@ dagify(B ~ C + U,
 
 
 
-Es gibt zwei Hintertürpfade:
+Es gibt zwei Hintertürpfade in @fig-dag-fancy:
 
 1. $X \leftarrow U \leftarrow A \rightarrow C \rightarrow Y$, offen
 2. $X \leftarrow U \rightarrow B \leftarrow C \rightarrow Y$, geschlossen
@@ -1792,10 +1880,12 @@ Kontrollieren von $A$ oder (auch) $C$ schließt die offene Hintertür.
 
 ### Schließen Sie die Hintertür (wenn möglich)!, `bsp2`
 
-UV: $W$, AV: $D$
+S. DAG in @fig-dag-bsp2: UV: $W$, AV: $D$
 
 ```{r bsp2}
 #| echo: false
+#| label: fig-dag-bsp2
+#| fig-cap: "Welche Variablen muss man kontrollieren, um den Effekt von W auf D zu bestimmen?"
 dag_coords <-
   tibble(name = c("A", "D", "M", "S", "W"),
          x    = c(1, 3, 2, 1, 3),
@@ -1809,6 +1899,8 @@ dagify(A ~ S,
   gg_simple_dag()
 ```
 
+
+
 Kontrollieren Sie diese Variablen, um die offenen Hintertüren zu schließen:
 
 - entweder $A$ und $M$
@@ -1818,7 +1910,7 @@ Kontrollieren Sie diese Variablen, um die offenen Hintertüren zu schließen:
 
 
 
-@mcelreath_statistical_2020, @kurz_statistical_2021", s.S. 188.
+Details finden sich bei @mcelreath_statistical_2020 oder @kurz_statistical_2021, ‚S. 188.
 
 
 

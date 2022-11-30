@@ -1292,7 +1292,7 @@ wskt_gross <-
 Die Wahrscheinlichkeit beträgt `r wskt_gross`.
 
 
-- Wie wahrscheinlich ist es, dass die mittlere Größe höchstens 154.5 cm beträgt?
+Wie wahrscheinlich ist es, dass die mittlere Größe höchstens 154.5 cm beträgt?
 
 
 ```{r echo = TRUE}
@@ -1301,7 +1301,7 @@ m43a_post %>%
   mutate(prop = n / sum(n))
 ```
 
-```{r}
+```{r wsktklein}
 #| echo: false
 wskt_klein <- 
   m43a_post %>% 
@@ -1345,14 +1345,14 @@ Die Wahrscheinlichkeit beträgt `r wskt_klein`.
 <!--   ggplot(aes(x = b)) + -->
 <!--   geom_density() -->
 <!-- ``` -->
-
+‚
 <!-- ] -->
 
 
 
 ### Typischer Bayes-Nutzer in Aktion
 
-![Typischer Bayes-Nutzer, der ein Ungewissheitsintervall berechnet. Bildquelle: Easystats, bayestestR](img/bayesianMaster.jpg)
+![Typischer Bayes-Nutzer, der ein Ungewissheitsintervall berechnet. Bildquelle: Easystats, bayestestR](img/bayesianMaster.jpg){width="50%" fig-align="center"}
 
 [Quelle](https://easystats.github.io/bayestestR/articles/bayestestR.html)
 
@@ -1380,7 +1380,7 @@ $\mu|\text{weight}=45$
 Erstellen wir uns dazu eine Tabelle:
 
 
-```{r mu-at-45, echo = TRUE}
+```{r mu-at-45-def, echo = TRUE}
 mu_at_45 <-
   m43a_post %>% 
   mutate(mu_at_45 = `(Intercept)`)
@@ -1390,8 +1390,7 @@ Und plotten diese, s. @fig-mu-at-45.
 
 ```{r Post-Regression-befragen-15, echo = TRUE, eval = FALSE}
 #| eval: false
-#| label: fig-mu-at-45
-#| fig-cap: Post-Verteilung der Größe (laut unserem Modell) bei einem Gewicht von 45kg 
+
 mu_at_45 %>% 
   ggplot(aes(x = mu_at_45)) +
   geom_density()
@@ -1401,6 +1400,8 @@ mu_at_45 %>%
 
 ```{r Post-Regression-befragen-17}
 #| echo: false
+#| label: fig-mu-at-45
+#| fig-cap: "Post-Verteilung der Größe (laut unserem Modell) bei einem Gewicht von 45kg"
 mu_at_45 %>% 
   ggplot(aes(x = mu_at_45)) +
   geom_density() +
@@ -1540,7 +1541,7 @@ nicht nur die Ungewissheit zum Mittelwert.
 
 Berechnen wir die PPV für `m43a`:
 
-```{r}
+```{r ppv-m43a}
 ppv_m43a <- posterior_predict(
   m43a,
   newdata = weight_df,
@@ -1577,7 +1578,7 @@ mus %>%
 
 
 
-```{r}
+```{r mus-d2}
 #| echo: false
 mus <- 
   mus %>% 
@@ -1598,11 +1599,12 @@ d2 %>%
 
 Die vertikalen Balken geben die 95%-KI wieder, die wir jeweils zu erwarten haben.
 
-Noch eine andere Visualisierung, s. @fig-katzenaugen; je dicker die "Katzenaugen", desto mehr Stichproben (samples) liegen vor an der Stelle,
+Noch eine andere Visualisierung, s. @fig-katzenaugen; 
+je dicker die "Katzenaugen", desto mehr Stichproben (samples) liegen vor an der Stelle,
 und umso genauer ist die Schätzung.
 
 
-```{r}
+```{r ppv-m43-weight}
 #| echo: false
 #| label: fig-katzenaugen
 #| fig-cap: Die PPV für bestimmte Gewichtswerte w, visualisiert mit Katzenaugen-Diagrammen
@@ -1640,10 +1642,7 @@ Also: Je dicker die Violine, desto wahrscheinlicher $\mu | w_i$.
 ### Die PPV visualisiert
 
 Gerade eben haben wir bedingte PPVen angeschaut: Also eine PPV für einen bestimmten Prädiktorwert, z.B. bei einer Person mittleren Gewichts.
-
 Wir können auch den Mittelwert über alle bedingten PPV anschauen, sozusagen die "Master-PPV" oder "unbedingte PPV" oder schlicht PPV.
-
-
 Vergleichen wir die echten Werte für `height`, $y$, mit den von der PPV simulierten Werten für `height`, $y_{rep}$, s. @fig-ppv-check.
 
 ```{r ppv-plot1}

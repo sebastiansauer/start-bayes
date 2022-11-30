@@ -305,6 +305,7 @@ gg_exp <- function(r, max_x = 50) {
 #| echo: false
 #| label: fig-exps
 #| fig-cap: Beispiele von Expnentialverteilungen mit unterschiedlichem lambda 
+#| fig-width: 9
 
 p_r1 <- gg_exp(r = 1)
  
@@ -483,11 +484,11 @@ Das ist ok, aber wenn Sie Vorab-Wissen haben,
 sollten Sie das an `rstanarm` weitergeben, weil es ja schade wäre,
 wenn Sie Wissen haben, das von Ihrem Modell nicht genutzt wird.
 
-Plotten wir mal die Posteriori-Verteilung von `m41`, s. @fig-kung2.
+Plotten wir mal die Posteriori-Verteilung von `m41`, s. @fig-m42-post-joint.
 
 ```{r post-m41-plot}
 #|  echo: true
-#|  label: fig-kung2
+#|  label: fig-m42-post-joint
 #|  fig-cap: Die gemeinsame Verteilung von Mittelwert und Streuung.
 m41_post %>% 
   ggplot() +
@@ -500,34 +501,46 @@ Da das Modell *zwei* Parameter hat, können wir auch beide gleichzeitig plotten.
 Wie man sieht, sind die beiden Parameter unkorreliert.
 In anderen Modellen können die Parameter korreliert sein.
 
-@fig-kung2 erlaubt uns, für jede Kombination von Mittelwert und Streuung zu fragen,
-wie wahrscheinlich diese Kombination ist.
+@fig-m42-post-joint erlaubt uns, für jede Kombination von Mittelwert und Streuung zu fragen,
+wie wahrscheinlich diese bestimmte Kombination ist.
 
 
 
-Hier noch eine andere Visualisierung:
+Hier sind noch zwei andere Visualisierungen der Post-Verteilung von `m42`, s. @fig-m42-post-anders.
+
+
 
 ```{r Kung-5-bis}
-# echo: false
+#| echo: false
+#| fig-cap: "Die Postverteilung in unterschiedlicher Darstellung"
+#| label: fig-m42-post-anders
+
+
 p_m41_post <- 
   m41_post %>% 
   ggplot() +
   aes(x = mu, y = sigma) +
   geom_point(alpha = .1) 
 
-ggExtra::ggMarginal(p_m41_post, type = "density")
-```
+p10 <- ggExtra::ggMarginal(p_m41_post, type = "density")
 
-
-Natürlich können wir auch nur einen Parameter plotten:
-
-
-```{r}
-m41_post %>% 
+p20 <- 
+  m41_post %>% 
   ggplot(aes(x = mu)) + 
   geom_histogram()
+
+plots(p10, p20,
+      n_rows = 1,
+      title = c("Die gemeinsame Verteilung von mu und Sigma als Punktediagramm",
+                "Die Post-Verteilung von mu in m42; ein Balkendiagramm bietet sich an."))
 ```
 
+
+
+
+
+
+Natürlich können wir auch nur einen Parameter plotten.
 
 
 Fassen wir die Ergebnisse dieses Modells zusammen:
@@ -562,7 +575,7 @@ Antworten folgen etwas weiter unten.
 
 Abschließend, eigentlich nur Spielerei, noch eine andere Visualisierung der Post-Verteilung von $\mu$ und von $\sigma$, @fig-kung3.
 
-```{r Kung-22, fig.asp = 1}
+```{r Kung-22}
 #| echo: false
 #| label: fig-kung3
 #| fig-cap: Die beiden Randverteilungen der Post-Verteilungen, d.h. die Verteilungen für mu und für sigma
@@ -576,7 +589,7 @@ m41_post %>%
   theme(panel.grid = element_blank()) +
   facet_wrap(~ name, scales = "free", 
              labeller = label_parsed,
-             nrow = 2)
+             ncol = 2)
 ```
 
 
