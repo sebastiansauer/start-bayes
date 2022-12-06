@@ -467,7 +467,7 @@ Durch Zentrieren kann man die Ergebnisse einer Regression einfacher interpretier
 
 ### Modelldefinition von `m43`
 
-- Für jede Ausprägung des Prädiktors (`weight`), $h_i$, wird eine Post-Verteilung für die abhängige Variable (`height`) berechnet.
+- Für jede Ausprägung des Prädiktors (`weight_centered`), $wc_i$, wird eine Post-Verteilung für die abhängige Variable (`height`, $h_i$) berechnet.
 - Der Mittelwert $\mu$ für jede Post-Verteilung ergibt sich aus dem linearen Modell (unserer Regressionsformel).
 - Die Post-Verteilung berechnet sich auf Basis der Priori-Werte und des Likelihood (Bayes-Formel).
 - Wir brauchen Priori-Werte für die Steigung $\beta$ und den Achsenabschnitt $\alpha$ der Regressionsgeraden.
@@ -482,6 +482,15 @@ Durch Zentrieren kann man die Ergebnisse einer Regression einfacher interpretier
 \color{blue}\beta  & \color{blue}\sim \color{blue}{\operatorname{Normal}(0, 10)}  && \color{blue}{\text{Priori}}\\
 \color{blue}\sigma & \color{blue}\sim \color{blue}{\operatorname{Exp}(0.1)}  && \color{blue}{\text{Priori}}
 \end{align*}
+
+
+
+:::callout-note
+Der Achsenabschnit (engl. *intercept*) eines Regressionsmodell wird in der Literatur oft mit $\beta_0$ bezeichnet,
+aber manchmal auch mit $\alpha$.
+Und manchmal mit noch anderen Buchstaben, das Alphabet ist weit. 🤷
+:::
+
 
 
 
@@ -913,8 +922,8 @@ Sagen wir, auf Basis gut geprüfter Evidenz haben wir folgendes Modell festgeleg
 
 Prioris:
 
-$$\beta_1 \sim N(5,3) \\
-\beta_0 \sim N(178, 20) \\
+$$\beta_1 \sim N(5,3); \\
+\beta_0 \sim N(178, 20); \\
 \sigma \sim E(0.1)$${#eq-m43a}
 
 Wir nennen das Modell `m43a`^[Wer ist hier für die Namensgebung zuständig? Besoffen oder was?].
@@ -932,6 +941,18 @@ m43a <-
     seed = 42,  # lege die Zufallszahlen fest für Reproduzierbarkeit
     data = d2)
 ```
+
+
+:::callout-note
+Mit `seed` kann man die Zufallszahlen fixieren,
+so dass jedes Mal die gleichen Werte resultieren.
+So ist die Nachprüfbarkeit der Ergebnisse ("Reproduzierbarkeit") sichergestellt^[oder zumindest *besser* sichergestellt].
+Welche Wert für `seed` man verwendet, ist egal,
+solange alle den gleichen verwenden.
+Der Autor verwendet z.B. oft den Wert 42.
+Zur Erinnerung: Der Golem zieht Zufallszahlen,
+damit erstellt er Stichproben, die die Postverteilung schätzen.
+:::
 
 
 
@@ -1040,7 +1061,7 @@ plot(m43_expect)
 
 ### Zentrale Statistiken zu den Parametern
 
-In diesem Modell gibt es drei Parameter: $\mu, \beta, \sigma$.
+In diesem Modell gibt es drei Parameter: $\alpha, \beta, \sigma$.
 
 Hier folgen einige Beispiele an Fragen, die wir an unser Modell bzw. die Post-Verteilung stellen können.
 
@@ -1427,7 +1448,7 @@ mu_at_50 <-
 head(mu_at_50)
 ```
 
-Die Verteilung der Größe bei einem Gewicht von 50kg ist weiter rechts (Richtung höhere Größe) zentriert, s. @fig-mu-at-50.
+Die Verteilung der mittleren Größe bei einem Gewicht von 50kg ist weiter "rechts" (Richtung höhere Größe) zentriert, s. @fig-mu-at-50.
 
 
 ```{r Post-Regression-befragen-16, echo = TRUE, eval = FALSE}
@@ -1444,7 +1465,7 @@ mu_at_50 %>%
 ```{r Post-Regression-befragen-18}
 #| echo: false
 #| label: fig-mu-at-50
-#| fig-cap: Post-Verteilung der Größe (laut unserem Modell) bedingt auf ein Gewicht von 50 kg
+#| fig-cap: Post-Verteilung der mittleren Größe (laut unserem Modell) bedingt auf ein Gewicht von 50 kg
 mu_at_50 %>% 
   ggplot(aes(x = mu_at_50)) +
   geom_density() +
@@ -1487,9 +1508,6 @@ mu_at_45 %>%
 ## Die PPV befragen
 
 
-🏎️ VERTIEFUNG 🏎️
-
-
 
 
 
@@ -1525,12 +1543,20 @@ Für diese Werte lassen wir uns dann die Perzentil-Intervalle (PI) ausgeben:
 mus <- 
   predictive_interval(
     m43a, 
+    seed = 42,
     newdata = weight_df) %>% 
   as_tibble() %>% 
   bind_cols(weight_df)
+
+head(mus)
 ```
 
-Um die Perzentilintervalle zu erstellen, wird von `predictive_interval()` für jeden Prädiktorwert eine Posteriori-Verteilung erstellt und das 5%- sowie 95%-Quantil berechnet. 
+Um die Perzentilintervalle zu erstellen, wird von `predictive_interval()` für jeden Prädiktorwert eine PPV erstellt und (in der Voreinstellung) das 5%- sowie 95%-Quantil dafür berechnet. 
+Sie können die Voreinstellung ändern mittels des Arguments `prob`;
+um ein 89%-PI zu berechnen, würde man z.B. schreiben `prob = .89`.
+
+Um Reproduzierbarkeit sicherzustellen,
+haben wir mit `seed = 42` die Zufallszahlen fixiert.
 
 Wir sehen etwa, dass wir bei einer Person mittleren Gewichts, eine Körpergröße von ca. 146 cm bis 163 cm zu erwarten haben (95%-KI).
 Hoppla! Das ist ja viel ungenauer, als die Angaben der Post-Verteilung oben.
@@ -1693,5 +1719,22 @@ ppv_m43a %>%
 
 ## Aufgaben
 
+(s. Aufgaben mit Datum 6.12.22 auf dem Datenwerk)
 
-(kommen noch)
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+<!-- - []() -->
+
