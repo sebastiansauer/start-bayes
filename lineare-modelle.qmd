@@ -322,9 +322,16 @@ Nein, s. Abb. @fig-na.
 d2 %>% plot_missing()
 ```
 
+
+
 #### Verteilung der numerischen Variablen
 
+Betrachten wir die Verteilung der *numerischen* Variablen des Datensatzes, s. @fig-d2-hists.
+
+
 ```{r}
+#| label: fig-d2-hists
+#| fig-cap: "Verteilung (als Histogramme dargestellt) der numerischen Variablen des Datensatzes"
 d2 %>% plot_histogram()
 ```
 
@@ -333,7 +340,12 @@ d2 %>% plot_histogram()
 #### Verteilung der kategorialen Variablen
 
 
+Betrachten wir die Verteilung der *kategorialen* Variablen des Datensatzes, s. @fig-d2-bars.
+
+
 ```{r}
+#| label: fig-d2-bars
+#| fig-cap: "Verteilung (als Balkendiagramme dargestellt) der kategorialen Variablen des Datensatzes"
 d2 %>% plot_bar()
 ```
 
@@ -341,8 +353,11 @@ d2 %>% plot_bar()
 
 #### Korrelationen
 
+Die Korrelationen der (numerischen) Variablen sind in @fig-num-korrs dargestellt.
 
 ```{r}
+#| label: fig-num-korrs
+#| fig-cap: "Korrelationsmatrix"
 d2 %>% plot_correlation()
 ```
 
@@ -467,12 +482,12 @@ Durch Zentrieren kann man die Ergebnisse einer Regression einfacher interpretier
 
 ### Modelldefinition von `m43`
 
-- Für jede Ausprägung des Prädiktors (`weight_centered`), $wc_i$, wird eine Post-Verteilung für die abhängige Variable (`height`, $h_i$) berechnet.
-- Der Mittelwert $\mu$ für jede Post-Verteilung ergibt sich aus dem linearen Modell (unserer Regressionsformel).
-- Die Post-Verteilung berechnet sich auf Basis der Priori-Werte und des Likelihood (Bayes-Formel).
-- Wir brauchen Priori-Werte für die Steigung $\beta$ und den Achsenabschnitt $\alpha$ der Regressionsgeraden.
-- Außerdem brauchen wir einen Priori-Wert, der die Streuung $\sigma$ der Größe (`height`) angibt; dieser Wert wird als exonentialverteilt angenommen.
-- Der Likelihood gibt an, wie wahrscheinlich ein Wert `height` ist, gegeben $\mu$ und $\sigma$.
+Für jede Ausprägung des Prädiktors (`weight_centered`), $wc_i$, wird eine Post-Verteilung für die abhängige Variable (`height`, $h_i$) berechnet.
+Der Mittelwert $\mu$ für jede Post-Verteilung ergibt sich aus dem linearen Modell (unserer Regressionsformel).
+ Die Post-Verteilung berechnet sich auf Basis der Priori-Werte und des Likelihood (Bayes-Formel).
+ Wir brauchen Priori-Werte für die Steigung $\beta$ und den Achsenabschnitt $\alpha$ der Regressionsgeraden.
+ Außerdem brauchen wir einen Priori-Wert, der die Streuung $\sigma$ der Größe (`height`) angibt; dieser Wert wird als exonentialverteilt angenommen.
+ Der Likelihood gibt an, wie wahrscheinlich ein Wert `height` ist, gegeben $\mu$ und $\sigma$.
 
 
 \begin{align*}
@@ -509,10 +524,10 @@ $$
 
 
 
-- Der Likelihood von `m43` ist ähnlich zu den vorherigen Modellen (`m41, m42`).
-- Nur gibt es jetzt ein kleines "Index-i" am $\mu$ und am $h$ (h wie `heights`).
-- Es gibt jetzt nicht mehr nur einen Mittelwert $\mu$, sondern für jede Beobachtung (Zeile) einen Mittelwert $\mu_i$.
-- Lies  etwa so:
+ Der Likelihood von `m43` ist ähnlich zu den vorherigen Modellen (`m41, m42`).
+ Nur gibt es jetzt ein kleines "Index-i" am $\mu$ und am $h$ (h wie `heights`).
+ Es gibt jetzt nicht mehr nur einen Mittelwert $\mu$, sondern für jede Beobachtung (Zeile) einen Mittelwert $\mu_i$.
+ Lies  etwa so:
 
 >    "Die Wahrscheinlichkeit, eine bestimmte Größe bei Person $i$ zu beobachten, gegeben $\mu$ und $\sigma$ ist normalverteilt (mit Mittelwert $\mu$ und Streuung $\sigma$)".
 
@@ -530,16 +545,16 @@ $$
 $$
 
 
-- $\mu$ ist jetzt nicht mehr ein Parameter, der (stochastisch) geschätzt werden muss. $\mu$ wird jetzt (deterministisch) *berechnet*. Gegeben $\alpha$ und $\beta$ ist $\mu$ ohne Ungewissheit bekannt.
-- $\text{weight}_i$ ist der Prädiktorwert (`weight`) der $i$ten Beobachtung, also einer !Kung-Person (Zeile $i$ im Datensatz).
-- Lies  etwa so:
+ $\mu$ ist jetzt nicht mehr ein Parameter, der (stochastisch) geschätzt werden muss. $\mu$ wird jetzt (deterministisch) *berechnet*. Gegeben $\alpha$ und $\beta$ ist $\mu$ ohne Ungewissheit bekannt.
+ $\text{weight}_i$ ist der Prädiktorwert (`weight`) der $i$ten Beobachtung, also einer !Kung-Person (Zeile $i$ im Datensatz).
+Lies  etwa so:
 
 >    "Der Mittelwert $\mu_i$ der $i$ten Person berechnet sich als Summe von $\alpha$ und $\beta$ mal  $\text{weight}_i$".
 
 
-- $\mu_i$ ist eine lineare Funktion von `weight`.
-- $\beta$ gibt den Unterschied in `height` zweier Beobachtung an, die sich um eine Einheit in `weight` unterscheiden (Steigung der Regressionsgeraden).
-- $\alpha$ gibt an, wie groß $\mu$ ist, wenn `weight` Null ist (Achsenabschnitt, engl. intercept).
+ $\mu_i$ ist eine lineare Funktion von `weight`.
+ $\beta$ gibt den Unterschied in `height` zweier Beobachtung an, die sich um eine Einheit in `weight` unterscheiden (Steigung der Regressionsgeraden).
+ $\alpha$ gibt an, wie groß $\mu$ ist, wenn `weight` Null ist (Achsenabschnitt, engl. intercept).
 
 
 
@@ -562,7 +577,7 @@ $$
 
 ## Vertiefung: Prior-Prädiktiv-Verteilung
 
-🏎️ VERTIEFUNG 🏎️
+🏎️ VERTIEFUNG, nicht prüfungsrelevant 🏎️
 
 ### Moment
 
@@ -926,10 +941,28 @@ $$\beta_1 \sim N(5,3); \\
 \beta_0 \sim N(178, 20); \\
 \sigma \sim E(0.1)$${#eq-m43a}
 
-Wir nennen das Modell `m43a`^[Wer ist hier für die Namensgebung zuständig? Besoffen oder was?].
+
+Wir nennen das Modell `m43a`^[Wer ist hier für die Namensgebung zuständig? Besoffen oder was?], s. @lst-m43a.
 
 
-```{r m43a, echo = TRUE}
+
+
+```{#lst-m43a .r lst-cap="Modelldefinition von m43a in R"}
+m43a <-
+  stan_glm(
+    height ~ weight_c,  # Regressionsformel
+    prior = normal(5, 3),  # Regressionsgewicht (beta 1)
+    prior_intercept = normal(178, 20),  # mu
+    prior_aux = exponential(0.1),  # sigma
+    refresh = 0,  # zeig mir keine Details
+    seed = 42,  # lege die Zufallszahlen fest für Reproduzierbarkeit
+    data = d3)
+```
+
+
+
+
+```{r m43a, echo = FALSE}
 # Posteriori-Vert. berechnen:
 m43a <-
   stan_glm(
@@ -939,7 +972,7 @@ m43a <-
     prior_aux = exponential(0.1),  # sigma
     refresh = 0,  # zeig mir keine Details
     seed = 42,  # lege die Zufallszahlen fest für Reproduzierbarkeit
-    data = d2)
+    data = d3)
 ```
 
 
@@ -1607,10 +1640,17 @@ mus %>%
 
 ### Perzentilintervalle für verschiedenen Prädiktorwerte visualisiert
 
+@fig-m43a-nochmal visualisiert die Ungewissheit von Vorhersagen laut der PPV.
+Die Ungewissheit in @fig-m43a-nochmal ist die Antwort auf die Frage: "Wie sicher sind wir uns,
+zur Größe einer !Kung-Person, gegeben dass die z.B. 10 kg mehr als der Durchschnitt wiegt?"
+Eine Vorhersage bezeichnet man auch als "bedingte Verteilung", da man den Wert einer Verteilung voraussagt,
+*gegeben* einer Bedingung, z.B. `weight_c = 10`.  
 
 
 ```{r mus-d2}
 #| echo: false
+#| label: m43a-nochmal 
+#| fig-cap: "Visualisierung der Ungewissheit der Vorhersagen laut PPV: Die Vorhersage von Beobachtungen beinhaltet mehr Ungewissheit als die Vorhersage von zu erwartenden Werten, daher sind die Ungewissheitsintervalle der PPV größer als die der Post-Verteilung."
 mus <- 
   mus %>% 
   mutate(height = 154.6 + 0.9*weight_c)
@@ -1724,7 +1764,7 @@ ppv_m43a %>%
 
 ## Aufgaben
 
-(s. Aufgaben mit Datum 6.12.22 auf dem Datenwerk)
+
 
 - [Bayes-Ziel1](https://datenwerk.netlify.app/posts/bayes-ziel1/bayes-ziel1)
 - [Bayesmod-bestimmen01](https://datenwerk.netlify.app/posts/bayesmod-bestimmen01/bayesmod-bestimmen01)
@@ -1740,4 +1780,5 @@ ppv_m43a %>%
 - [Aussagen-einfache-Regr](https://datenwerk.netlify.app/posts/aussagen-einfache-regr/aussagen-einfache-regr)
 - [Likelihood-identifizieren](https://datenwerk.netlify.app/posts/likelihood-identifizieren/likelihood-identifizieren)
 - [Priorwahl2](https://datenwerk.netlify.app/posts/priorwahl2/priorwahl2)
+- [penguins-stan-01](https://datenwerk.netlify.app/posts/penguins-stan-01/penguins-stan-01.html)
 

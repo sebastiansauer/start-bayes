@@ -570,37 +570,55 @@ div.csl-indent {
 </section>
 <section id="verteilung-der-numerischen-variablen" class="level4" data-number="9.2.4.2">
 <h4 data-number="9.2.4.2" class="anchored" data-anchor-id="verteilung-der-numerischen-variablen"><span class="header-section-number">9.2.4.2</span> Verteilung der numerischen Variablen</h4>
+<p>Betrachten wir die Verteilung der <em>numerischen</em> Variablen des Datensatzes, s. <a href="#fig-d2-hists">Abbildung&nbsp;<span>9.4</span></a>.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="sc">%&gt;%</span> <span class="fu">plot_histogram</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="lineare-modelle_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<div id="fig-d2-hists" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="lineare-modelle_files/figure-html/fig-d2-hists-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.4: Verteilung (als Histogramme dargestellt) der numerischen Variablen des Datensatzes</figcaption><p></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
 <section id="verteilung-der-kategorialen-variablen" class="level4" data-number="9.2.4.3">
 <h4 data-number="9.2.4.3" class="anchored" data-anchor-id="verteilung-der-kategorialen-variablen"><span class="header-section-number">9.2.4.3</span> Verteilung der kategorialen Variablen</h4>
+<p>Betrachten wir die Verteilung der <em>kategorialen</em> Variablen des Datensatzes, s. <a href="#fig-d2-bars">Abbildung&nbsp;<span>9.5</span></a>.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="sc">%&gt;%</span> <span class="fu">plot_bar</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="lineare-modelle_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<div id="fig-d2-bars" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="lineare-modelle_files/figure-html/fig-d2-bars-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.5: Verteilung (als Balkendiagramme dargestellt) der kategorialen Variablen des Datensatzes</figcaption><p></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
 <section id="korrelationen" class="level4" data-number="9.2.4.4">
 <h4 data-number="9.2.4.4" class="anchored" data-anchor-id="korrelationen"><span class="header-section-number">9.2.4.4</span> Korrelationen</h4>
+<p>Die Korrelationen der (numerischen) Variablen sind in <a href="#fig-num-korrs">Abbildung&nbsp;<span>9.6</span></a> dargestellt.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="sc">%&gt;%</span> <span class="fu">plot_correlation</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="lineare-modelle_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<div id="fig-num-korrs" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="lineare-modelle_files/figure-html/fig-num-korrs-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.6: Korrelationsmatrix</figcaption><p></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -1127,14 +1145,7 @@ Wichtig
 </div>
 <section id="modelldefinition-von-m43" class="level3" data-number="9.3.1">
 <h3 data-number="9.3.1" class="anchored" data-anchor-id="modelldefinition-von-m43"><span class="header-section-number">9.3.1</span> Modelldefinition von <code>m43</code></h3>
-<ul>
-<li>Für jede Ausprägung des Prädiktors (<code>weight_centered</code>), <span class="math inline">\(wc_i\)</span>, wird eine Post-Verteilung für die abhängige Variable (<code>height</code>, <span class="math inline">\(h_i\)</span>) berechnet.</li>
-<li>Der Mittelwert <span class="math inline">\(\mu\)</span> für jede Post-Verteilung ergibt sich aus dem linearen Modell (unserer Regressionsformel).</li>
-<li>Die Post-Verteilung berechnet sich auf Basis der Priori-Werte und des Likelihood (Bayes-Formel).</li>
-<li>Wir brauchen Priori-Werte für die Steigung <span class="math inline">\(\beta\)</span> und den Achsenabschnitt <span class="math inline">\(\alpha\)</span> der Regressionsgeraden.</li>
-<li>Außerdem brauchen wir einen Priori-Wert, der die Streuung <span class="math inline">\(\sigma\)</span> der Größe (<code>height</code>) angibt; dieser Wert wird als exonentialverteilt angenommen.</li>
-<li>Der Likelihood gibt an, wie wahrscheinlich ein Wert <code>height</code> ist, gegeben <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span>.</li>
-</ul>
+<p>Für jede Ausprägung des Prädiktors (<code>weight_centered</code>), <span class="math inline">\(wc_i\)</span>, wird eine Post-Verteilung für die abhängige Variable (<code>height</code>, <span class="math inline">\(h_i\)</span>) berechnet. Der Mittelwert <span class="math inline">\(\mu\)</span> für jede Post-Verteilung ergibt sich aus dem linearen Modell (unserer Regressionsformel). Die Post-Verteilung berechnet sich auf Basis der Priori-Werte und des Likelihood (Bayes-Formel). Wir brauchen Priori-Werte für die Steigung <span class="math inline">\(\beta\)</span> und den Achsenabschnitt <span class="math inline">\(\alpha\)</span> der Regressionsgeraden. Außerdem brauchen wir einen Priori-Wert, der die Streuung <span class="math inline">\(\sigma\)</span> der Größe (<code>height</code>) angibt; dieser Wert wird als exonentialverteilt angenommen. Der Likelihood gibt an, wie wahrscheinlich ein Wert <code>height</code> ist, gegeben <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span>.</p>
 <p><span class="math display">\[\begin{align*}
 \color{red}{\text{height}_i} &amp; \color{red}\sim \color{red}{\operatorname{Normal}(\mu_i, \sigma)} &amp;&amp; \color{red}{\text{Likelihood}} \\
 \color{green}{\mu_i} &amp; \color{green}= \color{green}{\alpha + \beta\cdot \text{weightcentered}_i}  &amp;&amp; \color{green}{\text{Lineares Modell} } \\
@@ -1163,12 +1174,7 @@ Hinweis
 \color{red}{\text{height}_i} &amp; \color{red}\sim \color{red}{\operatorname{Normal}(\mu_i, \sigma)} &amp;&amp; \color{red}{\text{Likelihood}}
 \end{aligned}
 \]</span></p>
-<ul>
-<li>Der Likelihood von <code>m43</code> ist ähnlich zu den vorherigen Modellen (<code>m41, m42</code>).</li>
-<li>Nur gibt es jetzt ein kleines “Index-i” am <span class="math inline">\(\mu\)</span> und am <span class="math inline">\(h\)</span> (h wie <code>heights</code>).</li>
-<li>Es gibt jetzt nicht mehr nur einen Mittelwert <span class="math inline">\(\mu\)</span>, sondern für jede Beobachtung (Zeile) einen Mittelwert <span class="math inline">\(\mu_i\)</span>.</li>
-<li>Lies etwa so:</li>
-</ul>
+<p>Der Likelihood von <code>m43</code> ist ähnlich zu den vorherigen Modellen (<code>m41, m42</code>). Nur gibt es jetzt ein kleines “Index-i” am <span class="math inline">\(\mu\)</span> und am <span class="math inline">\(h\)</span> (h wie <code>heights</code>). Es gibt jetzt nicht mehr nur einen Mittelwert <span class="math inline">\(\mu\)</span>, sondern für jede Beobachtung (Zeile) einen Mittelwert <span class="math inline">\(\mu_i\)</span>. Lies etwa so:</p>
 <blockquote class="blockquote">
 <p>“Die Wahrscheinlichkeit, eine bestimmte Größe bei Person <span class="math inline">\(i\)</span> zu beobachten, gegeben <span class="math inline">\(\mu\)</span> und <span class="math inline">\(\sigma\)</span> ist normalverteilt (mit Mittelwert <span class="math inline">\(\mu\)</span> und Streuung <span class="math inline">\(\sigma\)</span>)”.</p>
 </blockquote>
@@ -1180,19 +1186,11 @@ Hinweis
 \color{green}{\mu_i} &amp; \color{green}= \color{green}{\alpha + \beta\cdot \text{weight}_i}  &amp;&amp; \color{green}{\text{Lineares Modell} } \\
 \end{aligned}
 \]</span></p>
-<ul>
-<li><span class="math inline">\(\mu\)</span> ist jetzt nicht mehr ein Parameter, der (stochastisch) geschätzt werden muss. <span class="math inline">\(\mu\)</span> wird jetzt (deterministisch) <em>berechnet</em>. Gegeben <span class="math inline">\(\alpha\)</span> und <span class="math inline">\(\beta\)</span> ist <span class="math inline">\(\mu\)</span> ohne Ungewissheit bekannt.</li>
-<li><span class="math inline">\(\text{weight}_i\)</span> ist der Prädiktorwert (<code>weight</code>) der <span class="math inline">\(i\)</span>ten Beobachtung, also einer !Kung-Person (Zeile <span class="math inline">\(i\)</span> im Datensatz).</li>
-<li>Lies etwa so:</li>
-</ul>
+<p><span class="math inline">\(\mu\)</span> ist jetzt nicht mehr ein Parameter, der (stochastisch) geschätzt werden muss. <span class="math inline">\(\mu\)</span> wird jetzt (deterministisch) <em>berechnet</em>. Gegeben <span class="math inline">\(\alpha\)</span> und <span class="math inline">\(\beta\)</span> ist <span class="math inline">\(\mu\)</span> ohne Ungewissheit bekannt. <span class="math inline">\(\text{weight}_i\)</span> ist der Prädiktorwert (<code>weight</code>) der <span class="math inline">\(i\)</span>ten Beobachtung, also einer !Kung-Person (Zeile <span class="math inline">\(i\)</span> im Datensatz). Lies etwa so:</p>
 <blockquote class="blockquote">
 <p>“Der Mittelwert <span class="math inline">\(\mu_i\)</span> der <span class="math inline">\(i\)</span>ten Person berechnet sich als Summe von <span class="math inline">\(\alpha\)</span> und <span class="math inline">\(\beta\)</span> mal <span class="math inline">\(\text{weight}_i\)</span>”.</p>
 </blockquote>
-<ul>
-<li><span class="math inline">\(\mu_i\)</span> ist eine lineare Funktion von <code>weight</code>.</li>
-<li><span class="math inline">\(\beta\)</span> gibt den Unterschied in <code>height</code> zweier Beobachtung an, die sich um eine Einheit in <code>weight</code> unterscheiden (Steigung der Regressionsgeraden).</li>
-<li><span class="math inline">\(\alpha\)</span> gibt an, wie groß <span class="math inline">\(\mu\)</span> ist, wenn <code>weight</code> Null ist (Achsenabschnitt, engl. intercept).</li>
-</ul>
+<p><span class="math inline">\(\mu_i\)</span> ist eine lineare Funktion von <code>weight</code>. <span class="math inline">\(\beta\)</span> gibt den Unterschied in <code>height</code> zweier Beobachtung an, die sich um eine Einheit in <code>weight</code> unterscheiden (Steigung der Regressionsgeraden). <span class="math inline">\(\alpha\)</span> gibt an, wie groß <span class="math inline">\(\mu\)</span> ist, wenn <code>weight</code> Null ist (Achsenabschnitt, engl. intercept).</p>
 </section>
 <section id="priori-werte-des-modells-m43" class="level3" data-number="9.3.4">
 <h3 data-number="9.3.4" class="anchored" data-anchor-id="priori-werte-des-modells-m43"><span class="header-section-number">9.3.4</span> Priori-Werte des Modells <code>m43</code></h3>
@@ -1212,7 +1210,7 @@ Hinweis
 </section>
 <section id="vertiefung-prior-prädiktiv-verteilung" class="level2" data-number="9.4">
 <h2 data-number="9.4" class="anchored" data-anchor-id="vertiefung-prior-prädiktiv-verteilung"><span class="header-section-number">9.4</span> Vertiefung: Prior-Prädiktiv-Verteilung</h2>
-<p>🏎️ VERTIEFUNG 🏎️</p>
+<p>🏎️ VERTIEFUNG, nicht prüfungsrelevant 🏎️</p>
 <section id="moment" class="level3" data-number="9.4.1">
 <h3 data-number="9.4.1" class="anchored" data-anchor-id="moment"><span class="header-section-number">9.4.1</span> Moment</h3>
 <p>🤔 Moment. Dieser Prior, <span class="math inline">\(\beta\)</span> in <code>m43</code> erachtet positive und negative Zusammenhang als gleich wahrscheinlich?!</p>
@@ -2373,21 +2371,21 @@ Hinweis
 <p><span id="eq-m43a"><span class="math display">\[\beta_1 \sim N(5,3); \\
 \beta_0 \sim N(178, 20); \\
 \sigma \sim E(0.1) \tag{9.1}\]</span></span></p>
-<p>Wir nennen das Modell <code>m43a</code><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+<p>Wir nennen das Modell <code>m43a</code><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, s. <a href="#lst-m43a">Listing&nbsp;<span>9.1</span></a>.</p>
+<div id="lst-m43a" class="listing">
+<p>Listing&nbsp;9.1: Modelldefinition von m43a in R</p>
+<div class="sourceCode" id="lst-m43a" data-lst-cap="Modelldefinition von m43a in R"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="lst-m43a-1"><a href="#lst-m43a-1" aria-hidden="true" tabindex="-1"></a>m43a <span class="ot">&lt;-</span></span>
+<span id="lst-m43a-2"><a href="#lst-m43a-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stan_glm</span>(</span>
+<span id="lst-m43a-3"><a href="#lst-m43a-3" aria-hidden="true" tabindex="-1"></a>    height <span class="sc">~</span> weight_c,  <span class="co"># Regressionsformel</span></span>
+<span id="lst-m43a-4"><a href="#lst-m43a-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">prior =</span> <span class="fu">normal</span>(<span class="dv">5</span>, <span class="dv">3</span>),  <span class="co"># Regressionsgewicht (beta 1)</span></span>
+<span id="lst-m43a-5"><a href="#lst-m43a-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">prior_intercept =</span> <span class="fu">normal</span>(<span class="dv">178</span>, <span class="dv">20</span>),  <span class="co"># mu</span></span>
+<span id="lst-m43a-6"><a href="#lst-m43a-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">prior_aux =</span> <span class="fu">exponential</span>(<span class="fl">0.1</span>),  <span class="co"># sigma</span></span>
+<span id="lst-m43a-7"><a href="#lst-m43a-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">refresh =</span> <span class="dv">0</span>,  <span class="co"># zeig mir keine Details</span></span>
+<span id="lst-m43a-8"><a href="#lst-m43a-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed =</span> <span class="dv">42</span>,  <span class="co"># lege die Zufallszahlen fest für Reproduzierbarkeit</span></span>
+<span id="lst-m43a-9"><a href="#lst-m43a-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> d3)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Posteriori-Vert. berechnen:</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>m43a <span class="ot">&lt;-</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stan_glm</span>(</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    height <span class="sc">~</span> weight_c,  <span class="co"># Regressionsformel</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">prior =</span> <span class="fu">normal</span>(<span class="dv">5</span>, <span class="dv">3</span>),  <span class="co"># Regressionsgewicht (beta 1)</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">prior_intercept =</span> <span class="fu">normal</span>(<span class="dv">178</span>, <span class="dv">20</span>),  <span class="co"># mu</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">prior_aux =</span> <span class="fu">exponential</span>(<span class="fl">0.1</span>),  <span class="co"># sigma</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">refresh =</span> <span class="dv">0</span>,  <span class="co"># zeig mir keine Details</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed =</span> <span class="dv">42</span>,  <span class="co"># lege die Zufallszahlen fest für Reproduzierbarkeit</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> d2)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+
 </div>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
@@ -2854,7 +2852,7 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parameters</span>(m43a)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parameters</span>(m43a)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
@@ -2905,17 +2903,17 @@ Hinweis
 </div>
 </div>
 <p>Die Kennzahl <code>pd</code> (propability of direction) gibt die Wahrscheinlichkeit an, dass der Effekt positiv (also größer als Null) oder negativ ist (jenachdem ob der Median des Effekts positiv oder negativ ist). <code>pd</code> gibt aber nicht an, wie stark der Effekt ist, nur ob er klar auf einer Seite der Null liegt. Damit ist er so etwas (grob!) Ähnliches wie der p-Wert in der Frequentistischen Statistik <span class="citation" data-cites="makowski_indices_2019">(<a href="references.html#ref-makowski_indices_2019" role="doc-biblioref">Makowski u.&nbsp;a. 2019</a>)</span>.</p>
-<p>Am besten das Diagramm dazu anschauen, s <a href="#fig-pd1">Abbildung&nbsp;<span>9.4</span></a>.</p>
+<p>Am besten das Diagramm dazu anschauen, s <a href="#fig-pd1">Abbildung&nbsp;<span>9.7</span></a>.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">p_direction</span>(m43a))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">p_direction</span>(m43a))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-pd1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="lineare-modelle_files/figure-html/fig-pd1-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.4: Diagramm zur Probability of Direction, Modell m43a</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.7: Diagramm zur Probability of Direction, Modell m43a</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -2929,9 +2927,9 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>m43a <span class="sc">%&gt;%</span> </span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>m43a <span class="sc">%&gt;%</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -2983,31 +2981,31 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="sc">%&gt;%</span> </span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> weight_c, <span class="at">y =</span> height) <span class="sc">+</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">slope =</span> <span class="fl">0.9</span>,  <span class="co"># Median beta 1</span></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">intercept =</span> <span class="dv">154</span>,  <span class="co"># Median beta 0</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"blue"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> weight_c, <span class="at">y =</span> height) <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">slope =</span> <span class="fl">0.9</span>,  <span class="co"># Median beta 1</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">intercept =</span> <span class="dv">154</span>,  <span class="co"># Median beta 0</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"blue"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="lineare-modelle_files/figure-html/Post-Regression-befragen-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Einfacher ist die Syntax vielleicht, wenn man die Funktion <code>estimate_expectation</code> benutzt, s. <a href="#fig-expect-m43a">Abbildung&nbsp;<span>9.5</span></a>. Mit “expectation” sind hier die erwarteten Werte, also die Regressionsgerade, gemeint.</p>
+<p>Einfacher ist die Syntax vielleicht, wenn man die Funktion <code>estimate_expectation</code> benutzt, s. <a href="#fig-expect-m43a">Abbildung&nbsp;<span>9.8</span></a>. Mit “expectation” sind hier die erwarteten Werte, also die Regressionsgerade, gemeint.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>m43_expect <span class="ot">&lt;-</span> <span class="fu">estimate_expectation</span>(m43a)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m43_expect)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>m43_expect <span class="ot">&lt;-</span> <span class="fu">estimate_expectation</span>(m43a)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m43_expect)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-expect-m43a" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="lineare-modelle_files/figure-html/fig-expect-m43a-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.5: Erwartete Werte des Modell m43a, sprich, die Regressionsgerade</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.8: Erwartete Werte des Modell m43a, sprich, die Regressionsgerade</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -3029,8 +3027,8 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>m43a <span class="sc">%&gt;%</span> </span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">parameters</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>m43a <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">parameters</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
@@ -3084,12 +3082,12 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="ot">&lt;-</span> </span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  m43a <span class="sc">%&gt;%</span> </span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>()</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="ot">&lt;-</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  m43a <span class="sc">%&gt;%</span> </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>()</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -3144,9 +3142,9 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> weight_c)) <span class="sc">+</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"orange"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> weight_c)) <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"orange"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="lineare-modelle_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
@@ -3157,23 +3155,23 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">map_b1 =</span> <span class="fu">map_estimate</span>(weight_c))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">map_b1 =</span> <span class="fu">map_estimate</span>(weight_c))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Hier ist die Verteilung von <span class="math inline">\(\sigma\)</span> visualisiert, s. <a href="#fig-m43a-post">Abbildung&nbsp;<span>9.6</span></a>.</p>
+<p>Hier ist die Verteilung von <span class="math inline">\(\sigma\)</span> visualisiert, s. <a href="#fig-m43a-post">Abbildung&nbsp;<span>9.9</span></a>.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> sigma)) <span class="sc">+</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"orange"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> sigma)) <span class="sc">+</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"orange"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-m43a-post" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="lineare-modelle_files/figure-html/fig-m43a-post-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.6: Die Post-Verteilung für den Parameter sigma, m43a</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.9: Die Post-Verteilung für den Parameter sigma, m43a</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -3182,15 +3180,15 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>m43a_hdi <span class="ot">&lt;-</span> <span class="fu">hdi</span>(m43a_post)  <span class="co"># analog mit eti(m43a)</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m43a_hdi)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>m43a_hdi <span class="ot">&lt;-</span> <span class="fu">hdi</span>(m43a_post)  <span class="co"># analog mit eti(m43a)</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m43a_hdi)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-m43a-plot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="lineare-modelle_files/figure-html/fig-m43a-plot-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.7: Die Parameter Gewicht (zentriert) und sigma des Modells m43a</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.10: Die Parameter Gewicht (zentriert) und sigma des Modells m43a</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -3224,16 +3222,16 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="sc">%&gt;%</span> </span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> weight_c, </span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> height)) <span class="sc">+</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> m43a_post <span class="sc">%&gt;%</span> </span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>),</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">slope =</span> weight_c,</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">intercept =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>),</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> .<span class="dv">3</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="sc">%&gt;%</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> weight_c, </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> height)) <span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> m43a_post <span class="sc">%&gt;%</span> </span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>),</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">slope =</span> weight_c,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">intercept =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>),</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> .<span class="dv">3</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="lineare-modelle_files/figure-html/Post-Regression-befragen-10-1.png" class="img-fluid" width="672"></p>
@@ -3243,16 +3241,16 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="sc">%&gt;%</span> </span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> weight_c, </span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> height)) <span class="sc">+</span></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> m43a_post <span class="sc">%&gt;%</span> </span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">100</span>),</span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>     <span class="fu">aes</span>(<span class="at">slope =</span> weight_c,</span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">intercept =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>),</span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> .<span class="dv">1</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="sc">%&gt;%</span> </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> weight_c, </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> height)) <span class="sc">+</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> m43a_post <span class="sc">%&gt;%</span> </span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">100</span>),</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>     <span class="fu">aes</span>(<span class="at">slope =</span> weight_c,</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">intercept =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>),</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> .<span class="dv">1</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="lineare-modelle_files/figure-html/Post-Regression-befragen-11-ersten-1000-1.png" class="img-fluid" width="672"></p>
@@ -3262,16 +3260,16 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="sc">%&gt;%</span> </span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> weight_c, </span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> height)) <span class="sc">+</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> m43a_post <span class="sc">%&gt;%</span> </span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fl">1e3</span>),</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>     <span class="fu">aes</span>(<span class="at">slope =</span> weight_c,</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">intercept =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>),</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> .<span class="dv">01</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="sc">%&gt;%</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> weight_c, </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> height)) <span class="sc">+</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> m43a_post <span class="sc">%&gt;%</span> </span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fl">1e3</span>),</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>     <span class="fu">aes</span>(<span class="at">slope =</span> weight_c,</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">intercept =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>),</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> .<span class="dv">01</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="lineare-modelle_files/figure-html/Post-Regression-befragen-11-die-ersten-1000-1.png" class="img-fluid" width="672"></p>
@@ -3282,7 +3280,7 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_expectation</span>(m43a) <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_expectation</span>(m43a) <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="lineare-modelle_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
@@ -3313,11 +3311,11 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_50 =</span> <span class="fu">quantile</span>(<span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>, <span class="at">prob =</span> .<span class="dv">5</span>),</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_90 =</span> <span class="fu">quantile</span>(<span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>, <span class="at">prob =</span> .<span class="dv">9</span>),</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_05 =</span> <span class="fu">quantile</span>(<span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>, <span class="at">prob =</span> .<span class="dv">95</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_50 =</span> <span class="fu">quantile</span>(<span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>, <span class="at">prob =</span> .<span class="dv">5</span>),</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_90 =</span> <span class="fu">quantile</span>(<span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>, <span class="at">prob =</span> .<span class="dv">9</span>),</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_05 =</span> <span class="fu">quantile</span>(<span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>, <span class="at">prob =</span> .<span class="dv">95</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -3344,8 +3342,8 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>m43a <span class="sc">%&gt;%</span> </span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">eti</span>(<span class="at">ci =</span> .<span class="dv">5</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>m43a <span class="sc">%&gt;%</span> </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">eti</span>(<span class="at">ci =</span> .<span class="dv">5</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -3389,9 +3387,9 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="at">gross =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span> <span class="sc">&gt;=</span> <span class="dv">155</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="at">gross =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span> <span class="sc">&gt;=</span> <span class="dv">155</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -3427,9 +3425,9 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="at">klein =</span> (<span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span> <span class="sc">&lt;=</span> <span class="fl">154.5</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>m43a_post <span class="sc">%&gt;%</span> </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="at">klein =</span> (<span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span> <span class="sc">&lt;=</span> <span class="fl">154.5</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -3503,18 +3501,18 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>mu_at_45 <span class="ot">&lt;-</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  m43a_post <span class="sc">%&gt;%</span> </span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mu_at_45 =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>mu_at_45 <span class="ot">&lt;-</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  m43a_post <span class="sc">%&gt;%</span> </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mu_at_45 =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Und plotten diese, s. <a href="#fig-mu-at-45">Abbildung&nbsp;<span>9.8</span></a>.</p>
+<p>Und plotten diese, s. <a href="#fig-mu-at-45">Abbildung&nbsp;<span>9.11</span></a>.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>mu_at_45 <span class="sc">%&gt;%</span> </span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mu_at_45)) <span class="sc">+</span></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>mu_at_45 <span class="sc">%&gt;%</span> </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mu_at_45)) <span class="sc">+</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
@@ -3522,7 +3520,7 @@ Hinweis
 <div id="fig-mu-at-45" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="lineare-modelle_files/figure-html/fig-mu-at-45-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.8: Post-Verteilung der Größe (laut unserem Modell) bei einem Gewicht von 45kg</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.11: Post-Verteilung der Größe (laut unserem Modell) bei einem Gewicht von 45kg</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -3532,11 +3530,11 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>mu_at_50 <span class="ot">&lt;-</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  mu_at_45 <span class="sc">%&gt;%</span> </span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mu_at_50 =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span> <span class="sc">+</span> <span class="dv">5</span> <span class="sc">*</span> weight_c)</span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mu_at_50)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>mu_at_50 <span class="ot">&lt;-</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  mu_at_45 <span class="sc">%&gt;%</span> </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mu_at_50 =</span> <span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span> <span class="sc">+</span> <span class="dv">5</span> <span class="sc">*</span> weight_c)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mu_at_50)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -3598,13 +3596,13 @@ Hinweis
 </div>
 </div>
 </div>
-<p>Die Verteilung der mittleren Größe bei einem Gewicht von 50kg ist weiter “rechts” (Richtung höhere Größe) zentriert, s. <a href="#fig-mu-at-50">Abbildung&nbsp;<span>9.9</span></a>.</p>
+<p>Die Verteilung der mittleren Größe bei einem Gewicht von 50kg ist weiter “rechts” (Richtung höhere Größe) zentriert, s. <a href="#fig-mu-at-50">Abbildung&nbsp;<span>9.12</span></a>.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>mu_at_50 <span class="sc">%&gt;%</span> </span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mu_at_50)) <span class="sc">+</span></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>mu_at_50 <span class="sc">%&gt;%</span> </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mu_at_50)) <span class="sc">+</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
@@ -3612,7 +3610,7 @@ Hinweis
 <div id="fig-mu-at-50" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="lineare-modelle_files/figure-html/fig-mu-at-50-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.9: Post-Verteilung der mittleren Größe (laut unserem Modell) bedingt auf ein Gewicht von 50 kg</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.12: Post-Verteilung der mittleren Größe (laut unserem Modell) bedingt auf ein Gewicht von 50 kg</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -3625,8 +3623,8 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>mu_at_50 <span class="sc">%&gt;%</span> </span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">eti</span>(mu_at_50, <span class="at">ci =</span> .<span class="dv">9</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>mu_at_50 <span class="sc">%&gt;%</span> </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">eti</span>(mu_at_50, <span class="at">ci =</span> .<span class="dv">9</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -3680,8 +3678,8 @@ Hinweis
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>mu_at_45 <span class="sc">%&gt;%</span> </span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">q_95 =</span> <span class="fu">quantile</span>(mu_at_45, <span class="at">prob =</span> .<span class="dv">95</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>mu_at_45 <span class="sc">%&gt;%</span> </span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">q_95 =</span> <span class="fu">quantile</span>(mu_at_45, <span class="at">prob =</span> .<span class="dv">95</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -3724,22 +3722,22 @@ Wichtig
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>weight_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">weight_c =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">20</span>,<span class="dv">20</span>, <span class="at">by =</span> <span class="dv">5</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>weight_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">weight_c =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">20</span>,<span class="dv">20</span>, <span class="at">by =</span> <span class="dv">5</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Für diese Werte lassen wir uns dann die Perzentil-Intervalle (PI) ausgeben:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>mus <span class="ot">&lt;-</span> </span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predictive_interval</span>(</span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    m43a, </span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed =</span> <span class="dv">42</span>,</span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> weight_df) <span class="sc">%&gt;%</span> </span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(weight_df)</span>
-<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mus)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>mus <span class="ot">&lt;-</span> </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predictive_interval</span>(</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    m43a, </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed =</span> <span class="dv">42</span>,</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> weight_df) <span class="sc">%&gt;%</span> </span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(weight_df)</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mus)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -3794,15 +3792,15 @@ Wichtig
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>ppv_m43a <span class="ot">&lt;-</span> <span class="fu">posterior_predict</span>(</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  m43a,</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> weight_df,</span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">draws =</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">everything</span>(),</span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"weight_condition"</span>,</span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"height"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>ppv_m43a <span class="ot">&lt;-</span> <span class="fu">posterior_predict</span>(</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  m43a,</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> weight_df,</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">draws =</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">everything</span>(),</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"weight_condition"</span>,</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"height"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Hier ist ein Auszug aus der PPV-Tabelle:</p>
@@ -4258,19 +4256,25 @@ Wichtig
 </section>
 <section id="perzentilintervalle-für-verschiedenen-prädiktorwerte-visualisiert" class="level3" data-number="9.7.2">
 <h3 data-number="9.7.2" class="anchored" data-anchor-id="perzentilintervalle-für-verschiedenen-prädiktorwerte-visualisiert"><span class="header-section-number">9.7.2</span> Perzentilintervalle für verschiedenen Prädiktorwerte visualisiert</h3>
+<p><span class="quarto-unresolved-ref">?fig-m43a-nochmal</span> visualisiert die Ungewissheit von Vorhersagen laut der PPV. Die Ungewissheit in <span class="quarto-unresolved-ref">?fig-m43a-nochmal</span> ist die Antwort auf die Frage: “Wie sicher sind wir uns, zur Größe einer !Kung-Person, gegeben dass die z.B. 10 kg mehr als der Durchschnitt wiegt?” Eine Vorhersage bezeichnet man auch als “bedingte Verteilung”, da man den Wert einer Verteilung voraussagt, <em>gegeben</em> einer Bedingung, z.B. <code>weight_c = 10</code>.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="lineare-modelle_files/figure-html/mus-d2-1.png" class="img-fluid" width="672"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lineare-modelle_files/figure-html/ppv-m43a-nochmal-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Visualisierung der Ungewissheit der Vorhersagen laut PPV: Die Vorhersage von Beobachtungen beinhaltet mehr Ungewissheit als die Vorhersage von zu erwartenden Werten, daher sind die Ungewissheitsintervalle der PPV größer als die der Post-Verteilung.</figcaption><p></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Die vertikalen Balken geben die 95%-KI wieder, die wir jeweils zu erwarten haben.</p>
-<p>Noch eine andere Visualisierung, s. <a href="#fig-katzenaugen">Abbildung&nbsp;<span>9.10</span></a>; je dicker die “Katzenaugen”, desto mehr Stichproben (samples) liegen vor an der Stelle, und umso genauer ist die Schätzung.</p>
+<p>Noch eine andere Visualisierung, s. <a href="#fig-katzenaugen">Abbildung&nbsp;<span>9.13</span></a>; je dicker die “Katzenaugen”, desto mehr Stichproben (samples) liegen vor an der Stelle, und umso genauer ist die Schätzung.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-katzenaugen" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="lineare-modelle_files/figure-html/fig-katzenaugen-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.10: Die PPV für bestimmte Gewichtswerte w, visualisiert mit Katzenaugen-Diagrammen</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.13: Die PPV für bestimmte Gewichtswerte w, visualisiert mit Katzenaugen-Diagrammen</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -4279,17 +4283,17 @@ Wichtig
 </section>
 <section id="die-ppv-visualisiert" class="level3" data-number="9.7.3">
 <h3 data-number="9.7.3" class="anchored" data-anchor-id="die-ppv-visualisiert"><span class="header-section-number">9.7.3</span> Die PPV visualisiert</h3>
-<p>Gerade eben haben wir bedingte PPVen angeschaut: Also eine PPV für einen bestimmten Prädiktorwert, z.B. bei einer Person mittleren Gewichts. Wir können auch den Mittelwert über alle bedingten PPV anschauen, sozusagen die “Master-PPV” oder “unbedingte PPV” oder schlicht PPV. Vergleichen wir die echten Werte für <code>height</code>, <span class="math inline">\(y\)</span>, mit den von der PPV simulierten Werten für <code>height</code>, <span class="math inline">\(y_{rep}\)</span>, s. <a href="#fig-ppv-check">Abbildung&nbsp;<span>9.11</span></a>.</p>
+<p>Gerade eben haben wir bedingte PPVen angeschaut: Also eine PPV für einen bestimmten Prädiktorwert, z.B. bei einer Person mittleren Gewichts. Wir können auch den Mittelwert über alle bedingten PPV anschauen, sozusagen die “Master-PPV” oder “unbedingte PPV” oder schlicht PPV. Vergleichen wir die echten Werte für <code>height</code>, <span class="math inline">\(y\)</span>, mit den von der PPV simulierten Werten für <code>height</code>, <span class="math inline">\(y_{rep}\)</span>, s. <a href="#fig-ppv-check">Abbildung&nbsp;<span>9.14</span></a>.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_predictions</span>(m43a) </span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_predictions</span>(m43a) </span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-ppv-check" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="lineare-modelle_files/figure-html/fig-ppv-check-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.11: Vergleich der Vorhersagen für y (leichte, blaue Linien) mit der beobachteten Verteilung von y</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;9.14: Vergleich der Vorhersagen für y (leichte, blaue Linien) mit der beobachteten Verteilung von y</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -4307,13 +4311,13 @@ Wichtig
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>ppv_m43a <span class="sc">%&gt;%</span> </span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_10 =</span> <span class="fu">quantile</span>(height, <span class="at">prob =</span> .<span class="dv">1</span>),</span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">height_mean =</span> <span class="fu">mean</span>(height),</span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_50 =</span> <span class="fu">quantile</span>(height, <span class="at">prob =</span> .<span class="dv">5</span>),</span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_90 =</span> <span class="fu">quantile</span>(height, <span class="at">prob =</span> .<span class="dv">9</span>)</span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>ppv_m43a <span class="sc">%&gt;%</span> </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_10 =</span> <span class="fu">quantile</span>(height, <span class="at">prob =</span> .<span class="dv">1</span>),</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">height_mean =</span> <span class="fu">mean</span>(height),</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_50 =</span> <span class="fu">quantile</span>(height, <span class="at">prob =</span> .<span class="dv">5</span>),</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">q_90 =</span> <span class="fu">quantile</span>(height, <span class="at">prob =</span> .<span class="dv">9</span>)</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -4342,8 +4346,8 @@ Wichtig
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>ppv_m43a <span class="sc">%&gt;%</span> </span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">eti</span>(<span class="at">ci =</span> .<span class="dv">5</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>ppv_m43a <span class="sc">%&gt;%</span> </span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">eti</span>(<span class="at">ci =</span> .<span class="dv">5</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -4372,7 +4376,6 @@ Wichtig
 </section>
 <section id="aufgaben" class="level2" data-number="9.8">
 <h2 data-number="9.8" class="anchored" data-anchor-id="aufgaben"><span class="header-section-number">9.8</span> Aufgaben</h2>
-<p>(s. Aufgaben mit Datum 6.12.22 auf dem Datenwerk)</p>
 <ul>
 <li><a href="https://datenwerk.netlify.app/posts/bayes-ziel1/bayes-ziel1">Bayes-Ziel1</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/bayesmod-bestimmen01/bayesmod-bestimmen01">Bayesmod-bestimmen01</a></li>
@@ -4387,6 +4390,7 @@ Wichtig
 <li><a href="https://datenwerk.netlify.app/posts/aussagen-einfache-regr/aussagen-einfache-regr">Aussagen-einfache-Regr</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/likelihood-identifizieren/likelihood-identifizieren">Likelihood-identifizieren</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/priorwahl2/priorwahl2">Priorwahl2</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/penguins-stan-01/penguins-stan-01.html">penguins-stan-01</a></li>
 </ul>
 
 
