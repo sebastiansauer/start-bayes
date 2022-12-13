@@ -767,41 +767,12 @@ if (knitr:::is_html_output()) {
 }
 ```
 
+
+:::callout-important
 Das Modell macht *keine* kausalen Aussagen. Es werden lediglich Unterschiede bzw. Zusammenhänge beschrieben.
+Für kausale Aussagen ist mehr nötig, als einen Zusammenhang festzustellen.
+:::
 
-
-
-
-### Relevanz von Prädiktoren
-
-
-
-
-
-![Made at imgflip.com](img/5sps62.jpg){width=50%}
-
-
-Betrachten wir `m10.3` noch einmal.
-
-Welcher Prädiktor, `mom_hs` oder `mom_hs` ist wichtiger, im Sinne von stärker mit AV `kid_score` verbunden?
-
-
-```{r}
-#| echo: false
-hdi(m10.3)
-```
-
-
-
-
-
-Das Problem ist, dass die Prädiktoren auf verschiedenen Skalen gemessen wurden, so dass sie nicht direkt vergleichbar sind.
-Man könnte 
-
-- die Skalierungen der Prädiktoren angleichen
-- Vorhersagegüte verschiedener Modelle vergleichen (Modell mit einem vs. Modell mit beiden Prädiktoren)
-- ...
-- Dazu später mehr 🤓
 
 
 
@@ -1226,9 +1197,11 @@ r2(m10.6)
 
 
 Möchte man es ausführlicher, und im Komfort einer Bayes-Analyse schwelgen,
-so kann man sich die Posteriori-Verteilung von $R2$ ausgeben lassen:
+so kann man sich die Posteriori-Verteilung von $R2$ ausgeben lassen, s. @fig-m106-r2.
 
 ```{r}
+#| fig.cap: "Die Verteilung von R-Quadrat im Modell m10.6"
+#| label: fig-ma106-r2
 m10.6_r2 <-
 m10.6 %>% 
   r2_posterior() %>% 
@@ -1395,8 +1368,13 @@ rope(m10.6) %>% plot()
 
 
 Das ROPE druchkreuzt die "Berge" der Posteriori-Verteilung für Chinstrap deutlich.
-Wir knönen das Rope für Chinstrap nicht verwerfen.
-Gentoo hingegen wird vom vom Rope nicht durchkreuzt, es ist weit entfernt vom "blauen Fluss" des Rope.
+Aber: Das 95%-HDI liegt nicht komplett innerhalb des Rope.
+Wir können das Rope für Chinstrap *nicht verwerfen*, aber auch *nicht bestätigen*.
+
+Gentoo hingegen wird vom vom Rope nicht durchkreuzt, 
+es ist weit entfernt vom "blauen Fluss" des Rope: Gentoo liegt außerhalb des Rope. 
+Es gibt einen "substanziellen" Unterschied, größer als das ROPE. 
+Wir verwerfen die "Praktisch-Null-Hypothese" in diesem Fall.
 
 
 
@@ -1685,7 +1663,7 @@ in der die 3. Dimension durch eine Farbschattierung ersetzt ist.
 ```{r fig-m109-color, fig.asp = .5}
 #| echo: false
 #| label: fig-m109-color
-#| fig-cap: "Modell m10.9; die Farverläufe zeigen der Wert der abhängigen Variablen"
+#| fig-cap: "Modell m10.9; die Farbverläufe zeigen der Wert der abhängigen Variablen"
 kidiq <-
   kidiq %>%
   mutate(pred_m10.9 = predict(m10.9))
@@ -1733,7 +1711,28 @@ Daher kann man ein Modell verstehen als eine Zusammenfassung eines (ggf. hochdim
 
 ### Relevanz der Prädiktoren
 
-Welcher Prädiktor ist nun "wichtiger" oder "stärker" in Bezug auf den Zusammenhang mit der AV, `mom_iq` oder `mom_age`?
+
+Woher weiß man,
+welcher Prädiktor am stärksten mit der AV zusammenhängt?
+Man könnte auch sagen: Welcher Prädiktor (welche UV) am "wichtigsten" ist
+oder den "stärksten Einfluss" auf die AV ausübt?
+Bei solchen kausal konnotierten Ausdrücken muss man vorsichtig sein:
+Die Regressionsanalyse als solche ist keine Kausalanalyse.
+Die Regressionsanalyse - wie jede statistische Methoden - kann
+für sich *nur Muster in den Daten*, also Zusammenhänge bzw. Unterschiede,
+entdecken, s. @fig-how-would-i-know.
+
+
+![Made at imgflip.com](img/5sps62.jpg){#fig-how-would-i-know width=50%}
+
+
+
+
+
+
+
+
+Welcher Prädiktor ist nun "wichtiger" oder "stärker" in Bezug auf den Zusammenhang mit der AV, `mom_iq` oder `mom_age` (Modell `m10.9`)?
 
 - `mom_iq` hat den größeren Koeffizienten.
 - `mom_age` hat weniger Streuung.
@@ -1769,6 +1768,13 @@ kidiq2 <-
 ```
 
 
+Der Nutzen von Standardisieren (dieser Art) ist die bessere Vergleichbarkeit von Variablen, die (zuvor) verschiedene Mittelwerte und Streuungen hatten^[am nützlichsten ist diese Standardisierung bei normal verteilten Variablen.].
+Die Standardisierung ist ähnlich zur Vergabe von Prozenträngen: "Dieser Messwert gehört zu den Top-3-Prozent".
+Diese Aussage ist bedeutsam für Variablen mit verschiedenem Mittelwert und Streuung.
+So werden vergleichende Aussagen für verschiedene Verteilungen möglich.
+
+
+
 
 
 
@@ -1781,7 +1787,7 @@ describe_distribution(kidiq, type = "mean_sd") %>%
 ```
 
 
-So kann man auch die z-Transformation ("Skalierung") durchführen:
+Man kann auch die z-Transformation ("Skalierung") mit `standardize` durchführen:
 
 
 ```{r kidiq-stand}
@@ -1795,7 +1801,8 @@ head(kidiq)
 Der Schalter `append = TRUE` sorgt dafür, dass die ursprünglichen Variablen beim Z-Standardisieren nicht überschrieben werden, sondern angehängt werden (mit einem Suffix `_z`).
 
 
-Man kann auch nur einzelne Variablen standardisieren
+Man kann auch nur einzelne Variablen mit `standardize` standardisieren.
+
 ```{r}
 #| eval: false
 kidiq %>% 
