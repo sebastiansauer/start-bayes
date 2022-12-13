@@ -38,13 +38,23 @@ theme_set(theme_modern())
 
 ### Lernziele
 
-Nach Absolvieren des jeweiligen Kapitel sollen folgende Lernziele erreicht sein.
+Nach Absolvieren des jeweiligen Kapitels sollen folgende Lernziele erreicht sein.
 
 Sie können... 
 
 - typische, deskriptive Forschungsfragen spezifizieren als Regression
 - Forschungsfragen in Regressionsterme übersetzen
 - typische Forschungsfragen auswerten
+
+
+
+### Begleitvideos
+
+
+
+- [Teil 1](https://youtu.be/WQOmGUyMkxU)
+- [Teil 2](https://youtu.be/k-CB0VGRENY)
+
 
 
 
@@ -197,6 +207,13 @@ In diesem Beispiel liegt die Effektvitität $e$ bei knapp 90%.
 - Hat die Art des Webshops einen Einfluss auf unseren Umsatz?
 
 
+:::callout-note
+Das Erkenntnisziel wissenschaftlicher Studien ist zumeist erklärend.
+Anhand der verwendeten statistischen Methode (z.B. Regressionsanalyse)
+kann man nicht feststellen, zu welchem Erkenntnisziel die Studie gehört.
+:::
+
+
 ### Nach dem Skalenniveau
 
 
@@ -239,6 +256,7 @@ Eine Psychologin, die im öffentlichen Dienst arbeitet, versucht herauszufinden,
 data("kidiq")  # Paket rstanarm
 m10.1 <- stan_glm(
   kid_score ~ mom_hs, 
+  seed = 42,
   data = kidiq)
 ```
 
@@ -289,6 +307,12 @@ ggplot(kidiq) +
 - UV: binär (zweistufig nominal/kategorial)
 - AV: metrisch (quantitativ)
 
+
+Hey R-Golem! Nimm den Datensatz `kidiq`, gruppiere nach `mom_hs`
+und fasse zusammen anhand des Mittelwerts.
+Die resultierende Zahl soll heißen `kid_score_avg`. 
+An die Arbeit!
+
 ```{r kidqi2-sum, echo = TRUE}
 kidiq %>% 
   group_by(mom_hs) %>% 
@@ -297,9 +321,9 @@ kidiq %>%
 ```
 
 
-- In der klassischen Statistik untersucht man diese Datensituation mit einem *t-Test*.
-- Der t-Test ist ein inferenzstatistisches Verfahren, dass prüft, ob die Mittelwertsdifferenz (in der Population) $\mu_d$ Null ist: $\mu_d = 0$.
-- In der Bayes-Statistik betrachtet man dazu die Posteriori-Verteilung (z.B. mit 95%PI).
+In der klassischen Statistik untersucht man diese Datensituation mit einem *t-Test*.
+Der t-Test ist ein inferenzstatistisches Verfahren, dass prüft, ob die Mittelwertsdifferenz (in der Population) $\mu_d$ Null ist: $\mu_d = 0$.
+In der Bayes-Statistik betrachtet man dazu stattdessen die Posteriori-Verteilung (z.B. mit 95%PI).
 
 
 Der mittlere (average, avg) IQ-Wert unterscheidet sich um ca. 12 Punkte (89.4-77.6), zugunsten der Kinder von Müttern mit Abschluss. Allerdings gibt es viel Streuung um die Mittelwerte herum.
@@ -307,10 +331,11 @@ Der mittlere (average, avg) IQ-Wert unterscheidet sich um ca. 12 Punkte (89.4-77
 
 ### Antwort auf die Forschungsfrage, `m10.1`
 
+Betrachten wir die Ergebnisse von `m10.1`.
+Hier sind die ersten paar Zeilen.
 
 ```{r echo = TRUE}
 m10.1_post <-
-#| eval: false
   m10.1 %>% 
   as_tibble() 
 
@@ -330,6 +355,7 @@ m10.1_post %>%
   tab_header("Stichprobe aus der Post-Verteilung")
 ```
 
+Berechnen wir ein 95%-PI von Hand:^[komfortabler geht es mit `eti(m10.1)`.]
 
 
 ```{r echo = TRUE}
@@ -343,10 +369,11 @@ pi_mom_hs
 
 
 
+
+
 Mit 95% Wahrscheinlichkeit liegt der Unterschied im mittleren IQ-Wert zwischen 
 Kindern von Müttern mit bzw. ohne Schulabschluss im Bereich von 7 bis 14 IQ-Punkten, 
 laut unserem Modell: $95\%PI: [7,16]$.
-
 Die Hypothese, dass es keinen  Unterschied oder einen Unterschied in die andere Richtung geben sollte, 
 ist vor diesem Hintergrund als unwahrscheinlich abzulehnen.
 
@@ -354,63 +381,20 @@ Visualisieren wir abschließend die Posteriori-Verteilung, s. @fig-m101hdi.
 
 ```{r plot-hdi-m101}
 #| label: fig-m101hdi
-#| fig-cap: "Das 95% HDI zum Effekt des mütterlichen Schulabschlusses"
-plot(hdi(m10.1))
+#| fig-cap: "Das 95% ETI zum (statistischen) Effekt des mütterlichen Schulabschlusses"
+plot(eti(m10.1))
 ```
 
 
 
-## Nullhypothesen sind praktisch immer falsch
-
-
-
-Nullhypothesen sind fast immer falsch, s. @fig-nullmeme.
-
-
-```{r meme-null}
-#| echo: false
-#| label: fig-nullmeme
-#| fig-cap: "Du testest Nullhypothesen?"
-knitr::include_graphics("img/5v5531.jpg")
-```
-
-[Quelle: Imgflip Meme Generator](https://imgflip.com/i/5v5531)
-
-
-
-
-
-
-
->   We do not generally use null hypothesis significance testing in our own work. In the fields in which we work, we do not generally think null hyptheses can be true: in social science and public health, just about every treatment one might consider will have *some* effect, and no comparison or regression coefficient of interest will be exactly zero. We do not find it particularly helpful to formulate and test null hypothess that we knowe ahead of time cannot be true.
-
-
-@gelman_regression_2021
-
-
-
-
-
-
-### Alternativen zu Nullhypothesen
-
-
-- Nullhypothesen, $H_0$, sind z.B.: $\rho=0$, $\rho_1 = rho_2$, $\mu_1 = \mu_2$, $\mu=0$, $\beta_1=0$.
-
-- Nullhypothesen zu testen, ist sehr verbreitet.
-
-- Ein Grund ist, dass in der Frequentistischen Statistik keine andere Art von Hypothesentest möglich ist^[Mittlerweile gibt es Ansätze für einem Verfahren ähnlich dem ROPE-Ansatz, der weiter unten vorgestellt wird.]
-
-- Ein anderer Grund ist vermutlich, ... wir haben es schon immer so gemacht.
-
-- Alternativen zum Testen von Nullhypothesen:
-    - Posteriori-Intervalle (PI oder HDI)  berichten
-    - Rope-Konzept, @kruschke_rejecting_2018
-    - Wahrscheinlichkeit von inhaltlich bedeutsamen Hypothesen quantifizieren.
-    - Wahrscheinlichkeit quantifizieren, dass der Effekt ein positives bzw. ein negatives Vorzeichen hat.
-
-
-
+Zur Einnerung: Korrelation ungleich Kausation.
+Von einem "Effekt" zu sprechen,
+lässt in den meisten Köpfen wohl die Assoziation zu einem *kausalen* Effekt
+entstehen. 
+Ein Kausaleffekt ist eine starke (und sehr interessante und wichtige) Behauptung,
+die mehr Fundierung bedarf als eine einfache Korrelation bzw. ein
+ einfacher Zusammenhang.
+ 
 
 
 
@@ -450,13 +434,13 @@ describe_distribution(kidiq) %>%
 ### 1 metrischer Prädiktor
 
 
-Berechnen wir folgendens Modell: `kid_score ~ mom_iq`.
+Berechnen wir folgendens Modell: `kid_score ~ mom_iq` (`m10.2`).
 
 
 ```{r Thema6-Teil2-3, results = "hide"}
 #| results: "hide"
 m10.2 <-
-  stan_glm(kid_score ~ mom_iq, data = kidiq)
+  stan_glm(kid_score ~ mom_iq, data = kidiq, seed = 42)
 
 m10.2 %>% 
   parameters()
@@ -479,7 +463,7 @@ Visualisieren wir uns noch das Modell, s. @fig-kidiqmomiq.
 
 ```{r Thema6-Teil2-4, fig.asp = 1}
 #| label: fig-kidiqmomiq
-#| fig-cao: "Die Intelligenz eines Kindes als Funktion der Intelligenz der Mutter"
+#| fig-cap: "Die Intelligenz eines Kindes als Funktion der Intelligenz der Mutter"
 kidiq %>% 
   ggplot(aes(x = mom_iq, y = kid_score)) +
   geom_point(alpha = .7) +
@@ -506,6 +490,7 @@ m10.3 <-
   stan_glm(
     kid_score ~ mom_hs + mom_iq, 
     refresh = 0,
+    seed = 42,
     data = kidiq)
 ```
 
@@ -529,11 +514,13 @@ coef(m10.3)[3]
 ```
 
 
+Aber natürlich ist es möglich (und einfacher) anstelle von `coef` den Befehl `parameters` zu verwenden.
+
 Und die Visualisierung des Modells `m10.3`, s. @fig-m103.
 
 ```{r Thema6-Teil2-5, fig.asp = 0.62}
 #| label: fig-m103
-#| fig-cap: "Der Effekt von sowohl mütterlicher Intelligenz als auch mütterlichem Schulabschluss"
+#| fig-cap: "Der Effekt von sowohl mütterlicher Intelligenz als auch mütterlichem Schulabschluss. Es ist gut zu erkennen, dass der Achsenabschnitt für die Daten nicht interpretierbar ist."
 kidiq %>% 
   mutate(mom_hs = factor(mom_hs)) %>%  
   ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
@@ -547,7 +534,8 @@ kidiq %>%
               color = "red",
               linewidth = 2) +
   scale_color_manual(values = c("blue", "red")) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  scale_x_continuous(limits = c(0, 140))
 ```
 
 
@@ -574,17 +562,19 @@ Wir berechnen mit m10.4 folgendes Modell: `kid_score ~ mom_hs + mom_iq + mom_hs:
 ```{r m10-4, echo = TRUE}
 m10.4 <- 
   stan_glm(kid_score ~ mom_hs + mom_iq + mom_hs:mom_iq, 
-                  data = kidiq, refresh = 0)
+           seed = 42,
+           data = kidiq, 
+           refresh = 0)
 
 coef(m10.4)
 ```
 
 
 
-```{r Thema6-Teil2-6, fig.asp = .3, fig.width=8}
+```{r Thema6-Teil2-6, fig.width=8}
 #| echo: false
 #| label: fig-m104
-#| fig-cap: "Wie m10.3, aber mit Interaktionseffekt"
+#| fig-cap: "Wie m10.3, aber mit Interaktionseffekt. Es ist gut zu erkennen, dass der Achsenabschnitt für diese Daten kaum zu interpretieren ist."
 kidiq %>% 
   mutate(mom_hs = factor(mom_hs)) %>%  
   ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
@@ -597,7 +587,8 @@ kidiq %>%
               intercept = coef(m10.4)[1] + coef(m10.4)[2],
               size = 2,
               color = "red") +
-  scale_color_manual(values = c("blue", "red")) 
+  scale_color_manual(values = c("blue", "red")) +
+  scale_x_continuous(limits = c(0, 140))
 ```
 
 
@@ -641,25 +632,37 @@ kid_score = -11 + 51*1 + 1.1* mom_iq + 0.5*1*mom_iq
 
 ## Zentrieren von Prädiktoren
 
-- Unter *Zentrieren* (to center) versteht man das Bilden der Differenz eines Messwerts zu seinem Mittelwert.
-- Zentrierte Werte geben also an, wie weit ein Messwert vom mittleren (typischen) Messwert entfernt ist.
-- Mit zentrierten Werten ist eine Regression einfacher zu interpretieren.
+Unter *Zentrieren* (to center) versteht man das Bilden der Differenz eines Messwerts zu seinem Mittelwert.
+Zentrierte Werte geben also an, wie weit ein Messwert vom mittleren (typischen) Messwert entfernt ist.
+Mit zentrierten Werten ist eine Regression einfacher zu interpretieren.
+Hier zentrieren wir (nur) `mom_iq`.
+
+
+Man könnte auch `mom_hs` zentrieren,
+aber für eine einfache Interpretation ist es meist nützlich,
+nur metrische Prädiktoren zu zentrieren.
 
 ```{r Thema6-Teil2-7, echo = TRUE}
+#| results: hide
 kidiq <-
   kidiq %>% 
-  mutate(mom_iq_c = mom_iq - mean(mom_iq),
-         mom_hs_c = mom_hs - mean(mom_hs))
-```
+  mutate(mom_iq_c = mom_iq - mean(mom_iq))
 
-
-
-```{r m10-5, echo = TRUE}
 m10.5 <- stan_glm(kid_score ~ mom_hs + mom_iq_c + mom_hs:mom_iq_c, 
                   data = kidiq, 
+                  seed = 42,
                   refresh = 0)
 coef(m10.5)
 ```
+
+
+```{r}
+#| echo: false
+parameters(m10.5) %>% 
+  select(1,2) %>% 
+  display()
+```
+
 
 
 
@@ -703,7 +706,7 @@ kidiq %>%
 
 ### Zentrieren ändert nichts an den Vorhersagen
 
-`m10.4`: 
+Betrachten wir die Vorhersagen von `m10.4`: 
 
 ```{r Thema6-Teil2-8, echo = TRUE}
 new <- tibble(mom_hs = 0, mom_iq = mean(kidiq$mom_iq))
@@ -711,7 +714,7 @@ pred_new <- posterior_predict(m10.4, newdata = new)
 mean(pred_new)
 ```
 
-`m10.5`: 
+Und vergleichen wir mit diesen die Vorhersagen von `m10.5`: 
 
 ```{r Thema6-Teil2-9, echo = TRUE}
 new <- tibble(mom_hs = 0, mom_iq_c = 0)
@@ -719,10 +722,13 @@ pred_new <- posterior_predict(m10.5, newdata = new)
 mean(pred_new)
 ```
 
+Wir sehen, die Vorhersagen sind (bis auf Rundungsfehler) identisch.
+
+
 Auch die Streuungen der vorhergesagten Werte unterscheiden sich nicht (wirklich): $\sigma_{m10.4}= `r round(sigma(m10.4))`$; $\sigma_{m10.5}= `r round(sigma(m10.5))`$.
 
 
-Das Zentrieren ändert auch nicht die Regressionskoeffizienten, da die Streuungen der Prädiktoren nicht verändert wurden.
+Das Zentrieren ändert auch *nicht* die Regressionskoeffizienten, da die Streuungen der Prädiktoren nicht verändert wurden.
 
 
 
@@ -840,19 +846,7 @@ Genauer gesagt ging es um Größenunterschiede zwischen drei Pinguinarten.
 Ja, stimmt, an so ein Forschungsprojekt hatten Sie vorher nie auch nur nur im Traum gedacht.
 
 
-<!-- Nach Ihrem Studium haben Sie bei einem aufstrebenden Online-Händler angeheuert -->
-<!-- Sie sind für alles zuständig,  -->
-<!-- was nach Wissenschaft oder Analyse aussieht oder sonst den Anschein erweckt, -->
-<!-- kompliziert zu sein.  -->
-<!-- Aus irgendwelchen Gründen liebt Ihre Chefin Diamanten, -->
-<!-- so dass Ihre erste Aufgabe darin besteht, Diamantenpreise zu analysieren.  -->
-<!-- Das Ziel Ihrer Chefin liegt darin,  -->
-<!-- zu erkennen, was ein Preis ist,  -->
-<!-- für den ein Diamant gut verkauft werden kann. Kennt man diesen Preis,  -->
-<!-- kann man sich auf die Suche machen,  -->
-<!-- ob man den Diamant irgendwo günstiger findet.  -->
-<!-- Wenn ja, macht man Gewinn.  -->
-<!-- Gutes Geschäftsmodell, meint Ihre Chefin. -->
+
 
 </br>
 
@@ -864,9 +858,9 @@ Ja, stimmt, an so ein Forschungsprojekt hatten Sie vorher nie auch nur nur im Tr
 
 
 
-### Alle Mittelwerte sind gleich (?)
+### Alle Mittelwerte sind gleich, exakt gleich (?)
 
-- Formal: $\mu_1 = \mu_2 = \ldots = \mu_k$ mit $k$ verschiedenen Gruppen von Schliffart.
+- Formal: $\mu_1 = \mu_2 = \ldots = \mu_k$ mit $k$ verschiedenen Gruppen von Pinguinarten.
 
 - Hypothesen, die keinen (Null) Unterschied zwischen Gruppen oder keinen Zusammenhang zwischen Variablen postulieren, kann man als *Nullhypothesen* bezeichnen.
 
@@ -874,7 +868,7 @@ Ja, stimmt, an so ein Forschungsprojekt hatten Sie vorher nie auch nur nur im Tr
 
 > *Wie sehr* unterscheiden sich mittlere Körpergewichte in Abhängigkeit von der Pinguinart?
 
-Oder wir prüfen die Hypothese, ob die Mittelwerte "praktisch" gleich sind, also sich "kaum" unterscheiden. Der Grenzwert für "praktisch gleich" bzw. "kaum unterschiedlich" ist subjektiv.
+Alternativ können wir  die Hypothese prüfen, ob die Mittelwerte "praktisch" gleich sind, also sich "kaum" unterscheiden. Der Grenzwert für "praktisch gleich" bzw. "kaum unterschiedlich" ist subjektiv. Dazu in @sec-rope mehr.
 
 
 
@@ -882,17 +876,19 @@ Oder wir prüfen die Hypothese, ob die Mittelwerte "praktisch" gleich sind, also
 
 [Datenquelle](https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv), [Beschreibung des Datensatzes](https://vincentarelbundock.github.io/Rdatasets/doc/palmerpenguins/penguins.html)
 
-```{r echo = TRUE}
-penguins_url <- "https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv"
-```
+Hier ist die Quelle der Daten:
 
-```{r echo = TRUE, results = "hide"}
+
+```{r import-penguins}
+penguins_url <- "https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv"
+
 #| results: "hide"
 #| message: false
-set.seed(42)  # Zufallszahlen für `sample()` festlegen
 penguins <- 
   read_csv(penguins_url)
 ```
+
+Hier ist die Verteilung des Gewichts jeder Spezies im Datensatz:
 
 ```{r}
 penguins %>% 
@@ -941,6 +937,7 @@ penguins %>%
   geom_jitter(width = 0.1, alpha = .1)
 ```
 
+@fig-penguines2 zeigt die Gewichtsverteilung pro Spezies als "Bergrücken" (`geom_ridges`).
 
 ```{r fig.asp = .3, fig.width=7}
 #| echo: false
@@ -950,6 +947,9 @@ ggplot(penguins) +
   aes(x = body_mass_g, y = species) +
   geom_density_ridges()
 ```
+
+@fig-penguines3 zeigt die Gewichtsverteilung pro Spezies als "halbe Violinen" (`geom_ridges`), 
+sozusagen Dichtediagramme um 90 Grad gedreht.
 
 ```{r}
 #| label: fig-penguines3
@@ -963,14 +963,20 @@ penguins %>%
 
 
 
-### Mittlere Preisunterschiede in der Population
+
+### Mittlere Gewichtsunterschiede in der Population
+
+Berechnen wir das mittlere Gewicht pro Spezies (Gruppe) der Pinguine, s. `m10.6` und @tbl-m106-params.
 
 
 
 ```{r m106, echo = TRUE}
 options(mc.cores = parallel::detectCores())  # Turbo einschalten
 
-m10.6 <- stan_glm(body_mass_g ~ species, data = penguins, refresh = 0)
+m10.6 <- stan_glm(body_mass_g ~ species, 
+                  data = penguins, 
+                  refresh = 0,
+                  seed = 42)
 # refresh=0 unterdrückt Ausgabe der Posteriori-Stichproben
 ```
 
@@ -984,6 +990,8 @@ m10.6 %>%
 
 ```{r}
 #| echo: false
+#| tbl-cap: "Parameter des Modells m10.6; neben dem Achsenabschnitt sind die Effekte der Gruppe Adelie und Chinstrap ausgewiesen"
+#| label: tbl-m106-params
 m10.6 %>% 
   parameters() %>% 
   display()
@@ -994,11 +1002,11 @@ m10.6 %>%
 
 ### Interpretation von `m10.6`
 
-- Die UV hat drei verschiedene Stufen (Werte, Ausprägungen), aber es werden nur zwei angezeigt (also eine weniger)
-- Die fehlende Stufe (`Adelie`, nicht ausgegeben) ist die *Vergleichs- oder Referenzkategorie* (baseline) und ist im Achsenabschnitt ausgedrückt (Intercept).
-- Die Koeffizienten für `species` geben jeweils den Unterschied zur Vergleichskategorie wieder.
-- Diamanten der Schliffart `Adelie` haben laut Modell ein mittleres Gewicht von ca. 3700$.
-- Pinguine der Spezies Gentoo sind laut Modell im Mittel gut 1000g schwerer als Pinguine der Spezies `Adelie`, etc.
+Die UV hat drei verschiedene Stufen (Werte, Ausprägungen; hier: Spezies), aber es werden in @tbl-m106-params nur zwei Stufen angezeigt (also eine weniger) zusätzlich zum Achsenabsdhnitt.
+Die fehlende Stufe (`Adelie`, nicht ausgegeben) ist die *Vergleichs- oder Referenzkategorie* (baseline) und ist im Achsenabschnitt ausgedrückt (Intercept).
+Die Koeffizienten für `species` geben jeweils den (vorhergesagten) Unterschied zur Vergleichskategorie wieder.
+Pinguine der Spezies `Adelie` haben laut Modell ein mittleres Gewicht von ca. 3700g.
+Pinguine der Spezies Gentoo sind laut Modell im Mittel gut 1000g schwerer als Pinguine der Spezies `Adelie`, etc.
 
 
 Der Unterschied im mittleren Gewicht von den Gruppen Chinstrap und Gentoo zur Referenzgruppe (Adelie) ist in @fig-m106-params verdeutlicht.
@@ -1012,24 +1020,15 @@ plot(hdi(m10.6))
 
 
 
-### Schätzbereiche für die Modellparameter
-
-
-```{r}
-m10.6 %>% 
-  hdi()
-```
-
-
-
-
 
 ### Glauben wir jetzt an Gruppeneffekte?
 
 Glauben wir jetzt, auf Basis der Modellparameter,
 an Unterschiede (hinsichtlich der AV) zwischen den Gruppen (UV)?
 
-Es scheinen sich nicht alle Gruppen voneinander zu unterscheidne. So ist der Mittelwert der Gruppe `Gentoo` deutlich höher als der der beiden anderen Gruppen. Umgekehrt sind sich `Adelie` und `Chinstrap` in ihren Mittelwerten ziemlich ähnlich.
+Es scheinen sich nicht alle Gruppen voneinander zu unterscheiden. 
+So ist der Mittelwert der Gruppe `Gentoo` deutlich höher als der der beiden anderen Gruppen. 
+Umgekehrt sind sich die Pinguinarten `Adelie` und `Chinstrap` in ihren Mittelwerten ziemlich ähnlich.
 
 Wie in @fig-m106-params ersichtlich,
 überlappt sich der Schätzbereich für den Parameter von Gentoo *nicht* mit der Null;
@@ -1039,13 +1038,10 @@ hingegen überlappt sich der Schätzbereich des Parameters für Chinstrap deutli
 
 Auf Basis unseres Modells schließen wir also (mit hoher Sicherheit) aus, dass *alle* Mittelwerte   *exakt* identisch sind.
 
-Ehrlicherweise hätte sowieso niemand geglaubt, dass die *exakte Nullhypothese* $\mu_1 = \mu_2 = \ldots = \mu_k$ bis in die letzte Dezimale gilt. Anders gesagt: Die Wahrscheinlichkeit eines bestimmten Wertes einer stetigen Zufallsvariable ist praktisch Null.
-
-Aber: Viele Forscheris prüfen gerne die Nullhypothese, daher taucht der Begriff hier auf.
-
+Ehrlicherweise hätte sowieso (fast) niemand geglaubt, dass die *exakte Nullhypothese* $\mu_1 = \mu_2 = \ldots = \mu_k$ bis in die letzte Dezimale gilt. Anders gesagt: Die Wahrscheinlichkeit eines bestimmten Wertes einer stetigen Zufallsvariable ist praktisch Null.
+Aber: Viele Forschis prüfen gerne die Nullhypothese, daher diskutieren wir den Begriff der (exakten) Nullhypothese.
 Das Verfahren der Frequentistischen Statistik, um die Nullhypothese $\mu_1 = \mu_2 = \ldots = \mu_k$ zu testen, nennt man *Varianzanalyse* (analysis of variance, kurz *ANOVA*).
-
-In der Bayes-Statistik nutzt man - wie immer - primär die Post-Verteilung, um Fragen der Inferenz (z.B. Gruppenunterschiede dieser Art) zu inferenzstatistisch zu beurteilen.
+In der Bayes-Statistik nutzt man - wie immer - primär die Post-Verteilung, um Fragen der Inferenz (z.B. Gruppenunterschiede dieser Art)  inferenzstatistisch zu beurteilen.
 
 
 
@@ -1075,27 +1071,71 @@ In der Bayes-Statistik nutzt man - wie immer - primär die Post-Verteilung, um F
 ## Priori-Werte
 
 Unser Modell `m10.6` hat schwach informierte (weakly informative) Priors.
-Für Achsenabschnitt und die Regressionskoeffizienten werden Normalverteilungen angenommen mit Mittelwert entsprechend den Stichprobendaten und Streuung, die der 2.5-fachen der Streuung in der Stichprobe entspricht.
-Mehr Infos kann man sich so ausgeben lassen: `prior_summary(m10.6)`.
-Wo man man über mehr inhaltliches Wissen verfügt, so wird man die Priors anpassen wollen, z.B.:
+Für Achsenabschnitt und die Regressionskoeffizienten trifft unser Golem Stan folgende Annahmen in der Voreinstellung:
+
+- Achsenabschnitt und Regressionsgewichte werden als normalverteilt angenommen
+- mit Mittelwert entsprechend den Stichprobendaten 
+- und einer Streuung des Mittelwerts, die der 2.5-fachen der Streuung in der Stichprobe entspricht
+- für Sigma wird eine Exponentialverteilung mit Rate $\lambda=1$ angenommen, skaliert mit der Streuung der AV.
+
+Mehr Infos kann man sich so ausgeben lassen: `prior_summary(modell)`:
+
+
+```{r}
+prior_summary(m10.6)
+```
+
+Wo man man über mehr inhaltliches Wissen verfügt, so wird man die Prioris anpassen wollen, z.B.:
 
 ```{r echo = TRUE}
-m10.6b <- stan_glm(price ~ cut, data = diamonds, refresh = 0,
-                   prior = normal(location = c(100, 100, 100, 100),
-                                  scale = c(100, 100, 100, 100)),
-                   prior_intercept = normal(3000, 500))
+m10.6b <- stan_glm(body_mass_g ~ species, 
+                   data = penguins, 
+                   refresh = 0,
+                   seed = 42,
+                   prior = normal(location = c(0, 0),  # betas, Mittelwert
+                                  scale = c(500, 500)),  # betas, Streuung
+                   prior_intercept = normal(3000, 500),  # Achsenabschnitt, Mittelwert und Streuung
+                   prior_aux = exponential(0.001)
+)
 coef(m10.6b)
 ```
 
 
-Die Streuung des Modells, $\sigma$, kann man sich mit `sigma(modell)` ausgeben lassen:
+Anstelle von Rohwerten (hier Angabe von Gramm Gewicht) kann man die Streuung auch in z-Werten eingeben, das macht es etwas einfacher.
+Dazu gibt man bei dem oder den entsprechenden Parametern den Zusatz `autoscale = TRUE` an.
+
+
+
+```{r echo = TRUE}
+m10.6c <- stan_glm(body_mass_g ~ species, 
+                   data = penguins, 
+                   refresh = 0,
+                   seed = 42,
+                   prior = normal(location = c(0, 0),  # betas, Mittelwert
+                                  scale = c(2.5, 2.5),  # betas, Streuung
+                                  autoscale = TRUE),  # in z-Einheiten
+                   prior_intercept = normal(4200, 2.5,   # Achsenabschnitt, Mittelwert und Streuung
+                                            autoscale = TRUE), 
+                   prior_aux = exponential(1, autoscale = TRUE)
+)
+coef(m10.6c)
+```
+
+
+
+
+
+Den Parameter für die Streuung des Modells, $\sigma$, kann man sich mit `sigma(modell)` ausgeben lassen:
 
 ```{r}
 sigma(m10.6b)
 ```
 
 
-Implizit bekommt man diese Informationen mitgeteilt durch die Größe der Konfidenzintervalle.
+
+Implizit bekommt man die Informationen zu $\sigma$ mitgeteilt durch die Größe der Konfidenzintervalle.
+
+Übrigens macht es meistens keinen Sinn, extrem weite Prioris zu definieren^[s. Details [hier](https://mc-stan.org/rstanarm/articles/priors.html#how-to-specify-flat-priors-and-why-you-typically-shouldnt).].
 
 
 
@@ -1201,7 +1241,7 @@ hdi(m10.6_r2) %>%
 
 
 
-## Definition vom "klassischen" $R^2$
+### Definition vom "klassischen" $R^2$
 
 
 
@@ -1219,26 +1259,75 @@ Die beiden obigen Ausdrücke nehmen $\hat{y}_i$ als fix (sicher) an und vernachl
 
 
 
-## Bayes' $R^2$
+### Bayes' $R^2$
 
 Besser ist es (aus Bayes-Sicht), die Ungewissheit der Vorhersagen bei der Berechnung der Modellgüte miteinzubeziehen:
-$\text{Bayes }R^2 = \frac{\text{erkärte Varianz}}{\text{Erklärte Varianz + Residualvarianz}}= \frac{V_{mod}}{V_{mod} + V_{res}}$
+$\text{Bayes }R^2 = \frac{\text{erkärte Varianz}}{\text{Erklärte Varianz + Residualvarianz}}= \frac{V_{mod}}{V_{mod} + V_{res}}$.
+
 $V_{mod}$ ist die Varianz in der PPV mit $s = 1, \ldots, S$ simulierten Stichproben, $V(\hat{y}_i)$ und $V_{res}$ ist die Residualvarianz im Modell.
 Für jede Stichprobe $s$ berechnet man die vorhergesagten Werte, $\hat{y}_i^s$, die Residualvarianz $\sigma^2_s$ und den Anteil der erklärten Varianz:
-$\text{Bayes }R^2_s = \frac{V(\hat{y}_i^s)}{V(\hat{y}_i^s+\sigma_s^2)}$
-
-
-@gelman_r_squared_2019, @gelman_regression_2021, Kap. 11.7
-
+$\text{Bayes }R^2_s = \frac{V(\hat{y}_i^s)}{V(\hat{y}_i^s+\sigma_s^2)}$, vgl. 
+@gelman_r_squared_2019, @gelman_regression_2021, Kap. 11.7.
 
 
 
 
 
+## Nullhypothesen sind praktisch immer falsch  {#sec-rope}
 
 
 
-## "Praktisch" kein Unterschied
+Nullhypothesen sind fast immer falsch, s. @fig-nullmeme.
+
+
+```{r meme-null}
+#| echo: false
+#| label: fig-nullmeme
+#| fig-cap: "Du testest Nullhypothesen?"
+knitr::include_graphics("img/5v5531.jpg")
+```
+
+[Quelle: Imgflip Meme Generator](https://imgflip.com/i/5v5531)
+
+
+
+
+
+
+
+>   We do not generally use null hypothesis significance testing in our own work. In the fields in which we work, we do not generally think null hyptheses can be true: in social science and public health, just about every treatment one might consider will have *some* effect, and no comparison or regression coefficient of interest will be exactly zero. We do not find it particularly helpful to formulate and test null hypothess that we knowe ahead of time cannot be true.
+
+
+@gelman_regression_2021
+
+
+
+
+
+
+### Alternativen zu Nullhypothesen
+
+
+- Nullhypothesen, $H_0$, sind z.B.: $\rho=0$, $\rho_1 = rho_2$, $\mu_1 = \mu_2$, $\mu=0$, $\beta_1=0$.
+
+- Nullhypothesen zu testen, ist sehr verbreitet.
+
+- Ein Grund ist, dass in der Frequentistischen Statistik keine andere Art von Hypothesentest möglich ist^[Mittlerweile gibt es Ansätze für einem Verfahren ähnlich dem ROPE-Ansatz, der weiter unten vorgestellt wird.]
+
+- Ein anderer Grund ist vermutlich, ... wir haben es schon immer so gemacht.
+
+- Alternativen zum Testen von Nullhypothesen:
+    - Posteriori-Intervalle (PI oder HDI)  berichten
+    - Rope-Konzept, @kruschke_rejecting_2018
+    - Wahrscheinlichkeit von inhaltlich bedeutsamen Hypothesen quantifizieren.
+    - Wahrscheinlichkeit quantifizieren, dass der Effekt ein positives bzw. ein negatives Vorzeichen hat.
+
+
+
+
+
+
+### "Praktisch" kein Unterschied
 
 
 
@@ -1247,15 +1336,17 @@ Nimmt man (praktisch) keinen Unterschied/Zusammenhang/Effekt an, spricht man von
 Die Wahl von $d$ ist *subjektiv* in dem Sinne als sie von inhaltlichen Überlegungen geleitet sein sollte.
 Diesen Bereich bezeichnen wir den *Indifferenzbereich* (Äquivalenzzone, Bereich eines vernachlässigbaren Unterschieds oder *Region of practical equivalence*, Rope). 
 Jetzt prüfen wir, ob ein "Großteil" der Posteriori-Stichproben im Rope liegt.
-Unter "Großteil" wird häufig das *95%-HDI* verstanden.
+Unter "Großteil" wird häufig das *95%-HDI* verstanden (das ist auch der Standard der R-Funktion `rope()`, die wir hier nutzen).
 
-*Entscheidungsregel*:
+
+
+*Entscheidungsregel* nach @kruschke_rejecting_2018:
 
 Großteil liegt *innerhalb* von Rope  ➡️ *Annahme* der Nullhypothese "praktisch kein Effekt", $H_0$
 Großteil liegt *außerhalb* von Rope  ➡️ *Ablehnung* der Nullhypothese "praktisch kein Effekt", $H_0$
 Ansonsten  ➡️  keine Entscheidung 
 
-@kruschke_rejecting_2018
+
 
 
 
@@ -1507,7 +1598,7 @@ plots(p1, p2,
 
 Univariate Regressionen
 
-:::
+
 
 
 ### Multiples Modell (beide Prädiktoren), m10.9
@@ -1650,7 +1741,7 @@ Welcher Prädiktor ist nun "wichtiger" oder "stärker" in Bezug auf den Zusammen
 
 Um die Relevanz der Prädiktoren vergleichen zu können, müsste man vielleicht die Veränderung von `kid_score` betrachten, wenn man von kleinsten zum größten Prädiktorwert geht.
 Allerdings sind Extremwerte meist instabil (da sie von einer einzigen Beobachtung bestimmt werden).
-Sinnvoller ist es daher, die Veränderung in der AV zu betrachten, wenn man den Prädiktor von "unterdurchschittlich" auf "überdurchschnittlich" ändert.
+Sinnvoller ist es daher, die Veränderung in der AV zu betrachten, wenn man den Prädiktor von "unterdurchschnittlich" auf "überdurchschnittlich" ändert.
 Das kann man mit *z-Standardisierung* erreichen.
 
 
@@ -1686,7 +1777,7 @@ kidiq2 <-
 ```{r discribe-kidiq}
 #| echo: false
 describe_distribution(kidiq, type = "mean_sd") %>% 
-  gt() 
+  display() 
 ```
 
 
@@ -1726,14 +1817,19 @@ kidiq %>%
 
 
 
-### Modell mit standardisierten Prädiktoren, `m10.10`
 
-Das Standardisieren der AV, `kid_score` ist nicht nötig, um den Effekt der Prädiktoren (UV) auf die AV zu untersuchen.
-Standardisiert man die AV, so liefern die Regressionskoeffizienten (Betas) Aussage darüber,
+
+## Modell `m10.10`
+
+Im Modell `m10.10` sind die Prädiktoren z-standardisiesrt.
+Das Standardisieren der AV, `kid_score` ist *nicht* nötig, um den Effekt der Prädiktoren (UV) auf die AV zu untersuchen.
+Standardisiert man aber die AV, so liefern die Regressionskoeffizienten (Betas) Aussage darüber,
 um wie viele *SD-*Einheiten sich die AV verändert, wenn sich ein Prädiktor um eine *SD-*Einheit verändert.
 
 ```{r m10-10, echo = TRUE}
-m10.10 <- stan_glm(kid_score_z ~ mom_iq_z + mom_age_z, data = kidiq, refresh = 0)
+m10.10 <- stan_glm(kid_score_z ~ mom_iq_z + mom_age_z, 
+                   data = kidiq, 
+                   refresh = 0)
 coef(m10.10)
 ```
 
@@ -1754,7 +1850,8 @@ Jetzt sind die Prädiktoren in ihrer Relevanz (Zusammenhang mit der AV) vergleic
 ### 95%-PI
 
 
-Mit `parameters` können wir uns ein PI ausgeben lassen, s. @fig-m1010hdi.
+Mit `parameters` können wir uns ein PI für `m10.10` ausgeben lassen, s. @fig-m1010hdi;
+ im Standard wird ein ETI berichtet.
 
 
 ```{r m10-10-params-noeval, echo = TRUE}
@@ -1771,8 +1868,8 @@ parameters(m10.10) %>% display()
 
 ```{r 1010-params-plot}
 #| label: fig-m1010hdi
-#| fig-cap: "Im Standard wird ein 95%-Intervall gezeigt bzw. berechnet"
-plot(hdi(m10.10))
+#| fig-cap: "Im Standard wird ein 95%-Intervall gezeigt bzw. berechnet; hier das ETI für m10.10"
+plot(eti(m10.10))
 ```
 
 
@@ -1814,32 +1911,6 @@ Das impliziert Rope-Grenzen von $\beta_x = \pm 0.05$ für z-standardisierte Vari
 
 
 
-
-
-
-### Verwandtheit von Korrelation und Regression
-
-
- Sind X und Y *z-standardisiert*, so sind Korrelation und Regression identisch.
-
-
-$$b = r \frac{sd_x}{sd_y}$$
-
-```{r m10-11, echo = TRUE}
-m10.11 <- 
-  stan_glm(kid_score_z ~ mom_iq_z , data = kidiq, refresh = 0)
-coef(m10.11)
-```
-
-
-```{r}
-kidiq %>% 
-  select(kid_score, mom_iq, kid_score_z, mom_iq_z) %>% 
-  correlation()
-```
-
-
-
 ### Modellgüte
 
 ```{r m10-10-r2}
@@ -1872,12 +1943,17 @@ Danke, Herr Cohen!
 
 ### Priori-Verteilung für `m10.10` und Modelldefinition
 
+Stan hat für uns folgende Prioris ausgesucht:
+
+
 ```{r m10-10-prior}
 prior_summary(m10.10)  # aus rstanarm
 ```
 
 
+Wie gesagt, Stan nimmt dafür einfach die empirischen Mittelwerte und Streuungen her^[Nicht unbedingt die feine bayesianische Art, denn die Prioris sollten ja eigentlich apriori, also vor Kenntnis der Daten, bestimmt werden. Auf der anderen Seite behauptet Stan, von uns zur Rede gestellt, dass die empirischen Mittelwerte ja doch gute Schätzer der echten Parameter sein müssten, wenn die Stichprobe, die wir ihm angeschleppt hätten, tatsächlich gut ist...].
 
+Stans Ausgabe kann man in Mathe-Sprech so darstellen, s. @eq-m1010.
 
 
 $$
@@ -1889,10 +1965,13 @@ $$
 \beta_2 &\sim \mathcal{N}(0,2.5)\\
 \sigma &\sim \mathcal{E}(1)
 \end{aligned}
-$$
+$${#eq-m1010}
 
+Man beachte, dass der Achsenabschnitt zur Intelligenz der Kinder auf Null festgelegt wird:
+Bei *mittlerer* Intelligenz und *mittlerem* Alter der Mutter wird *mittlere* Intelligenz des Kindes erwartet in `m10.10`. 
+Dadurch, dass nicht nur UV, sondern auch AV zentriert (und in der Streuung auf 1 standardisiert) sind, ist der Mittelwert der AV Null.
 
-Schreibt man einen Bericht, so bietet es sich an, die Modelldefinition zumindest im Anhang aufzuführen.
+Schreibt man einen Bericht, so bietet es sich an, die Modelldefinition *zumindest* im Anhang aufzuführen.
 
 
 ### Beantwortung der Forschungsfrage
@@ -1902,10 +1981,12 @@ Schreibt man einen Bericht, so bietet es sich an, die Modelldefinition zumindest
 >   Das Modell spricht sich klar für einen statistischen, linearen Effekt von Intelligenz der Mutter auf die Intelligenz des Kindes aus, wenn das Alter der Mutter statistisch kontrolliert wird (95%PI: [0.38, 0.51]). Hingegen zeigt das Modell, dass das Alter der Mutter statistisch eher keine Rolle spielt (95%PI: [-0.02, 0.12]). Alle Variablen wurden z-transformiert. Insgesamt erkärt das Modell im Median einen Anteil von ca. 0.2 an der Varianz der Kinderintelligenz. Das Modell griff auf die Standard-Priori-Werte aus dem R-Paket rstanarm [@goodrich_rstanarm_2020] zurück (s. Anhang für Details).
 
 
+
+:::callout-important
 Hier wird von einem "statistischen Effekt" gesprochen, um klar zu machen, dass es sich lediglich um assoziative Zusammenhänge, und nicht um kausale Zusammenhänge, handelt.
 Kausale Zusammenhänge dürfen wir nur verkünden, 
 wenn wir sie a) explizit untersuchen, b) sich in der Literatur Belege dafür finden oder c) wir ein  Experiment fachgerecht durchgeführt haben.
-
+:::
 
 
 
@@ -1916,6 +1997,37 @@ wenn wir sie a) explizit untersuchen, b) sich in der Literatur Belege dafür fin
 
 
 🏎️VERTIEFUNG, nicht prüfungsrelevant🏎️
+
+
+
+
+
+
+
+
+### Verwandtheit von Korrelation und Regression
+
+
+ Sind X und Y *z-standardisiert*, so sind Korrelation und Regression identisch.
+
+
+$$b = r \frac{sd_x}{sd_y}$$
+
+```{r m10-11, echo = TRUE}
+m10.11 <- 
+  stan_glm(kid_score_z ~ mom_iq_z , data = kidiq, refresh = 0)
+coef(m10.11)
+```
+
+
+```{r}
+kidiq %>% 
+  select(kid_score, mom_iq, kid_score_z, mom_iq_z) %>% 
+  correlation()
+```
+
+
+
 
 
 
@@ -2254,7 +2366,7 @@ Eine Kurzdarstellung des Bayes-Inferenz findet sich [in diesem Post](https://dat
 >    *Forschungsfrage:* Kann man anhand des Spritverbrauchs vorhersagen, ob ein Auto eine Automatik- bzw. ein manuelle Schaltung hat? Anders gesagt: Hängen Spritverbrauch und Getriebeart? (Datensatz `mtcars`)
 
 
-
+Dazu nutzen wir den Datensatz `mtcars`, wobei wir die Variablen z-standardisieren.
 
 ```{r echo = TRUE}
 data(mtcars)
@@ -2262,6 +2374,9 @@ mtcars2 <-
   mtcars %>% 
   standardize(append = TRUE)
 ```
+
+
+Dann berechnen wir mit Hilfe von Stan ein Regressionsmodell: `m13: am ~ mpg_z`:
 
 ```{r m13, echo = TRUE, results = "show"}
 m13 <-
@@ -2292,7 +2407,8 @@ neg_am <- predict(m13, newdata = tibble(mpg_z = -1.3))
 ```
 
 
-Für kleine Werte von `mpg_z` (<1.3) sagt unser Modell *negative* Werte für `am` voraus. Das macht keinen Sinn. Müssen wir mal bei Gelegenheit besser machen.
+Für kleine Werte von `mpg_z` (<1.3) sagt unser Modell *negative* Werte für `am` voraus. Das macht keinen Sinn: Es gibt keine negative Werte von `am`, nur 0 und 1.
+Müssen wir mal bei Gelegenheit besser machen.
 
 
 
@@ -2317,7 +2433,29 @@ Genug für heute. 👍
 
 
 
+## Aufgaben
 
 
+1. [Banova-skalenniveau](https://datenwerk.netlify.app/posts/anova-skalenniveau/anova-skalenniveau.html)
+2. [Nullhyp-Beispiel](https://datenwerk.netlify.app/posts/nullhyp-beispiel/nullhyp-beispiel)
+1. [ttest-skalenniveau](https://datenwerk.netlify.app/posts/ttest-skalenniveau/ttest-skalenniveau.html)
+2. [Griech-Buchstaben-Inferenz](https://datenwerk.netlify.app/posts/griech-buchstaben-inferenz/griech-buchstaben-inferenz)
+3. [Interaktionseffekt1](https://datenwerk.netlify.app/posts/interaktionseffekt1/interaktionseffekt1)
+1. [Regression2](https://datenwerk.netlify.app/posts/regression2/regression2)
+2. [Regression3](https://datenwerk.netlify.app/posts/regression3/regression3)
+3. [Regression6](https://datenwerk.netlify.app/posts/regression6/regression6)
+1. [posterior_interval](https://datenwerk.netlify.app/posts/posterior_interval/posterior_interval.html)
+2. [diamonds-nullhyp-mws](https://datenwerk.netlify.app/posts/diamonds-nullhyp-mws/diamonds-nullhyp-mws.html)
+3. [stan_glm_parameterzahl](https://datenwerk.netlify.app/posts/stan_glm_parameterzahl/stan_glm_parameterzahl.html)
+1. [stan_glm_prioriwerte](https://datenwerk.netlify.app/posts/stan_glm_prioriwerte/stan_glm_prioriwerte.html)
+2. [zwert-berechnen](https://datenwerk.netlify.app/posts/zwert-berechnen/zwert-berechnen.html)
+3. [Regr-Bayes-interpret](https://datenwerk.netlify.app/posts/regr-bayes-interpret/regr-bayes-interpret)
+3. [Regr-Bayes-interpret03](https://datenwerk.netlify.app/posts/regr-bayes-interpret03/regr-bayes-interpret03)
+3. [Regr-Bayes-interpret02](https://datenwerk.netlify.app/posts/regr-bayes-interpret03/regr-bayes-interpret02)
+2. [rope-regr](https://datenwerk.netlify.app/posts/rope-regr/rope-regr.html)
+3. [rope1](https://datenwerk.netlify.app/posts/rope1/rope1.html)
+3. [rope2](https://datenwerk.netlify.app/posts/rope2/rope2.html)
+3. [rope3](https://datenwerk.netlify.app/posts/rope3/rope3.html)
+3. [rope4](https://datenwerk.netlify.app/posts/rope4/rope4.html)
 
 
