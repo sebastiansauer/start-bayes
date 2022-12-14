@@ -467,7 +467,7 @@ m10.2 %>%
 Visualisieren wir uns noch das Modell m10.2, s. @fig-kidiqmomiq.
 
 
-```{r Thema6-Teil2-4, fig.asp = 1}
+```{r Thema6-Teil2-4}
 #| label: fig-kidiqmomiq
 #| fig-cap: "Die Intelligenz eines Kindes als Funktion der Intelligenz der Mutter (m10.2)"
 kidiq %>% 
@@ -478,7 +478,7 @@ kidiq %>%
               color = "blue")
 ```
 
-Alternativ kann man sich - einfacher - das Modell (m10.2) so visualisieren, s. @fig-m102-a
+Alternativ kann man sich - einfacher - das Modell (m10.2) so visualisieren, s. @fig-m102-a.
 
 ```{r}
 #| label: fig-m102-a
@@ -545,28 +545,26 @@ coef(m10.3)[3]
 
 Aber natürlich ist es möglich (und einfacher) anstelle von `coef` den Befehl `parameters` zu verwenden.
 
-Und die Visualisierung des Modells `m10.3`, s. @fig-m103.^[Alternativ kann man die gleiche Visualisierung - einfacher - so bekommen: `plot(estimate_expectation(m10.3))`. Allerdings müssen Sie dann, bevor Sie m10.3 berechnen, `mom_hs` als Faktorvariable definiernen mit `mutate` und `as.factor(mom_hs)`.]
+Und die Visualisierung des Modells `m10.3`, s. @fig-m103.
+
 
 ```{r Thema6-Teil2-5, fig.asp = 0.62}
 #| label: fig-m103
 #| fig-cap: "Der Effekt von sowohl mütterlicher Intelligenz als auch mütterlichem Schulabschluss. Es ist gut zu erkennen, dass der Achsenabschnitt für die Daten nicht interpretierbar ist."
-kidiq %>% 
-  mutate(mom_hs = factor(mom_hs)) %>%  
-  ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
-  geom_point(alpha = .7) +
-  geom_abline(slope = coef(m10.3)[3],  # den 3. Wert aus dem Vector, den `coef()` zurückgibt
-              intercept = 26,
-              linewidth = 1,
-              color = "blue") +
-  geom_abline(slope = coef(m10.3)[3],
-              intercept = 32,
-              color = "red",
-              linewidth = 2) +
-  scale_color_manual(values = c("blue", "red")) +
-  theme(legend.position = "bottom") +
-  scale_x_continuous(limits = c(0, 140))
-```
 
+kidiq2 <-
+  kidiq %>% 
+  mutate(mom_hs = as.factor(mom_hs))
+
+m10.3a <- 
+  stan_glm(
+    kid_score ~ mom_iq + mom_hs, 
+    refresh = 0,
+    seed = 42,
+    data = kidiq2)
+
+plot(estimate_expectation(m10.3a))
+```
 
 
 
@@ -1042,24 +1040,6 @@ Ehrlicherweise hätte sowieso (fast) niemand geglaubt, dass die *exakte Nullhypo
 Aber: Viele Forschis prüfen gerne die Nullhypothese, daher diskutieren wir den Begriff der (exakten) Nullhypothese.
 Das Verfahren der Frequentistischen Statistik, um die Nullhypothese $\mu_1 = \mu_2 = \ldots = \mu_k$ zu testen, nennt man *Varianzanalyse* (analysis of variance, kurz *ANOVA*).
 In der Bayes-Statistik nutzt man - wie immer - primär die Post-Verteilung, um Fragen der Inferenz (z.B. Gruppenunterschiede dieser Art)  inferenzstatistisch zu beurteilen.
-
-
-
-
-
-<!-- ### Modellkoeffizienten von `m10.6` -->
-
-<!-- Die Regressionsoeffizienten pro Stufe der UV entsprechen den Mittelwerten $\hat{y_i}$ aus der Posteriori-Verteilung. Mit `coef(m10.6)` kann man sie sich bequem ausgeben lassen. -->
-
-<!-- ```{r echo = TRUE} -->
-<!-- coef(m10.6) -->
-<!-- ``` -->
-
-
-<!-- - $\hat{y}_{Fair} = `r round(coef(m10.6)[1])`$ -->
-<!-- - $\hat{y}_{Good} = `r round(coef(m10.6)[2])`$ -->
-<!-- - etc. -->
-
 
 
 
