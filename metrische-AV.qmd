@@ -262,11 +262,13 @@ m10.1 <- stan_glm(
 
 Alternativ können Sie die Daten [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/kidiq.csv) herunterladen.
 
-Mit `parameters(m10.1)` bekommt man die Parameter des Modells:
+Mit `parameters(m10.1)` bekommt man die Parameter des Modells, s. @tbl-m101.
 
 
 ```{r echo = TRUE}
 #| echo: false
+#| tbl-cap: "Parameter des Modells m10.1 (sigma ist nicht dargestellt)"
+#| label: tbl-m101 
 display(parameters(m10.1))
 ```
 
@@ -409,7 +411,7 @@ die mehr Fundierung bedarf als eine einfache Korrelation bzw. ein
 >    Wie stark ist der Zusammenhang von jeweils Schulabschluss der Mutter (`mom_hs`) und  IQ der Mutter (`mom_iq`)  auf den IQ des Kindes (`kid_score`) ?
 
 
-Deskriptive Statistiken zum Datensatz:
+Deskriptive Statistiken zum Datensatz sind in Tabelle @tbl-kidiq1 dargestellt.
 
 
 ```{r Thema6-Teil2-1, echo = TRUE, results="hide"}
@@ -419,7 +421,9 @@ describe_distribution(kidiq)
 
 
 ```{r Thema6-Teil2-2}
+#| tbl-cap: "Variablen und ihre Verteilung im Datenatz kidiq"
 #| echo: false
+#| label: tbl-kidiq1
 describe_distribution(kidiq) %>% 
   display()
 ```
@@ -434,7 +438,7 @@ describe_distribution(kidiq) %>%
 ### 1 metrischer Prädiktor
 
 
-Berechnen wir folgendens Modell: `kid_score ~ mom_iq` (`m10.2`).
+Berechnen wir folgendens Modell: `kid_score ~ mom_iq` (`m10.2`), s. Tab. @tbl-m102.
 
 
 ```{r Thema6-Teil2-3, results = "hide"}
@@ -449,6 +453,8 @@ m10.2 %>%
 
 ```{r}
 #| echo: false
+#| tbl-cap: "Parameter des Modells m10.2"
+#| label: tbl-m102
 m10.2 %>% 
   parameters() %>% 
   display()
@@ -458,12 +464,12 @@ m10.2 %>%
 `kid_score = 26 + 0.6 * mom_iq + error`
 
 
-Visualisieren wir uns noch das Modell, s. @fig-kidiqmomiq.
+Visualisieren wir uns noch das Modell m10.2, s. @fig-kidiqmomiq.
 
 
 ```{r Thema6-Teil2-4, fig.asp = 1}
 #| label: fig-kidiqmomiq
-#| fig-cap: "Die Intelligenz eines Kindes als Funktion der Intelligenz der Mutter"
+#| fig-cap: "Die Intelligenz eines Kindes als Funktion der Intelligenz der Mutter (m10.2)"
 kidiq %>% 
   ggplot(aes(x = mom_iq, y = kid_score)) +
   geom_point(alpha = .7) +
@@ -472,9 +478,23 @@ kidiq %>%
               color = "blue")
 ```
 
+Alternativ kann man sich - einfacher - das Modell (m10.2) so visualisieren, s. @fig-m102-a
+
+```{r}
+#| label: fig-m102-a
+#| fig-cap: "Die geschätzten Erwartungswerte von m10.2 visualisiert"
+plot(estimate_expectation(m10.2))
+```
+
+
+
+
 Die Linie zeigt die vorhergesagten IQ-Werte der Kinder für verschiedene IQ-Werte der Mütter.
-Vergleicht man Teilpopulationen von Müttern mit mittleren Unterschied von einem IQ-Punkt, so findet man 0.6 IQ-Punkte Unterschied bei ihren Kindern *im Durchschnitt*.
+Vergleicht man Teilpopulationen von Müttern mit mittleren Unterschied von einem IQ-Punkt, 
+so findet man 0.6 IQ-Punkte Unterschied bei ihren Kindern *im Durchschnitt*, laut dem Modell m10.2.
 Der Achsenabschnitt hilft uns nicht weiter, da es keine Menschen mit einem IQ von 0 gibt.
+
+
 
 
 
@@ -482,23 +502,32 @@ Der Achsenabschnitt hilft uns nicht weiter, da es keine Menschen mit einem IQ vo
 ### Beide Prädiktoren, `m10.3`
 
 
-Berechnen wir als nächstes ein Modell mit beiden Prädiktoren: `kid_score ~ mom_hs + mom_iq`.
+Berechnen wir als nächstes ein Modell mit beiden Prädiktoren: `kid_score ~ mom_hs + mom_iq`, s. @tbl-m103.
 
+    
 
 ```{r m10-3, echo = TRUE}
 m10.3 <- 
   stan_glm(
-    kid_score ~ mom_hs + mom_iq, 
+    kid_score ~ mom_iq + mom_hs, 
     refresh = 0,
     seed = 42,
     data = kidiq)
 ```
 
 
+```{r}
+#| tbl-cap: "Parameter des Modells m10.3 (ohne sigma)"
+#| label: tbl-m103
+#| echo: false
+
+parameters(m10.3) %>% 
+  display()
+```
 
 
 
-Will man nur schnell die Punktschätzer (Median) zu den Modellparametern (auch als Koeffizienten bezeichnet), so kann man anstelle von `parameters()` auch schreiben:
+Will man nur schnell die Koeffizienten des Modells (d.h. Punktschätzer der Modellparametern, in diesem Fall den Median) wissen, so kann man anstelle von `parameters(mein_modell)` auch `coef(mein_modell)` schreiben:
 
 ```{r}
 coef(m10.3)
@@ -516,7 +545,7 @@ coef(m10.3)[3]
 
 Aber natürlich ist es möglich (und einfacher) anstelle von `coef` den Befehl `parameters` zu verwenden.
 
-Und die Visualisierung des Modells `m10.3`, s. @fig-m103.
+Und die Visualisierung des Modells `m10.3`, s. @fig-m103.^[Alternativ kann man die gleiche Visualisierung - einfacher - so bekommen: `plot(estimate_expectation(m10.3))`. Allerdings müssen Sie dann, bevor Sie m10.3 berechnen, `mom_hs` als Faktorvariable definiernen mit `mutate` und `as.factor(mom_hs)`.]
 
 ```{r Thema6-Teil2-5, fig.asp = 0.62}
 #| label: fig-m103
@@ -539,6 +568,9 @@ kidiq %>%
 ```
 
 
+
+
+
 - *Achsenabschnitt*: Hat das Kind eine Mutter mit einem IQ von 0 und ohne Schulabschluss, dann schätzt das Modell den IQ-Wert des Kindes auf 26.
 - *Koeffizient zum mütterlichen Schulabschluss*: Vergleicht man Kinder von Müttern gleicher Intelligenz, aber mit Unterschied im Schulabschluss, so sagt das Modell einen Unterschied von 6 Punkten im IQ voraus.
 - *Koeffizient zur mütterlichen IQ*: Vergleicht man Kinder von Müttern mit gleichem Wert im Schulabschluss, aber mit 1 IQ-Punkt Unterschied, so sagt das Modell einen Unterschied von 0.6 IQ-Punkten bei den Kindern voraus.
@@ -557,7 +589,7 @@ Sind die Regressionsgeraden nicht parallel, so spricht man von einer Interaktion
 Liegt eine Interaktion vor, so unterscheidet sich die Steigung der Geraden in den Gruppen.
 :::
 
-Wir berechnen mit m10.4 folgendes Modell: `kid_score ~ mom_hs + mom_iq + mom_hs:mom_iq`, s. @fig-m104.
+Wir berechnen mit m10.4 folgendes Modell: `kid_score ~ mom_hs + mom_iq + mom_hs:mom_iq`, s. @fig-m104 und @tbl-m104
 
 ```{r m10-4, echo = TRUE}
 m10.4 <- 
@@ -565,8 +597,15 @@ m10.4 <-
            seed = 42,
            data = kidiq, 
            refresh = 0)
+```
 
-coef(m10.4)
+
+```{r}
+#| echo: false
+#| label: tbl-m104
+#| tbl-cap: "Parameter von m10.4"
+parameters(m10.4) %>% 
+  display()
 ```
 
 
@@ -698,7 +737,8 @@ kidiq %>%
   scale_color_manual(values = c("blue", "red")) +
   theme(legend.position = "bottom",
         axis.title = element_text(size = 8),
-        legend.title = element_text(size = 6))
+        legend.title = element_text(size = 6)) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40")
 ```
 
 
@@ -736,16 +776,26 @@ Das Zentrieren ändert auch *nicht* die Regressionskoeffizienten, da die Streuun
 
 ### Perzentilintervalle aus der Posterori-Verteilung
 
+@tbl-m105 zeigt die Punktschätzer der Parameter für m10.5 sowie ihre Perzentilintervalle^[auch ETI genannt].
+Nutzen Sie dafür `parameters(m10.5)`.
+
 ```{r}
-eti(m10.5)
+#| fig-cap: "Parameter von m10.5 und ETIs"
+#| echo: false
+#| label: tbl-m10a
+parameters(m10.5) %>% 
+  display()
 ```
 
 
 
-Highest Density (Posterior) Intervalle (HDI oder HDPI) kann man sich  komfortabel ausgeben lassen mit `hdi(m10.5)`:
+Highest Density (Posterior) Intervalle (HDI oder HDPI) kann man sich  komfortabel ausgeben lassen mit `hdi(m10.5)` oder mit `parameters(m10.5, ci_method = "hdi")`,
+s. @tbl-m105-hdi
 
 ```{r Thema6-Teil2-11}
-hdi(m10.5)
+#| tbl-cap: "Parameter von m10.5 und HDIs"
+parameters(m10.5, ci_method = "hdi") %>% 
+  display()
 ```
 
 Im Falle symmetrischer Posteriori-Verteilungen (wie hier) kommen beide Arten von Intervallen zu gleichen Ergebnissen.
@@ -872,23 +922,6 @@ penguins %>%
 
 
 
-
-### Ein Überblick über die metrischen Variablen
-
-
-
-... aufgeteilt in die Stufen von `species`:
-
-```{r echo = FALSE, eval = TRUE}
-#| echo: false
-penguins %>% 
-  select(body_mass_g, species) %>% 
-  group_by(species) %>% 
-  describe_distribution(range = FALSE, iqr = FALSE) %>% 
-  display()
-```
-
-
 Was fällt Ihnen auf?
 
 
@@ -942,19 +975,15 @@ Berechnen wir das mittlere Gewicht pro Spezies (Gruppe) der Pinguine, s. `m10.6`
 
 
 ```{r m106, echo = TRUE}
+#| results: hide
 options(mc.cores = parallel::detectCores())  # Turbo einschalten
 
 m10.6 <- stan_glm(body_mass_g ~ species, 
                   data = penguins, 
-                  refresh = 0,
+                  refresh = 0,  # unterdrückt Ausgabe der Posteriori-Stichproben
                   seed = 42)
-# refresh=0 unterdrückt Ausgabe der Posteriori-Stichproben
-```
 
 
-
-```{r}
-#| eval: false
 m10.6 %>% 
   parameters()
 ```
@@ -982,8 +1011,8 @@ Pinguine der Spezies Gentoo sind laut Modell im Mittel gut 1000g schwerer als Pi
 
 Der Unterschied im mittleren Gewicht von den Gruppen Chinstrap und Gentoo zur Referenzgruppe (Adelie) ist in @fig-m106-params verdeutlicht.
 
-```{r fig.asp = .33}
-#| fig-cap: "Effekt der UV: Unterschiede zur Referenzgruppe"
+```{r plot-hdi-m106}
+#| fig-cap: "Effekt der UV: Unterschiede zur Referenzgruppe (95%-HDI)"
 #| label: fig-m106-params
 plot(hdi(m10.6))
 ```
@@ -1281,15 +1310,14 @@ knitr::include_graphics("img/5v5531.jpg")
 ### Alternativen zu Nullhypothesen
 
 
-- Nullhypothesen, $H_0$, sind z.B.: $\rho=0$, $\rho_1 = rho_2$, $\mu_1 = \mu_2$, $\mu=0$, $\beta_1=0$.
+ Nullhypothesen, $H_0$, sind z.B.: $\rho=0$, $\rho_1 = rho_2$, $\mu_1 = \mu_2$, $\mu=0$, $\beta_1=0$.
+ Nullhypothesen zu testen, ist sehr verbreitet.
+Ein Grund ist, dass in der Frequentistischen Statistik keine andere Art von Hypothesentest möglich ist^[Mittlerweile gibt es Ansätze für einem Verfahren ähnlich dem ROPE-Ansatz, der weiter unten vorgestellt wird.]
 
-- Nullhypothesen zu testen, ist sehr verbreitet.
+Ein anderer Grund ist vermutlich, ... wir haben es schon immer so gemacht.
 
-- Ein Grund ist, dass in der Frequentistischen Statistik keine andere Art von Hypothesentest möglich ist^[Mittlerweile gibt es Ansätze für einem Verfahren ähnlich dem ROPE-Ansatz, der weiter unten vorgestellt wird.]
+Alternativen zum Testen von Nullhypothesen sind: 
 
-- Ein anderer Grund ist vermutlich, ... wir haben es schon immer so gemacht.
-
-- Alternativen zum Testen von Nullhypothesen:
     - Posteriori-Intervalle (PI oder HDI)  berichten
     - Rope-Konzept, @kruschke_rejecting_2018
     - Wahrscheinlichkeit von inhaltlich bedeutsamen Hypothesen quantifizieren.
@@ -1300,7 +1328,7 @@ knitr::include_graphics("img/5v5531.jpg")
 
 
 
-### "Praktisch" kein Unterschied
+### "Praktisch" kein Unterschied: Das Rope-Konzept
 
 
 
@@ -1315,9 +1343,9 @@ Unter "Großteil" wird häufig das *95%-HDI* verstanden (das ist auch der Standa
 
 *Entscheidungsregel* nach @kruschke_rejecting_2018:
 
-Großteil liegt *innerhalb* von Rope  ➡️ *Annahme* der Nullhypothese "praktisch kein Effekt", $H_0$
-Großteil liegt *außerhalb* von Rope  ➡️ *Ablehnung* der Nullhypothese "praktisch kein Effekt", $H_0$
-Ansonsten  ➡️  keine Entscheidung 
+- Großteil liegt *innerhalb* von Rope  ➡️ *Annahme* der Nullhypothese "praktisch kein Effekt", $H_0$
+- Großteil liegt *außerhalb* von Rope  ➡️ *Ablehnung* der Nullhypothese "praktisch kein Effekt", $H_0$
+- Ansonsten  ➡️  keine Entscheidung 
 
 
 
@@ -2443,15 +2471,15 @@ Genug für heute. 👍
 ## Aufgaben
 
 
-1. [Banova-skalenniveau](https://datenwerk.netlify.app/posts/anova-skalenniveau/anova-skalenniveau.html)
+1. [Anova-skalenniveau](https://datenwerk.netlify.app/posts/anova-skalenniveau/anova-skalenniveau.html)
 2. [Nullhyp-Beispiel](https://datenwerk.netlify.app/posts/nullhyp-beispiel/nullhyp-beispiel)
 1. [ttest-skalenniveau](https://datenwerk.netlify.app/posts/ttest-skalenniveau/ttest-skalenniveau.html)
 2. [Griech-Buchstaben-Inferenz](https://datenwerk.netlify.app/posts/griech-buchstaben-inferenz/griech-buchstaben-inferenz)
 3. [Interaktionseffekt1](https://datenwerk.netlify.app/posts/interaktionseffekt1/interaktionseffekt1)
 1. [Regression2](https://datenwerk.netlify.app/posts/regression2/regression2)
 2. [Regression3](https://datenwerk.netlify.app/posts/regression3/regression3)
-3. [Regression6](https://datenwerk.netlify.app/posts/regression6/regression6)
-1. [posterior_interval](https://datenwerk.netlify.app/posts/posterior_interval/posterior_interval.html)
+<!-- 3. [Regression6](https://datenwerk.netlify.app/posts/regression6/regression6) -->
+<!-- 1. [posterior_interval](https://datenwerk.netlify.app/posts/posterior_interval/posterior_interval.html) -->
 2. [diamonds-nullhyp-mws](https://datenwerk.netlify.app/posts/diamonds-nullhyp-mws/diamonds-nullhyp-mws.html)
 3. [stan_glm_parameterzahl](https://datenwerk.netlify.app/posts/stan_glm_parameterzahl/stan_glm_parameterzahl.html)
 1. [stan_glm_prioriwerte](https://datenwerk.netlify.app/posts/stan_glm_prioriwerte/stan_glm_prioriwerte.html)
