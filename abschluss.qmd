@@ -55,25 +55,30 @@ Lieblingsfehler im Überblick 🤷:
 
 ## Post-Präd-Verteilung (PPV) und Post-Verteilung verwechseln 🤷
 
-Berechen wir das Standard-mtcars-Modell: `mpg ~ hp`. 
+Berechnen wir das Standard-mtcars-Modell: `mpg ~ hp`. 
 
 ```{r m1, results = "hide", echo = TRUE}
 m1 <- stan_glm(mpg ~ hp, data = mtcars, refresh = 0)
 ```
 
 
-Die Post-Verteilung zeigt Stichproben zu den Parameterwerten.
+Die *Post-Verteilung* zeigt Stichproben zu den Parameterwerten, s. @tbl-post-m1.
 
 ```{r echo = TRUE}
+#| fig-cap: "Postverteilung in Stichprobenform (m1)"
+#| label: tbl-post-m1
 post_verteilung <- m1 %>% 
   as_tibble()
 head(post_verteilung)
 ```
 
+Diese Tabelle kann man hernehmen,
+um Fragen zu Post-Verteilung zu beantworten.
+Häufig ist es aber bequemer, z.B. mit `parameters(m1)` Post-Intervalle und Punktschätzer auszulesen.
 
 
 
-Die Posterior-Prädiktiv-Verteilung (PPV) zeigt die Vorhersagen, also keine Parameterwerte, sondern Beobachtungen.
+Die *Posterior-Prädiktiv-Verteilung (PPV)* zeigt die Vorhersagen, also keine Parameterwerte, sondern Beobachtungen.
 ```{r echo=FALSE}
 ppv <- posterior_predict(m1) %>% as_tibble()
 
@@ -94,9 +99,11 @@ ppv %>%
 ### Quantil für $p$
 
 Ein $p$-Quantil teilt eine Verteilung in zwei Teile, 
-und zwar so, dass mind. $p$ kleiner oder gleich dem $p$-Quantil sind.
+und zwar so, dass mind. $p$ kleiner oder gleich dem $p$-Quantil sind. s. @fig-quantil.
 ```{r quantil-plot}
 #| echo: false
+#| fig-cap: "50%-Quantil"
+#| label: fig-quantil
 funcShaded_low <- function(x, lower_bound) {
     y = dnorm(x, mean = 0, sd = 1)
     y[x < lower_bound] <- NA
@@ -127,10 +134,12 @@ Mind ein Anteil $1-p$ ist größer oder gleich dem $p$-Quantil.
 ### Verteilungsfunktion $F$
 
 $F(x)$ gibt die Wahrscheinlichkeit an der Stelle $x$ an, 
-dass $X$ einen Wert kleiner oder gleich $x$ annimmt.
+dass $X$ einen Wert kleiner oder gleich $x$ annimmt, s. @fig-F.
 
 ```{r f-plot}
 #| echo: false
+#| label: fig-F
+#| fig-cap: "Verteilungsfunktion F(x=0)=1/2"
 ggplot(tibble(x = -3:3)) +
   aes(x) + 
   stat_function(fun = dnorm, n = 100) +
@@ -148,7 +157,6 @@ $F(0)=1/2$, die Wahrscheinlichkeit beträgt hier 50%, dass $x$ nicht größer is
 
 Berechnen wir ein einfaches Interaktionsmodell: `mpg ~ hp*vs`.
 
-
 :::callout-note
 Zur Erinnerung: `mpg ~ hp*vs` ist synonym zu (aber kürzer als) `mpg ~ hp + vs + hp:vs`.
 :::
@@ -160,7 +168,8 @@ m2 <- stan_glm(mpg ~ hp*vs, data = mtcars)  # mit Interaktionseffekt
 ```
 
 
-Modellkoeffizienten:
+Modellkoeffizienten, s. @tbl-m2-params.
+
 ```{r}
 #| eval: false
 parameters(m2)
@@ -168,12 +177,16 @@ parameters(m2)
 
 ```{r}
 #| echo: false
+#| label: m2-params
+#| fig-cap: "Parameter von m2"
 parameters(m2) %>% display()
 ```
 
-
+@fig-m2-params zeigt die Visualisierung der Parameter von m2.
 
 ```{r}
+#| label: fig-m2-params
+#| fig-cap: "Parameter von m2 visualisiert"
 plot(parameters(m2))
 ```
 
@@ -285,9 +298,11 @@ Berechnen wir wieder ein einfaches^[langweiliges] Modell: `mpg ~ hp`.
 m3 <- stan_glm(mpg ~ hp, data = mtcars)
 ```
 
-Und schauen wir uns die Post-Verteilung an, mit eingezeichnetem HDI:
+Und schauen wir uns die Post-Verteilung an, mit eingezeichnetem HDI, s. @fig-post-m3.
 
-```{r echo = FALSE, fig.asp = .9}
+```{r echo = FALSE}
+#| label: fig-post-m3
+#| fig-cap: "Post-Verteilung (HDI) von m3"
 plot(hdi(m3))
 ```
 
@@ -345,10 +360,13 @@ Teamarbeit bleibt natürlich trotzdem untersagt.
 ### DAG mit doppelter Konfundierung
 
 
+Puh, jetzt kommt ein wilder DAG, s. @fig-dag-wild.
 
 
 ```{r dag2}
 #| echo: false
+#| fig-cap: "Ein DAG mit doppelter Konfundierung. Ist hier noch zu helfen?"
+#| label: fig-dag-wild
 dag2_raw <-
   'dag {
 A [pos="-2.200,-1.520"]
@@ -375,13 +393,19 @@ um den totalen (gesamten) Effekt von *E* auf *D* zu bestimmen!
 
 ❗ Entweder ist die Menge {A,Z} zu adjustieren oder die Menge {B,Z}.
 
+Ja, dem DAG ist zu helfen.
 
 
 ### DAG mit vielen Variablen
 
+Je nach dem wie komplex Ihre Theorie ist, ist
+Ihr DAG auch komplex, s. @fig-dag-komplex.
+
 
 ```{r dag3, fig.asp = .5}
 #| echo: false
+#| label: fig-dag-komplex
+#| fig-cap: "Ein DAG mit vielen Variablen"
 dag3_raw <-
   'dag {
 1 [pos="-5.600,2.115"]
@@ -428,6 +452,8 @@ dag3_raw %>% dagitty() %>% plot()
 
 Minimale Adjustierungsmenge, um den Effekt von E auf D zu identifizieren: {7}, {8}.
 
+Trotz der vielen Variablen,
+ist der kausale Effekt von E auf D recht gut zu identifizieren.
 
 
 ### Ein Kausalmodell der Schizophrenie, van Kampen (2014)
@@ -454,11 +480,15 @@ um den kausalen Effekt der UV auf die AV zu identifizieren!
 
 
 
-### DAG von van Kampen (2014) zu den Symptomen der Schizophrenie
+@fig-van-kampen zeigt den DAG von van Kampen (2014) zu den Symptomen der Schizophrenie.
+
+
 
 
 ```{r dag-van-kampen, fig.asp=.5}
 #| echo: false
+#| label: fig-van-kampen
+#| fig-cap: "Ein DAG zu den Symptomen der Schizophrenie"
 dad_van_kampen_raw <-
   'dag {
 AFF [pos="0.262,0.477"]

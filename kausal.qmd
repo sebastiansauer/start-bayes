@@ -36,7 +36,7 @@ Nach Absolvieren des jeweiligen Kapitels sollen folgende Lernziele erreicht sein
 
 Sie können ... 
 
-- rklären, wann eine Kausalaussage gegeben eines DAGs berechtigt ist
+- erklären, wann eine Kausalaussage gegeben eines DAGs berechtigt ist
 - die “Atome” der Kausalität eines DAGs benennen
 - “kausale Hintertüren” schließen
 
@@ -75,7 +75,8 @@ studie_a %>%
 Die Daten stammen aus einer (fiktiven) klinischen Studie, $n=700$, hoher Qualität (Beobachtungsstudie).
 Bei Männern scheint das Medikament zu helfen; bei Frauen auch.
 Aber *insgesamt* (Summe von Frauen und Männern) *nicht*?!
-Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, wenn er das Geschlecht kennt @pearl_causal_2016?
+Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? 
+Vielleicht nur dann, wenn er das Geschlecht kennt [@pearl_causal_2016]?
 
 
 
@@ -116,17 +117,15 @@ plot(dag_studie_a)
 ```
 
 
-:::callout-important
-Betrachtung der Teildaten (d.h. stratifiziert pro Gruppe) zeigt in diesem Fall den wahren, kausalen Effekt. 
-Stratifizieren ist also in diesem Fall der korrekte, richtige Weg.
-:::
-
-
 Betrachtung der Gesamtdaten zeigt in diesem Fall einen *konfundierten* Effekt: Geschlecht konfundiert den Zusammenhang von Medikament und Heilung.
 
 
 :::callout-important
+Betrachtung der Teildaten (d.h. stratifiziert pro Gruppe) zeigt in diesem Fall den wahren, kausalen Effekt. 
+Stratifizieren ist also in diesem Fall der korrekte, richtige Weg.
 Achtung: Das Stratifizieren ist nicht immer und nicht automatisch die richtige Lösung.
+Stratifizieren bedeutet,
+den Gesamtdatensatz in Gruppen oder "Schichten" ("Strata")
 :::
 
 
@@ -217,8 +216,9 @@ Stratifizieren wäre falsch, da dann nur der toxische Effekt, aber nicht der hei
 
 
 Vergleichen Sie die DAGs @fig-dag-studie-a und @fig-dag-studie-b,
-die die Kausalmodelle der Studien A und B darstellen:
+die die *Kausalmodelle* der Studien A und B darstellen:
 Sie sind *unterschiedlich*.
+Aber: Die *Daten* sind *identisch*.
 
 
 
@@ -271,7 +271,7 @@ Die Behandlung hat einen Einfluss auf die Heilung.
 Damit gibt es eine Mediation ("Kette") von Größe $\rightarrow$ Behandlung $\rightarrow$ Heilung.
 Darüber hinaus gibt es noch einen Einfluss von Größe der Nierensteine auf die Heilung.
 
-Das Kausalmodell ist in @fig-dag-studie-c dargestellt; @@fig-dag-studie-c visualisiert alternativ.
+Das Kausalmodell ist in @fig-dag-studie-c dargestellt; @fig-dag-studie-c2 visualisiert alternativ.
 
 Sollte man hier `size` kontrollieren,
 wenn man den Kausaleffekt von `treatment` schätzen möchte? 
@@ -341,7 +341,18 @@ Nehmen Sie Bezug zu folgenden Aussagen:
 
 
 
+### Zwischenfazit
 
+Bei *Beobachtungsstudien* ist aus den Daten alleine nicht herauszulesen,
+ob eine Intervention wirksam ist,
+ob es also einen kausalen Effekt von der Intervention (angenommen Ursache) auf eine AV (Wirkung) gibt.
+Damit ist auch nicht zu erkennen, welche Entscheidung zu treffen ist.
+Nur Kenntnis des Kausalmodells zusätzlich zu den Daten erlaubt,
+eine Entscheidung sinnvoll zu treffen.
+
+Bei *experimentellen Daten* ist die Kenntnis des Kausalmodells nicht nötig (wenn das Experiment handwerklich gut gestaltet ist):
+Das Randomisieren der Versuchspersonen zu Gruppen und das Kontrollieren der Versuchsbedingungen sorgen dafür,
+dass es keine Konfundierung gibt.
 
 
 
@@ -357,8 +368,9 @@ Nehmen Sie Bezug zu folgenden Aussagen:
 ### Datensatz 'Hauspreise im Saratoga County'
 
 
-[Datenquelle](https://vincentarelbundock.github.io/Rdatasets/csv/mosaicData/SaratogaHouses.csv); 
-[Beschreibung des Datensatzes](https://vincentarelbundock.github.io/Rdatasets/doc/mosaicData/SaratogaHouses.html)
+Wir nutzen den Datensatz [Saratoga County](https://vincentarelbundock.github.io/Rdatasets/csv/mosaicData/SaratogaHouses.csv); s. @tbl-saratoga.
+Hier gibt es eine 
+[Beschreibung des Datensatzes](https://vincentarelbundock.github.io/Rdatasets/doc/mosaicData/SaratogaHouses.html).
 
 
 ```{r data-saratoga, echo = TRUE}
@@ -374,6 +386,8 @@ d <- data_read(d_path)  # aus easystats
 
 ```{r}
 #| echo: false
+#| label: tbl-saratoga
+#| tbl-cap: "Saratoga-County-Datensatz"
 d %>% 
   select(price, livingArea, bedrooms,waterfront) %>% 
   #slice_head(n=5) %>% 
@@ -395,9 +409,8 @@ Die muss viel wert sein!"
 
 
 >   Das finde ich heraus. Ich mach das wissenschaftlich.
-👩 🔬
 
-Das ist Angie, Data Scientistin.
+👩 🔬 Das ist Angie, Data Scientistin.
 
 
 
@@ -409,12 +422,15 @@ Das ist Angie, Data Scientistin.
 👩 🔬
 
 
+Modell 1 (`m1`) modelliert den Hauspreis als Funktion der Zimmerzahl, s. @fig-m1.
 
 
 
 ```{r d-plot-don1}
 #| echo: false
 #| message: false
+#| label: fig-m1
+#| fig-cap: "Modell m1"
 d %>% 
   ggplot() +
   aes(x = bedrooms, y = price) +
@@ -437,10 +453,12 @@ d %>%
 🧑
 
 
-Berechnen wir das Modell:
+Berechnen wir das Modell `m1`; die Parameter stehen in @tbl-m1.
 
 
 ```{r m1, echo = TRUE}
+#| label: tbl-m1
+#| fig-cap: "Parameter für m1"
 m1 <- stan_glm(price ~ bedrooms,
                refresh = 0,
                data = d)
@@ -448,9 +466,13 @@ hdi(m1)
 ```
 
 
-Mit `estimate_preditioncs` können wir Vorhersagen berechnen (bzw. schätzen; die Vorhersagen sind ja mit Ungewissheit verbunden, daher ist "schätzen" vielleicht das treffendere Wort):
+Mit `estimate_preditioncs` können wir Vorhersagen berechnen (bzw. schätzen; die Vorhersagen sind ja mit Ungewissheit verbunden, daher ist "schätzen" vielleicht das treffendere Wort).
+@tbl-m1-pred zeigt den laut `m1` vorhergesagten Hauspreis für ein Haus mit 2 Zimmern.
+
 
 ```{r echo = TRUE}
+#| tbl-cap: "Vorhersage des Hauspreises für ein Haus mit 2 Zimmern"
+#| label: tbl-m1-pred
 dons_house <- tibble(bedrooms = 2)
 estimate_prediction(m1, data = dons_house)
 ```
@@ -471,27 +493,24 @@ Don hofft, durch Verdopplung der Zimmerzahl den doppelten Verkaufspreis zu erzie
 
 👩
 
-Berechnen wir die Vorhersagen für Dons neues Haus (mit den durch Mauern halbierten Zimmern).
+Berechnen wir die Vorhersagen für Dons neues Haus (mit den durch Mauern halbierten Zimmern), s. @tbl-m1-pred2.
 
 
 ```{r m1-estimate-pred, echo = TRUE}
+#| fig-cap: "Vorhergesagter Hauspreis laut m1 für ein Haus mit 4 Zimmern"
+#| label: tbl-m1-pred2
 dons_new_house <- tibble(bedrooms = 4)
 estimate_prediction(m1, dons_new_house)
 ```
 
 
-Mit 4 statt 2 Schlafzimmer steigt der Wert auf 250k, laut `m1`.
+Mit 4 statt 2 Schlafzimmer steigt der Wert auf 250k, laut `m1`, @fig-m1.
 
 
 >   Volltreffer! Jetzt verdien ich 100 Tausend mehr! 🤑 Ich bin der Größte!
 🧑
 
 
-```{r plot-pred-m1}
-#| echo: false
-pred <- estimate_relation(m1)
-plot(pred)
-```
 
 
 :::callout-note
@@ -525,30 +544,65 @@ estimate_expectation(m1, dons_new_house)
 
 
 
-### Modell 2: `price ~ bedrooms + livingArea`
+### Modell 2
 
-Berechnen wir das Modell  `m2: price ~ bedrooms + livingArea`.
+
+Berechnen wir das Modell  `m2: price ~ bedrooms + livingArea`, s. @tbl-m2.
 
 ```{r m2, echo = TRUE}
+#| tbl-cap: "Parameter von m2"
+#| label: tbl-m2
 m2 <- stan_glm(price ~ bedrooms + livingArea, data = d, refresh = 0)
 
 hdi(m2)
 ```
 
-Was sind die Vorhersgaen des Modell? 
+Was sind die Vorhersagen des Modell? 
+@tbl-m2-pred gibt Aufschluss für den laut `m2` vorhersagten Kaufpreis eines Hauses
+mit 4 Zimmern und 1200 Quadratfuß Wohnfläche; @tbl-m2-pred2 gibt die Schätzung (laut `m2`) für den Preis eines Hauses mit 2 Zimmern (und der gleichen Wohnfläche).
 
 
 ```{r m2-pred, echo = TRUE}
+#| tbl-cap: "Vorhersage von m2 für ein Haus mit 4 Zimmern und 1200 Einheiten Wohnfläche"
+#| label: tbl-m2-pred
 estimate_prediction(m2, data = tibble(bedrooms = 4, livingArea = 1200))
 ```
 
 
-Andere, aber ähnliche Frage: Wieviel Haus kostet ein Haus mit sagen wir 4 Zimmer *gemittelt* über die verschiedenen Größen von `livingArea`? Stellen Sie sich alle Häuser mit 4 Zimmern vor (also mit verschiedenen Wohnflächen). Wir möchten nur wissen, was so ein Haus "im Mittel" kostet.
-Wir möchten also die Mittelwerte pro `bedroom` schätzen, gemittelt für jeden Wert von `bedroom` über `livingArea`:
+```{r m2-pred2, echo = FALSE}
+#| tbl-cap: "Vorhersage von m2 für ein Haus mit 2 Zimmern und 1200 Einheiten Wohnfläche"
+#| label: tbl-m2-pred2
+estimate_prediction(m2, data = tibble(bedrooms = 4, livingArea = 1200))
+```
+
+
+
+
+Andere, aber ähnliche Frage: Wieviel kostet ein Haus mit sagen wir 4 Zimmer *gemittelt* über die verschiedenen Größen von `livingArea`? Stellen Sie sich alle Häuser mit 4 Zimmern vor (also mit verschiedenen Wohnflächen). Wir möchten nur wissen, was so ein Haus "im Mittel" kostet.
+Wir möchten also die Mittelwerte pro `bedroom` schätzen, gemittelt für jeden Wert von `bedroom` über `livingArea`.
+Die Ergebnisse stehen in @tbl-m2-preds und sind in @fig-m2-preds visualisiert.
 
 ```{r m2-pred-means}
+#| label: tbl-m2-preds
+#| tbl-cap: "Vorhersagen des Preises von Häusern mit verschiedener Zimmerzahl gemittelt über die verschiedenen Werte der Wohnfläche; basierend auf m2."
 estimate_means(m2, at = "bedrooms", length = 7)
 ```
+
+
+```{r}
+#| echo: false
+#| label: fig-m2-preds
+#| fig-asp: 0.3
+#| fig-cap: "Hauspreis als Funktion der Zimmerzahl, laut m2"
+estimate_means(m2, at = "bedrooms", length = 7) %>% 
+  ggplot() +
+  aes(x = bedrooms, y = Mean) +
+  geom_line() +
+  geom_point(alpha = .7) 
+```
+
+
+
 
 >   "Die Zimmer zu halbieren,
 hat den Wert des Hauses *verringert*,
@@ -558,6 +612,7 @@ Don!"
 
 
 >   "Verringert!? Weniger Geld?! Oh nein!"
+
 🧑
 
 
@@ -566,7 +621,7 @@ Don!"
 
 ### Die Zimmerzahl ist negativ mit dem Preis korreliert 
 
-... wenn man die Wohnfläche (Quadratmeter) kontrolliert.
+... wenn man die Wohnfläche (Quadratmeter) kontrolliert, s. @fig-m2-negativ.
 
 
 
@@ -575,7 +630,7 @@ Don!"
 👩
 
 
-[Hauspreis stratifizieren](img/hauspreis1.png)
+![Hauspreis stratifizieren](img/hauspreis1.png){#fig-m2-negativ fig-asp=.5}
 
 [Quellcode](https://github.com/sebastiansauer/QM2-Folien/blob/main/Themen/children/Hauspreis-stratifizieren.Rmd)
 
@@ -589,7 +644,7 @@ Die Koeffizienten einer multiplen Regression zeigen den Zusammenhang $\beta$ des
 
 Man nennt die Koeffizienten einer multiplen Regression daher auch *parzielle Regressionskoeffizienten*. Manchmal spricht man, eher umgangssprachlich, auch vom "Netto-Effekt" eines Prädiktors, oder davon, dass ein Prädiktor "bereinigt" wurde vom (linearen) Einfluss der anderen Prädiktoren auf $y$.
 
-Damit kann man die Regressionskoeffizienten so interpretieren, dass Sie den Effekt des Prädiktors $x_1$ auf $y$ anzeigen *unabhängig* vom Effekt der anderen Prädiktoren, $x_2,x_3,...$ auf $y$
+Damit kann man die Regressionskoeffizienten so interpretieren, dass Sie den Effekt des Prädiktors $x_1$ auf $y$ anzeigen *unabhängig* vom Effekt der anderen Prädiktoren, $x_2,x_3,...$ auf $y$.
 
 Man kann sich dieses Konstanthalten vorstellen als eine Aufteilung in Gruppen: Der Effekt eines Prädiktors $x_1$ wird für jede Ausprägung (Gruppe) des Prädiktors $x_2$ berechnet.
 
@@ -646,12 +701,14 @@ A true hypothesis will pass and fail many statistical "tests" on its way to acce
 
 ### Kausalmodell für Konfundierung, `km1`
 
-
+Das Kausalmodell `km1` ist in @fig-km1 dargestellt.
 
 
 ```{r km1, fig.asp = .33, fig.width=9}
 #| echo: false
 #| warning: false
+#| label: fig-km1
+#| fig-cap: "Kausalmodell km1 - Eine Erklärung (von mehreren) für m1 bzw. die Daten, die m1 zugrunde liegen"
 km1 <- confounder_triangle(x = "bedrooms",
                           y = "price",
                           z = "living area") %>% 
@@ -682,11 +739,13 @@ Wenn das Kausalmodell stimmt, dann zeigt `m2` den kausalen Effekt von `livingAre
 👩
 
 
-
+@fig-km1-controlled zeigt, dass `bedrooms` und `price` *unkorreliert* werden (`d_separated`), wenn man `living area` kontrolliert.
 
 ```{r confounder-triangle, fig.asp = 0.45, fig.width=9, dpi=300}
 #| echo: false
 #| warning: false
+#| label: fig-km1-controlled
+#| fig-cap: "Durch Kontrolle von living area wird die Assoziation von price und bedrooms aufgehoben."
 confounder_triangle(x = "bedrooms",
                           y = "price",
                           z = "living area") %>% 
@@ -708,27 +767,24 @@ source("https://raw.githubusercontent.com/sebastiansauer/QM2-Folien/41bc43754169
 
 
 
-1. Ohne Kontrollieren der Konfundierungsvariablen
-
-Regressionsmodell:
-`y ~ x`
+*Ohne* Kontrollieren der Konfundierungsvariablen: Regressionsmodell `y ~ x`, @fig-p-konf1.
 
 ```{r}
 #| echo: false
+#| fig-cap: "Konfundierung von y und x!"
+#| label: fig-p-konf1
 p_konf1
 ```
 
 Es wird (fälschlich) eine Korrelation zwischen `x` und `y`  angezeigt: Scheinkorrelation.
 
 
-M2. it Kontrollieren der Konfundierungsvariablen
-
-
-Regressionsmodell:
-`y ~ x + group`
+*Mit* Kontrollieren der Konfundierungsvariablen: Regressionsmodell `y ~ x + group`, @fig-p-konf2.
 
 ```{r plot-konf2}
 #| echo: false
+#| fig-cap: "Keine Konfundierung von y und x!"
+#| label: fig-p-konf2
 p_konf2
 ```
 
@@ -750,14 +806,9 @@ Es wird korrekt gezeigt, dass es keine Korrelation zwischen `x` und `y` gibt, we
 
 
 
-```{r print-km1}
-#| echo: false
-print(km1)
-```
 
 
-
-Laut `km1` dürfte es keine Assoziation (Korrelation) zwischen `bedrooms` und `price` geben, wenn man `livingArea` kontrolliert.
+Laut `km1` dürfte es keine Assoziation (Korrelation) zwischen `bedrooms` und `price` geben, wenn man `livingArea` kontrolliert, wie in @fig-km1 dargestellt.
 Es gibt aber noch eine Assoziation zwischen `bedrooms` und `price` geben, wenn man `livingArea` kontrolliert.
  Daher sind sowohl `m1` und `m2` nicht mit dem Kausalmodell `km1` vereinbar.
 
@@ -780,12 +831,14 @@ Insgesamt gibt es zwei Kausaleinflüsse von `a` auf `p`:
     - $a \rightarrow p$
     - $a \rightarrow b \rightarrow p$
 
-Man nennt die mittlere Variable einer Wirkkette auch einen *Mediator* und den Pfad von der UV (`a`) über den Mediator (`b`) zur AV (`p`) auch *Mediation*.
+Man nennt die mittlere Variable einer Wirkkette auch einen *Mediator* und den Pfad von der UV (`a`) über den Mediator (`b`) zur AV (`p`) auch *Mediation*, s. @fig-m1-mediation.
 
 
 
 ```{r km2}
 #| echo: false
+#| fig-cap: "Der Effekt von livingArea wird über den Mediator bedrooms auf price vermittelt."
+#| label: fig-m1-mediation
 km2 <- 
   dagify(
   b ~ a,
@@ -805,20 +858,23 @@ print(km2)
 
 ### Schoki macht Nobelpreis! (?)
 
-Eine Studie fand eine starke Korrelation, $r=0.79$ zwischen (Höhe des) Schokoladenkonsums eines Landes und (Anzahl der) Nobelpreise eines Landes [@messerli_chocolate_2012].
+Eine Studie fand eine starke Korrelation, $r=0.79$ zwischen (Höhe des) Schokoladenkonsums eines Landes und (Anzahl der) Nobelpreise eines Landes [@messerli_chocolate_2012], s. @fig-schoki.
 
 
 ```{r schoki-plot, out.width="50%"}
 #| echo: false
 #| warning: false
 #| fig-align: "center"
+#| label: fig-schoki
+#| fig-cap: "Je mehr Schoki, desto mehr Nobelpreise"
 knitr::include_graphics("img/correlation_550.png")
 ```
 
 
 
 :::callout-important
-Korrelation ungleich Kausation!
+Korrelation ungleich Kausation! Korrelation *kann* bedeuten, dass eine Kausation vorliegt, aber es muss auch nicht sein, dass Kausation vorliegt.
+Dann spricht man von einer *Scheinkorrelation*.
 :::
 
 
@@ -876,14 +932,26 @@ print(km3)
 >   "Don, nach deinem Kausalmodell müssten `bedrooms` und `livingArea` unkorreliert sein. Sind sie aber nicht."
 
 
-Rechne doch selber, die Korrelation aus, Don:
+Rechne doch selber die Korrelation aus, Don:
 
+
+>   Äh, wie ging das nochmal?
+
+🧑
+
+
+So könntest du das rechnen, Don: `correlation(d, select = c("bedrooms", "livingArea"))`. 
+Oder z.B. so:
 
 ```{r}
-d %>% 
+dons_r <- d %>% 
   summarise(cor(bedrooms, livingArea))
 ```
 
+Die Korrelation liegt also bei `r  round(cor(d$bedrooms, d$livingArea), 2)`
+
+
+>   Bitte, gerne hab ich dir geholfen, Don.
 
 👩
 
@@ -894,18 +962,13 @@ d %>%
 
 
 
-```{r}
-#| echo: false
-#| label: fig-km1
-#| out-width: "50%"
-km1
-```
+Das Kausalmodell `km1` behauptet: $b \indep p \, |\, a$: `bedrooms` sind unabhängig von `price`, wenn man `livingArea` kontrolliert.
+
+*Kontrollieren* einer Variable $Z$ erreicht man auf einfache Art,
+indem man sie in zusätzlich zur vermuteten Ursache $X$ in die Regressionsgleichung mit aufnimmt, also $y ~ x + z`. 
 
 
-
-$b \indep p \, |\, a$: `bedrooms` sind unabhängig von `price`, wenn man `livingArea` kontrolliert.
-
-⛈️ Passt nicht zu den Daten/zum Modell!
+Aber diese behauptete Unabhängigkeit findet sich *nicht* in den Daten wieder, s. @tbl-m2. Also: ⛈️ Passt nicht zu den Daten!
 
 
 
@@ -913,38 +976,40 @@ $b \indep p \, |\, a$: `bedrooms` sind unabhängig von `price`, wenn man `living
 
 ### Unabhängigkeiten laut `km2`
 
-`b`: bedrooms, `p`: price, `a` area (living area)
+`b`: bedrooms, `p`: price, `a` area (living area), s. @fig-m1-mediation.
 
 
 
+Das Kausalmodell `km2` postuliert *keine* Unabhängigkeiten:
+Laut `km2`sind alle Variablen des Modells miteinander assoziiert (korreliert).
 
-```{r}
-#| echo: false
-km2
-```
+:::callout-note
+Ein Modell, in dem alle Variablen miteinander korreliert sind,
+nennt man auch *satuiert* oder saturiertes Modell.
+So ein Modell ist empirisch *schwach*.
+Denn: Behauptet ein Modell, 
+dass die Korrelation zwischen zwei Variablen irgendeinen Wert zwischen -1 und +1 beträgt (nur nicht exakt Null), so ist das eine sehr schwache Aussage (und kaum zu falsifizieren). 
+So ein Modell ist wissenschaftlich wenig wert. 
+Das ist so ähnlich wie ein Modell, das voraussagt,
+dass es morgen irgendeine Temperatur hat zwischen -30 und +30 Grad (nur nicht exakt Null). Trifft diese Temperaturvorhersage ein,
+so werden wir nicht gerade beeindruckt sein. 🥱
+:::
 
-keine Unabhängigkeiten
-
-❓ Passt zu den Daten/zum Modell
+Fazit: `km2` asst zu den Daten, aber wir sind nicht gerade beeindruckt vom Modell.
 
 
 
 
 ### Unabhängigkeiten laut `km3`
 
-`b`: bedrooms, `p`: price, `a` area (living area)
+`b`: bedrooms, `p`: price, `a` area (living area), s. @fig-km3.
 
 
 
-
-
-```{r}
-#| echo: false
-km3
-```
 
 
 $b \indep a$: `bedrooms` sind unabhängig von `livingArea` (`a`)
+
 
 ⛈️ Passt nicht zu den Daten/zum Modell!
 
@@ -969,14 +1034,7 @@ Was sind DAGs?
 
 
 
-### DAG von `km1`
-
-```{r}
-#| echo: false
-km1
-```
-
-
+Der DAG von `km1` ist in @fig-km1 zu sehen.
 
 
 ### Leider passen potenziell viele DAGs zu einer Datenlage
@@ -984,17 +1042,23 @@ km1
 `b`: bedrooms, `p`: price, `a` area (living area)
 
 
+Ja, der Job der Wissenschaft ist kein Zuckerschlecken.
+Aber wenn es einfach wäre, die Kausalstruktur der Phänomene zu entdecken,
+wären sie längst erkannt, und alle Probleme der Menschheit gelöst.
+
+In @fig-kms sind mögliche Kausalmodelle für Dons Studie dargestellt.
+
 
 ```{r dag-km1, fig.width=9}
 #| echo: false
+#| label: fig-kms
+#| fig-cap: "Kausalmodelle, die potenziell geeignet sind für Dons Fragestellung"
 dag_km1 <-
   dagitty("dag{
          a -> b
          a -> p
          }
          ")
-
-
 
 
 coordinates(dag_km1) <- list(
@@ -1012,7 +1076,7 @@ ggdag_equivalent_dags(dag_km1) +
 
 ### Was ist eigentlich eine Ursache?
 
-Etwas verursachen kann man auch (ziemlich hochtrabend) als "Kausation" verwenden.
+Etwas verursachen kann man auch (hochtrabend) als "Kausation" bezeichnen.
 
 :::callout-note
 Weiß man, was die Wirkung $W$ einer Handlung $H$ (Intervention) ist,  so hat man $H$ als Ursache von $W$ erkannt.
@@ -1021,13 +1085,15 @@ Weiß man, was die Wirkung $W$ einer Handlung $H$ (Intervention) ist,  so hat ma
 @mcelreath_statistical_2020
 
 
-
+Viele Menschen denken - fälschlich - dass Korrelation Kausation bedeuten muss, s. @fig-xkcd-causation.
 
 
 ```{r}
 #| echo: false
 #| fig-align: "center"
 #| out-width: "50%"
+#| label: fig-xkcd-causation
+#| fig-cap: "xkcd zum Thema Kausation"
 knitr::include_graphics("img/correlation.png")
 ```
 
@@ -1363,9 +1429,11 @@ Ergebnis: Ein *negativer* Zusammenhang!?
 
 
 
-Berechnen wir das "Eignungsmodell", aber nur mit Studis (`studium == 1)`:
+Berechnen wir das "Eignungsmodell", aber nur mit Studis (`studium == 1)`, s. @tbl-m-eignung.
 
 ```{r}
+#| fig-cap: "Zum Zusammenhang von Fleiss und Talent"
+#| label: fig-m-eignung
 m_eignung <-
   stan_glm(iq ~ fleiss, data = d_eignung %>%  filter(studium == 1), refresh = 0)
 
@@ -1379,7 +1447,7 @@ hdi(m_eignung)
 #| echo: false
 #| label: fig-eignung
 #| fig-cap: "Der Zusammenhang von Fleiss und IQ"
-#| out-width: "50%"
+#| fig-asp: 0.5
 d_eignung %>% 
   filter(studium == 1) %>% 
   ggplot(aes(x = fleiss, y = iq)) +
@@ -1474,6 +1542,7 @@ Wir sind v.a. interessiert an $G \rightarrow K$, dem *direkten kausalen* Effekt 
 ```{r}
 #| echo: false
 #| label: fig-dag-grannies
+#| fig-cap: "Der kausale Effekt von Gro0eltern auf Enkel. Ein verlorener Fall, zumindest was den DAG betrifft"
 dag_coords <-
   tibble(name = c("G", "E", "K"),
          x    = c(1, 2, 2),
@@ -1487,7 +1556,7 @@ dagify(E ~ G,
 ```
 
 
-Aber was ist, wenn wir vielleicht eine *u*nbekannte Variable übersehen haben? (S. nächster Abschnitt 👻)
+Aber was ist, wenn wir vielleicht eine *u*nbekannte Variable übersehen haben? (S. nächster Abschnitt). 👻
 
 
 
@@ -1496,7 +1565,7 @@ Aber was ist, wenn wir vielleicht eine *u*nbekannte Variable übersehen haben? (
 
 ## Vertiefung
 
-🏎️VERTIEFUNG🏎️
+🏎️VERTIEFUNG - nicht prüfungsrelevant🏎️
 
 
 ### Der Gespenster-DAG
@@ -1885,6 +1954,7 @@ S. DAG in @fig-dag-bsp2: UV: $W$, AV: $D$
 ```{r bsp2}
 #| echo: false
 #| label: fig-dag-bsp2
+#| fig-asp: 0.5
 #| fig-cap: "Welche Variablen muss man kontrollieren, um den Effekt von W auf D zu bestimmen?"
 dag_coords <-
   tibble(name = c("A", "D", "M", "S", "W"),
@@ -1940,12 +2010,12 @@ impliedConditionalIndependencies(dag_6.2)
 
 
 
-### Fazit
+## Fazit
 
-Wie (und sogar ob) Sie statistische Ergebnisse (z.B. eines Regressionsmodells) interpretieren können, hängt von der *epistemologischen Zielrichting* der Forschungsfrage ab:
+Wie (und sogar ob) Sie statistische Ergebnisse (z.B. eines Regressionsmodells) interpretieren können, hängt von der *epistemologischen Zielrichtung* der Forschungsfrage ab:
 
 - Bei *deskriptiven* Forschungsfragen können die Ergebnisse (z.B. Regressionskoeffizienten) direkt interpretiert werden. Z.B. "Der Unterschied zwischen beiden Gruppen beträgt etwa ...". Allerdings ist eine kausale Interpretation nicht zulässig.
-- Bei *prognostischen* Fragestellungen spielen die Modellkoeffizienten keine Rolle, stattdessen geht es um vorhergesagten Werte, $\hat{y}_i$, z.B. auf Basis der PPV. Kausalaussagen sind zwar nicht möglich, aber auch nicht von Interesse.
+- Bei *prognostischen* Fragestellungen (Vorhersagen) spielen die Modellkoeffizienten keine Rolle, stattdessen geht es um vorhergesagten Werte, $\hat{y}_i$, z.B. auf Basis der PPV. Kausalaussagen sind zwar nicht möglich, aber auch nicht von Interesse.
 - Bei *kausalen* Forschungsfragen dürfen die Modellkoeffizienten nur auf Basis eines Kausalmodells (DAG) oder eines (gut gemachten) Experiments interpretiert werden.
     
 Modellkoeffizienten ändern sich (oft), wenn man Prädiktoren zum Modell hinzufügt oder wegnimmt.
@@ -1954,6 +2024,10 @@ Kenntnis der "kausalen Atome" ist Voraussetzung zur Ableitung von Kausalschlüss
 
 
 
+## Aufgaben
+
+
+- [Sammlung "kausal"](https://datenwerk.netlify.app/#category=causal)
 
 
 

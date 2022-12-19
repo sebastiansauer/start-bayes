@@ -353,23 +353,27 @@ div.csl-indent {
 </section>
 <section id="post-präd-verteilung-ppv-und-post-verteilung-verwechseln" class="level2" data-number="12.3">
 <h2 data-number="12.3" class="anchored" data-anchor-id="post-präd-verteilung-ppv-und-post-verteilung-verwechseln"><span class="header-section-number">12.3</span> Post-Präd-Verteilung (PPV) und Post-Verteilung verwechseln 🤷</h2>
-<p>Berechen wir das Standard-mtcars-Modell: <code>mpg ~ hp</code>.</p>
+<p>Berechnen wir das Standard-mtcars-Modell: <code>mpg ~ hp</code>.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(mpg <span class="sc">~</span> hp, <span class="at">data =</span> mtcars, <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Die Post-Verteilung zeigt Stichproben zu den Parameterwerten.</p>
-<div class="cell">
+<p>Die <em>Post-Verteilung</em> zeigt Stichproben zu den Parameterwerten, s. <span class="quarto-unresolved-ref">?tbl-post-m1</span>.</p>
+<div>
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>post_verteilung <span class="ot">&lt;-</span> m1 <span class="sc">%&gt;%</span> </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(post_verteilung)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display">
-<div class="kable-table">
+<div id="tbl-post-m1" class="cell tbl-parent quarto-layout-panel anchored">
+<div class="panel-caption table-caption">
+<p><strong>?(caption)</strong></p>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="kable-table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
 <table class="table table-sm table-striped">
 <thead>
 <tr class="header">
@@ -380,41 +384,48 @@ div.csl-indent {
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">27.99734</td>
-<td style="text-align: right;">-0.0625998</td>
-<td style="text-align: right;">4.004573</td>
+<td style="text-align: right;">28.36398</td>
+<td style="text-align: right;">-0.0633220</td>
+<td style="text-align: right;">3.280704</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">28.41831</td>
-<td style="text-align: right;">-0.0648228</td>
-<td style="text-align: right;">4.248156</td>
+<td style="text-align: right;">28.37194</td>
+<td style="text-align: right;">-0.0599555</td>
+<td style="text-align: right;">3.088217</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">32.35498</td>
-<td style="text-align: right;">-0.0766825</td>
-<td style="text-align: right;">3.539327</td>
+<td style="text-align: right;">29.27274</td>
+<td style="text-align: right;">-0.0574541</td>
+<td style="text-align: right;">3.585167</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">26.64150</td>
-<td style="text-align: right;">-0.0527664</td>
-<td style="text-align: right;">4.268596</td>
+<td style="text-align: right;">30.88125</td>
+<td style="text-align: right;">-0.0724607</td>
+<td style="text-align: right;">3.729026</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">27.85701</td>
-<td style="text-align: right;">-0.0622692</td>
-<td style="text-align: right;">4.176046</td>
+<td style="text-align: right;">27.73357</td>
+<td style="text-align: right;">-0.0573495</td>
+<td style="text-align: right;">3.771514</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">28.17933</td>
-<td style="text-align: right;">-0.0638320</td>
-<td style="text-align: right;">4.115600</td>
+<td style="text-align: right;">32.74799</td>
+<td style="text-align: right;">-0.0818476</td>
+<td style="text-align: right;">4.531927</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p>Postverteilung in Stichprobenform (m1)</p>
 </div>
-<p>Die Posterior-Prädiktiv-Verteilung (PPV) zeigt die Vorhersagen, also keine Parameterwerte, sondern Beobachtungen.</p>
+</div>
+</div>
+</div>
+<p>Diese Tabelle kann man hernehmen, um Fragen zu Post-Verteilung zu beantworten. Häufig ist es aber bequemer, z.B. mit <code>parameters(m1)</code> Post-Intervalle und Punktschätzer auszulesen.</p>
+<p>Die <em>Posterior-Prädiktiv-Verteilung (PPV)</em> zeigt die Vorhersagen, also keine Parameterwerte, sondern Beobachtungen.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div class="kable-table">
@@ -428,23 +439,23 @@ div.csl-indent {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Mazda RX4</td>
-<td style="text-align: right;">25.65092</td>
+<td style="text-align: right;">21.85375</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Mazda RX4 Wag</td>
-<td style="text-align: right;">21.33374</td>
+<td style="text-align: right;">20.30950</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Datsun 710</td>
-<td style="text-align: right;">16.10424</td>
+<td style="text-align: right;">27.45144</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Hornet 4 Drive</td>
-<td style="text-align: right;">17.52942</td>
+<td style="text-align: right;">16.04914</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Hornet Sportabout</td>
-<td style="text-align: right;">11.22213</td>
+<td style="text-align: right;">14.85981</td>
 </tr>
 </tbody>
 </table>
@@ -456,20 +467,30 @@ div.csl-indent {
 <h2 data-number="12.4" class="anchored" data-anchor-id="quantile-und-verteilungsfuntion-verwechseln"><span class="header-section-number">12.4</span> Quantile und Verteilungsfuntion verwechseln 🤷</h2>
 <section id="quantil-für-p" class="level3" data-number="12.4.1">
 <h3 data-number="12.4.1" class="anchored" data-anchor-id="quantil-für-p"><span class="header-section-number">12.4.1</span> Quantil für <span class="math inline">\(p\)</span></h3>
-<p>Ein <span class="math inline">\(p\)</span>-Quantil teilt eine Verteilung in zwei Teile, und zwar so, dass mind. <span class="math inline">\(p\)</span> kleiner oder gleich dem <span class="math inline">\(p\)</span>-Quantil sind.</p>
+<p>Ein <span class="math inline">\(p\)</span>-Quantil teilt eine Verteilung in zwei Teile, und zwar so, dass mind. <span class="math inline">\(p\)</span> kleiner oder gleich dem <span class="math inline">\(p\)</span>-Quantil sind. s. <a href="#fig-quantil">Abbildung&nbsp;<span>12.1</span></a>.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="abschluss_files/figure-html/quantil-plot-1.png" class="img-fluid" width="672"></p>
+<div id="fig-quantil" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="abschluss_files/figure-html/fig-quantil-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;12.1: Quantil</figcaption><p></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Das 50%-Quantil (.5-Quantil) beträgt <span class="math inline">\(x=0\)</span>. Mind ein Anteil <span class="math inline">\(1-p\)</span> ist größer oder gleich dem <span class="math inline">\(p\)</span>-Quantil.</p>
 </section>
 <section id="verteilungsfunktion-f" class="level3" data-number="12.4.2">
 <h3 data-number="12.4.2" class="anchored" data-anchor-id="verteilungsfunktion-f"><span class="header-section-number">12.4.2</span> Verteilungsfunktion <span class="math inline">\(F\)</span></h3>
-<p><span class="math inline">\(F(x)\)</span> gibt die Wahrscheinlichkeit an der Stelle <span class="math inline">\(x\)</span> an, dass <span class="math inline">\(X\)</span> einen Wert kleiner oder gleich <span class="math inline">\(x\)</span> annimmt.</p>
+<p><span class="math inline">\(F(x)\)</span> gibt die Wahrscheinlichkeit an der Stelle <span class="math inline">\(x\)</span> an, dass <span class="math inline">\(X\)</span> einen Wert kleiner oder gleich <span class="math inline">\(x\)</span> annimmt, s. <a href="#fig-F">Abbildung&nbsp;<span>12.2</span></a>.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="abschluss_files/figure-html/f-plot-1.png" class="img-fluid" width="672"></p>
+<div id="fig-F" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="abschluss_files/figure-html/fig-F-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;12.2: Verteilungsfunktion einer Variablen</figcaption><p></p>
+</figure>
+</div>
 </div>
 </div>
 <p><span class="math inline">\(F(0)=1/2\)</span>, die Wahrscheinlichkeit beträgt hier 50%, dass <span class="math inline">\(x\)</span> nicht größer ist als 0.</p>
@@ -531,44 +552,45 @@ Hinweis
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">(Intercept)</td>
-<td style="text-align: center;">24.64</td>
-<td style="text-align: center;">(18.96, 30.09)</td>
+<td style="text-align: center;">24.57</td>
+<td style="text-align: center;">(18.79, 30.43)</td>
 <td style="text-align: center;">100%</td>
-<td style="text-align: center;">1.001</td>
-<td style="text-align: center;">2384.00</td>
+<td style="text-align: center;">1.000</td>
+<td style="text-align: center;">1955.00</td>
 <td style="text-align: center;">Normal (20.09 +- 15.07)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">hp</td>
 <td style="text-align: center;">-0.04</td>
 <td style="text-align: center;">(-0.07, -0.01)</td>
-<td style="text-align: center;">99.75%</td>
-<td style="text-align: center;">1.001</td>
-<td style="text-align: center;">2367.00</td>
+<td style="text-align: center;">99.70%</td>
+<td style="text-align: center;">1.000</td>
+<td style="text-align: center;">1980.00</td>
 <td style="text-align: center;">Normal (0.00 +- 0.22)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">vs</td>
-<td style="text-align: center;">13.98</td>
-<td style="text-align: center;">(4.80, 23.02)</td>
-<td style="text-align: center;">99.90%</td>
-<td style="text-align: center;">1.000</td>
-<td style="text-align: center;">1654.00</td>
+<td style="text-align: center;">14.07</td>
+<td style="text-align: center;">(4.37, 23.39)</td>
+<td style="text-align: center;">99.75%</td>
+<td style="text-align: center;">1.002</td>
+<td style="text-align: center;">1556.00</td>
 <td style="text-align: center;">Normal (0.00 +- 29.89)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">hp:vs</td>
 <td style="text-align: center;">-0.11</td>
-<td style="text-align: center;">(-0.19, -0.03)</td>
-<td style="text-align: center;">99.50%</td>
-<td style="text-align: center;">1.000</td>
-<td style="text-align: center;">1781.00</td>
+<td style="text-align: center;">(-0.20, -0.03)</td>
+<td style="text-align: center;">99.45%</td>
+<td style="text-align: center;">1.002</td>
+<td style="text-align: center;">1843.00</td>
 <td style="text-align: center;">Normal (0.00 +- 0.31)</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+<p>Visualisierung der Parameter:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -624,10 +646,15 @@ Hinweis
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(mpg <span class="sc">~</span> hp, <span class="at">data =</span> mtcars)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Und schauen wir uns die Post-Verteilung an, mit eingezeichnetem HDI:</p>
-<div class="cell" data-fig.asp="0.9">
+<p>Und schauen wir uns die Post-Verteilung an, mit eingezeichnetem HDI, s. <a href="#fig-post-m3">Abbildung&nbsp;<span>12.3</span></a>.</p>
+<div class="cell">
 <div class="cell-output-display">
-<p><img src="abschluss_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<div id="fig-post-m3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="abschluss_files/figure-html/fig-post-m3-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;12.3: Post-Verteilung (HDI) von m3</figcaption><p></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Ein Zusammenfassen der Posterior-Verteilung (z.B. zu einem 95%-PI) ist möglich und oft sinnvoll. Verschiedene Arten des Zusammenfassens der Post-Verteilung sind möglich, z.B. zu Mittelwert oder SD oder einem einem HD-Intervall. Allerdings übermittelt nur die gesamte Post-Verteilung alle Informationen. Daher empfiehlt es sich (oft), die Post-Verteilung zu visualisieren.</p>
