@@ -453,12 +453,12 @@ d %>%
 🧑
 
 
-Berechnen wir das Modell `m1`; die Parameter stehen in @tbl-m1.
+Berechnen wir das Modell `m1`; die Parameter stehen in @tbl-m1-hdi.
 
 
 ```{r m1, echo = TRUE}
-#| label: tbl-m1
-#| fig-cap: "Parameter für m1"
+#| label: tbl-m1-hdi
+#| tbl-cap: "Parameter für m1"
 m1 <- stan_glm(price ~ bedrooms,
                refresh = 0,
                data = d)
@@ -493,12 +493,12 @@ Don hofft, durch Verdopplung der Zimmerzahl den doppelten Verkaufspreis zu erzie
 
 👩
 
-Berechnen wir die Vorhersagen für Dons neues Haus (mit den durch Mauern halbierten Zimmern), s. @tbl-m1-pred2.
+Berechnen wir die Vorhersagen für Dons neues Haus (mit den durch Mauern halbierten Zimmern), s. @tbl-m1-pred2a.
 
 
-```{r m1-estimate-pred, echo = TRUE}
-#| fig-cap: "Vorhergesagter Hauspreis laut m1 für ein Haus mit 4 Zimmern"
-#| label: tbl-m1-pred2
+```{r}
+#| tbl-cap: "Vorhergesagter Hauspreis laut m1 für ein Haus mit 4 Zimmern"
+#| label: tbl-m1-pred2a
 dons_new_house <- tibble(bedrooms = 4)
 estimate_prediction(m1, dons_new_house)
 ```
@@ -549,7 +549,7 @@ estimate_expectation(m1, dons_new_house)
 
 Berechnen wir das Modell  `m2: price ~ bedrooms + livingArea`, s. @tbl-m2.
 
-```{r m2, echo = TRUE}
+```{r, echo = TRUE}
 #| tbl-cap: "Parameter von m2"
 #| label: tbl-m2
 m2 <- stan_glm(price ~ bedrooms + livingArea, data = d, refresh = 0)
@@ -572,7 +572,7 @@ estimate_prediction(m2, data = tibble(bedrooms = 4, livingArea = 1200))
 ```{r m2-pred2, echo = FALSE}
 #| tbl-cap: "Vorhersage von m2 für ein Haus mit 2 Zimmern und 1200 Einheiten Wohnfläche"
 #| label: tbl-m2-pred2
-estimate_prediction(m2, data = tibble(bedrooms = 4, livingArea = 1200))
+estimate_prediction(m2, data = tibble(bedrooms = 2, livingArea = 1200))
 ```
 
 
@@ -673,7 +673,10 @@ Man kann sich dieses Konstanthalten vorstellen als eine Aufteilung in Gruppen: D
 
 
 :::callout-important
-In Beobachtungsstudien hilft nur ein (korrektes) Kausalmodell. Ohne Kausalmodell ist es nutzlos, die Regressionskoeffizienten (oder eine andere Statistik) zur Erklärung der Ursachen heranzuziehen.
+In Beobachtungsstudien hilft nur ein (korrektes) Kausalmodell. Ohne Kausalmodell ist es nutzlos, die Regressionskoeffizienten (oder eine andere Statistik) zur Erklärung der Ursachen heranzuziehen:
+Die Regressionskoeffizienten können sich wild ändern, wenn man Prädiktoren hinzufügt oder weglässt. 
+Es können sich sogar die Vorzeichen der Regressionsgewichte ändern;
+in dem Fall spricht man von einem Simpson-Paradox.
 :::
 
 
@@ -701,7 +704,7 @@ A true hypothesis will pass and fail many statistical "tests" on its way to acce
 
 ### Kausalmodell für Konfundierung, `km1`
 
-Das Kausalmodell `km1` ist in @fig-km1 dargestellt.
+Das Kausalmodell `km1` ist in @fig-km1 dargestellt; vgl.  @fig-m2-negativ.
 
 
 ```{r km1, fig.asp = .33, fig.width=9}
@@ -788,7 +791,9 @@ Es wird (fälschlich) eine Korrelation zwischen `x` und `y`  angezeigt: Scheinko
 p_konf2
 ```
 
-Es wird korrekt gezeigt, dass es keine Korrelation zwischen `x` und `y` gibt, wenn `group` kontrolliert wird.
+@fig-p-konf2 zeigt korrekt, dass es keine Korrelation zwischen `x` und `y` gibt, wenn `group` kontrolliert wird.
+Außerdem sieht man in @fig-p-konf2, dass es ein Kontrollieren der Variable `group` durch Aufnahme als Prädiktor in die Regressionsgleichung einem Stratifizieren entspricht (getrennte Berechnung der Regressionsgerade pro Gruppe).
+
 
 
 
@@ -874,7 +879,10 @@ knitr::include_graphics("img/correlation_550.png")
 
 :::callout-important
 Korrelation ungleich Kausation! Korrelation *kann* bedeuten, dass eine Kausation vorliegt, aber es muss auch nicht sein, dass Kausation vorliegt.
-Dann spricht man von einer *Scheinkorrelation*.
+Liegt Korrelation ohne Kausation vor, so spricht man von einer *Scheinkorrelation*.
+Um Scheinkorrelation von echter Assoziation (auf Basis von Kausation) abzugrenzen,
+muss man die Kausalmodelle überprüfen,
+so wie wir das hier tun.
 :::
 
 
@@ -1117,7 +1125,7 @@ Konfundierung kann man entdecken, indem man die angenommene Konfundierungsvariab
 
 Ist die Annahme einer Konfundierung korrekt, so löst sich der Scheinzusammenhang nach dem Adjustieren auf.
 
-Löst sich der Scheinzusammenhang nicht auf, sondern drehen sich die Vorzeichen der Zusammenhänge nach Adjustieren um, so spricht man einem *Simpson Paradox*.
+Löst sich der Scheinzusammenhang nicht auf, sondern drehen sich die Vorzeichen der Zusammenhänge nach Adjustieren um, so spricht man einem *Simpson-Paradox*.
 
 Die Daten alleine können nie sagen, welches Kausalmodell der Fall ist in einer Beobachtungsstudie. Fachwissen (inhaltliches wissenschaftliches Wissen) ist nötig, um DAGs auszuschließen.
 
@@ -1261,7 +1269,7 @@ p_coll_dag1
 ```
 
 
-In ähnlicher Weise, s. @fig-coll2-dag.
+Eine ähnliche Visualisierung des gleichen Sachverhalts zeigt @fig-coll2-dag.
 
 ```{r p-coll-dag22, fig.width=9}
 #| echo: false
@@ -1345,7 +1353,7 @@ Also: X und Y sind abhängig – gegeben Z: $X \not\indep Y \,|\, Z$.
 
 
 @fig-coll1-dag zeigt: Durch Kontrollieren entsteht eine Kollision,
-eine Scheinkorrelation zwischen den Ursacxhen.
+eine Scheinkorrelation zwischen den Ursachen.
 
 *Kontrollieren* kann z.B. bedeuten:
 
