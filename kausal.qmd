@@ -22,7 +22,7 @@ library(easystats)
 ```{r libs-hidden}
 #| echo: false
 library(gt)
-library(DT)
+#library(DT)
 library(ggdag)
 
 theme_set(theme_modern())
@@ -47,6 +47,8 @@ Sie können ...
 
 
 ### Studie A: Östrogen
+
+#### Medikament einnehmen?
 
 Mit Blick auf @tbl-studie-a: Was raten Sie dem Arzt? Medikament einnehmen, ja oder nein?
 
@@ -82,7 +84,7 @@ Vielleicht nur dann, wenn er das Geschlecht kennt [@pearl_causal_2016]?
 
 
 
-### Kausalmodell zur Studie A
+#### Kausalmodell zur Studie A
 
 
 
@@ -133,6 +135,9 @@ den Gesamtdatensatz in Gruppen oder "Schichten" ("Strata")
 
 ### Studie B: Blutdruck
 
+
+#### Medikament einnehmen?
+
 Mit Blick auf @tbl-studie-b: Was raten Sie dem Arzt? Medikament einnehmen, ja oder nein?
 
 
@@ -165,7 +170,7 @@ Aber *insgesamt* (Summe über beide Gruppe) *nicht*, da scheint es zu nutzen?!
 Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, wenn er den Blutdruck nicht kennt? @pearl_causal_2016
 
 
-### Kausalmodell zur Studie B
+#### Kausalmodell zur Studie B
 
 
 
@@ -246,23 +251,26 @@ Kausales Wissen basiert auf einer Theorie (Kausalmodell) plus Daten.
 :::
 
 
+### Vertiefung^[Dieser Abschnitt ist prüfungsrelevant, birgt aber nichts Neues.]
 
 
-### Studie C: Nierensteine
+
+
+#### Studie C: Nierensteine
 
 
 
 Nehmen wir an, es gibt zwei Behandlungsvarianten bei Nierensteinen, Behandlung A und B. Ärzte tendieren zu Behandlung A bei großen Steinen (die einen schwereren Verlauf haben); bei kleineren Steinen tendieren die Ärzte zu Behandlung B. 
 
 
-Sollte ein Patient, der nicht weiß, ob sein Nierenstein groß oder klein ist, die Wirksamkeit in der Gesamtpopulation (Gesamtdaten) oder in den stratiﬁzierten Daten (Teildaten nach Steingröße) betrachten, um zu entscheiden, welche Behandlungsvariante er (oder sie) wählt?
+Sollte ein Patient, der nicht weiß, ob sein Nierenstein groß oder klein ist, die Wirksamkeit in der Gesamtpopulation (Gesamtdaten) oder in den stratifizierten Daten (Teildaten nach Steingröße) betrachten, um zu entscheiden, welche Behandlungsvariante er (oder sie) wählt?
 
 
 
 
 
 
-### Kausalmodell zur Studie C
+
 
 
 
@@ -322,7 +330,7 @@ also keine (belastbare) Aussage über den Effekt der Behandlung.
 
 
 
-### Mehr Beispiele
+#### Mehr Beispiele
 
 Nehmen Sie Bezug zu folgenden Aussagen:
 
@@ -390,8 +398,7 @@ d <- data_read(d_path)  # aus easystats
 #| tbl-cap: "Saratoga-County-Datensatz"
 d %>% 
   select(price, livingArea, bedrooms,waterfront) %>% 
-  #slice_head(n=5) %>% 
-  datatable(options = list(pageLength = 5))
+  slice_head(n = 5)
 ```
 
 
@@ -441,10 +448,9 @@ d %>%
 
 
 
-### Posteriori-Verteilung von Modell 1
 
 
->   "Jedes Zimmer mehr ist knapp 50 Tausend wert. Dein Haus hat einen Wert von etwa 150 Tausend."
+>   "Jedes Zimmer mehr ist knapp 50 Tausend wert. Dein Haus hat einen Wert von etwa 150 Tausend Dollar, Don."
 
 👩
 
@@ -453,7 +459,7 @@ d %>%
 🧑
 
 
-Berechnen wir das Modell `m1`; die Parameter stehen in @tbl-m1-hdi.
+Berechnen wir das Modell `m1`; der Punktschätzer des Parameters `bedroom` steht in @tbl-m1-hdi.
 
 
 ```{r m1, echo = TRUE}
@@ -461,12 +467,17 @@ Berechnen wir das Modell `m1`; die Parameter stehen in @tbl-m1-hdi.
 #| tbl-cap: "Parameter für m1"
 m1 <- stan_glm(price ~ bedrooms,
                refresh = 0,
+               seed = 42,
                data = d)
-hdi(m1)
+
+point_estimate(m1)
 ```
 
 
-Mit `estimate_preditioncs` können wir Vorhersagen berechnen (bzw. schätzen; die Vorhersagen sind ja mit Ungewissheit verbunden, daher ist "schätzen" vielleicht das treffendere Wort).
+`point_estimates(modell)` gibt die Punktschätzer der Parameter eines Modells zurück,
+aber nicht die Schätzbereiche. Möchten Sie beides, können Sie die Funktion `parameters(modell)` nutzen.^[In aller Regel macht es mehr Sinn, die Schätzbereiche der Punktschätzer auch zu betrachten. Nur die Punktschätzer zu betrachten vernachlässigt wesentliche Information.]
+
+Mit `estimate_predictions` können wir Vorhersagen berechnen (bzw. schätzen; die Vorhersagen sind ja mit Ungewissheit verbunden, daher ist "schätzen" vielleicht das treffendere Wort).
 @tbl-m1-pred zeigt den laut `m1` vorhergesagten Hauspreis für ein Haus mit 2 Zimmern.
 
 
@@ -552,9 +563,12 @@ Berechnen wir das Modell  `m2: price ~ bedrooms + livingArea`, s. @tbl-m2.
 ```{r, echo = TRUE}
 #| tbl-cap: "Parameter von m2"
 #| label: tbl-m2
-m2 <- stan_glm(price ~ bedrooms + livingArea, data = d, refresh = 0)
+m2 <- stan_glm(price ~ bedrooms + livingArea, 
+               data = d, 
+               seed = 42,
+               refresh = 0)
 
-hdi(m2)
+point_estimate(m2, centrality = "median")
 ```
 
 Was sind die Vorhersagen des Modell? 
@@ -762,6 +776,8 @@ Durch das Kontrollieren ("adjustieren"), sind `bedrooms` und `price` nicht mehr 
 
 ### Konfundierer kontrollieren
 
+Gehen wir in diesem Abschnitt davon aus, dass `km1` richtig ist.
+
 
 ```{r}
 #| echo: false
@@ -770,29 +786,28 @@ source("https://raw.githubusercontent.com/sebastiansauer/QM2-Folien/41bc43754169
 
 
 
-*Ohne* Kontrollieren der Konfundierungsvariablen: Regressionsmodell `y ~ x`, @fig-p-konf1.
+*Ohne* Kontrollieren der Konfundierungsvariablen: Regressionsmodell `y ~ x`, @fig-p-konf1, links:
+Es wird (fälschlich) eine Korrelation zwischen `x` und `y`  angezeigt: Scheinkorrelation.
+*Mit* Kontrollieren der Konfundierungsvariablen: Regressionsmodell `y ~ x + group`, @fig-p-konf1, rechts.
 
 ```{r}
 #| echo: false
 #| fig-cap: "Konfundierung von y und x!"
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - "Ohne Kontrolle der Konfundierungsvariablen: Konfundierung tritt auf."
+#|   - "Mit Kontrolle der Konfundierungsvariablen: Konfundierung tritt nicht auf."
 #| label: fig-p-konf1
 p_konf1
-```
-
-Es wird (fälschlich) eine Korrelation zwischen `x` und `y`  angezeigt: Scheinkorrelation.
-
-
-*Mit* Kontrollieren der Konfundierungsvariablen: Regressionsmodell `y ~ x + group`, @fig-p-konf2.
-
-```{r plot-konf2}
-#| echo: false
-#| fig-cap: "Keine Konfundierung von y und x!"
-#| label: fig-p-konf2
 p_konf2
 ```
 
-@fig-p-konf2 zeigt korrekt, dass es keine Korrelation zwischen `x` und `y` gibt, wenn `group` kontrolliert wird.
-Außerdem sieht man in @fig-p-konf2, dass es ein Kontrollieren der Variable `group` durch Aufnahme als Prädiktor in die Regressionsgleichung einem Stratifizieren entspricht (getrennte Berechnung der Regressionsgerade pro Gruppe).
+
+
+
+
+@fig-p-konf1, rechts, zeigt korrekt, dass es keine Korrelation zwischen `x` und `y` gibt, wenn `group` kontrolliert wird.
+Außerdem sieht man im rechten Teildiagramm, dass es ein Kontrollieren der Variable `group` durch Aufnahme als Prädiktor in die Regressionsgleichung einem Stratifizieren entspricht (getrennte Berechnung der Regressionsgerade pro Gruppe).
 
 
 
@@ -861,53 +876,6 @@ print(km2)
 
 
 
-### Schoki macht Nobelpreis! (?)
-
-Eine Studie fand eine starke Korrelation, $r=0.79$ zwischen (Höhe des) Schokoladenkonsums eines Landes und (Anzahl der) Nobelpreise eines Landes [@messerli_chocolate_2012], s. @fig-schoki.
-
-
-```{r schoki-plot, out.width="50%"}
-#| echo: false
-#| warning: false
-#| fig-align: "center"
-#| label: fig-schoki
-#| fig-cap: "Je mehr Schoki, desto mehr Nobelpreise"
-knitr::include_graphics("img/correlation_550.png")
-```
-
-
-
-:::callout-important
-Korrelation ungleich Kausation! Korrelation *kann* bedeuten, dass eine Kausation vorliegt, aber es muss auch nicht sein, dass Kausation vorliegt.
-Liegt Korrelation ohne Kausation vor, so spricht man von einer *Scheinkorrelation*.
-Um Scheinkorrelation von echter Assoziation (auf Basis von Kausation) abzugrenzen,
-muss man die Kausalmodelle überprüfen,
-so wie wir das hier tun.
-:::
-
-
-
-
-
-
-
-
-
-### Kausalmodell für die Schoki-Studie
-
-Der "Schoki-DAG" in @fig-schoki-dag zeigt den DAG für das Schokoloaden-Nobelpreis-Modell.
-
-```{r schok-dag, fig.width=7}
-#| echo: false
-#| label: fig-schoki-dag
-#| fig-cap: "Macht Schokolade Nobelpreise?"
-confounder_triangle(x = "Schoki",
-                          y = "Nobelpreise",
-                          z = "Entwicklungsstand") %>% 
-  ggdag_dconnected(text = FALSE, use_labels = "label") +
-  theme_dag()
-```
-
 
 
 ### Dons Kausalmodell, `km3`
@@ -964,16 +932,21 @@ Die Korrelation liegt also bei `r  round(cor(d$bedrooms, d$livingArea), 2)`
 👩
 
 
-### Unabhängigkeiten laut `km1`
 
-`b`: bedrooms, `p`: price, `a` area (living area), s. @fig-km1.
+
+
+
+### Unabhängigkeiten laut der Kausalmodelle
+
+
+`km1`: `b`: bedrooms, `p`: price, `a` area (living area), s. @fig-km1.
 
 
 
 Das Kausalmodell `km1` behauptet: $b \indep p \, |\, a$: `bedrooms` sind unabhängig von `price`, wenn man `livingArea` kontrolliert.
 
 *Kontrollieren* einer Variable $Z$ erreicht man auf einfache Art,
-indem man sie in zusätzlich zur vermuteten Ursache $X$ in die Regressionsgleichung mit aufnimmt, also $y ~ x + z`. 
+indem man sie in zusätzlich zur vermuteten Ursache $X$ in die Regressionsgleichung mit aufnimmt, also `y ~ x + z`. 
 
 
 Aber diese behauptete Unabhängigkeit findet sich *nicht* in den Daten wieder, s. @tbl-m2. Also: ⛈️ Passt nicht zu den Daten!
@@ -982,9 +955,8 @@ Aber diese behauptete Unabhängigkeit findet sich *nicht* in den Daten wieder, s
 
 
 
-### Unabhängigkeiten laut `km2`
 
-`b`: bedrooms, `p`: price, `a` area (living area), s. @fig-m1-mediation.
+`km2` `b`: bedrooms, `p`: price, `a` area (living area), s. @fig-m1-mediation.
 
 
 
@@ -1003,14 +975,14 @@ dass es morgen irgendeine Temperatur hat zwischen -30 und +30 Grad (nur nicht ex
 so werden wir nicht gerade beeindruckt sein. 🥱
 :::
 
-Fazit: `km2` asst zu den Daten, aber wir sind nicht gerade beeindruckt vom Modell.
+Fazit: `km2` passt zu den Daten, aber wir sind nicht gerade beeindruckt vom Modell.
 
 
 
 
-### Unabhängigkeiten laut `km3`
 
-`b`: bedrooms, `p`: price, `a` area (living area), s. @fig-km3.
+
+`km3`: `b`: bedrooms, `p`: price, `a` area (living area), s. @fig-km3.
 
 
 
@@ -1019,7 +991,7 @@ Fazit: `km2` asst zu den Daten, aber wir sind nicht gerade beeindruckt vom Model
 $b \indep a$: `bedrooms` sind unabhängig von `livingArea` (`a`)
 
 
-⛈️ Passt nicht zu den Daten/zum Modell!
+⛈️ `km3` passt nicht zu den Daten/zum Modell!
 
 
 
@@ -1028,7 +1000,7 @@ $b \indep a$: `bedrooms` sind unabhängig von `livingArea` (`a`)
 ## DAGs: Directed Acyclic Graphs
 
 
-Was sind DAGs?
+Was sind DAGs? Wir haben in diesem Kapitel schon viele Beispiele gesehen, z.B.  @fig-km3.
 
 - DAGs sind eine bestimmte Art von Graphen zur Analyse von Kausalstrukturen.
 
@@ -1079,6 +1051,12 @@ ggdag_equivalent_dags(dag_km1) +
 ```
 
 
+Alle diese DAgs in @fig-km1 haben die *gleichen* Implikationen hinsichtlich der (Un-)Abhängigkeiten zwischen der Variablen.
+Wir können also leider empirisch nicht bestimmen,
+welcher der DAGs der richtige ist.
+Um den richtigen DAG zu identifizieren, bräuchten wir z.B. einen reichhaltigeren DAG,
+also mit mehr Variablen.
+
 
 
 
@@ -1112,7 +1090,7 @@ knitr::include_graphics("img/correlation.png")
 
 
 
-### Fazit
+### Zwischenfazit
 
 Sind zwei Variablen korreliert (abhängig, assoziiert), so kann es dafür zwei Gründe geben:
 
@@ -1133,6 +1111,57 @@ Die Daten alleine können nie sagen, welches Kausalmodell der Fall ist in einer 
 
 
 
+
+### Schoki macht Nobelpreis! (?)
+
+🏎️ Vertiefung 🏎️
+
+
+
+Eine Studie fand eine starke Korrelation, $r=0.79$ zwischen (Höhe des) Schokoladenkonsums eines Landes und (Anzahl der) Nobelpreise eines Landes [@messerli_chocolate_2012], s. @fig-schoki.
+
+
+```{r schoki-plot, out.width="50%"}
+#| echo: false
+#| warning: false
+#| fig-align: "center"
+#| label: fig-schoki
+#| fig-cap: "Je mehr Schoki, desto mehr Nobelpreise"
+knitr::include_graphics("img/correlation_550.png")
+```
+
+
+
+:::callout-important
+Korrelation ungleich Kausation! Korrelation *kann* bedeuten, dass eine Kausation vorliegt, aber es muss auch nicht sein, dass Kausation vorliegt.
+Liegt Korrelation ohne Kausation vor, so spricht man von einer *Scheinkorrelation*.
+Um Scheinkorrelation von echter Assoziation (auf Basis von Kausation) abzugrenzen,
+muss man die Kausalmodelle überprüfen,
+so wie wir das hier tun.
+:::
+
+
+
+
+
+
+
+
+
+
+
+Der "Schoki-DAG" in @fig-schoki-dag zeigt den DAG für das Schokoloaden-Nobelpreis-Modell.
+
+```{r schok-dag, fig.width=7}
+#| echo: false
+#| label: fig-schoki-dag
+#| fig-cap: "Macht Schokolade Nobelpreise?"
+confounder_triangle(x = "Schoki",
+                          y = "Nobelpreise",
+                          z = "Entwicklungsstand") %>% 
+  ggdag_dconnected(text = FALSE, use_labels = "label") +
+  theme_dag()
+```
 
 
 
