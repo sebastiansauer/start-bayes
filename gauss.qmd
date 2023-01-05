@@ -499,6 +499,7 @@ Plotten wir mal die Posteriori-Verteilung von `m41`, s. @fig-m42-post-joint.
 #| echo: true
 #| label: fig-m42-post-joint
 #| fig-cap: "Die gemeinsame Verteilung von Mittelwert und Streuung."
+
 m41_post %>% 
   ggplot() +
   aes(x = mu, y = sigma) %>% 
@@ -588,7 +589,8 @@ Abschließend, eigentlich nur Spielerei, noch eine andere Visualisierung der Pos
 #| echo: false
 #| label: fig-kung3
 #| fig-cap: Die beiden Randverteilungen der Post-Verteilungen, d.h. die Verteilungen für mu und für sigma
-
+#| fig-asp: 0.5
+#
 m41_post %>% 
   pivot_longer(mu:sigma) %>% 
   ggplot(aes(x = value)) + 
@@ -735,6 +737,7 @@ daher gibt uns die Spalte `(Intercept)` Aufschluss über unsere Schätzwerte zu 
 ## Mit welcher Wahrscheinlichkeit ist $\mu>155$? 
 
 ```{r Kung-28a, echo = TRUE}
+
 names(post_m41) <- 
   c("mu", "sigma")  # den Namen "(Intercept)" durch "mu" ersetzen, ist prägnanter
 
@@ -806,17 +809,27 @@ Ein ETI ist synonym zu PI.
 
 
 
-```{r}
+```{r eval = FALSE}
 m41 %>% 
   parameters()
 ```
 
 
 
+```{r}
+#| echo: false
+m41 %>% 
+  parameters() |> 
+  display()
+```
 
-Seeing is believing:
+
+
+Seeing is believing, @fig-m41-params-intercept.
 
 ```{r}
+#| fig-cap: "Parameter von m41, nur einer: der Intercept"
+#| label: fig-m41-params-intercept
 m41 %>% 
   parameters() %>% 
   plot(show_intercept = TRUE)
@@ -909,10 +922,11 @@ Jetzt lassen wir mal unsere eigenen Priori-Werte einfließen, in unserem zweiten
 
 ### m42
 
-Dann lassen wir `stan_glm()` unser zweites Modell berechnen.
-Dieses Mal geben wir die Priori-Werte explizit an.
+Dann lassen wir `stan_glm()` unser zweites Modell berechnen.^[Hey Stan, los, an die Arbeit!]
+Dieses Mal geben wir die Priori-Werte explizit an, @tbl-m42-params.
 
 ```{r Kung-15-bis, echo = TRUE}
+#| eval: false
 m42 <- 
   stan_glm(height ~ 1, 
            prior_intercept = normal(178, 20),  # mu
@@ -923,8 +937,25 @@ parameters(m42)
 ```
 
 
-Wir haben noch nicht alle Informationen kennengelernt, die hier ausgegeben werden.
-Im Zweifel: Einfach ignorieren. Wichtige Fähigkeit im Studium 🤓.
+```{r Kung-15-bis-print}
+#| echo: false
+#| eval: true
+#| label: tbl-m42-params
+#| tbl-cap: "Parameter von m42 mit eigenen Prioriwerten"
+m42 <- 
+  stan_glm(height ~ 1, 
+           prior_intercept = normal(178, 20),  # mu
+           prior_aux = exponential(0.125),  # sigma
+           refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
+           data = d2)
+parameters(m42) |> display()
+```
+
+
+
+
+Wir haben noch nicht alle Informationen kennengelernt, die in @tbl-m42-params ausgegeben werden.
+Im Zweifel: Einfach ignorieren. Wichtige Fähigkeit im Studium. 🤓
 
 
 :::callout-important
@@ -1115,9 +1146,11 @@ $$\sigma \sim \mathcal{E}(\lambda=0.01)$$
 
 
 ```{r Kung-16}
-# simulate
+#| echo: false
 set.seed(4)
 
+
+# simulate
 sim2 <-
   tibble(sample_mu    = rnorm(n, mean = 178, sd = 100),
          sample_sigma = rexp(n, rate = .01)) %>% 

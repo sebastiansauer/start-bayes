@@ -408,8 +408,7 @@ d %>%
 
 
 
->   Finden Sie den Wert meiner Immobilie heraus! </br>
-Die muss viel wert sein!"
+>   "Finden Sie den Wert meiner Immobilie heraus! Die Immobilie muss viel wert sein!"
 
 🧑 Das ist Don, Immobilienmogul, Auftraggeber.
 
@@ -463,13 +462,21 @@ Berechnen wir das Modell `m1`; der Punktschätzer des Parameters `bedroom` steht
 
 
 ```{r m1, echo = TRUE}
-#| label: tbl-m1-hdi
-#| tbl-cap: "Parameter für m1"
+#| results: hide
 m1 <- stan_glm(price ~ bedrooms,
                refresh = 0,
                seed = 42,
                data = d)
 
+point_estimate(m1)
+```
+
+
+
+```{r}
+#| label: tbl-m1-hdi
+#| tbl-cap: "Parameter für m1"
+#| echo: false
 point_estimate(m1)
 ```
 
@@ -482,12 +489,18 @@ Mit `estimate_predictions` können wir Vorhersagen berechnen (bzw. schätzen; di
 
 
 ```{r echo = TRUE}
-#| tbl-cap: "Vorhersage des Hauspreises für ein Haus mit 2 Zimmern"
-#| label: tbl-m1-pred
+#| results: hide
 dons_house <- tibble(bedrooms = 2)
 estimate_prediction(m1, data = dons_house)
 ```
 
+
+```{r}
+#| tbl-cap: "Vorhersage des Hauspreises für ein Haus mit 2 Zimmern"
+#| label: tbl-m1-pred
+#| echo: false
+estimate_prediction(m1, data = dons_house) |> display() 
+```
 
 
 
@@ -495,12 +508,12 @@ estimate_prediction(m1, data = dons_house)
 
 
 
->   "Ich bau eine Mauer! Genial! An die Arbeit, Angie! </br>
+>   "Ich bau eine Mauer! Genial! An die Arbeit, Angie!" 
 🧑
 
 Don hofft, durch Verdopplung der Zimmerzahl den doppelten Verkaufspreis zu erzielen. Ob das klappt?
 
->   Das ist keine gute Idee, Don."
+>   "Das ist keine gute Idee, Don."
 
 👩
 
@@ -508,17 +521,25 @@ Berechnen wir die Vorhersagen für Dons neues Haus (mit den durch Mauern halbier
 
 
 ```{r}
-#| tbl-cap: "Vorhergesagter Hauspreis laut m1 für ein Haus mit 4 Zimmern"
-#| label: tbl-m1-pred2a
+#| results: hide
 dons_new_house <- tibble(bedrooms = 4)
 estimate_prediction(m1, dons_new_house)
 ```
 
 
+```{r}
+#| tbl-cap: "Vorhergesagter Hauspreis laut m1 für ein Haus mit 4 Zimmern"
+#| label: tbl-m1-pred2a
+#| echo: false
+estimate_prediction(m1, dons_new_house) |> display()
+```
+
+
+
 Mit 4 statt 2 Schlafzimmer steigt der Wert auf 250k, laut `m1`, @fig-m1.
 
 
->   Volltreffer! Jetzt verdien ich 100 Tausend mehr! 🤑 Ich bin der Größte!
+>   "Volltreffer! Jetzt verdien ich 100 Tausend mehr! 🤑 Ich bin der Größte!"
 🧑
 
 
@@ -545,24 +566,32 @@ Zur Erinnerung: "4e+05" ist die Kurzform der wissenschaftlichen Schreibweise und
 - Ungewissheiten in den Parametern (Modellkoeffizienten, $\beta_0, \beta_1, ...$)
 
 
-Die Schätzbereiche sind in dem Fall deutlich kleiner:
+Die Schätzbereiche sind in dem Fall deutlich kleiner, s. @tbl-m1-dons-new.
 
 
 ```{r plot-m1-dons-new-house}
+#| eval: false
 estimate_expectation(m1, dons_new_house)
 ```
 
+
+```{r plot-m1-dons-new-house-show}
+#| echo: false
+#| label: tbl-m1-dons-new
+#| fig-cap: "Ungewissheit für die Parameter, also die Regressionsgerade, nicht die Beobachtungen"
+estimate_expectation(m1, dons_new_house) |> display()
+```
 
 
 
 ### Modell 2
 
 
-Berechnen wir das Modell  `m2: price ~ bedrooms + livingArea`, s. @tbl-m2.
+Berechnen wir das Modell  `m2: price ~ bedrooms + livingArea`.
+@tbl-m2 gibt den Punktschätzer für die Koeffizienten wider.
 
 ```{r, echo = TRUE}
-#| tbl-cap: "Parameter von m2"
-#| label: tbl-m2
+#| results: hide
 m2 <- stan_glm(price ~ bedrooms + livingArea, 
                data = d, 
                seed = 42,
@@ -571,14 +600,22 @@ m2 <- stan_glm(price ~ bedrooms + livingArea,
 point_estimate(m2, centrality = "median")
 ```
 
+```{r}
+#| tbl-cap: "Parameter von m2"
+#| label: tbl-m2
+#| echo: false
+point_estimate(m2, centrality = "median") |> display()
+```
+
+
+
 Was sind die Vorhersagen des Modell? 
 @tbl-m2-pred gibt Aufschluss für den laut `m2` vorhersagten Kaufpreis eines Hauses
 mit 4 Zimmern und 1200 Quadratfuß Wohnfläche; @tbl-m2-pred2 gibt die Schätzung (laut `m2`) für den Preis eines Hauses mit 2 Zimmern (und der gleichen Wohnfläche).
 
 
 ```{r m2-pred, echo = TRUE}
-#| tbl-cap: "Vorhersage von m2 für ein Haus mit 4 Zimmern und 1200 Einheiten Wohnfläche"
-#| label: tbl-m2-pred
+#| results: hide
 estimate_prediction(m2, data = tibble(bedrooms = 4, livingArea = 1200))
 ```
 
@@ -586,6 +623,7 @@ estimate_prediction(m2, data = tibble(bedrooms = 4, livingArea = 1200))
 ```{r m2-pred2, echo = FALSE}
 #| tbl-cap: "Vorhersage von m2 für ein Haus mit 2 Zimmern und 1200 Einheiten Wohnfläche"
 #| label: tbl-m2-pred2
+#| echo: false
 estimate_prediction(m2, data = tibble(bedrooms = 2, livingArea = 1200))
 ```
 
@@ -1465,16 +1503,25 @@ Ergebnis: Ein *negativer* Zusammenhang!?
 
 
 
-Berechnen wir das "Eignungsmodell", aber nur mit Studis (`studium == 1)`, s. @tbl-m-eignung.
+Berechnen wir das "Eignungsmodell", aber nur mit Studis (`studium == 1`, also ohne Nicht-Studis), 
+s. @tbl-m-eignung.
 
 ```{r}
-#| tbl-cap: "Zum Zusammenhang von Fleiss und Talent"
-#| label: tbl-m-eignung
+#| results: hide
 m_eignung <-
   stan_glm(iq ~ fleiss, data = d_eignung %>%  filter(studium == 1), refresh = 0)
 
 hdi(m_eignung)
 ```
+
+```{r}
+#| tbl-cap: "Zum Zusammenhang von Fleiss und Talent"
+#| label: tbl-m-eignung
+#| echo: false
+hdi(m_eignung) |> display()
+```
+
+
 
 
 @fig-eignung zeigt das Modell und die Daten.
@@ -1483,13 +1530,13 @@ hdi(m_eignung)
 #| echo: false
 #| label: fig-eignung
 #| fig-cap: "Der Zusammenhang von Fleiss und IQ"
-#| fig-asp: 0.5
+
 d_eignung %>% 
   filter(studium == 1) %>% 
   ggplot(aes(x = fleiss, y = iq)) +
   geom_point(alpha = .5) +
   geom_smooth(method = "lm") +
-  labs(title = "Nativer Zusammenhang von Fleiss und IQ bei Studentis",
+  labs(title = "Negativer Zusammenhang von Fleiss und IQ bei Studentis",
        subtitle = "Macht Fleiss blöd?")
 ```
 
@@ -1498,7 +1545,7 @@ IQ ist *nicht* unabhängig von Fleiß in unseren Daten, sondern abhängig.
 
 Nichtwissenschaftliche Berichte, etwa in einigen Medien,
 greifen gerne Befunde über Zusammenhänge auf und interpretieren die Zusammenhänge
-- oft vorschnell - als kausal.^[Ehrlicherweise muss man zugeben, dass auch wissenschaftliche Berichte Daten über Zusammenhänge gerne kausal interpretieren, oft vorschnell.]
+-- oft vorschnell -- als kausal.^[Ehrlicherweise muss man zugeben, dass auch wissenschaftliche Berichte Daten über Zusammenhänge gerne kausal interpretieren, oft vorschnell.]
 
 
 

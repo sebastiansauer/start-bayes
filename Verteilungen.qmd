@@ -140,13 +140,11 @@ p2 <- mtcars %>%
 plots(p1, p2, n_rows = 1)
 ```
   
-:::
-
 
 
 
  
-Ein *stetiges* Merkmal, wie `hp` (PS-Zahl), lässt sich durch Klassenbildung diskretisieren, s. Abb. @fig-mtcars-freq, rechts.
+Ein *stetiges* Merkmal, wie `hp` (PS-Zahl), lässt sich durch Klassenbildung in ein diskretes umwandeln (diskretisieren), s. Abb. @fig-mtcars-freq, rechts.
 
 ### Wahrscheinlichkeitsverteilung
 
@@ -338,7 +336,7 @@ Bei jeder Wiederholung des Zufallexperiments bleibt die Wahrscheinlichkeit der E
 
 ### Veranschaulichung
 
-Stellen wir uns eine Kistchen^[In den Lehrbüchern häufig als Urne bezeichnet, was den bösen Spott von "Friedhofsstatistik" nach sich zog.] mit 5 Losen vor, darunter 2 *T*reffer (Gewinn) und 3 *N*ieten, s. Abb. @fig-urne.
+Stellen wir uns eine Kistchen^[In den Lehrbüchern häufig als Urne bezeichnet, was den bösen Spott von "Friedhofstatistik" nach sich zog.] mit 5 Losen vor, darunter 2 *T*reffer (Gewinn) und 3 *N*ieten, s. Abb. @fig-urne.
 Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut.
 
 
@@ -346,6 +344,7 @@ Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder
 ```{r echo = FALSE}
 #| fig-cap: Ein Kästchen mit 5 Losen, darunter 2 Treffer und 3 Nieten.
 #| label: fig-urne
+#| fig-asp: 0.5
 d <- 
   tibble(id = 1:5,
          event = c("T", "T", "N", "N", "N"))
@@ -566,7 +565,7 @@ Wenn Sie einen Zufallsversuch wiederholen, muss nicht jedes Mal das gleiche Erge
 :::
 
 
-Visualisieren wir mal unsere Münzwürfe. Dazu erstellen wir zuerst eine geeignete Tabelle:
+Visualisieren wir mal unsere Münzwürfe. Dazu erstellen wir zuerst eine geeignete Tabelle, @tbl-muenz.
 
 
 ```{r}
@@ -576,7 +575,13 @@ muenz_tab <-
     x = muenze_oft,
     x_cumsum = cumsum(x) / id  # gibt Anteil von "Zahl" wieder
   )
+```
 
+
+```{r}
+#| echo: false
+#| label: tbl-muenz
+#| tbl-cap: "Die kumulierte Summe beim Münzwurf (nur die ersten paar Zeilen)"
 head(muenz_tab)
 ```
 
@@ -628,7 +633,7 @@ Normalverteilungen können sich unterscheiden  in ihrem Mittelwert $\mu$ und ihr
 Diese beiden Größen ("Parameter") determinieren den Graphen einer bestimmten Normalverteilungsfunktion, s. @fig-norms.
 Sind diese beiden Parameter bekannt, so ist die Dichte jedes beliebigen Datenpunkts (aus dieser Normalverteilung) bestimmt.
 
-![Beispiele von Normalverteilungen mit verschiedenen Mittelwerten und Streuungen, Quelle: Wikipedia](img/normals.png){#fig-norms}
+![Beispiele von Normalverteilungen mit verschiedenen Mittelwerten und Streuungen, Quelle: Wikipedia](img/normals.png){#fig-norms width=50% fig-align="center"}
 
 
 Beispiel: Wie groß sind Studentis ([Quelle des Datensatzes](https://rdrr.io/cran/openintro/man/speed_gender_height.html))? 
@@ -650,12 +655,15 @@ height_summary %>%
   gt()
 ```
 
-Visualisierung der Quantile:
+@ fig-quantiles zeigt eine Visualisierung der Quantile.
 
 ```{r QM2-Thema3-Teil1-6}
 #| echo: false
 #| results: hold
 #| fig-width: 12
+#| fig-asp: 0.618
+#| fig-cap: "Quantile verschieden visualisiert"
+#| label: fig-quantiles
 
 speed_gender_height <-
   speed_gender_height %>% 
@@ -813,6 +821,7 @@ mit $e=2.71...$, der Eulerschen Zahl.^[Das Zeichen $y \propto x$ bedeutet "x ist
 
 
 ```{r norm, eval = FALSE, echo = TRUE}
+#| fig-asp: 0.5
 d <-
   tibble(
     x = seq(-3, 3, 

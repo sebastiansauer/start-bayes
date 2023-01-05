@@ -938,15 +938,25 @@ penguins <-
   read_csv(penguins_url)
 ```
 
-Hier ist die Verteilung des Gewichts jeder Spezies im Datensatz:
+Hier ist die Verteilung des Gewichts jeder Spezies im Datensatz, @tbl-penguins.
 
 ```{r}
+#| results: hide
 penguins %>% 
   select(body_mass_g, species) %>% 
   group_by(species) %>% 
   describe_distribution(range = FALSE, iqr = FALSE)
 ```
 
+```{r}
+#| echo: false
+#| tbl-cap: "Die Verteilung des Körpergewichts pro Spezies der Pinguine"
+#| label: tbl-penguins
+penguins %>% 
+  select(body_mass_g, species) %>% 
+  group_by(species) %>% 
+  describe_distribution(range = FALSE, iqr = FALSE)
+```
 
 
 
@@ -1099,14 +1109,15 @@ prior_summary(m10.6)
 Wo man man über mehr inhaltliches Wissen verfügt, so wird man die Prioris anpassen wollen, z.B.:
 
 ```{r echo = TRUE}
-m10.6b <- stan_glm(body_mass_g ~ species, 
-                   data = penguins, 
-                   refresh = 0,
-                   seed = 42,
-                   prior = normal(location = c(0, 0),  # betas, Mittelwert
-                                  scale = c(500, 500)),  # betas, Streuung
-                   prior_intercept = normal(3000, 500),  # Achsenabschnitt, Mittelwert und Streuung
-                   prior_aux = exponential(0.001)
+m10.6b <- stan_glm(
+  body_mass_g ~ species, 
+  data = penguins, 
+  refresh = 0,
+  seed = 42,
+  prior = normal(location = c(0, 0),  # betas, Mittelwert
+                 scale = c(500, 500)),  # betas, Streuung
+  prior_intercept = normal(3000, 500),  # Achsenabschnitt, Mittelwert und Streuung
+  prior_aux = exponential(0.001)
 )
 coef(m10.6b)
 ```
@@ -1118,16 +1129,17 @@ Dazu gibt man bei dem oder den entsprechenden Parametern den Zusatz `autoscale =
 
 
 ```{r echo = TRUE}
-m10.6c <- stan_glm(body_mass_g ~ species, 
-                   data = penguins, 
-                   refresh = 0,
-                   seed = 42,
-                   prior = normal(location = c(0, 0),  # betas, Mittelwert
-                                  scale = c(2.5, 2.5),  # betas, Streuung
-                                  autoscale = TRUE),  # in z-Einheiten
-                   prior_intercept = normal(4200, 2.5,   # Achsenabschnitt, Mittelwert und Streuung
-                                            autoscale = TRUE), 
-                   prior_aux = exponential(1, autoscale = TRUE)
+m10.6c <- stan_glm(
+  body_mass_g ~ species, 
+  data = penguins, 
+  refresh = 0,
+  seed = 42,
+  prior = normal(location = c(0, 0),  # betas, Mittelwert
+                 scale = c(2.5, 2.5),  # betas, Streuung
+                 autoscale = TRUE),  # in z-Einheiten
+  prior_intercept = normal(4200, 2.5,   # Achsenabschnitt, Mittelwert und Streuung
+                           autoscale = TRUE), 
+  prior_aux = exponential(1, autoscale = TRUE)
 )
 coef(m10.6c)
 ```
@@ -1192,12 +1204,23 @@ levels(penguins$species)
 
 
 
-Der Wechsel der Referenzkategorie ändert nichts Wesentliches am Modell:
+Der Wechsel der Referenzkategorie ändert nichts Wesentliches am Modell, s. @tbl-m106a.
 
 ```{r echo = TRUE}
+#| results: hide
 m10.6a <- stan_glm(body_mass_g ~ species, data = penguins, refresh = 0)
 hdi(m10.6a)
 ```
+
+
+```{r}
+#| echo: false
+#| tbl-cap: "m10.6a mit geänderter Referenzkategorie; die Effekte der UVs bleiben gleich."
+#| label: tbl-m106a
+m10.6a <- stan_glm(body_mass_g ~ species, data = penguins, refresh = 0)
+hdi(m10.6a) |> display()
+```
+
 
 
 
@@ -1321,18 +1344,18 @@ knitr::include_graphics("img/5v5531.jpg")
 ### Alternativen zu Nullhypothesen
 
 
- Nullhypothesen, $H_0$, sind z.B.: $\rho=0$, $\rho_1 = rho_2$, $\mu_1 = \mu_2$, $\mu=0$, $\beta_1=0$.
- Nullhypothesen zu testen, ist sehr verbreitet.
+Nullhypothesen, $H_0$, sind z.B.: $\rho=0$, $\rho_1 = rho_2$, $\mu_1 = \mu_2$, $\mu=0$, $\beta_1=0$.
+Nullhypothesen zu testen, ist sehr verbreitet.
 Ein Grund ist, dass in der Frequentistischen Statistik keine andere Art von Hypothesentest möglich ist^[Mittlerweile gibt es Ansätze für einem Verfahren ähnlich dem ROPE-Ansatz, der weiter unten vorgestellt wird.]
 
 Ein anderer Grund ist vermutlich, ... wir haben es schon immer so gemacht.
 
 Alternativen zum Testen von Nullhypothesen sind: 
 
-    - Posteriori-Intervalle (PI oder HDI)  berichten
-    - Rope-Konzept, @kruschke_rejecting_2018
-    - Wahrscheinlichkeit von inhaltlich bedeutsamen Hypothesen quantifizieren.
-    - Wahrscheinlichkeit quantifizieren, dass der Effekt ein positives bzw. ein negatives Vorzeichen hat.
+- Posteriori-Intervalle (PI oder HDI) berichten
+- Rope-Konzept [@kruschke_rejecting_2018]
+- Wahrscheinlichkeit von inhaltlich bedeutsamen Hypothesen quantifizieren.
+- Wahrscheinlichkeit quantifizieren, dass der Effekt ein positives bzw. ein negatives Vorzeichen hat.
 
 
 
@@ -1365,12 +1388,20 @@ Unter "Großteil" wird häufig das *95%-HDI* verstanden (das ist auch der Standa
 
 ### HDI-Rope-Entscheidungsregel visualisiert
 
-```{r out.width="70%"}
+```{r out.width="100%"}
 #| echo: false
+#| fig-align: "center"
+#| fig-cap: "Die Entscheidungsregeln zum ROPE illustiert."
+#| label: fig-kruschke-rope
 knitr::include_graphics("img/Kruschke-2018-Fig1.png")
 ```
 
-@kruschke_rejecting_2018, Abbildung 1, S. 272
+@fig-kruschke-rope illustriert die Entscheidungsregel zum ROPE 
+für mehrere Situatioenen [@kruschke_rejecting_2018, Abbildung 1, S. 272]:
+
+- Liegt das HDI komplett außerhalb des ROPE, verwirft man die Nullhypothese.
+- Liegt das HDI komplett innerhalb des ROPE, akzeptiert man die Nullhypothese.
+- Ansonsten ist keine Entscheidung möglich; die Datenlage ist unklar.
 
 
 
@@ -1530,18 +1561,31 @@ kidiq %>%
 ```
 
 
-Oder als Korrelationsmatrix:
+@tbl-kidiq-corr zeigt die Korrelationsmatrix als Korrelationsmatrix:
 
 ```{r}
+#| eval: false
 kidiq %>% 
   correlation() %>% 
   summary()
 ```
 
+```{r}
+#| echo: false
+#| label: tbl-kidiq-corr
+#| tbl-cap: "Die Korrelationen zwischen den Variablen der Tabelle kidiq"
+kidiq %>% 
+  correlation() %>% 
+  summary() |> 
+  display()
+```
 
 
+Nützlich ist auch die Visualisierung der Korrelationstabelle als Heatmap, @fig-kidiq-heatmap.
 
 ```{r echo = TRUE}
+#| label: fig-kidiq-heatmap
+#| fig-cap: "Visualisierung der Korrelationsmatrix als Heatmap"
 kidiq %>% 
   correlation() %>% 
   summary() %>% 
@@ -1591,6 +1635,7 @@ In @fig-regr-one-pred ist die univariate Regression mit jeweils einem der beiden
 ```{r p1-p2}
 #| fig-cap: Zwei univariate Regressionen
 #| label: fig-regr-one-pred
+#| echo: false
 p1 <- 
   kidiq %>% 
   ggplot(aes(x = mom_iq, y = kid_score)) +
@@ -1850,17 +1895,28 @@ kidiq %>%
 
 
 
-Man kann das Standardisieren auch von Hand machen, ohne ein Extra-Paket:
+Man kann das Standardisieren auch von Hand machen, ohne ein Extra-Paket, s. @tbl-scale-manual.
 
 ```{r echo = TRUE}
 #data(kidiq)
+#| eval: false
+kidiq %>% 
+  mutate(mom_iq_z2 = scale(mom_iq),
+         mom_age_z2 = scale(mom_age),
+         kid_score_z2 = scale(kid_score))
+```
+
+
+```{r echo = TRUE}
+#| echo: false
+#| label: tbl-scale-manual
+#| tbl-cap: Z-Standardisierung ohne Extrapaket"
 kidiq %>% 
   mutate(mom_iq_z2 = scale(mom_iq),
          mom_age_z2 = scale(mom_age),
          kid_score_z2 = scale(kid_score)) %>% 
   head()
 ```
-
 
 
 
@@ -1897,7 +1953,7 @@ Jetzt sind die Prädiktoren in ihrer Relevanz (Zusammenhang mit der AV) vergleic
 
 
 Mit `parameters` können wir uns ein PI für `m10.10` ausgeben lassen, s. @fig-m1010hdi;
- im Standard wird ein ETI berichtet.
+ im Standard wird ein 95%-ETI berichtet^[Zumindest zur Zeit als ich diese Zeilen schreibe. Achtung: Voreinstellungen können sich ändern. Am besten in der Dokumentation nachlesen: `?parameters`.].
 
 
 ```{r m10-10-params-noeval, echo = TRUE}
@@ -2147,6 +2203,7 @@ Unser Modell - bzw. die Stichproben unserer Posteriori-Verteilung, $y_{rep}$ ver
 
 
 ```{r kidiq3}
+#| echo: false
 set.seed(42)
 data(kidiq)
 kidiq3 <- 
@@ -2242,8 +2299,12 @@ m10.10d_plot <-
 
 ```{r resid-lm-plot, fig.asp = .619}
 #(m10.10a_plot + m10.10b_plot) / (m10.10c_plot + m10.10d_plot)
+#| echo: false
+#| fig-cap: "Bereinigte Regressionskoeffizienten"
+#| label: fig-bereinigt
 plots(m10.10a_plot, m10.10b_plot, m10.10c_plot, m10.10d_plot, 
       n_rows = 2, tags = "A",
+      caption = "Die vertikalen Balken zeigen die Residuen.",
       guides = "collect")
 ```
 
@@ -2253,14 +2314,14 @@ plots(m10.10a_plot, m10.10b_plot, m10.10c_plot, m10.10d_plot,
 
 
 
-Die vertikalen Balken zeigen die Residuen.
 
 
 
 
 
 
-Obere Reihe: Regression eines Prädiktors auf den anderen Prädiktor.
+
+@fig-bereinigt zeigt in der oberen Reihe die Regression eines Prädiktors auf den anderen Prädiktor.
 Untere Reihe: Regression der Residuen der oberen Reihe auf die AV, `kid-score_z`. 
 Unten links (C): Die Residuen von `mom_iq_c` sind kaum mit der AV assoziiert. Das heißt, nutzt man den Teil von `mom_age_z`, der nicht mit `mom_iq_z` zusammenhängt, um `kid_score` vorher zusagen, findet man keinen (*kaum*) Zusammenhang.
 Unten rechts (D): Die Residuen von `mom_age_c` sind *stark* mit der AV assoziiert. Das heißt, nutzt man den Teil von `mom_iq_z`, der nicht mit `mom_age_z` zusammenhängt, um `kid_score` vorher zusagen, findet man einen starken Zusammenhang.
@@ -2270,10 +2331,6 @@ Unten rechts (D): Die Residuen von `mom_age_c` sind *stark* mit der AV assoziier
 Eine multiple Regression liefert die gleichen Regressionskoeffizienten wie die Modelle aus Teildiagrammen (C) und (D).
 
 
-```{r}
-#| echo: false
-parameters(m10.10) %>% display
-```
 
 
 
@@ -2282,8 +2339,7 @@ parameters(m10.10) %>% display
 
 
 
-
-### Bereinigte Regressionskoeffizienten für mtcars
+### Bayesianisch gleich Frequentistisch?
 
 
 
@@ -2291,6 +2347,7 @@ parameters(m10.10) %>% display
 
 ```{r mtcars2}
 #| results: "hide"
+#| echo: false
 
 mtcars2 <-
   mtcars %>% 
@@ -2373,14 +2430,17 @@ m12d_plot <-
 ```
 
 
-```{r resid-lm-plot-mtcars, fig.asp = .619}
+```{r resid-lm-plot-mtcars}
 #| echo: false
+#| fig-cap: "Prüfung der Voraussetzungen des Modells"
+#| label: fig-resid-lm-plot
+#| eval: false
 plots(m12a_plot, m12b_plot, m12c_plot, m12d_plot, n_rows = 2, tags = "A",
       guides = "collect")
 ```
 
 
-Übrigens liefern `stan_glm()` und `lm` oft ähnliche Parameterwerte (bei schwach informativen Prioriwerten):
+Übrigens liefern `stan_glm()` und `lm` oft ähnliche Ergebnisse (bei schwach informativen Prioriwerten):
 
 ```{r stan-vs-lm}
 stan_glm(mpg ~ hp + cyl, data = mtcars, refresh = 0) %>% coef()
@@ -2390,7 +2450,7 @@ lm(mpg ~ hp + cyl, data = mtcars) %>% coef()
 
 
 :::callout-important
-Wenn auch die  Parameterwerte eines Frequentistischen und Bayes-Modell numerisch ähnlich sein können, so ist doch die Interpretation grundverschieden. 
+Wenn auch die  Ergebnisse eines Frequentistischen und Bayes-Modell numerisch ähnlich sein können, so ist doch die Interpretation grundverschieden. 
 Bayesmodelle erlauben Wahrscheinlichkeitsaussagen zu den Parametern, Frequentistische Modelle nicht.
 :::
 

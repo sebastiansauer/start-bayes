@@ -707,13 +707,13 @@ Angenommen, wir wollen wissen, welcher Wasseranteil mit 90% Wahrscheinlichkeit n
 Das können wir mit im Datensatz `samples` so erreichen.
 
 1. Sortiere die Stichproben aufsteigend.
-2. Schneide die oberen 10% ab.
+2. Schneide die oberen 10% (von 10000) ab (entferne sie).
 3. Schaue, was der größte verbleibende Wert ist.
 
 ```{r}
 samples %>% 
   arrange(p_grid) %>%   # sortiere
-  slice_head(n = 9000) %>%  # nur die ersten 90000, also die obersten 1000 abschneiden
+  slice_head(n = 9000) %>%  # nur die ersten 90000
   summarise(p90 = max(p_grid))
 ```
 
@@ -923,22 +923,28 @@ d_33 %>%
 
 
 
-So kann man sich die Grenzwerte eines 50%-HDI ausgeben lassen:
+So kann man sich die Grenzwerte eines 50%-HDI ausgeben lassen, s. @tbl-samples-hdi.
 
 
 ```{r hdi-samples-50}
+#| eval: false
 samples %>% 
   select(p_grid) %>% 
-  bayestestR::hdi(ci = .5)  # aus dem Paket `bayestestR`
+  hdi(ci = .5)  # aus dem Paket `{easystats}`
 ```
 
-Das Modell ist sich also zu 50% sicher, dass der gesuchte Parameter (der Wasseranteil der Erdoberfläche) sich in diesem Bereich befindet (auf Basis eines HDI).
+```{r hdi-samples-51}
+#| echo: false
+#| label: tbl-samples-hdi
+#| tbl-cap: "50%-HDI für unser Globusmodell"
+samples %>% 
+  select(p_grid) %>% 
+  hdi(ci = .5)  # aus dem Paket `{easystats}`
+```
 
 
-:::callout-note
-Das R-Paket `{bayestestR}` ist Teil des Meta-Pakets `{easystats}`.
-Es reicht, wenn Sie `easystats` laden, damit wird `bayestestR` automatisch geladen.
-:::
+
+Das Modell ist sich also zu 50% sicher, dass der gesuchte Parameter (der Wasseranteil der Erdoberfläche) sich im  von ca. .67 bis .78 befindet (auf Basis eines HDI).
 
 
 ## Fazit
