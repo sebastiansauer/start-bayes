@@ -330,8 +330,8 @@ kidiq %>%
 ```
 
 
-In der klassischen Statistik untersucht man diese Datensituation mit einem *t-Test*.
-Der t-Test ist ein inferenzstatistisches Verfahren, dass prüft, ob die Mittelwertsdifferenz (in der Population) $\mu_d$ Null ist: $\mu_d = 0$.
+In der frequentistischen Statistik (die mehrheitlich unterricht wird) untersucht man diese Datensituation mit einem *t-Test*.
+Der t-Test ist ein inferenzstatistisches Verfahren, das prüft, ob die Mittelwertsdifferenz (in der Population) $\mu_d$ Null ist: $\mu_d = 0$.^[Genauer gesagt wird geprüft, wie wahrscheinlich es auf Basis des Modell ist, noch extremere Ergebnisse zu beachten unter der Annahme, dass die (exakte) Nullhypothese wahr ist. Es ist etwas kompliziert.]
 In der Bayes-Statistik betrachtet man dazu stattdessen die Posteriori-Verteilung (z.B. mit 95%PI).
 
 
@@ -1075,7 +1075,7 @@ hingegen überlappt sich der Schätzbereich des Parameters für Chinstrap deutli
 
 
 
-Auf Basis unseres Modells schließen wir also (mit hoher Sicherheit) aus, dass *alle* Mittelwerte   *exakt* identisch sind.
+Auf Basis unseres Modells verwerfen wir die also (mit hoher Sicherheit) die Hypothese, dass *alle* Mittelwerte   *exakt* identisch sind.
 
 Ehrlicherweise hätte sowieso (fast) niemand geglaubt, dass die *exakte Nullhypothese* $\mu_1 = \mu_2 = \ldots = \mu_k$ bis in die letzte Dezimale gilt. Anders gesagt: Die Wahrscheinlichkeit eines bestimmten Wertes einer stetigen Zufallsvariable ist praktisch Null.
 Aber: Viele Forschis prüfen gerne die Nullhypothese, daher diskutieren wir den Begriff der (exakten) Nullhypothese.
@@ -1864,28 +1864,39 @@ So werden vergleichende Aussagen für verschiedene Verteilungen möglich.
 
 ### Statistiken zu den z-transformierten Variablen
 
-```{r discribe-kidiq}
-#| echo: false
-describe_distribution(kidiq, type = "mean_sd") %>% 
-  display() 
-```
+@tbl-kidiq1 zeigt die Verteilung der (metrischen) Variablen im Datensatz `kidiq`.
+
+Metrische Variablen in z-Werte zu transformieren, hat verschiedenen Vorteile:
+
+- der Achsenabschnitt ist einfacher zu interpretieren (da er sich dann auf ein Objekt mit mittlerer Ausprägung bezieht)
+- Interaktionen sind einfacher zu interpretieren (aus dem gleichen Grund)
+- Prioriwerte sind einfacher zu definieren (wieder aus dem gleichen Grund)
 
 
-Man kann auch die z-Transformation ("Skalierung") mit `standardize` durchführen:
+Man kann die z-Transformation ("Skalierung") mit `standardize` durchführen, s. @tbl-kidiq-z.
 
 
 ```{r kidiq-stand}
-kidiq <- 
+kidiq_z <- 
   standardize(kidiq, append = TRUE)
+```
 
-head(kidiq)
+
+
+```{r kidiq-stand-print}
+#| label: tbl-kidiq-z
+#| tbl-cap: "z-transformierte Variablen im Datensatz kidiq (erste paar Zeilen)"
+#| echo: false
+standardize(kidiq, append = TRUE) |> 
+  head() |> 
+  display()
 ```
 
 
 Der Schalter `append = TRUE` sorgt dafür, dass die ursprünglichen Variablen beim Z-Standardisieren nicht überschrieben werden, sondern angehängt werden (mit einem Suffix `_z`).
 
 
-Man kann auch nur einzelne Variablen mit `standardize` standardisieren.
+Man kann auch nur einzelne Variablen mit `standardize` standardisieren, indem man das Argument `select` nutzt.
 
 ```{r}
 #| eval: false
@@ -1896,9 +1907,9 @@ kidiq %>%
 
 
 Man kann das Standardisieren auch von Hand machen, ohne ein Extra-Paket, s. @tbl-scale-manual.
+Dazu verwendet man den Befehl `scale()`.
 
-```{r echo = TRUE}
-#data(kidiq)
+```{r}
 #| eval: false
 kidiq %>% 
   mutate(mom_iq_z2 = scale(mom_iq),
@@ -1911,6 +1922,7 @@ kidiq %>%
 #| echo: false
 #| label: tbl-scale-manual
 #| tbl-cap: Z-Standardisierung ohne Extrapaket"
+data(kidiq)
 kidiq %>% 
   mutate(mom_iq_z2 = scale(mom_iq),
          mom_age_z2 = scale(mom_age),
@@ -1930,7 +1942,7 @@ um wie viele *SD-*Einheiten sich die AV verändert, wenn sich ein Prädiktor um 
 
 ```{r m10-10, echo = TRUE}
 m10.10 <- stan_glm(kid_score_z ~ mom_iq_z + mom_age_z, 
-                   data = kidiq, 
+                   data = kidiq_z, 
                    refresh = 0)
 coef(m10.10)
 ```
@@ -2115,17 +2127,25 @@ wenn wir sie a) explizit untersuchen, b) sich in der Literatur Belege dafür fin
 
 $$b = r \frac{sd_x}{sd_y}$$
 
+Berechnen wir dazu ein einfaches Modell mit z-standardisierten Variablen 
+und betrachten die Punktschätzer für die Regressionskoeffizienten:
+
 ```{r m10-11, echo = TRUE}
 m10.11 <- 
-  stan_glm(kid_score_z ~ mom_iq_z , data = kidiq, refresh = 0)
+  stan_glm(kid_score_z ~ mom_iq_z , data = kidiq_z, refresh = 0)
 coef(m10.11)
 ```
 
+Vergleichen Sie diese Werte mit der Korrelation, s. @tbl-m10.11-corr.^[Ignorieren Sie die Zeile mit dem Befehl `display()`. Dieser Befehl dient nur dazu, die Ausgabe zu verschönern in Markdown-Dokumenten, wie im Quelltext dieses Kapitels.]
 
 ```{r}
-kidiq %>% 
+#| label: tbl-m10.11-corr
+#| fig-cap: "Korrelationen der z-transformierten Variablen im Datensatz kidiq"
+
+kidiq_z %>% 
   select(kid_score, mom_iq, kid_score_z, mom_iq_z) %>% 
-  correlation()
+  correlation() |> 
+  display()
 ```
 
 

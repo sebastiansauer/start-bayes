@@ -517,13 +517,14 @@ Don hofft, durch Verdopplung der Zimmerzahl den doppelten Verkaufspreis zu erzie
 
 👩
 
-Berechnen wir die Vorhersagen für Dons neues Haus (mit den durch Mauern halbierten Zimmern), s. @tbl-m1-pred2a.
+Berechnen wir die Vorhersagen für Dons neues Haus (mit den durch Mauern halbierten Zimmern), s. @tbl-m1-pred2a.^[Anstelle  von `estimate_relation()` kann man auch (einfacher vielleicht) `predict()` verwenden: `predict(m1, newdata = dons_new_house)`. Allerdings gibt `predict()` nur den vorhergesagten Wert aus. `estimate_prediction()` gibt noch zusätzlich das *Vorhersageintervall* aus, berücksichtigt also die (doppelte) Ungewissheit der Vorhersage. Mit anderen Worten: `estimate_prediction` gibt die PPV aus.]
 
 
 ```{r}
 #| results: hide
 dons_new_house <- tibble(bedrooms = 4)
 estimate_prediction(m1, dons_new_house)
+predict(m1, newdata = dons_new_house)
 ```
 
 
@@ -601,7 +602,7 @@ point_estimate(m2, centrality = "median")
 ```
 
 ```{r}
-#| tbl-cap: "Parameter von m2"
+#| tbl-cap: "Parameter (Punktschätzer, keine Schätzung der Ungewissheit) von m2"
 #| label: tbl-m2
 #| echo: false
 point_estimate(m2, centrality = "median") |> display()
@@ -612,16 +613,24 @@ point_estimate(m2, centrality = "median") |> display()
 Was sind die Vorhersagen des Modell? 
 @tbl-m2-pred gibt Aufschluss für den laut `m2` vorhersagten Kaufpreis eines Hauses
 mit 4 Zimmern und 1200 Quadratfuß Wohnfläche; @tbl-m2-pred2 gibt die Schätzung (laut `m2`) für den Preis eines Hauses mit 2 Zimmern (und der gleichen Wohnfläche).
+Die Vorhersage erhält man mit dem Befehl `predict()`:
+
+```{r}
+predict(m2, newdata = data.frame(bedrooms = 4, livingArea = 1200))
+```
+
 
 
 ```{r m2-pred, echo = TRUE}
-#| results: hide
+#| echo: false
+#| tbl-cap: "Vorhersage von m2 für ein Haus mit *4* Zimmern und 1200 Einheiten Wohnfläche"
+#| label: tbl-m2-pred
 estimate_prediction(m2, data = tibble(bedrooms = 4, livingArea = 1200))
 ```
 
 
 ```{r m2-pred2, echo = FALSE}
-#| tbl-cap: "Vorhersage von m2 für ein Haus mit 2 Zimmern und 1200 Einheiten Wohnfläche"
+#| tbl-cap: "Vorhersage von m2 für ein Haus mit *2* Zimmern und 1200 Einheiten Wohnfläche"
 #| label: tbl-m2-pred2
 #| echo: false
 estimate_prediction(m2, data = tibble(bedrooms = 2, livingArea = 1200))
@@ -937,7 +946,7 @@ print(km3)
 
 
 
->   Ich glaube aber an mein Kausalmodell. Mein Kausalmodell ist das größte! Alle anderen Kausalmodelle sind ein Disaster!"
+>   "Ich glaube aber an mein Kausalmodell. Mein Kausalmodell ist das größte! Alle anderen Kausalmodelle sind ein Disaster!"
 
 🧑
 
@@ -945,11 +954,13 @@ print(km3)
 
 >   "Don, nach deinem Kausalmodell müssten `bedrooms` und `livingArea` unkorreliert sein. Sind sie aber nicht."
 
+🧑
+
 
 Rechne doch selber die Korrelation aus, Don:
 
 
->   Äh, wie ging das nochmal?
+>   "Äh, wie ging das nochmal?"
 
 🧑
 
@@ -965,7 +976,7 @@ dons_r <- d %>%
 Die Korrelation liegt also bei `r  round(cor(d$bedrooms, d$livingArea), 2)`
 
 
->   Bitte, gerne hab ich dir geholfen, Don.
+>   "Bitte, gerne hab ich dir geholfen, Don."
 
 👩
 
@@ -1389,7 +1400,7 @@ In der Zeitung *Glitzer* werden nur folgende Menschen gezeigt:
 - Schöne Menschen
 - Reiche Menschen
     
-ehen wir davon aus, dass Schönheit und Reichtum unabhängig voneinander sind.
+Sehen wir davon aus, dass Schönheit und Reichtum unabhängig voneinander sind.
 
 Wenn ich Ihnen sage, dass Don nicht schön ist, aber in der Glitzer häufig auftaucht, was lernen wir dann über seine finanzielle Situation?^[Don muss reich sein.]
 
@@ -1404,7 +1415,7 @@ Wenn ich Ihnen sage, dass Don nicht schön ist, aber in der Glitzer häufig auft
 
 ### Noch ein einfaches Beispiel zur Kollision
 
->   "So langsam check ich's!"
+>   "So langsam check ich's!" 🧑
 
 
 
@@ -1413,7 +1424,7 @@ Sei Z = X + Y, wobei X und Y unabhängig sind.
 Wenn ich Ihnen sage, X = 3, lernen Sie nichts über Y, da die beiden Variablen unabhängig sind
  Aber: Wenn ich Ihnen zuerst sage, Z = 10, und dann sage, X = 3, wissen Sie sofort, was Y ist (Y = 7).
 
-Also: X und Y sind abhängig – gegeben Z: $X \not\indep Y \,|\, Z$.
+Also: X und Y sind abhängig, gegeben Z: $X \not\indep Y \,|\, Z$.^[Der horizontale Balken "|" bedeutet "gegeben, dass". Ein Beispiel lautet $Pr(A|B)$: "Die Wahrscheinlichkeit von A, gegeben dass B der Fall ist.]
 
 
 ### Durch Kontrollieren entsteht eine Verzerrung bei der Kollision
@@ -1425,7 +1436,7 @@ eine Scheinkorrelation zwischen den Ursachen.
 *Kontrollieren* kann z.B. bedeuten:
 
 - *Stratifizieren*: Aufteilen von `date` in zwei Gruppen und dann Analyse des Zusammenhangs von `talent` und `looks` in jeder Teilgruppe von `date`
-- *Kontrollieren mit Regressioin*: Durch Aufnahme von `date` als Prädiktor in eine Regression zusätzlich zu `looks` mit `talent` als Prädikotr
+- *Kontrollieren mit Regression*: Durch Aufnahme von `date` als Prädiktor in eine Regression zusätzlich zu `looks` mit `talent` als Prädikotr
 
 
 *Ohne* Kontrolle von `date` entsteht *keine* Scheinkorrelation zwischen `Looks` und `Talent`. Der Pfad ("Fluss") von `Looks` über `date` nach `Talent` ist blockiert.
@@ -1952,7 +1963,7 @@ Kontrollieren blockt (schließt) die Kette (genau wie bei der Gabel).
 
 
 
-Ein *Nachfahre* (descendent) ist eine Variable die von einer anderen Variable beeinflusst wird, s. fig-dag-nachfahre.
+Ein *Nachfahre* (descendent) ist eine Variable die von einer anderen Variable beeinflusst wird, s. @fig-dag-nachfahre.
 Kontrolliert man einen Nachfahren `d`, so kontrolliert man damit zum Teil den Vorfahren (die Ursache), `m`.
 Der Grund ist, dass `d` Information beinhaltet über `m`.
 Hier wird das Kontrollieren von `d` den Pfad von `x` nach `y` teilweise öffnen, da `m` eine Kollisionsvariable ist.
