@@ -14,7 +14,7 @@ Nach Absolvieren des jeweiligen Kapitels sollen folgende Lernziele erreicht sein
 
 Sie können …
 
-- ein Gaussmodell spezifizieren und inR berechnen
+- ein Gaußmodell spezifizieren und in R berechnen
 - an Beispielen verdeutlichen, wie sich eine vage bzw. eine informationsreiche Priori-Verteilung auf die Posteriori-Verteilung auswirkt
 
 
@@ -905,9 +905,37 @@ Bei der Wahl der Prioris gibt es nicht die eine, richtige Wahl.
 Die beste Entscheidung ist auf transparente Art den Stand der Forschung einfließen zu lassen und eigene Entscheidungen zu begründen. Häufig sind mehrere Entscheidungen möglich.
 Möchte man lieber vorsichtig sein, weil man wenig über den Gegenstand weiß,
 dann könnte man z.B. auf die Voreinstellung von `rstanarm` vertrauen,
-die "schwachinformativ" ist, also nur wenig Priori-Information  ind das Modell einfließen lässt.
+die "schwachinformativ" ist, also nur wenig Priori-Information  in das Modell einfließen lässt.
 :::
 
+
+
+### Wenn es schnell gehen muss
+
+
+`stan_glm()` ist deutlich langsamer als z.B. der befreundete Golem `lm()`.
+Der Grund für Stans Langsamkeit ist, dass er viele Stichproben zieht,
+also viel zu zählen hat.
+Außerdem wiederholt er das Stichprobenziehen (im Standard) 4 Mal,
+damit sein Meister prüfen kann, ob er (Stan) die Arbeit auch immer richtig gemacht hat.
+Die Idee dabei ist, wenn alle vier Durchführungen (auch "Ketten" engl., chains) genannt,
+zum etwa gleichen Ergebnis kommen, dann wird schon alles mit rechten Dingen
+zugegangen sein. Weichen die Ergebnisse der 4 Ketten voneinander ab,
+so ist Stan ein Fehler unterlaufen, oder, irgendetwas ist "dumm gelaufen".
+An dieser Stelle schauen wir uns die Ketten nicht näher an,
+aber es sei notiert, dass man die Anzahl der Ketten mit dem Argument `chains` steuern kann.
+Möchte man, dass Stan sich beeilt, so kann man `chains = 1` setzen,
+das spart Zeit.
+
+
+```{r m41a, echo = TRUE, results="hide"}
+m41a <- stan_glm(height ~ 1, 
+                 data = d2, 
+                 chains = 1,  # nur 1 Kette, anstelle von 4 im Default, spart Zeit
+                 refresh = 0) 
+
+parameters(m41a)  
+```
 
 
 
@@ -922,7 +950,7 @@ Jetzt lassen wir mal unsere eigenen Priori-Werte einfließen, in unserem zweiten
 
 ### m42
 
-Dann lassen wir `stan_glm()` unser zweites Modell berechnen.^[Hey Stan, los, an die Arbeit!]
+Dann lassen wir `stan_glm()` (Stan) unser zweites Modell berechnen.^[Hey Stan, los, an die Arbeit!]
 Dieses Mal geben wir die Priori-Werte explizit an, @tbl-m42-params.
 
 ```{r Kung-15-bis, echo = TRUE}
