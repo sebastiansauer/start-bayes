@@ -49,10 +49,10 @@ library(tidyverse)
 ```
 
 
-### Begleitvideos
+<!-- ### Begleitvideos -->
 
 
-- []()
+<!-- - []() -->
 
 
 ## Mit Stichproben die Post-Verteilung zusammenfassen
@@ -728,7 +728,14 @@ samples %>%
 
 ### Visualisierung der Intervalle
 
-Intervalle (Bereiche), die die "abzuschneidende" Wahrscheinlichkeitsmasse hälftig auf die beiden Ränder aufteilen, nennen wir *Perzentilintervalle* oder *Equal-Tails-Intervalle* (ETI), s. Abb. @fig-eti, rechtes Teildiagramm.
+
+::: {#def-eti}
+
+## Perzentilintervall (PI)
+
+Intervalle (Bereiche), die die "abzuschneidende" Wahrscheinlichkeitsmasse hälftig auf die beiden Ränder aufteilen, nennen wir *Perzentilintervalle* oder (synonym) *Equal-Tails-Intervalle* (ETI), s. Abb. @fig-eti, rechtes Teildiagramm.
+
+:::
 
 
 
@@ -805,7 +812,7 @@ samples_33 %>%
 Mit dieser "schiefen" Post-Verteilung können wir gut die Auswirkungen auf das Perzentil- und das Höchste-Dichte-Intervall anschauen.
 
 
-### 50%-Perzentil-Intervall
+### Perzentil-Intervall
 
 Hier z.B. ein 50%-Perzentilintervall, s. Abb. @fig-schief.
 
@@ -876,16 +883,23 @@ Das ist ein Nachteil der ETI.
 
 
 
-### 50%-Intervall höchster Dichte
-
-Intervalle höchster Dichte (Highest density Intervals, HDI oder HDPI) sind definiert als die *schmälsten* Intervalle, die den gesuchten Parameter enthalten.
+### Intervalle höchster Dichte
 
 
+::: {#def-hdi}
+
+Intervalle höchster Dichte (Highest density Intervals, HDI oder HDPI) sind definiert als das *schmälste* Intervall, das den gesuchten Parameter enthält (in Bezug auf ein gegebenes Modell).
+
+:::
 
 
 
-Der wahrscheinlichste Parameterwert (1) *ist* im Intervall enthalten, was Sinn macht.
-Bei einem HDI sind die abgeschnitten Ränder nicht mehr gleich groß, im Sinne von enthalten nicht (zwangsläufig) die gleiche Wahrscheinlichkeitsmasse. 
+
+
+
+
+Der wahrscheinlichste Parameterwert ($1$) *ist* im Intervall enthalten, was Sinn macht.
+Bei einem HDI sind die abgeschnitten Ränder nicht mehr gleich groß, im Sinne von enthalten nicht (zwangsläufig) die gleiche Wahrscheinlichkeitsmasse. Bei PI ist die Wahrscheinlichkeitsmasse in diesen Rändern hingegen gleich groß.
 
 
 Je symmetrischer die Verteilung, desto näher liegen die Punktschätzer aneinander (und umgekehrt), s. Abb. @fig-post-pointestimates.
@@ -939,7 +953,7 @@ samples %>%
 #| tbl-cap: "50%-HDI für unser Globusmodell"
 samples %>% 
   select(p_grid) %>% 
-  hdi(ci = .5)  # aus dem Paket `{easystats}`
+  bayestestR::hdi(ci = .5)  # aus dem Paket `{easystats}`
 ```
 
 

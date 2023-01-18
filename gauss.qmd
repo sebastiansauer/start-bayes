@@ -70,7 +70,7 @@ Dieser Abschnitt basiert auf @mcelreath_statistical_2020, Kap. 4.3.
 
 In diesem Abschnitt untersuchen wir eine Forschungsfrage in Zusammenhang mit dem Volk der !Kung, s. @fig-kungs.
 
-The ǃKung are one of the San peoples who live mostly on the western edge of the Kalahari desert, Ovamboland (northern Namibia and southern Angola), and Botswana.The names ǃKung (ǃXun) and Ju are variant words for 'people', preferred by different ǃKung groups. This band level society used traditional methods of hunting and gathering for subsistence up until the 1970s. Today, the great majority of ǃKung people live in the villages of Bantu pastoralists and European ranchers.
+>   The ǃKung are one of the San peoples who live mostly on the western edge of the Kalahari desert, Ovamboland (northern Namibia and southern Angola), and Botswana.The names ǃKung (ǃXun) and Ju are variant words for 'people', preferred by different ǃKung groups. This band level society used traditional methods of hunting and gathering for subsistence up until the 1970s. Today, the great majority of ǃKung people live in the villages of Bantu pastoralists and European ranchers.
 
 [Quelle](https://en.wikipedia.org/wiki/%C7%83Kung_people)
 
@@ -662,10 +662,13 @@ parameters(m41)  # aus Paket `easystats`
 ```{r Kung-6}
 #| echo: false
 parameters(m41) %>% display()
+
+ci_low <- parameters(m41)$CI_low
+ci_high <- parameters(m41)$CI_high
 ```
 
 
-Das Wesentliche: Unser Golem schätzt den Größenmittelwert der Kung auf ca. 155cm bzw. auf einen Bereich von etwa `r parameters(m41)$CI_low` bis `r parameters(m41)$CI_high` schätzt.
+Das Wesentliche: Unser Golem schätzt den Größenmittelwert der Kung auf ca. 155cm bzw. auf einen Bereich von etwa `r ci_low` bis `r ci_high` schätzt.
 
 Informativ ist vielleicht noch, dass wir den Prior erfahren, der im Modell verwendet wurde. 
 Dazu später mehr.
@@ -673,7 +676,7 @@ Dazu später mehr.
 
 In dieser Ausgabe sind ein paar Angaben, die wir nicht verstehen, wie `pd`, `Rhat` und `ESS`. Kein Problem: Einfach ignorieren :-)
 
-Wer Näheres wissen will, findet [hier]() einen Anfang. Außerdem sei an @mcelreath_statistical_2020 und @gelman_regression_2021 verwiesen.
+Wer Näheres wissen will, findet [hier](https://easystats.github.io/easystats/) einen Anfang. Außerdem sei an @mcelreath_statistical_2020 und @gelman_regression_2021 verwiesen.
 
 ## Wie tickt `stan_glm()`?
 
@@ -854,7 +857,7 @@ Das Modell ist sich recht sicher: die Ungewissheit der mittleren Körpergröße 
 
 
 
-🏋️ Ähnliche Fragen bleiben als Übung für die Lesis 🤓.
+🏋️ Ähnliche Fragen bleiben als Übung für die Lesis. 🤓
 
 
 
@@ -872,12 +875,15 @@ prior_summary(m41)
 
 
 `stan_glm()` verwendet (in der Voreinstellung) *schwach informative* Priori-Werte, die nur wenig Vorabwissen in das Modell geben.
-Es werden dafür die Stichproben-Daten als Priori-Daten verwendet: Mittelwerte und Streuungen der AV werden als Grundlage für die Priori-Verteilungen herangezogen.
+Es werden dafür die Stichproben-Daten als Priori-Daten verwendet: 
+Mittelwerte und Streuungen der AV werden als Grundlage für die Priori-Verteilungen herangezogen.
 Strenggenommen ist das nicht "pures Bayes",
-weil die Priori-Werte ja *vorab*, also vor Kenntnis der Daten bestimmt werden sollen.
+weil die Priori-Werte ja *vorab*, 
+also vor Kenntnis der Daten bestimmt werden sollen.
 Bitte reichen Sie Ihre Beschwerden bei Andrew Gelman ein.
 
-Man sollte diese Standardwerte als Minimalvorschlag sehen. Kennt man sich im Sachgebiet aus, kann man meist bessere Prioris finden.
+Man sollte diese Standardwerte als Minimalvorschlag sehen. 
+Kennt man sich im Sachgebiet aus, kann man meist bessere Prioris finden.
 Die Voreinstellung ist nicht zwingend; andere Werte wären auch denkbar.
 
 
@@ -894,7 +900,8 @@ Die Voreinstellung ist nicht zwingend; andere Werte wären auch denkbar.
 
 
 Eine sinnvolle Strategie ist, einen Prior so zu wählen, dass man nicht übergewiss ist,
-also nicht zu sicher Dinge behauptet, die dann vielleicht doch passieren (also die Ungewissheit zu gering spezifiziert),
+also nicht zu sicher Dinge behauptet, 
+die dann vielleicht doch passieren (also die Ungewissheit zu gering spezifiziert),
 andererseits sollte man extreme, unplausible Werte ausschließen.
 
 
@@ -902,10 +909,12 @@ andererseits sollte man extreme, unplausible Werte ausschließen.
 
 :::callout-important
 Bei der Wahl der Prioris gibt es nicht die eine, richtige Wahl.
-Die beste Entscheidung ist auf transparente Art den Stand der Forschung einfließen zu lassen und eigene Entscheidungen zu begründen. Häufig sind mehrere Entscheidungen möglich.
+Die beste Entscheidung ist auf transparente Art den Stand der Forschung einfließen zu lassen und eigene Entscheidungen zu begründen. 
+Häufig sind mehrere Entscheidungen möglich.
 Möchte man lieber vorsichtig sein, weil man wenig über den Gegenstand weiß,
 dann könnte man z.B. auf die Voreinstellung von `rstanarm` vertrauen,
-die "schwachinformativ" ist, also nur wenig Priori-Information  in das Modell einfließen lässt.
+die "schwachinformativ" ist, 
+also nur wenig Priori-Information  in das Modell einfließen lässt.
 :::
 
 
@@ -975,6 +984,7 @@ m42 <-
            prior_intercept = normal(178, 20),  # mu
            prior_aux = exponential(0.125),  # sigma
            refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
+           seed = 42,  # Zufallszahlen fixieren
            data = d2)
 parameters(m42) |> display()
 ```
@@ -1247,6 +1257,17 @@ sim2 %>%
 
 🤯   Vage (flache, informationslose, "neutrale", "objektive") Priori-Werte machen oft keinen Sinn, weil sie extreme, unplausible Werte zulassen.
 
+
+
+
+
+## Fazit
+
+
+
+:::callout-important
+Kontinuierliches Lernen ist der Schlüssel zum Erfolg.
+:::
 
 
 ## Aufgaben

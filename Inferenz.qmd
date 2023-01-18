@@ -163,12 +163,14 @@ Es hilft allerdings, wenn man andere Menschen vom Wert seiner Idee überzeugen k
 
 ### Wozu ist die Inferenstatistik gut?
 
-::: callout-note
+::: {#def-inferenz}
+
+## Inferent
 Inferenz bedeutet Schließen; auf Basis von vorliegenden Wissen wird neues Wissen generiert.
-:::
 
 Inferenzstatistik ist ein Verfahren, das mathematische Modelle (oft aus der Stochastik) verwendet, um ausgehend von einer bestimmten Datenlage, die eine Stichprobe einer Grundgesamtheit darstellt, allgemeine Schlüsse zu ziehen.
 
+:::
 
 
 
@@ -410,8 +412,12 @@ Zur Bemessung der Unsicherheit (Ungewissheit) bedient man sich der Wahrscheinlic
 
 Die Wahrscheinlichkeitstheorie bzw. -rechnung wird auch als die Mathematik des Zufalls bezeichnet.
 
-::: callout-note
+::: {#def-zufall}
+
+## Zufälliges Ereignis
+
 Unter einem zufälligen Ereignis (random) verstehen wir ein Ereignis, das nicht (komplett) vorherzusehen ist, wie etwa die Augenzahl Ihres nächsten Würfelwurfs. Zufällig bedeutet nicht (zwangsläufig), dass das Ereignisse keine Ursachen besitzt. So gehorchen die Bewegungen eines Würfels den Gesetzen der Physik, nur sind uns diese oder die genauen Randbedingungen nicht (ausreichend) bekannt.
+
 :::
 
 🏋 Welche physikalischen Randbedingungen wirken wohl auf einen Münzwurf ein?
@@ -478,21 +484,28 @@ Im Rahmen der Regressionsanalyse schlägt sich die Ungewissheit an zwei Stellen 
 
 ### Visualisierung von Ungewissheit
 
+
+::: {#def-punktschaetzer}
+
+## Punktschätzer
+
 Gibt man nur einen Punktwert an, wie 42%, als Ergebnis einer Inferenz, spricht man von einem *Punktschätzer*.
+
+
 Punktschätzer beinhalten *keine Angabe* der Schätz(un)genauigkeit, s. Abb. @fig-punktschaetzer2, links. Rot markiert: Die Punktschätzung von `mpg` für `hp=200`.
 
+:::
 
 
+![Eine Punktschätzung und ihre Ungewissheit](img/fig-punktschaetzer.png){#ig-punktschaetzer2}
 
 
 ```{r fig-punktschaetzer}
 #| echo: false
-#| fig-cap: "Eine Punktschätzung und ihre Ungewissheit"
+#| fig-cap: ""
 #| label: fig-punktschaetzer2
 #| message: false
-
-
-
+#| eval: true
 
 lm1_glm <- lm(mpg ~ hp, data = mtcars)
 
@@ -549,8 +562,8 @@ plot2 <-
            size = 5)
 
 
-plots(plot1, plot2, n_rows = 1,
-      title = c("Eine Punktschätzung mittels einer Regressionsanalyse \nohne (links) bzw. mit Ungewissheitsintervall (rechts, in grau)"))
+# plots(plot1, plot2, n_rows = 1,
+#       title = c("Eine Punktschätzung mittels einer Regressionsanalyse \nohne (links) bzw. mit Ungewissheitsintervall (rechts, in grau)"))
 
 ```
 
@@ -562,7 +575,7 @@ plots(plot1, plot2, n_rows = 1,
 
 
 
-In Abb. @fig-punktschaetzer2, rechts, ist die Ungewissheit in den Regressionskoeffizienten visualisiert: Wie sicher sind wir uns zur Stärke des Zusammenhangs von X und Y?
+In Abb. @fig-punktschaetzer2, rechts, ist die Ungewissheit in den Regressionskoeffizienten visualisiert: Wie sicher sind wir uns zur Stärke des Zusammenhangs von X und Y, vgl. @def-punktschaetzer.
 
 
 
@@ -571,6 +584,9 @@ Unsere Schätzungen wären auch dann nicht sicher, nicht fehlerfrei.
 Das liegt daran, da das Modell nicht alle Einflüsse auf Y berücksichtigt, sondern nur einen, hier als X bezeichnet.
 
 In Abb. @fig-ungewiss2 ist nicht nur die Ungewissheit durch die Regressionsgewichte, sondern auch die "Restungewissheit" dargestellt. In diesem Fall spricht man von einem "Vorhersageintervall", da man nicht nur von "typischen Fällen" auf der Regressiongeraden spricht, sondern für echte Fälle Vorhersagen (Schätzungen) tätigt, wo auch die zweite Art von Ungewissheit relevant ist.
+
+
+![Das Vorhersageintevall zeigt eine Punktschätzung und ihre Ungewissheit](img/fig-predintervall.png)
 
 
 ```{r p-zweifach}
@@ -620,14 +636,19 @@ Wir sehen hier, dass ein "Ungewissheitskorridor" angegeben wird.
 Entsprechend wird nicht ein *Punktschätzer*, sondern ein *Schätzbereich* angegeben.
 Man spricht auch von einem *Konfidenzintervall* oder *Unsicherheitsbereich*^[Tatsächlich gibt es mehrere Synonyme oder ähnliche Begriffe für Konfidenzintervall. Wir kommen später darauf detaillierter zu sprechen.]
 
-Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben. Im Kontext der Bayes-Analyse ist das einfach zu interpretieren. 
-Sagen wir, wir finden, dass in einem Modell ein 95%-Konfidenzintervall für den Anteil der R-Fans angegeben wird, dass sich von 40 bis 44 Prozent erstreckt.
-Dieser Befund läßt sich so interpretieren: "Laut Modell liegt der gesuchte Anteil mit einer Wahrscheinlichkeit von 95% im Bereich von 44 bis 44 Prozentpunkten."
+::: {#def-konfintervall}
 
+## Konfidenzintervall
 
-::: callout-important
-Ein Konfidenzintervall gibt einen Schätzbereich plausibler Werte für den gesuchten Wert in der Population (den Parameter) an.
+Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schätzbereiche. Die Grenzen eines Konfindenzintervall markieren einen Bereich plausibler Werte für einen Parameter. 
+
 :::
+
+
+Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben.  Im Kontext der Bayes-Analyse ist das einfach zu interpretieren. 
+Sagen wir, wir finden, dass in einem Modell ein 95%-Konfidenzintervall für den Anteil der R-Fans angegeben wird, dass sich von 40 bis 44 Prozent erstreckt.
+Dieser Befund lässt sich so interpretieren: "Laut Modell liegt der gesuchte Anteil mit einer Wahrscheinlichkeit von 95% im Bereich von 44 bis 44 Prozentpunkten."
+
 
 
 
@@ -717,6 +738,20 @@ Allerdings lässt uns unser Vorwissen vermuten, dass so ein Treatment das Einkom
 ## Literatur
 
 Bei @gelman_regression_2021, Kap. 1 findet sich eine Darstellung ähnlich zu der in diesem Kapitel.
+
+
+
+
+
+## Fazit
+
+
+
+:::callout-important
+[Kontinuierliches Lernen](https://imgflip.com/i/77wn7m) ist der Schlüssel zum Erfolg.
+:::
+
+
 
 
 ## Aufgaben
