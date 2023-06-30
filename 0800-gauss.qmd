@@ -50,6 +50,7 @@ theme_set(theme_modern())
 library(tidyverse)
 library(rstanarm)
 library(easystats)
+library(DataExplorer)  # Daten verbildlichen
 ```
 
 
@@ -125,7 +126,7 @@ nrow(d2)
 $N=`r nrow(d2)`$.
 
 Lassen wir uns einige typische deskriptive Statistiken zum Datensatz ausgeben.
-`{easystats`} macht das tatsächlich recht easy.
+`{easystats`} macht das tatsächlich recht easy, s. @tbl-kung.
 
 ```{r Kung-7, echo = TRUE, eval = FALSE}
 #| eval: false
@@ -136,11 +137,24 @@ describe_distribution(d2)
 
 ```{r Kung-7a, eval = TRUE}
 #| echo: false
+#| label: tbl-kung
+#| tbl-cap: Statistiken der metrischen Variablen im Kung-Datensatz
 describe_distribution(d2) %>% 
   gt() %>% 
   fmt_number(columns = c(3:last_col()-1)) %>% 
   fmt_integer(columns = last_col())
 ```
+
+
+Die Verteilungen lassen sich mit `plot_density` (aus `{DataExplorer}`), s. @fig-kung-dens.
+
+
+```{r}
+#| label: fig-kung-dens
+#| fig-cap: Verteilungen der Variablen im Kung-Datensatz. Größe und Gewicht sind recht symmetrisch; Alter ist rechtsschief.
+plot_density(d2)
+```
+
 
 
 
@@ -161,8 +175,9 @@ Wir interessieren uns also für den Mittelwert der Körpergröße (erwachsener K
 
 Wir sind uns über diesen Mittelwert nicht sicher^[Darum machen wir hier ja die ganz Show!], und unsere Ungewissheit quantifizieren wir anhand einer Normalverteilung mit Mittelwert von 178cm und Streuung von 20 cm:
 
-$$\mu \sim \mathcal{N}(178, 20)$$
+$$\mu \sim \mathcal{N}(178, 20)$$ {#eq-kung}
 
+@eq-kung definiert ein Modell: Unsere Vorstellung der mittleren ("typischen") Körpergröße der erwachsenen !Kung.
 
 Warum 178 cm? Kein besonderer Grund. Hier wollen wir den Effekt verschiedener Priori-Werte untersuchen.^[Der Autor des zugrundeliegenden Fachbuchs, Richard McElreath gibt 178cm als seine Körpergröße an.]
 In einer echten Untersuchung sollte man immer einen inhaltlichen Grund für einen Priori-Wert haben.
@@ -234,6 +249,7 @@ das bei 3 liegt;
 #| fig-asp: 0.5
 #| label: fig-exp
 #| fig-cap: Die Exponentialverteilung mit einigen ihrer Quantilen
+#| echo: false
 
 d <-
   tibble(

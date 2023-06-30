@@ -1636,7 +1636,7 @@ Wir sind v.a. interessiert an $G \rightarrow K$, dem *direkten kausalen* Effekt 
 ```{r}
 #| echo: false
 #| label: fig-dag-grannies
-#| fig-cap: "Der kausale Effekt von Gro0eltern auf Enkel. Ein verlorener Fall, zumindest was den DAG betrifft"
+#| fig-cap: "Der kausale Effekt von Großeltern auf Enkel. Ein verlorener Fall, zumindest was den DAG betrifft"
 dag_coords <-
   tibble(name = c("G", "E", "K"),
          x    = c(1, 2, 2),
@@ -1938,10 +1938,10 @@ plots(p_conf, p_med, p_coll, p_desc, n_rows = 2)
 
 ### Mediation
 
-Die *Mediation* (Wirkkette, Rohr, Kette, chain) beschreibt Pfade, in der die Kanten gleiche Wirkrichtung haben: $x \rightarrow m \rightarrow y$. 
-Anders gesagt: Eine Mediation, auch "Kette" oder "Wirkkette" genannt, ist eine Kausalabfolge der Art $x \rightarrow m \rightarrow y$, s. @fig-med1.
+Die *Mediation* (synonym: Wirkkette, Rohr, Kette, chain) beschreibt Pfade, in der die Kanten (eines Pfades) die gleiche Wirkrichtung haben: $x \rightarrow m \rightarrow y$. 
+Anders gesagt: Eine Mediation ist eine Kausalabfolge der Art $x \rightarrow m \rightarrow y$, s. @fig-med1.
 Die Variable in der Mitte $m$ der Kette wird auch *Mediator* genannt,
-weil sei die Wirkung von X auf Y "vermittelt" oder übeträgt.
+weil sei die Wirkung von X auf Y "vermittelt" oder überträgt.
 Die Erforschung von Mediation spielt eine recht wichtige Rolle in einigen Wissenschaften,
 wie der Psychologie.
 
@@ -1957,6 +1957,34 @@ p_med
 
 Ohne Kontrollieren ist der Pfad offen: Die Assoziation "fließt" den Pfad entlang (in beide Richtungen).
 Kontrollieren blockt (schließt) die Kette (genau wie bei der Gabel).
+
+
+Es kann auch angenommen werden, dass der Mediator nicht der einzige Weg von X zu Y ist, s. @fig-part-med.
+In @fig-part-med gibt es zwei kausale Pfade von X zu Y: $x\rightarrow m \rightarrow y$ und $x \rightarrow y$. 
+Die Summe der Effekte beider Pfade nennt man den *totalen (kausalen) Effekt*. 
+Den Effekt über den Mediatorpfad nennt man den *indirekten (kausalen) Effekt*
+und den Pfad $x\rightarrow y$ nennt man den *direkten (kaudalen) Effekt*.
+
+```{r}
+#| label: fig-part-med
+#| fig-cap: Partielle Mediation
+#| echo: false
+dag <- 
+  dagitty('
+          dag{
+          
+          m [pos="1.000,0.000"]
+          x [pos="0.000,1.000"]
+          y [pos="2.000,1.000"]
+         
+
+          x -> m
+          x -> y
+          m -> y
+          }')
+
+gg_fancy_dag(dag)
+```
 
 
 ## Der Nachfahre
