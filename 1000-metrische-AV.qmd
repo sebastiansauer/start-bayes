@@ -8,7 +8,7 @@
 
 ### R-Pakete
 
-Benötigte R-Pakete für dieses Thema:
+In diesem Kapite lwerden folgende R-Pakete benötigt:
 
 ```{r}
 #| message: false
@@ -318,8 +318,15 @@ display(parameters(m10.1))
 In @fig-momkid ist der Unterschied im IQ der Kinder als Funktion des Schlussabschlusses der Mutter dargestellt.
 
 
+```{r}
+#| eval: false
+estimate_expectation(m10.1) %>% plot()
+```
+
+
 ```{r plot-kidiq}
 #| label: fig-momkid
+#| echo: false
 #| fig-cap: "Kinder, deren Mütter über einen Schulabschluss verfügen, haben im Mittel einen höheren Intelligenztestwert, laut dem vorliegenden Modell"
 ggplot(kidiq) +
   aes(x = mom_hs, y = kid_score) +
@@ -710,12 +717,12 @@ kidiq %>%
   geom_abline(slope = coef(m10.4)[3],
               intercept = coef(m10.4)[1],
               size = 1,
-              color = "blue") +
+              color =  "#56B4E9E6" ) +
   geom_abline(slope = coef(m10.4)[3]+coef(m10.4)[3]*coef(m10.4)[4],
               intercept = coef(m10.4)[1] + coef(m10.4)[2],
               size = 2,
-              color = "red") +
-  scale_color_manual(values = c("blue", "red")) +
+              color = "#009E73E6") +
+  scale_color_manual(values = c( "#56B4E9E6" , "#009E73E6")) +
   scale_x_continuous(limits = c(0, 140))
 ```
 
@@ -843,12 +850,12 @@ kidiq %>%
   geom_abline(slope = coef(m10.5)[3],
               intercept = coef(m10.5)[1],
               size = 1,
-              color = "blue") +
+              color = "#56B4E9E6") +
   geom_abline(slope = coef(m10.5)[3]+coef(m10.5)[3]*coef(m10.5)[4],
               intercept = coef(m10.5)[1] + coef(m10.5)[2],
               size = 2,
-              color = "red") +
-  scale_color_manual(values = c("blue", "red")) +
+              color = "#009E73E6") +
+  scale_color_manual(values = c("#56B4E9E6", "#009E73E6")) +
   theme(legend.position = "bottom",
         axis.title = element_text(size = 8),
         legend.title = element_text(size = 6)) +
@@ -890,11 +897,11 @@ Das Zentrieren ändert auch *nicht* die Regressionskoeffizienten, da die Streuun
 
 ### Perzentilintervalle aus der Posterori-Verteilung
 
-@tbl-m105 zeigt die Punktschätzer der Parameter für m10.5 sowie ihre Perzentilintervalle^[auch ETI genannt].
-Nutzen Sie dafür `parameters(m10.5)`.
+@tbl-m105 zeigt die Punktschätzer der Parameter für m10.5 sowie ihre Perzentilintervalle^[auch ETI (Equal Tails Interval) genannt].
+Nutzen Sie dafür `parameters(m10.5)`, s. @tbl-m105.
 
 ```{r}
-#| fig-cap: "Parameter von m10.5 und ETIs"
+#| tbl-cap: "Parameter von m10.5 und ETIs"
 #| echo: false
 #| label: tbl-m105
 parameters(m10.5) %>% 
@@ -904,7 +911,7 @@ parameters(m10.5) %>%
 
 
 Highest Density (Posterior) Intervalle (HDI oder HDPI) kann man sich  komfortabel ausgeben lassen mit `hdi(m10.5)` oder mit `parameters(m10.5, ci_method = "hdi")`,
-s. @tbl-m105-hdi
+s. @tbl-m105-hdi.
 
 ```{r Thema6-Teil2-11}
 #| tbl-cap: "Parameter von m10.5 und HDIs"
@@ -1073,39 +1080,45 @@ Was fällt Ihnen auf?
 ### Visualisierung (EDA)
 
 
-Hier kommen die Pinguine! Wie schwer sind die Tiere in unserer Stichprobe, s. @fig-penguines1, @fig-penguines2, @fig-penguines3 ? 
+Hier kommen die Pinguine! Wie schwer sind die Tiere in unserer Stichprobe, 
+s. @fig-penguines1? 
+
+
+
 
 ```{r}
 #| echo: false
 #| label: fig-penguines1
 #| fig-cap: "Verteilung des Körpergewichts dreier Arten von Pinguinen - Geom Violine"
-penguins %>% 
-  ggplot(aes(x = species, y = body_mass_g, fill = species)) +
-  geom_violin() +
-  geom_jitter(width = 0.1, alpha = .1)
+library(ggpubr)
+ggviolin(penguins,
+          x = "species",
+         fill = "species",  # Füllfarbe nach `species`
+          y = "body_mass_g") +
+  scale_fill_okabeito()  #  Farbpalette nach Okabe & Ito
 ```
 
-@fig-penguines2 zeigt die Gewichtsverteilung pro Spezies als "Bergrücken" (`geom_ridges`).
+<!-- @fig-penguines2 zeigt die Gewichtsverteilung pro Spezies als "Bergrücken" (`geom_ridges`). -->
 
-```{r fig.asp = .3, fig.width=7}
-#| echo: false
-#| label: fig-penguines2
-#| fig-cap: "Verteilung des Körpergewichts dreier Arten von Pinguinen - Geom Ridges"
-ggplot(penguins) +
-  aes(x = body_mass_g, y = species) +
-  geom_density_ridges()
-```
+<!-- ```{r fig.asp = .3, fig.width=7} -->
+<!-- #| echo: false -->
+<!-- #| label: fig-penguines2 -->
+<!-- #| fig-cap: "Verteilung des Körpergewichts dreier Arten von Pinguinen - Geom Ridges" -->
+<!-- ggplot(penguins) + -->
+<!--   aes(x = body_mass_g, y = species) + -->
+<!--   geom_density_ridges() -->
+<!-- ``` -->
 
-@fig-penguines3 zeigt die Gewichtsverteilung pro Spezies als "halbe Violinen" (`geom_ridges`), 
-sozusagen Dichtediagramme um 90 Grad gedreht.
+<!-- @fig-penguines3 zeigt die Gewichtsverteilung pro Spezies als "halbe Violinen" (`geom_ridges`),  -->
+<!-- sozusagen Dichtediagramme um 90 Grad gedreht. -->
 
-```{r}
-#| label: fig-penguines3
-#| fig-cap: "Verteilung des Körpergewichts dreier Arten von Pinguinen - Geom Violindot"
-penguins %>% 
-  ggplot(aes(x = species, y = body_mass_g, fill = species)) +
-  geom_violindot(fill_dots = "black")
-```
+<!-- ```{r} -->
+<!-- #| label: fig-penguines3 -->
+<!-- #| fig-cap: "Verteilung des Körpergewichts dreier Arten von Pinguinen - Geom Violindot" -->
+<!-- penguins %>%  -->
+<!--   ggplot(aes(x = species, y = body_mass_g, fill = species)) + -->
+<!--   geom_violindot(fill_dots = "black") -->
+<!-- ``` -->
 
 
 
@@ -1125,7 +1138,8 @@ options(mc.cores = parallel::detectCores())  # Turbo einschalten
 m10.6 <- stan_glm(body_mass_g ~ species, 
                   data = penguins, 
                   refresh = 0,  # unterdrückt Ausgabe der Posteriori-Stichproben
-                  seed = 42)
+                  seed = 42  # zur Reproduzierbarkeit
+                  )
 
 
 m10.6 %>% 
@@ -1158,11 +1172,12 @@ Der Unterschied im mittleren Gewicht von den Gruppen Chinstrap und Gentoo zur Re
 ```{r plot-hdi-m106}
 #| fig-cap: "Effekt der UV: Unterschiede zur Referenzgruppe (95%-HDI)"
 #| label: fig-m106-params
-plot(hdi(m10.6))
+
+plot(hdi(m10.6)) + scale_fill_okabeito()
 ```
 
 
-
+Das [Farbschema nach Okabe und Ito](https://jfly.uni-koeln.de/color/) ist gut geeignet, um nominal skalierte Farben zu kodieren (d. [Details hier](https://data-se.netlify.app/2023/06/30/farbpaletten/)).
 
 
 ### Glauben wir jetzt an Gruppeneffekte?
@@ -1538,7 +1553,7 @@ Die angegebenen Prozentwerte beziehen sich nicht auf die 100% der Post-Verteilun
 - Aber können wir umgekehrt sagen, dass ein Großteil außerhalb liegt? Das erkennt man optisch ganz gut.
 
 ```{r fig.asp = .5}
-rope(m10.6) %>% plot()
+plot(rope(m10.6)) + scale_fill_okabeito()
 ```
 
 
@@ -1565,7 +1580,7 @@ Sagen wir, 100 Gramm sind unsere Grenze für einen vernachlässigbaren Effekt, s
 #| label: fig-rope-range
 #| fig-cap: ROPE mit selber eingestellter Grenze von ±100 (Gramm)
 rope(m10.6, range = c(-100, 100))
-plot(rope(m10.6, range = c(-100, 100)))
+plot(rope(m10.6, range = c(-100, 100))) + scale_fill_okabeito()
 ```
 
 
@@ -2090,7 +2105,7 @@ parameters(m10.10) %>% display()
 ```{r 1010-params-plot}
 #| label: fig-m1010hdi
 #| fig-cap: "Im Standard wird ein 95%-Intervall gezeigt bzw. berechnet; hier das ETI für m10.10"
-plot(eti(m10.10))
+plot(eti(m10.10)) + scale_fill_okabeito()
 ```
 
 
