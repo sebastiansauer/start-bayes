@@ -30,6 +30,11 @@ Sie können ...
 
 
 
+### Vorbereitung im Eigenstudium
+
+- [Statistik1, Kap. "Daten verbildlichen"](https://statistik1.netlify.app/040-verbildlichen#vertiefung)
+
+
 ### Benötigte R-Pakete
 
 
@@ -38,6 +43,7 @@ Sie können ...
 
 ```{r}
 library(tidyverse)
+library(ggpubr)  # dataviz
 ```
 
 
@@ -159,7 +165,7 @@ samples_zwielicht <-
 
 ```{r QM2-Thema3-Post-befragen-22}
 #| echo: false
-#| fig-cap: Post-Verteilung zu den Daten des zwielichten Dozenten (9 von 10 Treffern im wiederholten Münzwurf)
+#| fig-cap: Post-Verteilung für den Parameter p zu den Daten des zwielichten Dozenten (9 von 10 Treffern im wiederholten Münzwurf)
 #| label: fig-post-zwielicht
 samples_zwielicht %>% 
   ggplot() +
@@ -167,12 +173,26 @@ samples_zwielicht %>%
   geom_histogram(fill = "grey60", bins = 20) +
   #geom_vline(xintercept = 0.9) +
   #geom_label(x = 0.8, y= 0, label = "Emp. Ergebnis") +
-  labs(title = "Posteriori-Verteilung",
+  labs(title = "Posteriori-Verteilung für p",
        subtitle = "Priori: Gleichverteilung; Daten: 9 von 10 Treffern, binomialverteilt",
        caption = "Das Dreieck zeigt die Wskt. eines Treffers bei einer fairen Münze",
        x = "Gewinnchance der Münze") +
   annotate("point", x = .5, y = 0, size = 5, color = "grey40", shape = 17)
 ```
+
+```{r}
+#| eval: false
+gghistogram(samples_zwielicht,
+            x = "gewinnchance_muenze",
+            title = "Posteriori-Verteilung für p",
+            subtitle = "Priori: Gleichverteilung; Daten: 9 von 10 Treffern, binomialverteilt",
+            xlab = "p (Gewinchance der Münze)",
+            fill = "grey60") +
+  geom_vline(xintercept = 0.5)
+
+```
+
+Hilfe für die Funktion `gghistogram()` finden Sie auf der [Hilfeseite der Funktion](https://rpkgs.datanovia.com/ggpubr/reference/gghistogram.html).
 
 Die *Posteriori-Verteilung* gibt die Wahrscheinlichkeit jedes Parameterwerts $p$ wider, gegeben der empirischen Daten $D$: $Pr(p|D)$. 
 
