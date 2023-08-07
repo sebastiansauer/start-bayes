@@ -1,0 +1,3076 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Start:Bayes! - 5&nbsp; Verteilungen</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./0500-Globusversuch.html" rel="next">
+<link href="./0300-Wskt.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Keine Treffer",
+    "search-matching-documents-text": "Treffer",
+    "search-copy-link-title": "Link in die Suche kopieren",
+    "search-hide-matches-text": "Zusätzliche Treffer verbergen",
+    "search-more-match-text": "weitere Treffer in diesem Dokument",
+    "search-more-matches-text": "weitere Treffer in diesem Dokument",
+    "search-clear-button-title": "Zurücksetzen",
+    "search-detached-cancel-button-title": "Abbrechen",
+    "search-submit-button-title": "Abschicken",
+    "search-label": "Suchen"
+  }
+}</script><link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="styles.css">
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./0200-Inferenz.html">Wahrscheinlichkeit</a></li><li class="breadcrumb-item"><a href="./0400-Verteilungen.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Verteilungen</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Start:Bayes!</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Dunkelmodus umschalten"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Suchen"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Organisatorisches</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Hinweise</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0100-Pruefung.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Prüfung</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Wahrscheinlichkeit</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0200-Inferenz.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Inferenz</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0300-Wskt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Wahrscheinlichkeit</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0400-Verteilungen.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Verteilungen</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Bayes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0500-Globusversuch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Globusversuch</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0600-Post.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Die Post befragen</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0700-ppv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Vorhersage-Verteilung</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Lineare Modelle</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0800-gauss.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Gauss-Modelle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0900-lineare-modelle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Lineare Modelle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1000-metrische-AV.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Forschungsfragen mit metrischer AV</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Kausalität</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1100-kausal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Kausalinferenz</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Abschluss</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1200-abschluss.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Abschluss</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Inhaltsverzeichnis</h2>
+   
+  <ul>
+<li>
+<a href="#lernsteuerung" id="toc-lernsteuerung" class="nav-link active" data-scroll-target="#lernsteuerung"><span class="header-section-number">5.1</span> Lernsteuerung</a>
+  <ul class="collapse">
+<li><a href="#lernziele" id="toc-lernziele" class="nav-link" data-scroll-target="#lernziele"><span class="header-section-number">5.1.1</span> Lernziele</a></li>
+  <li><a href="#vorbereitung-im-eigenstudium" id="toc-vorbereitung-im-eigenstudium" class="nav-link" data-scroll-target="#vorbereitung-im-eigenstudium"><span class="header-section-number">5.1.2</span> Vorbereitung im Eigenstudium</a></li>
+  <li><a href="#pr%C3%BCfungsrelevanter-stoff" id="toc-prüfungsrelevanter-stoff" class="nav-link" data-scroll-target="#pr%C3%BCfungsrelevanter-stoff"><span class="header-section-number">5.1.3</span> Prüfungsrelevanter Stoff</a></li>
+  <li><a href="#ben%C3%B6tigte-r-pakete" id="toc-benötigte-r-pakete" class="nav-link" data-scroll-target="#ben%C3%B6tigte-r-pakete"><span class="header-section-number">5.1.4</span> Benötigte R-Pakete</a></li>
+  <li><a href="#zentrale-begriffe" id="toc-zentrale-begriffe" class="nav-link" data-scroll-target="#zentrale-begriffe"><span class="header-section-number">5.1.5</span> Zentrale Begriffe</a></li>
+  <li><a href="#begleitvideos" id="toc-begleitvideos" class="nav-link" data-scroll-target="#begleitvideos"><span class="header-section-number">5.1.6</span> Begleitvideos</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#verteilungen-1" id="toc-verteilungen-1" class="nav-link" data-scroll-target="#verteilungen-1"><span class="header-section-number">5.2</span> Verteilungen</a>
+  <ul class="collapse">
+<li><a href="#h%C3%A4ufigkeitsverteilung" id="toc-häufigkeitsverteilung" class="nav-link" data-scroll-target="#h%C3%A4ufigkeitsverteilung"><span class="header-section-number">5.2.1</span> Häufigkeitsverteilung</a></li>
+  <li><a href="#wahrscheinlichkeitsverteilung" id="toc-wahrscheinlichkeitsverteilung" class="nav-link" data-scroll-target="#wahrscheinlichkeitsverteilung"><span class="header-section-number">5.2.2</span> Wahrscheinlichkeitsverteilung</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#gleichverteilung" id="toc-gleichverteilung" class="nav-link" data-scroll-target="#gleichverteilung"><span class="header-section-number">5.3</span> Gleichverteilung</a>
+  <ul class="collapse">
+<li><a href="#indifferenz-als-grundlage" id="toc-indifferenz-als-grundlage" class="nav-link" data-scroll-target="#indifferenz-als-grundlage"><span class="header-section-number">5.3.1</span> Indifferenz als Grundlage</a></li>
+  <li><a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation"><span class="header-section-number">5.3.2</span> Simulation</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-bin-distrib" id="toc-sec-bin-distrib" class="nav-link" data-scroll-target="#sec-bin-distrib"><span class="header-section-number">5.4</span> Binomialverteilung</a>
+  <ul class="collapse">
+<li><a href="#veranschaulichung" id="toc-veranschaulichung" class="nav-link" data-scroll-target="#veranschaulichung"><span class="header-section-number">5.4.1</span> Veranschaulichung</a></li>
+  <li><a href="#rechnen-mit-r" id="toc-rechnen-mit-r" class="nav-link" data-scroll-target="#rechnen-mit-r"><span class="header-section-number">5.4.2</span> Rechnen mit R</a></li>
+  <li><a href="#simulieren" id="toc-simulieren" class="nav-link" data-scroll-target="#simulieren"><span class="header-section-number">5.4.3</span> Simulieren</a></li>
+  </ul>
+</li>
+  <li><a href="#normalverteilung" id="toc-normalverteilung" class="nav-link" data-scroll-target="#normalverteilung"><span class="header-section-number">5.5</span> Normalverteilung</a></li>
+  <li><a href="#parameter" id="toc-parameter" class="nav-link" data-scroll-target="#parameter"><span class="header-section-number">5.6</span> Parameter</a></li>
+  <li><a href="#normal-auf-dem-fu%C3%9Fballfeld" id="toc-normal-auf-dem-fußballfeld" class="nav-link" data-scroll-target="#normal-auf-dem-fu%C3%9Fballfeld"><span class="header-section-number">5.6.1</span> Normal auf dem Fußballfeld</a></li>
+  <li><a href="#normal-durch-addieren" id="toc-normal-durch-addieren" class="nav-link" data-scroll-target="#normal-durch-addieren"><span class="header-section-number">5.6.2</span> Normal durch Addieren</a></li>
+  <li><a href="#normalverteilung-vs.-randlastige-verteilungen" id="toc-normalverteilung-vs.-randlastige-verteilungen" class="nav-link" data-scroll-target="#normalverteilung-vs.-randlastige-verteilungen"><span class="header-section-number">5.6.3</span> Normalverteilung vs.&nbsp;randlastige Verteilungen</a></li>
+  <li><a href="#beispiele-f%C3%BCr-normal--und-randlastige-verteilungen" id="toc-beispiele-für-normal--und-randlastige-verteilungen" class="nav-link" data-scroll-target="#beispiele-f%C3%BCr-normal--und-randlastige-verteilungen"><span class="header-section-number">5.6.4</span> Beispiele für Normal- und randlastige Verteilungen</a></li>
+  <li><a href="#formel-der-normalverteilung" id="toc-formel-der-normalverteilung" class="nav-link" data-scroll-target="#formel-der-normalverteilung"><span class="header-section-number">5.6.5</span> Formel der Normalverteilung</a></li>
+  <li><a href="#simulation-einer-normalverteilung" id="toc-simulation-einer-normalverteilung" class="nav-link" data-scroll-target="#simulation-einer-normalverteilung"><span class="header-section-number">5.6.6</span> Simulation einer Normalverteilung</a></li>
+  <li><a href="#iq-verteilung" id="toc-iq-verteilung" class="nav-link" data-scroll-target="#iq-verteilung"><span class="header-section-number">5.6.7</span> IQ-Verteilung</a></li>
+  <li><a href="#quantile-der-normalverteilung" id="toc-quantile-der-normalverteilung" class="nav-link" data-scroll-target="#quantile-der-normalverteilung"><span class="header-section-number">5.6.8</span> Quantile der Normalverteilung</a></li>
+  <li><a href="#standardnormalverteilung" id="toc-standardnormalverteilung" class="nav-link" data-scroll-target="#standardnormalverteilung"><span class="header-section-number">5.6.9</span> Standardnormalverteilung</a></li>
+  <li><a href="#normalverteilung-als-konservative-wahl" id="toc-normalverteilung-als-konservative-wahl" class="nav-link" data-scroll-target="#normalverteilung-als-konservative-wahl"><span class="header-section-number">5.6.10</span> Normalverteilung als konservative Wahl</a></li>
+  <li><a href="#aufgaben" id="toc-aufgaben" class="nav-link" data-scroll-target="#aufgaben"><span class="header-section-number">5.7</span> Aufgaben</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><span class="header-section-number">5.8</span> —</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Verteilungen</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header><section id="lernsteuerung" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="lernsteuerung">
+<span class="header-section-number">5.1</span> Lernsteuerung</h2>
+<section id="lernziele" class="level3" data-number="5.1.1"><h3 data-number="5.1.1" class="anchored" data-anchor-id="lernziele">
+<span class="header-section-number">5.1.1</span> Lernziele</h3>
+<p>Nach Absolvieren des jeweiligen Kapitels sollen folgende Lernziele erreicht sein.</p>
+<p>Sie können …</p>
+<ul>
+<li>den Begriff der Zufallsvariablen erläutern</li>
+<li>die Begriffe von Wahrscheinlichkeitsdichte und Verteilungsfunktion erläutern und anhand einfacher Beispiele ausrechnen</li>
+<li>den Begriff einer Gleichverteilung erläutern und einfache Fallbeispiele ausrechnen</li>
+<li>die Parameter einer Normalverteilung nennen und erläutern</li>
+</ul></section><section id="vorbereitung-im-eigenstudium" class="level3" data-number="5.1.2"><h3 data-number="5.1.2" class="anchored" data-anchor-id="vorbereitung-im-eigenstudium">
+<span class="header-section-number">5.1.2</span> Vorbereitung im Eigenstudium</h3>
+<p>Lesen Sie zusätzlich zum Stoff dieses Kapitels noch <span class="citation" data-cites="bourier_2018">Bourier (<a href="references.html#ref-bourier_2018" role="doc-biblioref">2018</a>)</span>, folgende Abschnitte:</p>
+<ul>
+<li>Kap. 6.1 (Zum Begriff Zufallsvariable)</li>
+<li>Kap. 6.3 (Stetige Zufallsvariablen)</li>
+<li>Kap. 7.1.1 (Binomialverteilung)</li>
+<li>Kap. 7.2.1 (Gleichverteilung) und 7.2.3 (Normalverteilung)</li>
+</ul>
+<p>Lösen Sie auch die Übungsaufgaben dazu.</p>
+<p>Weitere Übungsaufgaben finden Sie im dazugehörigen Übungsbuch, <span class="citation" data-cites="bourier_statistik-ubungen_2022">Bourier (<a href="references.html#ref-bourier_statistik-ubungen_2022" role="doc-biblioref">2022</a>)</span>.</p>
+</section><section id="prüfungsrelevanter-stoff" class="level3" data-number="5.1.3"><h3 data-number="5.1.3" class="anchored" data-anchor-id="prüfungsrelevanter-stoff">
+<span class="header-section-number">5.1.3</span> Prüfungsrelevanter Stoff</h3>
+<p>Beachten Sie, dass neben den Inhalten des Kapitels auch stets der vorzubereitende Stoff prüfungsrelevant ist.</p>
+</section><section id="benötigte-r-pakete" class="level3" data-number="5.1.4"><h3 data-number="5.1.4" class="anchored" data-anchor-id="benötigte-r-pakete">
+<span class="header-section-number">5.1.4</span> Benötigte R-Pakete</h3>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-1_110dd5f16e280703098e9c840efbc9d0">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="zentrale-begriffe" class="level3" data-number="5.1.5"><h3 data-number="5.1.5" class="anchored" data-anchor-id="zentrale-begriffe">
+<span class="header-section-number">5.1.5</span> Zentrale Begriffe</h3>
+<section id="eigenschaften-von-zufallsvariablen" class="level4" data-number="5.1.5.1"><h4 data-number="5.1.5.1" class="anchored" data-anchor-id="eigenschaften-von-zufallsvariablen">
+<span class="header-section-number">5.1.5.1</span> Eigenschaften von Zufallsvariablen</h4>
+<ul>
+<li>Zufallsvariable (random variable)</li>
+<li>Diskret vs.&nbsp;stetig</li>
+<li>Wahrscheinlichkeitsdichte (Dichte, (probability) density, f)</li>
+<li>Wahrscheinlichkeitsfunktion (kumulierte Wahrscheinlichkeit, Wahrscheinlichkeitsmasse)</li>
+</ul></section><section id="verteilungen" class="level4" data-number="5.1.5.2"><h4 data-number="5.1.5.2" class="anchored" data-anchor-id="verteilungen">
+<span class="header-section-number">5.1.5.2</span> Verteilungen</h4>
+<ul>
+<li>Gleichverteilung</li>
+<li>Normalverteilung</li>
+<li>Standardnormalverteilung</li>
+</ul></section></section><section id="begleitvideos" class="level3" data-number="5.1.6"><h3 data-number="5.1.6" class="anchored" data-anchor-id="begleitvideos">
+<span class="header-section-number">5.1.6</span> Begleitvideos</h3>
+<ul>
+<li><a href="https://youtu.be/7GqIE4sKDs4">Video 1 zum Thema Verteilungen</a></li>
+<li><a href="https://youtu.be/HKWwondYsW8">Video 2 zum Thema Verteilungen</a></li>
+</ul></section></section><section id="verteilungen-1" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="verteilungen-1">
+<span class="header-section-number">5.2</span> Verteilungen</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Eine <em>Verteilung</em> zeigt, welche Ausprägungen eine Variable aufweist und wie häufig bzw. wahrscheinlich diese sind. Einfach gesprochen, veranschaulicht eine Balken- oder Histogramm eine Verteilung. Man unterscheidet Häufigkeitsverteilungen (s. Abb. <a href="#fig-mtcars-freq">Abbildung&nbsp;<span>5.1</span></a>) von Wahrscheinlichkeitsverteilungen (Abb. <a href="#fig-uniform">Abbildung&nbsp;<span>5.2</span></a>).</p>
+</div>
+</div>
+<section id="häufigkeitsverteilung" class="level3" data-number="5.2.1"><h3 data-number="5.2.1" class="anchored" data-anchor-id="häufigkeitsverteilung">
+<span class="header-section-number">5.2.1</span> Häufigkeitsverteilung</h3>
+<p>Die Häufigkeitsverteilung eines <em>diskreten</em> Merkmals <span class="math inline">\(X\)</span> mit <span class="math inline">\(k\)</span> Ausprägungen zeigt, wie häufig die einzelnen Ausprägungen sind. So hat die Variable <em>Zylinder</em> (in einem Datensatz) etwa die Ausprägungen 4,6 und 8.</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/Normalverteilung-1_419abde230d701db4045c8e5a6fd17a3">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
+<span>  <span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: right;">cyl</th>
+<th style="text-align: right;">n</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">14</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Abb. <a href="#fig-mtcars-freq">Abbildung&nbsp;<span>5.1</span></a>, links, visualisiert die Häufigkeitsverteilung von <code>cyl</code>.</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/fig-mtcars-freq_e0103e034fbc3f4593ab084b1570a6b9">
+<div class="cell-output-display">
+<div id="fig-mtcars-freq" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0400-Verteilungen_files/figure-html/fig-mtcars-freq-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Abbildung&nbsp;5.1: Häufigkeitsverteilung von <code>cyl</code> und <code>hp</code> (diskretisiert in 10 Körbe oder Gruppen)</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Ein <em>stetiges</em> Merkmal, wie <code>hp</code> (PS-Zahl), lässt sich durch Klassenbildung in ein diskretes umwandeln (diskretisieren), s. Abb. <a href="#fig-mtcars-freq">Abbildung&nbsp;<span>5.1</span></a>, rechts.</p>
+</section><section id="wahrscheinlichkeitsverteilung" class="level3" data-number="5.2.2"><h3 data-number="5.2.2" class="anchored" data-anchor-id="wahrscheinlichkeitsverteilung">
+<span class="header-section-number">5.2.2</span> Wahrscheinlichkeitsverteilung</h3>
+<p>Wahrscheinlichkeitsverteilungen dienen dazu, Ereignissen einer Zufallsvariable eine Wahrscheinlichkeit zuzuordnen.</p>
+<p>Eine <em>diskrete</em> Wahrscheinlichkeitsverteilung der (diskreten) Zufallsvariablen <span class="math inline">\(X\)</span> ordnet jeder der <span class="math inline">\(k\)</span> Ausprägungen <span class="math inline">\(X=x\)</span> eine Wahrscheinlichkeit <span class="math inline">\(p\)</span> zu. So hat die Variable <em>Geschlecht eines Babies</em> die beiden Ausprägungen <em>Mädchen</em> und <em>Junge</em> mit den Wahrscheinlichkeiten <span class="math inline">\(p_M = 51.2\%\)</span> bzw. <span class="math inline">\(p_J = 48.8\%\)</span> <span class="citation" data-cites="gelman_regression_2021">(<a href="references.html#ref-gelman_regression_2021" role="doc-biblioref">Gelman, Hill, und Vehtari 2021</a>)</span>.</p>
+<p>Bei <em>stetigen</em> Zufallsvarialben <span class="math inline">\(X\)</span> geht man von unendlich vielen Ausprägungen aus; die Wahrscheinlichkeit einer bestimmten Ausprägung ist (praktisch) Null: <span class="math inline">\(p(X=x_j)=0, \quad j=1,...,+\infty\)</span>. So ist die Wahrscheinlichkeit, dass eine Person exakt 166,66666666… cm groß ist, (praktisch) Null. Man gibt stattdessen die <em>Dichte</em> der Wahrscheinlichkeit an: Das ist die Wahrscheinlichkeit(smasse) pro Einheit von <span class="math inline">\(X\)</span>.</p>
+</section></section><section id="gleichverteilung" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="gleichverteilung">
+<span class="header-section-number">5.3</span> Gleichverteilung</h2>
+<section id="indifferenz-als-grundlage" class="level3" data-number="5.3.1"><h3 data-number="5.3.1" class="anchored" data-anchor-id="indifferenz-als-grundlage">
+<span class="header-section-number">5.3.1</span> Indifferenz als Grundlage</h3>
+<p>Eine Gleichverteilung nimmt an, dass jeder Wert im Ergebnisraum der zugehörigen Zufallsvariable <em>gleichwahrscheinlich</em> ist. Wenn man keinen hinreichenden Grund hat, eine Realisation einer Zufallsvariablen für plausibler als einen anderen zu halten, ist eine Gleichverteilung eine passende Verteilung. Gleichverteilungen gibt es im diskreten und im stetigen Fall.</p>
+<p>Abb. <a href="#fig-uniform">Abbildung&nbsp;<span>5.2</span></a> zeigt ein Beispiel für eine (stetige) Gleichverteilung.</p>
+<div class="cell" data-fig.asp="0.5" data-hash="0400-Verteilungen_cache/html/fig-uniform_f992e5b90aa9d89663a69bff77847475">
+<div class="cell-output-display">
+<div id="fig-uniform" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0400-Verteilungen_files/figure-html/fig-uniform-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Abbildung&nbsp;5.2: Gleichverteilung min=-1, max=1</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Bei <span class="math inline">\(X=0\)</span> hat eine Einheit von <span class="math inline">\(X\)</span> die Wahrscheinlichkeitsmasse von 50%.</p>
+<p>Definierendes Kennzeichen einer Gleichverteilung ist die <em>konstante Dichte</em>.</p>
+</section><section id="simulation" class="level3" data-number="5.3.2"><h3 data-number="5.3.2" class="anchored" data-anchor-id="simulation">
+<span class="header-section-number">5.3.2</span> Simulation</h3>
+<p>Möchte man die Verteilungsfunktion einer stetigen Zufallsvariablen berechnen, kann das ganz schön kompliziert werden, schließlich muss man Integrale lösen. Aber es gibt einen Trick, wie man die Sache stark vereinfachen kann: man simuliert die Verteilung. Was bedeutet das?</p>
+<p>Angenommen, die Wartezeit auf einen Bus ist gleichverteilt (engl. <em>uniform distribution</em>); der Bus kommt regelmäßig und püunktlich alle 10 Minuten. Die minimale Wartezeit beträgt also 0 Minuten und die maximale 10 Minuten. Nennen wir die zugehörige Zufallsvariable <span class="math inline">\(X\)</span>, das ist schön kurz.</p>
+<p>Dann schreibt man auch:</p>
+<p><span class="math display">\[X \sim Unif(0,10).\]</span></p>
+<p>Ja, das sieht fancy aus, aber wo ist der versprochene Trick zum Vereinfachen? Kommt gleich, Moment.</p>
+<p>Eine Frage könnte nun lauten, wie groß ist die Wahrscheinlichkeit, dass man zwischen 3 und 5 Minuten auf den Bus warten muss?</p>
+<p>Der Trick ist, dass wir Integralrechnung gegen stumpfes Zählen eintauschen.</p>
+<p>Computer (und damit R) haben eingebaut Funktionen, die eine beliebige Zufallszahl ziehen können, zum Beispiel gleichverteilt</p>
+<p>Auf Errisch heißt das Zauberwort <code><a href="https://rdrr.io/r/stats/Uniform.html">runif()</a></code>:</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-5_1daa637f69f4509f7bbd34ac6e82a41b">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-6_caa54b1c3e7bce280f92af4ab37bf35b">
+<pre><code>## [1] 9.14806</code></pre>
+</div>
+<p>Auf Deutsch heißt das: “Hey R, ich hätte gerne eine (daher <code>n = 1</code>) Zufallszahl <em>r</em> wie <em>random</em>, die gleichverteilt ist (<em>uniform</em>) mit <code>min = 0</code> und <code>max = 10</code>.</p>
+<p>(Zu) anschaulich gesprochen: R hat den Bus kommen lassen und es hat gut 9.1 Minuten gedauert, bis er da war.</p>
+<p>Achtung, jetzt kommt’s: Jetzt lassen wir R mal <span class="math inline">\(10^5\)</span> (<code>1e5</code> auf Computersprech) Busse vorfahren. R soll jedes Mal notieren, wie lange man auf den Bus warten musste.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-7_87404082d14be6a8892fbe4627234528">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x_simu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1e5</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Schauen wir uns die Verteilung an, <a href="#fig-simu-gleichvert">Abbildung&nbsp;<span>5.3</span></a>.</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/fig-simu-gleichvert_a1d6642b91ef7abb16e8de276b9ef5c4">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">x_simu_df</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_simu</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-simu-gleichvert" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0400-Verteilungen_files/figure-html/fig-simu-gleichvert-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Abbildung&nbsp;5.3: Simulation einer gleichverteiluten Zufallsvariablen</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Okay, unsere Verteilung sieht nicht <em>exakt</em> gleichverteilt, aber einigermaßen. Gut genug für unsere Zwecke!</p>
+<p>So, und jetzt kommt das Ernten. Wir können jetzt nämlich einfach zählen (<code><a href="https://dplyr.tidyverse.org/reference/count.html">count()</a></code>), um die Antwort auf unsere Frage (der Wartezeit 3-5 Min.) zu erhalten.</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-10_72f6dbb62f5bb908cdb94701fefb9a0f">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x_simu_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span>Schnittmenge <span class="op">=</span> <span class="va">x</span> <span class="op">&gt;</span> <span class="fl">3</span> <span class="op">&amp;</span> <span class="va">x</span> <span class="op">&lt;</span> <span class="fl">5</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: left;">Schnittmenge</th>
+<th style="text-align: right;">n</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">80072</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">19928</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Das Zeichen <code>&amp;</code> ist das logische UND, also die Schnittmenge der zwei Mengen <span class="math inline">\(A := \{x|x&gt;3\}\)</span> und <span class="math inline">\(B := \{x|x&lt;5\}\)</span>, also <span class="math inline">\(A \cap B\)</span>.</p>
+<p>Wie man sieht, fallen ca. 20% der Stichproben in den entsprechenden Bereich.</p>
+<p>Da viele Probleme, wenn sie komplexer werden, kaum noch analytisch (wie Integrieren) ausrechenbar sind, greift man in der modernen (Analyse-)Welt oft lieber auf Simulationsverfahren zurück - Dank sei den schnellen Rechnern. Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen zurückgeführt.</p>
+</section></section><section id="sec-bin-distrib" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="sec-bin-distrib">
+<span class="header-section-number">5.4</span> Binomialverteilung</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Die Binomialverteilung dient zur Darstellung der Wahrscheinlichkeit der Ergebnisse eines wiederholten binomialen Zufallexperiments, eines Zufallsexperiments mit <em>zwei</em> Ergebnissen also. Typisches Beispiel ist ein Münzwurf. Bei jeder Wiederholung des Zufallexperiments bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (Ziehen mit Zurücklegen). Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit eines bestimmten Ergebnisses im zweiten Wurf, etc.</p>
+</div>
+</div>
+<section id="veranschaulichung" class="level3" data-number="5.4.1"><h3 data-number="5.4.1" class="anchored" data-anchor-id="veranschaulichung">
+<span class="header-section-number">5.4.1</span> Veranschaulichung</h3>
+<p>Stellen wir uns eine Kistchen<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> mit 5 Losen vor, darunter 2 <em>T</em>reffer (Gewinn) und 3 <em>N</em>ieten, s. Abb. <a href="#fig-urne">Abbildung&nbsp;<span>5.4</span></a>. Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut.</p>
+<div class="cell" data-fig.asp="0.5" data-hash="0400-Verteilungen_cache/html/fig-urne_da0e8189cb208e6759953b80d015e891">
+<div class="cell-output-display">
+<div id="fig-urne" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0400-Verteilungen_files/figure-html/fig-urne-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Abbildung&nbsp;5.4: Ein Kästchen mit 5 Losen, darunter 2 Treffer und 3 Nieten.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Um die Wahrscheinlichkeitsverteilung einer binomialverteilte Zufallsvariable ausrechnen zu können, muss man zwei Dinge wissen: Erstens die Anzahl der Züge, <span class="math inline">\(n\)</span> (Stichprobengröße) und zweitens die Trefferwahrscheinlichkeit, <span class="math inline">\(p\)</span>.</p>
+</div>
+</div>
+<p>Wie groß ist die Wahrscheinlichkeit von <span class="math inline">\(A^{\prime}\)</span>, d.h. bei <span class="math inline">\(n=4\)</span> Zügen <span class="math inline">\(x=2\)</span> Treffer zu erzielen, gegeben dass die Trefferwahrscheinlichkeit bei <span class="math inline">\(p=2/4\)</span> liegt?</p>
+<p>Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen (Multiplikationssatz), s. <a href="0300-Wskt.html#fig-3muenzen">Abbildung&nbsp;<span>4.9</span></a>. Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit, <span class="math inline">\(W\)</span> (Additionssatz). Das ist einfach, dauert aber.</p>
+<p>In diesem Fall ist die Wahrscheinlichkeit eines (günstigen) Pfades, <span class="math inline">\(A\)</span>:</p>
+<p><span class="math inline">\(P(A) = P(T)^2 \cdot P(N)^2 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right) ^2\)</span>.</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-12_a4ef52b9ad4512a1ac46539bb1137df9">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_a</span> <span class="op">=</span> <span class="op">(</span><span class="fl">2</span><span class="op">/</span><span class="fl">5</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="fl">3</span><span class="op">/</span><span class="fl">5</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
+<span><span class="va">p_a</span></span>
+<span><span class="co">## [1] 0.0576</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Etwas mühevolles Zählen der Pfade würde uns zeigen, dass es <span class="math inline">\(k=6\)</span> Pfade gibt, die alle die gleiche Wahrscheinlichkeit, <span class="math inline">\(P(A)\)</span>, aufweisen.</p>
+<p>Damit beträgt die Wahrscheinlichkeit des gesuchten Ereignisses <span class="math inline">\(A^{\prime}\)</span> (2 Treffer bei 4 Zügen):</p>
+<p><span class="math inline">\(P(A^{\prime}) = 6 \cdot P(A)\)</span>.</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-13_6551e370219506fd0702eda9db693bc7">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_a_strich</span> <span class="op">=</span> <span class="fl">6</span> <span class="op">*</span> <span class="va">p_a</span></span>
+<span><span class="va">p_a_strich</span></span>
+<span><span class="co">## [1] 0.3456</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Mithilfe der Formel der Binomialverteilung lässt sich das Ergebnis, die Wahrscheinlichkeit von <span class="math inline">\(A^{\prime}\)</span> schneller ausrechnen. Einfach gesprochen sieht sie so aus:</p>
+<p><span class="math display">\[P(A^{\prime}) = k \cdot P(A)\]</span> Dabei steht <span class="math inline">\(k\)</span> für die Anzahl der günstigen Pfade und <span class="math inline">\(P(A)\)</span> für die Wahrscheinlichkeit eines günstigen Pfades (d.h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.</p>
+<p>Die Anzahl der Pfade kann man mit dem <em>Binomialkoeffizient</em> ausrechnen, den man so darstellt:</p>
+<p><span class="math inline">\(\tbinom{n}{k}\)</span></p>
+<p>Lies: “Wähle aus <span class="math inline">\(n\)</span> möglichen Ereignissen (Pfade im Baum) <span class="math inline">\(k\)</span> günstige Ereignisse (günstige Pfade).</p>
+<p>Auf Errisch geht das so:</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-14_f8b034ae9f1de914954ab2f4e14b3cd4">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Special.html">choose</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">## [1] 6</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="rechnen-mit-r" class="level3" data-number="5.4.2"><h3 data-number="5.4.2" class="anchored" data-anchor-id="rechnen-mit-r">
+<span class="header-section-number">5.4.2</span> Rechnen mit R</h3>
+<p>Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen.</p>
+<p>Die Wahrscheinlichkeit, bei 4 Zügen 2 Treffer zu erzielen mit <span class="math inline">\(p=2/5\)</span> unter der Annahme einer Binomialverteilung lässt sich so mit R berechnen:</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-15_991c9639a2216eaef27e5f7f16e3c7c4">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">2</span>, size <span class="op">=</span> <span class="fl">4</span>, prob <span class="op">=</span> <span class="fl">2</span><span class="op">/</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">## [1] 0.3456</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="exm-binom" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 5.1 (Pumpstation-Beispiel zur Binomialverteilung) </strong></span>In einer Pumpstation arbeiten 7 Motoren, die wir als identisch annehmen. Mit einer Wahrscheinlichkeit von 5% fällt ein Motor aus und ist für den Rest des Tages nicht einsatzbereit. Der Betrieb kann aufrecht erhalten werden, solange mindestens 5 Motoren arbeiten. Wie groß ist die Wahrscheinlichkeit, dass die Pumpstation aus dem Betrieb fällt?</p>
+<p><span class="math inline">\(P(X=k)\)</span> (oder kurz: <span class="math inline">\(P(k)\)</span>) gibt die Wahrscheinlichkeit (Wahrscheinlichkeitsfunktion) an für das Ereignis, dass <em>k</em> Motoren arbeiten.</p>
+<p>Lassen wir R mal <span class="math inline">\(P(X=5)\)</span> ausrechnen.</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-16_a37d49277fc5376e97ae8b3470fcf543">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">5</span>, size <span class="op">=</span> <span class="fl">7</span>, prob <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
+<span><span class="co">## [1] 0.0406235</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Es gilt also <span class="math inline">\(P(X=5) \approx .04\)</span>. Die Wahrscheinlichkeit, dass (nur) 5 Motoren laufen an einem beliebigen Tag ist relativ gering<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
+<p><code><a href="https://rdrr.io/r/stats/Binomial.html">dbinom()</a></code> steht für die Wahrscheinlichkeits<em>d</em>ichte (im diskreten Fall, also hier, Wahrscheinlichkeitsfunktion genannt) und <code>binom</code> für die Binomialverteilung. <code>x</code> gibt die Anzahl der Treffer an (das gesuchte Ereignis, hier 5 Motoren arbeiten); <code>size</code> gibt die Stichprobengröße an (hier 7 Motoren).</p>
+<p>Damit gilt:</p>
+<p><span class="math inline">\(P(X\ge 5) = P(X=5) + P(X=6) + P(X=7)\)</span></p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-17_386b3199158f45abb4eb17c83cd6ccdb">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">5</span>, size <span class="op">=</span> <span class="fl">7</span>, prob <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
+<span><span class="va">p_6</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">6</span>, size <span class="op">=</span> <span class="fl">7</span>, prob <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
+<span><span class="va">p_7</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">7</span>, size <span class="op">=</span> <span class="fl">7</span>, prob <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p_mind_5</span> <span class="op">&lt;-</span> <span class="va">p_5</span> <span class="op">+</span> <span class="va">p_6</span> <span class="op">+</span> <span class="va">p_7</span></span>
+<span></span>
+<span><span class="va">p_mind_5</span></span>
+<span><span class="co">## [1] 0.996243</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Die Wahrscheinlichkeit, dass mind. 5 Motoren arbeiten beträgt also 0.9962.</p>
+<p>Das Komplement zu diesem Ereignis ist, dass <em>nicht</em> mind. 5 Motoren arbeiten, also höchstens 4 und es daher zu einem Ausfall kommt.</p>
+<p>Natürlich gilt <span class="math inline">\(P(\bar{X}) = 1- P(X)\)</span>.</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-18_6948d11fa8003a6c59eb6916a3a4a84a">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_weniger_als_4</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">p_mind_5</span></span>
+<span><span class="va">p_weniger_als_4</span></span>
+<span><span class="co">## [1] 0.003757043</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Alternativ kann man mit der Verteilungsfunktion rechnen: <span class="math inline">\(P(X \le 4)\)</span>.</p>
+<p>In R kann man dafür die Funktion <code><a href="https://rdrr.io/r/stats/Binomial.html">pbinom()</a></code> nutzen (p für (kumulierte) Wahrscheinlichkeit).</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-19_9d2f32dc3f88bba021b89fceffca805a">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">pbinom</a></span><span class="op">(</span>q <span class="op">=</span> <span class="fl">4</span>, size <span class="op">=</span> <span class="fl">7</span>, prob <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
+<span><span class="co">## [1] 0.003757043</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>q = 4</code> steht für <span class="math inline">\(X \le 4\)</span>, also für höchstens 4 Treffer (arbeitende Motoren); <code>size = 7</code> meint die Stichprobengröße, hier 7 Motoren.</p>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Die Funktion, die die Wahrscheinlichkeit dafür angibt, dass die diskrete Zufallsvariable <span class="math inline">\(X\)</span> eine Realisation annimmt, die kleiner oder gleich (höchstens) einem Wert <span class="math inline">\(X=x\)</span> ist, heißt <em>Verteilungsfunktion</em>.</p>
+<p><span class="math inline">\(F(X=x) = P(X \le x)\)</span></p>
+</div>
+</div>
+</section><section id="simulieren" class="level3" data-number="5.4.3"><h3 data-number="5.4.3" class="anchored" data-anchor-id="simulieren">
+<span class="header-section-number">5.4.3</span> Simulieren</h3>
+<p>Die Binomialverteilung lässt sich gut als “Münzwurf-Verteilung” auffassen.</p>
+<p>Werfen wir eine Münze und sehen wir, was passiert.</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-20_8e83eec67181643b6808bc4bd3dd9337">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">## [1] 1</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Mit <code><a href="https://rdrr.io/r/base/sample.html">sample()</a></code> ziehen wir eine Stichprobe aus dem Ereignisraum <code>x</code>, hier 0 und 1. Dabei vereinbaren wir (willkürlich), dass 0 für “Kopf” steht und 1 für “Zahl”. <code>size = 1</code> bedeutet, wir werfen die Münze ein Mal (d.h. Stichprobengröße <em>size</em> ist 1).</p>
+<p>Okay, noch an Bord? Dann werfen wir die Münze 10 Mal:</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-21_5d11103df959d9b7a980b6772d270e7a">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">10</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">##  [1] 0 1 1 1 1 0 0 1 0 1</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>replace = TRUE</code> heißt, wir legen die Münze wieder zurück auf den Tisch, wenn wir sie geworfen haben. Oder anders ausgedrückt: <em>Ziehen mit Zurücklegen</em>.</p>
+<p>R, mach dich bereit, wirf die Münze 1000 (<span class="math inline">\(n=10^3\)</span> oder <code>1e3</code>) Mal<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>:</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-22_dad16e739ad94219738eedea431949a6">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">1e3</span></span>
+<span></span>
+<span><span class="va">muenze_oft</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, size <span class="op">=</span> <span class="va">n</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span>
+<span></span>
+<span></span>
+<span><span class="va">muenze_oft</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">## [1] 539</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Mit <code><a href="https://rdrr.io/r/base/sum.html">sum()</a></code> nach dem Pfeifensymbol <code>%&gt;%</code> haben wir aus dem Vektor <code>muenze_oft</code>, der aus der ersten Zeile resultiert, die Summe ausgerechnet.</p>
+<p>Jetzt wissen wir, wie oft die Münze “Zahl” gezeigt hat, nämlich 539 Mal.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Wenn Sie einen Zufallsversuch wiederholen, muss nicht jedes Mal das gleiche Ergebnis resultieren. Entsprechend wird bei wiederholten Ausführung der Funktion <code><a href="https://rdrr.io/r/base/sample.html">sample()</a></code> nicht immer das gleiche Ergebnis resultieren. Wundern Sie sich also nicht, wenn bei Ihrem Computer eine ähnliche, aber nicht gleiche, Zahl herauskommt.</p>
+</div>
+</div>
+<p>Visualisieren wir mal unsere Münzwürfe. Dazu erstellen wir zuerst eine geeignete Tabelle, <a href="#tbl-muenz">Tabelle&nbsp;<span>5.1</span></a>.</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-23_03c10a9c4f8b798a9b05b84e4643ec11">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">muenz_tab</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
+<span>    id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span>,</span>
+<span>    x <span class="op">=</span> <span class="va">muenze_oft</span>,</span>
+<span>    x_cumsum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">/</span> <span class="va">id</span>  <span class="co"># gibt Anteil von "Zahl" wieder</span></span>
+<span>  <span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/tbl-muenz_5443314bec423ed5b69d9c69523fc26b">
+<div class="cell-output-display">
+<div class="kable-table">
+<div id="tbl-muenz" class="anchored">
+<table class="table table-sm table-striped small">
+<caption>Tabelle&nbsp;5.1: Die kumulierte Summe beim Münzwurf (nur die ersten paar Zeilen)</caption>
+<thead><tr class="header">
+<th style="text-align: right;">id</th>
+<th style="text-align: right;">x</th>
+<th style="text-align: right;">x_cumsum</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.6666667</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.5000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.6000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.6666667</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<p>Und hier der Anteil von “Zahl” im Verlauf unserer Münzwürfe, s. <a href="#fig-lln">Abbildung&nbsp;<span>5.5</span></a>.</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/fig-lln_f29c3b7aafe0a30936103afa5e9b7c74">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">muenz_tab</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1e3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">id</span>, y <span class="op">=</span> <span class="va">x_cumsum</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-lln" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0400-Verteilungen_files/figure-html/fig-lln-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Abbildung&nbsp;5.5: Das Gesetz der großen Zahl am Beispiel der Stabilisierung des Trefferanteils beim wiederholten Münzwurf</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Grob gesagt scheint sich ein Münzwurf nach, naja, vielleicht 500 Würfen “einigermaßen” zu stabilisieren.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Das Gesetz der großen Zahl</p>
+<p>Zieht man (zufällig) immer mehr Werte aus einer Verteilung (mit endlichem Mittelwert), nähert sich der Mittelwert der Stichprobe immer mehr mit dem Mittelwert (oft als Erwartungswert bezeichnet) der Verteilung an</p>
+</div>
+</div>
+<!-- 3b1b hat ein [nettes Video zu diesem Thema](https://youtu.be/8idr1WZ1A7Q), das sich als Vertiefung eignet. -->
+</section></section><section id="normalverteilung" class="level2" data-number="5.5"><h2 data-number="5.5" class="anchored" data-anchor-id="normalverteilung">
+<span class="header-section-number">5.5</span> Normalverteilung</h2>
+<p>Normalverteilungen haben eine charakteristische Glockenform; sie sind symmetrisch<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. Normalverteilungen können sich unterscheiden Mittelwert <span class="math inline">\(\mu\)</span> und ihrer Streuung, <span class="math inline">\(\sigma\)</span>. Diese beiden Größen (“Parameter”) determinieren den Graphen einer bestimmten Normalverteilungsfunktion, s. <a href="#fig-norms">Abbildung&nbsp;<span>5.6</span></a>. Sind diese beiden Parameter bekannt, so ist die Dichte jedes beliebigen Datenpunkts (aus dieser Normalverteilung) bestimmt.</p>
+</section><section id="parameter" class="level2 {def-parameter}" data-number="5.6"><h2 data-number="5.6" class="anchored" data-anchor-id="parameter">
+<span class="header-section-number">5.6</span> Parameter</h2>
+<p>Ein Parameter (einer Verteilung) legt die “Varianten” einer Verteilung fest. Durch die Wahl der Parameterwerte nimmt eine Verteilung eine genaue Form an.</p>
+</section><div id="fig-norms" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="img/normals.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Abbildung&nbsp;5.6: Beispiele von Normalverteilungen mit verschiedenen Mittelwerten und Streuungen, Quelle: Wikipedia</figcaption></figure>
+</div>
+<p>Beispiel: Wie groß sind Studentis (<a href="https://rdrr.io/cran/openintro/man/speed_gender_height.html">Quelle des Datensatzes</a>)?</p>
+<p>Das Quantil von z.B. 25% zeigt die Körpergröße der 25% kleinsten Studentis an, analog für 50%, 75%:</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/QM2-Thema3-Teil1-5_541ee7f2d495d85174161340e217f8b6">
+<div class="cell-output-display">
+
+<div id="edeqnuynmt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#edeqnuynmt table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#edeqnuynmt thead, #edeqnuynmt tbody, #edeqnuynmt tfoot, #edeqnuynmt tr, #edeqnuynmt td, #edeqnuynmt th {
+  border-style: none;
+}
+
+#edeqnuynmt p {
+  margin: 0;
+  padding: 0;
+}
+
+#edeqnuynmt .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#edeqnuynmt .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#edeqnuynmt .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#edeqnuynmt .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#edeqnuynmt .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#edeqnuynmt .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#edeqnuynmt .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#edeqnuynmt .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#edeqnuynmt .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#edeqnuynmt .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#edeqnuynmt .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#edeqnuynmt .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#edeqnuynmt .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#edeqnuynmt .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#edeqnuynmt .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#edeqnuynmt .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#edeqnuynmt .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#edeqnuynmt .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#edeqnuynmt .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#edeqnuynmt .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#edeqnuynmt .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#edeqnuynmt .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#edeqnuynmt .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#edeqnuynmt .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#edeqnuynmt .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#edeqnuynmt .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#edeqnuynmt .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#edeqnuynmt .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#edeqnuynmt .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#edeqnuynmt .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#edeqnuynmt .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#edeqnuynmt .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#edeqnuynmt .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#edeqnuynmt .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#edeqnuynmt .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#edeqnuynmt .gt_left {
+  text-align: left;
+}
+
+#edeqnuynmt .gt_center {
+  text-align: center;
+}
+
+#edeqnuynmt .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#edeqnuynmt .gt_font_normal {
+  font-weight: normal;
+}
+
+#edeqnuynmt .gt_font_bold {
+  font-weight: bold;
+}
+
+#edeqnuynmt .gt_font_italic {
+  font-style: italic;
+}
+
+#edeqnuynmt .gt_super {
+  font-size: 65%;
+}
+
+#edeqnuynmt .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#edeqnuynmt .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#edeqnuynmt .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#edeqnuynmt .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#edeqnuynmt .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#edeqnuynmt .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#edeqnuynmt .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="q25">q25</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="q50">q50</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="q75">q75</th>
+    </tr></thead>
+<tbody class="gt_table_body"><tr>
+<td headers="q25" class="gt_row gt_right">160.02</td>
+<td headers="q50" class="gt_row gt_right">167.64</td>
+<td headers="q75" class="gt_row gt_right">175.26</td>
+</tr></tbody>
+</table>
+</div>
+</div>
+</div>
+<p><a href="#fig-quantiles">Abbildung&nbsp;<span>5.7</span></a> zeigt eine Visualisierung der Quantile.</p>
+<div class="cell" data-fig.asp="0.618" data-hash="0400-Verteilungen_cache/html/fig-quantiles_1f855a86db04e26f6c4a8788f8b7ef7d">
+<div class="cell-output-display">
+<div id="fig-quantiles" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0400-Verteilungen_files/figure-html/fig-quantiles-1.png" class="img-fluid figure-img" width="1152"></p>
+<figcaption class="figure-caption">Abbildung&nbsp;5.7: Quantile verschieden visualisiert</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Das 25%-Quantil nennt man <em>1. Quartil</em>, das 50%-Quantil auch <em>2. Quartil</em>, das 75%-Quantil das <em>3. Quartil</em>, und das 100%-Quantil (Maximalwert) das <em>4. Quartil</em>.</p>
+</div>
+</div>
+<section id="normal-auf-dem-fußballfeld" class="level3" data-number="5.6.1"><h3 data-number="5.6.1" class="anchored" data-anchor-id="normal-auf-dem-fußballfeld">
+<span class="header-section-number">5.6.1</span> Normal auf dem Fußballfeld</h3>
+<p>Sie und 100 Ihrer besten Freunde stehen auf der Mittellinie eines Fußballfelds. Auf Kommando werfen alle jeweils eine Münze; bei Kopf geht man einen Schritt nach links, bei Zahl nach rechts. Das wird 16 Mal wiederholt. Wie wird die Verteilung der Positionen wohl aussehen?</p>
+<div class="cell" data-fig.asp="0.45" data-hash="0400-Verteilungen_cache/html/Normalverteilung-6_9ebf83a7709faedebe35d99cea22d0a3">
+<div class="cell-output-display">
+<p><img src="0400-Verteilungen_files/figure-html/Normalverteilung-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><span class="citation" data-cites="mcelreath_statistical_2020">(<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref"><strong>mcelreath_statistical_2020?</strong></a>)</span></p>
+</section><section id="normal-durch-addieren" class="level3" data-number="5.6.2"><h3 data-number="5.6.2" class="anchored" data-anchor-id="normal-durch-addieren">
+<span class="header-section-number">5.6.2</span> Normal durch Addieren</h3>
+<p>Die Summe vieler (gleich starker) Zufallswerte (aus der gleichen Verteilung) erzeugt eine Normalverteilung; egal aus welcher Verteilung die Zufallswerte kommen (Zentraler Grenzwertsatz), vgl. <a href="#fig-fussball">Abbildung&nbsp;<span>5.8</span></a>.</p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.5" data-hash="0400-Verteilungen_cache/html/fig-fussball_a9f2c7ac85bbd9d95481f8ce8d335834">
+<div class="cell-output-display">
+<div id="fig-fussball" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0400-Verteilungen_files/figure-html/fig-fussball-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">Abbildung&nbsp;5.8: Entstehen einer Normalverteilung durch Addition vieler unabhgängiger Ereignisse</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Nicht verwechseln:</p>
+<div class="cell" data-layout-align="center" data-hash="0400-Verteilungen_cache/html/Normalverteilung-8_ca01f9ad7b7022bc17ea990893bb7ed5">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="img/ch33910f1.jpg" class="img-fluid figure-img" style="width:30.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="normalverteilung-vs.-randlastige-verteilungen" class="level3" data-number="5.6.3"><h3 data-number="5.6.3" class="anchored" data-anchor-id="normalverteilung-vs.-randlastige-verteilungen">
+<span class="header-section-number">5.6.3</span> Normalverteilung vs.&nbsp;randlastige Verteilungen</h3>
+<div class="cell" data-fig.asp="0.5" data-hash="0400-Verteilungen_cache/html/Normalverteilung-9_372f96b80cceb5e6401ac5a4673ba5d3">
+<div class="cell-output-display">
+<p><img src="0400-Verteilungen_files/figure-html/Normalverteilung-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Bei randlastigen Verteilungen (“fat tails”) kommen Extremereignisse viel häufiger vor als bei Normalverteilungen. Deshalb ist es wichtig sein, zu wissen, ob eine Normalverteilung oder eine randlastige Verteilung vorliegt. Viele statistische Methoden sind nicht zuverlässig bei (stark) randlastigen Methoden.</p>
+</section><section id="beispiele-für-normal--und-randlastige-verteilungen" class="level3" data-number="5.6.4"><h3 data-number="5.6.4" class="anchored" data-anchor-id="beispiele-für-normal--und-randlastige-verteilungen">
+<span class="header-section-number">5.6.4</span> Beispiele für Normal- und randlastige Verteilungen</h3>
+<p>Normal verteilt:</p>
+<ul>
+<li>Größe</li>
+<li>Münzwürfe</li>
+<li>Gewicht</li>
+<li>IQ</li>
+<li>Blutdruck</li>
+<li>Ausschuss einer Maschine</li>
+</ul>
+<p>Randlastig verteilt:</p>
+<ul>
+<li>Vermögen</li>
+<li>Verkaufte Bücher</li>
+<li>Ruhm</li>
+<li>Aktienkurse</li>
+<li>Erdbeben</li>
+<li>Pandemien</li>
+<li>Kriege</li>
+<li>Erfolg auf Tinder</li>
+<li>Meteroritengröße</li>
+<li>Stadtgrößen</li>
+</ul></section><section id="formel-der-normalverteilung" class="level3" data-number="5.6.5"><h3 data-number="5.6.5" class="anchored" data-anchor-id="formel-der-normalverteilung">
+<span class="header-section-number">5.6.5</span> Formel der Normalverteilung</h3>
+<p>Vereinfacht ausgedrückt lässt die Normalverteilung <span class="math inline">\(\mathcal{N}\)</span> durch Exponenzieren einer Quadratfunktion beschreiben:</p>
+<p><span class="math display">\[\mathcal{N} \propto e^{-x^2}\]</span></p>
+<p>mit <span class="math inline">\(e=2.71...\)</span>, der Eulerschen Zahl.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<div class="cell" data-fig.asp="0.5" data-hash="0400-Verteilungen_cache/html/norm_83f11ed7b32c7370a6d1670750f43e1f">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>, </span>
+<span>            length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span>
+<span>    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">x</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">d</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/Normalverteilung-10_545c6aa5924759f6e906cc3531bab9f8">
+<div class="cell-output-display">
+<p><img src="0400-Verteilungen_files/figure-html/Normalverteilung-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Eine Normalverteilung mit <span class="math inline">\(\mu=0\)</span> und <span class="math inline">\(\sigma=1\)</span> nennt man auch <em>Standardnormalverteilung</em> und man schreibt:</p>
+<p><span class="math display">\[IQ \sim \mathcal{N}(0,1)\]</span></p>
+<p>Die Normalverteilung wird auch <em><a href="https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F">Gauss</a>-Verteilung</em> oder <em>Glockenkurve</em> genannt.</p>
+</section><section id="simulation-einer-normalverteilung" class="level3" data-number="5.6.6"><h3 data-number="5.6.6" class="anchored" data-anchor-id="simulation-einer-normalverteilung">
+<span class="header-section-number">5.6.6</span> Simulation einer Normalverteilung</h3>
+<p>R hat eine Funktion eingebaut zur Erzeugung von Zufallszahlen (Zufallszahlengenerator), z.B. normalverteilte. Man übergibt dieser Funktion den gewünschten Mittelwert und die gewünschte Streuung und die Funktion zieht dann zufällig Werte aus dieser Verteilung.</p>
+<p>Diesen Zufallszahlengenerator kann man mit einem Duschkopf vergleichen, s. <a href="#fig-shower">Abbildung&nbsp;<span>5.9</span></a>. An diesem Duschkopf kann man einen Schwenker einstellen, der den Duschkopf ausrichtet, also steuert, ob die Wassertropfen weit in die eine oder die andere Richtugn fallen. Zweitens hat unser Duschkopf noch einen Streuregler, der den Wasserstrahl entweder eng bündelt<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> oder weit auseinanderfächert. Im ersten Fall fällt der Wasserstrahl eng und schmal aus. Im zweiten Fall fällt der Wasserstrahl breit aus.</p>
+<div id="fig-shower" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="img/shower-data.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Abbildung&nbsp;5.9: Zufallszahlengenerator als Duschkopf</figcaption></figure>
+</div>
+<p><a href="https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models">Quelle</a>: John Kruschke.</p>
+<p>Eine Zufallszahl (<em>r</em>andom number), die <em>norm</em>alverteilt ist, mit <span class="math inline">\(\mu=0\)</span> und <span class="math inline">\(\sigma=1\)</span> kann man in R so erzeugen:</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-26_55fbf4789121b31f0fbf418e2c0e4030">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, mean <span class="op">=</span> <span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">## [1] 0.2664096</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Ein Fallbeispiel: Der Inhalt einer Tüte mit Zucker, <span class="math inline">\(X\)</span>, sei normalverteilt mit <span class="math inline">\(\mu = 10002\)</span> g und <span class="math inline">\(\sigma=1.5\)</span> g. Aus vertragsrechtlichen Gründen darf das Füllgewicht von 1000g nicht unterschritten werden, sonst drohen Konventionalstrafen.</p>
+<p>Wie groß ist die Wahrscheinlichkeit, dass 1000g unterschritten werden?</p>
+<p>Simulieren wir uns 1e4 Zuckertüten!</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-27_851b982a0dcd4351858c65ef8b416645">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">1e4</span></span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
+<span>    id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span>,</span>
+<span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">n</span>, mean <span class="op">=</span> <span class="fl">1002</span>, sd <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: right;">id</th>
+<th style="text-align: right;">x</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1002.479</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1001.216</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1003.320</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1001.173</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1001.465</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1003.843</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Zählen wir, viele der Zuckertüten ein Gewicht von weniger als 1000g aufweisen:</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-28_73cbf0ff905834f6ff8efdcd42364545">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">d</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&lt;</span> <span class="fl">1000</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: left;">x &lt; 1000</th>
+<th style="text-align: right;">n</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">9013</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">987</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Ein ziemlich<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> kleiner Anteil. Rechnen wir uns noch die Anteile (<em>prop</em>ortion) aus:</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-29_61e49020cec622e235dd33d6a2ca6162">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">d</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&lt;</span> <span class="fl">1000</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop <span class="op">=</span> <span class="va">n</span><span class="op">/</span><span class="fl">1e4</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: left;">x &lt; 1000</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">prop</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">9013</td>
+<td style="text-align: right;">0.9013</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">987</td>
+<td style="text-align: right;">0.0987</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section><section id="iq-verteilung" class="level3" data-number="5.6.7"><h3 data-number="5.6.7" class="anchored" data-anchor-id="iq-verteilung">
+<span class="header-section-number">5.6.7</span> IQ-Verteilung</h3>
+<p>Die Verteilung der Zufallsvariablen IQ ist normalverteilt mit einem Mittelwert von 100 und einer Streuung von 15, s. <a href="#fig-norm-100-15">Abbildung&nbsp;<span>5.10</span></a>:</p>
+<p><span class="math inline">\(IQ \sim \mathcal{N}(100,15)\)</span></p>
+<ul>
+<li>Wie schlau muss man sein, um zu den unteren 75%, 50%, 25%, 5%, 1% zu gehören?</li>
+<li>Anders gesagt: Welcher IQ-Wert wird von 75%, 50%, … der Leute nicht überschritten?</li>
+</ul>
+<div id="fig-norm-100-15" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="img/norm-100-15.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Abbildung&nbsp;5.10: Visualisierung der theoretischen IQ-Verteilung</figcaption></figure>
+</div>
+<p><a href="https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models">Quelle:</a>: John Kruschke.</p>
+<p>Ziehen wir zufällig <span class="math inline">\(1e4\)</span> Stichproben aus <span class="math inline">\(\mathcal{N}(100,15)\)</span> und berechnen die Quantile:</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-30_bf1175957442bedafc8bf70c545dadd6">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
+<span>  iq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1e4</span>, </span>
+<span>             mean <span class="op">=</span> <span class="fl">100</span>, </span>
+<span>             sd <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.75</span>,<span class="fl">.5</span>,<span class="fl">.25</span>,<span class="fl">.05</span>,<span class="fl">.01</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">d_summary</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>p <span class="op">=</span> <span class="va">probs</span>,</span>
+<span>            q <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">iq</span>, <span class="va">probs</span><span class="op">)</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-31_e121eb9b9407db7b0401d5458436fad6">
+<div class="cell-output-display">
+
+<div id="bjztboonsi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bjztboonsi table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#bjztboonsi thead, #bjztboonsi tbody, #bjztboonsi tfoot, #bjztboonsi tr, #bjztboonsi td, #bjztboonsi th {
+  border-style: none;
+}
+
+#bjztboonsi p {
+  margin: 0;
+  padding: 0;
+}
+
+#bjztboonsi .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#bjztboonsi .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#bjztboonsi .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#bjztboonsi .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#bjztboonsi .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bjztboonsi .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bjztboonsi .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bjztboonsi .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#bjztboonsi .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#bjztboonsi .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#bjztboonsi .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#bjztboonsi .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#bjztboonsi .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#bjztboonsi .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#bjztboonsi .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#bjztboonsi .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#bjztboonsi .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#bjztboonsi .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#bjztboonsi .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bjztboonsi .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#bjztboonsi .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#bjztboonsi .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#bjztboonsi .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bjztboonsi .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#bjztboonsi .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#bjztboonsi .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bjztboonsi .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bjztboonsi .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#bjztboonsi .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bjztboonsi .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#bjztboonsi .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bjztboonsi .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bjztboonsi .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bjztboonsi .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bjztboonsi .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bjztboonsi .gt_left {
+  text-align: left;
+}
+
+#bjztboonsi .gt_center {
+  text-align: center;
+}
+
+#bjztboonsi .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#bjztboonsi .gt_font_normal {
+  font-weight: normal;
+}
+
+#bjztboonsi .gt_font_bold {
+  font-weight: bold;
+}
+
+#bjztboonsi .gt_font_italic {
+  font-style: italic;
+}
+
+#bjztboonsi .gt_super {
+  font-size: 65%;
+}
+
+#bjztboonsi .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#bjztboonsi .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#bjztboonsi .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#bjztboonsi .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#bjztboonsi .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#bjztboonsi .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#bjztboonsi .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="p">p</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="q">q</th>
+    </tr></thead>
+<tbody class="gt_table_body">
+<tr>
+<td headers="p" class="gt_row gt_right">0.75</td>
+<td headers="q" class="gt_row gt_right">110</td>
+</tr>
+<tr>
+<td headers="p" class="gt_row gt_right">0.50</td>
+<td headers="q" class="gt_row gt_right">100</td>
+</tr>
+<tr>
+<td headers="p" class="gt_row gt_right">0.25</td>
+<td headers="q" class="gt_row gt_right">90</td>
+</tr>
+<tr>
+<td headers="p" class="gt_row gt_right">0.05</td>
+<td headers="q" class="gt_row gt_right">75</td>
+</tr>
+<tr>
+<td headers="p" class="gt_row gt_right">0.01</td>
+<td headers="q" class="gt_row gt_right">65</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Das <em>Quantil</em> <span class="math inline">\(q\)</span> zur kumulierten Wahrscheinlichkeit <span class="math inline">\(p=75\)</span> ist 110, etc.</p>
+<p>Umgekehrt können wir uns auch fragen: Gegeben einer Realisation der Zufallsvariablen (z.B. IQ), was ist die zugehörige Wahrscheinlichkeit (Wert der Verteilungsfunktion?)</p>
+<ul>
+<li>Welcher Anteil der Fläche unter der Kurve <span class="math inline">\(p\)</span> gehört zu den IQ-Werten 75, 100, 115, 130?</li>
+<li>Anders gesagt: Welcher Anteil der Wahrscheinlichkeitsmasse der Verteilung liegt unter IQ=75, IQ=100, etc.?</li>
+</ul>
+<p>Ziehen wir Stichproben aus <span class="math inline">\(\mathcal{N}(100,15)\)</span>:</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-32_5bb04b880a0213a42147c0f9d411e835">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
+<span>    iq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1e4</span>, </span>
+<span>               mean <span class="op">=</span> <span class="fl">100</span>, </span>
+<span>               sd <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>iq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">iq</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">qs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">75</span>,<span class="fl">100</span>,<span class="fl">115</span>,<span class="fl">130</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">d</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span>p_100 <span class="op">=</span> <span class="va">iq</span> <span class="op">&lt;</span> <span class="fl">100</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop <span class="op">=</span> <span class="va">n</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> </span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-33_3da4456c0349f8fde3e60861cfcd5018">
+<div class="cell-output-display">
+
+<div id="cqzqjsyohe" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#cqzqjsyohe table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#cqzqjsyohe thead, #cqzqjsyohe tbody, #cqzqjsyohe tfoot, #cqzqjsyohe tr, #cqzqjsyohe td, #cqzqjsyohe th {
+  border-style: none;
+}
+
+#cqzqjsyohe p {
+  margin: 0;
+  padding: 0;
+}
+
+#cqzqjsyohe .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#cqzqjsyohe .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#cqzqjsyohe .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#cqzqjsyohe .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#cqzqjsyohe .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#cqzqjsyohe .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#cqzqjsyohe .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#cqzqjsyohe .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#cqzqjsyohe .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#cqzqjsyohe .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#cqzqjsyohe .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#cqzqjsyohe .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#cqzqjsyohe .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#cqzqjsyohe .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#cqzqjsyohe .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#cqzqjsyohe .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#cqzqjsyohe .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#cqzqjsyohe .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#cqzqjsyohe .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cqzqjsyohe .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#cqzqjsyohe .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#cqzqjsyohe .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#cqzqjsyohe .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cqzqjsyohe .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#cqzqjsyohe .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#cqzqjsyohe .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#cqzqjsyohe .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cqzqjsyohe .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#cqzqjsyohe .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#cqzqjsyohe .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#cqzqjsyohe .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#cqzqjsyohe .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#cqzqjsyohe .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cqzqjsyohe .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#cqzqjsyohe .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cqzqjsyohe .gt_left {
+  text-align: left;
+}
+
+#cqzqjsyohe .gt_center {
+  text-align: center;
+}
+
+#cqzqjsyohe .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#cqzqjsyohe .gt_font_normal {
+  font-weight: normal;
+}
+
+#cqzqjsyohe .gt_font_bold {
+  font-weight: bold;
+}
+
+#cqzqjsyohe .gt_font_italic {
+  font-style: italic;
+}
+
+#cqzqjsyohe .gt_super {
+  font-size: 65%;
+}
+
+#cqzqjsyohe .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#cqzqjsyohe .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#cqzqjsyohe .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#cqzqjsyohe .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#cqzqjsyohe .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#cqzqjsyohe .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#cqzqjsyohe .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="p_100">p_100</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="prop">prop</th>
+    </tr></thead>
+<tbody class="gt_table_body">
+<tr>
+<td headers="p_100" class="gt_row gt_center">FALSE</td>
+<td headers="n" class="gt_row gt_right">5143</td>
+<td headers="prop" class="gt_row gt_right">0.51</td>
+</tr>
+<tr>
+<td headers="p_100" class="gt_row gt_center">TRUE</td>
+<td headers="n" class="gt_row gt_right">4857</td>
+<td headers="prop" class="gt_row gt_right">0.49</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Anstelle von <code>iq &lt; 100</code> kann man <code>iq &lt; 115</code> einsetzen, etc.</p>
+<p>Die <em>Verteilungsfunktion</em> (der Anteil der Wahrscheinlichkeitsmasse), <code>p</code>, für IQ-Werte nicht größer als 100, <span class="math inline">\(IQ\le100\)</span>, ist 50%, etc.</p>
+</section><section id="quantile-der-normalverteilung" class="level3" data-number="5.6.8"><h3 data-number="5.6.8" class="anchored" data-anchor-id="quantile-der-normalverteilung">
+<span class="header-section-number">5.6.8</span> Quantile der Normalverteilung</h3>
+<ul>
+<li>
+<em>Quantile</em> teilen eine Verteilung so ein, dass ein Anteil <span class="math inline">\(p\)</span> kleiner oder gleich und der andere Teil <span class="math inline">\(1-p\)</span> größer dem Quantil <span class="math inline">\(q\)</span> ist.
+<ul>
+<li>
+<em>Beispiel</em>: “50%-Quantil = 100” meint, dass 50% der Elemente der Verteilung einen Wert kleiner oder gleich als 100 haben.</li>
+</ul>
+</li>
+<li>Die <em>Verteilungsfunktion F</em> (für einen Wert <span class="math inline">\(x\)</span>) gibt die Wahrscheinlichkeit an, dass die zugehörige Zufallsvariable <span class="math inline">\(X\)</span> einen Wert höchstens so groß wie <span class="math inline">\(x\)</span> annimmt. Sie zeigt also die kumulierte Wahrscheinlichkeit <span class="math inline">\([-\infty, q)\)</span>.
+<ul>
+<li>
+<em>Beispiel</em>: “F(100) = 50%” meint: Die Wahrscheinlichkeit für eine Ausprägung von höchstens als 100 beträgt 50%.</li>
+</ul>
+</li>
+</ul>
+<p>Schauen wir uns die Quartile der Normalverteilung einmal näher an. Wir gehen von einer Normalverteilung aus, wie sie zur Beschreibung von Intelligenz (IQ) verwendet wird, s. <a href="#fig-nv-quants">Abbildung&nbsp;<span>5.11</span></a>.</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/fig-nv-quants_b9f6ba94c3e2b8e162fcce2d97ac9c97">
+<div class="cell-output-display">
+<div id="fig-nv-quants" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0400-Verteilungen_files/figure-html/fig-nv-quants-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Abbildung&nbsp;5.11: Quantile der Normalverteiltung</figcaption></figure>
+</div>
+</div>
+</div>
+<p><span class="math display">\[IQ \sim \mathcal{N}(100, 15)\]</span> Mit R kann man sich die beiden Größen komfortabel berechnen lassen:</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-36_18c8aa79282a337a4420b01bc23462ed">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span><span class="fl">.50</span>, mean <span class="op">=</span> <span class="fl">100</span>, sd <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>  <span class="co"># 50%-Quantil</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="fl">100</span>, mean <span class="op">=</span> <span class="fl">100</span>, sd <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>  <span class="co"># Verteilungsfunktion für IQ=100</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Betrachten wir einige wichtigen Quantile, s. <a href="#fig-nv-quants2">Abbildung&nbsp;<span>5.12</span></a>.</p>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/fig-nv-quants2_25358a0bf6c6be6b1e8759a5dfc8896c">
+<div class="cell-output-display">
+<div id="fig-nv-quants2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0400-Verteilungen_files/figure-html/fig-nv-quants2-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption class="figure-caption">Abbildung&nbsp;5.12: Verschiedene Quantil der Normalverteilung</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="standardnormalverteilung" class="level3" data-number="5.6.9"><h3 data-number="5.6.9" class="anchored" data-anchor-id="standardnormalverteilung">
+<span class="header-section-number">5.6.9</span> Standardnormalverteilung</h3>
+<div class="cell" data-hash="0400-Verteilungen_cache/html/Normalverteilung-3_93c22a84e05c2476ffcfbdf4dcf9ea3e">
+<div class="cell-output-display">
+<p><img src="0400-Verteilungen_files/figure-html/Normalverteilung-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Bei <span class="math inline">\(X=0\)</span>:</p>
+<ul>
+<li>hat eine Einheit von <span class="math inline">\(X\)</span> die Wahrscheinlichkeitsmasse von 40% (Wahrscheinlichkeitsdichte)</li>
+<li>sind 50% der Wahrscheinlichkeitsmasse (Fläche unter der Kurve) kleiner als dieser Wert (Verteilungsfunktion).</li>
+</ul>
+<p>In Summe liegen 100% der Wahrscheinlichkeitsmasse unter der Kurve.</p>
+</section><section id="normalverteilung-als-konservative-wahl" class="level3" data-number="5.6.10"><h3 data-number="5.6.10" class="anchored" data-anchor-id="normalverteilung-als-konservative-wahl">
+<span class="header-section-number">5.6.10</span> Normalverteilung als konservative Wahl</h3>
+<p>Dem Mathematiker <a href="https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F">Carl Friedrich Gauss</a> (s. <a href="#fig-gauss">Abbildung&nbsp;<span>5.13</span></a>) wird die Ehre zuerkannt, die Normalverteilung eingeführt zu haben.</p>
+<div class="cell" data-layout-align="center" data-hash="0400-Verteilungen_cache/html/fig-gauss_f613bcc36273303570c3d4d528247582">
+<div class="cell-output-display">
+<div id="fig-gauss" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="img/10_Deutsche_Mark_-_detail.png" class="img-fluid figure-img" width="341"></p>
+<figcaption class="figure-caption">Abbildung&nbsp;5.13: Zehn-Mark-Geldschein mit Gauss und Normalverteilung</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Quelle: Uni Greifswald, Public domain, via Wikimedia Commons</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><em>Ontologische Begründung</em></p>
+<ul>
+<li>Wirken viele, gleichstarke Einflüsse additiv zusammen, entsteht eine Normalverteilung <span class="citation" data-cites="mcelreath_statistical_2020">(<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref"><strong>mcelreath_statistical_2020?</strong></a>)</span>, Kap. 4.1.4.</li>
+</ul>
+<p><em>Epistemologische Begründung</em></p>
+<ul>
+<li>Wenn wir nur wissen, dass eine Variable über einen endlichen Mittelwert und eine endliche Varianz verfügt und wir keine weiteren Annahmen treffen bzw. über kein weiteres Vorwissen verfügen, dann ist die Normalverteilung die plausibelste Verteilung (maximale Entropie) <span class="citation" data-cites="mcelreath_statistical_2020">(<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref"><strong>mcelreath_statistical_2020?</strong></a>)</span>, Kap. 7 und 10.</li>
+</ul>
+</div>
+</div>
+<!-- ### Zweidimensionale Normalverteilung, unkorreliert -->
+<!-- ```{r Normalverteilung-11, out.width="70%", fig.align="center"} -->
+<!-- #| echo: false -->
+<!-- knitr::include_graphics("https://github.com/sebastiansauer/QM2-Folien/raw/main/img/mult-norm.png") -->
+<!-- ``` -->
+<!-- [Quelle](https://tex.stackexchange.com/questions/31708/draw-a-bivariate-normal-distribution-in-tikz) -->
+<!-- [Vgl. auch dieses Diagramm](http://ballistipedia.com/index.php?title=File:Bivariate.png)] -->
+<!-- ### 2D-Normalverteilung mit R, unkorreliert -->
+<!-- $r(X,Y) = 0$ -->
+<!-- ```{r norm-plot1} -->
+<!-- #| echo: false -->
+<!-- #| eval: false -->
+<!-- #| fig-asp: 1 -->
+<!-- #| out-width: "50%" -->
+<!-- d1 <-  -->
+<!--   tibble(  -->
+<!--     x=rnorm(1e4),  -->
+<!--     y=rnorm(1e4) -->
+<!--   ) -->
+<!-- ggplot(d1) + -->
+<!--   aes(x, y) + -->
+<!--   geom_hex()  -->
+<!-- ggplot(d1) + -->
+<!--   aes(x, y) + -->
+<!--   geom_density2d() -->
+<!-- ``` -->
+<!-- [[ggplot-Referenz](https://ggplot2.tidyverse.org/reference/geom_density_2d.html), [Quellcode](https://www.r-graph-gallery.com/2d-density-plot-with-ggplot2.html)] -->
+<!-- Mit `scale_fill_continuous(type = "viridis")`kann man die Farbpalette der Füllfarbe ändern. Nicht so wichtig. -->
+<!-- ```{r Normalverteilung-2-bis} -->
+<!-- #| echo: false -->
+<!-- #| eval: true -->
+<!-- #| fig-asp: 1 -->
+<!-- #| out-width: "50%" -->
+<!-- d1 <-  -->
+<!--   tibble(  -->
+<!--     x=rnorm(1e4),  -->
+<!--     y=rnorm(1e4) -->
+<!--   ) -->
+<!-- ggplot(d1) + -->
+<!--   aes(x, y) + -->
+<!--   geom_hex() + -->
+<!--   scale_fill_viridis_c() + -->
+<!--   theme(legend.position = "bottom") -->
+<!-- ggplot(d1) + -->
+<!--   aes(x, y) + -->
+<!--   geom_density2d() -->
+<!-- ``` -->
+<!-- ### 2D-Normalverteilung mit R, korreliert, r=0.7 -->
+<!-- Die ersten paar Zeilen der Daten: -->
+<!-- ```{r Normalverteilung-3-bis, echo = FALSE} -->
+<!-- d2 <- rnorm_multi( -->
+<!--   n = 1e4, -->
+<!--   mu = c(0,0), -->
+<!--   sd = c(1, 1), -->
+<!--   r = (0.7) -->
+<!-- ) -->
+<!-- ``` -->
+<!-- ```{r Normalverteilung-4-bis} -->
+<!-- #| echo: false -->
+<!-- d2 %>%  -->
+<!--   head(n=3) %>%  -->
+<!--   gt() %>%  -->
+<!--   fmt_number(columns = everything()) -->
+<!-- ``` -->
+<!-- Berechnen wir die Korrelation `r`: -->
+<!-- ```{r Normalverteilung-5-bis, echo = TRUE, eval = FALSE} -->
+<!-- d2 %>%  -->
+<!--   summarise( -->
+<!--     r = cor(X1,X2), -->
+<!--     n = n() -->
+<!--   ) -->
+<!-- ``` -->
+<!-- ```{r Normalverteilung-6-bis} -->
+<!-- #| echo: false -->
+<!-- d2 %>%  -->
+<!--   summarise( -->
+<!--     r = cor(X1,X2), -->
+<!--     n = n() -->
+<!--   ) %>%  -->
+<!--   gt() %>%  -->
+<!--   fmt_number(columns = everything()) -->
+<!-- ``` -->
+<!-- ```{r Normalverteilung-7-bis} -->
+<!-- #| echo: false -->
+<!-- ggplot(d2) + -->
+<!--   aes(X1, X2) + -->
+<!--   geom_hex() + -->
+<!--   scale_fill_viridis_c() + -->
+<!--   theme(legend.position = "bottom") -->
+<!-- ggplot(d2) + -->
+<!--   aes(X1, X2) + -->
+<!--   geom_density2d() -->
+<!-- ``` -->
+</section><section id="aufgaben" class="level2" data-number="5.7"><h2 data-number="5.7" class="anchored" data-anchor-id="aufgaben">
+<span class="header-section-number">5.7</span> Aufgaben</h2>
+<p>Zusätzlich zu den Aufgaben im Buch:</p>
+<ul>
+<li><a href="https://datenwerk.netlify.app/posts/lose-nieten-binomial-grid/lose-nieten-binomial-grid">Lose-Nieten-Binomial-Grid</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/bsp-binomial/bsp-binomial">Bsp-Binomial</a></li>
+</ul></section><section id="section" class="level2" data-number="5.8"><h2 data-number="5.8" class="anchored" data-anchor-id="section">
+<span class="header-section-number">5.8</span> —</h2>
+<p><img src="img/outro-04.jpg" class="img-fluid" style="width:100.0%"></p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-bourier_2018" class="csl-entry" role="listitem">
+Bourier, Günther. 2018. <em>Wahrscheinlichkeitsrechnung Und Schließende Statistik: Praxisorientierte Einführung: Mit Aufgaben Und Lösungen</em>. 9., aktualisierte Auflage. Lehrbuch. <span>Wiesbaden [Heidelberg]</span>: <span>Springer Gabler</span>. <a href="https://doi.org/10.1007/978-3-658-07481-4">https://doi.org/10.1007/978-3-658-07481-4</a>.
+</div>
+<div id="ref-bourier_statistik-ubungen_2022" class="csl-entry" role="listitem">
+———. 2022. <em>Statistik-Übungen: <span>Beschreibende</span> Statistik – Wahrscheinlichkeitsrechnung – Schließende Statistik</em>. 7. Auflage. <span>Wiesbaden</span>: <span>Springer Gabler</span>.
+</div>
+<div id="ref-gelman_regression_2021" class="csl-entry" role="listitem">
+Gelman, Andrew, Jennifer Hill, und Aki Vehtari. 2021. <em>Regression and Other Stories</em>. Analytical Methods for Social Research. <span>Cambridge</span>: <span>Cambridge University Press</span>.
+</div>
+</div>
+</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>Machen Sie das mal ohne Computer, wenn Sie ein Wochenende Langeweile haben.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>In den Lehrbüchern häufig als Urne bezeichnet, was den bösen Spott von “Friedhofstatistik” nach sich zog.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>wobei “gering” subjektiv ist, die Betreiberfirma findet diese Wahrscheinlichkeit, dass 2 Pumpen ausfallen, wohl viel zu hoch.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>R meckert nicht bei langweiligen Aufgaben.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Was “einigermaßen” bedeuten soll, ist kein statistischer Begriff, sondern einer, der im echten Leben von den Menschen beantwortet werden muss, die eine Entscheidung zu treffen haben.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>d.h. die Schiefe (<code>skewness</code>) ist 0<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Das Zeichen <span class="math inline">\(y \propto x\)</span> bedeutet “x ist proportional zu y”, also <span class="math inline">\(y = mx\)</span>.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Massagedusche, behauptet der Hersteller<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>“Ziemlich” ist natürlich subjektiv; je nach Situation kann es zu viel oder nicht zu viel sein.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Kopiert");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Kopiert");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./0300-Wskt.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Wahrscheinlichkeit</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./0500-Globusversuch.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Globusversuch</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
