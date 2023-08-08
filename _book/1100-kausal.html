@@ -51,7 +51,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -906,7 +925,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p></p>
-<p>Die Daten stammen aus einer (fiktiven) klinischen Studie, <span class="math inline">\(n=700\)</span>, hoher Qualität (Beobachtungsstudie). Bei Männern scheint das Medikament zu helfen; bei Frauen auch. Aber <em>insgesamt</em> (Summe von Frauen und Männern) <em>nicht</em>?! Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, wenn er das Geschlecht kennt <span class="citation" data-cites="pearl_causal_2016">(<a href="references.html#ref-pearl_causal_2016" role="doc-biblioref"><strong>pearl_causal_2016?</strong></a>)</span>?</p>
+<p>Die Daten stammen aus einer (fiktiven) klinischen Studie, <span class="math inline">\(n=700\)</span>, hoher Qualität (Beobachtungsstudie). Bei Männern scheint das Medikament zu helfen; bei Frauen auch. Aber <em>insgesamt</em> (Summe von Frauen und Männern) <em>nicht</em>?! Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, wenn er das Geschlecht kennt <span class="citation" data-cites="pearl_causal_2016">(<a href="references.html#ref-pearl_causal_2016" role="doc-biblioref">Pearl, Glymour, und Jewell 2016</a>)</span>?</p>
 </section><section id="kausalmodell-zur-studie-a" class="level4" data-number="12.2.1.2"><h4 data-number="12.2.1.2" class="anchored" data-anchor-id="kausalmodell-zur-studie-a">
 <span class="header-section-number">12.2.1.2</span> Kausalmodell zur Studie A</h4>
 <p>In Wahrheit sehe die kausale Struktur so aus: Das Geschlecht (Östrogen) hat einen Einfluss (+) auf Einnahme des Medikaments und auf Heilung (-). Das Medikament hat einen Einfluss (+) auf Heilung. Betrachtet man die Gesamt-Daten zur Heilung, so ist der Effekt von Geschlecht (Östrogen) und Medikament <em>vermengt</em> (konfundiert, confounded). Die kausale Struktur, also welche Variable beeinflusst bzw. nicht, ist in <a href="#fig-dag-studie-a">Abbildung&nbsp;<span>12.1</span></a> dargestellt.</p>
@@ -1410,7 +1429,7 @@ Wichtig
 </div>
 </div>
 </div>
-<p>Die Daten stammen aus einer (fiktiven) klinischen Studie, <span class="math inline">\(n=700\)</span>, hoher Qualität (Beobachtungsstudie). Bei geringem Blutdruck scheint das Medikament zu schaden. Bei hohem Blutdrck scheint das Medikamenet auch zu schaden. Aber <em>insgesamt</em> (Summe über beide Gruppe) <em>nicht</em>, da scheint es zu nutzen?! Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, wenn er den Blutdruck nicht kennt? <span class="citation" data-cites="pearl_causal_2016">(<a href="references.html#ref-pearl_causal_2016" role="doc-biblioref"><strong>pearl_causal_2016?</strong></a>)</span></p>
+<p>Die Daten stammen aus einer (fiktiven) klinischen Studie, <span class="math inline">\(n=700\)</span>, hoher Qualität (Beobachtungsstudie). Bei geringem Blutdruck scheint das Medikament zu schaden. Bei hohem Blutdrck scheint das Medikamenet auch zu schaden. Aber <em>insgesamt</em> (Summe über beide Gruppe) <em>nicht</em>, da scheint es zu nutzen?! Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, wenn er den Blutdruck nicht kennt? <span class="citation" data-cites="pearl_causal_2016">Pearl, Glymour, und Jewell (<a href="references.html#ref-pearl_causal_2016" role="doc-biblioref">2016</a>)</span></p>
 </section><section id="kausalmodell-zur-studie-b" class="level4" data-number="12.2.2.2"><h4 data-number="12.2.2.2" class="anchored" data-anchor-id="kausalmodell-zur-studie-b">
 <span class="header-section-number">12.2.2.2</span> Kausalmodell zur Studie B</h4>
 <p>Das Medikament hat einen (absenkenden) Einfluss auf den Blutdruck. Gleichzeitig hat das Medikament einen (toxischen) Effekt auf die Heilung. Verringerter Blutdruck hat einen positiven Einfluss auf die Heilung. Sucht man innerhalb der Leute mit gesenktem Blutdruck nach Effekten, findet man nur den toxischen Effekt: Gegeben diesen Blutdruck ist das Medikament schädlich aufgrund des toxischen Effekts. Der positive Effekt der Blutdruck-Senkung ist auf diese Art nicht zu sehen.</p>
@@ -2000,7 +2019,7 @@ Wichtig
 <blockquote class="blockquote">
 <p>Often people want statistical modeling to do things that statical modeling cannot do. For example, we’d like to know wheter an effect is “real” or rather spurios. Unfortunately, modeling merely quantifies uncertainty in the precise way that the model understands the problem. Usually answers to lage world questions about truth and causation depend upon information not included in the model. For example, any observed correlation between an outcome and predictor could be eliminated or reversed once another predictor is added to the model. But if we cannot think of the right variable, we might never notice. Therefore all statical models are vulnerable to and demand critique, regardless of the precision of their estimates and apparaent accuracy of their predictions. Rounds of model criticism and revision embody the real tests of scientific hypotheses. A true hypothesis will pass and fail many statistical “tests” on its way to acceptance.</p>
 </blockquote>
-<p><span class="citation" data-cites="mcelreath_statistical_2020">(<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref"><strong>mcelreath_statistical_2020?</strong></a>)</span>, S. 139</p>
+<p><span class="citation" data-cites="mcelreath_statistical_2020">McElreath (<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref">2020</a>)</span>, S. 139</p>
 <section id="kausalmodell-für-konfundierung-km1" class="level3" data-number="12.5.1"><h3 data-number="12.5.1" class="anchored" data-anchor-id="kausalmodell-für-konfundierung-km1">
 <span class="header-section-number">12.5.1</span> Kausalmodell für Konfundierung, <code>km1</code>
 </h3>
@@ -2183,7 +2202,7 @@ Hinweis
 <p>Weiß man, was die Wirkung <span class="math inline">\(W\)</span> einer Handlung <span class="math inline">\(H\)</span> (Intervention) ist, so hat man <span class="math inline">\(H\)</span> als Ursache von <span class="math inline">\(W\)</span> erkannt.</p>
 </div>
 </div>
-<p><span class="citation" data-cites="mcelreath_statistical_2020">(<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref"><strong>mcelreath_statistical_2020?</strong></a>)</span></p>
+<p><span class="citation" data-cites="mcelreath_statistical_2020">McElreath (<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref">2020</a>)</span></p>
 <p>Viele Menschen denken - fälschlich - dass Korrelation Kausation bedeuten muss, s. <a href="#fig-xkcd-causation">Abbildung&nbsp;<span>12.14</span></a>.</p>
 <div class="cell" data-layout-align="center" data-hash="1100-kausal_cache/html/fig-xkcd-causation_22e4e76a1f653fcb0f2412c2956cd3f0">
 <div class="cell-output-display">
@@ -2209,7 +2228,7 @@ Hinweis
 </section><section id="schoki-macht-nobelpreis" class="level3" data-number="12.6.4"><h3 data-number="12.6.4" class="anchored" data-anchor-id="schoki-macht-nobelpreis">
 <span class="header-section-number">12.6.4</span> Schoki macht Nobelpreis! (?)</h3>
 <p>🏎️ Vertiefung 🏎️</p>
-<p>Eine Studie fand eine starke Korrelation, <span class="math inline">\(r=0.79\)</span> zwischen (Höhe des) Schokoladenkonsums eines Landes und (Anzahl der) Nobelpreise eines Landes <span class="citation" data-cites="messerli_chocolate_2012">(<a href="references.html#ref-messerli_chocolate_2012" role="doc-biblioref"><strong>messerli_chocolate_2012?</strong></a>)</span>, s. <a href="#fig-schoki">Abbildung&nbsp;<span>12.15</span></a>.</p>
+<p>Eine Studie fand eine starke Korrelation, <span class="math inline">\(r=0.79\)</span> zwischen (Höhe des) Schokoladenkonsums eines Landes und (Anzahl der) Nobelpreise eines Landes <span class="citation" data-cites="messerli_chocolate_2012">(<a href="references.html#ref-messerli_chocolate_2012" role="doc-biblioref">Messerli 2012</a>)</span>, s. <a href="#fig-schoki">Abbildung&nbsp;<span>12.15</span></a>.</p>
 <div class="cell" data-layout-align="center" data-hash="1100-kausal_cache/html/fig-schoki_2acd12e98e038d800bc0aa30a35b5065">
 <div class="cell-output-display">
 <div id="fig-schoki" class="quarto-figure quarto-figure-center anchored">
@@ -2290,7 +2309,7 @@ Wichtig
 </div>
 <section id="was-ist-eine-kollision" class="level3" data-number="12.8.1"><h3 data-number="12.8.1" class="anchored" data-anchor-id="was-ist-eine-kollision">
 <span class="header-section-number">12.8.1</span> Was ist eine Kollision?</h3>
-<p>Als <em>Kollision</em> (Kollisionsverzerrung, Auswahlverzerrung, engl. collider) bezeichnet man einen DAG, bei dem eine Wirkung zwei Ursachen hat (eine gemeinsame Wirkung zweier Ursachen). Kontrolliert man die <em>Wirkung</em> <code>m</code>, so entsteht eine Scheinkorrelation zwischen den Ursachen <code>x</code> und <code>y</code>. Kontrolliert man die Wirkung nicht, so entsteht keine Scheinkorrelation zwischen den Ursachen, s. <a href="#fig-coll1-dag">Abbildung&nbsp;<span>12.19</span></a>, vgl. <span class="citation" data-cites="rohrer_thinking_2018">(<a href="references.html#ref-rohrer_thinking_2018" role="doc-biblioref"><strong>rohrer_thinking_2018?</strong></a>)</span>.</p>
+<p>Als <em>Kollision</em> (Kollisionsverzerrung, Auswahlverzerrung, engl. collider) bezeichnet man einen DAG, bei dem eine Wirkung zwei Ursachen hat (eine gemeinsame Wirkung zweier Ursachen). Kontrolliert man die <em>Wirkung</em> <code>m</code>, so entsteht eine Scheinkorrelation zwischen den Ursachen <code>x</code> und <code>y</code>. Kontrolliert man die Wirkung nicht, so entsteht keine Scheinkorrelation zwischen den Ursachen, s. <a href="#fig-coll1-dag">Abbildung&nbsp;<span>12.19</span></a>, vgl. <span class="citation" data-cites="rohrer_thinking_2018">Rohrer (<a href="references.html#ref-rohrer_thinking_2018" role="doc-biblioref">2018</a>)</span>.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2490,7 +2509,7 @@ Hinweis
 <li><p><code>E</code> ist sowohl für <code>G</code> als auch für <code>U</code> eine Wirkung, also eine Kollisionsvariable auf diesem Pfad.</p></li>
 <li><p>Wenn wir <code>E</code> kontrollieren, wird es den Pfad <span class="math inline">\(G \rightarrow K\)</span> verzerren, auch wenn wir niemals <code>U</code> messen.</p></li>
 </ul>
-<p>Die Sache ist in diesem Fall chancenlos. Wir müssen diesen DAG verloren geben, <span class="citation" data-cites="mcelreath_statistical_2020">(<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref"><strong>mcelreath_statistical_2020?</strong></a>)</span>, S. 180.</p>
+<p>Die Sache ist in diesem Fall chancenlos. Wir müssen diesen DAG verloren geben, <span class="citation" data-cites="mcelreath_statistical_2020">McElreath (<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref">2020</a>)</span>, S. 180.</p>
 </section></section><section id="die-hintertür-schließen" class="level2" data-number="12.9"><h2 data-number="12.9" class="anchored" data-anchor-id="die-hintertür-schließen">
 <span class="header-section-number">12.9</span> Die Hintertür schließen</h2>
 <section id="zur-erinnerung-konfundierung" class="level3" data-number="12.9.1"><h3 data-number="12.9.1" class="anchored" data-anchor-id="zur-erinnerung-konfundierung">
@@ -2606,7 +2625,7 @@ Hinweis
 <span class="math inline">\(X \leftarrow U \rightarrow B \leftarrow C \rightarrow Y\)</span>, geschlossen</li>
 </ol>
 <p>Kontrollieren von <span class="math inline">\(A\)</span> oder (auch) <span class="math inline">\(C\)</span> schließt die offene Hintertür.</p>
-<p><span class="citation" data-cites="mcelreath_statistical_2020">(<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref"><strong>mcelreath_statistical_2020?</strong></a>)</span>, <span class="citation" data-cites="kurz_statistical_2021">(<a href="references.html#ref-kurz_statistical_2021" role="doc-biblioref"><strong>kurz_statistical_2021?</strong></a>)</span>, s.S. 186.</p>
+<p><span class="citation" data-cites="mcelreath_statistical_2020">McElreath (<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref">2020</a>)</span>, <span class="citation" data-cites="kurz_statistical_2021">Kurz (<a href="references.html#ref-kurz_statistical_2021" role="doc-biblioref">2021</a>)</span>, s.S. 186.</p>
 <section id="schließen-sie-die-hintertür-wenn-möglich-bsp2" class="level3" data-number="12.11.1"><h3 data-number="12.11.1" class="anchored" data-anchor-id="schließen-sie-die-hintertür-wenn-möglich-bsp2">
 <span class="header-section-number">12.11.1</span> Schließen Sie die Hintertür (wenn möglich)!, <code>bsp2</code>
 </h3>
@@ -2627,7 +2646,7 @@ Hinweis
 </li>
 </ul>
 <p><a href="https://bookdown.org/content/4857/the-haunted-dag-the-causal-terror.html#backdoor-waffles.">Mehr Infos</a></p>
-<p>Details finden sich bei <span class="citation" data-cites="mcelreath_statistical_2020">(<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref"><strong>mcelreath_statistical_2020?</strong></a>)</span> oder <span class="citation" data-cites="kurz_statistical_2021">(<a href="references.html#ref-kurz_statistical_2021" role="doc-biblioref"><strong>kurz_statistical_2021?</strong></a>)</span>, ‚S. 188.</p>
+<p>Details finden sich bei <span class="citation" data-cites="mcelreath_statistical_2020">McElreath (<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref">2020</a>)</span> oder <span class="citation" data-cites="kurz_statistical_2021">Kurz (<a href="references.html#ref-kurz_statistical_2021" role="doc-biblioref">2021</a>)</span>, ‚S. 188.</p>
 </section><section id="implizierte-bedingte-unabhängigkeiten-von-bsp2" class="level3" data-number="12.11.2"><h3 data-number="12.11.2" class="anchored" data-anchor-id="implizierte-bedingte-unabhängigkeiten-von-bsp2">
 <span class="header-section-number">12.11.2</span> Implizierte bedingte Unabhängigkeiten von <code>bsp2</code>
 </h3>
@@ -2656,6 +2675,23 @@ Hinweis
 <p><img src="img/outro-11.jpg" class="img-fluid" style="width:100.0%"></p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-kurz_statistical_2021" class="csl-entry" role="listitem">
+Kurz, A. Solomon. 2021. <em>Statistical Rethinking with Brms, Ggplot2, and the Tidyverse: <span>Second</span> Edition</em>. <a href="https://bookdown.org/content/4857/">https://bookdown.org/content/4857/</a>.
+</div>
+<div id="ref-mcelreath_statistical_2020" class="csl-entry" role="listitem">
+McElreath, Richard. 2020. <em>Statistical Rethinking: A <span>Bayesian</span> Course with Examples in <span>R</span> and <span>Stan</span></em>. 2. Aufl. <span>CRC</span> Texts in Statistical Science. <span>Boca Raton</span>: <span>Taylor and Francis, CRC Press</span>.
+</div>
+<div id="ref-messerli_chocolate_2012" class="csl-entry" role="listitem">
+Messerli, Franz H. 2012. <span>„Chocolate <span>Consumption</span>, <span>Cognitive Function</span>, and <span>Nobel Laureates</span>“</span>. <em>New England Journal of Medicine</em> 367 (16): 1562–64. <a href="https://doi.org/10.1056/NEJMon1211064">https://doi.org/10.1056/NEJMon1211064</a>.
+</div>
+<div id="ref-pearl_causal_2016" class="csl-entry" role="listitem">
+Pearl, Judea, Madelyn Glymour, und Nicholas P. Jewell. 2016. <em>Causal Inference in Statistics: A Primer</em>. <span>Chichester, West Sussex</span>: <span>Wiley</span>.
+</div>
+<div id="ref-rohrer_thinking_2018" class="csl-entry" role="listitem">
+Rohrer, Julia M. 2018. <span>„Thinking <span>Clearly About Correlations</span> and <span>Causation</span>: <span>Graphical Causal Models</span> for <span>Observational Data</span>“</span>. <em>Advances in Methods and Practices in Psychological Science</em> 1 (1): 27–42. <a href="https://doi.org/10.1177/2515245917745629">https://doi.org/10.1177/2515245917745629</a>.
+</div>
+</div>
 </section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
 <ol>
 <li id="fn1"><p>Dieser Abschnitt ist prüfungsrelevant, birgt aber nichts Neues.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
