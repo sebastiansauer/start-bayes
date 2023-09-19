@@ -399,6 +399,7 @@ div.csl-indent {
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>`</p>
 </section><section id="zentrale-begriffe" class="level3" data-number="5.1.5"><h3 data-number="5.1.5" class="anchored" data-anchor-id="zentrale-begriffe">
 <span class="header-section-number">5.1.5</span> Zentrale Begriffe</h3>
 <section id="eigenschaften-von-zufallsvariablen" class="level4" data-number="5.1.5.1"><h4 data-number="5.1.5.1" class="anchored" data-anchor-id="eigenschaften-von-zufallsvariablen">
@@ -514,16 +515,16 @@ Wichtig
 <p>Der Trick ist, dass wir Integralrechnung gegen stumpfes Zählen eintauschen.</p>
 <p>Computer (und damit R) haben eingebaut Funktionen, die eine beliebige Zufallszahl ziehen können, zum Beispiel gleichverteilt</p>
 <p>Auf Errisch heißt das Zauberwort <code><a href="https://rdrr.io/r/stats/Uniform.html">runif()</a></code>:</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-5_1daa637f69f4509f7bbd34ac6e82a41b">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-4_231b2d632588a59f4bdf1366b68c9bab">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-6_caa54b1c3e7bce280f92af4ab37bf35b">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-5_974f4a7614e2eb8628cd73b6069ca100">
 <pre><code>## [1] 9.14806</code></pre>
 </div>
 <p>Auf Deutsch heißt das: “Hey R, ich hätte gerne eine (daher <code>n = 1</code>) Zufallszahl <em>r</em> wie <em>random</em>, die gleichverteilt ist (<em>uniform</em>) mit <code>min = 0</code> und <code>max = 10</code>.</p>
 <p>(Zu) anschaulich gesprochen: R hat den Bus kommen lassen und es hat gut 9.1 Minuten gedauert, bis er da war.</p>
 <p>Achtung, jetzt kommt’s: Jetzt lassen wir R mal <span class="math inline">\(10^5\)</span> (<code>1e5</code> auf Computersprech) Busse vorfahren. R soll jedes Mal notieren, wie lange man auf den Bus warten musste.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-7_87404082d14be6a8892fbe4627234528">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-6_a82cb8158b0d7d58359c59ebbc76469d">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x_simu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1e5</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Schauen wir uns die Verteilung an, s. <a href="#fig-simu-gleichvert">Abbildung&nbsp;<span>5.4</span></a>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
@@ -539,27 +540,15 @@ Wichtig
 </div>
 <p>Okay, unsere Verteilung sieht nicht <em>exakt</em> gleichverteilt, aber einigermaßen. Gut genug für unsere Zwecke!</p>
 <p>So, und jetzt kommt das Ernten. Wir können jetzt nämlich einfach zählen (<code><a href="https://dplyr.tidyverse.org/reference/count.html">count()</a></code>), um die Antwort auf unsere Frage (der Wartezeit 3-5 Min.) zu erhalten.</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-10_72f6dbb62f5bb908cdb94701fefb9a0f">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-9_28e487a3265b587783f331c11ad77889">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x_simu_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span>Schnittmenge <span class="op">=</span> <span class="va">x</span> <span class="op">&gt;</span> <span class="fl">3</span> <span class="op">&amp;</span> <span class="va">x</span> <span class="op">&lt;</span> <span class="fl">5</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="kable-table">
-<table class="table table-sm table-striped small">
-<thead><tr class="header">
-<th style="text-align: left;">Schnittmenge</th>
-<th style="text-align: right;">n</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">80072</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">19928</td>
-</tr>
-</tbody>
-</table>
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Schnittmenge"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"FALSE","2":"80072"},{"1":"TRUE","2":"19928"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
 </div>
 </div>
@@ -606,10 +595,10 @@ Wichtig
 </div>
 </div>
 <p>Wie groß ist die Wahrscheinlichkeit von <span class="math inline">\(A^{\prime}\)</span>, d.h. bei <span class="math inline">\(n=4\)</span> Zügen <span class="math inline">\(x=2\)</span> Treffer zu erzielen, gegeben dass die Trefferwahrscheinlichkeit bei <span class="math inline">\(p=2/4\)</span> liegt?</p>
-<p>Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen (Multiplikationssatz), s. <a href="0300-Wskt.html#fig-3muenzen">Abbildung&nbsp;<span>4.7</span></a>. Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit, <span class="math inline">\(W\)</span> (Additionssatz). Das ist einfach, dauert aber.</p>
+<p>Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen (Multiplikationssatz), s. <a href="0300-Wskt.html#fig-3muenzen">Abbildung&nbsp;<span>4.10</span></a>. Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit, <span class="math inline">\(W\)</span> (Additionssatz). Das ist einfach, dauert aber.</p>
 <p>In diesem Fall ist die Wahrscheinlichkeit eines (günstigen) Pfades, <span class="math inline">\(A\)</span>:</p>
 <p><span class="math inline">\(P(A) = P(T)^2 \cdot P(N)^2 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right) ^2\)</span>.</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-12_a4ef52b9ad4512a1ac46539bb1137df9">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-11_72fbb544187ea3f423a599c616de1c89">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_a</span> <span class="op">=</span> <span class="op">(</span><span class="fl">2</span><span class="op">/</span><span class="fl">5</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="fl">3</span><span class="op">/</span><span class="fl">5</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
 <span><span class="va">p_a</span></span>
 <span><span class="co">## [1] 0.0576</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -617,7 +606,7 @@ Wichtig
 <p>Etwas mühevolles Zählen der Pfade würde uns zeigen, dass es <span class="math inline">\(k=6\)</span> Pfade gibt, die alle die gleiche Wahrscheinlichkeit, <span class="math inline">\(P(A)\)</span>, aufweisen.</p>
 <p>Damit beträgt die Wahrscheinlichkeit des gesuchten Ereignisses <span class="math inline">\(A^{\prime}\)</span> (2 Treffer bei 4 Zügen):</p>
 <p><span class="math inline">\(P(A^{\prime}) = 6 \cdot P(A)\)</span>.</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-13_6551e370219506fd0702eda9db693bc7">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-12_ad179f472b23a301c38a7b3ff9519b8e">
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_a_strich</span> <span class="op">=</span> <span class="fl">6</span> <span class="op">*</span> <span class="va">p_a</span></span>
 <span><span class="va">p_a_strich</span></span>
 <span><span class="co">## [1] 0.3456</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -628,7 +617,7 @@ Wichtig
 <p><span class="math inline">\(\tbinom{n}{k}\)</span></p>
 <p>Lies: “Wähle aus <span class="math inline">\(n\)</span> möglichen Ereignissen (Pfade im Baum) <span class="math inline">\(k\)</span> günstige Ereignisse (günstige Pfade).</p>
 <p>Auf Errisch geht das so:</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-14_f8b034ae9f1de914954ab2f4e14b3cd4">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-13_7b763edcad206039a031b2756fa25235">
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Special.html">choose</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">## [1] 6</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -636,7 +625,7 @@ Wichtig
 <span class="header-section-number">5.4.2</span> Rechnen mit R</h3>
 <p>Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen.</p>
 <p>Die Wahrscheinlichkeit, bei 4 Zügen 2 Treffer zu erzielen mit <span class="math inline">\(p=2/5\)</span> unter der Annahme einer Binomialverteilung lässt sich so mit R berechnen:</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-15_991c9639a2216eaef27e5f7f16e3c7c4">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-14_3823833b119c0d378750508d7b94a0d6">
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">2</span>, size <span class="op">=</span> <span class="fl">4</span>, prob <span class="op">=</span> <span class="fl">2</span><span class="op">/</span><span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co">## [1] 0.3456</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -644,7 +633,7 @@ Wichtig
 <p><span class="theorem-title"><strong>Beispiel 5.1 (Pumpstation-Beispiel zur Binomialverteilung) </strong></span>In einer Pumpstation arbeiten 7 Motoren, die wir als identisch annehmen. Mit einer Wahrscheinlichkeit von 5% fällt ein Motor aus und ist für den Rest des Tages nicht einsatzbereit. Der Betrieb kann aufrecht erhalten werden, solange mindestens 5 Motoren arbeiten. Wie groß ist die Wahrscheinlichkeit, dass die Pumpstation aus dem Betrieb fällt?</p>
 <p><span class="math inline">\(P(X=k)\)</span> (oder kurz: <span class="math inline">\(P(k)\)</span>) gibt die Wahrscheinlichkeit (Wahrscheinlichkeitsfunktion) an für das Ereignis, dass <em>k</em> Motoren arbeiten.</p>
 <p>Lassen wir R mal <span class="math inline">\(P(X=5)\)</span> ausrechnen.</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-16_a37d49277fc5376e97ae8b3470fcf543">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-15_efb5f401379903851ca9e5d780bc5ed7">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">5</span>, size <span class="op">=</span> <span class="fl">7</span>, prob <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
 <span><span class="co">## [1] 0.0406235</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -652,7 +641,7 @@ Wichtig
 <p><code><a href="https://rdrr.io/r/stats/Binomial.html">dbinom()</a></code> steht für die Wahrscheinlichkeits<em>d</em>ichte (im diskreten Fall, also hier, Wahrscheinlichkeitsfunktion genannt) und <code>binom</code> für die Binomialverteilung. <code>x</code> gibt die Anzahl der Treffer an (das gesuchte Ereignis, hier 5 Motoren arbeiten); <code>size</code> gibt die Stichprobengröße an (hier 7 Motoren).</p>
 <p>Damit gilt:</p>
 <p><span class="math inline">\(P(X\ge 5) = P(X=5) + P(X=6) + P(X=7)\)</span></p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-17_386b3199158f45abb4eb17c83cd6ccdb">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-16_c3827df77c70c043b33cf9d0c652e379">
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">5</span>, size <span class="op">=</span> <span class="fl">7</span>, prob <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
 <span><span class="va">p_6</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">6</span>, size <span class="op">=</span> <span class="fl">7</span>, prob <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
 <span><span class="va">p_7</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">7</span>, size <span class="op">=</span> <span class="fl">7</span>, prob <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
@@ -665,14 +654,14 @@ Wichtig
 <p>Die Wahrscheinlichkeit, dass mind. 5 Motoren arbeiten beträgt also 0.9962.</p>
 <p>Das Komplement zu diesem Ereignis ist, dass <em>nicht</em> mind. 5 Motoren arbeiten, also höchstens 4 und es daher zu einem Ausfall kommt.</p>
 <p>Natürlich gilt <span class="math inline">\(P(\bar{X}) = 1- P(X)\)</span>.</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-18_6948d11fa8003a6c59eb6916a3a4a84a">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-17_2020bb4a65fca50775eadac9b8ef18ee">
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_weniger_als_4</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">p_mind_5</span></span>
 <span><span class="va">p_weniger_als_4</span></span>
 <span><span class="co">## [1] 0.003757043</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Alternativ kann man mit der Verteilungsfunktion rechnen: <span class="math inline">\(P(X \le 4)\)</span>.</p>
 <p>In R kann man dafür die Funktion <code><a href="https://rdrr.io/r/stats/Binomial.html">pbinom()</a></code> nutzen (p für (kumulierte) Wahrscheinlichkeit).</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-19_9d2f32dc3f88bba021b89fceffca805a">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-18_0ffb58b139693fa42f3792d14e1829ef">
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">pbinom</a></span><span class="op">(</span>q <span class="op">=</span> <span class="fl">4</span>, size <span class="op">=</span> <span class="fl">7</span>, prob <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
 <span><span class="co">## [1] 0.003757043</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -696,19 +685,19 @@ Wichtig
 <span class="header-section-number">5.4.3</span> Simulieren</h3>
 <p>Die Binomialverteilung lässt sich gut als “Münzwurf-Verteilung” auffassen.</p>
 <p>Werfen wir eine Münze und sehen wir, was passiert.</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-20_8e83eec67181643b6808bc4bd3dd9337">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-19_487079b7e6898db12be63e8c84319a7f">
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">## [1] 1</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Mit <code><a href="https://rdrr.io/r/base/sample.html">sample()</a></code> ziehen wir eine Stichprobe aus dem Ereignisraum <code>x</code>, hier 0 und 1. Dabei vereinbaren wir (willkürlich), dass 0 für “Kopf” steht und 1 für “Zahl”. <code>size = 1</code> bedeutet, wir werfen die Münze ein Mal (d.h. Stichprobengröße <em>size</em> ist 1).</p>
 <p>Okay, noch an Bord? Dann werfen wir die Münze 10 Mal:</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-21_5d11103df959d9b7a980b6772d270e7a">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-20_60438222aa83593ad398ccf4a9aa4651">
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">10</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">##  [1] 0 1 1 1 1 0 0 1 0 1</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>replace = TRUE</code> heißt, wir legen die Münze wieder zurück auf den Tisch, wenn wir sie geworfen haben. Oder anders ausgedrückt: <em>Ziehen mit Zurücklegen</em>.</p>
 <p>R, mach dich bereit, wirf die Münze 1000 (<span class="math inline">\(n=10^3\)</span> oder <code>1e3</code>) Mal<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>:</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-22_dad16e739ad94219738eedea431949a6">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-21_2513e4caa84f11062fb14d7cd6a02e9b">
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">1e3</span></span>
 <span></span>
 <span><span class="va">muenze_oft</span> <span class="op">&lt;-</span> </span>
@@ -735,7 +724,7 @@ Hinweis
 </div>
 </div>
 <p>Visualisieren wir mal unsere Münzwürfe. Dazu erstellen wir zuerst eine geeignete Tabelle, <a href="#tbl-muenz">Tabelle&nbsp;<span>5.1</span></a>.</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-23_03c10a9c4f8b798a9b05b84e4643ec11">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-22_52df657d21014ba4a1753a80b1b06d87">
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">muenz_tab</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
 <span>    id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span>,</span>
@@ -1374,14 +1363,14 @@ Hinweis
 </div>
 <p><a href="https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models">Quelle</a>: John Kruschke.</p>
 <p>Eine Zufallszahl (<em>r</em>andom number), die <em>norm</em>alverteilt ist, mit <span class="math inline">\(\mu=0\)</span> und <span class="math inline">\(\sigma=1\)</span> kann man in R so erzeugen:</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-26_55fbf4789121b31f0fbf418e2c0e4030">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-25_da6d0c8158d60c560d8163baae8ad3b1">
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, mean <span class="op">=</span> <span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">## [1] 0.2664096</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Ein Fallbeispiel: Der Inhalt einer Tüte mit Zucker, <span class="math inline">\(X\)</span>, sei normalverteilt mit <span class="math inline">\(\mu = 10002\)</span> g und <span class="math inline">\(\sigma=1.5\)</span> g. Aus vertragsrechtlichen Gründen darf das Füllgewicht von 1000g nicht unterschritten werden, sonst drohen Konventionalstrafen.</p>
 <p>Wie groß ist die Wahrscheinlichkeit, dass 1000g unterschritten werden?</p>
 <p>Simulieren wir uns 1e4 Zuckertüten!</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-27_851b982a0dcd4351858c65ef8b416645">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-26_1196883983238ac192acdbad634b9f19">
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">1e4</span></span>
 <span><span class="va">d</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
@@ -1391,93 +1380,38 @@ Hinweis
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="kable-table">
-<table class="table table-sm table-striped small">
-<thead><tr class="header">
-<th style="text-align: right;">id</th>
-<th style="text-align: right;">x</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1002.479</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1001.216</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">1003.320</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">1001.173</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">1001.465</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">1003.843</td>
-</tr>
-</tbody>
-</table>
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["id"],"name":[1],"type":["int"],"align":["right"]},{"label":["x"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"1002.479"},{"1":"2","2":"1001.216"},{"1":"3","2":"1003.320"},{"1":"4","2":"1001.173"},{"1":"5","2":"1001.465"},{"1":"6","2":"1003.843"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
 </div>
 </div>
 <p>Zählen wir, viele der Zuckertüten ein Gewicht von weniger als 1000g aufweisen:</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-28_73cbf0ff905834f6ff8efdcd42364545">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-27_8b646dc4e0e573411b738e9b165182fe">
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">d</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&lt;</span> <span class="fl">1000</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="kable-table">
-<table class="table table-sm table-striped small">
-<thead><tr class="header">
-<th style="text-align: left;">x &lt; 1000</th>
-<th style="text-align: right;">n</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">9013</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">987</td>
-</tr>
-</tbody>
-</table>
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["x < 1000"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"FALSE","2":"9013"},{"1":"TRUE","2":"987"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
 </div>
 </div>
 <p>Ein ziemlich<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a> kleiner Anteil. Rechnen wir uns noch die Anteile (<em>prop</em>ortion) aus:</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-29_61e49020cec622e235dd33d6a2ca6162">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-28_db5082aa78d134ad21d54f1492f772c4">
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">d</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&lt;</span> <span class="fl">1000</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop <span class="op">=</span> <span class="va">n</span><span class="op">/</span><span class="fl">1e4</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="kable-table">
-<table class="table table-sm table-striped small">
-<thead><tr class="header">
-<th style="text-align: left;">x &lt; 1000</th>
-<th style="text-align: right;">n</th>
-<th style="text-align: right;">prop</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">9013</td>
-<td style="text-align: right;">0.9013</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">987</td>
-<td style="text-align: right;">0.0987</td>
-</tr>
-</tbody>
-</table>
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["x < 1000"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]},{"label":["prop"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"FALSE","2":"9013","3":"0.9013"},{"1":"TRUE","2":"987","3":"0.0987"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
 </div>
 </div>
@@ -1495,7 +1429,7 @@ Hinweis
 </div>
 <p><a href="https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models">Quelle:</a>: John Kruschke.</p>
 <p>Ziehen wir zufällig <span class="math inline">\(1e4\)</span> Stichproben aus <span class="math inline">\(\mathcal{N}(100,15)\)</span> und berechnen die Quantile:</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-30_bf1175957442bedafc8bf70c545dadd6">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-29_4fda32432784b09a012dd2a917b03b4b">
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
 <span>  iq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1e4</span>, </span>
@@ -1508,7 +1442,7 @@ Hinweis
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>p <span class="op">=</span> <span class="va">probs</span>,</span>
 <span>            q <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">iq</span>, <span class="va">probs</span><span class="op">)</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-31_e121eb9b9407db7b0401d5458436fad6">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-30_6be3f3c11ba661ae248123f2d83a1f2f">
 <div class="cell-output-display">
 
 <div id="bjztboonsi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -1989,7 +1923,7 @@ Hinweis
 <li>Anders gesagt: Welcher Anteil der Wahrscheinlichkeitsmasse der Verteilung liegt unter IQ=75, IQ=100, etc.?</li>
 </ul>
 <p>Ziehen wir Stichproben aus <span class="math inline">\(\mathcal{N}(100,15)\)</span>:</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-32_5bb04b880a0213a42147c0f9d411e835">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-31_c5f49ffcf9622e5c4e6f1177fb778645">
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
 <span>    iq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1e4</span>, </span>
@@ -2003,7 +1937,7 @@ Hinweis
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span>p_100 <span class="op">=</span> <span class="va">iq</span> <span class="op">&lt;</span> <span class="fl">100</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop <span class="op">=</span> <span class="va">n</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> </span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-33_3da4456c0349f8fde3e60861cfcd5018">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-32_b7c2ec1d4328c225cac865ae01305d19">
 <div class="cell-output-display">
 
 <div id="cqzqjsyohe" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -2497,7 +2431,7 @@ Hinweis
 </div>
 </div>
 <p><span class="math display">\[IQ \sim \mathcal{N}(100, 15)\]</span> Mit R kann man sich die beiden Größen komfortabel berechnen lassen:</p>
-<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-36_18c8aa79282a337a4420b01bc23462ed">
+<div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-35_6bc24fe7ced0c0ddce8029c6631b3693">
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span><span class="fl">.50</span>, mean <span class="op">=</span> <span class="fl">100</span>, sd <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>  <span class="co"># 50%-Quantil</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="fl">100</span>, mean <span class="op">=</span> <span class="fl">100</span>, sd <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>  <span class="co"># Verteilungsfunktion für IQ=100</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
