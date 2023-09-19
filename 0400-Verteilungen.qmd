@@ -203,7 +203,7 @@ uniform_Plot <- function(a, b){
 }
 
 uniform_Plot(-1, 1)
-#uniform_Plot(0, 3)
+uniform_Plot(0, 3)
 ```
 
 
@@ -289,15 +289,20 @@ x_simu_df <-
 ```
 
 
-Schauen wir uns die Verteilung an, @fig-simu-gleichvert.
+Schauen wir uns die Verteilung an, s. @fig-simu-gleichvert.^[Alternativ kann man z.B. auch `ggplot` verwenden: `ggplot(x_simu_df, aes(x = x_simu)) +  geom_histogram(bins = 50)`.]
 
 ```{r}
 #| label: fig-simu-gleichvert
 #| fig-cap: "Simulation einer gleichverteiluten Zufallsvariablen"
-ggplot(x_simu_df) +
-  aes(x = x_simu) +
-  geom_histogram(bins = 50)
+
+library(ggpubr)
+gghistogram(x_simu_df, x = "x_simu", fill = "grey20")
+
+
 ```
+
+
+
 
 Okay, unsere Verteilung sieht nicht *exakt* gleichverteilt, aber einigermaßen. 
 Gut genug für unsere Zwecke!
@@ -597,6 +602,8 @@ Und hier der Anteil von "Zahl" im Verlauf unserer Münzwürfe, s. @fig-lln.
 ```{r}
 #| label: fig-lln
 #| fig-cap: "Das Gesetz der großen Zahl am Beispiel der Stabilisierung des Trefferanteils beim wiederholten Münzwurf"
+#| fig-asp: 0.3
+
 muenz_tab %>% 
   slice_head(n = 1e3) %>% 
   ggplot() +
@@ -831,11 +838,26 @@ $$\mathcal{N} \propto e^{-x^2}$$
 mit $e=2.71...$, der Eulerschen Zahl.^[Das Zeichen $y \propto x$ bedeutet "x ist proportional zu y", also $y = mx$.]
 
 
-
+Wie man sieht (@fig-normal1) ergibt sich eine Normalverteilung. 
 
 
 ```{r norm, eval = FALSE, echo = TRUE}
+d <-
+  tibble(
+    x = seq(-3, 3, 
+            length.out = 100),
+    y = exp(-x^2)
+  )
+
+ggline(d, x = "x",y = "y")  # aus {ggpubr}
+```
+
+
+
+```{r Normalverteilung-10, echo = FALSE}
 #| fig-asp: 0.5
+#| label: fig-normal1
+#| fig-cap: "Wir basteln uns eine Normalverteilung"
 d <-
   tibble(
     x = seq(-3, 3, 
@@ -847,11 +869,6 @@ d %>%
   ggplot() +
   aes(x = x, y = y) +
   geom_line()
-```
-
-
-
-```{r Normalverteilung-10, echo = FALSE, ref.label = "norm"}
 ```
 
 

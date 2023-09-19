@@ -96,15 +96,14 @@ Zusammengefasst: Daten: 9 von 10 Treffern beim Münzwurf. Forschungsfrage: Ist d
 
 
 Schauen wir uns zunächst einmal an, wie wahrscheinlich 9 von 10 Treffern sind,
-*wenn* die Münze fair ist, s. @fig-stiprovert.
+*wenn* die Münze fair ist, s. @fig-stiprovert-post-zwielicht, links.
 
 
 ```{r QM2-Thema3-Post-befragen-21}
 #| echo: false
-#| fig-cap: "Stichprobenverteilung einer fairen Münze"
-#| label: fig-stiprovert
 
-tibble(
+p_stripro_vert <-
+  tibble(
   Trefferzahl = rbinom(n = 1e4, size = 10, prob = 1/2)
 ) %>% 
   mutate(signifikant = ifelse(Trefferzahl %in% c(9,10), TRUE, FALSE)) %>% 
@@ -129,13 +128,13 @@ Er wird genutzt, um über die Ablehnung einer Hypothese zu entscheiden.
 In diesem Fall entspricht der p-Wert dem türkis markierten Flächenanteil in @fig-stiprovert.
 Ist dieser Anteil kleiner als 5% (der Gesamtfläche im Balkendiagramm),
 so wird die Hypothese (hier: faire Münze) verworfen.
-Allgemeiner gesprochne berechnet sich der p-Wert als Summe der Likelihoods, 
+Allgemeiner gesprochen berechnet sich der p-Wert als Summe der Likelihoods, 
 die mindestens so extrem sind wie das beobachtete empirische Ergebnis.
 :::
 
 
 In der Bayes-Statistik ist die Post-Verteilung Dreh- und Angelpunkt der Entscheidung über eine Hypothese.
-In @fig-post-zwielicht ist die Posteriori-Verteilung für die Daten zum zwielichten Dozent dargestellt.
+In @fig-stiprovert-post-zwielicht (rehcts) ist die Posteriori-Verteilung für die Daten zum zwielichten Dozent dargestellt.
 
 
 
@@ -165,8 +164,14 @@ samples_zwielicht <-
 
 ```{r QM2-Thema3-Post-befragen-22}
 #| echo: false
-#| fig-cap: Post-Verteilung für den Parameter p zu den Daten des zwielichten Dozenten (9 von 10 Treffern im wiederholten Münzwurf)
-#| label: fig-post-zwielicht
+#| fig-cap:
+#|   - "Post-Verteilung für den Parameter p zu den Daten des zwielichten Dozenten (9 von 10 Treffern im wiederholten Münzwurf)"
+#   fig-cap: "Stichprobenverteilung einer fairen Münze"
+#| label: fig-stiprovert-post-zwielicht
+# layout-ncol: 2
+
+
+p_samples_zwielicht <- 
 samples_zwielicht %>% 
   ggplot() +
   aes(x = gewinnchance_muenze) +
@@ -178,6 +183,8 @@ samples_zwielicht %>%
        caption = "Das Dreieck zeigt die Wskt. eines Treffers bei einer fairen Münze",
        x = "Gewinnchance der Münze") +
   annotate("point", x = .5, y = 0, size = 5, color = "grey40", shape = 17)
+
+p_samples_zwielicht
 ```
 
 ```{r}
@@ -221,6 +228,12 @@ samples_zwielicht %>%
 
 Die Wahrscheinlichkeit für eine "einigermaßen faire" Münze ist klein, etwa 5%!
 
+:::
+
+
+:::{#exr-vis-zwieliecht}
+### Visualisieren Sie @fig-stiprovert-post-zwielicht
+Sie finden Details zur Aufgabenstellung (sowie die Lösung 🙈) [hier](https://datenwerk.netlify.app/posts/postvert-vis-zwielicht/postvert-vis-zwielicht).$\square$
 :::
 
 
@@ -400,13 +413,10 @@ Die Verteilung der zu erwartenden Treffer ist in @fig-globus-striprovert dargest
 ```{r QM2-Thema3-Post-befragen-30, echo = TRUE, results = "hide", eval = FALSE}
 n_draws <- 1e6
 
-draws <- 
+draws_df <- 
   tibble(draws = rbinom(n_draws, size = 9, prob = .7))
 
-plot1 <- 
-  draws %>% 
-  ggplot(aes(x = draws)) +
-  geom_histogram() 
+draws_df %>% gghistogram(x = "draws")
 ```
 
 
@@ -414,6 +424,7 @@ plot1 <-
 ```{r QM2-Thema3-Post-befragen-31}
 #| echo: false
 #| label: fig-globus-striprovert
+#| out-width: "50%"
 #| fig-cap: Anteile (Wahrscheinlichkeit), die man für jede Wasserzahl in unserem Globusversuch erwarten kann
 n_draws <- 1e6
 draws <- tibble(draws = rbinom(n_draws, 
@@ -553,9 +564,20 @@ Wahrscheinliche Parameterwerte, etwa $\pi=7$, sollen häufiger verwendet werden 
 Praktischerweise sind die Werte in der Spalte `p_grid` in `samples` so häufig vertreten, wie ihre Wahrscheinlichkeit es erwarten lässt. Hier ist ein Auszug aus `samples`:
 
 ```{r}
+#| eval: false
 samples %>% 
   select(p_grid) %>% 
   slice_head(n = 10)
+```
+
+
+
+```{r}
+#| echo: false
+samples %>% 
+  select(p_grid) %>% 
+  slice_head(n = 10) |> 
+  print_md()
 ```
 
 Wie man sieht, sind wahrscheinliche Parameterwerte häufiger vertreten.^[An dieser Stelle sollten Sie sichd die ganze Spalte `p_grid` anschauen, um sich von dieser Behauptung mit eigenen Augen zu überzeugen.]
@@ -790,6 +812,7 @@ d_small %>%
 9. [ReThink3m4](https://datenwerk.netlify.app/posts/rethink3m4/rethink3m4)
 10. [ReThink3m5](https://datenwerk.netlify.app/posts/rethink3m5/rethink3m5)
 11. [Quiz zu Verteilungen](https://datenwerk.netlify.app/#category=Verteilungen-Quiz)
+12. [postvert-vis-zwielicht](https://datenwerk.netlify.app/posts/postvert-vis-zwielicht/postvert-vis-zwielicht)
 
 
 

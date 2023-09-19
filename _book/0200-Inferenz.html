@@ -17,6 +17,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 /* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
@@ -293,10 +327,9 @@ div.csl-indent {
 <a href="#stichprobe-vs.-population" id="toc-stichprobe-vs.-population" class="nav-link" data-scroll-target="#stichprobe-vs.-population"><span class="header-section-number">3.5</span> Stichprobe vs.&nbsp;Population</a>
   <ul class="collapse">
 <li><a href="#deskriptiv--vs.-inferenzstatistik" id="toc-deskriptiv--vs.-inferenzstatistik" class="nav-link" data-scroll-target="#deskriptiv--vs.-inferenzstatistik"><span class="header-section-number">3.5.1</span> Deskriptiv- vs.&nbsp;Inferenzstatistik</a></li>
-  <li><a href="#wozu-ist-die-inferenstatistik-gut" id="toc-wozu-ist-die-inferenstatistik-gut" class="nav-link" data-scroll-target="#wozu-ist-die-inferenstatistik-gut"><span class="header-section-number">3.5.2</span> Wozu ist die Inferenstatistik gut?</a></li>
+  <li><a href="#inferenzstatistik" id="toc-inferenzstatistik" class="nav-link" data-scroll-target="#inferenzstatistik"><span class="header-section-number">3.5.2</span> Inferenzstatistik</a></li>
   <li><a href="#deskriptiv--und-inferenzstatistik-gehen-hand-in-hand" id="toc-deskriptiv--und-inferenzstatistik-gehen-hand-in-hand" class="nav-link" data-scroll-target="#deskriptiv--und-inferenzstatistik-gehen-hand-in-hand"><span class="header-section-number">3.5.3</span> Deskriptiv- und Inferenzstatistik gehen Hand in Hand</a></li>
   <li><a href="#sch%C3%A4tzen-von-parametern-einer-grundgesamtheit" id="toc-schätzen-von-parametern-einer-grundgesamtheit" class="nav-link" data-scroll-target="#sch%C3%A4tzen-von-parametern-einer-grundgesamtheit"><span class="header-section-number">3.5.4</span> Schätzen von Parametern einer Grundgesamtheit</a></li>
-  <li><a href="#beispiele-f%C3%BCr-inferenzstatistische-fragestellungen" id="toc-beispiele-für-inferenzstatistische-fragestellungen" class="nav-link" data-scroll-target="#beispiele-f%C3%BCr-inferenzstatistische-fragestellungen"><span class="header-section-number">3.5.5</span> Beispiele für inferenzstatistische Fragestellungen</a></li>
   </ul>
 </li>
   <li>
@@ -310,27 +343,23 @@ div.csl-indent {
 <a href="#regression" id="toc-regression" class="nav-link" data-scroll-target="#regression"><span class="header-section-number">3.7</span> Regression</a>
   <ul class="collapse">
 <li><a href="#regression-zum-modellieren" id="toc-regression-zum-modellieren" class="nav-link" data-scroll-target="#regression-zum-modellieren"><span class="header-section-number">3.7.1</span> Regression zum Modellieren</a></li>
-  <li><a href="#viele-statistische-verfahren-sind-spezialf%C3%A4lle-der-regression" id="toc-viele-statistische-verfahren-sind-spezialfälle-der-regression" class="nav-link" data-scroll-target="#viele-statistische-verfahren-sind-spezialf%C3%A4lle-der-regression"><span class="header-section-number">3.7.2</span> Viele statistische Verfahren sind Spezialfälle der Regression</a></li>
-  <li><a href="#in-voller-pracht" id="toc-in-voller-pracht" class="nav-link" data-scroll-target="#in-voller-pracht"><span class="header-section-number">3.7.3</span> In voller Pracht</a></li>
+  <li><a href="#in-voller-pracht" id="toc-in-voller-pracht" class="nav-link" data-scroll-target="#in-voller-pracht"><span class="header-section-number">3.7.2</span> In voller Pracht</a></li>
   </ul>
 </li>
   <li>
 <a href="#unsicherheit" id="toc-unsicherheit" class="nav-link" data-scroll-target="#unsicherheit"><span class="header-section-number">3.8</span> Unsicherheit</a>
   <ul class="collapse">
-<li><a href="#inferenz-beinhaltet-unsicherheit" id="toc-inferenz-beinhaltet-unsicherheit" class="nav-link" data-scroll-target="#inferenz-beinhaltet-unsicherheit"><span class="header-section-number">3.8.1</span> Inferenz beinhaltet Unsicherheit</a></li>
-  <li><a href="#beispiele-zur-quantifizierung-von-ungewissheit" id="toc-beispiele-zur-quantifizierung-von-ungewissheit" class="nav-link" data-scroll-target="#beispiele-zur-quantifizierung-von-ungewissheit"><span class="header-section-number">3.8.2</span> Beispiele zur Quantifizierung von Ungewissheit</a></li>
-  <li><a href="#zwei-arten-von-ungewissheit" id="toc-zwei-arten-von-ungewissheit" class="nav-link" data-scroll-target="#zwei-arten-von-ungewissheit"><span class="header-section-number">3.8.3</span> Zwei Arten von Ungewissheit</a></li>
-  <li><a href="#ich-wei%C3%9F-was-ich-nicht-wei%C3%9F-ungewissheit-angeben" id="toc-ich-weiß-was-ich-nicht-weiß-ungewissheit-angeben" class="nav-link" data-scroll-target="#ich-wei%C3%9F-was-ich-nicht-wei%C3%9F-ungewissheit-angeben"><span class="header-section-number">3.8.4</span> Ich weiß, was ich nicht weiß: Ungewissheit angeben</a></li>
-  <li><a href="#visualisierung-von-ungewissheit" id="toc-visualisierung-von-ungewissheit" class="nav-link" data-scroll-target="#visualisierung-von-ungewissheit"><span class="header-section-number">3.8.5</span> Visualisierung von Ungewissheit</a></li>
-  <li><a href="#konfidenzintervall" id="toc-konfidenzintervall" class="nav-link" data-scroll-target="#konfidenzintervall"><span class="header-section-number">3.8.6</span> Konfidenzintervall</a></li>
+<li><a href="#inferenz-beinhaltet-ungewissheit" id="toc-inferenz-beinhaltet-ungewissheit" class="nav-link" data-scroll-target="#inferenz-beinhaltet-ungewissheit"><span class="header-section-number">3.8.1</span> Inferenz beinhaltet Ungewissheit</a></li>
+  <li><a href="#zwei-arten-von-ungewissheit" id="toc-zwei-arten-von-ungewissheit" class="nav-link" data-scroll-target="#zwei-arten-von-ungewissheit"><span class="header-section-number">3.8.2</span> Zwei Arten von Ungewissheit</a></li>
+  <li><a href="#ich-wei%C3%9F-was-ich-nicht-wei%C3%9F-ungewissheit-angeben" id="toc-ich-weiß-was-ich-nicht-weiß-ungewissheit-angeben" class="nav-link" data-scroll-target="#ich-wei%C3%9F-was-ich-nicht-wei%C3%9F-ungewissheit-angeben"><span class="header-section-number">3.8.3</span> Ich weiß, was ich nicht weiß: Ungewissheit angeben</a></li>
+  <li><a href="#visualisierung-von-ungewissheit" id="toc-visualisierung-von-ungewissheit" class="nav-link" data-scroll-target="#visualisierung-von-ungewissheit"><span class="header-section-number">3.8.4</span> Visualisierung von Ungewissheit</a></li>
+  <li><a href="#konfidenzintervall" id="toc-konfidenzintervall" class="nav-link" data-scroll-target="#konfidenzintervall"><span class="header-section-number">3.8.5</span> Konfidenzintervall</a></li>
   </ul>
 </li>
   <li>
 <a href="#klassische-vs.-bayes-inferenz" id="toc-klassische-vs.-bayes-inferenz" class="nav-link" data-scroll-target="#klassische-vs.-bayes-inferenz"><span class="header-section-number">3.9</span> Klassische vs.&nbsp;Bayes-Inferenz</a>
   <ul class="collapse">
-<li><a href="#klassische-inferenz-frequentismus" id="toc-klassische-inferenz-frequentismus" class="nav-link" data-scroll-target="#klassische-inferenz-frequentismus"><span class="header-section-number">3.9.1</span> Klassische Inferenz: Frequentismus</a></li>
-  <li><a href="#bayesianische-inferenz" id="toc-bayesianische-inferenz" class="nav-link" data-scroll-target="#bayesianische-inferenz"><span class="header-section-number">3.9.2</span> Bayesianische Inferenz</a></li>
-  <li><a href="#vergleich-von-wahrscheinlichkeitsaussagen" id="toc-vergleich-von-wahrscheinlichkeitsaussagen" class="nav-link" data-scroll-target="#vergleich-von-wahrscheinlichkeitsaussagen"><span class="header-section-number">3.9.3</span> Vergleich von Wahrscheinlichkeitsaussagen</a></li>
+<li><a href="#vergleich-von-wahrscheinlichkeitsaussagen" id="toc-vergleich-von-wahrscheinlichkeitsaussagen" class="nav-link" data-scroll-target="#vergleich-von-wahrscheinlichkeitsaussagen"><span class="header-section-number">3.9.3</span> Vergleich von Wahrscheinlichkeitsaussagen</a></li>
   <li><a href="#frequentist-und-bayesianer" id="toc-frequentist-und-bayesianer" class="nav-link" data-scroll-target="#frequentist-und-bayesianer"><span class="header-section-number">3.9.4</span> Frequentist und Bayesianer</a></li>
   <li><a href="#der-p-wert-ist-wenig-intuitiv" id="toc-der-p-wert-ist-wenig-intuitiv" class="nav-link" data-scroll-target="#der-p-wert-ist-wenig-intuitiv"><span class="header-section-number">3.9.5</span> Der p-Wert ist wenig intuitiv</a></li>
   <li><a href="#beispiel-zum-nutzen-von-apriori-wissen-1" id="toc-beispiel-zum-nutzen-von-apriori-wissen-1" class="nav-link" data-scroll-target="#beispiel-zum-nutzen-von-apriori-wissen-1"><span class="header-section-number">3.9.6</span> Beispiel zum Nutzen von Apriori-Wissen 1</a></li>
@@ -372,18 +401,20 @@ div.csl-indent {
 <p>Sie können …</p>
 <ul>
 <li>die Definition von Inferenzstatistik sowie Beispiele für inferenzstatistische Fragestellungen nennen</li>
-<li>zentrale Begriffe nennen und in Grundzügen erklären</li>
+<li>zentrale Begriffe der Inferenzstatistik nennen und in Grundzügen erklären</li>
 <li>den Nutzen von Inferenzstatistik nennen</li>
 <li>erläutern, in welchem Zusammenhang Ungewissheit zur Inferenzstatistik steht</li>
-<li>auch anhand von Beispielen erklären, was ein statistisches Modell ist</li>
+<li>anhand von Beispielen erklären, was ein statistisches Modell ist</li>
 <li>die Grundkonzepte der Regression angeben</li>
 <li>Unterschiede zwischen klassischer und Bayes-Inferenz benennen</li>
 <li>Vor- und Nachteile der klassischen vs.&nbsp;Bayes-Inferenz diskutieren</li>
-<li>Die grundlegende Herangehensweise zur Berechnung des p-Werts informell erklären können</li>
+<li>Die grundlegende Herangehensweise zur Berechnung des p-Werts informell erklären</li>
 </ul></section></section><section id="vorbereitung-im-eigenstudium" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="vorbereitung-im-eigenstudium">
 <span class="header-section-number">3.2</span> Vorbereitung im Eigenstudium</h2>
 <ul>
-<li><a href="https://statistik1.netlify.app/010-rahmen">Statistik 1, Kap .”Rahmen”</a></li>
+<li><a href="https://statistik1.netlify.app/010-rahmen">Statistik 1, Kap. “Rahmen”</a></li>
+<li>
+<a href="https://statistik1.netlify.app/">Statistik 1</a>, dort alle Hinweise zum Thema “Modellieren”</li>
 </ul>
 <section id="begleitvideos" class="level3" data-number="3.2.1"><h3 data-number="3.2.1" class="anchored" data-anchor-id="begleitvideos">
 <span class="header-section-number">3.2.1</span> Begleitvideos</h3>
@@ -392,8 +423,17 @@ div.csl-indent {
 <li><a href="https://https://youtu.be/QNMVi6IqQ90">Video zur Inferenz, Teil 2</a></li>
 </ul></section></section><section id="wozu-ist-statistik-überhaupt-da" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="wozu-ist-statistik-überhaupt-da">
 <span class="header-section-number">3.3</span> Wozu ist Statistik überhaupt da?</h2>
-<p>Ja, diese Frage haben Sie sich auch schon mal gestellt?</p>
-<p>Abb. <a href="#fig-goals">Abbildung&nbsp;<span>3.1</span></a> gibt einen Überblick über die Ziele der Statistik.</p>
+<p>Ja, diese Frage haben Sie sich auch schon mal gestellt? Abb. <a href="#fig-goals">Abbildung&nbsp;<span>3.1</span></a> gibt einen Überblick über die Ziele der Statistik.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Nach dieser Einteilung lassen sich drei Arten von Zielen unterscheiden: Beschreiben, Vorhersagen und Erklären.</p>
+<div id="exm-ziele-stat" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 3.1 (Beispiele für die Zielarten statistischer Analysen) </strong></span>&nbsp;</p>
+<ul>
+<li>Beschreiben: “Wie groß ist der Gender-Paygap in der Branche X im Zeitraum Y?”</li>
+<li>Vorhersagen: Wenn eine Person, Mr.&nbsp;X, 100 Stunden auf die Statistikklausur lernen, welche Note kann diese Person dann erwarten?</li>
+<li>Erklären: Wie viel bringt (mir) das Lernen auf die Statistikklausur?<span class="math inline">\(\square\)</span>
+</li>
+</ul>
+</div>
+<p>Für die Wissenschaft ist <em>Erklären</em> das wichtigste Ziel. Bei wenig beackerten Wissenschaftsfeldern ist das <em>Beschreiben</em> ein sinnvoller erster Schritt, der allerdings nicht Stolperfallen ist, wie in <a href="1100-kausal.html"><span>Kapitel&nbsp;12</span></a> erläutert. <em>Vorhersagen</em> ist mehr für die Praxis als für die Wissenschaft relevant.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-goals" class="quarto-figure quarto-figure-center anchored">
@@ -413,52 +453,31 @@ div.csl-indent {
 
 </pre>
 </div>
-<figcaption class="figure-caption">Abbildung&nbsp;3.1: A taxonomy of statistical goals</figcaption></figure>
+<figcaption class="figure-caption">Abbildung&nbsp;3.1: Eine Einteilung der Ziele von statistischen Analysen</figcaption></figure>
 </div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Hinweis
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Ziele existieren nicht “in echt” in der Welt. Wir denken sie uns aus. Ziele haben also keine ontologische Wirklichkeit, sie sind epistemologische Dinge (existieren nur in unserem Kopf). Das heißt, dass man sich nach Beliebem Ziele ausdenken kann. Allerdings hülfe es, wenn man andere Menschen vom Nutzen der eigenen Ideen überzeugen kann.</p>
 </div>
 </div>
 </section><section id="was-ist-inferenz" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="was-ist-inferenz">
 <span class="header-section-number">3.4</span> Was ist Inferenz?</h2>
+<!-- TODO: -->
+<!-- Attentio Grabber zum Einstieg -->
+<!-- An Vorwissen anknüpfen -->
+<!-- -- gilt auch für übrige Kapitel und übrige Bücher -->
 <section id="inferenz-als-generalisieren" class="level3" data-number="3.4.1"><h3 data-number="3.4.1" class="anchored" data-anchor-id="inferenz-als-generalisieren">
 <span class="header-section-number">3.4.1</span> Inferenz als Generalisieren</h3>
-<p>Statistische Inferenz sieht sich drei “Herausforderungen” gegenüber, laut <span class="citation" data-cites="gelman_regression_2021">Gelman, Hill, und Vehtari (<a href="references.html#ref-gelman_regression_2021" role="doc-biblioref">2021</a>)</span>, Kap. 1.1. Diese betreffen das Schließen (oder Generalisieren) vom Einzelfall auf das Allgemeine:</p>
+<p>Statistische Inferenz hat zum Ziel, vom Teil aufs Ganze zu schließen, bzw. vom Konkreten auf das Abstrakte.^[Statistische Inferenz sieht sich drei “Herausforderungen” gegenüber, laut <span class="citation" data-cites="gelman_regression_2021">Gelman, Hill, und Vehtari (<a href="references.html#ref-gelman_regression_2021" role="doc-biblioref">2021</a>)</span>, Kap. 1.1. Diese betreffen das Schließen (oder Generalisieren) vom Einzelfall auf das Allgemeine:</p>
 <ol type="1">
 <li>Von der Stichprobe aus die Grundgesamtheit (Population)</li>
 <li>Von der Experimental- auf die Kontrollgruppe (Kausalinferenz)</li>
 <li>Von einem Messwert auf das zugrundeliegende Konstrukt</li>
 </ol>
-<p>In diesem Kurs beschäftigen wir uns mit den ersten beiden Herausforderungen.</p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Wichtig
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Statistische Inferenz hat zum Ziel, vom Teil aufs Ganze zu schließen, bzw. vom Konrketen auf das Abstrakte.</p>
-</div>
-</div>
+<p>In diesem Kurs beschäftigen wir uns mit den ersten beiden Herausforderungen.]</p>
+<p>Typischerweise untersuchen im Rahmen einer statistischen Analyse eine <em>Stichprobe</em>, wie z.B. Ihr Freundeskreis, der leichtsinnig genug war, auf Ihre WhatsApp-Nachricht “Tolle Studie zu dem Geheimnis des Glücks!!!” zu klicken. Ihr Freundeskreis ist ein <em>Teil</em> der Menschen (z.B. aus Deutschland), also eine Stichprobe. Schauen wir uns den Unterschied zwischen Stichprobe und Population näher an.</p>
 </section></section><section id="stichprobe-vs.-population" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="stichprobe-vs.-population">
 <span class="header-section-number">3.5</span> Stichprobe vs.&nbsp;Population</h2>
-<p>Nehmen wir an, wir möchten herausfinden, wie groß der Anteil der R-Fans an der Population der Studierenden ist. Den Anteil der F-Fans bezeichnen wir der Einfachheit halber hier mit <code>A</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
-<p>Das <em>Grundproblem der Inferenzstatistik</em> ist, dass wir an Aussagen zur Grundgesamtheit interessiert sind, aber nur eine Stichprobe, also einen Ausschnitt oder eine Teilmenge der Grundgesamtheit vorliegen haben.</p>
-<p>Wir müssen also den Anteil der R-Fans auf Basis des Anteils in der Stichprobe für die Grundgesamtheit schließen: Wir verallgemeinern oder generalisieren von der Stichprobe auf die Grundgesamtheit, s. Abb. <a href="#fig-pop-sample">Abbildung&nbsp;<span>3.2</span></a>.</p>
+<p>Nehmen wir an, wir möchten herausfinden, wie groß der Anteil der R-Fans in der Population der Studierenden ist. Den Anteil der F-Fans bezeichnen wir der Einfachheit halber hier mit <code>A</code><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
+<p>Das <em>Grundproblem der Inferenzstatistik</em> ist, dass wir an Aussagen zur Grundgesamtheit interessiert sind, aber nur eine Stichprobe, also einen Ausschnitt oder eine Teilmenge der Grundgesamtheit (synonym: Population) vorliegen haben.</p>
+<p>Wir müssen also den Anteil der R-Fans <em>in der Population</em> auf Basis des Anteils <em>in der Stichprobe</em> schließen: Wir verallgemeinern oder generalisieren von der Stichprobe auf die Grundgesamtheit, s. Abb. <a href="#fig-pop">Abbildung&nbsp;<span>3.2 (a)</span></a> und <a href="#fig-sample">Abbildung&nbsp;<span>3.2 (b)</span></a>.</p>
 <div id="fig-pop-sample" class="quarto-layout-panel">
 <figure class="figure"><div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
@@ -474,81 +493,55 @@ Wichtig
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Abbildung&nbsp;3.2: Population vs.&nbsp;sample (Image credit: Karsten Luebke)</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;3.2: Population vs.&nbsp;Sample. Autor: Karsten Lübke. OEM</figcaption><p></p>
 </figure>
 </div>
-<p>Häufig ist das praktische Vorgehen recht simpel: Ah, in unserer Stichprobe sind 42% R-Fans!<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Man schreibt: <span class="math inline">\(p = 0.42\)</span> (<code>p</code> wie <code>proportion</code>). Die Stichprobe sei repräsentativ für die Grundgesamtheit aller Studierender. Messerscharf schließen wir: In der Grundgesamtheit ist der Anteil der R-Fans auch 42%, <span class="math inline">\(\pi=0.42\)</span>.</p>
+<!-- ![Population](img/pvoll.png){#fig-pop width="40%"} -->
+<!-- ![Sample](img/psti.png){#fig-sample width="40%"} -->
+<!-- Ohne Zwischenzeile funktioniert die REferenz nicht, aber es sähe besesr im PDF-Druck aus. -->
+<p>Häufig ist das praktische Vorgehen recht simpel: Ah, in unserer Stichprobe sind 42% R-Fans!<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Man schreibt gerne: <span class="math inline">\(p = 0.42\)</span> (<code>p</code> wie <code>proportion</code>). Die Stichprobe sei repräsentativ für die Grundgesamtheit aller Studierender. Messerscharf schließen wir: In der Grundgesamtheit ist der Anteil der R-Fans auch 42%, <span class="math inline">\(\pi=0.42\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Wir verwenden lateinische Buchstaben (p), um Kennzahlen einer Stichprobe zu benennen, und griechische (<span class="math inline">\(\pi\)</span>) für Populationen.<span class="math inline">\(\square\)</span></p>
+</div>
+</div>
 <section id="deskriptiv--vs.-inferenzstatistik" class="level3" data-number="3.5.1"><h3 data-number="3.5.1" class="anchored" data-anchor-id="deskriptiv--vs.-inferenzstatistik">
 <span class="header-section-number">3.5.1</span> Deskriptiv- vs.&nbsp;Inferenzstatistik</h3>
-<p>Statistik gibt es in zwei Geschmacksrichtungen, könnte man sagen: Deskriptiv- und Inferenzstatistik, s. Abb. <a href="#fig-inf1">Abbildung&nbsp;<span>3.3</span></a>. Einteilungen in Schubladen existieren nicht auf der Welt, sondern in unserem Kopf: Sie besitzen keine ontologische Realität, sondern eine epistemologische. Sie sind frei, sich andere Einteilungen der Statistik auszudenken. Es hilft allerdings, wenn man andere Menschen vom Wert seiner Idee überzeugen kann.</p>
+<p>Statistik gibt es in zwei Geschmacksrichtungen, könnte man sagen: Deskriptiv- und Inferenzstatistik, s. Abb. <a href="#fig-inf1">Abbildung&nbsp;<span>3.3</span></a>.</p>
 <div id="fig-inf1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="img/desk_vs_inf-crop.png" class="img-fluid figure-img" style="width:70.0%"></p>
 <figcaption class="figure-caption">Abbildung&nbsp;3.3: Deskriptiv- vs.&nbsp;Inferenzstatistik</figcaption></figure>
 </div>
-<p><em>Deskriptivstastistik</em> fasst Stichprobenmerkmale zu Kennzahlen (Statistiken) zusammen.</p>
-<p><em>Inferenzstatistik</em> schließt von Statistiken auf Parameter (Kennzahlen von Grundgesamtheiten).</p>
-<p>🏋 Schließen Sie die Augen und zeichnen Sie obiges Diagramm!</p>
-</section><section id="wozu-ist-die-inferenstatistik-gut" class="level3" data-number="3.5.2"><h3 data-number="3.5.2" class="anchored" data-anchor-id="wozu-ist-die-inferenstatistik-gut">
-<span class="header-section-number">3.5.2</span> Wozu ist die Inferenstatistik gut?</h3>
-<div id="def-inferenz" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3.1 (Inferent) </strong></span>Inferenz bedeutet Schließen; auf Basis von vorliegenden Wissen wird neues Wissen generiert.</p>
-<p>Inferenzstatistik ist ein Verfahren, das mathematische Modelle (oft aus der Stochastik) verwendet, um ausgehend von einer bestimmten Datenlage, die eine Stichprobe einer Grundgesamtheit darstellt, allgemeine Schlüsse zu ziehen.</p>
+<div id="exr-smple-pop" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.1 </strong></span>🏋 Schließen Sie die Augen und zeichnen Sie obiges Diagramm, <a href="#fig-inf1">Abbildung&nbsp;<span>3.3</span></a>!<span class="math inline">\(\square\)</span></p>
 </div>
-<p>🏋️️ Heute Nacht vor dem Schlafen wiederholen Sie die Definition. Üben Sie jetzt schon mal.</p>
-</section><section id="deskriptiv--und-inferenzstatistik-gehen-hand-in-hand" class="level3" data-number="3.5.3"><h3 data-number="3.5.3" class="anchored" data-anchor-id="deskriptiv--und-inferenzstatistik-gehen-hand-in-hand">
+<div id="def-desk" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.1 (Deskriptivstatistik) </strong></span><em>Deskriptivstastistik</em> fasst Stichprobenmerkmale zu Kennzahlen (Statistiken) zusammen.</p>
+</div>
+</section><section id="inferenzstatistik" class="level3 {def-inf}" data-number="3.5.2"><h3 data-number="3.5.2" class="anchored" data-anchor-id="inferenzstatistik">
+<span class="header-section-number">3.5.2</span> Inferenzstatistik</h3>
+<p><em>Inferenzstatistik</em> schließt von Statistiken auf Parameter (ein <em>Parameter</em> meint hier eine Kennzahl von einer Grundgesamtheit, z.B. die Streuung).</p>
+<p>Inferenz bedeutet Schließen; auf Basis von vorliegenden Wissen wird neues Wissen generiert.</p>
+<p>Inferenzstatistik ist ein Verfahren, das mathematische Modelle (oft aus der Stochastik) verwendet, um ausgehend von einer bestimmten Datenlage, die eine Stichprobe einer Grundgesamtheit darstellt, allgemeine Schlüsse zu ziehen.</p>
+</section><div id="exr-inf" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.2 </strong></span>🏋️️ Heute Nacht vor dem Schlafen wiederholen Sie die Definition. Üben Sie jetzt schon mal.</p>
+</div>
+<section id="deskriptiv--und-inferenzstatistik-gehen-hand-in-hand" class="level3" data-number="3.5.3"><h3 data-number="3.5.3" class="anchored" data-anchor-id="deskriptiv--und-inferenzstatistik-gehen-hand-in-hand">
 <span class="header-section-number">3.5.3</span> Deskriptiv- und Inferenzstatistik gehen Hand in Hand</h3>
 <p>Für jede beliebige Statistik (Kennzahl von Stichprobendaten) kann man die Methoden der Inferenzstatistik verwenden, s. Tabelle <a href="#tbl-kennwerte">Tabelle&nbsp;<span>3.1</span></a>.</p>
-<div class="cell" data-hash="0200-Inferenz_cache/html/tbl-kennwerte_c813539302c9d5e27be126969bbe59c4">
+<div class="cell" data-hash="0200-Inferenz_cache/html/tbl-kennwerte_2f82765259a70d2bdfe0abfe035be52d">
 <div class="cell-output-display">
 <div id="tbl-kennwerte" class="anchored">
 <table class="table table-sm table-striped small">
 <caption>Tabelle&nbsp;3.1: Bezeichnungen für Kennwerte</caption>
-<thead><tr class="header">
-<th style="text-align: left;">Kennwert</th>
-<th style="text-align: left;">Stichprobe</th>
-<th style="text-align: left;">Grundgesamtheit</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Mittelwert</td>
-<td style="text-align: left;"><span class="math inline">\(\bar{X}\)</span></td>
-<td style="text-align: left;"><span class="math inline">\(\mu\)</span></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Streuung</td>
-<td style="text-align: left;"><span class="math inline">\(sd\)</span></td>
-<td style="text-align: left;"><span class="math inline">\(\sigma\)</span></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Anteil</td>
-<td style="text-align: left;"><span class="math inline">\(p\)</span></td>
-<td style="text-align: left;"><span class="math inline">\(\pi\)</span></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Korrelation</td>
-<td style="text-align: left;"><span class="math inline">\(r\)</span></td>
-<td style="text-align: left;"><span class="math inline">\(\rho\)</span></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Regression</td>
-<td style="text-align: left;"><span class="math inline">\(b\)</span></td>
-<td style="text-align: left;"><span class="math inline">\(\beta\)</span></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<p>Für Statistiken (Daten einer Stichprobe) verwendet man <em>lateinische</em> Buchstaben; für Parameter (Population) verwendet man <em>griechische</em> Buchstaben.</p>
-<p>🏋️ Geben Sie die griechischen Buchstaben für typische Statistiken an!</p>
-</section><section id="schätzen-von-parametern-einer-grundgesamtheit" class="level3" data-number="3.5.4"><h3 data-number="3.5.4" class="anchored" data-anchor-id="schätzen-von-parametern-einer-grundgesamtheit">
-<span class="header-section-number">3.5.4</span> Schätzen von Parametern einer Grundgesamtheit</h3>
-<p>Meist begnügt man sich beim Analysieren von Daten nicht mit Aussagen für eine Stichprobe, sondern will auf eine Grundgesamtheit verallgemeinern.</p>
-<p>Leider sind die Parameter einer Grundgesamtheit zumeist unbekannt, daher muss man sich mit <em>Schätzungen</em> begnügen.</p>
-<p>Schätzwerte werden mit einem “Dach” über dem Kennwert gekennzeichnet, z.B.</p>
-<div class="cell" data-hash="0200-Inferenz_cache/html/unnamed-chunk-5_c9bed1559a58e0e8dbedabefd7ef08a9">
-<div class="cell-output-display">
-<table class="table table-sm table-striped small">
 <thead><tr class="header">
 <th style="text-align: left;">Kennwert</th>
 <th style="text-align: left;">Stichprobe</th>
@@ -590,16 +583,37 @@ Wichtig
 </table>
 </div>
 </div>
-</section><section id="beispiele-für-inferenzstatistische-fragestellungen" class="level3" data-number="3.5.5"><h3 data-number="3.5.5" class="anchored" data-anchor-id="beispiele-für-inferenzstatistische-fragestellungen">
-<span class="header-section-number">3.5.5</span> Beispiele für inferenzstatistische Fragestellungen</h3>
-<p>Sie testen zwei Varianten Ihres Webshops (V1 und V2), die sich im Farbschema unterscheiden und ansonsten identisch sind: Hat das Farbschema einen Einfluss auf den Umsatz?</p>
-<ul>
-<li><p>Dazu vergleichen Sie den mittleren Umsatz pro Tag von V1 vs.&nbsp;V2, <span class="math inline">\(\bar{X}_{V1}\)</span> und <span class="math inline">\(\bar{X}_{V2}\)</span>.</p></li>
-<li><p>Die Mittelwerte unterscheiden sich etwas, <span class="math inline">\(\bar{X}_{V1} &gt; \bar{X}_{V2}\)</span></p></li>
-<li><p>Sind diese Unterschiede “zufällig” oder “substanziell”? Gilt also <span class="math inline">\(\mu_{V1} &gt; \mu_{V2}\)</span> oder gilt <span class="math inline">\(\mu_{V1} \le \mu_{V2}\)</span>?</p></li>
-<li><p>Wie groß ist die Wahrscheinlichkeit<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> <span class="math inline">\(Pr(\mu_{V1} &gt; \mu_{V2})\)</span>?</p></li>
-</ul>
-<p>🏋️ <em>Predictive Maintenance</em> ist ein Anwendungsfeld inferenzstatistischer Modellierung. Lesen Sie dazu S. 3 <a href="https://www.rolandberger.com/publications/publication_pdf/roland_berger_vdma_predictive_maintenance_d_1.pdf">dieses Berichts</a>!</p>
+</div>
+<p>Für Statistiken (Daten einer Stichprobe) verwendet man <em>lateinische</em> Buchstaben; für Parameter (Population) verwendet man <em>griechische</em> Buchstaben.</p>
+<div id="exr-greek" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.3 </strong></span>🏋️ Geben Sie die griechischen Buchstaben für typische Statistiken an!</p>
+</div>
+</section><section id="schätzen-von-parametern-einer-grundgesamtheit" class="level3" data-number="3.5.4"><h3 data-number="3.5.4" class="anchored" data-anchor-id="schätzen-von-parametern-einer-grundgesamtheit">
+<span class="header-section-number">3.5.4</span> Schätzen von Parametern einer Grundgesamtheit</h3>
+<p>Meist begnügt man sich beim Analysieren von Daten nicht mit Aussagen für eine Stichprobe, sondern will auf eine Grundgesamtheit verallgemeinern.</p>
+<p>Leider sind die Parameter einer Grundgesamtheit zumeist unbekannt, daher muss man sich mit <em>Schätzungen</em> begnügen.</p>
+<p>Schätzwerte werden mit einem “Dach” über dem Kennwert gekennzeichnet, s. letzte Spalte in <a href="#tbl-kennwerte">Tabelle&nbsp;<span>3.1</span></a>.</p>
+<p>In der angewandten Forschung interessieren häufig Fragen wie: “Welche Entscheidung ist (wahrscheinlich) besser?”. Da bekanntlich (fast) keine Aussagen sicher sind, spielt <em>Wahrscheinlichkeit</em> eine wichtige Rolle in den Forschungsfragen bzw. in deren Antworten.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Wahrscheinlichkeit wird oft mit <em>Pr</em> oder <em>p</em> abgekürzt, für engl. <em>probability</em>.<span class="math inline">\(\square\)</span></p>
+</div>
+</div>
+<div id="exm-inf" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 3.2 </strong></span>Sie testen zwei Varianten Ihres Webshops (V1 und V2), die sich im Farbschema unterscheiden und ansonsten identisch sind: Hat das Farbschema einen Einfluss auf den Umsatz?</p>
+<p>Dazu vergleichen Sie den mittleren Umsatz pro Tag von V1 vs.&nbsp;V2, <span class="math inline">\(\bar{X}_{V1}\)</span> und <span class="math inline">\(\bar{X}_{V2}\)</span>. Die Mittelwerte unterscheiden sich etwas, <span class="math inline">\(\bar{X}_{V1} &gt; \bar{X}_{V2}\)</span>. Sind diese Unterschiede “zufällig” oder “substanziell”? Gilt also <span class="math inline">\(\mu_{V1} &gt; \mu_{V2}\)</span> oder gilt <span class="math inline">\(\mu_{V1} \le \mu_{V2}\)</span>? Wie groß ist die Wahrscheinlichkeit<span class="math inline">\(Pr(\mu_{V1} &gt; \mu_{V2})\)</span>?</p>
+</div>
+<div id="exr-pred-maint" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.4 </strong></span>🏋️ VERTIEFUNG <em>Predictive Maintenance</em> ist ein Anwendungsfeld inferenzstatistischer Modellierung. Lesen Sie dazu S. 3 <a href="https://www.rolandberger.com/publications/publication_pdf/roland_berger_vdma_predictive_maintenance_d_1.pdf">dieses Berichts</a>!<span class="math inline">\(\square\)</span></p>
+</div>
 </section></section><section id="modellieren" class="level2" data-number="3.6"><h2 data-number="3.6" class="anchored" data-anchor-id="modellieren">
 <span class="header-section-number">3.6</span> Modellieren</h2>
 <section id="modellieren-als-grundraster-des-erkennens" class="level3" data-number="3.6.1"><h3 data-number="3.6.1" class="anchored" data-anchor-id="modellieren-als-grundraster-des-erkennens">
@@ -607,20 +621,11 @@ Wichtig
 <p>In der Wissenschaft - wie auch oft in der Technik, Wirtschaft oder im Alltag - betrachtet man einen Teil der Welt näher, meist mit dem Ziel, eine Entscheidung zu treffen, was man tun wird oder mit dem Ziel, etwas zu lernen.</p>
 <p>Nun ist die Welt ein weites Feld. Jedes Detail zu berücksichtigen ist nicht möglich. Wir müssen die Sache vereinfachen: Alle Informationen ausblenden, die nicht zwingend nötig sind. Aber gleichzeitig die Strukturelemente der wirklichen Welt, die für unsere Fragestellung zentral ist, beibehalten.</p>
 <p>Dieses Tun nennt man <em>Modellieren</em>: Man erstellt sich ein Modell.</p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<div id="def-model" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.2 (Modell) </strong></span>Ein Modell ist ein vereinfachtes Abbild der Wirklichkeit.<span class="math inline">\(\square\)</span></p>
 </div>
-<div class="callout-title-container flex-fill">
-Wichtig
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Ein Modell ist ein vereinfachtes Abbild der Wirklichkeit.</p>
-</div>
-</div>
-<p>Auf die Statistik bezogen heißt das, dass man einen Datensatz zu zusammenfasst, dass man das Wesentliche erkennt. Was ist das “Wesentliche”? Meist interessiert man sich für die Ursachen eines Phänomens? Etwa: “Wie kommt es bloß, dass ich ohne zu lernen die Klausur so gut bestanden habe?”<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> Noch allgemeiner ist vom häufig am Zusammenhang von <code>X</code> und <code>Y</code> interessiert, s. <a href="#fig-xy">Abbildung&nbsp;<span>3.4</span></a>, linker Teil, die ein Sinnbild eines statistischen Modells widergibt.</p>
+<p>Der Nutzen eines Modells ist, einen (übermäßig) komplexen Sachverhalt zu vereinfachen oder überhaupt erst handhabbar zu machen. Man versucht zu vereinfachen, ohne Wesentliches wegzulassen. Der Speck muss weg, sozusagen. Das Wesentliche bleibt.</p>
+<p>Auf die Statistik bezogen heißt das, dass man einen Datensatz dabei so zusammenfasst, damit man das Wesentliche erkennt. Was ist das “Wesentliche”? Oft interessiert man sich für die Ursachen eines Phänomens. Etwa: “Wie kommt es bloß, dass ich ohne zu lernen die Klausur so gut bestanden habe?”<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Noch allgemeiner ist man dabei häufig am Zusammenhang von <code>X</code> und <code>Y</code> interessiert, s. <a href="#fig-xy">Abbildung&nbsp;<span>3.4</span></a>, die ein Sinnbild von statistischen Modellen widergibt.</p>
 <div id="fig-xy" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><div class="cell">
 <div class="cell-output-display">
@@ -639,7 +644,14 @@ X2 --&gt; Y2
 </div>
 <figcaption class="figure-caption">Abbildung&nbsp;3.4: oben: Sinnbild eines statistischen Modells; unten: Sinnbild eines statistischen Modells, mit zwei Inputvariablen (Ursachen)</figcaption></figure>
 </div>
-<p>Das Diagramm hat Sie nicht so vom Hocker? Okay, ein statistisches Modell kann natürlich komplexer sein, z.B. wie in Abb. <a href="#fig-xy">Abbildung&nbsp;<span>3.4</span></a>, rechter Teil, dargestellt.</p>
+<p>Man kann <a href="#fig-xy">Abbildung&nbsp;<span>3.4</span></a> als ein Sinnbild einer (mathematischen) Funktion lesen.</p>
+<div id="def-fun" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.3 </strong></span>Eine Funktion <span class="math inline">\(f\)</span> setzt zwei Größen in Beziehung.<span class="math inline">\(\square\)</span></p>
+</div>
+<p>In Mathe-Sprech:</p>
+<p><span class="math inline">\(f: X \rightarrow Y\)</span></p>
+<p>oder:</p>
+<p><span class="math inline">\(y = f(x)\)</span>, lies: “Y ist eine Funktion von X”.</p>
 <p>Es hört sich zugspitzt an, aber eigentlich ist fast alles Modellieren: Wenn man den Anteil der R-Fans in einer Gruppe Studierender ausrechnet, macht man sich ein Modell: man vereinfacht diesen Ausschnitt der Wirklichkeit anhand einer statistischen Kennzahl, die das forschungsleitende Interesse zusammenfasst.</p>
 </section><section id="vertiefung" class="level3" data-number="3.6.2"><h3 data-number="3.6.2" class="anchored" data-anchor-id="vertiefung">
 <span class="header-section-number">3.6.2</span> Vertiefung</h3>
@@ -666,9 +678,7 @@ Hinweis
 </div>
 <section id="regression-zum-modellieren" class="level3" data-number="3.7.1"><h3 data-number="3.7.1" class="anchored" data-anchor-id="regression-zum-modellieren">
 <span class="header-section-number">3.7.1</span> Regression zum Modellieren</h3>
-<p>Die Regression ist eine Art Schweizer Taschenmessen: Für vieles gut einsetzbar.</p>
-<p>Anstelle von vielen verschiedenen Verfahren des statistischen Modellierens kann man (fast) immer die Regression verwenden. Das ist nicht nur einfacher, sondern auch schöner. Wir werden im Folgenden stets die Regression zum Modellieren verwenden.</p>
-<p>Dann wenden wir die Methoden der Inferenz auf die Kennzahlen der Regression an.</p>
+<p>Die Regression ist eine Art Schweizer Taschenmesser der Statistik: Für vieles gut einsetzbar. Anstelle von vielen verschiedenen Verfahren des statistischen Modellierens kann man (fast) immer die Regression verwenden. Das ist nicht nur einfacher, sondern auch schöner. Wir werden im Folgenden stets die Regression zum Modellieren verwenden. Dann wenden wir die Methoden der Inferenz auf die Kennzahlen der Regression an.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -682,36 +692,57 @@ Hinweis
 <p>Regression + Inferenz = 💖</p>
 </div>
 </div>
-<p>Alternativ zur Regression könnte man sich in den Wald der statistischen Verfahren begeben, <a href="https://web.archive.org/web/20091029162244/http://www.wiwi.uni-muenster.de/ioeb/en/organisation/pfaff/stat_overview_table.html">wie hier von der Uni Münster als Ausschnitt (!) aufgeführt</a>.</p>
-<p>Auf dieser Basis kann man meditieren, welches statistischen Verfahren man für eine bestimmte Fragestellung verwenden sollte, s. Abb. <a href="#fig-choose-test">Abbildung&nbsp;<span>3.6</span></a>.</p>
+<p>Alternativ zur Regression könnte man sich in den Wald der statistischen Verfahren begeben, <a href="https://web.archive.org/web/20091029162244/http://www.wiwi.uni-muenster.de/ioeb/en/organisation/pfaff/stat_overview_table.html">wie hier von der Uni Münster als Ausschnitt (!) aufgeführt</a>. Auf dieser Basis kann man meditieren, welches statistischen Verfahren man für eine bestimmte Fragestellung verwenden sollte, s. Abb. <a href="#fig-choose-test">Abbildung&nbsp;<span>3.6</span></a>. Muss man aber nicht.</p>
 <div id="fig-choose-test" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="img/choose-test.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Abbildung&nbsp;3.6: Wähle deine Statistik mit Bedacht</figcaption></figure>
+<figcaption class="figure-caption">Abbildung&nbsp;3.6: Wähle deine Statistik mit Bedacht. Oder wähle die Regressionsanalyse.</figcaption></figure>
 </div>
-</section><section id="viele-statistische-verfahren-sind-spezialfälle-der-regression" class="level3" data-number="3.7.2"><h3 data-number="3.7.2" class="anchored" data-anchor-id="viele-statistische-verfahren-sind-spezialfälle-der-regression">
-<span class="header-section-number">3.7.2</span> Viele statistische Verfahren sind Spezialfälle der Regression</h3>
-<p>Wie Jonas Kristoffer Lindeløv uns erklärt, sind viele statistische Verfahren, wie der sog. t-Test Spezialfälle der Regression, s. Abb. <a href="#fig-lindeloev">Abbildung&nbsp;<span>3.7</span></a>.</p>
-<div id="fig-lindeloev" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure"><p><img src="img/linear_tests_cheat_sheet.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Abbildung&nbsp;3.7: Common statistical tests as linear models</figcaption></figure>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-</section><section id="in-voller-pracht" class="level3" data-number="3.7.3"><h3 data-number="3.7.3" class="anchored" data-anchor-id="in-voller-pracht">
-<span class="header-section-number">3.7.3</span> In voller Pracht</h3>
-<p>Hier ist die Regressionsgleichung in voller Pracht; Abb. <a href="#fig-regr-rules">Abbildung&nbsp;<span>3.8</span></a>.</p>
-<p><span class="math display">\[y = \beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k + \epsilon\]</span></p>
-<p>Anhan der Gleichung erkennt man auch, warum man von einem <em>linearen Modell</em> spricht: Y wird als gewichteter Mittelwert mehrerer Summanden berechnet. Dabei wird X nicht mit “fortgeschrittenen” Transformationen wie Quadradieren oder Exponenzieren beglückt, sondern nur mit den Regressiongewichten multipliziert.</p>
-<div class="cell" data-hash="0200-Inferenz_cache/html/fig-regr-rules_9acf24807246ff3328e1b9c4e59e02a5">
-<div class="cell-output-display">
-<div id="fig-regr-rules" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure"><p><img src="0200-Inferenz_files/figure-html/fig-regr-rules-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Abbildung&nbsp;3.8: Die Regressionsgerade in voller Pracht</figcaption></figure>
+<div class="callout-title-container flex-fill">
+Hinweis
 </div>
 </div>
+<div class="callout-body-container callout-body">
+<p>Es ist meist einfacher und nützlicher, die Regression zu verwenden, anstelle der Vielzahl von anderen Verfahren (die zumeist Spezialfälle der Regression sind). In diesem Kurs werden wir für alle Fragestellungen die Regression verwenden.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a><span class="math inline">\(\square\)</span></p>
+</div>
+</div>
+<!-- ![Common statistical tests as linear models](img/linear_tests_cheat_sheet.png){#fig-lindeloev} -->
+</section><section id="in-voller-pracht" class="level3" data-number="3.7.2"><h3 data-number="3.7.2" class="anchored" data-anchor-id="in-voller-pracht">
+<span class="header-section-number">3.7.2</span> In voller Pracht</h3>
+<p>Hier ist die Regressionsgleichung in voller Pracht; s. <a href="#fig-regr-rules">Abbildung&nbsp;<span>3.7</span></a>. Links sieht man eine einfache Regression mit <code>hp</code> als Prädiktor (<code>X</code>, unabhängige Variable) und <code>mpg</code> als abhängige Variable (<code>Y</code>). Das rechte Teildiagramm zeigt eine multiple Regression mit den Prädiktoren <code>hp</code> und <code>am</code>.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<p>Im einfachsten Fall sind die vom Modell vorhergesagten (geschätzten) Werte, <span class="math inline">\(\hat{y}\)</span>, durch eine einfache Gerade beschrieben, s. <a href="#fig-regr-rules">Abbildung&nbsp;<span>3.7</span></a>, links. Eine Gerade lässt sich durch folgende Formel beschreiben: <span class="math inline">\(\hat{y} = \beta_0 + \beta_1\)</span>. Dabei ist <span class="math inline">\(\beta_0\)</span> der <em>Achsenabschnitt</em> (eng. intercept) und <span class="math inline">\(\beta_1\)</span> die <em>Steigung</em> der Regressiongeraden.</p>
+<div class="{def-lm}">
+<p>In allgemeiner Form schreibt man die Regressionsgleichung so, s. <a href="#eq-lm">Gleichung&nbsp;<span>3.1</span></a></p>
+<p><span id="eq-lm"><span class="math display">\[y = \beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k + \epsilon \tag{3.1}\]</span></span></p>
+<p>Man nennt alle <span class="math inline">\(\beta_0, \beta_1, \beta_2, ...\)</span> die <em>Koeffizienten</em>, <em>Regressionsgewichte</em> oder <em>Parameter</em> des Modells <span class="citation" data-cites="gelman_regression_2021">(<a href="references.html#ref-gelman_regression_2021" role="doc-biblioref">Gelman, Hill, und Vehtari 2021</a>)</span>.</p>
+</div>
+<p>Anhand von <a href="#eq-lm">Gleichung&nbsp;<span>3.1</span></a> erkennt man auch, warum man von einem <em>linearen Modell</em> spricht: Y wird als gewichteter Mittelwert mehrerer Summanden (<span class="math inline">\(X_1, X_2, ...\)</span>) berechnet.</p>
+<div id="fig-regr-rules" class="cell quarto-layout-panel" data-hash="0200-Inferenz_cache/html/fig-regr-rules_d6a9b2411f076a8aa49d972dc7be4929">
+<figure class="figure"><div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-regr-rules-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0200-Inferenz_files/figure-html/fig-regr-rules-1.png" class="img-fluid figure-img" data-ref-parent="fig-regr-rules" width="672"></p>
+<figcaption class="figure-caption">(a) Einfache Regression (ein Prädiktor: hp)</figcaption></figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-regr-rules-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0200-Inferenz_files/figure-html/fig-regr-rules-2.png" class="img-fluid figure-img" data-ref-parent="fig-regr-rules" width="672"></p>
+<figcaption class="figure-caption">(b) Multiple Regression (zwei Prädiktoren: hp und am)</figcaption></figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;3.7: Die Regressionsgerade in voller Pracht</figcaption><p></p>
+</figure>
 </div>
 </section></section><section id="unsicherheit" class="level2" data-number="3.8"><h2 data-number="3.8" class="anchored" data-anchor-id="unsicherheit">
 <span class="header-section-number">3.8</span> Unsicherheit</h2>
-<section id="inferenz-beinhaltet-unsicherheit" class="level3" data-number="3.8.1"><h3 data-number="3.8.1" class="anchored" data-anchor-id="inferenz-beinhaltet-unsicherheit">
-<span class="header-section-number">3.8.1</span> Inferenz beinhaltet Unsicherheit</h3>
+<section id="inferenz-beinhaltet-ungewissheit" class="level3" data-number="3.8.1"><h3 data-number="3.8.1" class="anchored" data-anchor-id="inferenz-beinhaltet-ungewissheit">
+<span class="header-section-number">3.8.1</span> Inferenz beinhaltet Ungewissheit</h3>
 <p>Inferenzstatistische Schlüsse sind mit Unsicherheit behaftet: Schließlich kennt man nur einen Teil (die Stichprobe) eines Ganzen (die Population), möchte aber vom Teil auf das Ganze schließen.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -723,50 +754,88 @@ Wichtig
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Nichts Genaues weiß man nicht: Schließt man von einem Teil auf das Ganze, so geschieht das unter Unsicherheit. Man spricht von Ungewissheit, da man die Unsicherheit das Wissen über das Ganze betrifft.</p>
+<p>Nichts Genaues weiß man nicht: Schließt man von einem Teil auf das Ganze, so geschieht das unter Unsicherheit. Man spricht von <em>Ungewissheit</em>, da man die Unsicherheit das Wissen über die Genauigkeit des Schließens betrifft.</p>
 </div>
 </div>
-<p>Schließt man etwa, dass in einer Grundgesamtheit der Anteil der R-Fans bei 42% liegt, so geschieht das unter Unsicherheit. Man ist sich nicht sicher, dass es wirklich 42% in der Population sind - und nicht etwa etwas mehr oder etwas weniger. Schließlich hat man <em>nicht</em> die ganze Population gesehen bzw. vermessen. <em>Sicher</em> ist man sich hingegen für die Stichprobe (Messfehler einmal ausgeblendet).</p>
-<p>Zur Bemessung der Unsicherheit (Ungewissheit) bedient man sich der Wahrscheinlichkeitsrechnung (wo immer möglich).</p>
-<p>Die Wahrscheinlichkeitstheorie bzw. -rechnung wird auch als die Mathematik des Zufalls bezeichnet.</p>
+<p>Schließt man etwa, dass in einer Grundgesamtheit der Anteil der R-Fans bei 42% liegt, so geschieht das unter Unsicherheit; es ist ungewiss. Man ist sich nicht sicher, dass es wirklich 42% in der Population sind - und nicht etwa etwas mehr oder etwas weniger. Schließlich hat man <em>nicht</em> die ganze Population gesehen bzw. vermessen. <em>Sicher</em> ist man sich hingegen für die Stichprobe (Messfehler einmal ausgeblendet). Zur Bemessung der Unsicherheit (Ungewissheit) bedient man sich der Wahrscheinlichkeitsrechnung (wo immer möglich). Die Wahrscheinlichkeitstheorie bzw. -rechnung wird daher auch als die Mathematik des Zufalls bezeichnet.</p>
 <div id="def-zufall" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3.2 (Zufälliges Ereignis) </strong></span>Unter einem zufälligen Ereignis (random) verstehen wir ein Ereignis, das nicht (komplett) vorherzusehen ist, wie etwa die Augenzahl Ihres nächsten Würfelwurfs. Zufällig bedeutet nicht (zwangsläufig), dass das Ereignisse keine Ursachen besitzt. So gehorchen die Bewegungen eines Würfels den Gesetzen der Physik, nur sind uns diese oder die genauen Randbedingungen nicht (ausreichend) bekannt.</p>
+<p><span class="theorem-title"><strong>Definition 3.4 (Zufälliges Ereignis) </strong></span>Unter einem zufälligen (engl. random) Ereignis verstehen wir ein Ereignis, das nicht (komplett) vorherzusehen ist, wie etwa die Augenzahl Ihres nächsten Würfelwurfs. Zufällig bedeutet nicht (zwangsläufig), dass das Ereignisse keine Ursachen besitzt. So gehorchen die Bewegungen eines Würfels den Gesetzen der Physik, nur sind uns diese oder die genauen Randbedingungen nicht (ausreichend) bekannt.</p>
 </div>
-<p>🏋 Welche physikalischen Randbedingungen wirken wohl auf einen Münzwurf ein?</p>
-</section><section id="beispiele-zur-quantifizierung-von-ungewissheit" class="level3" data-number="3.8.2"><h3 data-number="3.8.2" class="anchored" data-anchor-id="beispiele-zur-quantifizierung-von-ungewissheit">
-<span class="header-section-number">3.8.2</span> Beispiele zur Quantifizierung von Ungewissheit</h3>
-<p>Aussagen mit Unsicherheit können unterschiedlich präzise formuliert sein.</p>
+<div id="exr-muenz" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.5 </strong></span>🏋 Welche physikalischen Randbedingungen wirken wohl auf einen Münzwurf ein?<span class="math inline">\(\square\)</span></p>
+</div>
+<div id="exm-muenz" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 3.3 (Beispiele zur Quantifizierung von Ungewissheit) </strong></span>Aussagen mit Unsicherheit können unterschiedlich präzise formuliert sein.</p>
 <ul>
 <li><p>Morgen regnet’s <span class="math inline">\(\Leftrightarrow\)</span> Morgen wird es hier mehr als 0 mm Niederschlag geben (<span class="math inline">\(p=97\%\)</span>).</p></li>
-<li><p>Methode <span class="math inline">\(A\)</span> ist besser als Methode <span class="math inline">\(B\)</span> <span class="math inline">\(\Leftrightarrow\)</span> Mit einer Wahrscheinlichkeit von 57% ist der Mittelwert für Methode <span class="math inline">\(A\)</span> höher als für Methode <span class="math inline">\(B\)</span>.</p></li>
+<li><p>Methode <span class="math inline">\(A\)</span> ist besser als Methode <span class="math inline">\(B\)</span> <span class="math inline">\(\Leftrightarrow\)</span> Mit einer Wahrscheinlichkeit von 57% ist der Mittelwert von <span class="math inline">\(Y\)</span> für Methode <span class="math inline">\(A\)</span> höher als für Methode <span class="math inline">\(B\)</span>.</p></li>
 <li><p>Die Maschine fällt demnächst aus <span class="math inline">\(\Leftrightarrow\)</span> Mit einer Wahrscheinlichkeit von 97% wird die Maschine in den nächsten 1-3 Tagen ausfallen, laut unserem Modell.</p></li>
 <li><p>Die Investition lohnt sich <span class="math inline">\(\Leftrightarrow\)</span> Die Investition hat einen Erwartungswert von 42 Euro; mit 90% Wahrscheinlichkeit wird der Gewinn zwischen -10000 und 100 Euro.</p></li>
 </ul>
-<p>🏋 Geben Sie weitere Beispiele an!</p>
-</section><section id="zwei-arten-von-ungewissheit" class="level3" data-number="3.8.3"><h3 data-number="3.8.3" class="anchored" data-anchor-id="zwei-arten-von-ungewissheit">
-<span class="header-section-number">3.8.3</span> Zwei Arten von Ungewissheit</h3>
-<p>Im Modellieren im Allgemeinen und in Regressionsmodellen im Besonderen lassen sich (mindestens) zwei Arten von Ungewissheiten angeben, s. auch Abb. <a href="#fig-zwei-arten">Abbildung&nbsp;<span>3.9</span></a>.</p>
+</div>
+<div id="exr-ungewiss" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.6 </strong></span>🏋 Geben Sie weitere Beispiele an!</p>
+</div>
+</section><section id="zwei-arten-von-ungewissheit" class="level3" data-number="3.8.2"><h3 data-number="3.8.2" class="anchored" data-anchor-id="zwei-arten-von-ungewissheit">
+<span class="header-section-number">3.8.2</span> Zwei Arten von Ungewissheit</h3>
+<p>Im Modellieren im Allgemeinen und in Regressionsmodellen im Besonderen lassen sich (mindestens) zwei Arten von Ungewissheiten angeben, s. auch Abb. <a href="#fig-zwei-arten">Abbildung&nbsp;<span>3.8</span></a>.</p>
 <ol type="1">
-<li><p>Wie (un)gewiss ist man sich über den Wert des Regressionsgewichts?</p></li>
-<li><p>Wie (un)gewiss ist man sich über den Wert von Y? Schließlich könnte es ja Einflüsse (X) geben, die man nicht berücksichtigt hat.</p></li>
+<li><p>Wie (un)gewiss ist man sich über die Regressionsgewichte?</p></li>
+<li><p>Wie (un)gewiss ist man sich über die Genauigkeit der Vorhersage (des Modells)?</p></li>
 </ol>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-zwei-arten" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><div>
 <pre class="mermaid mermaid-js" data-label="fig-zwei-arten">flowchart LR
-X1 --&gt;|Wie stark ist der Einfluss?|B
-X2 -. Haben wir vielleicht X2 übersehen? .-&gt; B
+X1 --&gt;|Werte von Steigung und Achsenabschnitt?|B
+X2 -. Genuaigkeit des Modells .-&gt; B
 
 </pre>
 </div>
-<figcaption class="figure-caption">Abbildung&nbsp;3.9: Zwei Arten der Ungewissheit beim Modellieren</figcaption></figure>
+<figcaption class="figure-caption">Abbildung&nbsp;3.8: Zwei Arten der Ungewissheit beim Modellieren</figcaption></figure>
 </div>
 </div>
 </div>
-</section><section id="ich-weiß-was-ich-nicht-weiß-ungewissheit-angeben" class="level3" data-number="3.8.4"><h3 data-number="3.8.4" class="anchored" data-anchor-id="ich-weiß-was-ich-nicht-weiß-ungewissheit-angeben">
-<span class="header-section-number">3.8.4</span> Ich weiß, was ich nicht weiß: Ungewissheit angeben</h3>
-<p>Streng genommen ist eine Inferenz aus Angabe der Ungewissheit (Genuaigkeit der Schätzung) wertlos. Angenommen, jemand sagt, dass sie den Anteil der R-Fans (in der Population) auf 42% schätzt, lässt aber offen wie <em>sicher</em> (präzise) die Schätzung ist. Wir wissen also nicht, ob z.B. 2% oder 82% noch erwartbar sind. Oder ob man im Gegenteil mit hoher Sicherheit sagen kann, die Schätzung schließt sogar 41% oder 43% aus.</p>
+<section id="ungewissheit-der-modellkoeffizienten" class="level4" data-number="3.8.2.1"><h4 data-number="3.8.2.1" class="anchored" data-anchor-id="ungewissheit-der-modellkoeffizienten">
+<span class="header-section-number">3.8.2.1</span> Ungewissheit der Modellkoeffizienten</h4>
+<p>Wie man in <a href="#fig-regr-div">Abbildung&nbsp;<span>3.9</span></a> sieht, können sich die Koeffizienten (Achsenabschnitt und Steigung) unterscheiden. Woran liegt das?</p>
+<div id="exm-flights" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 3.4 (Stichproben der New Yorker Flüge) </strong></span>Nehmen wir an, wir ziehen ein paar Zufallstichproben aus der Menge (Population) aller Flüge, die in New York im Jahre 2013 gestartet sind. In jeder Stichprobe berechnen wir eine Regression zwischen Flugzeit und Verspätung des Flugs am Ankunftsort. Sicherlich werden sich die Stichproben in ihren Kennwerten, z.B. in den Koeffizienten der genannten Regression, unterscheiden.<span class="math inline">\(\square\)</span></p>
+</div>
+<div class="cell" data-hash="0200-Inferenz_cache/html/unnamed-chunk-8_ffc39a0636c52d4f467306265a8787de">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/nycflights13">nycflights13</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">flights</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">stipro1</span> <span class="op">&lt;-</span> <span class="fu">sample_n</span><span class="op">(</span><span class="va">flights</span>, size <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">stipro2</span> <span class="op">&lt;-</span> <span class="fu">sample_n</span><span class="op">(</span><span class="va">flights</span>, size <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">stipro3</span> <span class="op">&lt;-</span> <span class="fu">sample_n</span><span class="op">(</span><span class="va">flights</span>, size <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="fig-regr-div" class="cell quarto-layout-panel" data-hash="0200-Inferenz_cache/html/fig-regr-div_8663359b9d852295bbb48b7d67939feb">
+<figure class="figure"><div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-regr-div-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0200-Inferenz_files/figure-html/fig-regr-div-1.png" class="img-fluid figure-img" data-ref-parent="fig-regr-div" width="672"></p>
+<figcaption class="figure-caption">(a) Stichprobe 1</figcaption></figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-regr-div-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0200-Inferenz_files/figure-html/fig-regr-div-2.png" class="img-fluid figure-img" data-ref-parent="fig-regr-div" width="672"></p>
+<figcaption class="figure-caption">(b) Stichprobe 2</figcaption></figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-regr-div-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0200-Inferenz_files/figure-html/fig-regr-div-3.png" class="img-fluid figure-img" data-ref-parent="fig-regr-div" width="672"></p>
+<figcaption class="figure-caption">(c) Stichprobe 3</figcaption></figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;3.9: Regressionsanalysen mit verschiedenen Koeffizienten aufgrund der Zufälligkeit des Stichprobenziehens</figcaption><p></p>
+</figure>
+</div>
+<p>Der Grund für die Schwankungen der Modellparameter zwischen den Stichproben ist die Zufälligkeit des Stichprobenziehens. Je nachdem, wie es der Zufall (oder sonst wer) will, landen bestimmte Fälle (Flüge in unserem Beispiel) in unserer Stichprobe. Zumeist unterscheiden sich die Stichproben; theoretisch könnten sie aber auch rein zufällig gleich sein.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -777,81 +846,161 @@ Wichtig
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Eine Inferenz nennt man auch Schätzung. Es sollte immer die Genauigkeit (Ungewissheit) der Schätzung angegeben werden.</p>
+<p>Stichproben-Kennwerte schwanken um den tatsächlichen Wert in der Population herum.<span class="math inline">\(\square\)</span></p>
+</div>
+</div>
+<p>Um diese Ungewissheit, die sich in den Schwankungen der Stichproben-Regressionskoeffizienten ausdrückt, anzuzeigen, ist ein “grauer Schleier” um die Regressionsgeraden in <a href="#fig-regr-div">Abbildung&nbsp;<span>3.9</span></a> gekennzeichnet. Dieser grauer Schleier gibt also eine Spannbreite anderer, plausibler Ergebnisse an, die sich in einer anderen Stichprobe auch manifestieren könnten.</p>
+</section><section id="ungewissheit-der-modellgüte" class="level4" data-number="3.8.2.2"><h4 data-number="3.8.2.2" class="anchored" data-anchor-id="ungewissheit-der-modellgüte">
+<span class="header-section-number">3.8.2.2</span> Ungewissheit der Modellgüte</h4>
+<p>Angenommen, wir sind uns <em>sicher</em> über die Werte der Modellparameter, also über die Lage der Regressionsgeraden, anschaulich gesprochen. Dann bliebe immer noch Ungewissheit zur Modellgüte. Ein bestimmtes Modell kann genau oder ungenaue Vorhersagen abgeben; das ist die zweite Art der Ungewissheit.</p>
+<p>Diese Art der Ungewissheit ist nicht von Interesse, wenn man nur an Modellkoeffizienten interessiert ist. Sie ist dann interessant, wenn man für einzelne Fälle eine Vorherage macht und sich fragt, wie zuverlässig diese Vorhersage ist.</p>
+<div id="fig-resid-var" class="cell quarto-layout-panel" data-hash="0200-Inferenz_cache/html/fig-resid-var_3164c5cfe25db5c7d789b2434dd7ced5">
+<figure class="figure"><div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-resid-var-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0200-Inferenz_files/figure-html/fig-resid-var-1.png" class="img-fluid figure-img" data-ref-parent="fig-resid-var" width="672"></p>
+<figcaption class="figure-caption">(a) geringer Vorhersagefehler (hohe Vorhersagegüte)</figcaption></figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-resid-var-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0200-Inferenz_files/figure-html/fig-resid-var-2.png" class="img-fluid figure-img" data-ref-parent="fig-resid-var" width="672"></p>
+<figcaption class="figure-caption">(b) hoher Vorhersagefehler</figcaption></figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-resid-var-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0200-Inferenz_files/figure-html/fig-resid-var-3.png" class="img-fluid figure-img" data-ref-parent="fig-resid-var" width="672"></p>
+<figcaption class="figure-caption">(c) auch hoher Vorhsagefehler</figcaption></figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;3.10: Regressionsanalyse mit gleicher Regressionsgerade, aber unterschiedlicher Vorhersagegüte</figcaption><p></p>
+</figure>
+</div>
+</section></section><section id="ich-weiß-was-ich-nicht-weiß-ungewissheit-angeben" class="level3" data-number="3.8.3"><h3 data-number="3.8.3" class="anchored" data-anchor-id="ich-weiß-was-ich-nicht-weiß-ungewissheit-angeben">
+<span class="header-section-number">3.8.3</span> Ich weiß, was ich nicht weiß: Ungewissheit angeben</h3>
+<p>Streng genommen ist eine Inferenz ohne Angabe der Ungewissheit (Genauigkeit der Schätzung) wertlos. Angenommen, jemand sagt, dass sie den Anteil der R-Fans (in der Population) auf 42% schätzt, lässt aber offen wie <em>sicher</em> (präzise) die Schätzung (der Modellparameter) ist. Wir wissen also nicht, ob z.B. 2% oder 82% noch erwartbar sind. Oder ob man im Gegenteil mit hoher Sicherheit sagen kann, die Schätzung schließt sogar 41% oder 43% aus.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Schließt man auf eine Population, schätzt also die Modellparameter, so sollte stets die (Un-)Genauigkeit der Schätzung, also die Ungewissheit des Modells, angegeben sein.<span class="math inline">\(\square\)</span></p>
 </div>
 </div>
 <p>Im Rahmen der Regressionsanalyse schlägt sich die Ungewissheit an zwei Stellen nieder:</p>
 <ol type="1">
-<li>zur Lage der Regressionsgeraden (<span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span>)</li>
-<li>zu Einflüssen (X), die unser Modell nicht kennt (<span class="math inline">\(\epsilon, \sigma\)</span>)</li>
-</ol></section><section id="visualisierung-von-ungewissheit" class="level3" data-number="3.8.5"><h3 data-number="3.8.5" class="anchored" data-anchor-id="visualisierung-von-ungewissheit">
-<span class="header-section-number">3.8.5</span> Visualisierung von Ungewissheit</h3>
+<li>zur Lage der Regressionsgeraden, <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span>
+</li>
+<li>zur Modellgüte bzw. zum Vorhersagefehler, <span class="math inline">\(\sigma\)</span> <a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>
+</li>
+</ol></section><section id="visualisierung-von-ungewissheit" class="level3" data-number="3.8.4"><h3 data-number="3.8.4" class="anchored" data-anchor-id="visualisierung-von-ungewissheit">
+<span class="header-section-number">3.8.4</span> Visualisierung von Ungewissheit</h3>
 <div id="def-punktschaetzer" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3.3 (Punktschätzer) </strong></span>Gibt man nur einen Punktwert an, wie 42%, als Ergebnis einer Inferenz, spricht man von einem <em>Punktschätzer</em>.</p>
-<p>Punktschätzer beinhalten <em>keine Angabe</em> der Schätz(un)genauigkeit, s. Abb. <a href="#fig-punktschaetzer2">Abbildung&nbsp;<span>3.10</span></a>, links. Rot markiert: Die Punktschätzung von <code>mpg</code> für <code>hp=200</code>.</p>
+<p><span class="theorem-title"><strong>Definition 3.5 (Punktschätzer) </strong></span>Gibt man nur einen Punktwert an, wie 42%, als Ergebnis einer Inferenz, spricht man von einem <em>Punktschätzer</em>.</p>
+<p>Punktschätzer beinhalten <em>keine Angabe</em> der Schätz(un)genauigkeit, s. Abb. <a href="#fig-ungewiss2">Abbildung&nbsp;<span>3.11</span></a>, links. Rot markiert: Die Punktschätzung von <code>mpg</code> für <code>hp=200</code>.</p>
 </div>
-<div id="fig-punktschaetzer2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure"><p><img src="img/fig-punktschaetzer.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Abbildung&nbsp;3.10: Eine Punktschätzung und ihre Ungewissheit</figcaption></figure>
-</div>
-<p>In Abb. <a href="#fig-punktschaetzer2">Abbildung&nbsp;<span>3.10</span></a>, rechts, ist die Ungewissheit in den Regressionskoeffizienten visualisiert: Wie sicher sind wir uns zur Stärke des Zusammenhangs von X und Y, vgl. <a href="#def-punktschaetzer">Definition&nbsp;<span>3.3</span></a>.</p>
-<p>Auch wenn wir uns <em>sicher</em> im Hinblick auf die Regressionsgewichte in Abb. <a href="#fig-ungewiss2">Abbildung&nbsp;<span>3.11</span></a> <em>bliebe eine Restungewissheit</em>: Unsere Schätzungen wären auch dann nicht sicher, nicht fehlerfrei. Das liegt daran, da das Modell nicht alle Einflüsse auf Y berücksichtigt, sondern nur einen, hier als X bezeichnet.</p>
-<p>In Abb. <a href="#fig-ungewiss2">Abbildung&nbsp;<span>3.11</span></a> ist nicht nur die Ungewissheit durch die Regressionsgewichte, sondern auch die “Restungewissheit” dargestellt. In diesem Fall spricht man von einem “Vorhersageintervall”, da man nicht nur von “typischen Fällen” auf der Regressiongeraden spricht, sondern für echte Fälle Vorhersagen (Schätzungen) tätigt, wo auch die zweite Art von Ungewissheit relevant ist.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="img/fig-predintervall.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Das Vorhersageintevall zeigt eine Punktschätzung und ihre Ungewissheit</figcaption></figure>
-</div>
-<div class="cell" data-hash="0200-Inferenz_cache/html/fig-ungewiss2_5bf1b5fc87942afd6e84a19acffc477f">
-<div class="cell-output-display">
-<div id="fig-ungewiss2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure"><p><img src="0200-Inferenz_files/figure-html/fig-ungewiss2-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Abbildung&nbsp;3.11: Zweifache Ungewissheit in den Regressionskoeffizienten - Vorhersageintervall</figcaption></figure>
+<!-- ![Eine Punktschätzung der Regressionsgeraden und die zugehörige Ungewissheit Ungewissheit](img/fig-punktschaetzer.png){#fig-punktschaetzer2} -->
+<p>In Abb. <a href="#fig-ungewiss2">Abbildung&nbsp;<span>3.11</span></a>, links, ist die Ungewissheit in den <em>Regressionskoeffizienten</em> visualisiert: Wie sicher sind wir uns bzgl. der Lage der Regressionskoeffizienten? Vgl. <a href="#def-punktschaetzer">Definition&nbsp;<span>3.5</span></a>.</p>
+<p>Auch wenn wir uns <em>sicher</em> wären im Hinblick auf die Regressionsgewichte in Abb. <a href="#fig-ungewiss2">Abbildung&nbsp;<span>3.11</span></a>, links, bliebe Ungewissheit bei der Vorhersage des Bereichs plausibler Werte für individuelle Vorhersagen, s. <a href="#fig-ungewiss2">Abbildung&nbsp;<span>3.11</span></a>, rechts. Unsere Schätzungen wären auch dann nicht sicher, nicht fehlerfrei, wenn wir den genauen Verlauf der Regressiongerade sicher wüssten. Das liegt daran, da das Modell nicht alle Einflüsse auf Y berücksichtigt, sondern nur einen einzigen, hier als X bezeichnet. Das Modell hat also keine perfekte Information, es ist ungewiss über alle möglichen Einflussfaktoren auf Y. Wüsste unser Modell alle Einflussfaktoren genau, so wäre unser Vorhersageintervall sehr schmal (bzw. hätte null Breite).</p>
+<p>In Abb. <a href="#fig-ungewiss2">Abbildung&nbsp;<span>3.11</span></a>, rechts, ist nicht nur die Ungewissheit durch die Regressionsgewichte, sondern auch die Ungewissheit zur Vorhersage der Y-Werte individueller Beobachtungen dargestellt. In diesem Fall spricht man von einem “Vorhersageintervall”, da man nicht nur von “typischen Fällen” auf der Regressiongeraden spricht, sondern für echte Fälle Vorhersagen (Schätzungen) tätigt, wo auch die Ungewissheit der Modellgüte relevant ist.</p>
+<!-- ![Das Vorhersageintevall zeigt eine Punktschätzung und ihre Ungewissheit](img/fig-predintervall.png){fig-ungewiss2 width="50%"} -->
+<div id="fig-ungewiss2" class="cell quarto-layout-panel" data-hash="0200-Inferenz_cache/html/fig-ungewiss2_a294d6441a4ff0d52492fd7dece82f2b">
+<figure class="figure"><div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-ungewiss2-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0200-Inferenz_files/figure-html/fig-ungewiss2-1.png" class="img-fluid figure-img" data-ref-parent="fig-ungewiss2" width="672"></p>
+<figcaption class="figure-caption">(a) Eine Punktschätzung der Regressionsgeraden und die zugehörige Ungewissheit der Koeffizienten</figcaption></figure>
 </div>
 </div>
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-ungewiss2-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="0200-Inferenz_files/figure-html/fig-ungewiss2-2.png" class="img-fluid figure-img" data-ref-parent="fig-ungewiss2" width="672"></p>
+<figcaption class="figure-caption">(b) Das Vorhersageintevall zur Regressionsgeraden zeigt die Ungewissheit für die jeweiligen Beobachtungen</figcaption></figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Abbildung&nbsp;3.11: Die zwei Arten der Ungewissheit visualisiert</figcaption><p></p>
+</figure>
+</div>
+<p><a href="#fig-ungewiss2">Abbildung&nbsp;<span>3.11</span></a> zeigt auch, dass für eine Beobachtung mit <code>hp=200</code> der <em>Punktschätzer</em> der geschätzte Wert von <code>mpg</code> bei ca <code>16.5</code> liegt. Das ist sozusagen unser <em>Best Guess</em>. Weiterhin ist (in grün) das <em>Vorhersageintervall</em> für <code>hp=200</code> angezeigt. Für Beobachtungen mit <code>hp=200</code> liegt der Bereich plausibler <code>mpg</code>-Werte in dem (grün) markierten Bereich (ca. 8 bis 25).</p>
+<div id="def-vorhersageintervall" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.6 (Vorhersageintervall) </strong></span>Ein Vorhersageintervall zeigt den Bereich plausibler Werte (laut unserer Analyse) für eine Beobachtung mit bestimmten Prädiktor-Werten.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Wie man sieht, wird die Ungewissheit <em>größer</em>, wenn man beide Arten der Ungewissheit berücksichtigt. Das Vorhersage-Intervall berücksichtigt Ungewissheit in <span class="math inline">\(\beta_0, \beta_1, \epsilon\)</span> bei der Vorhersage von <span class="math inline">\(\hat{y_i}\)</span>.</p>
-<p>🏋 Geben Sie ein vergleichbares Beispiel an!</p>
-</section><section id="konfidenzintervall" class="level3" data-number="3.8.6"><h3 data-number="3.8.6" class="anchored" data-anchor-id="konfidenzintervall">
-<span class="header-section-number">3.8.6</span> Konfidenzintervall</h3>
-<p>Wir sehen hier, dass ein “Ungewissheitskorridor” angegeben wird. Entsprechend wird nicht ein <em>Punktschätzer</em>, sondern ein <em>Schätzbereich</em> angegeben. Man spricht auch von einem <em>Konfidenzintervall</em> oder <em>Unsicherheitsbereich</em><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
-<div id="def-konfintervall" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3.4 (Konfidenzintervall) </strong></span>Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schätzbereiche. Die Grenzen eines Konfindenzintervall markieren einen Bereich plausibler Werte für einen Parameter.</p>
+<div id="exr-zweifache-ungewissheit" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.7 </strong></span>🏋 Geben Sie ein vergleichbares Beispiel an!</p>
 </div>
-<p>Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben. Im Kontext der Bayes-Analyse ist das einfach zu interpretieren. Sagen wir, wir finden, dass in einem Modell ein 95%-Konfidenzintervall für den Anteil der R-Fans angegeben wird, dass sich von 40 bis 44 Prozent erstreckt. Dieser Befund lässt sich so interpretieren: “Laut Modell liegt der gesuchte Anteil mit einer Wahrscheinlichkeit von 95% im Bereich von 44 bis 44 Prozentpunkten.”</p>
-<p>🏋 Interpretieren Sie den Ungewissheitskorridor!</p>
+</section><section id="konfidenzintervall" class="level3" data-number="3.8.5"><h3 data-number="3.8.5" class="anchored" data-anchor-id="konfidenzintervall">
+<span class="header-section-number">3.8.5</span> Konfidenzintervall</h3>
+<p>Wir sehen in <a href="#fig-ungewiss2">Abbildung&nbsp;<span>3.11</span></a>, dass ein “Ungewissheitskorridor” angegeben wird für die Lage der Regressionsgerade (linkes Teildiagramm) bzw. für den Bereich plausibler Vorhersagen im konkreten Fall einer Beobachtung mit bestimmten X-Wert. Entsprechend wird nicht ein <em>Punktschätzer</em>, sondern ein <em>Schätzbereich</em> angegeben. Man spricht auch von einem <em>Konfidenzintervall</em> oder <em>Unsicherheitsbereich</em>.<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a></p>
+<div id="def-konfintervall" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.7 (Konfidenzintervall) </strong></span>Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schätzbereiche. Die Grenzen eines Konfindenzintervall markieren einen Bereich plausibler Werte für einen Parameter.</p>
+</div>
+<p>Es gibt verschiedene Arten, Konfidenzintervalle zu berechnen; wir sprechen in späteren Kapiteln dazu ausführlicher. Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben. Im Kontext der Bayes-Analyse - auf der dieser Kurs aufbaut - ist ein Konfidenzintervall einfach zu interpretieren. Sagen wir, wir finden, dass in einem Modell ein 95%-Konfidenzintervall für den Anteil der R-Fans angegeben wird, dass sich von 40 bis 44 Prozent erstreckt. Dieser Befund lässt sich so interpretieren: “Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95% im Bereich von 44 bis 44 Prozentpunkten.”</p>
+<div id="exm-ungewisskorr" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 3.5 </strong></span>Geben Sie Beispiele für Konfidenzintervalle an.</p>
+</div>
 </section></section><section id="klassische-vs.-bayes-inferenz" class="level2" data-number="3.9"><h2 data-number="3.9" class="anchored" data-anchor-id="klassische-vs.-bayes-inferenz">
 <span class="header-section-number">3.9</span> Klassische vs.&nbsp;Bayes-Inferenz</h2>
+<div class="columns">
+<div class="column">
 <section id="klassische-inferenz-frequentismus" class="level3" data-number="3.9.1"><h3 data-number="3.9.1" class="anchored" data-anchor-id="klassische-inferenz-frequentismus">
 <span class="header-section-number">3.9.1</span> Klassische Inferenz: Frequentismus</h3>
 <ul>
 <li>Die Berücksichtigung von Vorwissen zum Sachgegenstand wird vom Frequentismus als subjektiv zurückgewiesen.</li>
-<li>Nur die Daten selber fliesen in die Ergebnisse ein</li>
+<li>Nur die Daten selber fliesen in die Ergebnisse ein, keine Vorannahmen.</li>
 <li>Wahrscheinlichkeit wird über relative Häufigkeiten definiert.</li>
-<li>Es ist nicht möglich, die Wahrscheinlichkeit einer Hypothese anzugeben.</li>
+<li>Es ist <em>nicht</em> möglich, die Wahrscheinlichkeit einer Hypothese anzugeben.</li>
 <li>Stattdessen wird angegeben, wie häufig eine vergleichbare Datenlage zu erwarten ist, wenn die Hypothese gilt und der Versuch sehr häufig wiederholt ist.</li>
 <li>Ein Großteil der Forschung (in den Sozialwissenschaften) verwendet diesen Ansatz.</li>
-</ul></section><section id="bayesianische-inferenz" class="level3" data-number="3.9.2"><h3 data-number="3.9.2" class="anchored" data-anchor-id="bayesianische-inferenz">
+</ul></section>
+</div><div class="column">
+<section id="bayesianische-inferenz" class="level3" data-number="3.9.2"><h3 data-number="3.9.2" class="anchored" data-anchor-id="bayesianische-inferenz">
 <span class="header-section-number">3.9.2</span> Bayesianische Inferenz</h3>
 <ul>
 <li>Vorwissen (Priori-Wissen) fließt explizit in die Analyse ein (zusammen mit den Daten).</li>
 <li>
-<em>Wenn</em> das Vorwissen gut ist, wird die Vorhersage genauer, ansonsten ungenauer.</li>
+<em>Wenn</em> das Vorwissen gut ist, wird die Vorhersage durch das Vorwissen genauer, ansonsten ungenauer.</li>
 <li>Die Wahl des Vorwissens muss explizit (kritisierbar) sein.</li>
 <li>In der Bayes-Inferenz sind Wahrscheinlichkeitsaussagen für Hypothesen möglich.</li>
 <li>Die Bayes-Inferenz erfordert mitunter viel Rechenzeit und ist daher erst in den letzten Jahren (für gängige Computer) komfortabel geworden.</li>
-</ul></section><section id="vergleich-von-wahrscheinlichkeitsaussagen" class="level3" data-number="3.9.3"><h3 data-number="3.9.3" class="anchored" data-anchor-id="vergleich-von-wahrscheinlichkeitsaussagen">
+</ul></section>
+</div>
+</div>
+<section id="vergleich-von-wahrscheinlichkeitsaussagen" class="level3" data-number="3.9.3"><h3 data-number="3.9.3" class="anchored" data-anchor-id="vergleich-von-wahrscheinlichkeitsaussagen">
 <span class="header-section-number">3.9.3</span> Vergleich von Wahrscheinlichkeitsaussagen</h3>
 <section id="frequentismus" class="level4" data-number="3.9.3.1"><h4 data-number="3.9.3.1" class="anchored" data-anchor-id="frequentismus">
 <span class="header-section-number">3.9.3.1</span> Frequentismus</h4>
-<p>Die zentrale Statistik heißt der <em>p-Wert</em></p>
-<p>Der p-Wert ist so definiert: “Wie wahrscheinlich ist der Wert der Teststatistik (oder noch extremere Werte), vorausgesetzt die Nullhypothese gilt und man wiederholt den Versuch unendlich oft (mit gleichen Bedingungen, aber zufällig verschieden und auf Basis unseres Modells)?”</p>
-<p>Findet man <span class="math inline">\(p&lt;.05\)</span> (oder einen anderen Prozentwert, aber meistens wird 5% hergenommen), so spricht man von “(statistischer) Signifikanz” und nimmt dies als Beleg, dass man einen Effekt gefunden hat, die Hypothese eines Nulleffekts (z.B. kein Zusammenhang von X und Y) also verwerfen kann.</p>
+<p>Die zentrale Statistik des Frequentismus heißt der <em>p-Wert</em></p>
+<p>Der p-Wert ist so definiert, vgl. <span class="citation" data-cites="wasserstein_asa_2016">Wasserstein und Lazar (<a href="references.html#ref-wasserstein_asa_2016" role="doc-biblioref">2016</a>)</span>:</p>
+<blockquote class="blockquote">
+<p>Wie wahrscheinlich ist der Wert der Teststatistik (oder noch extremere Werte), vorausgesetzt die Nullhypothese gilt und man wiederholt den Versuch unendlich oft (mit gleichen Bedingungen, aber zufällig verschieden und auf Basis unseres Modells)?</p>
+</blockquote>
+<p>Findet man <span class="math inline">\(p&lt;.05\)</span> (oder einen anderen Prozentwert, aber meistens wird 5% hergenommen), so spricht man von “(statistischer) Signifikanz” und nimmt dies als Beleg, dass man einen Effekt gefunden hat, die Hypothese eines Nulleffekts (z.B. kein Zusammenhang von X und Y) also verwerfen kann. Faktisch entscheidet man sich, die Forschungshypothese weiterhin als “vorläufig gültig” oder zumindest als “nicht widerlegt” zu betrachten.</p>
+<div id="exr-p" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.8 </strong></span>🏋 Recherchieren Sie eine Definition des p-Werts und lesen Sie sie einem Freund. Beobachten sie die Reaktionen auf ihre Erklärung.<span class="math inline">\(\square\)</span></p>
+</div>
+<p>Der p-Wert wird oft falsch verstanden <span class="citation" data-cites="badenes-ribera_misconceptions_2016-1">(<a href="references.html#ref-badenes-ribera_misconceptions_2016-1" role="doc-biblioref">Badenes-Ribera u.&nbsp;a. 2016</a>)</span>. Hier sind einige <em>FALSCHE</em> Interpretationen zum p-Wert laut der Autoren:</p>
+<ul>
+<li>🙅‍♀ Der p-Wert würde die Wahrscheinlichkeit der Nullhypothese oder der Forschungshypothese angeben. 🙊</li>
+<li>‍♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. badenes-ribera_misconceptions_2016-1</li>
+</ul>
+<p>Die Definition der Konfidenzintervalls in Frquentistischer Lesart lautet:</p>
+<blockquote class="blockquote">
+<p>Der Konfidenzbereich, z.B. von 95%, repräsentiert den Anteil der Konfidenzintervalle bei sehr vielen (oder undentlich vielen) Wiederholungen des Experiments, die den echten Parameterwert enthalten.</p>
+</blockquote>
 </section><section id="bayes-statistik" class="level4" data-number="3.9.3.2"><h4 data-number="3.9.3.2" class="anchored" data-anchor-id="bayes-statistik">
 <span class="header-section-number">3.9.3.2</span> Bayes-Statistik</h4>
-<p>Die zentrale Statistik ist die <em>Posteriori-Verteilung</em>.</p>
-<p>Die Posteriori-Verteilung beantwortet uns die Frage: “Wie wahrscheinlich ist die Forschungshypothese, jetzt, nachdem wir die Daten kennen, auf Basis unseres Modells?”</p>
-<p>🏋 Recherchieren Sie eine Definition des p-Werts und lesen Sie sie genau.</p>
-<p><a href="https://data-se.netlify.app/2022/01/27/warum-bayes/">In diesem Post</a> wird für Bayes geworben und (vielleicht einseitig) Stellung pro Bayes bezogen.</p>
+<p>Die zentrale Statistik der Bayes-Statistik ist die <em>Posteriori-Verteilung</em>.</p>
+<p>Die Posteriori-Verteilung beantwortet uns die Frage: “Wie wahrscheinlich ist die Forschungshypothese (oder Varianten von ihr), jetzt, nachdem wir die Daten kennen, auf Basis unseres Modells?”</p>
+<p><a href="https://data-se.netlify.app/2022/01/27/warum-bayes/">In diesem Post</a> wird für Bayes geworben und (einseitig) Stellung pro Bayes bezogen.</p>
 </section></section><section id="frequentist-und-bayesianer" class="level3" data-number="3.9.4"><h3 data-number="3.9.4" class="anchored" data-anchor-id="frequentist-und-bayesianer">
 <span class="header-section-number">3.9.4</span> Frequentist und Bayesianer</h3>
 <p>Im Cartoon 1132 <a href="https://xkcd.com/">von xkcd</a> wird sich über das Nicht-Berücksichtigen von Vorab-Informationen (Prior-Verteilung) lustig gemacht, s. <a href="#fig-xkcd-bayes">Abbildung&nbsp;<span>3.12</span></a>.</p>
@@ -868,13 +1017,11 @@ Wichtig
 </div>
 </section><section id="beispiel-zum-nutzen-von-apriori-wissen-1" class="level3" data-number="3.9.6"><h3 data-number="3.9.6" class="anchored" data-anchor-id="beispiel-zum-nutzen-von-apriori-wissen-1">
 <span class="header-section-number">3.9.6</span> Beispiel zum Nutzen von Apriori-Wissen 1</h3>
-<p>Ein Betrunkener behauptet, er könne hellsehen. Er wirft eine Münze 10 Mal und sagt jedes Mal korrekt vorher, welche Seite oben landen wird.</p>
-<p>Die Wahrscheinlichkeit dieses Ergebnisses ist sehr gering (<span class="math inline">\(2^{-10}\)</span>) unter der Hypothese, dass die Münze fair ist, dass Ergebnis also “zufällig” ist.</p>
+<p>Ein Betrunkener behauptet, er könne hellsehen. Er wirft eine Münze 10 Mal und sagt jedes Mal korrekt vorher, welche Seite oben landen wird. Die Wahrscheinlichkeit dieses Ergebnisses ist sehr gering (<span class="math inline">\(2^{-10}\)</span>) unter der Hypothese, dass die Münze fair ist, dass Ergebnis also “zufällig” ist, also <span class="math inline">\(p &lt; .05\)</span> und damit ist das Ergebnis “statistisch signifikant”.</p>
 <p>Unser Vorwissen lässt uns allerdings trotzdem an der Hellsichtigkeit des Betrunkenen zweifeln, so dass die meisten von uns die Hypothese von der Zufälligkeit des Ergebnisses wohl nicht verwerfen.</p>
 </section><section id="beispiel-zum-nutzen-von-apriori-wissen-2" class="level3" data-number="3.9.7"><h3 data-number="3.9.7" class="anchored" data-anchor-id="beispiel-zum-nutzen-von-apriori-wissen-2">
 <span class="header-section-number">3.9.7</span> Beispiel zum Nutzen von Apriori-Wissen 2</h3>
-<p>Eine Studie (vgl. <span class="citation" data-cites="gelman_regression_2021">Gelman, Hill, und Vehtari (<a href="references.html#ref-gelman_regression_2021" role="doc-biblioref">2021</a>)</span>) fand einen “großen Effekt” auf das Einkommen von Babies, eine Stunde pro Woche während zwei Jahren an einem psychosozialen Entwicklungsprogramm teilnahmen (im Vergleich zu einer Kontrollgruppe), <span class="math inline">\(n=127\)</span>.</p>
-<p>Nach 20 Jahren war das mittlere Einkommen der Experimentalgruppe um 42% höher (als in der Kontrollgruppe) mit einem Konfidenzintervall von [+2%,+98%].</p>
+<p>Eine Studie <span class="citation" data-cites="gelman_regression_2021">(<a href="references.html#ref-gelman_regression_2021" role="doc-biblioref">Gelman, Hill, und Vehtari 2021</a>)</span> fand einen “großen Effekt” auf das Einkommen von Babies, die eine Stunde pro Woche während zwei Jahren an einem psychosozialen Entwicklungsprogramm teilnahmen (im Vergleich zu einer Kontrollgruppe), <span class="math inline">\(n=127\)</span>. Nach 20 Jahren war das mittlere Einkommen der Experimentalgruppe um 42% höher (als in der Kontrollgruppe) mit einem Konfidenzintervall von [+2%,+98%].</p>
 <p>Allerdings lässt uns unser Vorwissen vermuten, dass so ein Treatment das Einkommen nach 20 Jahren kaum verdoppeln lässt. Wir würden den Effekt lieber in einem konservativeren Intervall schätzen (enger um Null).</p>
 </section></section><section id="literatur" class="level2" data-number="3.10"><h2 data-number="3.10" class="anchored" data-anchor-id="literatur">
 <span class="header-section-number">3.10</span> Literatur</h2>
@@ -914,20 +1061,30 @@ Wichtig
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-badenes-ribera_misconceptions_2016-1" class="csl-entry" role="listitem">
+Badenes-Ribera, Laura, Dolores Frias-Navarro, Bryan Iotti, Amparo Bonilla-Campos, und Claudio Longobardi. 2016. <span>„Misconceptions of the P-Value among <span>Chilean</span> and <span>Italian Academic Psychologists</span>“</span>. <em>Frontiers in Psychology</em> 7. <a href="https://www.frontiersin.org/article/10.3389/fpsyg.2016.01247">https://www.frontiersin.org/article/10.3389/fpsyg.2016.01247</a>.
+</div>
 <div id="ref-gelman_regression_2021" class="csl-entry" role="listitem">
 Gelman, Andrew, Jennifer Hill, und Aki Vehtari. 2021. <em>Regression and Other Stories</em>. Analytical Methods for Social Research. <span>Cambridge</span>: <span>Cambridge University Press</span>.
 </div>
 <div id="ref-poldrack_statistical_2022" class="csl-entry" role="listitem">
 Poldrack, Russell. 2022. <em>Statistical <span>Thinking</span> for the 21st <span>Century</span></em>. <a href="https://statsthinking21.github.io/statsthinking21-core-site/index.html">https://statsthinking21.github.io/statsthinking21-core-site/index.html</a>.
 </div>
+<div id="ref-wasserstein_asa_2016" class="csl-entry" role="listitem">
+Wasserstein, Ronald L., und Nicole A. Lazar. 2016. <span>„The <span>ASA</span> Statement on P-<span>Values</span>: <span>Context</span>, Process, and Purpose“</span>. <em>The American Statistician</em> 70 (2): 129–33. <a href="https://doi.org/10.1080/00031305.2016.1154108">https://doi.org/10.1080/00031305.2016.1154108</a>.
+</div>
 </div>
 </section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
 <ol>
-<li id="fn1"><p><del>Meistens</del> Manchmal darf man bei der Statistik nicht nach einem tieferen Sinn suchen. Ist Statistik eine Art moderne Kunst?<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Mancheiner hätte mit mehr gerechnet<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>oft mit <em>Pr</em> oder <em>p</em> abgekürzt, für <em>probability</em><a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>Das ist natürlich nur ein fiktives, komplett unrealistisches Beispiel, das auch unklaren Ursachen den Weg auf diese Seite gefunden hat.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>Tatsächlich gibt es mehrere Synonyme oder ähnliche Begriffe für Konfidenzintervall. Wir kommen später darauf detaillierter zu sprechen.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Ziele existieren nicht “in echt” in der Welt. Wir denken sie uns aus. Ziele haben also keine ontologische Wirklichkeit, sie sind epistemologische Dinge (existieren nur in unserem Kopf). Das heißt, dass man sich nach Beliebem Ziele ausdenken kann. Allerdings hilft es, wenn man andere Menschen vom Nutzen der eigenen Ideen überzeugen kann…<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Vielleicht hat Ihr Dozent Sie schon mal mit einem Prognosewettbewerb gequält? Ja? Genau! In einem Prognosewettbewerb ist das Ziel eine - natürlich möglichst exakte - Vorhersage zu treffen.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p><del>Meistens</del> Manchmal darf man bei der Statistik nicht nach einem tieferen Sinn suchen. Ist Statistik eine Art moderne Kunst?<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Manch einer hätte mit mehr gerechnet; andere mit weniger…<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Das ist natürlich nur ein fiktives, komplett unrealistisches Beispiel, das auch unklaren Ursachen den Weg auf diese Seite gefunden hat.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Wie Jonas <a href="https://lindeloev.github.io/tests-as-linear/">Kristoffer Lindeløv</a> uns erklärt, sind viele statistische Verfahren, wie der sog. t-Test Spezialfälle der Regression.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Der Datensatz <code>mtcars</code> wird gerne als Studienobjekt verwendet, da er einfach ist und für viele Beispiele geeignet. Wenn Sie sich einen Sachverhalt an einem einfachen Datensatz vergegenwärtigen wollen, bietet sich auch der Datensatz <code>mtcars</code> an. Zudem ist er “fest in R eingebaut”; mit <code>data(mtcars)</code> können Sie ihn verfügbar machen.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p><span class="math inline">\(\sigma\)</span>, das griechische <em>s</em> für Streuung (um die Regressionsgerade herum), manchmal wird auch e wie <em>error</em> verwendet<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>Tatsächlich gibt es mehrere Synonyme oder ähnliche Begriffe für Konfidenzintervall. Wir kommen später darauf detaillierter zu sprechen.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
