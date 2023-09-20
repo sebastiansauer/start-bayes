@@ -5,9 +5,10 @@
 #| include: false
 library(tidyverse)
 library(easystats)
-library(lubridate)
-library(gmp)
+#library(lubridate)
+#library(gmp)
 library(titanic)
+library(knitr)
 ```
 
 
@@ -131,9 +132,10 @@ Sie können ...
 ### Eigenstudium
 
 
-:::{.callout-note}
+:::{.callout-important}
 Dieses Kapitel ist selbständig im Eigenstudium vorzubereiten vor dem Unterricht.
-Lesen Sie dazu die angegebene Literatur.$\square$
+Lesen Sie dazu die angegebene Literatur.
+Im Unterricht werden Fragen beantwortet und Aufgaben gemeinsam bearbeitet. Der Stoff wird aber nicht vorgestellt, sondern ist im Selbststudium vorab vorzubereiten.$\square$
 :::
 
 
@@ -218,7 +220,7 @@ Weitere Übungsaufgaben finden Sie im dazugehörigen Übungsbuch, @bourier_stati
 Klassisches Beispiel für einen Zufallsvorgang ist das (einmalige oder mehrmalige) Werfen einer Münze.$\square$
 :::
 
-::{#exr-muenze}
+::{#exm-muenze}
 Werfen Sie eine Münze!
 Diese hier zum Beispiel:
 
@@ -228,14 +230,16 @@ Diese hier zum Beispiel:
 
 Wiederholen Sie den Versuch 10, nein, 100, nein 1000, nein: $10^6$ Mal.
 
-Notieren Sie das Ergebnis!
+Notieren Sie das Ergebnis.$\square$
+:::
+
 
 Oder probieren Sie die [App der Brown University](https://seeing-theory.brown.edu/basic-probability/index.html#section1).
 
 
 :::{#def-zufall}
 ### Zufallsvorgang
-Ein Zufallsvorgang oder Zufallsexperiment ist eine einigermaßen klar beschriebene Tätigkeit, deren Ergebnis nicht bekannt ist. Allerdings ist die Menge möglicher Ergebnisse sicher und die Wahrscheinlichkeit für die Ergebnisse kann quantifiziert werden.$\square$
+Ein *Zufallsvorgang* oder *Zufallsexperiment* ist eine einigermaßen klar beschriebene Tätigkeit, deren Ergebnis nicht bekannt ist. Allerdings ist die Menge möglicher Ergebnisse sicher und die Wahrscheinlichkeit für die Ergebnisse kann quantifiziert werden.$\square$
 :::
 
 
@@ -249,11 +253,15 @@ Zufall heißt nicht, dass ein Vorgang keine Ursachen hätte. So gehorcht der Fal
 ::::
 
 
+:::{#exr-würfel-geo}
+[Mit dieser App](https://www.geogebra.org/m/cbqee8h7) können Sie Würfelwürfe simulieren und die Ausgänge dieses Zufallsexperiments beobachten.$\square$
+:::
+
 
 
 :::{#def-ereignisraum}
-### Grundraum
-Die möglichen Ergebnisse eines Zufallvorgangs fasst man als Menge mit dem Namen *Ereignisraum*[synonym: *Ereignisraum* oder *Grundraum*] zusammen. Man verwendet den griechischen Buchstaben $\Omega$ für diese Menge.
+### Ereignisraum
+Die möglichen Ergebnisse eines Zufallvorgangs fasst man als Menge mit dem Namen *Ereignisraum*[leider gibt es eine Fülle synonymer Namen: *Ereignisraum*, *Elementarereignisraum*, *Ergebnisraum* oder *Grundraum*] zusammen. Man verwendet den griechischen Buchstaben $\Omega$ für diese Menge.
 Die Elemente $\omega$ (kleines Omega) von $\Omega$ nennt man *Ergebnisse*.$\square$
 :::
 
@@ -274,7 +282,7 @@ Jede Teilmenge^[$A$ ist eine Teilmenge von $B$, wenn alle Elemente von $A$ auch 
 
 :::{#exm-ereignis}
 Beim Mensch-ärger-dich-nicht Spielen habe ich eine 6 geworfen.^[Schon wieder.]
-Das Nennen wir das Ereignis $A$: "Augenzahl 6 liegt oben"-$\square$
+Das Nennen wir das Ereignis $A$: "Augenzahl 6 liegt oben".$\square$
 
 $A= \{6\}$
 :::
@@ -305,6 +313,60 @@ Jede einelementige Teilmenge $\{\omega\}$ von $\Omega$ heißt *Elementarereignis
 :::
 
 
+:::{#exm-elementarereignis}
+### Elementarereignis
+
+- Sie spielen Mensch-ärger-dich-nicht. Und brauchen dringend eine `6`. Sie würfeln. Das Ereignis $A = \{1\}$ tritt ein.^[Na toll.]
+
+- Sie schreiben eine Statistik-Klausur. Irgendwie haben Sie das Gefühl, das Ergebnis ist eine Zufallsexperiment... Jedenfalls können nach Adam Riese zwei Dinge passieren: $\Omega= \{\text{bestehen, nicht bestehen}\}$.
+Das erste der beiden Elementarereignisse tritt ein. Yeah!
+
+- Sie führen eine Studie durch zur Wirksamkeit einer Lern-App. Es ist nicht klar, ob die App wirklich was bringt für den Lernerfolg. Vereinfacht gesprochen ist der Grundraum dieses Experiments: $\Omega = \{\text{schadet, bringt nichts, nützt}\}$.
+Die Daten sprechen für das Ereignis $A = \{\text{bringt nichts}\}$.
+:::
+
+
+
+
+:::{#def-vollereignis}
+### Vollständiges Ereignissystem
+Wird der Grundraum $\Omega$ vollständig in paarweis disjunkte Ereignisse zerlegt, so bilden diese Ereignisse ein vollständiges Ereignissystem, s. @fig-vollereignis.$\square$
+:::
+
+
+![Zerlegung des Grundraums in ein vollständiges Ereignissystem](img/vollereignis.png){#fig-vollereignis width=50%}
+
+
+
+:::{#exm-vollereig1}
+Sei $\Omega$ der typische Ereignisraum des Würfelwurfs. Wir zerlegen den Grundraum in zwei Ereignisse, $A$ "gerade Zahlen", und $B$ "ungerade Zahlen". 
+Damit haben wir ein vollständiges Ereignissystem erstellt.
+
+
+\begin{align}
+A = \{2,4,6\} \qquad \hfill \boxed{\color{gray}{1}\; \boxed{\color{black}{2}}\; \color{gray}{3}\; \boxed{\color{black}{4}}\; \color{gray}{5}\; \boxed{\color{black}{6}}\;} \\
+B = \{1,3,5\} \qquad  \hfill \boxed{\boxed{\color{black}{1}}\; \color{gray}{2}\; \boxed{\color{black}{3}}\; \color{gray}{4}\; \boxed{\color{black}{5}}\; \color{gray}{6}\; } \\
+\hline \\
+\Omega = \{1,2,3,4,5,6\}  \qquad  \hfill \boxed{1\; 2\; 3\; 4\; 5\; 6 } 
+
+\end{align}
+:::
+
+
+:::{#exm-vollereig2}
+Sei $\Omega$ der typische Ereignisraum des Würfelwurfs. Wir zerlegen den Grundraum in zwei Ereignisse, $A$ "1,2,3", und $B$ "4,5,6". 
+Damit haben wir ein vollständiges Ereignissystem erstellt.
+
+\begin{align}
+A = \{1,2,3\} \qquad \qquad \hfill  \boxed{\boxed{ \color{black}{1\; 2\; 3}}\; \color{gray}{4\; 5\; 6}} \\
+B = \{4,5, 6\} \qquad \qquad  \hfill \boxed{\color{gray}{1 \; 2 \; 3}\; \boxed{\color{black}{4\; 5 \; 6}}} \\
+
+\newline
+\hline \\
+\Omega = \{1,2,3,4,5,6\} \qquad \qquad \hfill  \boxed{1\; 2\; 3\; 4\; 5\;6}
+\end{align}
+:::
+
 
 ## Direkte Ermittlung von Wahrscheinlichkeiten
 
@@ -326,7 +388,7 @@ $$Pr(A) = 1/n$$
 
 :::{#exm-briggs}
 Sei $A$ = "Der Würfel wird beim nächsten Wurf eine 6 zeigen."
-Die Wahrscheinlichkeit für $A$ ist $1/6$.$square$
+Die Wahrscheinlichkeit für $A$ ist $1/6. \square$
 :::
 
 
@@ -369,6 +431,7 @@ Und hier der Anteil von  `6` im Verlauf unserer Würfe, s. @fig-wuerfel.
 #| label: fig-wuerfel
 #| fig-cap: "Das Gesetz der großen Zahl am Beispiel der Stabilisierung des Trefferanteils beim wiederholten Würfelwurf"
 #| fig-asp: 0.5
+#| echo: false
 
 wuerfel_tab %>% 
   slice_head(n = 1e3) %>% 
@@ -407,10 +470,10 @@ Was ist die Wahrscheinlichkeit, *keine*  `6` zu würfeln?$\square$^[Die Wahrsche
 Für das Rechnen mit Wahrscheinlichkeiten ist es hilfreich, ein paar Werkzeuge zu kennen, die wir uns im Folgenden anschauen.
 
 
-## Relationen von Mengen
+## Relationen von Ereignissen
 
 
-
+### Überblick
 
 
 Wir gehen von Grundraum $\Omega$ aus, mit dem Ereignis $A$ als Teilmenge: $A \subset B$.
@@ -429,6 +492,13 @@ daraus lassen sich Rückschlüsse auf Rechenregeln für Wahrscheinlichkeiten abl
 Viele Menschen tun sich leichter, Rechenregeln visuell aufzufassen als mit Formeln und Zahlen alleine. Aber entscheiden Sie selbst!$\square$
 :::
 
+[Dies App](https://www.geogebra.org/m/QZvCMSDs) versinnbildlicht das Rechnen mit Relationen von Ereignissen anhand von Venn-Diagrammen.
+
+
+```{=html}
+<iframe width="780" height="500" src="https://www.geogebra.org/m/QZvCMSDs" title="Mengenoperationen mit Venn-Diagrammen verbildlicht"></iframe>
+```
+
 
 ### Vereinigung von Ereignissen
 
@@ -440,7 +510,7 @@ Man schreibt $C = A \cup B$, lies: "C ist A vereinigt mit B".$\square$
 
 @fig-cup zeigt ein Venn-Diagramm zur Verdeutlichung der Vereinigung von Ereignissen.
 
-![$A \cup B$](img/Venn0111.svg.png){@fig-cup width=25%}
+![$A \cup B$](img/Venn0111.svg.png){#fig-cup width=25%}
 
 :::{#exm-mengen-verein}
 
@@ -461,19 +531,30 @@ Zur besseren Verbildlichung betrachten Sie mal diese
 [Animation zur Vereinigung von Mengen](https://www.geogebra.org/m/GEZV4xXc#material/cmXR8fHN); [Quelle](Geogebra, J. Merschhemke).
 
 
+In R heißt die Vereinigung von Mengen `union()`. Praktisch zum Ausprobieren:
+
+```{r}
+A <- c(1, 2)
+B <- c(2, 3)
+
+union(A, B)
+```
+
+
+
 ### (Durch-)Schnitt von Ereignissen
 
 
 :::{#def-mengen-schnitt}
 ### Schnittmenge von Ereignissen
-Die Schnittmenge zweier Ereignisse $A$ und $B$ umfasst genau die Elementarereignisse, die Teil beider Ereignisse sind.$\square$
+Die Schnittmenge zweier Ereignisse $A$ und $B$ umfasst genau die Elementarereignisse, die Teil beider Ereignisse sind. Man schreibt: $A \cap B.$^[Synonym und kürzer: $AB$ anstelle von $A \cap B$.] Lies: "A geschnitten B". $\square$
 :::
 
 @fig-cap zeigt ein Sinnbild zur Schnittmenge zweier Ereignisse.
 
 
 
-![$A \cap B$](img/Venn0001.svg.png){@fig-cap width=25%}
+![$A \cap B$](img/Venn0001.svg.png){#fig-cap width=25%}
 
 
 :::{#exm-mengen-schnitt}
@@ -489,6 +570,13 @@ Um einen (hohen!) Geldpreis zu gewinnen, muss bei ihrem nächsten Wurf sowohl da
 & A \cap B = \{6\} \qquad \qquad \hfill  \boxed{\color{gray}{1\; 2\; 3\; 4\; 5\;} \color{black}{6}}
 \end{align}
 :::
+
+
+```{r}
+A <- c(2, 4, 6)
+B <- c(5, 6)
+intersect(A, B)
+```
 
 
 
@@ -510,7 +598,7 @@ Ein Ereignis $A$ ist genau dann ein Komplementärereignis zu $B$, wenn es genau 
 :::
 
 
-Man schreibt für das Komplementärereignis von $A$ oft $\bar{A}$ oder $\neg A$; lies "Nicht-A$ oder "A-quer".
+Man schreibt für das Komplementärereignis von $A$ oft $\bar{A}$ oder $\neg A$; lies "Nicht-A" oder "A-quer".
 
 
 :::{#exm-mengen-komplement}
@@ -522,7 +610,7 @@ das Komplementärereignis ist dann $\neg A$ "ungerade Augenzahl".
 \begin{align}
 A = \{2,4,6\} \qquad \hfill \boxed{\color{gray}{1}\; \boxed{\color{black}{2}}\; \color{gray}{3}\; \boxed{\color{black}{4}}\; \color{gray}{5}\; \boxed{\color{black}{6}}\;} \\
 \hline \\
-\neg B = \{1,3,5\} \qquad  \hfill \boxed{\boxed{\color{black}{1}}\; \color{gray}{2}\; \boxed{\color{black}{3}}\; \color{gray}{4}\; \boxed{\color{black}{5}}\; \color{gray}{6}\; } \\
+\neg A = \{1,3,5\} \qquad  \hfill \boxed{\boxed{\color{black}{1}}\; \color{gray}{2}\; \boxed{\color{black}{3}}\; \color{gray}{4}\; \boxed{\color{black}{5}}\; \color{gray}{6}\; } \\
 \end{align}
 :::
 
@@ -567,14 +655,16 @@ B <- c(2, 4, 6)
 
 setdiff(A, B)
 ```
-:::callout-caution
-$A \setminus B \ne B \setminus A$.
-:::
 
+🤯 Von der Menge $A$ die Menge $B$ abzuziehen, ist etwas anderes, als von $B$ die Menge $A$ abzuziehen:
 
 ```{r}
 setdiff(B, A)
 ```
+
+:::callout-caution
+$A \setminus B \ne B \setminus A$.
+:::
 
 
 ### Disjunkte Ereignisse
@@ -599,15 +689,16 @@ s. @fig-disjunkt
 [Quelle: rither.de](http://www.rither.de/a/mathematik/stochastik/mengentheorie-und-venn-diagramme/)
 
 
+
 ### Vertiefung
 
 
 [Animation zu Mengenoperationen](https://seeing-theory.brown.edu/compound-probability/index.html)
 
 
-## Eigenschaften von Wahrscheinlichkeiten
+## Anforderungen an Wahrscheinlichkeiten
 
-Wir richten eine Reihe von Forderungen an das Rechnen mit Wahrscheinlichkeiten, die direkt plausibel erscheinen:
+Wir richten eine Reihe von Forderungen an das Rechnen mit Wahrscheinlichkeiten, die direkt plausibel erscheinen:^[Ein Herr Kolmogorov hat das mal aufgeschrieben.]
 
 1. *Nichtnegativität*: Die Wahrscheinlichkeit eines Ereignisses kann nicht negativ sein.
 2. *Normierung*: Das sichere Ereignis hat die Wahrscheinlichkeit 1 bzw. 100%: $Pr(\Omega)=1$; das unmögliche Ereignis hat die Wahrscheinlichkeit 0: $Pr(\emptyset)=0$.
@@ -622,11 +713,7 @@ Der Additionssatz wird verwendet, wenn wir an der Wahrscheinlichkeit interessier
 
 #### Disjunkte Ereignisse
 
-$\Omega = {1,2,3,4,5,6}$
-
-
-
-$\boxed{1\; 2\; 3\; 4\; 5\; 6}$
+Gegeben sei $\Omega = {1,2,3,4,5,6}$. Als Sinnbild: $\boxed{1\; 2\; 3\; 4\; 5\; 6}$.
 
 Gesucht sei die Wahrscheinlichkeit des Ereignis $A=\{1,2\}$.
 
@@ -636,10 +723,17 @@ $\boxed{\boxed{1\; 2}\; \color{gray}{ 3\; 4\; 5\; 6}}$
 $P(1 \cup 2) = \frac{1}{6} + \frac{1}{6} = \frac{2}{6}$
 
 
+:::{#exm-sonntag}
+Was ist die Wahrscheinlichkeit, an einem Samstag oder Sonntag geboren zu sein?
+Unter der (etwas vereinfachten) Annahme, dass alle Jahre zu gleichen Teilen aus allen Wochentagen bestehen, ist die Antwort $Pr(A)=1/7 + 1/7 = 2/7$.$\square$
+:::
+
+
+
 #### Allgemein (disjunkt oder nicht disjunkt)
 
 
-Bei der Addition der Wahrscheinlichkeiten für $A$ und $B$ wird der Schnitt $A\cap B$ doppelt erfasst. Er muss daher noch abgezogen werden (vgl. @fig-sets2):
+Bei der Addition der Wahrscheinlichkeiten für $A$ und $B$ wird der Schnitt $A\cap B$ doppelt erfasst.^[sofern sie nicht disjunkt sind, aber wenn sie diskunkt sind, so ist der Schnitt gleich Null und wir machen auch dann nichts falsch] Er muss daher noch abgezogen werden:
 
 
 
@@ -647,22 +741,65 @@ $$P(A \cup B) = P(A) + P(B) - P(A\cap B)$$
 
 
 
-::: {#fig-sets2 layout-ncol=2}
+<!-- ::: {#fig-sets2 layout-ncol=2} -->
 
-![$A \cup B$](img/Venn0111.svg.png){width=20%}
-
-
-
-
-![$A \cap B$](img/Venn0001.svg.png){width=20%}
+<!-- ![$A \cup B$](img/Venn0111.svg.png){width=20%}{#fig-sets2-a} -->
 
 
 
-Die Schnittmenge muss beim Vereinigen abgezogen werden,
-damit sie nicht doppelt gezählt wird.
+
+<!-- ![$A \cap B$](img/Venn0001.svg.png){width=20%}{#fig-sets2-b} -->
 
 
+
+<!-- Die Schnittmenge muss beim Vereinigen abgezogen werden, -->
+<!-- damit sie nicht doppelt gezählt wird. -->
+
+
+<!-- ::: -->
+
+
+
+:::{#exm-klausur-bed-wskt}
+### Lernen und Klausur bestehen
+
+In einem angewandten Psychologie-Studiengang sind die Studis verdonnert, zwei Statistik-Module ($S1, S2$) zu belegen.
+Die meisten bestehen ($B$), einige leider nicht ($N$), s. tbl-klausur2.
+
+Ereignis $A$ ist "Klausur Statistik 1" mit den Ergebnissen "bestanden" und "nicht bestanden". 
+Ereignis $B$ ist analog für "Klausur Statistik 2".
+
+Wir suchen die Wahrscheinlichkeit, mindestens eine der beiden Klausuren zu bestehen: $Pr(S_1B \cup S_2B)$.
+Nennen wir das Ereignise $A$.
+
+
+
+```{r}
+#| echo: false
+#| label: tbl-klausur2
+#| tbl-cap: "Daten von 100 Studis; L: Lerner, B: Bestanden, N: Negation/Nicht"
+d <- tribble(
+  ~ ., ~ S1_B, ~ S1_NB, ~ Summe,
+  "S2_B", 85, 9, 94,
+  "S2_NB", 5, 1, 6,
+  "Summe", 90, 10, 100
+)
+
+kable(d)
+```
+
+
+\begin{aligned}
+Pr(A) &= Pr(S_1B \cup S_2B) \\
+&= Pr(S1_B) + Pr(S_2B) - Pr(S_1B \cap S_2B)  \\
+&= (90 + 94 - 85) / 100 = 99 / 100\\
+\end{aligned}
+
+Die Wahrscheinlichkeit, mindestens eine der beiden Klausuren zu bestehen liegt bei 99%.
+Umgekehrt liegt die Wahrscheinlichkeit, keine der beiden Klausuren zu bestehen, liegt bei $Pr(\neg A) = 1- Pr(A) = 0.01 = 1\%$; ein Sachverhalt, der sich auch mit einem kurzen Blick in die Datentabelle erkennen lässt.$\square$
 :::
+
+
 
 
 
@@ -670,18 +807,29 @@ damit sie nicht doppelt gezählt wird.
 
 :::{#def-pr-cond}
 ### Bedingte Wahrscheinlichkeit
-Die Bedingte Wahrscheinlichkeit ist die Wahrscheinlichkeit, dass $A$ eintritt, gegeben dass $B$ schon eingetreten ist. $\square$
+Die Bedingte Wahrscheinlichkeit ist die Wahrscheinlichkeit, dass $A$ eintritt, *gegeben dass* $B$ schon eingetreten ist. $\square$
+:::
 
-Man schreibt: $Pr(A|B).$ Lies: "A gegeben B".
+Man schreibt: $Pr(A|B).$ Lies: "A gegeben B" oder "A wenn B".
 
+
+
+
+
+
+
+
+
+:::{#exr-victorpowell}
 Schauen Sie sich mal diese [Wahnsinnsanimation von Victor Powell an](https://setosa.io/conditional/) zu bedingten Wahrscheinlichkeiten. 
 Hammer!
+:::
 
 
 #### Schema
 
 
-@fig-schema-p illustriert gemeinsame Wahrscheinlichkeit, $P(A \cap B)$ und bedingte Wahrscheinlichkeit, $P(A|B)$.
+@fig-schema-p illustriert *gemeinsame Wahrscheinlichkeit*, $P(A \cap B)$, und *bedingte Wahrscheinlichkeit*, $P(A|B)$.
 
 
 ```{r bed-w-schema}
@@ -709,10 +857,26 @@ $Pr(P|M) \ne Pr(M|P)$. Das hört sich erst verwirrend an, aber wenn man darüber
 
 :::{#exm-kalt-regen}
 ### Kalt und Regen
-Die Wahrscheinlichkeit, dass es kalt ist, wenn es regnet, ist gleich der Wahrscheinlichkeit, dass es gleichzeitig kalt ist und regnet geteilt durch die Wahrscheinlichkeit, dass es regnet.
+Die Wahrscheinlichkeit, dass es kalt ist, wenn es regnet, ist gleich der Wahrscheinlichkeit, dass es gleichzeitig kalt ist und regnet geteilt durch die Wahrscheinlichkeit, dass es regnet.$\square$
+:::
 
 
-Bedingte Wahrscheinlichkeit, $Pr(A|B)$, ist vergleichbar zum Filtern einer Tabelle:
+:::{#exm-hirn-grütze}
+Gustav Groß-Gütz verkauft eine Tinktur^[genauer besehen sieht sie eher aus wie eine Grütze oder ein Brei], die schlau machen soll, "Gützi Gehirn Grütze".^[Sie schmeckt scheußlich.]
+Gustav trinkt die Grütze und sagt schlaue Dinge.
+Was schließen wir daraus?
+Sei $H$ (wie *H*ypothese) "Gützis Grütze macht schlau"; sei $D$ (wie *D*aten) die Beobachtung, dass Gustav schlaue Dinge gesagt hat.
+Ohne exakte Zahlen zu suchen, wie hoch ist wohl $Pr(D|H)$? In Worten: "Wie wahrscheinlich ist es, schlaue Dinge gesagt zu haben, wenn die Grütze wirklich schlau macht?".
+Vermutlich ist diese Wahrscheinlichkeit sehr hoch.
+Aber wie hoch ist wohl $Pr(H|D)$? In Worten: "Wie wahrscheinlich ist es, dass die Grütze wirklich schlau macht, gegeben, dass wir gesehen hat, dass jemand etwas schlaues gesagt hat, nachdem er besagte Grütze getrunken hat?"
+Skeptische Geister werden der Meinung sein, $Pr(H|D)$ ist gering.
+Das Beispiel zeigt u.a. $Pr(H|D) \ne Pr(D|H).\square$
+:::
+
+
+
+
+Das Berechnen einer bedingten Wahrscheinlichkeit, $Pr(A|B)$, ist vergleichbar zum Filtern einer Tabelle:
 
 ```{r}
 #| echo: false
@@ -750,6 +914,49 @@ $$Pr(A|B) = \frac{Pr(A \cap B)}{Pr(B)}$${#eq-pr-cond}
 
 
 
+:::{#exm-klausur-bed-wskt}
+### Lernen und Klausur bestehen
+
+
+Sie bereiten sich gerade auf die Klausur bei Prof. Süß vor.
+Das heißt: Sie überlegen, ob Sie sich auf die Klausur vorbereiten sollten.
+Vielleicht lohnt es sich ja gar nicht? Vielleicht ist die Wahrscheinlichkeit zu bestehen, wenn man nicht gelernt hat, sehr groß?
+Aber da Sie nun mal auf Fakten stehen, haben Sie sich nach einiger Recherche folgende Zahlen besorgen können, s. @tbl-klausur-lernen.
+In der Tabelle sind die Daten von 100 Studis ausgewiesen.
+Ein Teil hat sich vorbereitet, ordentlich gelernt, nenen wir sie die "*L*erner.
+Ein anderer Teil hat nicht gelernt, $NL$ bzw. $\neg L$. Ein Teil hat bestanden, $B$, ein Teil nicht $NB$ oder $\neg B$.
+
+Wir suchen die Wahrscheinlichkeit, zu bestehen, wenn man nicht gelernt hat: $Pr(B |\neg L)$.
+
+
+
+```{r}
+#| echo: false
+#| label: tbl-klausur-lernen
+#| tbl-cap: "Daten von 100 Studis; L: Lerner, B: Bestanden, N: Negation/Nicht"
+d <- tribble(
+  ~ ., ~ L, ~ NL, ~ Summe,
+  "B", 80, 1, 81,
+  "NB", 5, 14, 19,
+  "Summe", 85, 15, 100
+)
+
+kable(d)
+```
+
+
+\begin{aligned}
+Pr(B |\neg L) &= \frac{Pr(B \cap \neg L)}{Pr(\neg L)} \\
+&=\frac{1/100}{15/100} = 1/15 \\
+\end{aligned}
+
+Die Wahrscheinlichkeit, zu bestehen, wenn man nicht gelernt hat, liegt bei 1 von 15,
+also ca. 7%.$\square$
+:::
+
+
+
+
 ### Stochastische (Un-)Abhängigkeit
 
 Stochastische Unabhängigkeit ist ein Spezialfall von Abhängigkeit: Es gibt sehr viele Ausprägungen für Abhängigkeit, aber nur eine für Unabhängigkeit.
@@ -758,13 +965,14 @@ Können wir Unabhängigkeit nachweisen, haben wir also eine starke Aussage getä
 
 :::{#def-indep}
 ### Stochastische Unabhängigkeit
-Zwei Ereignisse sind (stochastisch) unabhängig voneinander, wenn die Wahrscheinlichkeit von $A$ nicht davon abhängt, ob $B$ der Fall ist.$\square$
+Zwei Ereignisse sind (stochastisch) unabhängig voneinander, wenn die Wahrscheinlichkeit von $A$ nicht davon abhängt, ob $B$ der Fall ist.
+Dann gilt: $P(A|B) = P(A) = P(A|\neg B). \square$^[Exakte Gleichheit ist in dieser Welt empirisch schwer zu finden. Daher kann man vereinbaren, dass Unabhängigkeit erfüllt ist, wenn die Gleichheit "einigermaßen" oder "ziemlich" gilt, die Gleichheit gewissermaßen "praktisch bedeutsam" ist.]
 :::
 
 
 :::{#exm-indep1}
 ### Augenfarbe und Statistikliebe
-Ich vermute, dass die Ereignisse "Augenfarbe ist blau" und "Ich liebe Statistik" voneinander unabhängig sind.$\square$^[Wer Daten dazu hat oder eine Theorie, der melde sich bitte bei mir.]
+Ich vermute, dass die Ereignisse $A$, "Augenfarbe ist blau", und $B$, "Ich liebe Statistik", voneinander unabhängig sind.$\square$^[Wer Daten dazu hat oder eine Theorie, der melde sich bitte bei mir.]
 :::
 
 
@@ -782,7 +990,8 @@ titanic_train %>%
   mutate(Survived = factor(Survived)) %>%
   ggplot(aes(x = Pclass)) +
   geom_bar(aes(fill = Survived), position = "fill") +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom")  +
+  scale_fill_okabeito()
 
 
 plottitanic2 <-
@@ -792,7 +1001,8 @@ titanic_train %>%
   mutate(Survived = factor(Survived)) %>%
   ggplot(aes(x = Embarked)) +
   geom_bar(aes(fill = Survived), position = "fill") +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  scale_fill_okabeito()
 
 
 
@@ -808,7 +1018,8 @@ plottitanic3 <-
   geom_bar(aes(fill = Survived), position = "fill") +
   theme(legend.position = "bottom") +
   scale_x_discrete(breaks = c(0, 2),
-                     labels = c("Nicht Prim", "Prim"))
+                     labels = c("Nicht Prim", "Prim")) +
+  scale_fill_okabeito()
 
 # plottitanic3
 
@@ -956,20 +1167,34 @@ Der Weg vom Start zu einem bestimmten Blatt nennt man *Pfad*.
 Die Anzahl der Pfade entspricht der Anzahl der Blätter.
 In diesen Diagramm gibt es vier Pfade (und Blätter).
 
+Den Wurf der ersten Münze nennen wir in gewohnter Manier $A$; den Wurf der zweiten Münze $B$.
+
 
 Die Wahrscheinlichkeiten der resultierenden Ereignisse finden sich in @tbl-muenz2.
 
 
 ```{r}
 #| echo: false
+#| label: tbl-muenz2
 #| tbl-cap: Wahrscheinlichkeiten der Ereignisse im zweimaligen Münzwurf
 tibble::tribble(
   ~Ereignis,               ~Pr,
        "0K", "1/2 * 1/2 = 1/4",
        "1K", "1/4 + 1/4 = 1/2",
        "2K", "1/2 * 1/2 = 1/4"
-  )
+  ) %>% kable()
 ```
+
+
+
+Mit [dieser App](https://www.geogebra.org/m/gzxz57ak) können Sie das Baumdiagramm für den zweifachen Münzwurf näher erkunden.
+
+```{=html}
+<iframe width="780" height="500" src="https://www.geogebra.org/m/gzxz57ak" title="Baumdiagramm zum zweifachen Münzwurf"></iframe>
+```
+
+
+
 
 Wir werfen eine faire Münze *drei* Mal (Abb. @fig-3muenzen)
 
@@ -1003,8 +1228,8 @@ plots(plot16a1, plot16a2, plot16c)
 
 Abb. @fig-unabh-e zeigt, dass gilt: $P(A\cap B) = P(A) \cdot P(B) = P(B) \cdot P(A)$.
 
-
-#### Kalt und Regen
+:::{#exm-kaltregen}
+### Kalt und Regen
 
 Von @mcelreath_statistical_2020 stammt diese Verdeutlichung der gmeinsamen Wahrscheinlichkeit:
 
@@ -1018,7 +1243,7 @@ Die Wahrscheinlichkeit für kalt und Regen ist die Wahrscheinlichkeit von *Kält
 
 Das Gesagte als Emoji-Gleichung:
 
-$P(❄️ und ⛈️) = P(⛈️ |❄️ ) \cdot P(❄️) =  P(❄️ |⛈️ ) \cdot P(⛈️) = P(⛈️ und  ❄️)$
+$P(❄️ \text{ und } ⛈️) = P(⛈️ |❄️ ) \cdot P(❄️) =  P(❄️ |⛈️ ) \cdot P(⛈️) = P(⛈ \text{ und }   ❄️)$
 
 
 
@@ -1027,7 +1252,8 @@ Allgemein:
 $P(A\cap B) = P(A) \cdot P(B|A) = P(B) \cdot P(A|B)$
 
 
-Man kann also die "Gleichung drehen".
+Man kann also die "Gleichung drehen".$\square$
+:::
 
 #### Abhängige Ereignisse
 
@@ -1036,6 +1262,7 @@ Man kann also die "Gleichung drehen".
 Ein Baumdiagramm bietet sich zur Visualisierung abhängiger Ereignisse an, s. Abb. @fig-baum-abh. Für unabhängige Ereignisse übrigens auch.
 
 
+:::{#exm-urne1}
 In einer Urne befinden sich fünf Kugeln, von denen vier rot sind und eine blau ist.
 
 wie groß ist die Wahrscheinlichkeit, dass bei zwei Ziehungen ohne Zurücklegen (*ZOZ*) *zwei rote Kugeln* gezogen werden [@bourier_2018], S. 47.
@@ -1066,7 +1293,46 @@ flowchart LR
 
 
 
-Es gilt also: $P(A\cap B) = P(A) \cdot P(B|A)$.
+Es gilt also: $P(A\cap B) = P(A) \cdot P(B|A) \square$.
+:::
+
+
+
+:::{#exm-bertie-botts}
+### Bertie Botts Bohnen jeder Geschmacksrichtung
+
+>   Sei bloß vorsichtig mit denen. Wenn sie sagen jede Geschmacksrichtung, dann meinen sie es auch - Du kriegst zwar alle gewöhnlichen wie Schokolade und Pfefferminz und Erdbeere, aber auch Spinat und Leber und Kutteln. George meint, er habe mal eine mit Popelgeschmack gehabt.“
+
+— Ron Weasley zu Harry Potter^[Quelle: https://harrypotter.fandom.com/de/wiki/Bertie_Botts_Bohnen_jeder_Geschmacksrichtung]
+
+In einem Beutel liegen $n=20$ Bertie Botts Bohnen jeder Geschmacksrichtung.
+Uns wurde verraten, dass fast alle gut schmecken, also z.B. nach Schokolade, Pfefferminz oder Marmelade. Leider gibt es aber auch $x=3$ furchtbar scheußliche Bohnen (Ohrenschmalz-Geschmacksrichtung oder Schlimmeres).
+Sie haben sich nun bereit erklärt, $k=3$ Bohnen zu ziehen. Und zu essen, und zwar direkt und sofort!
+Also, jetzt heißt es tapfer sein. Ziehen und runter damit!
+
+Wie groß ist die Wahrscheinlichkeit, *genau eine* scheußliche Bohne zu erwischen?
+
+Nutzen Sie [diese App](https://www.geogebra.org/m/j545R3Fu), um das auszuprobieren.
+Sie müssen in der App noch die Zahl der Bohnen ($n$) und die Zahl der scheusslichen Bohnen ($x$) einstellen.$\square$
+:::
+
+
+:::{exr-baum3}
+### Baumdiagramm sucht Problem
+
+Überlegen Sie sich eine Problemstellung (Aufgabenstellung), die mit [folgender Baumdiagramm-App](
+https://www.geogebra.org/m/WVKur4yM) gelöst werden kann.$\square$
+:::
+
+```{=html}
+<iframe width="780" height="500" src="https://www.geogebra.org/m/WVKur4yM" title="Baumdiagramm sucht Problem"></iframe>
+```
+
+
+
+
+
+
 
 
 
@@ -1096,7 +1362,7 @@ flowchart LR
 
 Gesucht ist die Wahrscheinlichkeit $P(B)$.
 
-Dazu addieren wir die Warhscheinlichkeiten der relevanten Äste.
+Dazu addieren wir die Wahrscheinlichkeiten der relevanten Äste.
 
 ```{r}
 W_total <- 0.6 * 0.05 + 0.1 * 0.02 + 0.3 * 0.04
@@ -1108,13 +1374,24 @@ Die totale Wahrscheinlichkeit beträgt also $P(B) = 4.4\%$.
 Einfacher noch ist es, wenn man anstelle von Wahrscheinlichkeiten absolute Häufigkeiten verwendet.
 
 
-### Bayes
 
-#### Bayes als Baum
+
+
+:::{#exm-bertie-botts2}
+### Bertie Botts Bohnen jeder Geschmacksrichtung, Teil 2
+
+Es ist die gleich Aufgabe wie @exm-bertie-botts, aber jetzt lautet die Frage: 
+Wie groß ist die Wahrscheinlichkeit, *mindestens eine* scheußliche Bohne zu erwischen?$\square$
+:::
+
+
+## Bayes' Theorem
+
+### Bayes als Baum
 
 Gesucht sei $P(A_1|B)$.
 
-Für Bayes' Formel setzt man die Wahrscheinlichkeit des  *günstigen* Ast zur Wahrscheinlichkeit aller relevanten Äste, $P(B)$.
+Für Bayes' Formel^[synonym: Satz von Bayes] setzt man die Wahrscheinlichkeit des  *günstigen* Ast zur Wahrscheinlichkeit aller relevanten Äste, $P(B)$.
 
 Der günstige Ast ist hier schwarz gedruckt, die übrigen Äste gestrichelt, s. @fig-tot-wskt2.
 
@@ -1134,15 +1411,15 @@ flowchart LR
 ```
 
 
-
 $$P(A|B) = \frac{P(A1 \cap B)}{P(B)} = \frac{0.6 \cdot 0.05}{0.03 + 0.002 + 0.012} = \frac{0.03}{0.044} \approx 0.68$$
+
 
 $P(A|B)$ beträgt also ca. 68%.
 
 Zur Erinnerung: $P(B)$ ist die totale Wahrscheinlichkeit.
 
 
-## Bayes' Theorem
+
 
 ### Bayes als bedingte Wahrscheinlichkeit
 
@@ -1152,7 +1429,7 @@ Bayes' Theorem ist auch nur eine normale bedingte Wahrscheinlichkeit:
 
 $P(A|B) = \frac{\overbrace{ P(A\cap B)}^\text{umformen}}{P(B)}$
 
-$P(A\cap B)$ kann man  umformen, s. @eq-bayes1:
+$P(A| B)$ kann man  umformen, s. @eq-bayes1:
 
 $$P(A|B) =\frac{P(A\cap B)}{P(B)} = \frac{P(B|A) \cdot P(A)}{P(B)}$${#eq-bayes1}
 
@@ -1174,7 +1451,7 @@ $P(A|B) = \frac{P(A) \cdot P(B|A)}{P(B)}$
 In der Praxis nutzt man Bayes häufig, wenn man Daten zu einer Wirkung $W$ hat,
 und auf die Ursache $U$ zurückschließen möchte, sinngemäß:
 
-$W \quad \underrightarrow{Bayes} \quad U$.
+$$W \quad \underrightarrow{Bayes} \quad U$$
 
 Dann kann man @eq-bayes1 so schreiben, s. @eq-bayes2:
 
@@ -1183,7 +1460,7 @@ $$P(U|W) = \frac{ P(U) \cdot P(W|U) }{P(W)}$${#eq-bayes2}
 Eine ähnliche Situation, die in der Praxis häufig ist,
 dass man Daten $D$ hat und auf die Wahrscheinlichkeit einer Hypothese $H$ schließen möchte, s. @eq-bayes3.
 
-$D \quad \underrightarrow{Bayes} \quad H$.
+$$D \quad \underrightarrow{Bayes} \quad H$$
 
 
 $$P(H|D) = \frac{ P(H) \cdot P(D|H) }{P(D)}$${#eq-bayes3}
@@ -1225,14 +1502,20 @@ Das [Video zu Bayes von 3b1b](https://youtu.be/HZGCoVF3YvM) verdeutlicht das Vor
 ## Vertiefung
 
 
+
 Bei @henze_stochastik_2019 findet sich eine anspruchsvollere Einführung in das Rechnen mit Wahrscheinlichkeit; dieses Kapitel behandelt ein Teil des Stoffes  der Kapitel 2 und 3 von @henze_stochastik_2019.
 
 
 
 ## Aufgaben
 
+- Bearbeiten Sie die Aufgabe in der angegeben Literatur.
 
-Zusätzlich zu den Aufgaben im Buch:
+- Mit [dieser App, die ein zweistufiges Baumdiagramm zeigt](https://www.geogebra.org/m/n4xrk4x5), können Sie das Verhalten von verschiedenen Arten von Wahrscheinlichkeiten weiter untersuchen.
+
+- [Diese App lässt dich herausfinden, ob du wirklich krank bist, wenn der Arzt es bheauptet.](https://www.geogebra.org/m/tkdfxa8f)
+
+
 
 - [mtcars-abhaengig](https://datenwerk.netlify.app/posts/mtcars-abhaengig/mtcars-abhaengig.html)
 - [voll-normal](https://datenwerk.netlify.app/posts/voll-normal/voll-normal.html)
