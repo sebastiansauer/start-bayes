@@ -14,9 +14,10 @@ Sie können ...
 
 
 - den Begriff der Zufallsvariablen erläutern
-- die Begriffe von Wahrscheinlichkeitsdichte und Verteilungsfunktion erläutern und anhand einfacher Beispiele ausrechnen
-- den Begriff einer Gleichverteilung erläutern und einfache Fallbeispiele ausrechnen
+- die Begriffe von Wahrscheinlichkeitsdichte und Verteilungsfunktion erläutern 
+- den Begriff einer Gleichverteilung erläutern 
 - die Parameter einer Normalverteilung nennen und erläutern
+- zentrale Konzepte in R umsetzen
 
 
 
@@ -24,12 +25,13 @@ Sie können ...
 
 
 
-Lesen Sie zusätzlich zum Stoff dieses Kapitels noch @bourier_2018, folgende Abschnitte:
+Lesen Sie selbständig, zusätzlich  zum Stoff dieses Kapitels noch @bourier_2018; dort folgende Abschnitte:
 
 - Kap. 6.1 (Zum Begriff Zufallsvariable)
 - Kap. 6.3 (Stetige Zufallsvariablen)
 - Kap. 7.1.1 (Binomialverteilung)
-- Kap. 7.2.1 (Gleichverteilung) und 7.2.3 (Normalverteilung)
+- Kap. 7.2.1 (Gleichverteilung)
+- Kap. 7.2.3 (Normalverteilung)
 
 Lösen Sie auch die Übungsaufgaben dazu.
 
@@ -46,7 +48,6 @@ Beachten Sie, dass neben den Inhalten des Kapitels auch stets der vorzubereitend
 
 ```{r}
 #| message: false
-library(patchwork)
 library(tidyverse)
 ```
 
@@ -58,6 +59,8 @@ library(patchwork)
 library(faux)
 library(openintro)
 library(easystats)
+library(ggraph)
+library(knitr)
 ```
 
 
@@ -77,6 +80,8 @@ scale_colour_discrete <- function(...)
 
 
 ### Zentrale Begriffe
+
+
 
 
 #### Eigenschaften von Zufallsvariablen
@@ -101,38 +106,316 @@ scale_colour_discrete <- function(...)
 
 
 
+## Zufallsvariable
 
-## Verteilungen
+
+:::{#exm-thesis}
+Schorsch sucht eine Betreuerin für seine Abschlussarbeit.
+An die ideale Betreuerin setzt er 4 Kriterien an: a) klare, schriftliche fixierte Rahmenbedingungen, b) viel Erfahrung, c) guten Ruf und d) interessante Forschungsinteressen.
+Je mehr dieser 4 Kriterien erfüllt sind, desto besser. 
+Schorsch geht davon aus, dass die 4 Kriterien voneinander unabhängig sind (ob eines erfüllt ist oder nicht, ändert nichts an der Wahrscheinlichkeit eines anderen Kriteriums).
+Schorsch interessiert sich also für die *Anzahl* der erfüllten Kriterien, also eine Zahl von 0 bis 4.
+Er schätzt die Wahrscheinlichkeit für einen "Treffer" in jedem seiner 4 Kriterien auf 50%.
+Viel Glück, Schorsch!
+Sein Zufallsexperiment hat 16 Ausgänge, s. @fig-4muenzen und @tbl-schorsch-zufall. Ganz schön komplex.
+Eigentlich würden ihm ja eine Darstellung mit 5 Ergebnissen, also der "Gutachter-Score" von 0 bis 4 ja reichen. 
+Wie können wir es übersichtlicher für Schorsch?$\square$
+:::
 
 
-:::callout-important
-Eine *Verteilung* zeigt, welche Ausprägungen eine Variable aufweist und wie häufig bzw. wahrscheinlich diese sind. 
-Einfach gesprochen, veranschaulicht eine Balken- oder Histogramm eine Verteilung. Man unterscheidet Häufigkeitsverteilungen (s. Abb. @fig-mtcars-freq) von Wahrscheinlichkeitsverteilungen (Abb. @fig-uniform).
+ 
+
+```{r}
+#| echo: false
+#| label: fig-4muenzen
+#| fig-cap: Ein Baumdiagramm mit 16 Ausgängen, analog zur 4 Münzwürfen
+my_tree <- tidygraph::create_tree(31, 2, mode = "out")
+
+my_tree %>%
+  mutate(lab = 1:31) %>% 
+  ggraph(circular = FALSE) +
+  geom_edge_link() +
+  geom_node_label(mapping = aes(label = lab)) +
+  coord_flip() +
+  scale_y_reverse() +
+  theme_void() +
+  theme(text = element_text(size = 1)) +
+  theme_minimal()
+```
+
+
+
+```{r}
+#| echo: false
+#| tbl-cap: Schorschs Zufallsexperiment, Auszug der Elementarereignisse
+#| label: tbl-schorsch-zufall
+d <- tibble::tribble(
+   ~i, ~Elementarereignis, ~`Pr(EE)`, ~Trefferzahl, ~`Pr(Trefferzahl)`,
+  "1",             "NNNN",    "1/16",          "0",             "1/16",
+  "2",             "NNNT",    "1/16",          "1",              "1/4",
+  "3",             "NNTN",    "1/16",          "1",              "1/4",
+  "4",             "NTNN",    "1/16",          "1",              "1/4",
+  "5",             "TNNN",    "1/16",          "1",              "1/4",
+  "6",             "NNTT",    "1/16",          "2",                "…",
+  "…",                "…",       "…",          "…",                "…"
+  )
+
+
+kable(d, booktabs = TRUE)
+```
+
+
+Schorsch braucht also eine übersichtlichere Darstellung;
+die Zahl der Treffer und ihre Wahrscheinlichkeit würde ihm ganz reichen.
+In vielen Situationen ist man an der *Anzahl der Treffer* interessiert.
+Die Wahrscheinlichkeit für eine bestimmte Trefferanzahl bekommt man einfach durch Addieren der Wahrscheinlichkeiten der zugehörigen Elementarereignisse, s. @tbl-schorsch-zufall.
+Hier kommt die *Zufallsvariable* ins Spiel.
+Wir nutzen sie, um die Anzahl der Treffer in einem Zufallsexperiment zu zählen.
+
+
+:::{#def-zufallsvariable}
+### Zufallsvariable
+Die Zuordnung der Elementarereignisse eines Zufallsexperiment zu genau einer Zahl $\in \mathbb{R}$ nennt man Zufallsvariable.$\square$
+:::
+
+Die den Elementarereignisse zugewiesenen Zahlen nennt man *Realisationen* oder Ausprägungen der Zufallsvariablen
+
+:::{#exm-lotto}
+### Lotto
+Ein Lottospiel hat ca. 14 Miollionen Elementarereignisse. Die Zufallsvariable "Anzahl der Treffer" hat nur 7 Realisationen: 0,1,...,6.$\square$
+:::
+
+Es hat sich eingebürgert, Zufallszahlen mit $X$ zu bezeichnen (oder anderen Buchstaben weit hinten aus dem Alphabet).
+
+Man schreibt kurz: $X: \Omega \rightarrow \mathbb{R}$. Um die Vorschrift der Zuordnung genauer zu bestimmen, kann man folgende Kurzschreibweise nutzen:
+
+
+${\displaystyle X(\omega )={\begin{cases}1,&{\text{wenn }}\omega ={\text{Kopf}},\\[6pt]0,&{\text{wenn }}\omega ={\text{Zahl}}.\end{cases}}}$
+
+
+@fig-zv stellt diese Abbildung dar.
+
+
+
+```{mermaid}
+%%| fig-cap: Eine Zufallsvariable ist eine Abbildung vom Ereignisraum zu den Realisationen der Zufallsvariable. Außerdem sieht man, wie Zufallsvariablen genutzt werden, um Wahrsscheinlichkeiten zu bestimmen.
+%%| label: fig-zv
+flowchart LR
+  subgraph A[Ereignisraum]
+    Kopf
+    Zahl
+  end
+  subgraph B[Zufallsvariable]
+    null[0]
+    eins[1]
+  end
+  subgraph C[Wahrscheinlichkeit]
+    half[50%]
+  end
+  
+  Kopf --> null
+  Zahl --> eins
+  null --> half
+  eins --> half
+```
+
+
+
+Zufallsverteilungen kann im zwei Artein einteilen:
+
+1. diskrete Zufallsvariablen
+2. stetige Zufallsvariablen
+
+
+
+## Diskrete Zufallsvariable
+
+#### Grundlagen
+
+Eine diskrete Zufallsvariable ist dadurch gekennzeichnet, dass nur bestimmte Realisationen möglich sind, zumeist natürliche Zahlen, wie 0, 1, 2,..., .
+@fig-zuv-disk versinnbildlicht die Zufallsvariable des "Gutachter-Scores", s. @exm-thesis.
+
+
+```{r}
+#| echo: false
+#| label: fig-zuv-disk
+#| fig-cap: Sinnbild einer diskreten Zufallsvariablen X für Schorschs Suche nach einer Betreuerin seiner Abschlussarbeit. X gibt den Score der Gutachterin wider.
+ggplot(data.frame(x=c(0:4), y = 0), aes(x,y)) +
+  geom_point(size = 5, alpha = .7) +
+  scale_y_continuous(limits = c(-1,1), breaks = NULL) +
+  scale_x_continuous(breaks = 0:4, labels = 0:4) +
+  theme_minimal()
+```
+
+
+
+:::{#exm-zv-disk}
+### Diskrete Zufallsvariablen
+
+- Anzahl der Bewerbungen bis zum ersten Job-Interview
+- Anzahl Anläufe bis zum Bestehen der Statistik-Klausur
+- Anzahl der Absolventen an der HS Ansbach pro Jahr
+- Anzahl Treffer beim Kauf von Losen
+- Anzahl Betriebsunfälle
+- Anzahl der Produkte in der Produktpalette$\square$
 :::
 
 
 
+:::{#exm-zweiwuerfel}
+Der zweifache Würfelwurf ist ein typisches Lehrbuchbeispiel für eine diskrete Zufallsvariable.^[da einfach und deutlich]
+Hier ist $S$^[S wie Summe] die Augen*s*umme des zweifachen Würfelwurfs und $S$ ist eine Zahl zwischen 2 und 12.
+Für jede Realisation $X=x$ kann die Wahrscheinlichkeit berechnen, @fig-zweiwuerfel-vert versinnbildlicht die Wahrscheinlichkeit für jede Realisation von $X$.$\square$
+:::
+
+![Augensumme des zweifachen Würfelwurfs; für jede Realisation von S ist die zugehörige Wahrscheinlichkeit dargestellt. Bildquelle: Tim Stellmach, Wikipedia, PD](img/Dice_Distribution_(bar).svg.png){#fig-zweiwuerfel-vert width=50%}
 
 
-### Häufigkeitsverteilung
+
+*Wahrscheinlichkeitsverteilungen* dienen dazu, den Realisiationen einer Zufallsvariable eine Wahrscheinlichkeit zuzuordnen.
 
 
-  
-Die Häufigkeitsverteilung eines *diskreten* Merkmals $X$ mit $k$ Ausprägungen zeigt, 
-wie häufig die einzelnen Ausprägungen sind.
-So hat die Variable *Zylinder* (in einem Datensatz) etwa die Ausprägungen 4,6 und 8.
-  
-  
-```{r Normalverteilung-1, echo = TRUE}
-data(mtcars)
-  mtcars %>% 
-    count(cyl)
+:::{#def-wvert-disk}
+### Diskrete Wahrscheinlichkeitsverteilung
+Eine *diskrete* Wahrscheinlichkeitsverteilung der (diskreten) Zufallsvariablen $X$ ordnet jeder der $k$ Ausprägungen $X=x$ eine Wahrscheinlichkeit $p$ zu.$\square$
+:::
+
+:::{#exm-babies}
+### Wahrscheinlichkeit des Geschlechts bei der Geburt
+So hat die Variable *Geschlecht eines Babies* die beiden Ausprägungen *Mädchen* und *Junge* mit den Wahrscheinlichkeiten $p_M = 51.2\%$ bzw. $p_J = 48.8\%$, laut einer Studie [@gelman_regression_2021].$\square$
+:::
+
+
+Zwischen der deskriptiven Statistik und der Wahrscheinlichkeitstheorie bestehen enge Parallelen, @tbl-wkeit-desk stellt einige zentrale Konzepte gegenüber.
+
+```{r}
+#| echo: false
+#| label: tbl-wkeit-desk
+#| tbl-cap: "Gegenüberstellung von Wahrscheinlichkeitstheorie und deskriptiver Statistik"
+d <- tibble::tribble(
+         ~Wahrscheinlichkeitstheorie,                      ~Desktiptive.Statistik,
+                   "Zufallsvariable",                                   "Merkmal",
+                "Wahrscheinlichkeit",               "relative Häufigkeit, Anteil",
+       "Wahrscheinlichkeitsfunktion",   "einfache relative Häufigkeitsverteilung",
+               "Verteilungsfunktion", "kumulierte relative Häufigkeitsverteilung",
+                    "Erwartungswert",                                "Mittelwert",
+                           "Varianz",                                   "Varianz"
+       )
+
 ```
-  
-  
-Abb. @fig-mtcars-freq, links, visualisiert die Häufigkeitsverteilung von `cyl`.
 
 
+
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+dice_outcomes <- expand.grid(Die1 = 1:6, Die2 = 1:6)
+
+# Calculate the sum of the two dice for each outcome
+dice_outcomes$Sum <- dice_outcomes$Die1 + dice_outcomes$Die2
+
+# Calculate the probability of each sum using the table function
+sum_counts <- table(dice_outcomes$Sum)
+total_outcomes <- sum(sum_counts)
+probabilities <- sum_counts / total_outcomes
+
+twodice <- tibble(
+  Augensumme = 2:12,
+  p = probabilities)
+
+
+p_twodice <- ggplot(twodice, aes(x = Augensumme, y = p)) + 
+  geom_col() +
+  geom_label(aes(y = p, label = round(p, 2), nudge_y = .1))
+  
+```
+
+
+
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| 
+num_trials <- 1000  # You can change this to the desired number of trials
+
+# Simulate repeated throws of two dice
+results <- replicate(num_trials, {
+  die1 <- sample(1:6, 1, replace = TRUE)  # Simulate the first die
+  die2 <- sample(1:6, 1, replace = TRUE)  # Simulate the second die
+  c(Die1 = die1, Die2 = die2)  # Return the results as a vector
+}) |> 
+  t() |> 
+  as_tibble() |> 
+  mutate(Augensumme = Die1 + Die2)
+
+# Display
+
+results_count <-
+  results |> 
+  count(Augensumme) |> 
+  mutate(prob = n/num_trials)
+
+p_sim2dice <- 
+  ggplot(results_count) +
+  aes(x = Augensumme, y = n) +
+  geom_col() +
+  geom_label(aes(y = n, label = round(prob, 2), nudge_y = .1))
+```
+
+
+
+
+
+Eine *Verteilung* zeigt, welche Ausprägungen eine Variable aufweist und wie häufig bzw. wahrscheinlich diese sind. 
+Einfach gesprochen veranschaulicht eine Balken- oder Histogramm eine Verteilung. Man unterscheidet Häufigkeitsverteilungen (s. Abb. @fig-2dice-sim) von Wahrscheinlichkeitsverteilungen (Abb. @fig-2dice-prob).
+
+
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+#| echo: false
+#| fig-cap: Wahrscheinlichkeiten des zweifachen Würfelwurfs
+#| label: fig-2dice-prob
+p_twodice
+```
+
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: false
+#| fig-cap: (relative und absolute) Häufigkeiten des zweifachen Würfelwurfs, 1000 Mal wiederholt
+#| label: fig-2dice-sim
+p_sim2dice
+```
+:::
+
+::::
+
+
+
+
+
+
+:::{#exm-mtcars)
+### Häufigkeitsverteilung bei `mtcars`
+
+Die Häufigkeitsverteilung eines *diskreten* Merkmals $X$ mit $k$ Ausprägungen zeigt (vgl. tbl-hauef),
+wie häufig die einzelnen Ausprägungen sind.
+So hat die Variable *Zylinder* (in einem Datensatz) etwa die Ausprägungen 4,6 und 8.$\square$
+:::
+
+
+:::: {.columns}
+
+::: {.column width="70%"}
 
 
 ```{r}
@@ -152,20 +435,74 @@ p2 <- mtcars %>%
 plots(p1, p2, n_rows = 1)
 ```
   
+:::
+
+::: {.column width="30%"}
+```{r }
+#| eval: true
+#| echo: false
+#| tbl-cap: Eine diskrete Häufigkeitsverteilung, dargestellt in einer Häufigkeitstabelle
+#| label: tbl-hauef-tab
+data(mtcars)
+  mtcars %>% 
+    count(cyl)
+```
+:::
+
+::::
 
 
 
- 
+  
+  
+Abb. @fig-mtcars-freq, links, visualisiert die Häufigkeitsverteilung von `cyl`.
 Ein *stetiges* Merkmal, wie `hp` (PS-Zahl), lässt sich durch Klassenbildung in ein diskretes umwandeln (diskretisieren), s. Abb. @fig-mtcars-freq, rechts.
 
-### Wahrscheinlichkeitsverteilung
 
-Wahrscheinlichkeitsverteilungen dienen dazu, Ereignissen einer Zufallsvariable eine Wahrscheinlichkeit zuzuordnen.
+:::{#def-w-fun)
+### Wahrscheinlichkeitsfunktion
+
+Die Funktion $f$, die den möglichen Realisationen $x_i$ der diskreten Zufallsvariablen $X$ die Eintrittswahrscheinlichkeiten zuordnet, heißt Wahrscheinlichkeitsfunktion.$\square$
+:::
 
 
-Eine *diskrete* Wahrscheinlichkeitsverteilung der (diskreten) Zufallsvariablen $X$ ordnet jeder der $k$ Ausprägungen $X=x$ eine Wahrscheinlichkeit $p$ zu. So hat die Variable *Geschlecht eines Babies* die beiden Ausprägungen *Mädchen* und *Junge* mit den Wahrscheinlichkeiten $p_M = 51.2\%$ bzw. $p_J = 48.8\%$ [@gelman_regression_2021].
+:::{#exm-w-fun}
+Die Wahrscheinlichkeitsfunktion für $X$ "Augensumme im zweifachen Würfelwurf" ist in @fig-2dice-prob visualisiert.$\square$ 
+:::
 
-Bei *stetigen* Zufallsvarialben $X$ geht man von unendlich vielen Ausprägungen aus; die Wahrscheinlichkeit einer bestimmten Ausprägung ist (praktisch) Null: $p(X=x_j)=0, \quad j=1,...,+\infty$. 
+
+:::{#exm-muenz}
+Die Wahrscheinlichkeitsfunktion für $X$ "Treffer im einfachen Münzwurf, mit Zahl ist Treffer" ist $Pr(X=1)=1/2.$, vgl. @fig-zv.$\square$
+:::
+
+
+:::{#def-vert-fun}
+### Verteilungsfunktion
+Die Verteilungsfunktion $F$ gibt die Wahrscheinlichkeit an, dass die diskrete Zufallsvariable $X$ eine Realisation annimmt, die kleiner oder gleich $x$ ist.$\square$
+:::
+
+
+
+Die Berechnung von $F(x)$ erfolgt, indem die Wahrscheinlichkeiten aller möglichen Realisationen $x_i$, die kleiner oder gleich dem vorgegebenen Realisationswert $x$ sind, addiert werden:
+
+$F(x) = \sum_{x_ \le x} Pr(X=x_i).$
+
+
+
+
+
+
+
+
+
+
+
+:::{#def-wvert-stetig}
+### Stetige Wahrscheinlichkeitsverteilung
+Bei *stetigen* Zufallsvariablen $X$ geht man von unendlich vielen Ausprägungen aus; die Wahrscheinlichkeit einer bestimmten Ausprägung ist (praktisch) Null: $p(X=x_j)=0, \quad j=1,...,+\infty \square$.
+:::
+
+
 So ist die Wahrscheinlichkeit, dass eine Person exakt 166,66666666... cm groß ist, (praktisch) Null.
 Man gibt stattdessen die *Dichte* der Wahrscheinlichkeit an: Das ist die Wahrscheinlichkeit(smasse) pro  Einheit von $X$.
 
@@ -216,9 +553,7 @@ uniform_Plot(0, 3)
 
 
 
-Bei $X=0$ hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von 50%.
-
-
+Bei $X=0$ hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von 50%, da der Bereich $[-0.5, +0.5]$ die Hälfte (50%) der Wahrscheinlichkeitsmasse der Verteilung beinhaltet, s. @fig-uniform.
 Definierendes Kennzeichen einer Gleichverteilung ist die *konstante Dichte*.
 
 
@@ -227,15 +562,16 @@ Definierendes Kennzeichen einer Gleichverteilung ist die *konstante Dichte*.
 
 
 Möchte man die Verteilungsfunktion einer stetigen Zufallsvariablen berechnen,
-kann das ganz schön kompliziert werden, schließlich muss man Integrale lösen.
+kann die Mathe ganz schön kompliziert werden, schließlich muss man Integrale lösen.
 Aber es gibt einen Trick, wie man die Sache stark vereinfachen kann: 
 man simuliert die Verteilung. Was bedeutet das?
 
 
+
 Angenommen, die Wartezeit auf einen Bus ist gleichverteilt (engl. *uniform distribution*); 
-der Bus kommt regelmäßig und püunktlich alle 10 Minuten. 
+der Bus kommt regelmäßig und pünktlich alle 10 Minuten. 
 Die minimale Wartezeit beträgt also 0 Minuten und die maximale 10 Minuten.
-Nennen wir die zugehörige Zufallsvariable $X$, das ist schön kurz.
+Nennen wir die zugehörige Zufallsvariable $X$, das ist schön kurz zu schreiben.
 
 Dann schreibt man auch:
 
@@ -243,17 +579,14 @@ $$X \sim Unif(0,10).$$
 
 
 
-Ja, das sieht fancy aus, aber wo ist der versprochene Trick zum Vereinfachen?
+Ja, das sieht fancy aus, ist aber dafür schön kurz, aber wo ist der versprochene Trick zum Vereinfachen?
 Kommt gleich, Moment.
 
 Eine Frage könnte nun lauten, wie groß ist die Wahrscheinlichkeit, dass man zwischen 3 und 5 Minuten auf den Bus warten muss?
+Achtung: Hier ist der Trick. Nämlich, dass wir Integralrechnung gegen stumpfes Zählen eintauschen.
 
-
-Der Trick ist, dass wir Integralrechnung gegen stumpfes Zählen eintauschen.
-
-Computer (und damit R) haben eingebaut Funktionen, die eine beliebige Zufallszahl ziehen können,
-zum Beispiel gleichverteilt
-
+Computer (und damit R) haben eingebaute Funktionen, die eine beliebige Zufallszahl ziehen können,
+zum Beispiel gleichverteilte.
 Auf Errisch heißt das Zauberwort `runif()`:
 
 ```{r}
@@ -268,21 +601,28 @@ set.seed(42)
 runif(n = 1, min = 0, max = 10)
 ```
 
-Auf Deutsch heißt das: "Hey R, ich hätte gerne eine (daher `n = 1`) Zufallszahl *r* wie *random*,
+Auf Deutsch heißt das: 
+
+>   "Hey R, ich hätte gerne eine (daher `n = 1`) Zufallszahl (*r* wie *random*),
 die gleichverteilt ist (*uniform*) mit `min = 0` und `max = 10`.
+>   🤖 Jawohl, oh herrliches Leberwesen
+
+
 
 (Zu) anschaulich gesprochen: R hat den Bus kommen lassen und es hat gut 9.1 Minuten gedauert,
 bis er da war.
-
 Achtung, jetzt kommt's: Jetzt lassen wir R mal $10^5$ (`1e5` auf Computersprech) Busse vorfahren. 
-R soll jedes Mal notieren, wie lange man auf den Bus warten musste.^[Machen Sie das mal ohne Computer, wenn Sie ein Wochenende Langeweile haben.]
+R soll jedes Mal notieren, wie lange man auf den Bus warten musste.^[Machen Sie das mal ohne Computer, wenn Sie ein Wochenende lang Langeweile haben.]
 
+
+:::: {.columns}
+
+::: {.column width="50%"}
 
 ```{r}
 #| eval: false
 x_simu <- runif(n = 1e5, min = 0, max = 10)
 ```
-
 
 ```{r}
 #| echo: false
@@ -296,17 +636,36 @@ x_simu_df <-
 ```
 
 
+
 Schauen wir uns die Verteilung an, s. @fig-simu-gleichvert.^[Alternativ kann man z.B. auch `ggplot` verwenden: `ggplot(x_simu_df, aes(x = x_simu)) +  geom_histogram(bins = 50)`.]
+
+```{r}
+#| eval: false
+
+library(ggpubr)
+gghistogram(x_simu_df, x = "x_simu", fill = "grey20")
+```
+
+
+:::
+
+::: {.column width="50%"}
 
 ```{r}
 #| label: fig-simu-gleichvert
 #| fig-cap: "Simulation einer gleichverteiluten Zufallsvariablen"
+#| eval: true
+#| echo: false
 
 library(ggpubr)
 gghistogram(x_simu_df, x = "x_simu", fill = "grey20")
-
-
 ```
+
+
+:::
+
+::::
+
 
 
 
@@ -315,13 +674,34 @@ Okay, unsere Verteilung sieht nicht *exakt* gleichverteilt, aber einigermaßen.
 Gut genug für unsere Zwecke!
 
 So, und jetzt kommt das Ernten.
-Wir können jetzt nämlich einfach zählen (`count()`), um die Antwort auf unsere Frage (der Wartezeit 3-5 Min.) zu erhalten.
+Wir können jetzt nämlich einfach zählen (`count()`), um die Antwort auf unsere Frage (der Wartezeit 3-5 Min.) zu erhalten, s. @tbl-count-simu-bus.
 
 
+:::: {.columns}
+
+::: {.column width="50%"}
 ```{r}
+#| eval: false
 x_simu_df %>% 
   count(Schnittmenge = x > 3 & x < 5)
 ```
+
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: false
+#| tbl-cap: Häufigkiten auslesen anstelle von Integralen berechnen
+#| label: tbl-count-simu-bus
+x_simu_df %>% 
+  count(Schnittmenge = x > 3 & x < 5)
+```
+
+:::
+
+::::
+
+
 
 
 Das Zeichen `&` ist das logische UND, also die Schnittmenge der zwei Mengen $A := \{x|x>3\}$ und $B := \{x|x<5\}$, 
@@ -330,7 +710,7 @@ also $A \cap B$.
 Wie man sieht, fallen ca. 20% der Stichproben in den entsprechenden Bereich. 
 
 
-Da viele Probleme, wenn sie komplexer werden, kaum noch analytisch (wie Integrieren) ausrechenbar sind,
+Da viele Probleme, wenn sie komplexer werden, kaum noch "analytisch" (d.h. wie Ausrechnen von Integralen) lösbar sind,
 greift man in der modernen (Analyse-)Welt oft lieber auf Simulationsverfahren zurück - Dank sei den schnellen Rechnern.
 Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen zurückgeführt.
 
@@ -342,7 +722,8 @@ Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen z
 
 ## Binomialverteilung {#sec-bin-distrib}
 
-:::callout-important
+:::{#def-binvert}
+### Binomialverteilung
 Die Binomialverteilung dient zur Darstellung der Wahrscheinlichkeit der Ergebnisse eines wiederholten binomialen Zufallexperiments,
 eines Zufallsexperiments mit *zwei* Ergebnissen also. Typisches Beispiel ist ein Münzwurf.
 Bei jeder Wiederholung des Zufallexperiments bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (Ziehen mit Zurücklegen). Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit eines bestimmten Ergebnisses im zweiten Wurf, etc. 
@@ -388,12 +769,15 @@ Um die Wahrscheinlichkeitsverteilung einer binomialverteilte Zufallsvariable aus
 :::
 
 
-Wie groß ist die Wahrscheinlichkeit von $A^{\prime}$, d.h. bei $n=4$ Zügen $x=2$ Treffer zu erzielen, gegeben dass die Trefferwahrscheinlichkeit bei $p=2/4$ liegt?
+:::{exr-bin1}
+### Vier Lose, zwei Treffer
+Wie groß ist die Wahrscheinlichkeit von $A^{\prime}$, d.h. bei $n=4$ Zügen $x=2$ Treffer zu erzielen (und $n-x=2$ Nieten), gegeben dass die Trefferwahrscheinlichkeit bei $p=2/4$ liegt?$\square$
+:::
 
-Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen  (Multiplikationssatz), s. @fig-3muenzen.
+
+Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen  (Multiplikationssatz), vgl. @fig-3muenzen.
 Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit, $W$ (Additionssatz).
 Das ist einfach, dauert aber.
-
 In diesem Fall ist die Wahrscheinlichkeit eines (günstigen) Pfades, $A$:
 
 $P(A) = P(T)^2 \cdot P(N)^2 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right) ^2$.
@@ -404,7 +788,6 @@ p_a
 ```
 
 Etwas mühevolles Zählen der Pfade würde uns zeigen, dass es $k=6$ Pfade gibt, die alle die gleiche Wahrscheinlichkeit, $P(A)$, aufweisen.
-
 Damit beträgt die Wahrscheinlichkeit des gesuchten Ereignisses $A^{\prime}$ (2 Treffer bei 4 Zügen):
 
 $P(A^{\prime}) = 6 \cdot P(A)$.
@@ -422,9 +805,9 @@ Mithilfe der Formel der Binomialverteilung lässt sich das Ergebnis, die Wahrsch
 $$P(A^{\prime}) = k \cdot P(A)$$
 Dabei steht $k$ für die Anzahl der günstigen Pfade und $P(A)$ für die Wahrscheinlichkeit eines günstigen Pfades (d.h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit. 
 
-Die Anzahl der Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt:
+Die Anzahl der Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt:^[wobei gelten muss $n \ge k$]
 
-$\tbinom{n}{k}$
+$\tbinom{n}{k}= \frac{n!}{k!(n-k)!}$
 
 Lies: "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige Ereignisse (günstige Pfade).
 
