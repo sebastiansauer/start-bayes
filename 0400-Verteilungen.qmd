@@ -61,6 +61,8 @@ library(openintro)
 library(easystats)
 library(ggraph)
 library(knitr)
+
+source("funs/uniformplot.R")
 ```
 
 
@@ -75,7 +77,7 @@ scale_colour_discrete <- function(...)
   scale_color_okabeito()
 ```
 
-`
+
 
 
 
@@ -139,8 +141,7 @@ my_tree %>%
   coord_flip() +
   scale_y_reverse() +
   theme_void() +
-  theme(text = element_text(size = 1)) +
-  theme_minimal()
+  theme(text = element_text(size = 1))
 ```
 
 
@@ -228,7 +229,7 @@ Zufallsverteilungen kann im zwei Artein einteilen:
 
 
 
-## Diskrete Zufallsvariable
+### Diskrete Zufallsvariable
 
 #### Grundlagen
 
@@ -238,13 +239,16 @@ Eine diskrete Zufallsvariable ist dadurch gekennzeichnet, dass nur bestimmte Rea
 
 ```{r}
 #| echo: false
+#| fig-asp: 0.2
 #| label: fig-zuv-disk
 #| fig-cap: Sinnbild einer diskreten Zufallsvariablen X für Schorschs Suche nach einer Betreuerin seiner Abschlussarbeit. X gibt den Score der Gutachterin wider.
 ggplot(data.frame(x=c(0:4), y = 0), aes(x,y)) +
   geom_point(size = 5, alpha = .7) +
   scale_y_continuous(limits = c(-1,1), breaks = NULL) +
   scale_x_continuous(breaks = 0:4, labels = 0:4) +
-  theme_minimal()
+  theme_minimal() +
+  labs(y = "", x = "")
+
 ```
 
 
@@ -273,6 +277,12 @@ Für jede Realisation $X=x$ kann die Wahrscheinlichkeit berechnen, @fig-zweiwuer
 
 
 *Wahrscheinlichkeitsverteilungen* dienen dazu, den Realisiationen einer Zufallsvariable eine Wahrscheinlichkeit zuzuordnen.
+
+
+
+
+
+
 
 
 :::{#def-wvert-disk}
@@ -323,7 +333,8 @@ probabilities <- sum_counts / total_outcomes
 
 twodice <- tibble(
   Augensumme = 2:12,
-  p = probabilities)
+  p = probabilities) |> 
+  mutate(p_cum = cumsum(p))
 
 
 p_twodice <- ggplot(twodice, aes(x = Augensumme, y = p)) + 
@@ -350,20 +361,22 @@ results <- replicate(num_trials, {
 }) |> 
   t() |> 
   as_tibble() |> 
-  mutate(Augensumme = Die1 + Die2)
+  mutate(Augensumme  = Die1 + Die2)
 
 # Display
 
 results_count <-
   results |> 
   count(Augensumme) |> 
-  mutate(prob = n/num_trials)
+  mutate(prop = n/num_trials) |> 
+  mutate(n_cum = cumsum(n),
+         prop_cum = cumsum(prop))
 
-p_sim2dice <- 
+p_sim2dice <-
   ggplot(results_count) +
   aes(x = Augensumme, y = n) +
   geom_col() +
-  geom_label(aes(y = n, label = round(prob, 2), nudge_y = .1))
+  geom_label(aes(y = n, label = round(prop, 2)))
 ```
 
 
@@ -401,13 +414,20 @@ p_sim2dice
 
 
 
+:::{#exm-wert-wuerfel}
+### Wahrscheinlichkeitsfunktion eines Würfels
+@fig-w-wuerfel zeigt die Wahrscheinlichkeitsfunktion eines einfachen Würfelwurfs.$\square$
+:::
+
+![Wahrscheinlichkeitsfunktion eines einfachen Würfelwurfs, Bildrechte: Olex Alexandrov, Wikipedia, PD](img/220px-Fair_dice_probability_distribution.svg.png){#fig-w-wuerfel width=33%}
+
 
 
 
 :::{#exm-mtcars)
-### Häufigkeitsverteilung bei `mtcars`
+<!-- ### Häufigkeitsverteilung bei `mtcars` -->
 
-Die Häufigkeitsverteilung eines *diskreten* Merkmals $X$ mit $k$ Ausprägungen zeigt (vgl. tbl-hauef),
+Die Häufigkeitsverteilung eines *diskreten* Merkmals $X$ mit $k$ Ausprägungen zeigt (vgl.@ tbl-hauef),
 wie häufig die einzelnen Ausprägungen sind.
 So hat die Variable *Zylinder* (in einem Datensatz) etwa die Ausprägungen 4,6 und 8.$\square$
 :::
@@ -458,8 +478,9 @@ data(mtcars)
 Abb. @fig-mtcars-freq, links, visualisiert die Häufigkeitsverteilung von `cyl`.
 Ein *stetiges* Merkmal, wie `hp` (PS-Zahl), lässt sich durch Klassenbildung in ein diskretes umwandeln (diskretisieren), s. Abb. @fig-mtcars-freq, rechts.
 
+#### Wahrscheinlichkeitsfunktion
 
-:::{#def-w-fun)
+:::{#def-w-fun}
 ### Wahrscheinlichkeitsfunktion
 
 Die Funktion $f$, die den möglichen Realisationen $x_i$ der diskreten Zufallsvariablen $X$ die Eintrittswahrscheinlichkeiten zuordnet, heißt Wahrscheinlichkeitsfunktion.$\square$
@@ -475,6 +496,9 @@ Die Wahrscheinlichkeitsfunktion für $X$ "Augensumme im zweifachen Würfelwurf" 
 Die Wahrscheinlichkeitsfunktion für $X$ "Treffer im einfachen Münzwurf, mit Zahl ist Treffer" ist $Pr(X=1)=1/2.$, vgl. @fig-zv.$\square$
 :::
 
+#### Verteilungsfunktion
+
+
 
 :::{#def-vert-fun}
 ### Verteilungsfunktion
@@ -488,9 +512,206 @@ Die Berechnung von $F(x)$ erfolgt, indem die Wahrscheinlichkeiten aller möglich
 $F(x) = \sum_{x_ \le x} Pr(X=x_i).$
 
 
+```{r}
+#| echo: false
+p_F <- 
+  ggplot(twodice, aes(x = Augensumme, y = p_cum)) + 
+  geom_col() +
+  geom_line() +
+  geom_label(aes(label = round(p_cum, 2))) + 
+  scale_x_continuous(breaks = 1:12) +
+  labs(y = "Verteilungsfunktion F")
+
+
+y_lab <- "empirische Verteilungsfunktion F emp."
+
+p_F_emp <-
+  ggplot(results_count) +
+  aes(x = Augensumme, y = prop_cum) +
+  geom_col() +
+  geom_line() +
+  geom_label(aes(y = prop_cum, label = round(prop_cum, 2))) +
+  labs(y = y_lab) +
+  scale_x_continuous(breaks = 2:12)
+```
+
+
+Die Verteilungsfunktion ist das Pendant zur *kumulierten Häufigkeitsverteilung*, vgl. @fig-kum-h-vert und @fig-kum-h-vert-emp.
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+#| echo: false
+#| fig-cap: Kumulierte Häufigkeitsverteilung $H(X \le x_i)$
+#| label: fig-kum-h-vert
+p_F
+```
+
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: false
+#| fig-cap: Empirische Verteilungsfunktion (kumulierte Häufigkeitsverteilung) $H(X \le x_i)$ von 1000 zweifachen Münzwürfen
+#| label: fig-kum-h-vert-emp
+p_F_emp 
+```
+
+:::
+
+::::
+
+
+### Stetige Zufallsvariablen
+
+@fig-zv-stetig-groesse versinnbildlicht die stetige Zufallsvariable "Körpergröße", die (theoretisch, in Annäherung) jeden beliebigen Wert zwischen 0 und (vielleicht) 3m annehmen kann.
+
+```{r echo = FALSE}
+#| fig-cap: Sinnbild für eine stetige Zufallsvariable X "Körpergröße"
+#| label: fig-zv-stetig-groesse
+#| fig-asp: 0.2
+ 
+ggplot(data.frame(x=0, y = 0), aes(x,y)) +
+  #geom_point(size = 5, alpha = .7) +
+  scale_y_continuous(limits = c(-1,1), breaks = NULL) +
+  scale_x_continuous(breaks = c(0, 50, 100, 150, 200)) +
+  annotate("segment", x = 0, xend = 200, y = 0, yend = 0, color = "red")  +
+  theme_minimal() +
+  annotate("label", x = 200, y = 0, label = "...") +
+  labs(y = "", x = "")
+```
+
+
+:::{#def-zv-stetig}
+### Stetige Zufallsvariable
+Eine stetige Zufallsvariable gleicht einer diskreten, nur dass alle Werte im Intervall erlaubt sind.$\square$
+:::
+
+
+:::{#exm-zu-stetig}
+- Spritverbrauch
+- Körpergewicht von Professoren
+- Schnabellängen von Pinguinen
+- Geschwindigkeit beim Geblitztwerden$\square$
+:::
+
+
+:::{#exr-bus-42}
+### Warten auf den Bus, 42 Sekunden
+Sie stehen an der Bushaltestellen und warten auf den Bus.
+Langweilig.
+Da kommt Ihnen ein Gedanken in den Sinn: 
+Wie hoch ist wohl die Wahrscheinlichkeit, dass Sie *exakt* 42 Sekunden auf den Bus warten müssen, s. @fig-42?
+Weiterhin überlegen Sie, dass davon auszugehen ist, dass jede Wartezeit zwischen 0 und 10 Minuten gleich wahrscheinlich ist.
+Spätestens nach 10 Minuten kommt der Bus, so ist die Taktung (extrem zuverlässig).
+Exakt heißt *exakt*, also nicht 42.1s, nicht 42.01s, nicht 42.001s, etc. bis zur x-ten Dezimale.$\square$
+:::
+
+
+Nicht so einfach (?). Hingegen ist die Frage, wie hoch die Wahrscheinlichkeit ist, zwischen 0 und 5 Minuten auf den Bus zu warten ($0<x<5$), einfach: Sie beträgt 50%, wie man in @fig-p05 gut sehen kann.
 
 
 
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+```{r}
+#| echo: false
+#| #| label: "Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minuten auf den Bus zu warten? 50%!"
+#| fig-cap: fig-p05
+p_bus2 <-
+  uniform_Plot(0, 10) + 
+  geom_rect(xmin = 0, xmax = 5, ymin = 0, ymax = 0.1, fill = "#E69F00FF", alpha = .3) +
+  annotate("label", x = 2.5, y = .05, hjust = 0.5, label = "Pr(0<x<5)=50%",
+           color = "#E69F00FF")  +
+  annotate("label", x= 5, y = 0.1, label = "f(x) = 1/10", color = "#009E73FF", size = 10)
+
+p_bus2
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: false
+#| lafig-cap: "Wie groß ist die Wahrscheinlichkeit, genau 42 Sekunden auf den Bus zu warten? Hm."
+#| label: fig-p42
+p_bus1 <- 
+  uniform_Plot(0, 10) + 
+  geom_vline(xintercept = .42, color = "#56B4E9FF", size = 1) +
+  annotate("label", x = .42, y = .05, hjust = 0, label = "Pr(X=0.42)=?", color="#56B4E9FF") +
+  annotate("point", x = .42, y = 0, size = 5, color = "#56B4E9FF", alpha = .7) +
+  annotate("label", x= 5, y = 0.1, label = "f(x) = 1/10", color = "#009E73FF", size = 10)
+
+p_bus1
+```
+:::
+
+::::
+
+Vergleicht man @fig-p42 und @fig-p05 kommt man (vielleicht) zu dem Schluss, dass die Wahrscheinlichkeit exakt 42s auf den Bus zu warten, praktisch Null ist.
+Der Grund ist, dass die Fläche des Intervalls gegen Null geht, wenn das Intervall immer schmäler wird.
+Aus diesem Grund kann man bei stetigen Zufallszahlen nicht von einer Wahrscheinlichkeit eines bestimmten Punktes $X=x$ sprechen.
+Für einen bestimmten Punkt $X=x$ kann man aber die *Dichte* der Wahrscheinlichkeit angeben.
+
+Was  gleich ist in beiden Situationen ($Pr(X=.42)$ und $Pr(0<x<0.5)$) ist die *Wahrscheinlichkeitsdichte*, $f$.
+In @fig-p42 und @fig-p05 ist die Wahrscheinlichkeitsdichte gleich, $f=1/10=0.1$.
+
+:::{#def-wdichte}
+### Wahrscheinlichkeitsdichte
+Die Wahrscheinlichkeitsdichte $f(x)$ gibt an, wie viel Wahrscheinlichkeitsmasse pro Einheit von $X$ an an der Stelle $x$ ist.$\square$
+:::
+
+
+Die Wahrscheinlichkeitsdichte zeigt an, an welchen Stellen $x$ die Wahrscheinlichkeit besonders "geballt" oder "dicht" sind, s. @fig-wdichte-sinnbild.
+
+![Die Wahrscheinlichkeit, dass eine Zufallsvariable einen Wert zwischen und annimmt, entspricht dem Inhalt der Fläche unter dem Graph der Wahrscheinlichkeitsdichtefunktion. Bildrechte: 4C, Wikipedia, CC-BY-SA .](img/260px-Integral_as_region_under_curve.svg.png){#fig-wdichte-sinnbild width=33%}
+
+
+### Verteilungsfunktion
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+:::{#def-vert-fun-stetig}
+Die Verteilungsfunktion einer stetigen Zufallsvariablen gibt wie im diskreten Fall an, wie groß die Wahrscheinlichkeit für eine Realisation kleiner oder gleich einem vorgegebenen Realisationswert $x$ ist.$\square$
+
+Die Verteilungsfunktion $F(x)$ ist analog zur kumulierten Häufigkeitsverteilung zu verstehen, vgl. @fig-F-Bus.
+
+:::
+:::
+
+::: {.column width="50%"}
+
+
+
+```{r}
+#| echo: false
+#| fig-cap: 'Verteilungsfunktion F für X="Wartezeit auf den Bus"'
+#| label: fig-F-Bus
+#| fig-asp: 0.3
+d <- 
+  tibble(x=1:10,
+         y= 1:10/10) 
+
+ggplot(d, aes(x,y)) +
+  geom_point(alpha = .5) +
+  geom_line() +
+  scale_x_continuous(breaks = 1:10) +
+  theme_minimal()
+```
+
+
+
+
+:::
+
+::::
 
 
 
@@ -503,16 +724,20 @@ Bei *stetigen* Zufallsvariablen $X$ geht man von unendlich vielen Ausprägungen 
 :::
 
 
+:::{#exm-groesse}
+### Wahrscheinlichkeitsverteilung für die Körpergröße
 So ist die Wahrscheinlichkeit, dass eine Person exakt 166,66666666... cm groß ist, (praktisch) Null.
-Man gibt stattdessen die *Dichte* der Wahrscheinlichkeit an: Das ist die Wahrscheinlichkeit(smasse) pro  Einheit von $X$.
+Man gibt stattdessen die *Dichte* der Wahrscheinlichkeit an: Das ist die Wahrscheinlichkeit(smasse) pro  Einheit von $X$.$\square$
+:::
 
 
 
+## Wichtige Verteilngen
 
 
-## Gleichverteilung
+### Gleichverteilung
 
-### Indifferenz als Grundlage
+#### Indifferenz als Grundlage
 
 Eine Gleichverteilung nimmt an, dass jeder Wert im Ergebnisraum der zugehörigen Zufallsvariable *gleichwahrscheinlich* ist.
 Wenn man keinen hinreichenden Grund hat, eine Realisation einer Zufallsvariablen für plausibler als einen anderen zu halten,
@@ -524,27 +749,14 @@ Abb. @fig-uniform zeigt ein Beispiel für eine (stetige) Gleichverteilung.
 
 ```{r Normalverteilung-4, fig.asp = 0.5}
 #| echo: false
-#| fig-cap: 
-#|   - "Gleichverteilung min=-1, max=1"
-#|   - "Gleichverteilung min=0, max=3"
+#| fig-cap: Stetige Gleichverteilung
+#| fig-subcap: 
+#|   - "Beispiel a: Gleichverteilung min=-1, max=1. Dichte: 1/2"
+#|   - "Beispiel b: Gleichverteilung min=0, max=3. Dichte: 1/3"
 #| label: fig-uniform
+#| layout-ncol: 2
 #
 #source: https://dk81.github.io/dkmathstats_site/rmath-uniform-plots.html
-
-uniform_Plot <- function(a, b){
-  xvals <- data.frame(x = c(a, b)) #Range for x-values
-  
-  ggplot(data.frame(x = xvals), 
-         aes(x = x)) + xlim(c(a, b)) + ylim(0, 1/(b - a)) +
-    stat_function(fun = dunif, args = list(min = a, max = b), 
-                  geom = "area", 
-                  fill = "green", alpha = 0.35) + 
-    stat_function(fun = dunif, args = list(min = a, max = b)) +
-    labs(x = "X", y = "Dichte")  +
-    geom_vline(xintercept = a, linetype = "dashed", colour = "red") +
-    geom_vline(xintercept = b, linetype = "dashed", colour = "red")
-  
-}
 
 uniform_Plot(-1, 1)
 uniform_Plot(0, 3)
@@ -553,12 +765,13 @@ uniform_Plot(0, 3)
 
 
 
-Bei $X=0$ hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von 50%, da der Bereich $[-0.5, +0.5]$ die Hälfte (50%) der Wahrscheinlichkeitsmasse der Verteilung beinhaltet, s. @fig-uniform.
+@fig-uniform, links: Bei $X=0$ hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von 50%, da der Bereich $[-0.5, +0.5]$ die Hälfte (50%) der Wahrscheinlichkeitsmasse der Verteilung beinhaltet. Bei jedem anderen Punkt $x$ ist die Dichte gleich.
+@fig-uniform, rechts: Bei $X=0$ hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von ca. 33%, da der Bereich $[-0.5, +0.5]$ ein Drittel der Wahrscheinlichkeitsmasse der Verteilung beinhaltet. Bei jedem anderen Punkt $x$ ist die Dichte gleich.
 Definierendes Kennzeichen einer Gleichverteilung ist die *konstante Dichte*.
 
 
 
-### Simulation
+#### Simulation
 
 
 Möchte man die Verteilungsfunktion einer stetigen Zufallsvariablen berechnen,
@@ -605,6 +818,7 @@ Auf Deutsch heißt das:
 
 >   "Hey R, ich hätte gerne eine (daher `n = 1`) Zufallszahl (*r* wie *random*),
 die gleichverteilt ist (*uniform*) mit `min = 0` und `max = 10`.
+
 >   🤖 Jawohl, oh herrliches Leberwesen
 
 
@@ -615,9 +829,7 @@ Achtung, jetzt kommt's: Jetzt lassen wir R mal $10^5$ (`1e5` auf Computersprech)
 R soll jedes Mal notieren, wie lange man auf den Bus warten musste.^[Machen Sie das mal ohne Computer, wenn Sie ein Wochenende lang Langeweile haben.]
 
 
-:::: {.columns}
 
-::: {.column width="50%"}
 
 ```{r}
 #| eval: false
@@ -647,9 +859,7 @@ gghistogram(x_simu_df, x = "x_simu", fill = "grey20")
 ```
 
 
-:::
 
-::: {.column width="50%"}
 
 ```{r}
 #| label: fig-simu-gleichvert
@@ -661,10 +871,6 @@ library(ggpubr)
 gghistogram(x_simu_df, x = "x_simu", fill = "grey20")
 ```
 
-
-:::
-
-::::
 
 
 
@@ -720,19 +926,21 @@ Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen z
 
 
 
-## Binomialverteilung {#sec-bin-distrib}
+### Binomialverteilung {#sec-bin-distrib}
 
 :::{#def-binvert}
 ### Binomialverteilung
 Die Binomialverteilung dient zur Darstellung der Wahrscheinlichkeit der Ergebnisse eines wiederholten binomialen Zufallexperiments,
-eines Zufallsexperiments mit *zwei* Ergebnissen also. Typisches Beispiel ist ein Münzwurf.
-Bei jeder Wiederholung des Zufallexperiments bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (Ziehen mit Zurücklegen). Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit eines bestimmten Ergebnisses im zweiten Wurf, etc. 
+eines Zufallsexperiments mit *zwei* Ergebnissen bzw. Elementarereignissen also. 
+Typisches Beispiel ist ein Münzwurf.
+Bei jeder Wiederholung des Zufallexperiments bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (*Ziehen mit Zurücklegen*, ZmZ). 
+Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit eines bestimmten Ergebnisses im zweiten Wurf, etc.$\square$ 
 :::
 
 
 
 
-### Veranschaulichung
+#### Veranschaulichung
 
 Stellen wir uns eine Kistchen^[In den Lehrbüchern häufig als Urne bezeichnet, was den bösen Spott von "Friedhofstatistik" nach sich zog.] mit 5 Losen vor, darunter 2 *T*reffer (Gewinn) und 3 *N*ieten, s. Abb. @fig-urne.
 Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut.
@@ -742,7 +950,7 @@ Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder
 ```{r echo = FALSE}
 #| fig-cap: Ein Kästchen mit 5 Losen, darunter 2 Treffer und 3 Nieten.
 #| label: fig-urne
-#| fig-asp: 0.5
+#| fig-asp: 0.2
 d <- 
   tibble(id = 1:5,
          event = c("T", "T", "N", "N", "N"))
@@ -771,11 +979,12 @@ Um die Wahrscheinlichkeitsverteilung einer binomialverteilte Zufallsvariable aus
 
 :::{exr-bin1}
 ### Vier Lose, zwei Treffer
-Wie groß ist die Wahrscheinlichkeit von $A^{\prime}$, d.h. bei $n=4$ Zügen $x=2$ Treffer zu erzielen (und $n-x=2$ Nieten), gegeben dass die Trefferwahrscheinlichkeit bei $p=2/4$ liegt?$\square$
+Wie groß ist die Wahrscheinlichkeit von $A^{\prime}$, d.h. bei $n=4$ Zügen $x=2$ Treffer zu erzielen (und $n-x=2$ Nieten), gegeben dass die Trefferwahrscheinlichkeit bei $p=2/4$ liegt?
+Wir ziehen dabei *ohne* Zurücklegen (ZoZ). Außerdem sind die Lose nicht zu unterscheiden (abgesehen davon, ob es Treffer oder Nieten sind).$\square$
 :::
 
 
-Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen  (Multiplikationssatz), vgl. @fig-3muenzen.
+Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen  (Multiplikationssatz), vgl. @fig-dreimuenzen.
 Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit, $W$ (Additionssatz).
 Das ist einfach, dauert aber.
 In diesem Fall ist die Wahrscheinlichkeit eines (günstigen) Pfades, $A$:
@@ -798,23 +1007,52 @@ p_a_strich
 ```
 
 
-Mithilfe der Formel der Binomialverteilung lässt sich das Ergebnis, die Wahrscheinlichkeit von $A^{\prime}$  schneller ausrechnen. Einfach gesprochen sieht sie so aus:
+Mithilfe der Formel der Binomialverteilung lässt sich das Ergebnis, die Wahrscheinlichkeit von $A^{\prime}$  schneller ausrechnen. 
+Einfach gesprochen sieht sie so aus:
 
 
 
 $$P(A^{\prime}) = k \cdot P(A)$$
-Dabei steht $k$ für die Anzahl der günstigen Pfade und $P(A)$ für die Wahrscheinlichkeit eines günstigen Pfades (d.h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit. 
+Dabei steht $k$ für die Anzahl der günstigen Pfade und $P(A)$ für die Wahrscheinlichkeit eines günstigen Pfades (d.h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.
 
 Die Anzahl der Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt:^[wobei gelten muss $n \ge k$]
 
-$\tbinom{n}{k}= \frac{n!}{k!(n-k)!}$
+$k = \tbinom{n}{k}= \frac{n!}{k!(n-k)!}$
 
-Lies: "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige Ereignisse (günstige Pfade).
+Lies: "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige Ereignisse (günstige Pfade) oder kürzer "k aus n".
 
 Auf Errisch geht das so:
 
+
+:::: {.columns}
+
+::: {.column width="50%"}
+>    👨‍🏫 Hey R, Wie viele Möglichkeiten gibt es, aus $n=4$ Pfaden "$k=2$ auszuwählen?
+
+
+:::
+
+::: {.column width="50%"}
+>    🤖 Äh, Moment, oh herzliches Leberwesen
 ```{r}
 choose(4,2)
+```
+:::
+
+::::
+
+Hier ist ein Überblick der möglichen 6 Elementareignisse des Experiments:
+1. TTNN, 2. TNTN, 3. TNNT, 4. NTTN ,5. NTNT, 6. NNTT.
+
+```{r}
+#| echo: false
+# Define the values of n and k
+n <- 4  # Total number of items
+k <- 2  # Number of items to choose
+
+# Generate all combinations
+combinations <- combn(n, k) |> t() |> as_tibble()
+
 ```
 
 
@@ -822,7 +1060,9 @@ choose(4,2)
 
 
 
-### Rechnen mit R
+
+
+#### Rechnen mit R
 
 
 Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen.
@@ -836,8 +1076,7 @@ dbinom(x = 2, size = 4, prob = 2/5)
 
 
 ::: {#exm-binom}
-
-## Pumpstation-Beispiel zur Binomialverteilung
+### Pumpstation-Beispiel zur Binomialverteilung
 
 In einer Pumpstation arbeiten 7 Motoren, die wir als identisch annehmen. Mit einer Wahrscheinlichkeit von 5% fällt ein Motor aus und ist für den Rest des Tages nicht einsatzbereit. Der Betrieb kann aufrecht erhalten werden, solange mindestens 5 Motoren arbeiten. Wie groß ist die Wahrscheinlichkeit, dass die Pumpstation aus dem Betrieb fällt?
 
@@ -909,7 +1148,7 @@ $F(X=x) = P(X \le x)$
 
 
 
-### Simulieren
+#### Simulieren
 
 
 Die Binomialverteilung lässt sich gut als "Münzwurf-Verteilung" auffassen.
@@ -1027,7 +1266,7 @@ source(paste0(here::here(),"/R-Code/img15.R"))
 
 
 
-## Normalverteilung
+### Normalverteilung
 
 
 Normalverteilungen haben eine charakteristische Glockenform;
@@ -1038,7 +1277,7 @@ Sind diese beiden Parameter bekannt, so ist die Dichte jedes beliebigen Datenpun
 
 ::: {def-parameter}
 
-## Parameter
+### Parameter
 
 Ein Parameter (einer Verteilung) legt die "Varianten" einer Verteilung fest. Durch die Wahl der Parameterwerte nimmt eine Verteilung eine genaue Form an.
 
@@ -1128,7 +1367,7 @@ Das 25%-Quantil nennt man *1. Quartil*, das 50%-Quantil auch *2. Quartil*, das 7
 
 
 
-### Normal auf dem Fußballfeld
+#### Normal auf dem Fußballfeld
 
 Sie und 100 Ihrer besten Freunde stehen auf der Mittellinie eines Fußballfelds. Auf Kommando werfen alle jeweils eine Münze; bei Kopf geht man einen Schritt nach links, bei Zahl nach rechts. Das wird 16 Mal wiederholt. Wie wird die Verteilung der Positionen wohl aussehen?
 
@@ -1146,7 +1385,7 @@ source(paste0(here::here(),"/R-Code/img13.R"))
 
 
 
-### Normal durch Addieren
+#### Normal durch Addieren
 
 Die Summe vieler (gleich starker) Zufallswerte (aus der gleichen Verteilung) erzeugt eine Normalverteilung; egal aus welcher Verteilung die Zufallswerte kommen (Zentraler Grenzwertsatz), vgl. @fig-fussball.
 
@@ -1172,7 +1411,7 @@ knitr::include_graphics("img/ch33910f1.jpg")
 
 
 
-### Normalverteilung vs. randlastige Verteilungen
+#### Normalverteilung vs. randlastige Verteilungen
 
 
 ```{r Normalverteilung-9, fig.asp=0.5}
@@ -1189,11 +1428,13 @@ Bei randlastigen Verteilungen ("fat tails") kommen Extremereignisse viel häufig
 
 
 
-
+:::::{#exm-normal-rand}
 ### Beispiele für Normal- und randlastige Verteilungen
 
 
+:::: {.columns}
 
+::: {.column width="50%"}
 Normal verteilt:
 
 - Größe 
@@ -1202,8 +1443,9 @@ Normal verteilt:
 - IQ
 - Blutdruck
 - Ausschuss einer Maschine
+:::
 
-
+::: {.column width="50%"}
 Randlastig verteilt:
 
 - Vermögen
@@ -1217,9 +1459,17 @@ Randlastig verteilt:
 - Meteroritengröße
 - Stadtgrößen
 
+:::
+
+::::
+
+:::::
 
 
-### Formel der Normalverteilung
+
+
+
+#### Formel der Normalverteilung
 
 Vereinfacht ausgedrückt lässt die Normalverteilung $\mathcal{N}$ durch Exponenzieren einer Quadratfunktion beschreiben:
 
@@ -1274,7 +1524,7 @@ Die Normalverteilung wird auch *[Gauss](https://de.wikipedia.org/wiki/Carl_Fried
 
 
 
-### Simulation einer Normalverteilung
+#### Simulation einer Normalverteilung
 
 
 R hat eine Funktion eingebaut zur Erzeugung von Zufallszahlen (Zufallszahlengenerator), z.B. normalverteilte.
@@ -1350,8 +1600,11 @@ Die Verteilung der Zufallsvariablen IQ ist normalverteilt mit einem Mittelwert v
 
 $IQ \sim \mathcal{N}(100,15)$
 
+:::{#exr-iq}
+### Wie schlau muss man (nicht) sein?
 - Wie schlau muss man sein, um zu den unteren 75%, 50%, 25%, 5%, 1% zu gehören?
-- Anders gesagt: Welcher IQ-Wert wird von 75%, 50%, ... der Leute nicht überschritten?
+- Anders gesagt: Welcher IQ-Wert wird von 75%, 50%, ... der Leute nicht überschritten?$\square$
+:::
 
 
 ![Visualisierung der theoretischen IQ-Verteilung](img/norm-100-15.png){#fig-norm-100-15 width="50%"}
@@ -1395,8 +1648,11 @@ Das *Quantil* $q$ zur kumulierten Wahrscheinlichkeit $p=75$ ist 110, etc.
 Umgekehrt können wir uns auch fragen: Gegeben einer Realisation der Zufallsvariablen (z.B. IQ), was ist die zugehörige Wahrscheinlichkeit (Wert der Verteilungsfunktion?)
 
 
+:::{#exr-schlau2}
+### Wie schlau muss man (nicht) sein, Teil 2
 - Welcher Anteil der Fläche unter der Kurve $p$ gehört zu den IQ-Werten 75, 100, 115, 130?
-- Anders gesagt: Welcher Anteil der Wahrscheinlichkeitsmasse der Verteilung liegt unter IQ=75, IQ=100, etc.?
+- Anders gesagt: Welcher Anteil der Wahrscheinlichkeitsmasse der Verteilung liegt unter IQ=75, IQ=100, etc.?$\square$
+:::
 
 
 Ziehen wir Stichproben aus $\mathcal{N}(100,15)$:
@@ -1449,7 +1705,7 @@ Die *Verteilungsfunktion* (der Anteil der Wahrscheinlichkeitsmasse), `p`, für I
 
 
 
-### Quantile der Normalverteilung 
+#### Quantile der Normalverteilung 
 
 
 
@@ -1614,7 +1870,7 @@ q_p69 <-
 ```
 
 
-### Standardnormalverteilung
+#### Standardnormalverteilung
 
 
 ```{r Normalverteilung-3}
@@ -1633,7 +1889,7 @@ Bei $X=0$:
 In Summe liegen 100% der Wahrscheinlichkeitsmasse unter der Kurve.
 
 
-### Normalverteilung als konservative Wahl
+#### Normalverteilung als konservative Wahl
 
 Dem Mathematiker [Carl Friedrich Gauss](https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F) (s. @fig-gauss) wird die Ehre zuerkannt,
 die Normalverteilung eingeführt zu haben.
