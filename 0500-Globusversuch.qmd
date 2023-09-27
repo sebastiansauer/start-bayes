@@ -20,7 +20,7 @@ Sie können ...
 
 
 - Unterschiede zwischen Modellen und der Realität erläutern
-- die Binomialverteilung heranziehen, um geeignete (einfache) Modelle zu erstellen
+- die Binomialverteilung heranziehen, um geeignete (einfache) Modelle zu erstellen (für binomial verteilte Zufallsvariablen)
 - die weite Einsetzbarkeit anhand mehrerer Beispiele exemplifizieren
 - Post-Wahrscheinlichkeiten anhand der Gittermethode berechnen
 
@@ -639,23 +639,41 @@ Die "End-Wahrscheinlichkeit", die unstandardisierte Post-Wahrscheinlichkeit, die
 Anschaulich gesprochen: Die Priori-Werte werden mit den Likelihoodwerten gewichtet^[synonym: Die Likelihoodwerte werden mit den Apriori-Werten gewichtet.].
 Da wir letztlich eine Wahrscheinlichkeitverteilung bekommen möchten teilen wir jeden Posteriori-Wert durch die Summe aller Posteriori-Werte. 
 Dadurch ist gerantiert, dass sich die Posteriori-Werte zu eins aufaddieren. 
-Damit haben wir dann die Kolmogorov-Ansprüche an eine Wahrscheinlichkeitsverteilung erfüllt.
+Damit haben wir dann die Ansprüche an eine Wahrscheinlichkeitsverteilung erfüllt (vgl. @seq-kolmogorov).
 
 
 ### Bayes-Gitter in R berechnen
 
 Legen wir uns eine Tabelle mit Gitterwerten an, um deren Posteriori-Wahrscheinlichkeit zu berechnen.
 
+Ein paar Vorarbeiten. 
+Zuerst wählen wir unsere Gitterwerte; sagen wir 0, 0.1, 0.2, ... , 1:
+
+```{r}
+p_Gitter <- seq(from = 0, to = 1, by = 0.1)
+p_Gitter
+```
+
+
+Dann berechnen wir schon mal die Wahrscheinlichkeit der Daten (6 W bei 9 Würfen) gegeben jeweils eines Gitterwerts:
+
+```{r}
+Likelihood <- dbinom(6, size = 9, prob = p_Gitter)
+Likelihood
+```
+
+Dann packen wir das alles in eine Tabelle, s. @tbl-globus.
+
 ```{r QM2-Thema2-kleineModelle-28, echo = TRUE}
 d <-
   tibble(
     # definiere die Hypothesen (das "Gitter"): 
-    p_Gitter = seq(from = 0, to = 1, by = 0.1),
+    p_Gitter = p_Gitter,
     # bestimme den Priori-Wert:       
     Priori  = 1) %>%  
     mutate(
       # berechne Likelihood für jeden Gitterwert:
-      Likelihood = dbinom(6, size = 9, prob = p_Gitter),
+      Likelihood = Likelihood,
       # berechen unstand. Posteriori-Werte:
       unstd_Post = Likelihood * Priori,
       # berechne stand. Posteriori-Werte (summiert zu 1):
@@ -682,6 +700,10 @@ $\text{Post}_{\text{unstand}} = \text{Priori} \cdot \text{Likelihood}$
 Um zur standardisierten Posteriori-Wahrscheinlichkeit zu gelangten,
 teilen wir in jeder Zeile der Gitterbox (also für jede Hypothese) die unstandardisierte Post-Wahrscheinlichkeit durch die Summe der unstandardisierten Post-Wahrscheinlichkeiten.
 
+
+:::callout-note
+Wenn der Priori-Wert für jeden Gitterwert gleich ist, dann ist der Likelihood gleich der unstandardisierten Post-Wahrscheinlichkeit.$\square$
+:::
 
 🏋️ Was wohl mit *Post* passiert, wenn wir *Priori* ändern?
 

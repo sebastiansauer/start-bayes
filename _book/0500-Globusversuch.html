@@ -395,7 +395,7 @@ div.csl-indent {
 <p>Sie können …</p>
 <ul>
 <li>Unterschiede zwischen Modellen und der Realität erläutern</li>
-<li>die Binomialverteilung heranziehen, um geeignete (einfache) Modelle zu erstellen</li>
+<li>die Binomialverteilung heranziehen, um geeignete (einfache) Modelle zu erstellen (für binomial verteilte Zufallsvariablen)</li>
 <li>die weite Einsetzbarkeit anhand mehrerer Beispiele exemplifizieren</li>
 <li>Post-Wahrscheinlichkeiten anhand der Gittermethode berechnen</li>
 </ul></section><section id="vorbereitung-im-eigenstudium" class="level3" data-number="6.1.2"><h3 data-number="6.1.2" class="anchored" data-anchor-id="vorbereitung-im-eigenstudium">
@@ -775,20 +775,34 @@ Hinweis
 <li>Berechne den unstandardisierten Posteriori-Wert für jeden Gitterwert (Produkt von Priori und Likelihood).</li>
 <li>Standardisiere den Posteriori-Wert durch teilen anhand der Summe alle unstand. Posteriori-Werte.</li>
 </ol>
-<p>Für jeden “Gitterwert” berechnen wir eine (Post-)Wahrscheinlichkeit. Ein Gitterwert ist eine mögliche Ausprägung des Parameters. Häufig entspricht eine Hypothese einem Gitterwert, etwa wenn man sagt: “Ich glaube, die Münze ist fair”, was auf einem Parameterwert von 50% herausläuft. Dazu geben wir an, für wie wahrscheinlich wie apriori<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> - also bevor wir irgendwelche Daten erheben - jeden einzelnen Gitterwert halten. Wir machen es uns hier einfach und halten jeden Gitterwert für gleich wahrscheinlich. Tatsächlich ist der konkrete Wert hier egal, entscheidend ist das Verhältnis der Apriori-Werte zueinander: Geben wir einigen Gitterwerten den Wert 2, aber anderen den Wert 1, so halten wir Erstere für (apriori) doppelt so plauibel wie Letztere. Der Likelihood wird in diesem Fall mit der Binomialverteilung berechnet. Der Likelihood gibt an, wie wahrscheinlich ein Gitterwert ist gegeben einem bestimmten apriori gewählten Parameterwert. Die “End-Wahrscheinlichkeit”, die unstandardisierte Post-Wahrscheinlichkeit, die “hinten rauskommt” ist das Produkt von Priori-Wert und Likelihood. Anschaulich gesprochen: Die Priori-Werte werden mit den Likelihoodwerten gewichtet<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>. Da wir letztlich eine Wahrscheinlichkeitverteilung bekommen möchten teilen wir jeden Posteriori-Wert durch die Summe aller Posteriori-Werte. Dadurch ist gerantiert, dass sich die Posteriori-Werte zu eins aufaddieren. Damit haben wir dann die Kolmogorov-Ansprüche an eine Wahrscheinlichkeitsverteilung erfüllt.</p>
+<p>Für jeden “Gitterwert” berechnen wir eine (Post-)Wahrscheinlichkeit. Ein Gitterwert ist eine mögliche Ausprägung des Parameters. Häufig entspricht eine Hypothese einem Gitterwert, etwa wenn man sagt: “Ich glaube, die Münze ist fair”, was auf einem Parameterwert von 50% herausläuft. Dazu geben wir an, für wie wahrscheinlich wie apriori<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> - also bevor wir irgendwelche Daten erheben - jeden einzelnen Gitterwert halten. Wir machen es uns hier einfach und halten jeden Gitterwert für gleich wahrscheinlich. Tatsächlich ist der konkrete Wert hier egal, entscheidend ist das Verhältnis der Apriori-Werte zueinander: Geben wir einigen Gitterwerten den Wert 2, aber anderen den Wert 1, so halten wir Erstere für (apriori) doppelt so plauibel wie Letztere. Der Likelihood wird in diesem Fall mit der Binomialverteilung berechnet. Der Likelihood gibt an, wie wahrscheinlich ein Gitterwert ist gegeben einem bestimmten apriori gewählten Parameterwert. Die “End-Wahrscheinlichkeit”, die unstandardisierte Post-Wahrscheinlichkeit, die “hinten rauskommt” ist das Produkt von Priori-Wert und Likelihood. Anschaulich gesprochen: Die Priori-Werte werden mit den Likelihoodwerten gewichtet<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>. Da wir letztlich eine Wahrscheinlichkeitverteilung bekommen möchten teilen wir jeden Posteriori-Wert durch die Summe aller Posteriori-Werte. Dadurch ist gerantiert, dass sich die Posteriori-Werte zu eins aufaddieren. Damit haben wir dann die Ansprüche an eine Wahrscheinlichkeitsverteilung erfüllt (vgl. <span class="citation" data-cites="seq-kolmogorov">(<a href="references.html#ref-seq-kolmogorov" role="doc-biblioref"><strong>seq-kolmogorov?</strong></a>)</span>).</p>
 </section><section id="bayes-gitter-in-r-berechnen" class="level3" data-number="6.5.2"><h3 data-number="6.5.2" class="anchored" data-anchor-id="bayes-gitter-in-r-berechnen">
 <span class="header-section-number">6.5.2</span> Bayes-Gitter in R berechnen</h3>
 <p>Legen wir uns eine Tabelle mit Gitterwerten an, um deren Posteriori-Wahrscheinlichkeit zu berechnen.</p>
-<div class="cell" data-hash="0500-Globusversuch_cache/html/QM2-Thema2-kleineModelle-28_62b30cbe018602404c0fc75d0f4909dc">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span></span>
+<p>Ein paar Vorarbeiten. Zuerst wählen wir unsere Gitterwerte; sagen wir 0, 0.1, 0.2, … , 1:</p>
+<div class="cell" data-hash="0500-Globusversuch_cache/html/unnamed-chunk-8_f25a5abc15ffc0ef3e7e7cd656211d90">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_Gitter</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
+<span><span class="va">p_Gitter</span></span>
+<span><span class="co">##  [1] 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Dann berechnen wir schon mal die Wahrscheinlichkeit der Daten (6 W bei 9 Würfen) gegeben jeweils eines Gitterwerts:</p>
+<div class="cell" data-hash="0500-Globusversuch_cache/html/unnamed-chunk-9_ab635331f9a2bfcc5e24ec7da0ada153">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Likelihood</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span><span class="fl">6</span>, size <span class="op">=</span> <span class="fl">9</span>, prob <span class="op">=</span> <span class="va">p_Gitter</span><span class="op">)</span></span>
+<span><span class="va">Likelihood</span></span>
+<span><span class="co">##  [1] 0.000000000 0.000061236 0.002752512 0.021003948 0.074317824 0.164062500</span></span>
+<span><span class="co">##  [7] 0.250822656 0.266827932 0.176160768 0.044641044 0.000000000</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Dann packen wir das alles in eine Tabelle, s. <a href="#tbl-globus">Tabelle&nbsp;<span>6.2</span></a>.</p>
+<div class="cell" data-hash="0500-Globusversuch_cache/html/QM2-Thema2-kleineModelle-28_ccf335eb79148909e33960d93d68dd6e">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
 <span>    <span class="co"># definiere die Hypothesen (das "Gitter"): </span></span>
-<span>    p_Gitter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,</span>
+<span>    p_Gitter <span class="op">=</span> <span class="va">p_Gitter</span>,</span>
 <span>    <span class="co"># bestimme den Priori-Wert:       </span></span>
 <span>    Priori  <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>  </span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
 <span>      <span class="co"># berechne Likelihood für jeden Gitterwert:</span></span>
-<span>      Likelihood <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span><span class="fl">6</span>, size <span class="op">=</span> <span class="fl">9</span>, prob <span class="op">=</span> <span class="va">p_Gitter</span><span class="op">)</span>,</span>
+<span>      Likelihood <span class="op">=</span> <span class="va">Likelihood</span>,</span>
 <span>      <span class="co"># berechen unstand. Posteriori-Werte:</span></span>
 <span>      unstd_Post <span class="op">=</span> <span class="va">Likelihood</span> <span class="op">*</span> <span class="va">Priori</span>,</span>
 <span>      <span class="co"># berechne stand. Posteriori-Werte (summiert zu 1):</span></span>
@@ -905,6 +919,19 @@ Hinweis
 <p>Für jede Hypothese (Spalte <code>id</code>) berechnen wir die unstandardisierte Posteriori-Wahrscheinlichkeit als Produkt von Priori und Likelihood:</p>
 <p><span class="math inline">\(\text{Post}_{\text{unstand}} = \text{Priori} \cdot \text{Likelihood}\)</span></p>
 <p>Um zur standardisierten Posteriori-Wahrscheinlichkeit zu gelangten, teilen wir in jeder Zeile der Gitterbox (also für jede Hypothese) die unstandardisierte Post-Wahrscheinlichkeit durch die Summe der unstandardisierten Post-Wahrscheinlichkeiten.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Wenn der Priori-Wert für jeden Gitterwert gleich ist, dann ist der Likelihood gleich der unstandardisierten Post-Wahrscheinlichkeit.<span class="math inline">\(\square\)</span></p>
+</div>
+</div>
 <p>🏋️ Was wohl mit <em>Post</em> passiert, wenn wir <em>Priori</em> ändern?</p>
 </section><section id="was-sagt-die-post" class="level3" data-number="6.5.3"><h3 data-number="6.5.3" class="anchored" data-anchor-id="was-sagt-die-post">
 <span class="header-section-number">6.5.3</span> Was sagt die Post?</h3>
