@@ -20,7 +20,7 @@ Sie können ...
 
 
 - Unterschiede zwischen Modellen und der Realität erläutern
-- die Binomialverteilung heranziehen, um geeignete (einfache) Modelle zu erstellen
+- die Binomialverteilung heranziehen, um geeignete (einfache) Modelle zu erstellen (für binomial verteilte Zufallsvariablen)
 - die weite Einsetzbarkeit anhand mehrerer Beispiele exemplifizieren
 - Post-Wahrscheinlichkeiten anhand der Gittermethode berechnen
 
@@ -100,10 +100,14 @@ Bei unüberlegter Verwendung wird er jedoch großen Schaden anrichten.
 
 ### Wissenschaftliche Modelle sind wie Golems
 
-**Golem**
+
 
 !["Yeah, ich bin ein Golem!" - Bildquelle: Klara Schaumann](img/Golem_hex.png){width=25%}
 
+:::: {.columns}
+
+::: {.column width="50%"}
+**Golem**
 
 Eigenschaften des *Golems*:
 
@@ -114,7 +118,9 @@ Eigenschaften des *Golems*:
 -   Führt Befehle wörtlich aus
 -   Missbrauch leicht möglich
 -   Märchen
+:::
 
+::: {.column width="50%"}
 **Modell**
 
 Eigenschaften eines *Modells*:
@@ -127,6 +133,13 @@ Eigenschaften eines *Modells*:
 -   Führt Befehle wörtlich aus
 -   Missbrauch leicht möglich
 -   Nicht einmal falsch
+:::
+
+::::
+
+
+
+
 
 ::: callout-note
 Wir bauen Golems.
@@ -165,7 +178,11 @@ Vergleichen wir die kleine Welt unserer Modellen (@tbl-klein-gross), wie z.B. Be
 
 ### Welcher Anteil der Erdoberfläche ist mit Wasser bedeckt?
 
-Unsere Forschungsfrage lautet, mit welchem Anteil die Erde wohl mit Wasser bedeckt ist (@fig-erde)?
+
+:::{#exm-fofra1}
+### Wasseranteil auf der Erdoberfläche
+Unsere Forschungsfrage lautet, mit welchem Anteil die Erde wohl mit Wasser bedeckt ist (@fig-erde)?$\square$
+:::
 
 ![Die Erde](img/earth.png){#fig-erde width="10%" fig-align="center"}
 
@@ -180,7 +197,10 @@ So sah *mein*^[*Ihr* Ergebnis kann anders aussehen, schließlich ist es ja Zufal
 
 $$W \quad L \quad W \quad W \quad W \quad L \quad W \quad L \quad W$$
 
-🏋️️ Besorgen Sie sich einen Globus (zur Not eine Münze) und stellen Sie den Versuch nach!
+
+:::{#ex-globe1}
+🏋️️ Besorgen Sie sich einen Globus (zur Not eine Münze) und stellen Sie den Versuch nach!$\square$
+:::
 
 ### Wie entstanden die Daten?
 
@@ -344,14 +364,14 @@ kommen aber bei größeren Daten schnell an ihre Grenze.
 ```{r}
 #| echo: false
 #| label: fig-binom2
-#| fig-cap: Wir werfen den Globus (oder eine Münze) 3 Mal
-my_tree <- tidygraph::create_tree(511, 2, mode = "out")
+#| fig-cap: Wir werfen den Globus (oder eine Münze) 9 Mal, es resultieren 512 Endknoten
+my_tree <- tidygraph::create_tree(1023, 2, mode = "out")
 
 my_tree %>%
-  mutate(lab = 1:511) %>% 
+  mutate(lab = 1:1023) %>% 
   ggraph(circular = TRUE) +
   geom_edge_link() +
-  geom_node_label(mapping = aes(label = lab)) +
+  geom_node_label(mapping = aes(label = lab), size = 1) +
   coord_flip() +
   scale_y_reverse() +
   theme_void()
@@ -382,7 +402,7 @@ Das ist 1 günstiger Pfad von 512 Pfaden.
 
 ## Klausur mit 20-Richtig-Falsch-Fragen
 
-Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen. Wie groß ist die Wahrscheinlichkeit, durch bloßes Münze werfen genau 15 Fragen richtig zu raten?^[Hey, endlich mal was für echte Leben!].
+Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen. Wie groß ist die Wahrscheinlichkeit, durch bloßes Münze werfen genau 15 Fragen richtig zu raten?^[Hey, endlich mal was für echte Leben!]
 
 ```{r QM2-Thema2-kleineModelle-23, echo = TRUE}
 dbinom(x = 15, size = 20, prob = .5)
@@ -474,13 +494,13 @@ dbinom(0:9, 9, 1/2) %>%
 
 
 
-Abb. @fig-unif zeigt eine Gleichverteilung (Uniformverteilung, Rechteckverteilung).
+Abb. @fig-uniform zeigt eine Gleichverteilung (Uniformverteilung, Rechteckverteilung).
 
 ```{r QM2-Thema2-kleineModelle-26}
 #| echo: false
 #| fig-cap: Gleichverteilung mit Parametern min=0 und max=1
 #| label: fig-unif
-#| eval: true 
+#| eval: false
 
 
 uniform_Plot <- function(a, b){
@@ -501,8 +521,10 @@ uniform_Plot(0, 1)
 ```
 
 
-
+:::{#exr-binom}
 🏋️️ Was fällt Ihnen bei der Binomialverteilung auf? Ist sie symmetrisch? Verändert sich die Wahrscheinlichkeit linear?
+:::
+
 
 ## Zur Erinnerung: Bayes Theorem
 
@@ -617,23 +639,41 @@ Die "End-Wahrscheinlichkeit", die unstandardisierte Post-Wahrscheinlichkeit, die
 Anschaulich gesprochen: Die Priori-Werte werden mit den Likelihoodwerten gewichtet^[synonym: Die Likelihoodwerte werden mit den Apriori-Werten gewichtet.].
 Da wir letztlich eine Wahrscheinlichkeitverteilung bekommen möchten teilen wir jeden Posteriori-Wert durch die Summe aller Posteriori-Werte. 
 Dadurch ist gerantiert, dass sich die Posteriori-Werte zu eins aufaddieren. 
-Damit haben wir dann die Kolmogorov-Ansprüche an eine Wahrscheinlichkeitsverteilung erfüllt.
+Damit haben wir dann die Ansprüche an eine Wahrscheinlichkeitsverteilung erfüllt (vgl. @seq-kolmogorov).
 
 
 ### Bayes-Gitter in R berechnen
 
 Legen wir uns eine Tabelle mit Gitterwerten an, um deren Posteriori-Wahrscheinlichkeit zu berechnen.
 
+Ein paar Vorarbeiten. 
+Zuerst wählen wir unsere Gitterwerte; sagen wir 0, 0.1, 0.2, ... , 1:
+
+```{r}
+p_Gitter <- seq(from = 0, to = 1, by = 0.1)
+p_Gitter
+```
+
+
+Dann berechnen wir schon mal die Wahrscheinlichkeit der Daten (6 W bei 9 Würfen) gegeben jeweils eines Gitterwerts:
+
+```{r}
+Likelihood <- dbinom(6, size = 9, prob = p_Gitter)
+Likelihood
+```
+
+Dann packen wir das alles in eine Tabelle, s. @tbl-globus.
+
 ```{r QM2-Thema2-kleineModelle-28, echo = TRUE}
 d <-
   tibble(
     # definiere die Hypothesen (das "Gitter"): 
-    p_Gitter = seq(from = 0, to = 1, by = 0.1),
+    p_Gitter = p_Gitter,
     # bestimme den Priori-Wert:       
     Priori  = 1) %>%  
     mutate(
       # berechne Likelihood für jeden Gitterwert:
-      Likelihood = dbinom(6, size = 9, prob = p_Gitter),
+      Likelihood = Likelihood,
       # berechen unstand. Posteriori-Werte:
       unstd_Post = Likelihood * Priori,
       # berechne stand. Posteriori-Werte (summiert zu 1):
@@ -660,6 +700,10 @@ $\text{Post}_{\text{unstand}} = \text{Priori} \cdot \text{Likelihood}$
 Um zur standardisierten Posteriori-Wahrscheinlichkeit zu gelangten,
 teilen wir in jeder Zeile der Gitterbox (also für jede Hypothese) die unstandardisierte Post-Wahrscheinlichkeit durch die Summe der unstandardisierten Post-Wahrscheinlichkeiten.
 
+
+:::callout-note
+Wenn der Priori-Wert für jeden Gitterwert gleich ist, dann ist der Likelihood gleich der unstandardisierten Post-Wahrscheinlichkeit.$\square$
+:::
 
 🏋️ Was wohl mit *Post* passiert, wenn wir *Priori* ändern?
 
