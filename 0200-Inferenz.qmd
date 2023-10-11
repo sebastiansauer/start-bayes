@@ -125,21 +125,14 @@ library(easystats)
 <!-- -- gilt auch für übrige Kapitel und übrige Bücher -->
 
 
-### Inferenz als Generalisieren
+<!-- ### Inferenz als Generalisieren -->
 
 
 
 
 
 
-Statistische Inferenz hat zum Ziel, vom Teil aufs Ganze zu schließen, bzw. vom Konkreten auf das Abstrakte.^[Statistische Inferenz sieht sich drei "Herausforderungen" gegenüber, laut  @gelman_regression_2021, Kap. 1.1. 
-Diese betreffen das Schließen (oder Generalisieren) vom Einzelfall auf das Allgemeine:
-
-1. Von der Stichprobe aus die Grundgesamtheit (Population)
-2. Von der Experimental- auf die Kontrollgruppe (Kausalinferenz)
-3. Von einem Messwert auf das zugrundeliegende Konstrukt
-
-In diesem Kurs beschäftigen wir uns mit den ersten beiden Herausforderungen.]
+Statistische Inferenz hat zum Ziel, vom Teil aufs Ganze zu schließen, bzw. vom Konkreten auf das Abstrakte.^[Statistische Inferenz sieht sich drei "Herausforderungen" gegenüber, laut  @gelman_regression_2021, Kap. 1.1.; Diese betreffen das Schließen (oder Generalisieren) vom Einzelfall auf das Allgemeine: 1. Von der Stichprobe aus die Grundgesamtheit (Population), 2. Von der Experimental- auf die Kontrollgruppe (Kausalinferenz), 3. Von einem Messwert auf das zugrundeliegende Konstrukt. In diesem Kurs beschäftigen wir uns mit den ersten beiden Herausforderungen.]
 
 
 Typischerweise untersuchen im Rahmen einer statistischen Analyse eine *Stichprobe*, 
@@ -191,6 +184,13 @@ Wir verwenden lateinische Buchstaben (p), um Kennzahlen einer Stichprobe zu bene
 Statistik gibt es in zwei Geschmacksrichtungen, könnte man sagen: Deskriptiv- und Inferenzstatistik, s. Abb. @fig-inf1.
 
 
+
+Vereinfacht gesprochen fasst die Deskriptivstatistik  Daten (einer Stichprobe) zu einer einzelnen Kennzahl zusammen.
+
+::: {#exm-desk}
+In einem Hörsaal sitzen 100 Studis. Alle schreiben Ihre Körpergröße auf einen Zettel. Die Dozentin sammelt die Zettel ein und rechnet dann den Mittelwert der Körpergröße der anwesenden Studentis aus. Voilà: Deskriptive Statistik!$\square$
+:::
+
 ![Deskriptiv- vs. Inferenzstatistik](img/desk_vs_inf-crop.png){#fig-inf1 width=70% fig-align="center"}
 
 
@@ -220,13 +220,15 @@ Inferenzstatistik ist ein Verfahren, das mathematische Modelle (oft aus der Stoc
 
 
 :::{#exr-inf}
-🏋️️ Heute Nacht vor dem Schlafen wiederholen Sie die Definition. Üben Sie jetzt schon mal.
+🏋️️ Heute Nacht vor dem Schlafen wiederholen Sie die Definition. Üben Sie jetzt schon mal.$\square$
 :::
 
-
+$\square$
 ### Deskriptiv- und Inferenzstatistik gehen Hand in Hand
 
-Für jede beliebige Statistik (Kennzahl von Stichprobendaten) kann man die Methoden der Inferenzstatistik verwenden, s. Tabelle @tbl-kennwerte.
+Für jede beliebige Statistik (Kennzahl von Stichprobendaten) kann man die Methoden der Inferenzstatistik verwenden, um den zugehörigen Kennwert (Parameter) der Population zu bestimmen, s. Tabelle @tbl-kennwerte. 
+Da man die Parameter der Population so gut wie nie sicher kennt (schließlich hat man meist nur Auszüge, Teile der Population, also Stichproben), muss man sich mit *Schätzwerten* begnügen.
+Schätzwerte macht man kenntlich mit einem "Dach-Zeichen" über dem Parameter, also z.b. $\hat{\mu}$, lies: "mü-Dach".
 
 ```{r}
 #| echo: false
@@ -235,11 +237,11 @@ Für jede beliebige Statistik (Kennzahl von Stichprobendaten) kann man die Metho
 #| message: false
 x <- tribble(
     ~Kennwert, ~Stichprobe, ~Grundgesamtheit, ~Schätzwert,
-  "Mittelwert", "$\\bar{X}$", "$\\mu$", "$\\hat{\\mu}$",
-  "Streuung", "$sd$", "$\\sigma$", "$\\hat{\\sigma}$",
-  "Anteil", "$p$", "$\\pi$", "$\\hat{\\pi}$",
-  "Korrelation", "$r$", "$\\rho$", "$\\hat{\\rho}$" ,
-  "Regression", "$b$", "$\\beta$", "$\\hat{\\beta}$"
+  "Mittelwert", "$\\bar{X}$", "$\\mu$ (mü)", "$\\hat{\\mu}$",
+  "Streuung", "$sd$", "$\\sigma$ (sigma)", "$\\hat{\\sigma}$",
+  "Anteil", "$p$", "$\\pi$ (pi)", "$\\hat{\\pi}$",
+  "Korrelation", "$r$", "$\\rho$ (rho)", "$\\hat{\\rho}$" ,
+  "Regression", "$b$", "$\\beta$ (beta)", "$\\hat{\\beta}$"
 
 )
 
@@ -255,7 +257,7 @@ für Parameter (Population) verwendet man *griechische* Buchstaben.
 
 
 :::{#exr-greek}
-🏋️ Geben Sie die griechischen Buchstaben für typische Statistiken an!
+🏋️ Geben Sie die griechischen Buchstaben für typische Statistiken an. Ohne auf die Tabelle zu schauen.😜$\square$!
 :::
 
 
@@ -384,7 +386,8 @@ Einflussreiche Leute schwören auf die Regressionsanalyse (@fig-gandalf).
 
 
 
-
+Nutzen Sie die folgende App, um die Regressionskoeffizienten, Steigung (slope) und Achsenabschnitt (Intercept), zu optimieren.
+Dabei meint "optimieren", die Abweichungen (Residuen, Residualfehler; die roten Balken in der App) zu minimieren.
 
 ```{=html}
 <iframe width="780" height="500" src="https://gallery.shinyapps.io/simple_regression/" title="DIY: Regressionsgerade zum selber bauen"></iframe>
@@ -396,7 +399,7 @@ Einflussreiche Leute schwören auf die Regressionsanalyse (@fig-gandalf).
 
 :::{#exr-setosa-vis}
 ### VERTIEFUNG Regression mit Animationen erklärt
-Lesen Sie [diesen Post](https://setosa.io/ev/ordinary-least-squares-regression/), der Ihnen mit Hilfe von Bildern und Anminationen (okay, und etwas) Text die Grundlagen der Regressionsanalyse erklärt.$\square$
+Lesen Sie [diesen Post](https://setosa.io/ev/ordinary-least-squares-regression/), der Ihnen mit Hilfe von Bildern und Animationen (okay, und etwas) Text die Grundlagen der Regressionsanalyse erklärt.$\square$
 :::
 
 
@@ -560,7 +563,7 @@ Im Modellieren im Allgemeinen und in Regressionsmodellen im Besonderen lassen si
 %%| fig-cap: Zwei Arten der Ungewissheit beim Modellieren
 flowchart LR
 X1 -->|Werte von Steigung und Achsenabschnitt?|B
-X2 -. Genuaigkeit des Modells .-> B
+X2 -. Genauigkeit des Modells .-> B
 
 ```
 
@@ -989,7 +992,9 @@ Der p-Wert wird oft falsch verstanden [@badenes-ribera_misconceptions_2016-1].
 Hier sind einige *FALSCHE* Interpretationen zum p-Wert laut der Autoren:
 
 - 🙅‍♀ Der p-Wert würde die Wahrscheinlichkeit der Nullhypothese oder der Forschungshypothese angeben. 🙊 
-- ‍♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. badenes-ribera_misconceptions_2016-1
+- 🙅‍♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. 
+
+
 
 
 Die Definition der Konfidenzintervalls in Frquentistischer Lesart lautet:
@@ -1047,7 +1052,7 @@ Allerdings lässt uns unser Vorwissen vermuten, dass so ein Treatment das Einkom
 
 
 
-## Literatur
+## Vertiefung
 
 Bei @gelman_regression_2021, Kap. 1 findet sich eine Darstellung ähnlich zu der in diesem Kapitel.
 
