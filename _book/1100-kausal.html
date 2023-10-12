@@ -1569,7 +1569,7 @@ Wichtig
 <p>🧑</p>
 <p>Berechnen wir das Modell <code>m1</code>; der Punktschätzer des Parameters <code>bedroom</code> steht in <a href="#tbl-m1-hdi">Tabelle&nbsp;<span>12.4</span></a>.</p>
 <div class="cell" data-hash="1100-kausal_cache/html/m1_8d182f7713acc3f7dcb1776752848418">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rstanarm/man/stan_glm.html">stan_glm</a></span><span class="op">(</span><span class="va">price</span> <span class="op">~</span> <span class="va">bedrooms</span>,</span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mc-stan.org/rstanarm/reference/stan_glm.html">stan_glm</a></span><span class="op">(</span><span class="va">price</span> <span class="op">~</span> <span class="va">bedrooms</span>,</span>
 <span>               refresh <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>               seed <span class="op">=</span> <span class="fl">42</span>,</span>
 <span>               data <span class="op">=</span> <span class="va">d</span><span class="op">)</span></span>
@@ -1591,7 +1591,7 @@ Wichtig
 <p><code>point_estimates(modell)</code> gibt die Punktschätzer der Parameter eines Modells zurück, aber nicht die Schätzbereiche. Möchten Sie beides, können Sie die Funktion <code>parameters(modell)</code> nutzen.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <p>Mit <code>estimate_predictions</code> können wir Vorhersagen berechnen (bzw. schätzen; die Vorhersagen sind ja mit Ungewissheit verbunden, daher ist “schätzen” vielleicht das treffendere Wort). <a href="#tbl-m1-pred">Tabelle&nbsp;<span>12.5</span></a> zeigt den laut <code>m1</code> vorhergesagten Hauspreis für ein Haus mit 2 Zimmern.</p>
 <div class="cell" data-hash="1100-kausal_cache/html/unnamed-chunk-3_28322a3e0ebbddb7e227e3e15de62233">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dons_house</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/tibble.html">tibble</a></span><span class="op">(</span>bedrooms <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dons_house</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>bedrooms <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu">estimate_prediction</span><span class="op">(</span><span class="va">m1</span>, data <span class="op">=</span> <span class="va">dons_house</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-hash="1100-kausal_cache/html/tbl-m1-pred_0ece710180cbb0babd380bdd55869945">
@@ -1628,7 +1628,7 @@ Wichtig
 <p>👩</p>
 <p>Berechnen wir die Vorhersagen für Dons neues Haus (mit den durch Mauern halbierten Zimmern), s. <a href="#tbl-m1-pred2a">Tabelle&nbsp;<span>12.6</span></a>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
 <div class="cell" data-hash="1100-kausal_cache/html/unnamed-chunk-5_490508ccdd62af124bd905ecadee0d69">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dons_new_house</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/tibble.html">tibble</a></span><span class="op">(</span>bedrooms <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dons_new_house</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>bedrooms <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="fu">estimate_prediction</span><span class="op">(</span><span class="va">m1</span>, <span class="va">dons_new_house</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m1</span>, newdata <span class="op">=</span> <span class="va">dons_new_house</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1724,7 +1724,7 @@ Hinweis
 <span class="header-section-number">12.3.6</span> Modell 2</h3>
 <p>Berechnen wir das Modell <code>m2: price ~ bedrooms + livingArea</code>. <a href="#tbl-m2">Tabelle&nbsp;<span>12.8</span></a> gibt den Punktschätzer für die Koeffizienten wider.</p>
 <div class="cell" data-hash="1100-kausal_cache/html/unnamed-chunk-7_ee08d2bcb225afea174b628bc38474f9">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rstanarm/man/stan_glm.html">stan_glm</a></span><span class="op">(</span><span class="va">price</span> <span class="op">~</span> <span class="va">bedrooms</span> <span class="op">+</span> <span class="va">livingArea</span>, </span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mc-stan.org/rstanarm/reference/stan_glm.html">stan_glm</a></span><span class="op">(</span><span class="va">price</span> <span class="op">~</span> <span class="va">bedrooms</span> <span class="op">+</span> <span class="va">livingArea</span>, </span>
 <span>               data <span class="op">=</span> <span class="va">d</span>, </span>
 <span>               seed <span class="op">=</span> <span class="fl">42</span>,</span>
 <span>               refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
@@ -1982,8 +1982,8 @@ Wichtig
 <p>🧑</p>
 <p>So könntest du das rechnen, Don: <code>correlation(d, select = c("bedrooms", "livingArea"))</code>. Oder z.B. so:</p>
 <div class="cell" data-hash="1100-kausal_cache/html/unnamed-chunk-13_92b7be68840e03fc243bf41cf36a04c5">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dons_r</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">bedrooms</span>, <span class="va">livingArea</span><span class="op">)</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dons_r</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">bedrooms</span>, <span class="va">livingArea</span><span class="op">)</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Die Korrelation liegt also bei 0.66</p>
 <blockquote class="blockquote">
@@ -2230,7 +2230,7 @@ Wichtig
 <span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">1e03</span>  </span>
 <span></span>
 <span><span class="va">d_eignung</span> <span class="op">&lt;-</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/tibble/man/tibble.html">tibble</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
 <span>  iq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,  <span class="co"># normalverteilt mit MW=0, sd=1</span></span>
 <span>  fleiss <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,</span>
 <span>  glueck <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, mean <span class="op">=</span> <span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span>,</span>
@@ -2246,7 +2246,7 @@ Wichtig
 <p>Berechnen wir das “Eignungsmodell”, aber nur mit Studis (<code>studium == 1</code>, also ohne Nicht-Studis), s. <a href="#tbl-m-eignung">Tabelle&nbsp;<span>12.12</span></a>.</p>
 <div class="cell" data-hash="1100-kausal_cache/html/unnamed-chunk-16_0223744fb7b393b6da2e10f9526ca52b">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m_eignung</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/rstanarm/man/stan_glm.html">stan_glm</a></span><span class="op">(</span><span class="va">iq</span> <span class="op">~</span> <span class="va">fleiss</span>, data <span class="op">=</span> <span class="va">d_eignung</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="va">studium</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://mc-stan.org/rstanarm/reference/stan_glm.html">stan_glm</a></span><span class="op">(</span><span class="va">iq</span> <span class="op">~</span> <span class="va">fleiss</span>, data <span class="op">=</span> <span class="va">d_eignung</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">studium</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">hdi</span><span class="op">(</span><span class="va">m_eignung</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
