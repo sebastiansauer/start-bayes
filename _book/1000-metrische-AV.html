@@ -2006,7 +2006,10 @@ Wichtig
 </section><section id="erster-blick-in-den-datensatz-penguins" class="level3" data-number="11.8.3"><h3 data-number="11.8.3" class="anchored" data-anchor-id="erster-blick-in-den-datensatz-penguins">
 <span class="header-section-number">11.8.3</span> Erster Blick in den Datensatz <code>penguins</code>
 </h3>
-<p><img src="img/penguins-logo.png" class="img-fluid" alt="Palmer Penguins">){width=“25%”}</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="img/penguins-logo.png" class="img-fluid figure-img" style="width:25.0%"></p>
+<figcaption class="figure-caption">Palmer Penguins</figcaption></figure>
+</div>
 <p><a href="https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv">Datenquelle</a>, <a href="https://vincentarelbundock.github.io/Rdatasets/doc/palmerpenguins/penguins.html">Beschreibung des Datensatzes</a></p>
 <p>Hier ist die Quelle der Daten:</p>
 <div class="cell" data-hash="1000-metrische-AV_cache/html/import-penguins_93c6dfacafa1c1948feee3ac09bb317e">
@@ -2069,7 +2072,7 @@ Wichtig
 </section><section id="mittlere-gewichtsunterschiede-in-der-population" class="level3" data-number="11.8.5"><h3 data-number="11.8.5" class="anchored" data-anchor-id="mittlere-gewichtsunterschiede-in-der-population">
 <span class="header-section-number">11.8.5</span> Mittlere Gewichtsunterschiede in der Population</h3>
 <p>Berechnen wir das mittlere Gewicht pro Spezies (Gruppe) der Pinguine, s. <code>m10.6</code> und <a href="#tbl-m106-params">Tabelle&nbsp;<span>11.9</span></a>.</p>
-<div class="cell" data-hash="1000-metrische-AV_cache/html/m106_b5fd7a0cb51e14c7c745b85e0639d156">
+<div class="cell" data-hash="1000-metrische-AV_cache/html/m106_f2d9f0c68e428206c7fafd2c70eb72ef">
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>mc.cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>  <span class="co"># Turbo einschalten</span></span>
 <span></span>
 <span><span class="va">m10.6</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mc-stan.org/rstanarm/reference/stan_glm.html">stan_glm</a></span><span class="op">(</span><span class="va">body_mass_g</span> <span class="op">~</span> <span class="va">species</span>, </span>
@@ -2078,9 +2081,7 @@ Wichtig
 <span>                  seed <span class="op">=</span> <span class="fl">42</span>  <span class="co"># zur Reproduzierbarkeit</span></span>
 <span>                  <span class="op">)</span></span>
 <span></span>
-<span></span>
-<span><span class="va">m10.6</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">parameters</span><span class="op">(</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">m10.6</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">parameters</span><span class="op">(</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-hash="1000-metrische-AV_cache/html/tbl-m106-params_04140ed23c95a927388058f57a7c9ce9">
 <div class="cell-output-display">
@@ -2237,10 +2238,7 @@ Wichtig
 <p>Übrigens macht es meistens keinen Sinn, extrem weite Prioris zu definieren<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>.</p>
 <section id="wechsel-der-referenzkategorie" class="level3" data-number="11.9.1"><h3 data-number="11.9.1" class="anchored" data-anchor-id="wechsel-der-referenzkategorie">
 <span class="header-section-number">11.9.1</span> Wechsel der Referenzkategorie</h3>
-<ul>
-<li>
-<code>species</code> ist eine nominale Variable, da passt in R der Typ <code>factor</code> (Faktor) am besten. Aktuell ist der Typ noch <code>character</code> (Text):</li>
-</ul>
+<p><code>species</code> ist eine nominale Variable, da passt in R der Typ <code>factor</code> (Faktor) am besten. Aktuell ist der Typ noch <code>character</code> (Text):</p>
 <div class="cell" data-hash="1000-metrische-AV_cache/html/unnamed-chunk-28_9a8130091de4d3f040cb967530d725a7">
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span> <span class="op">&lt;-</span> <span class="va">penguins</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>

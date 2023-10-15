@@ -276,7 +276,7 @@ Für jede Realisation $X=x$ kann die Wahrscheinlichkeit berechnen, @fig-zweiwuer
 
 
 
-*Wahrscheinlichkeitsverteilungen* dienen dazu, den Realisiationen einer Zufallsvariable eine Wahrscheinlichkeit zuzuordnen.
+*Wahrscheinlichkeitsverteilungen* dienen dazu, den Realisationen einer Zufallsvariable eine Wahrscheinlichkeit zuzuordnen.
 
 
 
@@ -311,6 +311,7 @@ d <- tibble::tribble(
                     "Erwartungswert",                                "Mittelwert",
                            "Varianz",                                   "Varianz"
        )
+d
 
 ```
 
@@ -544,7 +545,7 @@ Die Verteilungsfunktion ist das Pendant zur *kumulierten Häufigkeitsverteilung*
 ::: {.column width="50%"}
 ```{r}
 #| echo: false
-#| fig-cap: Kumulierte Häufigkeitsverteilung $H(X \le x_i)$
+#| fig-cap: Kumulierte Häufigkeitsverteilung, d.h. die Verteilungsfunktion $F(X \le x_i)$
 #| label: fig-kum-h-vert
 p_F
 ```
@@ -554,7 +555,7 @@ p_F
 ::: {.column width="50%"}
 ```{r}
 #| echo: false
-#| fig-cap: Empirische Verteilungsfunktion (kumulierte Häufigkeitsverteilung) $H(X \le x_i)$ von 1000 zweifachen Münzwürfen
+#| fig-cap: Empirische Verteilungsfunktion (kumulierte Häufigkeitsverteilung) $F(X \le x_i)$ von 1000 zweifachen Münzwürfen
 #| label: fig-kum-h-vert-emp
 p_F_emp 
 ```
@@ -619,27 +620,33 @@ Nicht so einfach (?). Hingegen ist die Frage, wie hoch die Wahrscheinlichkeit is
 
 ::: {.column width="50%"}
 
+![Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minuten auf den Bus zu warten? 50 Prozent!](img/p_bus2.png){#fig-p05}
 
-```{r}
-#| echo: false
-#| #| label: "Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minuten auf den Bus zu warten? 50%!"
-#| fig-cap: fig-p05
-p_bus2 <-
-  uniform_Plot(0, 10) + 
-  geom_rect(xmin = 0, xmax = 5, ymin = 0, ymax = 0.1, fill = "#E69F00FF", alpha = .3) +
-  annotate("label", x = 2.5, y = .05, hjust = 0.5, label = "Pr(0<x<5)=50%",
-           color = "#E69F00FF")  +
-  annotate("label", x= 5, y = 0.1, label = "f(x) = 1/10", color = "#009E73FF", size = 10)
 
-p_bus2
-```
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- #| label: "Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minuten auf den Bus zu warten? 50 Prozent!" -->
+<!-- #| fig-cap: fig-p05 -->
+<!-- #| warning: false -->
+<!-- p_bus2 <- -->
+<!--   uniform_Plot(0, 10) + -->
+<!--   geom_rect(xmin = 0, xmax = 5, ymin = 0, ymax = 0.1, fill = "#E69F00FF", alpha = .3) + -->
+<!--   annotate("label", x = 2.5, y = .05, hjust = 0.5, label = "Pr(0<x<5)=50%", -->
+<!--            color = "#E69F00FF")  + -->
+<!--   annotate("label", x= 5, y = 0.1, label = "f(x) = 1/10", color = "#009E73FF", size = 10) -->
+
+<!-- p_bus2 -->
+<!-- ggsave("img/p_bus2.png", width = 7, height = 5) -->
+<!-- ``` -->
+
 :::
 
 ::: {.column width="50%"}
 ```{r}
 #| echo: false
-#| lafig-cap: "Wie groß ist die Wahrscheinlichkeit, genau 42 Sekunden auf den Bus zu warten? Hm."
+#| fig-cap: "Wie groß ist die Wahrscheinlichkeit, genau 42 Sekunden auf den Bus zu warten? Hm."
 #| label: fig-p42
+#| warning: false
 p_bus1 <- 
   uniform_Plot(0, 10) + 
   geom_vline(xintercept = .42, color = "#56B4E9FF", size = 1) +
@@ -749,7 +756,7 @@ Abb. @fig-uniform zeigt ein Beispiel für eine (stetige) Gleichverteilung.
 
 ```{r Normalverteilung-4, fig.asp = 0.5}
 #| echo: false
-#| fig-cap: Stetige Gleichverteilung
+#| fig-cap: "Stetige Gleichverteilung; man beachte jeweils die Y-Achse"
 #| fig-subcap: 
 #|   - "Beispiel a: Gleichverteilung min=-1, max=1. Dichte: 1/2"
 #|   - "Beispiel b: Gleichverteilung min=0, max=3. Dichte: 1/3"
@@ -816,7 +823,7 @@ runif(n = 1, min = 0, max = 10)
 
 Auf Deutsch heißt das: 
 
->   "Hey R, ich hätte gerne eine (daher `n = 1`) Zufallszahl (*r* wie *random*),
+> 👨‍🏫   "Hey R, ich hätte gerne eine (daher `n = 1`) Zufallszahl (*r* wie *random*),
 die gleichverteilt ist (*uniform*) mit `min = 0` und `max = 10`.
 
 >   🤖 Jawohl, oh herrliches Leberwesen
@@ -984,7 +991,7 @@ Wir ziehen dabei *ohne* Zurücklegen (ZoZ). Außerdem sind die Lose nicht zu unt
 :::
 
 
-Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen  (Multiplikationssatz), vgl. @fig-dreimuenzen.
+Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen  (Multiplikationssatz, @eq-multtheorem), vgl. @fig-dreimuenzen.
 Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit, $W$ (Additionssatz).
 Das ist einfach, dauert aber.
 In diesem Fall ist die Wahrscheinlichkeit eines (günstigen) Pfades, $A$:
@@ -1015,11 +1022,25 @@ Einfach gesprochen sieht sie so aus:
 $$P(A^{\prime}) = k \cdot P(A)$$
 Dabei steht $k$ für die Anzahl der günstigen Pfade und $P(A)$ für die Wahrscheinlichkeit eines günstigen Pfades (d.h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.
 
-Die Anzahl der Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt:^[wobei gelten muss $n \ge k$]
+Die Anzahl der Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt, s. @eq-binkoeff.^[wobei gelten muss $n \ge k$]
 
-$k = \tbinom{n}{k}= \frac{n!}{k!(n-k)!}$
+:::{#def-binkoeff}
+### Binomialkoeffizient
+Der Binomialkoeffizient gibt an, auf wie vielen verschiedenen Arten man aus einer Menge von $n$ verschiedenen Objekten $k$ Objekte ziehen kann (ohne Zurücklegen und ohne Beachtung der Reihenfolge).
+
+$k = \tbinom{n}{k}= \frac{n!}{k!(n-k)!} \square${#eq-binkoeff}
+:::
 
 Lies: "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige Ereignisse (günstige Pfade) oder kürzer "k aus n".
+
+
+:::{#exm-binkoeff}
+### Lotto
+
+Wie viele Zahlenkombinationen gibt es im Lotto für 6 Richtige?
+Der Binomialkoeffizient verrät es uns:
+$\tbinom{49}{6}= 13\,983\,816\square$
+:::
 
 Auf Errisch geht das so:
 
@@ -1027,7 +1048,7 @@ Auf Errisch geht das so:
 :::: {.columns}
 
 ::: {.column width="50%"}
->    👨‍🏫 Hey R, Wie viele Möglichkeiten gibt es, aus $n=4$ Pfaden "$k=2$ auszuwählen?
+>    👨‍🏫 Hey R, Wie viele Möglichkeiten gibt es, aus $n=4$ Pfaden $k=2$ auszuwählen?
 
 
 :::
@@ -1057,9 +1078,20 @@ combinations <- combn(n, k) |> t() |> as_tibble()
 
 
 
+:::{#exm-befördern}
+### Beförderung
+Aus einem Team mit 25 Personen sollen 11 Personen befördert werden. Wie viele mögliche Kombinationen (von beförderten Personen) können gebildet werden?
 
+$\tbinom{25}{11} = \frac{25!}{11!\cdot(25-11)!} = 4\,457\,400$
 
+In Errisch:
 
+```{r}
+choose(n = 25, k = 11)
+```
+
+Es gibt 4457400 Kombinationen von Teams; dabei ist die Reihenfolge der Ziehung nicht berücksichtigt.$\square$
+:::
 
 
 #### Rechnen mit R
@@ -1090,7 +1122,8 @@ dbinom(x = 5, size = 7, prob = .95)
 ```
 
 
-Es gilt also $P(X=5) \approx .04$. Die Wahrscheinlichkeit, dass (nur) 5 Motoren laufen an einem beliebigen Tag ist relativ gering^[wobei "gering" subjektiv ist, die Betreiberfirma findet diese Wahrscheinlichkeit, dass 2 Pumpen ausfallen, wohl viel zu hoch.]. 
+Es gilt also $P(X=5) \approx .04$. Die Wahrscheinlichkeit, dass (nur) 5 Motoren laufen an einem beliebigen Tag ist relativ gering^[wobei "gering" subjektiv ist, die Betreiberfirma findet diese Wahrscheinlichkeit, dass 2 Pumpen ausfallen, wohl viel zu hoch.].
+Die Wahrscheinlichkeit, dass $k=0 \ldots 7$ Motoren laufen, ist in @fig-motoren dargestellt.
 
 
 `dbinom()` steht für die Wahrscheinlichkeits*d*ichte (im diskreten Fall, also hier, Wahrscheinlichkeitsfunktion genannt) und `binom` für die Binomialverteilung. `x` gibt die Anzahl der Treffer an (das gesuchte Ereignis, hier 5 Motoren arbeiten); `size` gibt die Stichprobengröße an (hier 7 Motoren).
@@ -1099,20 +1132,32 @@ Damit gilt:
 
 $P(X\ge 5) = P(X=5) + P(X=6) + P(X=7)$
 
+Berechnen wir zunächst die Wahrscheinlichkeit, dass 5,6 oder 7 Motoren laufen:
+
 ```{r}
 p_5 <- dbinom(x = 5, size = 7, prob = .95)
 p_6 <- dbinom(x = 6, size = 7, prob = .95)
 p_7 <- dbinom(x = 7, size = 7, prob = .95)
 
+
+p_5
+p_6
+p_7
+```
+
+Die gesuchte Wahrscheinlichkeit, `p_mind_5`, ist die Summe der drei Einzelwahrscheinlichkeiten:
+
+```{r}
 p_mind_5 <- p_5 + p_6 + p_7
 
 p_mind_5
 ```
 
+
 Die Wahrscheinlichkeit, dass mind. 5 Motoren arbeiten beträgt also `r round(p_mind_5, 4)`.
 
 
-Das Komplement zu diesem Ereignis ist, dass *nicht* mind. 5 Motoren arbeiten, also höchstens 4 und es daher zu einem Ausfall kommt.
+Das Komplement zu diesem Ereignis ist, dass *nicht* mind. 5 Motoren arbeiten, also *höchstens 4* und es daher zu einem Ausfall kommt.
 
 Natürlich gilt $P(\bar{X}) = 1- P(X)$.
 
@@ -1122,18 +1167,52 @@ p_weniger_als_4
 ```
 
 
+
+```{r}
+#| echo: false
+#| fig-cap: "Wahrscheinlichkeit, dass genau k = 0..7 Motoren laufen"
+#| fig-subcap: 
+#|   - "In normaler Wahrscheinlichkeit, 0<p<1"
+#|   - "In Log-Einheiten (Basis 2), 'Halbierungen'"
+#| label: fig-motoren
+#| layout-ncol: 2
+#| 
+
+font_size <- 6
+
+ps <- dbinom(x = 0:7, size = 7, prob = .95)
+
+ps_df <-
+  tibble(Motorenzahl = 0:7,
+         Pr = ps,
+         Pr_log = log(ps, base = 2))
+
+ps_df |> 
+  ggplot(aes(x = Motorenzahl, y = Pr)) +
+  geom_col() +
+  scale_x_continuous(breaks = 0:7) +
+  geom_label(aes(label = round(Pr, 3)), size = font_size)
+
+ps_df |> 
+  ggplot(aes(x = Motorenzahl, y = Pr_log)) +
+  geom_col() +
+  scale_x_continuous(breaks = 0:7) +
+  geom_label(aes(label = round(Pr_log, 0)), size = font_size)
+```
+
+
 Alternativ kann man mit der Verteilungsfunktion rechnen: $P(X \le 4)$.
 
 
 
 
-In R kann man dafür die Funktion `pbinom()` nutzen (p für (kumulierte) Wahrscheinlichkeit).
+In R kann man die Funktion `pbinom()` nutzen (p für (kumulierte) Wahrscheinlichkeit), um die Verteilungsfunktion der Binomialverteilung zu berechnen:
 
 ```{r}
 pbinom(q = 4, size = 7, prob = .95)
 ```
 
-`q = 4` steht für $X \le 4$, also für höchstens 4 Treffer (arbeitende Motoren); `size = 7` meint die Stichprobengröße, hier 7 Motoren.
+`q = 4` steht für $X \le 4$, also für höchstens 4 Treffer (arbeitende Motoren); `size = 7` meint die Stichprobengröße, hier 7 Motoren.$\square$
 
 :::
 
@@ -1146,6 +1225,34 @@ $F(X=x) = P(X \le x)$
 
 :::
 
+
+:::{callout-note}
+### Logarithmus
+Der Logarithmus zur Basis 2^[als "Logarithmus Dualis", ld, bezeichnet] gibt die "Verdopplungen" bzw. "Halbierungen" der Wahrscheinlichkeit an, wobei $ld(1/2) = -1.\square$
+:::
+
+
+:::{#exm-log2-1}
+$ld(1/2) = -1:$
+```{r}
+log(.5, base = 2)
+```
+
+1/2 ist genau "minus 1 Verdopplung" von 1 entfernt, d.h. eine Halbierung.
+
+$ld(1/4) = -2:$
+```{r}
+log(1/4, base = 2)
+```
+1/2 ist genau "minus 2 Verdopplungen" von 1 entfernt, d.h. zwei Halbierungen.
+
+$ld(1/8) = -3:$
+```{r}
+log(1/8, base = 2)
+```
+
+1/8 (0.125) ist 3 Halbierungen von 1 entfernt.$\square$
+:::
 
 
 #### Simulieren
@@ -2069,9 +2176,21 @@ Zusätzlich zu den Aufgaben im Buch:
 - [wuerfel03](https://datenwerk.netlify.app/posts/wuerfel03/wuerfel03.html)
 - [wuerfel04](https://datenwerk.netlify.app/posts/wuerfel04/wuerfel04.html)
 
+- [iq01](https://datenwerk.netlify.app/posts/iq01/iq01)
+- [iq02](https://datenwerk.netlify.app/posts/iq02/iq02)
+- [iq03](https://datenwerk.netlify.app/posts/iq03/iq03)
+- [iq04](https://datenwerk.netlify.app/posts/iq04/iq04)
+- [iq05](https://datenwerk.netlify.app/posts/iq05/iq05)
+- [iq06](https://datenwerk.netlify.app/posts/iq06/iq06)
+- [iq07](https://datenwerk.netlify.app/posts/iq07/iq07)
+- [iq08](https://datenwerk.netlify.app/posts/iq08/iq08)
+- [iq09](https://datenwerk.netlify.app/posts/iq09/iq09)
+- [iq10](https://datenwerk.netlify.app/posts/iq010/iq10)
+- [Bus1](https://datenwerk.netlify.app/posts/bus1/bus1)
 
-
-
+- [alphafehler-inflation2](https://datenwerk.netlify.app/posts/alphafehler-inflation2/alphafehler-inflation2.html)
+- [alphafehler-inflation3](https://datenwerk.netlify.app/posts/alphafehler-inflation3/alphafehler-inflation3.html)
+- [alphafehler-inflation4](https://datenwerk.netlify.app/posts/alphafehler-inflation4/alphafehler-inflation4.html)
 
 
 ## ---
