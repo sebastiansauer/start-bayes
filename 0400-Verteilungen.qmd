@@ -130,18 +130,28 @@ Wie können wir es übersichtlicher für Schorsch?$\square$
 ```{r}
 #| echo: false
 #| label: fig-4muenzen
-#| fig-cap: Ein Baumdiagramm mit 16 Ausgängen, analog zur 4 Münzwürfen
+#| fig-cap: "Ein Baumdiagramm mit 16 Ausgängen, analog zur 4 Münzwürfen. Jede Münze ist in einer anderen Farbe dargestellt. Der Knoten "1" ist der Start, da ist noch keine Münze geworfen."
 my_tree <- tidygraph::create_tree(31, 2, mode = "out")
 
 my_tree %>%
-  mutate(lab = 1:31) %>% 
+  mutate(lab = 1:31) %>%
+  mutate(muenze = case_when(
+    lab == 1 ~ 0,
+    lab <= 3 ~ 1,
+    lab <= 7 ~ 2,
+    lab <= 15 ~ 3,
+    TRUE ~ 4
+  )) %>% 
+  mutate(muenze = factor(muenze)) %>% 
   ggraph(circular = FALSE) +
   geom_edge_link() +
-  geom_node_label(mapping = aes(label = lab)) +
+   geom_node_label(mapping = aes(label = lab, fill = muenze)) +
   coord_flip() +
   scale_y_reverse() +
+  # scale_fill_manual(values = c("0" = "red", "1" = "blue", "2" = "green", "3" = "purple", "4" = "orange"),
+  #                   name = "Muenze") +
   theme_void() +
-  theme(text = element_text(size = 1))
+  theme(text = element_text(size = 12))
 ```
 
 
@@ -202,11 +212,11 @@ ${\displaystyle X(\omega )={\begin{cases}1,&{\text{wenn }}\omega ={\text{Kopf}},
 %%| fig-cap: Eine Zufallsvariable ist eine Abbildung vom Ereignisraum zu den Realisationen der Zufallsvariable. Außerdem sieht man, wie Zufallsvariablen genutzt werden, um Wahrsscheinlichkeiten zu bestimmen.
 %%| label: fig-zv
 flowchart LR
-  subgraph A[Ereignisraum]
+  subgraph A[Ereignisse<br> im Ereignisraum]
     Kopf
     Zahl
   end
-  subgraph B[Zufallsvariable]
+  subgraph B[Realisationen der <br>Zufallsvariable]
     null[0]
     eins[1]
   end
@@ -340,7 +350,6 @@ twodice <- tibble(
 p_twodice <- ggplot(twodice, aes(x = Augensumme, y = p)) + 
   geom_col() +
   geom_label(aes(y = p, label = round(p, 2), nudge_y = .1))
-  
 ```
 
 
@@ -394,7 +403,7 @@ Einfach gesprochen veranschaulicht eine Balken- oder Histogramm eine Verteilung.
 ::: {.column width="50%"}
 ```{r}
 #| echo: false
-#| fig-cap: Wahrscheinlichkeiten des zweifachen Würfelwurfs
+#| fig-cap: Wahrscheinlichkeitsverteilung der Zufallsvariable "Augenzahl im zweifachen Würfelwurf"
 #| label: fig-2dice-prob
 p_twodice
 ```
@@ -427,7 +436,7 @@ p_sim2dice
 :::{#exm-mtcars)
 <!-- ### Häufigkeitsverteilung bei `mtcars` -->
 
-Die Häufigkeitsverteilung eines *diskreten* Merkmals $X$ mit $k$ Ausprägungen zeigt (vgl.@ tbl-hauef),
+Die Häufigkeitsverteilung eines *diskreten* Merkmals $X$ mit $k$ Ausprägungen zeigt (vgl.@tbl-hauef-tab),
 wie häufig die einzelnen Ausprägungen sind.
 So hat die Variable *Zylinder* (in einem Datensatz) etwa die Ausprägungen 4,6 und 8.$\square$
 :::
@@ -496,6 +505,8 @@ Die Wahrscheinlichkeitsfunktion für $X$ "Augensumme im zweifachen Würfelwurf" 
 Die Wahrscheinlichkeitsfunktion für $X$ "Treffer im einfachen Münzwurf, mit Zahl ist Treffer" ist $Pr(X=1)=1/2.$, vgl. @fig-zv.$\square$
 :::
 
+💡 Einfach gesprochen gibt die Wahrscheinlichkeitsfunktion die Wahrscheinlichkeit einer bestimmten Realisation einer Zufallsvariable an.
+
 #### Verteilungsfunktion
 
 
@@ -536,7 +547,8 @@ p_F_emp <-
 ```
 
 
-Die Verteilungsfunktion ist das Pendant zur *kumulierten Häufigkeitsverteilung*, vgl. @fig-kum-h-vert und @fig-kum-h-vert-emp.
+Die Verteilungsfunktion ist das Pendant zur *kumulierten Häufigkeitsverteilung*, vgl. @fig-kum-h-vert und @fig-kum-h-vert-emp:
+Was die kumulierte Häufigkeitsverteilung für Häufigkeiten ist, ist die Verteilungsfunktion für Wahrscheinlichkeiten.
 
 
 :::: {.columns}
@@ -544,7 +556,7 @@ Die Verteilungsfunktion ist das Pendant zur *kumulierten Häufigkeitsverteilung*
 ::: {.column width="50%"}
 ```{r}
 #| echo: false
-#| fig-cap: Kumulierte Häufigkeitsverteilung $H(X \le x_i)$
+#| fig-cap: Verteilungsfunktion $F(X \le x_i)$ für die Zufallsvariable "Augenzahl im zweifachen Würfelwurf"
 #| label: fig-kum-h-vert
 p_F
 ```
@@ -622,7 +634,7 @@ Nicht so einfach (?). Hingegen ist die Frage, wie hoch die Wahrscheinlichkeit is
 
 ```{r}
 #| echo: false
-#| #| label: "Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minuten auf den Bus zu warten? 50%!"
+#|  label: "Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minuten auf den Bus zu warten? 50%!"
 #| fig-cap: fig-p05
 p_bus2 <-
   uniform_Plot(0, 10) + 
@@ -2062,13 +2074,13 @@ Quelle: Uni Greifswald, Public domain, via Wikimedia Commons
 Zusätzlich zu den Aufgaben im Buch:
 
 
-- [Lose-Nieten-Binomial-Grid](https://datenwerk.netlify.app/posts/lose-nieten-binomial-grid/lose-nieten-binomial-grid)
-- [Bsp-Binomial](https://datenwerk.netlify.app/posts/bsp-binomial/bsp-binomial)
-- [wuerfel01](https://datenwerk.netlify.app/posts/wuerfel01/wuerfel01.html)
-- [wuerfel02](https://datenwerk.netlify.app/posts/wuerfel02/wuerfel02.html)
-- [wuerfel03](https://datenwerk.netlify.app/posts/wuerfel03/wuerfel03.html)
-- [wuerfel04](https://datenwerk.netlify.app/posts/wuerfel04/wuerfel04.html)
-
+1. [Lose-Nieten-Binomial-Grid](https://datenwerk.netlify.app/posts/lose-nieten-binomial-grid/lose-nieten-binomial-grid)
+2. [Bsp-Binomial](https://datenwerk.netlify.app/posts/bsp-binomial/bsp-binomial)
+3. [wuerfel01](https://datenwerk.netlify.app/posts/wuerfel01/wuerfel01.html)
+4. [wuerfel02](https://datenwerk.netlify.app/posts/wuerfel02/wuerfel02.html)
+5. [wuerfel03](https://datenwerk.netlify.app/posts/wuerfel03/wuerfel03.html)
+6. [wuerfel04](https://datenwerk.netlify.app/posts/wuerfel04/wuerfel04.html)
+3. [Klausur-raten](https://datenwerk.netlify.app/posts/klausur-raten/klausur-raten) 
 
 
 
