@@ -6,7 +6,7 @@
 library(tidyverse)
 library(easystats)
 #library(lubridate)
-#library(gmp)
+library(gmp)  # function "isprime"
 library(titanic)
 library(knitr)
 ```
@@ -324,6 +324,8 @@ Sie werfen eine Münze (Sie haben keinen Grund, an ihrer Fairness zu zweifeln). 
 @fig-baummuenz1 zeigt die möglichen Ausgänge (K wie Kopf und Z wie Zahl) dieses Zufallexperiments.
 
 ```{mermaid}
+%%| label: fig-baummuenz1
+%%| fig-cap: Sie werfen eine Münze. Party oder Lernen???
 flowchart LR
  M[Sie werfen die Münze] --> K
  M --> Z
@@ -912,7 +914,10 @@ Hammer!
 #| echo: false
 #| fig-cap: Illustration von gemeinsamer und bedingter Wahrscheinlichkeit
 #| label: fig-schema-p
-plots(plot16a1, plot16a2, plot16c)
+#| layout-ncol: 3
+plot16a1
+plot16a2
+plot16c
 ```
 
 
@@ -1121,9 +1126,9 @@ Auf der anderen Seite: Das Ereignis *Überleben* auf der Titanic ist *un*abhäng
 #| fig-cap: "Abhängigkeit und Unabhängigkeit zweier Ereignisse"
 #| label: fig-abh
 #| echo: false
-plots(plottitanic1, plottitanic3,
-      n_rows = 1,
-      title = c("Abhängigkeit zweier Ereignisse", "Un-Abhängigkeit zweier Ereignisse"))
+#| layout-ncol: 2
+plottitanic1
+plottitanic3
 ```
 
 
@@ -1151,6 +1156,7 @@ Sind die Ereignisse *Tod durch Covid*  bzw. *Impfquote* ($A$) und *Land*^[hier m
 #| cache: true
 #| fig-cap: Impfquote und Sterblichkeit sind voneinander abhängig (bezogen auf Covid, auf Basis vorliegender Daten)
 #| label: fig-covid1
+#| layout-ncol: 2
 
 
 # source: https://ourworldindata.org/covid-vaccinations
@@ -1206,7 +1212,8 @@ plot_covid2 <-
        subtitle = "2021-09-23")
 
 
-plots(plot_covid1, plot_covid2)
+plot_covid1
+plot_covid2
 ```
 
 Ja, da in beiden Diagrammen gilt: $P(A|B) \ne Pr(A) \ne Pr(A|\neg B)$.$\square$^[
@@ -1278,9 +1285,9 @@ Pr_K1K2
 
 :::{#def-multsatz}
 ### Multiplikationssatz für unabhängige Ereignisse
-Die Wahrscheinlichkeit, dass zwei unabhängige Ereignisse $A$ und $B$ *gemeinsam* eintreten, beträgt
+Die Wahrscheinlichkeit, dass zwei unabhängige Ereignisse $A$ und $B$ *gemeinsam* eintreten, ist gleich dem Produkt ihrer jeweiligen Wahrscheinlichkeiten, s. @eq-multtheorem.
 
-$Pr(A \cap B) = Pr(AB) = Pr(A) \cdot Pr(B)\square$.
+$Pr(A \cap B) = Pr(AB) = Pr(A) \cdot Pr(B) = Pr(B\cap A) = Pr(B) \cdot Pr(A).\square${#eq-multtheorem}
 :::
 
 
@@ -1339,7 +1346,10 @@ In diesem Fall sind $A$ und $B$ unabhängig.
 #| echo: false
 #| fig-cap: Unabhängige Ereignisse visualisiert
 #| label: fig-unabh-e
-plots(plot16a1, plot16a2, plot16c)
+#| layout-ncol: 3
+plot16a1
+plot16a2
+plot16c
 ```
 
 
@@ -1361,16 +1371,21 @@ Die Wahrscheinlichkeit für kalt und Regen ist die Wahrscheinlichkeit von *Kält
 Das Gesagte als Emoji-Gleichung:
 
 $P(❄️ \text{ und } ⛈️) = P(⛈️ |❄️ ) \cdot P(❄️) =  P(❄️ |⛈️ ) \cdot P(⛈️) = P(⛈ \text{ und }   ❄️)$
-
-
-
-Allgemein:
-
-$P(A\cap B) = P(A) \cdot P(B|A) = P(B) \cdot P(A|B)$
-
-
-Man kann also die "Gleichung drehen".$\square$
+Man kann also die "Gleichung drehen".^[Da $P(A\cap B)=Pr(B \cap A)$]$\square$
 :::
+
+
+:::{#def-kettenregel}
+### Kettenregel
+Allgemein gesagt, spricht man von der *Kettenregel* der Wahrscheinlichkeitsrechnung, s. @eq-kette.
+
+$P(A\cap B) = P(A) \cdot P(B|A) = P(B) \cdot P(A|B)\square${#eq-kette}
+
+In Worten: Die Wahrscheinlichkeit von $A$ gegeben $B$ ist gleich der Wahrscheinlichkeit von $A$ mal der Wahrscheinlichkeit von $B$ gegeben $A$.
+:::
+
+
+
 
 #### Abhängige Ereignisse
 
@@ -1422,7 +1437,7 @@ Es gilt also: $P(A\cap B) = P(A) \cdot P(B|A) \square$.
 
 — Ron Weasley zu Harry Potter^[Quelle: https://harrypotter.fandom.com/de/wiki/Bertie_Botts_Bohnen_jeder_Geschmacksrichtung]
 
-In einem Beutel liegen $n=20$ Bertie Botts Bohnen jeder Geschmacksrichtung.
+In einem Beutel liegen $n=20$ *Bertie Botts Bohnen jeder Geschmacksrichtung*.
 Uns wurde verraten, dass fast alle gut schmecken, also z.B. nach Schokolade, Pfefferminz oder Marmelade. Leider gibt es aber auch $x=3$ furchtbar scheußliche Bohnen (Ohrenschmalz-Geschmacksrichtung oder Schlimmeres).
 Sie haben sich nun bereit erklärt, $k=3$ Bohnen zu ziehen. Und zu essen, und zwar direkt und sofort!
 Also, jetzt heißt es tapfer sein. Ziehen und runter damit!
@@ -1512,6 +1527,19 @@ In @fig-tot-wskt gilt $Pr(B) = 0.6 \cdot 0.05 + 0.1 \cdot 0.02 + 0.3 \cdot  0.04
 Es ist die gleich Aufgabe wie @exm-bertie-botts, aber jetzt lautet die Frage: 
 Wie groß ist die Wahrscheinlichkeit, *mindestens eine* scheußliche Bohne zu erwischen?$\square$
 :::
+
+
+### Baumsammlung
+
+Baumdiagramme sind ein hilfreiches Werkzeug für wiederholte Zufallsexperimente.
+Daher ist hier eine "Baumsammlung"^[Wald?] zusammengestellt, s. fig-baumsammlung.
+
+- Sie werfen 1 Münze, @fig-baummuenz.
+- Sie werfen 2 Münzen, @fig-zweimuenzen.
+- Sie werfen 3 Münzen, @fig-dreimuenzen.
+- Sie werfen 4 Münzen, @fig-4muenzen.
+- Sie werfen 9 Münzen, 🤯 @fig-binom2.
+
 
 
 ## Bayes' Theorem
@@ -1676,7 +1704,7 @@ Bearbeiten Sie die Aufgabe in der angegeben Literatur.
 
 3. [mtcars-abhaengig](https://datenwerk.netlify.app/posts/mtcars-abhaengig/mtcars-abhaengig.html)
 3. [mtcars-abhaengig-var2](https://datenwerk.netlify.app/posts/mtcars-abhaengig_var2/mtcars-abhaengig_var2)
-3. [mtcars-abhaengig_var3](https://datenwerk.netlify.app/posts/mtcars-abhaengig_var3/mtcars-abhaengig_var3)
+3. [mtcars-abhaengig_var3a](https://datenwerk.netlify.app/posts/mtcars-abhaengig_var3a/mtcars-abhaengig_var3a)
 
 3. [voll-normal](https://datenwerk.netlify.app/posts/voll-normal/voll-normal.html)
 3. [corona-blutgruppe](https://datenwerk.netlify.app/posts/corona-blutgruppe/corona-blutgruppe.html)
