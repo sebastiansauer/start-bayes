@@ -286,7 +286,7 @@ Für jede Realisation $X=x$ kann die Wahrscheinlichkeit berechnen, @fig-zweiwuer
 
 
 
-*Wahrscheinlichkeitsverteilungen* dienen dazu, den Realisationen einer Zufallsvariable eine Wahrscheinlichkeit zuzuordnen.
+*Wahrscheinlichkeitsverteilungen* dienen dazu, den Realisationen einer Zufallsvariablen eine Wahrscheinlichkeit zuzuordnen.
 
 
 
@@ -439,7 +439,7 @@ p_sim2dice
 :::{#exm-mtcars)
 <!-- ### Häufigkeitsverteilung bei `mtcars` -->
 
-Die Häufigkeitsverteilung eines *diskreten* Merkmals $X$ mit $k$ Ausprägungen zeigt (vgl.@tbl-hauef-tab),
+Die Häufigkeitsverteilung eines *diskreten* Merkmals $X$ mit $k$ Ausprägungen zeigt (vgl. @tbl-hauef-tab),
 wie häufig die einzelnen Ausprägungen sind.
 So hat die Variable *Zylinder* (in einem Datensatz) etwa die Ausprägungen 4,6 und 8.$\square$
 :::
@@ -725,7 +725,7 @@ ggplot(d, aes(x,y)) +
 
 :::{#def-wvert-stetig}
 ### Stetige Wahrscheinlichkeitsverteilung
-Bei *stetigen* Zufallsvariablen $X$ geht man von unendlich vielen Ausprägungen aus; die Wahrscheinlichkeit einer bestimmten Ausprägung ist (praktisch) Null: $p(X=x_j)=0, \quad j=1,...,+\infty \square$.
+Bei *stetigen* Zufallsvariablen $X$ geht man von unendlich vielen Ausprägungen aus; die Wahrscheinlichkeit einer bestimmten Ausprägung ist (praktisch) Null: $Pr(X=x_j)=0, \quad j=1,...,+\infty \square$.
 :::
 
 
@@ -934,6 +934,8 @@ Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen z
 
 ### Binomialverteilung {#sec-bin-distrib}
 
+#### Grundlagen
+
 :::{#def-binvert}
 ### Binomialverteilung
 Die Binomialverteilung dient zur Darstellung der Wahrscheinlichkeit der Ergebnisse eines $n$-fach wiederholten binomialen Zufallexperiments,
@@ -986,7 +988,7 @@ Um die Wahrscheinlichkeitsverteilung einer binomialverteilte Zufallsvariable aus
 :::
 
 
-:::{exr-bin1}
+:::{#exr-bin1}
 ### Vier Lose, zwei Treffer
 Wie groß ist die Wahrscheinlichkeit von $A^{\prime}$, d.h. bei $n=4$ Zügen $x=2$ Treffer zu erzielen (und $n-x=2$ Nieten), gegeben dass die Trefferwahrscheinlichkeit bei $p=2/4$ liegt?
 Wir ziehen dabei *ohne* Zurücklegen (ZoZ). Außerdem sind die Lose nicht zu unterscheiden (abgesehen davon, ob es Treffer oder Nieten sind).$\square$
@@ -998,17 +1000,17 @@ Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlic
 Das ist einfach, dauert aber.
 In diesem Fall ist die Wahrscheinlichkeit eines (günstigen) Pfades, $A$:
 
-$P(A) = P(T)^2 \cdot P(N)^2 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right) ^2$.
+$Pr(A) = Pr(T)^2 \cdot Pr(N)^2 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right) ^2$.
 
 ```{r}
 p_a = (2/5)^2 * (3/5)^2
 p_a
 ```
 
-Etwas mühevolles Zählen der Pfade würde uns zeigen, dass es $k=6$ Pfade gibt, die alle die gleiche Wahrscheinlichkeit, $P(A)$, aufweisen.
+Etwas mühevolles Zählen der Pfade würde uns zeigen, dass es $k=6$ Pfade gibt, die alle die gleiche Wahrscheinlichkeit, $Pr(A)$, aufweisen.
 Damit beträgt die Wahrscheinlichkeit des gesuchten Ereignisses $A^{\prime}$ (2 Treffer bei 4 Zügen):
 
-$P(A^{\prime}) = 6 \cdot P(A)$.
+$Pr(A^{\prime}) = 6 \cdot Pr(A)$.
 
 ```{r}
 p_a_strich = 6 * p_a
@@ -1021,8 +1023,8 @@ Einfach gesprochen sieht sie so aus:
 
 
 
-$$P(A^{\prime}) = k \cdot P(A)$$
-Dabei steht $k$ für die Anzahl der günstigen Pfade und $P(A)$ für die Wahrscheinlichkeit eines günstigen Pfades (d.h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.
+$$Pr(A^{\prime}) = k \cdot Pr(A)$$
+Dabei steht $k$ für die Anzahl der günstigen Pfade und $Pr(A)$ für die Wahrscheinlichkeit eines günstigen Pfades (d.h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.
 
 Die Anzahl der Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt, s. @eq-binkoeff.^[wobei gelten muss $n \ge k$]
 
@@ -1064,7 +1066,7 @@ choose(4,2)
 
 ::::
 
-Hier ist ein Überblick der möglichen 6 Elementareignisse des Experiments:
+Hier ist ein Überblick der möglichen 6 günstigen Ereigniise des Experiments (2 Treffer bei 4 Versuchen):
 1. TTNN, 2. TNTN, 3. TNNT, 4. NTTN ,5. NTNT, 6. NNTT.
 
 ```{r}
@@ -1075,7 +1077,6 @@ k <- 2  # Number of items to choose
 
 # Generate all combinations
 combinations <- combn(n, k) |> t() |> as_tibble()
-
 ```
 
 
@@ -1114,9 +1115,9 @@ dbinom(x = 2, size = 4, prob = 2/5)
 
 In einer Pumpstation arbeiten 7 Motoren, die wir als identisch annehmen. Mit einer Wahrscheinlichkeit von 5% fällt ein Motor aus und ist für den Rest des Tages nicht einsatzbereit. Der Betrieb kann aufrecht erhalten werden, solange mindestens 5 Motoren arbeiten. Wie groß ist die Wahrscheinlichkeit, dass die Pumpstation aus dem Betrieb fällt?
 
-$P(X=k)$ (oder kurz: $P(k)$) gibt die Wahrscheinlichkeit (Wahrscheinlichkeitsfunktion) an für das Ereignis, dass *k* Motoren arbeiten.
+$Pr(X=k)$ (oder kurz: $Pr(k)$) gibt die Wahrscheinlichkeit (Wahrscheinlichkeitsfunktion) an für das Ereignis, dass *k* Motoren arbeiten.
 
-Lassen wir R mal $P(X=5)$ ausrechnen.
+Lassen wir R mal $Pr(X=5)$ ausrechnen.
 
 
 ```{r}
@@ -1124,7 +1125,7 @@ dbinom(x = 5, size = 7, prob = .95)
 ```
 
 
-Es gilt also $P(X=5) \approx .04$. Die Wahrscheinlichkeit, dass (nur) 5 Motoren laufen an einem beliebigen Tag ist relativ gering^[wobei "gering" subjektiv ist, die Betreiberfirma findet diese Wahrscheinlichkeit, dass 2 Pumpen ausfallen, wohl viel zu hoch.].
+Es gilt also $Pr(X=5) \approx .04$. Die Wahrscheinlichkeit, dass (nur) 5 Motoren laufen an einem beliebigen Tag ist relativ gering^[wobei "gering" subjektiv ist, die Betreiberfirma findet diese Wahrscheinlichkeit, dass 2 Pumpen ausfallen, wohl viel zu hoch.].
 Die Wahrscheinlichkeit, dass $k=0 \ldots 7$ Motoren laufen, ist in @fig-motoren dargestellt.
 
 
@@ -1132,7 +1133,7 @@ Die Wahrscheinlichkeit, dass $k=0 \ldots 7$ Motoren laufen, ist in @fig-motoren 
 
 Damit gilt:
 
-$P(X\ge 5) = P(X=5) + P(X=6) + P(X=7)$
+$Pr(X\ge 5) = Pr(X=5) + Pr(X=6) + Pr(X=7)$
 
 Berechnen wir zunächst die Wahrscheinlichkeit, dass 5,6 oder 7 Motoren laufen:
 
@@ -1161,7 +1162,7 @@ Die Wahrscheinlichkeit, dass mind. 5 Motoren arbeiten beträgt also `r round(p_m
 
 Das Komplement zu diesem Ereignis ist, dass *nicht* mind. 5 Motoren arbeiten, also *höchstens 4* und es daher zu einem Ausfall kommt.
 
-Natürlich gilt $P(\bar{X}) = 1- P(X)$.
+Natürlich gilt $Pr(\bar{X}) = 1- Pr(X)$.
 
 ```{r}
 p_weniger_als_4 <- 1 - p_mind_5
@@ -1203,7 +1204,7 @@ ps_df |>
 ```
 
 
-Alternativ kann man mit der Verteilungsfunktion rechnen: $P(X \le 4)$.
+Alternativ kann man mit der Verteilungsfunktion rechnen: $Pr(X \le 4)$.
 
 
 
@@ -1223,12 +1224,12 @@ pbinom(q = 4, size = 7, prob = .95)
 
 Die Funktion, die die Wahrscheinlichkeit dafür angibt, dass die diskrete Zufallsvariable $X$ eine Realisation annimmt, die kleiner oder gleich (höchstens) einem Wert $X=x$ ist, heißt *Verteilungsfunktion*.
 
-$F(X=x) = P(X \le x)$
+$F(X=x) = Pr(X \le x)$
 
 :::
 
 
-:::{callout-note}
+:::{#callout-note}
 ### Logarithmus
 Der Logarithmus zur Basis 2^[als "Logarithmus Dualis", ld, bezeichnet] gibt die "Verdopplungen" bzw. "Halbierungen" der Wahrscheinlichkeit an, wobei $ld(1/2) = -1.\square$
 :::
@@ -1257,7 +1258,7 @@ log(1/8, base = 2)
 :::
 
 
-#### Simulieren
+#### Simulieren wir eine Binomialverteilung
 
 
 Die Binomialverteilung lässt sich gut als "Münzwurf-Verteilung" auffassen.
@@ -1334,11 +1335,12 @@ head(muenz_tab)
 ```
 
 
-Und hier der Anteil von "Zahl" im Verlauf unserer Münzwürfe, s. @fig-lln.
+Und hier der Anteil von "Zahl" im Verlauf unserer Münzwürfe, s. @fig-lln.^[`library(ggpubr); ggline(muenz_tab, x = "id", y = "x_cumsum")`]
 
 
 ```{r}
 #| label: fig-lln
+#| echo: false
 #| fig-cap: "Das Gesetz der großen Zahl am Beispiel der Stabilisierung des Trefferanteils beim wiederholten Münzwurf"
 #| fig-asp: 0.3
 
@@ -1348,6 +1350,7 @@ muenz_tab %>%
   aes(x = id, y = x_cumsum) +
   geom_line()
 ```
+
 
 
 Grob gesagt scheint sich ein Münzwurf nach, naja, vielleicht 500 Würfen "einigermaßen" zu stabilisieren.^[Was "einigermaßen" bedeuten soll, ist kein statistischer Begriff, sondern einer, der im echten Leben von den Menschen beantwortet werden muss, die eine Entscheidung zu treffen haben.]
@@ -1378,7 +1381,7 @@ source(paste0(here::here(),"/R-Code/img15.R"))
 ### Normalverteilung
 
 
-:::{def-nv}
+:::{#def-nv}
 ### Normalverteilung
 Normalverteilungen haben eine charakteristische Glockenform;
 sie sind symmetrisch^[d.h. die Schiefe (`skewness`) ist 0].
@@ -1391,11 +1394,10 @@ Eine normalverteilte Zufallsvariable $X$ mit einem bestimmten Mittelwert und ein
 
 $$X \sim \mathcal{N}(\mu, \sigma)$$
 
-::: {def-parameter}
-
+::: {#def-parameter}
 ### Parameter
 
-Ein Parameter (einer Verteilung) legt die "Varianten" einer Verteilung fest. Durch die Wahl der Parameterwerte nimmt eine Verteilung eine genaue Form an.
+Ein Parameter (einer Verteilung) legt die "Varianten" einer Verteilung fest. Durch die Wahl der Parameterwerte nimmt eine Verteilung eine genaue Form an.$\square$
 
 :::
 
@@ -1404,9 +1406,11 @@ Ein Parameter (einer Verteilung) legt die "Varianten" einer Verteilung fest. Dur
 
 Beispiel: Wie groß sind Studentis ([Quelle des Datensatzes](https://rdrr.io/cran/openintro/man/speed_gender_height.html))? 
 
-Das Quantil von z.B. 25% zeigt die Körpergröße der 25% kleinsten Studentis an, analog für 50%, 75%:
+Das Quantil von z.B. 25% zeigt die Körpergröße der 25% kleinsten Studentis an, analog für 50%, 75%, vgl. @tbl-quantiles.
 
 ```{r QM2-Thema3-Teil1-5, echo = FALSE}
+#| tbl-cap: Quantile der Körpergrößen von Studentis
+#| label: tbl-quantiles
 data(speed_gender_height, package = "openintro")
 
 height_summary <- 
@@ -1516,12 +1520,10 @@ source(paste0(here::here(),"/R-Code/img14.R"))
 
 
 
-Nicht verwechseln:
+Verwechseln Sie die Normalverteilung nicht mit der Paranormalverteilung, s. @fig-paranormal.
 
+![Die Paranormalverteilung](img/ch33910f1.jpg){#fig-paranormal width=30%}
 
-```{r Normalverteilung-8, echo = FALSE, out.width="30%", fig.align='center'}
-knitr::include_graphics("img/ch33910f1.jpg")
-```
 
 
 
@@ -1531,18 +1533,20 @@ knitr::include_graphics("img/ch33910f1.jpg")
 #### Normalverteilung vs. randlastige Verteilungen
 
 
+
+Bei randlastigen Verteilungen ("fat tails") kommen Extremereignisse viel häufiger vor als bei Normalverteilungen. Deshalb ist es wichtig sein, zu wissen, ob eine Normalverteilung oder eine randlastige Verteilung vorliegt. Viele statistische Methoden sind nicht zuverlässig bei (stark) randlastigen Methoden. @fig-fat grenzt eine Normalverteilung von einer "Fat-Tail-Verteilung" ab.
+
+
 ```{r Normalverteilung-9, fig.asp=0.5}
 #| echo: false
+#| fig-cap: Normalverteilung vs. randlastige Verteilungen
+#| label: fig-fat
 ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
-  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1), color = "blue") +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1), color = "#E69F00FF") +
   labs(y = "Dichte", x = "Merkmal, X") +
-  stat_function(fun = dt, n = 101, args = list(df = 1, ncp =0), color = "red") +
-  labs(caption = "Blau: Normalverteilung\nRot: randlastige Verteilung (t-Verteilung mit df=1)")
+  stat_function(fun = dt, n = 101, args = list(df = 1, ncp =0), color = "#56B4E9FF") +
+  labs(caption = "orange: Normalverteilung\n blau: randlastige Verteilung (t-Verteilung mit df=1)")
 ```
-
-
-Bei randlastigen Verteilungen ("fat tails") kommen Extremereignisse viel häufiger vor als bei Normalverteilungen. Deshalb ist es wichtig sein, zu wissen, ob eine Normalverteilung oder eine randlastige Verteilung vorliegt. Viele statistische Methoden sind nicht zuverlässig bei (stark) randlastigen Methoden.
-
 
 
 :::::{#exm-normal-rand}
@@ -1729,7 +1733,7 @@ $IQ \sim \mathcal{N}(100,15)$
 [Quelle:](https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models): John Kruschke.
 
 
-Ziehen wir zufällig $1e4$ Stichproben aus $\mathcal{N}(100,15)$ und berechnen die Quantile:
+Ziehen wir zufällig $1e4$ Stichproben aus $\mathcal{N}(100,15)$ und berechnen die Quantile, s. @tbl-quantiles2.
 
 ```{r echo = TRUE}
 d <-
@@ -1749,6 +1753,8 @@ d_summary <- d %>%
 
 ```{r}
 #| echo: false
+#| tbl-cap: Quantile der IQ-Verteilung
+#| label: tbl-quantiles2
 d_summary %>% 
   gt() %>% 
   fmt_number(p, decimals = 2) %>% 
@@ -1772,7 +1778,8 @@ Umgekehrt können wir uns auch fragen: Gegeben einer Realisation der Zufallsvari
 :::
 
 
-Ziehen wir Stichproben aus $\mathcal{N}(100,15)$:
+Ziehen wir Stichproben aus $\mathcal{N}(100,15)$. 
+Was ist die Wahrscheinlichkeit für eine `iq < 100`?
 
 ```{r echo = TRUE, eval = FALSE}
 d <-
@@ -1790,8 +1797,17 @@ d %>%
 ```
 
 
+@tbl-i100 zeigt uns die Antwort. 
+
+:::{#callout-note}
+Wir schätzen die wahre, "theoretische" Wahrscheinlichkeit durch einfaches Ausprobieren: Wir führen das Zufallsexperiment einfach häufig durch.
+Dann zählen wir den Anteil der Treffer. Nennt man auch "Simulieren"; klingt cooler als "Ausprobieren".🤓$\square$
+:::
+
 
 ```{r echo = FALSE, eval = TRUE}
+#| tbl-cap: Wahrscheinlichkeit für iq < 100
+#| label: tbl-iq100
 d <-
   tibble(
     iq = rnorm(1e4, 
@@ -1827,15 +1843,24 @@ Die *Verteilungsfunktion* (der Anteil der Wahrscheinlichkeitsmasse), `p`, für I
 
 
 
-
-- *Quantile* teilen eine Verteilung so ein, dass ein Anteil $p$ kleiner oder gleich und der andere Teil $1-p$ größer  dem Quantil $q$ ist.
-    - *Beispiel*: "50%-Quantil = 100" meint, dass 50% der Elemente der Verteilung einen Wert kleiner oder gleich als 100 haben.
-    
-- Die *Verteilungsfunktion F* (für einen Wert $x$) gibt die Wahrscheinlichkeit an, dass die zugehörige Zufallsvariable $X$ einen Wert höchstens so groß wie $x$ annimmt. Sie zeigt also die kumulierte Wahrscheinlichkeit $[-\infty, q)$.
-    - *Beispiel*: "F(100) = 50%" meint: Die Wahrscheinlichkeit für eine Ausprägung von höchstens als 100 beträgt 50%.
+💡 Zur Erinnerung: *Quantile* teilen eine Verteilung so ein, dass ein Anteil $p$ kleiner oder gleich und der andere Teil $1-p$ größer  dem Quantil $q$ ist.
 
 
-Schauen wir uns die Quartile der Normalverteilung einmal näher an.
+:::{#exm-quantil} 
+"50%-Quantil = 100" meint, dass 50% der Elemente der Verteilung einen Wert kleiner oder gleich als 100 haben.
+Man schreibt auch: `q(.5) = 100`.
+:::
+
+
+💡  Zur Erinnerung: Die *Verteilungsfunktion F* (für einen Wert $x$ der Zufallsvariable $X$) gibt die Wahrscheinlichkeit an, dass $X$ einen Wert höchstens so groß wie $x$ annimmt. Sie zeigt also die kumulierte Wahrscheinlichkeit $[-\infty, q)$.
+
+
+:::{#exm-f}
+"F(100) = 50%" meint: Die Wahrscheinlichkeit für eine Ausprägung von höchstens als 100 beträgt 50%.$\square$
+:::
+
+
+Schauen wir uns die Quantile der Normalverteilung einmal näher an.
 Wir gehen von einer Normalverteilung aus, wie sie zur Beschreibung von Intelligenz (IQ) verwendet wird, s. @fig-nv-quants.
 
 
@@ -1851,7 +1876,7 @@ p1 <-
   geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 100)) +
   geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
   labs(x = "X", y = "Dichte",
-       title = "50%-Quantil: 100; Verteilungsfunktion von 100:50%") +
+       title = "50%-Quantil: 100;\nVerteilungsfunktion von 100:50%") +
   scale_y_continuous(breaks = NULL)
 
 p2 <-
@@ -1859,7 +1884,7 @@ p2 <-
   geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 125)) +
   geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
   labs(x = "X", y = "Dichte",
-       title = "95%-Quantil: 125; Verteilungsfunktion von 125:95%") +
+       title = "95%-Quantil: 125;\nVerteilungsfunktion von 125:95%") +
   scale_y_continuous(breaks = NULL)
 
 
@@ -1990,20 +2015,35 @@ q_p69 <-
 #### Standardnormalverteilung
 
 
+:::: {.columns}
+
+::: {.column width="50%"}
 ```{r Normalverteilung-3}
 #| echo: false
+#| fig-cap: "Normalverteilung mit Mittelwert 0 und SD 1, auch *Standard-Normalverteilung* genannt"
+#| label: fig-snv
 ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
   stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1)) +
   labs(y = "Dichte", x = "Merkmal, X") +
-  ggtitle("Normalverteilung mit Mittelwert 0 und SD 1")
+  theme_modern()
 ```
 
-Bei $X=0$:
+:::
+
+::: {.column width="50%"}
+Bei $X=0$ einer *Standard-Normalverteilung* (s. @fig-snv) gilt:
 
 - hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von 40% (Wahrscheinlichkeitsdichte)
 - sind 50% der Wahrscheinlichkeitsmasse (Fläche unter der Kurve) kleiner als dieser Wert (Verteilungsfunktion).
 
 In Summe liegen 100% der Wahrscheinlichkeitsmasse unter der Kurve.
+:::
+
+::::
+
+
+
+
 
 
 #### Normalverteilung als konservative Wahl
@@ -2175,18 +2215,8 @@ Quelle: Uni Greifswald, Public domain, via Wikimedia Commons
 ## Aufgaben
 
 
-Zusätzlich zu den Aufgaben im Buch:
+Zusätzlich zu den Aufgaben in der genannten Literatur sind folgende Aufgaben zu empfehlen.
 
-
-<<<<<<< HEAD
-1. [Lose-Nieten-Binomial-Grid](https://datenwerk.netlify.app/posts/lose-nieten-binomial-grid/lose-nieten-binomial-grid)
-2. [Bsp-Binomial](https://datenwerk.netlify.app/posts/bsp-binomial/bsp-binomial)
-3. [wuerfel01](https://datenwerk.netlify.app/posts/wuerfel01/wuerfel01.html)
-4. [wuerfel02](https://datenwerk.netlify.app/posts/wuerfel02/wuerfel02.html)
-5. [wuerfel03](https://datenwerk.netlify.app/posts/wuerfel03/wuerfel03.html)
-6. [wuerfel04](https://datenwerk.netlify.app/posts/wuerfel04/wuerfel04.html)
-3. [Klausur-raten](https://datenwerk.netlify.app/posts/klausur-raten/klausur-raten) 
-=======
 - [Lose-Nieten-Binomial-Grid](https://datenwerk.netlify.app/posts/lose-nieten-binomial-grid/lose-nieten-binomial-grid)
 - [Bsp-Binomial](https://datenwerk.netlify.app/posts/bsp-binomial/bsp-binomial)
 - [wuerfel01](https://datenwerk.netlify.app/posts/wuerfel01/wuerfel01.html)
@@ -2205,7 +2235,6 @@ Zusätzlich zu den Aufgaben im Buch:
 <!-- - [iq09](https://datenwerk.netlify.app/posts/iq09/iq09) -->
 <!-- - [iq10](https://datenwerk.netlify.app/posts/iq010/iq10) -->
 - [Bus1](https://datenwerk.netlify.app/posts/bus1/bus1)
->>>>>>> 2fd1a6361ffed80d1b4035c06f6099cbc8e469f3
 
 - [alphafehler-inflation2](https://datenwerk.netlify.app/posts/alphafehler-inflation2/alphafehler-inflation2.html)
 - [alphafehler-inflation3](https://datenwerk.netlify.app/posts/alphafehler-inflation3/alphafehler-inflation3.html)
