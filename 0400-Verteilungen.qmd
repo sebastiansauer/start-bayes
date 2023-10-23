@@ -63,6 +63,7 @@ library(ggraph)
 library(knitr)
 
 source("funs/uniformplot.R")
+source("funs/binomial_plot.R")
 ```
 
 
@@ -186,14 +187,14 @@ Wir nutzen sie, um die Anzahl der Treffer in einem Zufallsexperiment zu zählen.
 
 :::{#def-zufallsvariable}
 ### Zufallsvariable
-Die Zuordnung der Elementarereignisse eines Zufallsexperiment zu genau einer Zahl $\in \mathbb{R}$ nennt man Zufallsvariable.$\square$
+Die Zuordnung der Elementarereignisse eines Zufallsexperiments zu genau einer Zahl $\in \mathbb{R}$ nennt man Zufallsvariable.$\square$
 :::
 
-Die den Elementarereignisse zugewiesenen Zahlen nennt man *Realisationen* oder Ausprägungen der Zufallsvariablen
+Die den Elementarereignissen zugewiesenen Zahlen nennt man *Realisationen* oder Ausprägungen der Zufallsvariablen.
 
 :::{#exm-lotto}
 ### Lotto
-Ein Lottospiel hat ca. 14 Miollionen Elementarereignisse. Die Zufallsvariable "Anzahl der Treffer" hat nur 7 Realisationen: 0,1,...,6.$\square$
+Ein Lottospiel hat ca. 14 Millionen Elementarereignisse. Die Zufallsvariable "Anzahl der Treffer" hat nur 7 Realisationen: 0,1,...,6.$\square$
 :::
 
 Es hat sich eingebürgert, Zufallszahlen mit $X$ zu bezeichnen (oder anderen Buchstaben weit hinten aus dem Alphabet).
@@ -321,8 +322,7 @@ d <- tibble::tribble(
                     "Erwartungswert",                                "Mittelwert",
                            "Varianz",                                   "Varianz"
        )
-d
-
+gt::gt(d)
 ```
 
 
@@ -677,7 +677,7 @@ Die Wahrscheinlichkeitsdichte zeigt an, an welchen Stellen $x$ die Wahrscheinlic
 ![Die Wahrscheinlichkeit, dass eine Zufallsvariable einen Wert zwischen und annimmt, entspricht dem Inhalt der Fläche unter dem Graph der Wahrscheinlichkeitsdichtefunktion. Bildrechte: 4C, Wikipedia, CC-BY-SA .](img/260px-Integral_as_region_under_curve.svg.png){#fig-wdichte-sinnbild width=33%}
 
 
-### Verteilungsfunktion
+#### Verteilungsfunktion
 
 
 :::: {.columns}
@@ -1097,6 +1097,32 @@ Es gibt 4457400 Kombinationen von Teams; dabei ist die Reihenfolge der Ziehung n
 :::
 
 
+#### Formel der Binomialverteilung
+
+
+@eq-binomial zeigt die mathematische Definition der Binomialverteilung.
+Dabei liegt immer ein Zufallsversuch mit $n$ Durchgängen und $k$ Treffern zugrunde. Jeder Durchgang hat die Trefferwahrscheinlichkeit $p$ und jeder Durchgang ist unabhängig von allen anderen.
+
+
+
+$$Pr(X=k|p,n) = \frac{n}{k!(n-k)!}p^k(1-p)^{n-k}$${#eq-binomial}
+
+
+ @eq-binomial kann wie folgt auf Deutsch übersetzen:
+
+>   Die Wahrscheinlichkeit für das Ereignis "W,L" gegeben p berechnet als Produkt von zwei Termen. Erstens der Quotient von der Fakultät von W plus L im Zähler und im Nenner das Produkt von erstens der Fakultät von W mit zweitens der Fakultät von L. Der zweite Term ist das Produkt von p hoch W mal der komplementären Wahrscheinlichkeit von p hoch L.
+
+Oder noch kürzer:
+
+>    Die Wahrscheinlichkeit für das Ereignis "W,L" gegeben p berechnet als Produkt von zwei Termen. Erstens der Anzahl der günstigen Pfade, k und zweitens der Wahrscheinlichkeit für einen günstigen Pfad, P(A).
+
+
+Puh, Formeln sind vielleicht doch ganz praktisch, wenn man sich diese lange Übersetzung der Formel in Prosa duchliest.
+Noch praktischer ist es aber, dass es Rechenmaschinen gibt, die die Formel kennen und für uns ausrechnen. 
+Los, R, mach mal.
+
+
+
 #### Rechnen mit R
 
 
@@ -1142,7 +1168,6 @@ p_5 <- dbinom(x = 5, size = 7, prob = .95)
 p_6 <- dbinom(x = 6, size = 7, prob = .95)
 p_7 <- dbinom(x = 7, size = 7, prob = .95)
 
-
 p_5
 p_6
 p_7
@@ -1175,7 +1200,7 @@ p_weniger_als_4
 #| echo: false
 #| fig-cap: "Wahrscheinlichkeit, dass genau k = 0..7 Motoren laufen"
 #| fig-subcap: 
-#|   - "In normaler Wahrscheinlichkeit, 0<p<1"
+#|   - "In 'normaler' Wahrscheinlichkeit, 0<p<1"
 #|   - "In Log-Einheiten (Basis 2), 'Halbierungen'"
 #| label: fig-motoren
 #| layout-ncol: 2
@@ -1222,7 +1247,7 @@ pbinom(q = 4, size = 7, prob = .95)
 
 :::callout-important
 
-Die Funktion, die die Wahrscheinlichkeit dafür angibt, dass die diskrete Zufallsvariable $X$ eine Realisation annimmt, die kleiner oder gleich (höchstens) einem Wert $X=x$ ist, heißt *Verteilungsfunktion*.
+Die Funktion, die die Wahrscheinlichkeit dafür angibt, dass die diskrete Zufallsvariable $X$ eine Realisation annimmt, die *kleiner oder gleich* (höchstens) einem Wert $X=x$ ist, heißt *Verteilungsfunktion*.
 
 $F(X=x) = Pr(X \le x)$
 
@@ -1255,6 +1280,77 @@ log(1/8, base = 2)
 ```
 
 1/8 (0.125) ist 3 Halbierungen von 1 entfernt.$\square$
+:::
+
+
+
+
+
+::: {#exm-klausur20}
+
+## Klausur mit 20-Richtig-Falsch-Fragen
+
+Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen. Wie groß ist die Wahrscheinlichkeit, durch bloßes Münze werfen genau 15 Fragen richtig zu raten?^[Hey, endlich mal was für echte Leben!]
+
+```{r QM2-Thema2-kleineModelle-23, echo = TRUE}
+dbinom(x = 15, size = 20, prob = .5)
+```
+
+Um *höchstens* 15 Treffer zu erzielen, müssten wir die Wahrscheinlichkeiten von 0 bis 15 Treffern addieren.
+
+Praktischerweise gibt es einen R-Befehl, der das für uns übernimmt:
+
+```{r}
+pbinom(q = 15, size = 20, prob = .5)
+```
+
+
+Die Wahrscheinlichkeit 0, 1, 2, ... oder 15 Treffer zu erzielen, liegt also bei gut 99%.
+
+
+:::
+
+
+
+::: {#exm-globus4}
+
+## 3 Münzwürfe mit 3 Treffern
+
+Was ist die Wahrscheinlichkeit bei 3 Münzwürfen (genau) 3 Treffer (Kopf) zu erzielen?
+
+Das ist eine Frage an die Binomialverteilung;
+in R kann man das mit der Funktion `dbinom` beantworten.
+
+```{r QM2-Thema2-kleineModelle-24, echo = TRUE}
+dbinom(x = 3, size = 3, prob = 1/2)
+```
+
+Die Lösung lautet also $p=1/8 = .125.\qquad \square$
+
+:::
+
+
+<!-- Todo: XXX -->
+
+```{r QM2-Thema2-kleineModelle-25}
+#| echo: false
+#| label: p-bin-exms
+#| fig-cap: "Verschiedene Binomialverteilungen"
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - "n=3, p=1/2"
+#|   - "n=9, p=.7"
+
+binomial_plot(3, 1/2)
+
+binomial_plot(9, .7)
+```
+
+
+
+
+:::{#exr-binom}
+🏋️️ Was fällt Ihnen bei der Binomialverteilung auf? Ist sie symmetrisch? Verändert sich die Wahrscheinlichkeit linear?
 :::
 
 
@@ -1348,7 +1444,8 @@ muenz_tab %>%
   slice_head(n = 1e3) %>% 
   ggplot() +
   aes(x = id, y = x_cumsum) +
-  geom_line()
+  geom_line() +
+  theme_minimal()
 ```
 
 
@@ -1733,6 +1830,10 @@ $IQ \sim \mathcal{N}(100,15)$
 [Quelle:](https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models): John Kruschke.
 
 
+:::: {.columns}
+
+::: {.column width="70%"}
+
 Ziehen wir zufällig $1e4$ Stichproben aus $\mathcal{N}(100,15)$ und berechnen die Quantile, s. @tbl-quantiles2.
 
 ```{r echo = TRUE}
@@ -1749,6 +1850,9 @@ d_summary <- d %>%
             q = quantile(iq, probs))
 ```
 
+:::
+
+::: {.column width="25%"}
 
 
 ```{r}
@@ -1760,6 +1864,11 @@ d_summary %>%
   fmt_number(p, decimals = 2) %>% 
   fmt_number(q, decimals = 0)
 ```
+
+:::
+
+::::
+
 
 Das *Quantil* $q$ zur kumulierten Wahrscheinlichkeit $p=75$ ist 110, etc. 
 
@@ -2209,7 +2318,11 @@ Quelle: Uni Greifswald, Public domain, via Wikimedia Commons
 
 
 
+## Vertiefung
 
+@bourier_2018, Kap. 6.2 und 7.1 erläutert einige (grundlegende) theoretische Hintergründe zu diskreten Zufallsvariablen und Wahrscheinlichkeitsverteilungen. Wichtigstes Exemplar ist dabei die Binomialverteilung.
+
+@mittag_statistik_2020 stellen in Kap. 12 und 13 Zufallsvariablen vor; zum Teil geht die Darstellung dort über die Lernziele bzw. Inhalte dieses Kurses hinaus.
 
 
 ## Aufgaben
@@ -2217,7 +2330,6 @@ Quelle: Uni Greifswald, Public domain, via Wikimedia Commons
 
 Zusätzlich zu den Aufgaben in der genannten Literatur sind folgende Aufgaben zu empfehlen.
 
-- [Lose-Nieten-Binomial-Grid](https://datenwerk.netlify.app/posts/lose-nieten-binomial-grid/lose-nieten-binomial-grid)
 - [Bsp-Binomial](https://datenwerk.netlify.app/posts/bsp-binomial/bsp-binomial)
 - [wuerfel01](https://datenwerk.netlify.app/posts/wuerfel01/wuerfel01.html)
 - [wuerfel02](https://datenwerk.netlify.app/posts/wuerfel02/wuerfel02.html)
