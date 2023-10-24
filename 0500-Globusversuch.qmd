@@ -176,7 +176,7 @@ Vergleichen wir die kleine Welt unserer Modellen (@tbl-klein-gross), wie z.B. Be
 
 
 
-![So denkt unser Bayes-Golem](img/bayesupdate2.png){#fig-bayes1}
+<!-- ![So denkt unser Bayes-Golem](img/bayesupdate2.png){#fig-bayes1} -->
 
 
 
@@ -225,14 +225,16 @@ Der physikalische Prozess, der zur Entstehung der Daten führt, nennt man den  *
 
 In diesem Fall kann man ihn so beschreiben:
 
-1.  Der wahre Anteil von Wasser, $W$, der Erdoberfläche ist $p$ (und $1-p$ ist der Anteil Land, $L$).
-2.  Ein Wurf des Globusballs hat die Wahrscheinlichkeit $p$, eine $W$-Beobachtung zu erzeugen.
+1.  Der wahre Anteil von Wasser, $W$, der Erdoberfläche ist $\pi$ (und $1-\pi$ ist der Anteil Land, $L$).
+2.  Ein Wurf des Globusballs hat die Wahrscheinlichkeit $\pi$, eine $W$-Beobachtung zu erzeugen.
 3.  Die Würfe des Globusballs sind unabhängig voneinander.
-4.  Wir haben kein Vorwissen über $p$; jeder Wert ist uns gleich wahrscheinlich.
+4.  Wir haben kein Vorwissen über $\pi$; jeder Wert ist uns gleich wahrscheinlich.
 
 
-:::{exr-annahmen1}
-🏋 Welche Annahmen würden Sie ändern? Welche könnte man wegnehmen? Welche hinzufügen? Was wären die Konsequenzen?$\square$
+:::{#exr-annahmen1}
+🏋 Welche Annahmen würden Sie ändern? 
+Welche könnte man wegnehmen? Welche hinzufügen? 
+Was wären die Konsequenzen?$\square$
 :::
 
 
@@ -250,11 +252,11 @@ Für jede Hypothese haben wir ein Vorab-Wissen, das die jeweilige Plausibilität
 
 :::{#def-L}
 ### Likelihood
-Für jede Hypothese (d.h. jeden *Parameterwert* $p$) möchten wir wissen, wie wahrscheinlich die Daten sind (unter der Annahme, dass die Hypothese richtig ist). Kurz: Wir suchen die *Likelihood*. 
+Für jede Hypothese (d.h. jeden *Parameterwert* $\pi$) möchten wir wissen, wie wahrscheinlich die Daten sind (unter der Annahme, dass die Hypothese richtig ist). Kurz: Wir suchen die *Likelihood*. 
 Anders gesagt: Die Likelihood sagt uns, wie gut die Daten zu einer bestimmten Hypothese passen.$\square$
 :::
 
-:::{def-post1}
+:::{#def-post1}
 ### Posteriori-Verteilung
 Dann gewichten wir den Likelihood mit dem Vorabwissen, so dass wir die *Posteriori-Verteilung*^[ Anstatt von *Priori* liest man auch *Prior*; anstatt *Posteriori* auch *Posterior*] bekommen.$\square$
 :::
@@ -289,9 +291,9 @@ A[Priori-Vert.]-->B[Likelihood]-->C[Post-Vert.]-->A
 :::{#exr-l1}
 ### Wie gut passen die Daten zur Hypothese, dass die Erde komplett trocken ist?
 
-Wir haben in unseren Versuch $W=6$ und $L=3$ erzielt. Diese Daten passen überhaupt nicht zur Hypothese, dass die Erdoberfläche komplett trocken ist.
-Die *Likelihood*, $L$ für $p=0$ ist also Null.
-Analog ist die Likelihood für $p=1$ auch Null.$square$
+Wir haben in unseren Versuch $W=6$ und $L=3$ erzielt. Diese Daten passen *überhaupt nicht* zur Hypothese, dass die Erdoberfläche komplett trocken ist.
+Die *Likelihood*, $L$ für $\pi=0$ ist also Null.
+Analog ist die Likelihood für $\pi=1$ auch Null.$\square$
 :::
 
 
@@ -299,19 +301,18 @@ Analog ist die Likelihood für $p=1$ auch Null.$square$
 ### Wie wahrscheinlich ist ein Wasseranteil von 90%?
 
 Wie wahrscheinlich ist es, einen bestimmten Wasseranteil, z.B. 6 Treffer (bei 9 Würfen) zu erhalten, wenn man eine bestimmte Hypothese (einen bestimmten Wasseranteil, z.B. 90%) annimmt?
-Diese Wahrscheinlichkeit hat einen eigenen Namen, weil sie eine wichtige Sache ist.
-Man mennt sie die *Likelihood*, $L$ oder  $L$^[$\mathfrak{L}$ für Freunde alter Schriftarten].
+Diese Wahrscheinlichkeit nennt man die *Likelihood*, $L$ oder  $L$.
 
-Geht man von einer Binomialverteilng aus, ist die Likelihood einfach zu berechnen^[Ein Glück!].
+<!-- Geht man von einer Binomialverteilng aus, ist die Likelihood einfach zu berechnen. -->
 
 Wenn wir eine Binomialverteilung annehmen, dann gehen wir davon aus,  dass die Daten unabhängig voneinander entstehen und sich der Parameterwert nicht zwischenzeitlich ändert^[Die sog. "iid-Annahme", *i*ndependently and *i*dentically distributed: Jeder Wurf der Globusballes ist eine Realisation der gleichen Zufallsvariablen. Jeder Wurf ist unabhängig von allen anderen: Das Ergebnis eines Wurfes hat keinen (stochastischen) Einfluss auf ein Ergebnis anderer Würfe. Die Wahrscheinlichkeitsverteilung ist bei jedem Wurf identisch.].
 Der Wasseranteil der Erde bleibt während des Versuchs gleich (durchaus plausibel).
 
-Lassen Sie uns im Folgenden die Wahrscheinlichkeit ($Pr$), $W$ mal Wasser und $L$ mal Land zu beobachten, wenn die Wahrscheinlichkeit für Wasser $p$ beträgt, so bezeichnen: $(Pr(W,L | p))$.
-Diese Wahrscheinlichkeit, $(Pr(W,L | p))$, kann man mit der *Binomialverteilung* berechnen.
+Lassen Sie uns im Folgenden die Wahrscheinlichkeit ($Pr$), $W$ mal Wasser und $L$ mal Land zu beobachten, wenn die Wahrscheinlichkeit für Wasser $\pi$ beträgt, so bezeichnen: $(Pr(W,L | \pi))$.
+Diese Wahrscheinlichkeit, $(Pr(W,L | \pi))$, kann man mit der *Binomialverteilung* berechnen.
 
-Möchte man die Wahrscheinlichkeit ansprechen für das Ereignis "5 mal Wasser und 2 mal Land, wenn wir von einem Wasseranteil von 70% ausgehen", so würden wir kurz schreiben: $Pr(W=5, L=2 | p=.7)$.
-Oder noch kürzer:  $Pr(W=5 | p=.7)$, denn bei 7 Würfen, von denen 5 $W$ gezeigt haben, ist die Anzahl von $L$ festgelegt. 
+Möchte man die Wahrscheinlichkeit ansprechen für das Ereignis "5 mal Wasser und 2 mal Land, wenn wir von einem Wasseranteil von 70% ausgehen", so würden wir kurz schreiben: $Pr(W=5, L=2 | \pi=.7)$.
+Oder noch kürzer:  $Pr(W=5 | \pi=.7)$, denn bei 7 Würfen, von denen 5 $W$ gezeigt haben, ist die Anzahl von $L$ festgelegt. 
 
 Die Binomialverteilung zeigt die Verteilung der Häufigkeit (Wahrscheinlichkeit) der Ereignisse (z.B. 2 Mal Kopf) beim wiederholten Münzwurf (und allen vergleichbaren Zufallsexperimenten): "Münzwurfverteilung", s. Kap. @sec-bin-distrib.
 
@@ -321,7 +322,7 @@ Die Binomialverteilung zeigt die Verteilung der Häufigkeit (Wahrscheinlichkeit)
 
 Praktischerweise ist die Binomialverteilung in R eingebaut, wie wir gleich sehen werden.
 
-Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (Wahrscheinlichkeit), um 2 mal $W$ bei $N=W+L=3$ Würfen zu bekommen, wenn wir von $p=1/2$ ausgehen?^[Allgemeiner spricht man auch von 2 Treffern bei 3 Würfen (d.h. 1 "Nicht-Treffer", den wir als "Niete" bezeichnen). Treffer werden oft mit `1`  und Nieten mit `0` bezeichnet].
+Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (Wahrscheinlichkeit), um 2 mal $W$ bei $N=W+L=3$ Würfen zu bekommen, wenn wir von $\pi=1/2$ ausgehen?^[Allgemeiner spricht man auch von 2 Treffern bei 3 Würfen (d.h. 1 "Nicht-Treffer", den wir als "Niete" bezeichnen). Treffer werden oft mit `1`  und Nieten mit `0` bezeichnet].
 
 
 ```{r QM2-Thema2-kleineModelle-21a, echo = TRUE}
@@ -447,17 +448,17 @@ Das ist 1 günstiger Pfad von 512 Pfaden.
 
 ### Unser Modell ist geboren
 
-Wir fassen das Globusmodell so zusammen:
+Wir fassen das Globusmodell so zusammen, s. @eq-globus1.
 
-$$W \sim \text{Bin}(N,p),$$
+$$W \sim \text{Bin}(N,\pi)$${#eq-globus1}
 
-Lies: "W ist *bin*omial verteilt mit den Parametern $N$ und $p$". $N$ gibt die Anzahl der Globuswürfe an: $N=W+L$.
+Lies: "W ist *bin*omial verteilt mit den Parametern $N$ und $\pi$". $N$ gibt die Anzahl der Globuswürfe an: $N=W+L$.
 
 Unser Vorab-Wissen zu $p$ sei, dass uns alle Werte gleich plausibel erscheinen ("uniform"):
 
-$$p \sim \text{Unif}(0,1).$$
+$$\pi \sim \text{Unif}(0,1).$$
 
-Lies: "$p$ ist gleich (uniform) verteilt mit der Untergrenze 0 und der Obergrenze 1".
+Lies: "$\pi$ ist gleich (uniform) verteilt mit der Untergrenze 0 und der Obergrenze 1".
 
 Man könnte auch sagen: Wir haben praktisch kein Vorwissen, wir sind erstmal (aprior) indifferent,
 jeder Parameterwert erscheint uns erstmal gleich wahrscheinlich.
@@ -498,7 +499,7 @@ uniform_Plot(0, 1)
 
 ## Das Globus-Modell als Bayes' Theorem
 
-
+### Von gemeinsamer zur bedingen Wahrscheinlichkeit
 
 Erinnerung wir uns (@exm-kalt-regen): Die Wahrscheinlichkeit für *Regen* und *kalt* ist gleich der Wahrscheinlichkeit von *Regen*, *gegeben kalt* mal der Wahrscheinlichkeit von *kalt*; das ist die Kettenregel (@def-kettenregel).
 
@@ -521,11 +522,19 @@ Wir setzen die letzten beiden Gleichungen gleich:
 
 $$Pr(W|p) \cdot Pr(A) = Pr(A|W) \cdot (W)$$
 
-Und dann lösen wir auf nach der Posteriori-Wahrscheinlichkeit^[kürzen wir mit Post-Wahrscheinlichkeit or $Pr(Post)$ ab], $Pr(p|W)$:
+Und dann lösen wir auf nach der Posteriori-Wahrscheinlichkeit^[kürzen wir mit Post-Wahrscheinlichkeit or $Pr(Post)$ ab], $Pr(A|W)$,
+voilà! 
+Wir haben Bayes' Theorem genutzt, um die gesuchte Größe, $Pr(A|W)$, zu bestimmen, s. @eq-globusbayes.
 
-$$Pr(A|W) = \frac{Pr(W|A) \times Pr(A)}{Pr(W)}$$
+$$Pr(A|W) = \frac{Pr(W|A) \times Pr(A)}{Pr(W)}$${#globus-bayes}
 
-$Pr(W)$ nennt man die *mittlere Wahrscheinlichkeit der Daten* oder (synonym) die *Evidenz*. Die Evidenz berechnet sich als Mittelwert der Likelihoods über alle Werte von $W$. Die Aufgabe der Evidenz ist nur dafür zu sorgen, dass der Bruch insgesamt nur Werte zwischen 0 und 1 annehmen kann.
+$Pr(W)$ nennt die *Evidenz*. 
+Die Evidenz berechnet sich als Mittelwert der Likelihoods über alle Werte von $W$, vgl. @def-totwskt:
+
+$Pr(W) = Pr(W|A) \times Pr(A) + Pr(\neg W| \neg A) \times Pr(\neg A)$
+
+
+Die Aufgabe der Evidenz ist nur dafür zu sorgen, dass der Bruch insgesamt nur Werte zwischen 0 und 1 annehmen kann.
 
 ### Bayes' Theorem als Formel
 
