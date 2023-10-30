@@ -5,6 +5,7 @@
 
 ```{r download-hinweise}
 #| echo: false
+#| eval: false
 
 
 # Hinweise-Lernhilfen.qmd
@@ -107,12 +108,71 @@ Das @world_economic_forum_future_2020 berichtet zu den "Top 20 job roles in incr
 3. Big Data Specialists
 
 
+### Modulverlauf
+
+@fig-modulverlauf gibt einen Überblick zu den Inhalten des Kurses.
+
+
+
+```{mermaid}
+%%| label: fig-modulverlauf
+%%| fig-cap: Modulverlauf im Überblick. Die einezlenn Schritte entsprechen in etwa den Kapiteln dieses Buchs.
+flowchart LR
+  subgraph Wskt[Wahrscheinlichkeit]
+    Inferenz --> Ungewissheit --> Verteilungen
+  end 
+  subgraph Bayes
+    Globus --> Post
+  end 
+  subgraph Regression
+    Gauss --> Einfach --> Anwendung
+  end 
+  subgraph Kausalität
+    Kausalstart
+  end 
+  Wskt --> Bayes --> Regression --> Kausalität
+```
+
+
+
+
+
     
 
 ### Modulzeitplan
 
+```{r}
+zeitplan <- 
+tibble::tribble(
+  ~Nr,               ~Thema,           ~Datum,                              ~Kommentar,
+   1L,           "Inferenz",     "2.-8. Okt.",                                      NA,
+   2L, "Wahrscheinlichkeit",    "9.-15. Okt.",                                      NA,
+   3L,       "Verteilungen",   "16.-22. Okt.",                                      NA,
+   4L,      "Globusversuch",   "23.-29. Okt.",                                      NA,
+   5L,       "Aufhol-Woche",    "30.-5. Nov.",                                      NA,
+   6L,  "Die Post befragen",    "5.-12. Nov.",                                      NA,
+   7L,      "Gauss-Modelle",   "13.-19. Nov.",                                      NA,
+   NA,                   NA,   "20.-26. Nov.", "Blockwoche: Kein regulärer Unterricht",
+   8L,    "Lineare Modelle",    "27.-3. Dez.",                                      NA,
+   9L,       "Metrische AV",    "4.-10. Dez.",                                      NA,
+  10L,   "Kausalinferenz 1",    "11.-17. Dez",                                      NA,
+  11L,   "Kausalinferenz 2",   "18.-24. Dez.",                                      NA,
+   NA,                   NA,               NA,        "Jahreswechsel: Kein Unterricht",
+  12L,          "Abschluss", "8.-14. Jan. 24",                                      NA
+  )
+
+gt::gt(zeitplan) |> 
+  gt::cols_width(
+    1 ~ gt::pct(5),
+    2 ~ gt::pct(20),
+    3 ~ gt::pct(20),
+    4 ~ gt::pct(45)
+  )
+```
+
 
 ```{r source-timetable, echo = FALSE, cache=FALSE}
+#| eval: false
 timetable_file <- "specifics/Modulverlauf.xlsx"
 stopifnot(file.exists(timetable_file))
 timetable <- readxl::read_xlsx(timetable_file)
@@ -144,41 +204,28 @@ Alle Inhalte daraus werden in diesem Kurs benötigt.
 
 
 
-## Lernhilfen
+## Hinweise
+
+
+- [Lernhilfen](https://hinweisbuch.netlify.app/hinweise-lernhilfen-frame)
+
+- [Didaktik](https://hinweisbuch.netlify.app/hinweise-didaktik-frame)
+
+- [Unterrichtsorganisation](https://hinweisbuch.netlify.app/hinweise-unterricht-frame)
 
 
 
+## Prüfung
 
+Das Prüfungsformat ist: *Open-Book-Prüfung*.
 
-{{< include children/Hinweise-Lernhilfen.qmd >}}
+- [Allgemeine Prüfungshinweise](https://hinweisbuch.netlify.app/hinweise-pruefung-allgemein-frame)
 
+- [Prüfungsformat: Open-Book-Prüfung](https://hinweisbuch.netlify.app/hinweise-pruefung-open-book-frame)
 
+- [Hinweise zu quantitativen Prüfungen](https://hinweisbuch.netlify.app/hinweise-pruefung-klausur-frame)
 
-
-
-
-## Didaktik
-
-
-
-
-
-{{< include children/Hinweise-Didaktik.qmd >}} 
-
-
-
-
-## Organisatorische Hinweise
-
-
-
-{{< include children/Hinweise-Unterricht.qmd >}}
-
-
-
-
-
-
+- [Prüfungsvorbereitung](https://hinweisbuch.netlify.app/hinweise-pruefungsvorbereitung-frame)
 
 
 ## Technische Details
