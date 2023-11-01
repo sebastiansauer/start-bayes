@@ -1295,7 +1295,11 @@ h_i &amp;\sim \mathcal{N}(\mu, \sigma) \\
 <p>Wer Näheres wissen will, findet <a href="https://easystats.github.io/easystats/">hier</a> einen Anfang. Außerdem sei an <span class="citation" data-cites="mcelreath_statistical_2020">McElreath (<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref">2020</a>)</span> und <span class="citation" data-cites="gelman_regression_2021">Gelman, Hill, und Vehtari (<a href="references.html#ref-gelman_regression_2021" role="doc-biblioref">2021</a>)</span> verwiesen.</p>
 </section></section><section id="wie-tickt-stan_glm" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="wie-tickt-stan_glm">
 <span class="header-section-number">7.7</span> Wie tickt <code>stan_glm()</code>?</h2>
-<div class="cell" data-hash="0800-gauss_cache/html/Kung-7-bis_f0ac519a793bfd810aaf4d99418d4d57">
+<!-- <hr> -->
+<!-- <div style = "float:right; width:25%;"> -->
+<!-- <img src="img/stanlogo.png" alt="HERE">   -->
+<!-- </div>   -->
+<div class="cell" data-hash="0800-gauss_cache/html/Kung-7-bis_cf6c8e321b5598edef409bec73251754">
 <div class="cell-output-display">
 <p><img src="img/stanlogo.png" class="img-fluid" style="width:10.0%"></p>
 </div>
@@ -1353,7 +1357,7 @@ h_i &amp;\sim \mathcal{N}(\mu, \sigma) \\
 </div>
 </div>
 </div>
-<p>Die Wahrscheinlichkeit ist nicht hoch, aber nicht auszuschließen, dass die Kung im Schnitt größer als 155 cm sind. Wahrscheinlicher ist jedoch, dass sie kleiner als 155 cm sind.</p>
+<p>Die Wahrscheinlichkeit ist nicht hoch, aber nicht auszuschließen, dass die Kung im Schnitt größer als 155 cm sind. Wahrscheinlicher ist jedoch, dass sie kleiner als 155 cm sind. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-kung2" class="theorem example">
 <p><span class="theorem-title"><strong>Beispiel 7.2 (Mit welcher Wahrscheinlichkeit ist <span class="math inline">\(\mu&gt;165\)</span>?) </strong></span>&nbsp;</p>
@@ -2055,25 +2059,90 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
+      // Handle positioning of the toggle
+      window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
           }
-        });
+        };
+      }
+      const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+      for (let i=0; i<annoteTargets.length; i++) {
+        const annoteTarget = annoteTargets[i];
+        const targetCell = annoteTarget.getAttribute("data-target-cell");
+        const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+        const contentFn = () => {
+          const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          if (content) {
+            const tipContent = content.cloneNode(true);
+            tipContent.classList.add("code-annotation-tip-content");
+            return tipContent.outerHTML;
+          }
+        }
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          onShow: (instance) => {
+            selectCodeLines(instance.reference);
+            instance.reference.classList.add('code-annotation-active');
+            window.tippy.hideAll();
+          },
+          onHide: (instance) => {
+            unselectCodeLines();
+            instance.reference.classList.remove('code-annotation-active');
+          },
+          maxWidth: 300,
+          delay: [50, 0],
+          duration: [200, 0],
+          offset: [5, 10],
+          arrow: true,
+          appendTo: function(el) {
+            return el.parentElement.parentElement.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'quarto',
+          placement: 'right',
+          popperOptions: {
+            modifiers: [
+            {
+              name: 'flip',
+              options: {
+                flipVariations: false, // true by default
+                allowedAutoPlacements: ['right'],
+                fallbackPlacements: ['right', 'top', 'top-start', 'top-end'],
+              },
+            },
+            {
+              name: 'preventOverflow',
+              options: {
+                mainAxis: false,
+                altAxis: false
+              }
+            }
+            ]        
+          }      
+        };
+        window.tippy(annoteTarget, config); 
       }
   const findCites = (el) => {
     const parentEl = el.parentElement;
