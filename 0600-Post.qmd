@@ -47,6 +47,7 @@ library(tidyverse)
 library(easystats)
 library(gt)
 library(ggpubr)
+library(plotly)
 ```
 
 
@@ -65,7 +66,9 @@ library(ggpubr)  # optional
 ```
 
 
-<!-- ### Begleitvideos -->
+### Begleitvideos
+
+- [Playlist QM2](https://www.youtube.com/watch?v=QNMVi6IqQ90&list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN)
 
 
 <!-- - []() -->
@@ -123,13 +126,16 @@ Abb. @fig-post1 zeigt die resultierende Bayes-Box; vor allem ist die Post-Vertei
 ```{r}
 #| eval: false
 library(ggpubr)
-ggline(d, x = "p_grid", y = "post")
+ggline(d, x = "p_grid", y = "post") 
 ```
 
 ```{r plot-post-d}
 #| echo: false
 #| label: fig-post1
 #| fig-cap: Die Postverteilung für W=6, N=9, k=10
+#
+
+p_d <-
 d %>% 
   ggplot() +
   aes(x = p_grid, y = post) +
@@ -137,7 +143,10 @@ d %>%
   geom_line() +
   scale_y_continuous("Posterior-Wahrscheinlichkeit", 
                      breaks = NULL) +
-  theme_minimal()
+  theme_minimal()  
+
+  
+ggplotly(p_d)
 ```
 
 
@@ -168,7 +177,7 @@ d %>%
 
 ### Bayes-Box automatisiert
 
-Übrigens kann man die Berechnung der Bayes-Box auch automatisieren, s. @tbl-bayes-fun, z.B. so:
+Übrigens kann man die Berechnung der Bayes-Box auch automatisieren, s. @tbl-bayes-fun, z.B. so:^[Alternativ kann man auf die Funktion über das [R-Paket {prada}](https://github.com/sebastiansauer/prada) zugreifen.]
 
 ```{r}
 #| label: tbl-bayes-fun
@@ -240,6 +249,7 @@ Das wäre doch eine recht lange Tabelle.^[Vorsicht beim Ausdrucken.]
 Bei einer multiplen Regression mit sagen wir 10 Prädiktoren mit jeweils 100 Ausprägungen rechnet das arme R bis zum jüngsten Tag: $10^{100}$.
 
 >    🤖 Bitte tue mir das nicht an!
+
 >    👨‍🏫 Schon gut, das können wir R nicht zumuten. Wir brauchen eine andere Lösung!
 
 
@@ -349,20 +359,33 @@ samples$p_grid[1:100] %>% round(2)
 
 
 Wie sieht diese Tabelle wohl als Histogramm^[hier als Balkendiagramm, kommt fast aufs Selbe raus, sieht aber etwas schöner aus in diesem Fall, da er nur wenige Balken sind] aus?
+So sieht sie als Balkendiagramm aus, s.  @fig-samples1.
 
-
-So sieht die Post-Verteilung auf Basis von Stichproben dann aus, s.  @fig-samples1.
-
+::: {.panel-tabset}
+### Syntax
 ```{r QM2-Thema3-Teil1-3}
-#| echo: true
+#| eval: false
+#| message: false
+samples |> 
+  count(p_grid) |> 
+  ggbarplot(x = "p_grid", y = "n") 
+```
+
+
+
+### Output
+```{r QM2-Thema3-Teil1-3}
+#| echo: false
 #| message: false
 #| fig-cap: Stichprobenverteilung auf Basis von Stichproben
 #| label: fig-samples1
 
 samples |> 
   count(p_grid) |> 
-  ggbarplot(x = "p_grid", y = "n")
+  ggbarplot(x = "p_grid", y = "n") 
 ```
+:::
+
 
 Aus @fig-samples1 können wir einfach auslesen, wie wahrscheinlich gewisse Parameterwerte sind.
 So sehen wir, dass das Modell Parameterwerte (Wasseranteil, $\pi$) zwischen ca. 50% und 70% für am wahrscheinlichsten hält.
@@ -370,6 +393,9 @@ Aber auch kleine Anteile wie 25% sind nicht auszuschließen (auf Basis der Daten
 
 Vergleichen Sie  @fig-samples1 mit @fig-gitter: beide sind sehr ähnlich!
 Das Stichprobenziehen (@fig-samples1) nähert sich recht gut an die exakte Berechnung an (@fig-gitter).
+
+
+
 
 
 ### Visualisierung der Stichprobendaten mit $k=100$ Gitterwerten
@@ -473,7 +499,7 @@ Die Stichproben-Post-Verteilung hat jetzt "glattere" Ränder.
 Mehr Stichproben und mehr Gitterwerte glätten die Verteilung.
 :::
 
-Jetzt noch mal mit mehr Stichproben: $n=10^6$ Stichproben bei $k=100$ Gitterwerten aus der Posteriori-Verteilung, s. @fig-post-dk100.
+Jetzt die Post-Verteilung noch mal mit mehr Stichproben: $n=10^6$ Stichproben bei $k=100$ Gitterwerten aus der Posteriori-Verteilung, s. @fig-post-dk100.
 
 ```{r QM2-Thema3-Post-befragen-5}
 #| echo: false
@@ -490,14 +516,22 @@ mode <- map_estimate(d_k100_samples$p_grid) %>% round(2)
 avg <- mean(d_k100_samples$p_grid) %>% round(2)
 md <- median(d_k100_samples$p_grid) %>% round(2)
 
-d_k100_samples %>%   
+p_100_samples <-
+  d_k100_samples %>%   
 ggplot(aes(x = p_grid)) +
   geom_density(fill = "grey40") +
   scale_x_continuous("Anteil Wasser (p)", limits = c(0, 1)) +
   labs(y = "",
        caption = paste0("Modus: ", mode, "; MW: ", avg, "; Md: ", md)) +
-  geom_vline(xintercept = c(mode, avg, md))  +
-  theme_minimal()
+  geom_vline(xintercept = c(mode), color = "#E69F00FF")  +
+  geom_vline(xintercept = c(avg), color = "#56B4E9FF")  +
+  geom_vline(xintercept = c(md), color = "#009E73FF")  +
+  theme_minimal() +
+  annotate("label", x = mode, y = 0, label = glue::glue("Modus: {mode}"), fill = "#E69F00FF") +
+  annotate("label", x = avg, y = 1, label = glue::glue("MW: {mode}"), fill = "#56B4E9FF") +
+  annotate("label", x = md, y = 2, label = glue::glue("Median: {md}"), fill = "#009E73FF")
+
+p_100_samples
 ```
 
 
@@ -557,6 +591,8 @@ Der Befehl `count` macht Folgendes: Er gruppiert die Stichprobe nach dem Prüfkr
 :::: {.columns}
 
 ::: {.column width="50%"}
+Wir zählen wie oft der Wasseranteil weniger als 50% beträgt:
+
 
 ```{r}
 samples %>%
@@ -590,7 +626,7 @@ d %>%
 Noch eine Forschungsfrage: *Mit welcher Wahrscheinlichkeit liegt der Parameter (Wasseranteil) zwischen 0.5 und 0.75?*
 
 
-Wir zählen die Stichrpoben, die diesen Kriterien entsprechen:
+Wir zählen die Stichproben, die diesen Kriterien entsprechen:
 
 ```{r QM2-Thema3-Post-befragen-8}
 samples %>% 
@@ -598,6 +634,7 @@ samples %>%
 ```
 
 >    🤖 Ich würde empfehlen, die Anzahl noch in Anteile umzurechnen. Die kann man dann als Wahrscheinlichkeiten auffassen.
+
 >    👨‍🏫 Das wollte ich auch gerade sagen...
 
 ```{r QM2-Thema3-Post-befragen-8a}
@@ -623,19 +660,50 @@ Fertig 😄  $\square$
 
 :::{#exm-param3}
 
-### Wasseranteil zwischen 90 und 100%?
+### Wasseranteil zwischen 90& und 100%?
 
-Noch ein Beispiel für eine Forschungsfrage: *Mit welcher Wahrscheinlichkeit liegt der Parameter zwischen 0.9 und 1*?
+Noch ein Beispiel für eine Forschungsfrage: *Mit welcher Wahrscheinlichkeit liegt der Parameter zwischen 0.9 und 1*? 
+
+::: {.panel-tabset}
+### Syntax
+
 
 ```{r QM2-Thema3-Post-befragen-9}
+#| eval: false
 samples %>% 
   count(p_grid >= .9 & p_grid <= 1) %>% 
   summarise(prop = 100 * n() / 1e4)  # prop wie "proportion", Anteil
 ```
+### Output
+```{r QM2-Thema3-Post-befragen-9a}
+#| echo: false
+samples %>% 
+  count(p_grid >= .9 & p_grid <= 1) %>% 
+  summarise(prop = 100 * n() / 1e4)  # prop wie "proportion", Anteil
+```
+:::
+
 
 Laut unserem Modell ist es also sehr unwahrscheinlich, dass der Wasseranteil der Erde mind.  90% beträgt.  $\square$
 
 
+:::
+
+
+:::{#exr-wasser50}
+### Wasseranteil höchstens 50%?
+
+>   👩‍🔬 Mit welcher Wahrscheinlichkeit ist der Planet höchstens zur Hälfte mit Wasser bedeckt?
+
+
+
+
+::: {.callout-tip appearance="minimal" collapse="true"}
+### Lösung
+```{r}
+samples %>% count(p_grid <= .5)
+```
+:::
 :::
 
 
@@ -654,19 +722,24 @@ map_estimate(samples$p_grid)
 Dabei steht `map` für [Maximum Aposteriori](https://easystats.github.io/bayestestR/reference/map_estimate.html), also das Maximum der Post-Verteilung.
 
 
+
+:::{#exr-mw-med-wasser}
 Bei der Gelegenheit könnten wir folgende, ähnliche Fragen stellen:
 
 - Was ist der mittlere Schätzwert (Mittelwert) zum Wasseranteil laut Post-Verteilung?
 - Was ist der mediane Schätzwert (Median)?
 
 
-Auf Errisch:
-
+::: {.callout-tip appearance="minimal" collapse="true"}
+### Lösung
 ```{r}
 samples %>% 
   summarise(mean(p_grid),
             median(p_grid))
 ```
+:::
+:::
+
 
 
 ### Fragen nach Parameterwerten
@@ -689,7 +762,7 @@ samples %>%
 
 Laut unserem Modell können wir zu 90% sicher sein, dass der Wasseranteil kleiner ist als ca. 78%.
 
-Es hilft vielleicht, sich die Post-Verteilung noch einmal vor Augen zu führen, s. @fig-post99.
+Es hilft vielleicht, sich die Post-Verteilung noch einmal vor Augen zu führen, s. @fig-post-dk100.
 
 
 <!-- ```{r} -->
@@ -719,6 +792,7 @@ samples %>%
 
 
 Solche Fragen lassen sich also mit Hilfe von *Quantilen* beantworten.
+
 
 
 
@@ -802,6 +876,70 @@ plots(p1, p2)
 ```
 
 
+
+
+
+:::{#exr-quant1}
+### Welcher Parameterwert ist der wahrscheinlich größte?
+
+Übersetzen wir "wahrscheinlich" größte in "mit einer Wahrscheinlichkeit von 99% gibt es keinen größeren".
+
+
+::: {.callout-tip appearance="minimal" collapse="true"}
+### Lösung
+
+```{r}
+samples |> 
+  summarise(quant99 = quantile(p_grid, p = .99))
+```
+Mit einer Wahrscheinlichkeit von 99% ist der höchste zu erwartende Wasseranteil 0.9.
+:::
+:::
+
+:::{#exr-quant2}
+### Welcher Parameterwert ist der wahrscheinlich kleinste?
+
+Übersetzen wir "wahrscheinlich" kleinste in "mit einer Wahrscheinlichkeit von 99% gibt es keinen kleineren".
+
+
+::: {.callout-tip appearance="minimal" collapse="true"}
+### Lösung
+
+```{r}
+samples |> 
+  summarise(wahrscheinlich_kleinste = 
+              quantile(p_grid, p = .01))
+```
+Mit einer Wahrscheinlichkeit von 99% ist der kleinste zu erwartende Wasseranteil 0.3 -- immer auf Basis unserer beobachteten Daten und der Vorannahmen.
+:::
+:::
+
+
+
+:::{#exr-quant3}
+### Welcher Parameterwert ist der "vermutlich" kleinste?
+
+In der "wirklichen" Welt sind Aussagen nicht immer präzise.
+Sagen wir, die Chefin der Weltraumbehörde hat in einem Presse-Statement von der "vermutlichen Untergrenze" hinsichtlich des Wasseranteils gesprochen.
+
+Übersetzen wir "vermutlich" kleinste in "mit einer Wahrscheinlichkeit von 90% gibt es keinen kleineren".
+
+
+::: {.callout-tip appearance="minimal" collapse="true"}
+### Lösung
+
+```{r}
+samples |> 
+  summarise(wahrscheinlich_kleinste = 
+              quantile(p_grid, p = .1))
+```
+Mit einer Wahrscheinlichkeit von 90% ist der kleinste zu erwartende Wasseranteil 0.5 -- immer auf Basis unserer beobachteten Daten und der Vorannahmen.
+:::
+:::
+
+
+
+
 ###  Den Quantilen unter die Motorhaube geschaut
 
 Den R-Befehl `quantile()` kann man sich, wenn man will, einfach nachbauen und entmystifizieren.
@@ -847,6 +985,10 @@ Intervalle (Bereiche), die die "abzuschneidende" Wahrscheinlichkeitsmasse hälft
 #| echo: false
 #| fig-cap: Perzintilintervalle
 #| label: fig-eti
+#| layout-ncol: 2
+#| fig-subcap:
+#|   - Intervall mit den unteren 80% der Wahrscheinlichkeit
+#|   - Intervall mit den mitteleren 80% der Wahrscheinlichkeit
 q_80 <- quantile(samples$p_grid, prob = .8)
 q_10_and_90 <- quantile(samples$p_grid, prob = c(.1, .9))
 
@@ -858,7 +1000,8 @@ p1 <-
        caption = paste0("q80: ", round(q_80, 2))) +
   geom_area(data = d_k100 %>% 
               filter(p_grid < q_80))   +
-  theme_minimal()
+  theme_minimal() +
+  annotate("label", x = q_80, y = 0, label = q_80)
 
 # lower right panel
 p2 <-
@@ -867,14 +1010,18 @@ p2 <-
   geom_line() +
   geom_area(data = d_k100 %>% 
               filter(p_grid > q_10_and_90[1] & p_grid < q_10_and_90[2])) +
-  labs(subtitle = "Perzentilintervall",
-       title = "Mittlere 80%",
+  labs(title = "Mittlere 80%",
        caption = paste0("q10: ", round(q_10_and_90[1], 2), 
                         "; q90: ",
                         round(q_10_and_90[2]), 2))  +
-  theme_minimal()
+  theme_minimal() +
+  annotate("label", label = round(q_10_and_90[1], 2),
+           x = round(q_10_and_90[1], 2), y = 0) +
+  annotate("label", label = round(q_10_and_90[2], 2),
+           x = round(q_10_and_90[2], 2), y = 0)  
 
-plots(p1, p2)
+ggplotly(p1)
+ggplotly(p2)
 ```
 
 
@@ -1105,7 +1252,7 @@ Im Globusversuch, Datendatz `samples`, s. @lst-post-sample. Sagen wir, wir haben
 
 
 
-Lageparmameter: Welchen mittleren Wasseranteil muss man annehmen?
+*Lageparmameter*: Welchen mittleren Wasseranteil kann man erwarten?
 
 ```{r QM2-Thema3-Post-befragen-19}
 samples %>% 
@@ -1114,7 +1261,7 @@ samples %>%
     median = median(p_grid))  
 ```
 
-Streuungsparameter: Wie unsicher sind wir in der Schätzung des Wasseranteils?
+*Streuungsparameter*: Wie unsicher sind wir in der Schätzung des Wasseranteils?
 
 ```{r QM2-Thema3-Post-befragen-20}
 samples %>% 
