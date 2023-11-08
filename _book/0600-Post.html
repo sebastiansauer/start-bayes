@@ -86,6 +86,7 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./0800-gauss.html" rel="next">
 <link href="./0500-Globusversuch.html" rel="prev">
+<link href="./img/Golem_hex.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -165,6 +166,7 @@ div.csl-indent {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Start:Bayes!</a> 
         <div class="sidebar-tools-main">
+    <a href="https://github.com/sebastiansauer/start-bayes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Dunkelmodus umschalten"><i class="bi"></i></a>
 </div>
     </div>
@@ -452,40 +454,38 @@ Lösung
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Aufgrund der Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten den Likelihoods. Die höchste Wahrscheinlichkeit (d.h. Likelihood) hat derjenige Parameterwert, zu dem die Daten am besten passen, und das ist 6/9 = 2/3. <span class="math inline">\(\square\)</span></p>
+<p>Aufgrund der Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten den Likelihoods. Die höchste Wahrscheinlichkeit (d.h. Likelihood) hat derjenige Parameterwert, zu dem die Daten am besten passen, und das ist 6/9 = 2/3, d. <a href="#lst-bayes1" class="quarto-xref">Listing&nbsp;<span>6.1</span></a>. <span class="math inline">\(\square\)</span></p>
 </div>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="0600-Post_cache/html/QM2-Thema2-kleineModelle-28_86ef0fd0aafc498cf9083d637fa08c5a">
-<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">11</span></span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>n_success <span class="ot">&lt;-</span> <span class="dv">6</span>          </span>
-<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>n_trials  <span class="ot">&lt;-</span> <span class="dv">9</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>p_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">1</span>, <span class="at">length.out =</span> n)</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-5" class="code-annotation-target"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(n_success, <span class="at">size =</span> n_trials, <span class="at">prob =</span> p_grid)</span>
-<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-hidden="true" tabindex="-1"></a></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3">3</button><span id="annotated-cell-2-7" class="code-annotation-target"><a href="#annotated-cell-2-7" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span></span>
-<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">p_grid =</span> p_grid,<span class="at">prior  =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
-<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> L) <span class="sc">%&gt;%</span> </span>
-<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">unstand_post =</span> (likelihood <span class="sc">*</span> prior),</span>
-<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">post =</span> unstand_post <span class="sc">/</span> <span class="fu">sum</span>(unstand_post))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="4" data-code-annotation="1"><em>Seq</em>uenz von 0 bis 1 mit der Länge n=11 Schritte, das gibt uns die Parameterwerte</span>
-</dd>
-<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="5" data-code-annotation="2"><em>L</em>ikelihood mit 6 Treffern bei 9 Würfen und das Ganze jeweils für alle 11 Parameterwerte</span>
-</dd>
-<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
-<dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="7" data-code-annotation="3">Dann packen wir alles in eine Tabelle.</span>
-</dd>
-</dl>
+<div class="cell" data-hash="0600-Post_cache/html/QM2-Thema2-kleineModelle-28_ccefcbf892ac329016d070a3bb5968b4">
+<div id="lst-bayes1" class="r cell-code listing">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="listing quarto-float-caption quarto-float-lst" id="lst-bayes1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;6.1: Bayes-Box mit 6 Wasser bei 9 Versuchen
+</figcaption>
+<div aria-describedby="lst-bayes1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-bayes1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="lst-bayes1-1"><a href="#lst-bayes1-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">11</span></span>
+<span id="lst-bayes1-2"><a href="#lst-bayes1-2" aria-hidden="true" tabindex="-1"></a>n_success <span class="ot">&lt;-</span> <span class="dv">6</span>          </span>
+<span id="lst-bayes1-3"><a href="#lst-bayes1-3" aria-hidden="true" tabindex="-1"></a>n_trials  <span class="ot">&lt;-</span> <span class="dv">9</span></span>
+<span id="lst-bayes1-4"><a href="#lst-bayes1-4" aria-hidden="true" tabindex="-1"></a>p_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">1</span>, <span class="at">length.out =</span> n)         <span class="co"># &lt;1&gt;</span></span>
+<span id="lst-bayes1-5"><a href="#lst-bayes1-5" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(n_success, <span class="at">size =</span> n_trials, <span class="at">prob =</span> p_grid)  <span class="co"># &lt;2&gt;</span></span>
+<span id="lst-bayes1-6"><a href="#lst-bayes1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-bayes1-7"><a href="#lst-bayes1-7" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span>                                                    <span class="co"># &lt;3&gt;</span></span>
+<span id="lst-bayes1-8"><a href="#lst-bayes1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">p_grid =</span> p_grid,<span class="at">prior  =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="lst-bayes1-9"><a href="#lst-bayes1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> L) <span class="sc">%&gt;%</span> </span>
+<span id="lst-bayes1-10"><a href="#lst-bayes1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">unstand_post =</span> (likelihood <span class="sc">*</span> prior),</span>
+<span id="lst-bayes1-11"><a href="#lst-bayes1-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">post =</span> unstand_post <span class="sc">/</span> <span class="fu">sum</span>(unstand_post))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
 </div>
 </div>
+<ol type="1">
+<li><em>Seq</em>uenz von 0 bis 1 mit der Länge n=11 Schritte, das gibt uns die Parameterwerte</li>
+<li><em>L</em>ikelihood mit 6 Treffern bei 9 Würfen und das Ganze jeweils für alle 11 Parameterwerte</li>
+<li>Dann packen wir alles in eine Tabelle.</li>
+</ol>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p>Abb. <a href="#fig-post1" class="quarto-xref">Abbildung&nbsp;<span>6.1</span></a> zeigt die resultierende Bayes-Box; vor allem ist die Post-Verteilung wichtig.</p>
@@ -1059,26 +1059,23 @@ Tabelle&nbsp;6.1: Postverteilung mit der Gittermethode berechnet
 </section>
 <section id="bayes-box-automatisiert" class="level3" data-number="6.2.2">
 <h3 data-number="6.2.2" class="anchored" data-anchor-id="bayes-box-automatisiert"><span class="header-section-number">6.2.2</span> Bayes-Box automatisiert</h3>
-<p>Übrigens kann man die Berechnung der Bayes-Box auch automatisieren, s. <a href="#tbl-bayes-fun" class="quarto-xref">Tabelle&nbsp;<span>6.2</span></a>, z.B. so:<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
-<div class="cell" data-hash="0600-Post_cache/html/tbl-bayes-fun_1d520bf901ce13ed8a89e4f7838c7e49">
-<div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"https://raw.githubusercontent.com/sebastiansauer/prada/master/R/NAME_bayesbox.R"</span>)</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2">2</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bayesbox</span>(<span class="at">hyps =</span> p_grid, <span class="at">priors =</span> <span class="dv">1</span>, <span class="at">liks =</span> L)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="1" data-code-annotation="1">Mit <code>source</code> importiert man eine R-Skriptdatei. In diesem Fall steht dort der Code für die Funktion <code>bayesbox</code>.</span>
-</dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="2">Die Funktion verhält sich wie eine gewöhnliche Bayes-Box: Bei <code>hyps</code> schreibt man die Hypothesen (bzw. Parameterwerte) auf. Bei <code>priors</code> die Priori-Werte und bei <code>liks</code> die Likelihoods der jeweiligen Hypothesn.</span>
-</dd>
-</dl>
+<p>Übrigens kann man die Berechnung der Bayes-Box auch automatisieren, s. <a href="#tbl-bayes-fun" class="quarto-xref">Tabelle&nbsp;<span>6.2</span></a> und <a href="#lst-bayesfun" class="quarto-xref">Listing&nbsp;<span>6.2</span></a>, z.B. so:<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="cell" data-hash="0600-Post_cache/html/tbl-bayes-fun_1c8c0324ff59fe6b24afc15fa6be9157">
+<div id="lst-bayesfun" class="r cell-code listing">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="listing quarto-float-caption quarto-float-lst" id="lst-bayesfun-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;6.2: Funktion <code>bayesbox</code>, auch im Paket <code>prada</code> erhältlich
+</figcaption>
+<div aria-describedby="lst-bayesfun-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-bayesfun"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="lst-bayesfun-1"><a href="#lst-bayesfun-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"https://raw.githubusercontent.com/sebastiansauer/prada/master/R/NAME_bayesbox.R"</span>)   <span class="co"># &lt;1&gt;</span></span>
+<span id="lst-bayesfun-2"><a href="#lst-bayesfun-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bayesbox</span>(<span class="at">hyps =</span> p_grid, <span class="at">priors =</span> <span class="dv">1</span>, <span class="at">liks =</span> L)   <span class="co"># &lt;2&gt;</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="tbl-bayes-fun" class="cell anchored" data-hash="0600-Post_cache/html/tbl-bayes-fun_1d520bf901ce13ed8a89e4f7838c7e49">
+</figure>
+</div>
+<div id="tbl-bayes-fun" class="cell anchored" data-hash="0600-Post_cache/html/tbl-bayes-fun_1c8c0324ff59fe6b24afc15fa6be9157">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-bayes-fun-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;6.2: Eine Bayes-Box ‘automatisiert’ erstellt, mit Hilfe der Fuktion <code>bayesbox</code>
+Tabelle&nbsp;6.2: Eine Bayes-Box ‘automatisiert’ erstellt, mit Hilfe der Funktion <code>bayesbox</code>
 </figcaption>
 <div aria-describedby="tbl-bayes-fun-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1092,6 +1089,10 @@ Tabelle&nbsp;6.2: Eine Bayes-Box ‘automatisiert’ erstellt, mit Hilfe der Fuk
 </figure>
 </div>
 </div>
+<ol type="1">
+<li>Mit <code>source</code> importiert man eine R-Skriptdatei. In diesem Fall steht dort der Code für die Funktion <code>bayesbox</code>.</li>
+<li>Die Funktion verhält sich wie eine gewöhnliche Bayes-Box: Bei <code>hyps</code> schreibt man die Hypothesen (bzw. Parameterwerte) auf. Bei <code>priors</code> die Priori-Werte und bei <code>liks</code> die Likelihoods der jeweiligen Hypothesn.</li>
+</ol>
 <!-- ```{r QM2-Thema3-Post-befragen-2} -->
 <!-- #| echo: false -->
 <!-- #| eval: false -->
@@ -1152,11 +1153,11 @@ Wichtig
 </section>
 <section id="häufigkeiten-sind-einfacher-als-wahrscheinlichkeiten" class="level3" data-number="6.2.5">
 <h3 data-number="6.2.5" class="anchored" data-anchor-id="häufigkeiten-sind-einfacher-als-wahrscheinlichkeiten"><span class="header-section-number">6.2.5</span> Häufigkeiten sind einfacher als Wahrscheinlichkeiten</h3>
-<p>Wie gesagt, typische R-Werkzeuge (“R-Golems”) liefern uns die Post-Verteilung in Stichprobenform zurück. Bevor wir uns aber mit diesen R-Werkzeugen beschäftigen, sollten wir uns vertraut machen mit einer Post-Verteilung in Stichprobenform. Erstellen wir uns also einen Tabelle mit Stichprobendaten aus der Posteriori-Verteilung (Tabelle <code>d</code>), s. <a href="#lst-post-sample" class="quarto-xref">Listing&nbsp;<span>6.1</span></a>.</p>
+<p>Wie gesagt, typische R-Werkzeuge (“R-Golems”) liefern uns die Post-Verteilung in Stichprobenform zurück. Bevor wir uns aber mit diesen R-Werkzeugen beschäftigen, sollten wir uns vertraut machen mit einer Post-Verteilung in Stichprobenform. Erstellen wir uns also einen Tabelle mit Stichprobendaten aus der Posteriori-Verteilung (Tabelle <code>d</code>), s. <a href="#lst-post-sample" class="quarto-xref">Listing&nbsp;<span>6.3</span></a>.</p>
 <div id="lst-post-sample" class="r listing">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="listing quarto-float-caption quarto-float-lst" id="lst-post-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;6.1: Wir stellen eine Tabelle mit Stichproben aus der Post-Verteilung
+Listing&nbsp;6.3: Wir stellen eine Tabelle mit Stichproben aus der Post-Verteilung
 </figcaption>
 <div aria-describedby="lst-post-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="sourceCode" id="lst-post-sample"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="lst-post-sample-1"><a href="#lst-post-sample-1" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span></span>
@@ -1702,49 +1703,49 @@ Abbildung&nbsp;6.2: Stichprobenverteilung auf Basis von Stichproben
 <h3 data-number="6.2.6" class="anchored" data-anchor-id="visualisierung-der-stichprobendaten-mit-k100-gitterwerten"><span class="header-section-number">6.2.6</span> Visualisierung der Stichprobendaten mit <span class="math inline">\(k=100\)</span> Gitterwerten</h3>
 <p><span class="math inline">\(k=10\)</span> Gitterwerte ist ein grobes Raster. Drehen wir mal die Auflösung auf <span class="math inline">\(k=100\)</span> Gitterwerte (Ausprägungen) nach oben.</p>
 <div class="cell" data-hash="0600-Post_cache/html/QM2-Thema2-kleineModelle-28a_2d16e90d9be09d1ccce07004a7fa55ff">
-<div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-1" class="code-annotation-target"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-2" class="code-annotation-target"><a href="#annotated-cell-4-2" aria-hidden="true" tabindex="-1"></a>n_success <span class="ot">&lt;-</span> <span class="dv">6</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3">3</button><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3" aria-hidden="true" tabindex="-1"></a>n_trials  <span class="ot">&lt;-</span> <span class="dv">9</span></span>
-<span id="annotated-cell-4-4"><a href="#annotated-cell-4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5" aria-hidden="true" tabindex="-1"></a>d_k100 <span class="ot">&lt;-</span></span>
-<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">p_grid =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, </span>
-<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">to =</span> <span class="dv">1</span>, </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="4">4</button><span id="annotated-cell-4-8" class="code-annotation-target"><a href="#annotated-cell-4-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">length.out =</span> k),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="5">5</button><span id="annotated-cell-4-9" class="code-annotation-target"><a href="#annotated-cell-4-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">prior  =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="6">6</button><span id="annotated-cell-4-10" class="code-annotation-target"><a href="#annotated-cell-4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(n_success,</span>
-<span id="annotated-cell-4-11"><a href="#annotated-cell-4-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">size =</span> n_trials, </span>
-<span id="annotated-cell-4-12"><a href="#annotated-cell-4-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">prob =</span> p_grid)) <span class="sc">%&gt;%</span> </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="7">7</button><span id="annotated-cell-4-13" class="code-annotation-target"><a href="#annotated-cell-4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">unstand_post =</span> (likelihood <span class="sc">*</span> prior),</span>
-<span id="annotated-cell-4-14"><a href="#annotated-cell-4-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">post =</span> unstand_post <span class="sc">/</span> <span class="fu">sum</span>(unstand_post))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-2" class="code-annotation-target"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>n_success <span class="ot">&lt;-</span> <span class="dv">6</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3">3</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>n_trials  <span class="ot">&lt;-</span> <span class="dv">9</span></span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>d_k100 <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">p_grid =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, </span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">to =</span> <span class="dv">1</span>, </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="4">4</button><span id="annotated-cell-2-8" class="code-annotation-target"><a href="#annotated-cell-2-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">length.out =</span> k),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="5">5</button><span id="annotated-cell-2-9" class="code-annotation-target"><a href="#annotated-cell-2-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">prior  =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="6">6</button><span id="annotated-cell-2-10" class="code-annotation-target"><a href="#annotated-cell-2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> <span class="fu">dbinom</span>(n_success,</span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">size =</span> n_trials, </span>
+<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">prob =</span> p_grid)) <span class="sc">%&gt;%</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="7">7</button><span id="annotated-cell-2-13" class="code-annotation-target"><a href="#annotated-cell-2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">unstand_post =</span> (likelihood <span class="sc">*</span> prior),</span>
+<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">post =</span> unstand_post <span class="sc">/</span> <span class="fu">sum</span>(unstand_post))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="1" data-code-annotation="1"><span class="math inline">\(k=100\)</span> Gitterwerte</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="1" data-code-annotation="1"><span class="math inline">\(k=100\)</span> Gitterwerte</span>
 </dd>
-<dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="2" data-code-annotation="2">6 Treffer (Wasser)</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="2" data-code-annotation="2">6 Treffer (Wasser)</span>
 </dd>
-<dt data-target-cell="annotated-cell-4" data-target-annotation="3">3</dt>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="3" data-code-annotation="3">9 Versuche</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="3">9 Versuche</span>
 </dd>
-<dt data-target-cell="annotated-cell-4" data-target-annotation="4">4</dt>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="8" data-code-annotation="4">Bayes-Box anlegen mit 100 Zeilen, d.h. 100 Parameterwerten</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="8" data-code-annotation="4">Bayes-Box anlegen mit 100 Zeilen, d.h. 100 Parameterwerten</span>
 </dd>
-<dt data-target-cell="annotated-cell-4" data-target-annotation="5">5</dt>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="9" data-code-annotation="5">Apriori indifferent: Alle Hypothesen haben die gleiche Apriori-Plausibilität</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="9" data-code-annotation="5">Apriori indifferent: Alle Hypothesen haben die gleiche Apriori-Plausibilität</span>
 </dd>
-<dt data-target-cell="annotated-cell-4" data-target-annotation="6">6</dt>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="6">6</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="10" data-code-annotation="6">Die Likelihood ist binomialverteilt.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="10" data-code-annotation="6">Die Likelihood ist binomialverteilt.</span>
 </dd>
-<dt data-target-cell="annotated-cell-4" data-target-annotation="7">7</dt>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="7">7</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="13" data-code-annotation="7">Post-Verteilung berechnen wie gewohnt.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="13" data-code-annotation="7">Post-Verteilung berechnen wie gewohnt.</span>
 </dd>
 </dl>
 </div>
@@ -1827,7 +1828,7 @@ Wichtig
 <li>nach Parameterwerten (Quantilen, q)</li>
 </ol>
 <p>Der Unterschied zwischen beiden Arten von Fragen ist in <a href="#fig-p-vs-q" class="quarto-xref">Abbildung&nbsp;<span>6.5</span></a> schematisch illustriert.</p>
-<div id="fig-p-vs-q" class="quarto-figure quarto-figure-center anchored" data-fig-align="center" width="90%">
+<div id="fig-p-vs-q" class="quarto-figure quarto-figure-center anchored" width="90%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-p-vs-q-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/p-vs-q.png" class="img-fluid quarto-figure-center figure-img" style="width:90.0%">
@@ -2925,7 +2926,7 @@ Tabelle&nbsp;6.4: 50%-HDI für unser Globusmodell
 <section id="zusammenfassung" class="level3" data-number="6.5.2">
 <h3 data-number="6.5.2" class="anchored" data-anchor-id="zusammenfassung"><span class="header-section-number">6.5.2</span> Zusammenfassung</h3>
 <p>Fassen wir zentrale Punkte an einem Beispiel zusammen.</p>
-<p>Im Globusversuch, Datendatz <code>samples</code>, s. <a href="#lst-post-sample" class="quarto-xref">Listing&nbsp;<span>6.1</span></a>. Sagen wir, wir haben 6 Treffer bei 9 Würfen erzielt.</p>
+<p>Im Globusversuch, Datendatz <code>samples</code>, s. <a href="#lst-post-sample" class="quarto-xref">Listing&nbsp;<span>6.3</span></a>. Sagen wir, wir haben 6 Treffer bei 9 Würfen erzielt.</p>
 <p><em>Lageparmameter</em>: Welchen mittleren Wasseranteil kann man erwarten?</p>
 <div class="cell" data-hash="0600-Post_cache/html/QM2-Thema3-Post-befragen-19_4cbba1baa102f587528ffcbaf07ab1f9">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>samples <span class="sc">%&gt;%</span> </span>
@@ -2986,6 +2987,12 @@ Wichtig
 <li><a href="https://datenwerk.netlify.app/posts/fattails01/fattails01.html">fattails1</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/fattails02/fattails02.html">fattails2</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/rethink3e1-7/rethink3e1-7">ReThink3e1-7</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/weinhaendler/weinhaendler">Weinhaendler</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/rethink3m1/rethink3m1">Rethink3m1</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/rethink3m2/rethink3m2">Rethink3m2</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/kaefer2/kaefer2">Kaefer2</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/groesse02/groesse02">groesse2</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/groesse01/groesse01">groesse1</a></li>
 </ol>
 </section>
 <section id="section" class="level2" data-number="6.7">
