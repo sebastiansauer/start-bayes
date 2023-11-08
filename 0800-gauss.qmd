@@ -61,12 +61,17 @@ theme_set(theme_modern())
 
 ```{r load-libs-non-hidden}
 #| message: false
-library(tidyverse)
-library(rstanarm)
-library(easystats)
+library(tidyverse)  # Datenjudo
+library(rstanarm)  # Bayes-Modelle berechnen
+library(easystats)  # Statistik-Komfort
 library(DataExplorer)  # Daten verbildlichen
+library(ggpubr)  # Daten verbildlichen
 ```
 
+
+::: callout-important
+Ab diesem Kapitel benötigen Sie das R-Paket `rstanarm`. $\square$
+:::
 
 
 ### Begleitvideos
@@ -79,7 +84,7 @@ library(DataExplorer)  # Daten verbildlichen
 
 ## Wie groß sind die !Kung San?
 
-Dieser Abschnitt basiert auf @mcelreath_statistical_2020, Kap. 4.3.
+Dieser Abschnitt basiert slee auf @mcelreath_statistical_2020, Kap. 4.3.
 
 ### !Kung San 
 
@@ -406,9 +411,9 @@ Wir nehmen an, dass $\mu$ und $h_i$ normalverteilt sind und $\sigma$ exponential
 
 Likelihood: $h_i \sim \mathcal{N}(\mu, \sigma)$
 
-Prior für $\mu$: $\mu \sim \mathcal{N}(178, 20)$
+Prior für den Parameter $\mu$: $\mu \sim \mathcal{N}(178, 20)$
 
-Prior für $\sigma$: $\sigma \sim \mathcal{E}(0, 0.1)$
+Prior für den Parameter $\sigma$: $\sigma \sim \mathcal{E}(0, 0.1)$
 
 Daher: $95\%KI( \mu): 178 \pm 40$
 
@@ -419,9 +424,15 @@ In @fig-kung-model1 sind unsere Priori-Verteilungen visualisiert.
 ```{r Kung-10}
 #| echo: false
 #| label: fig-kung-model1
-#| fig-cap: Unser (erstes) Kung-Modell
+#| fig-cap: Unser (erstes) Kung-Modell (m41)
+#| fig-asp: 0.4
 plots(p1, p2)
 ```
+
+
+:::callout-note
+Dieses Modell hat zwei Parameter, $\mu$ und $\sigma$. $\square$
+:::
 
 
 
@@ -439,26 +450,27 @@ Die *Körpergrößen der einzelnen Personen* $h_i$ nehmen wir als normalverteilt
 $$h_i \sim \mathcal{N}(\color{blue}{\mu},\color{green}{\sigma})$$
 
 
-### Prioris
+### Prioris der Parameter
 
-Mittelwert der Größe ist normalverteilt mit $\mu=178$ und $\sigma=20$:
+Der Mittelwert der Körpergröße sei *normalverteilt* mit $\mu=178$ und $\sigma=20$:
 
 $$\color{blue}{\mu \sim \mathcal{N}(178, 20)}$$
 
-Die Streuung $\sigma$ der Größen ist exponentialverteil mit $\lambda = 1/8$.
+Die Streuung $\sigma$ der Größen sei *exponentialverteil* mit $\lambda = 1/8$.
 
 $$\color{green}{\sigma \sim \mathcal{E}(1/8)}$$
 
 ### Fertig!
 
-Jetzt haben wir unser Modell definiert!
-
-Weil es so schön ist, schreiben wir es hier noch einmal auf, @eq-mod-kung1.
+Jetzt haben wir unser Modell (`m41`) definiert!
 
 
+Weil es so schön ist, schreiben/zeichnen wir es hier noch einmal auf, @eq-mod-kung1, @fig-mod-kung1.
 
 
+:::: {.columns}
 
+::: {.column width="50%"}
 $$
 \begin{aligned}
 h_i &\sim \mathcal{N}(\mu, \sigma) \\
@@ -466,13 +478,26 @@ h_i &\sim \mathcal{N}(\mu, \sigma) \\
 \sigma &\sim \mathcal{E}(1/8)
 \end{aligned}
 $${#eq-mod-kung1}
+:::
 
-Zur Berechnung nutzen wir jetzt dieses Mal aber *nicht* die Gittermethode (Bayes-Box),
+::: {.column width="50%"}
+![Modellschema für das Modell `m41`](img/modell-kung1.png){#fig-mod-kung1}
+:::
+
+::::
+
+
+
+
+
+
+
+Zur Berechnung von `m41` nutzen wir jetzt dieses Mal aber *nicht* die Gittermethode (Bayes-Box),
 sondern lassen R die Arbeit verrichten.
 
 Da gibt es einen neuen Golem, ziemlich kräftig der Bursche,
 der soll die Arbeit für uns tun.
-Der Golem hört auf den Namen `rstanarm`^[Hey, *ich* habe ihn diesne Namen nicht gegeben.].
+Der Golem hört auf den Namen `rstanarm`^[Hey, *ich* habe ihn diesen Namen nicht gegeben.].
 
 
 
@@ -481,6 +506,7 @@ Der Golem hört auf den Namen `rstanarm`^[Hey, *ich* habe ihn diesne Namen nicht
 
 ```{r}
 #| echo: false
+#| fig-align: center
 if (knitr:::is_html_output()) {
   knitr::include_graphics("img/pretty_good.gif")
 }
@@ -497,39 +523,40 @@ Berechne uns das Kung-Modell!
 Nennen wir das Modell `m41`^[*m* wie Modell und 4, weil das Modell in Kapitel 4 von @mcelreath_statistical_2020 in ähnlicher Form berichtet wird, und 1 weil es unsere erste Variante dieses Modells ist.].
 
 ```{r Kung-4, message=FALSE, results="hide"}
-m41 <- stan_glm(height ~ 1, data = d2, refresh = 0)
-m41_post <- as_tibble(m41)  # Modellergebnis in Tabelle umwandeln
-names(m41_post) <- c("mu", "sigma")  # schönere Namen für die Spalten
+m41 <- stan_glm(height ~ 1, data = d2, refresh = 0)  # <1>
+m41_post <- as_tibble(m41)    # <2>
+names(m41_post) <- c("mu", "sigma")  # <3>  
 ```
-
+1. Bayes-Regressionsmodell berechnen
+2. Modellergebnis in Tabelle umwandeln
+3.  Schönere Namen für die Spalten geben
 
 Das Argument `refresh = 0` verhindert, dass die Details zum Ziehen der Stichproben am Bildschirm ausgegeben werden.
 Ich finde diese Ausgabe meist nicht informativ,
 so dass ich sie lieber unterdrücke.
-
-
-`stan_glm` ist eine Funktion, mit der man Regressionsmodelle berechnen kann.
+`stan_glm`^[aus dem R-Paket `rstanam`, das zuvor installiert und gestartet sein muss, bevor Sie den Befehl nutzen können] ist eine Funktion, mit der man Regressionsmodelle berechnen kann.
 Nun haben wir in diesem Fall kein "richtiges" Regressionsmodell.
 Man könnte sagen, wir haben eine AV (Körpergröße), aber keine UV (keine Prädiktoren).
 Glücklicherweise können wir auch solche "armen" Regressionsmodelle formulieren:
-
 `av ~ 1` bzw. in unserem Beispiel `height ~ 1` bedeutet,
 dass man nur die Verteilung der AV berechnen möchte, 
 aber keine Prädiktoren hat (das soll die  `1` symbolisieren).
-
-
 Für das Modell `m41` haben wir *keine* Prioris spezifiziert.
-Wir greifen damit auf die Voreinstellung der Prioris von `rstanarm` zurück.
+Wir greifen damit auf die *Voreinstellung* (defaults) der Prioris von `rstanarm` zurück.
 Das ist ok, aber wenn Sie Vorab-Wissen haben,
 sollten Sie das an `rstanarm` weitergeben, weil es ja schade wäre,
 wenn Sie Wissen haben, das von Ihrem Modell nicht genutzt wird.
 
-Plotten wir mal die Posteriori-Verteilung von `m41`, s. @fig-m42-post-joint.
+Plotten wir mal die gemeinsame Posteriori-Verteilung von `m41`, s. @fig-m42-post-joint
+
+::: {.panel-tabset}
+
+### Gemeinsame Post-Verteilung von Mittelwert und Streuung
 
 ```{r post-m41-plot}
 #| echo: true
 #| label: fig-m42-post-joint
-#| fig-cap: "Die gemeinsame Verteilung von Mittelwert und Streuung."
+#| fig-cap: "Die gemeinsame Post-Verteilung von Mittelwert und Streuung von m42"
 
 m41_post %>% 
   ggplot() +
@@ -542,19 +569,23 @@ Da das Modell *zwei* Parameter hat, können wir auch beide gleichzeitig plotten.
 Wie man sieht, sind die beiden Parameter unkorreliert.
 In anderen Modellen können die Parameter korreliert sein.
 
-@fig-m42-post-joint erlaubt uns, für jede Kombination von Mittelwert und Streuung zu fragen,
+@fig-m42-post-joint erlaubt uns, für *jede Kombination von Mittelwert und Streuung* zu fragen,
 wie wahrscheinlich diese bestimmte Kombination ist.
 
 
 
-Hier sind noch zwei andere Visualisierungen der Post-Verteilung von `m42`, s. @fig-m42-post-anders.
+
+
+### Streudiagramm
+
+Hier sind noch zwei andere Visualisierungen der Post-Verteilung von `m42`, s. @fig-m42-post-anders1.
 
 
 
 ```{r Kung-5-bis}
 #| echo: false
 #| fig-cap: "Die Postverteilung in unterschiedlicher Darstellung"
-#| label: fig-m42-post-anders
+#| label: fig-m42-post-anders1
 
 
 p_m41_post <- 
@@ -570,18 +601,24 @@ p20 <-
   ggplot(aes(x = mu)) + 
   geom_histogram()
 
-plots(p10, p20,
-      n_rows = 1,
-      title = c("Die gemeinsame Verteilung von mu und Sigma als Punktediagramm",
-                "Die Post-Verteilung von mu in m42; ein Balkendiagramm bietet sich an."))
+p10
 ```
 
 
+### Post-Verteilung nur des Mittelwerts
+
+Natürlich können wir auch nur von einem einzelnen Parameter (z.B.  Mittelwert) die Verteilung untersuchen, s. @fig-m42-post-anders2.
+
+```{r}
+#| echo: false
+#| fig-cap: Die Post-Verteilung von mu in m42; ein Balkendiagramm bietet sich an.
+#| label: fig-m42-post-anders2
+p20
+```
 
 
+:::
 
-
-Natürlich können wir auch nur einen Parameter plotten.
 
 
 Fassen wir die Ergebnisse dieses Modells zusammen:
@@ -700,14 +737,13 @@ ci_high <- parameters(m41)$CI_high
 
 
 Das Wesentliche: Unser Golem schätzt den Größenmittelwert der Kung auf ca. 155cm bzw. auf einen Bereich von etwa `r ci_low` bis `r ci_high` schätzt.
-
-Informativ ist vielleicht noch, dass wir den Prior erfahren, der im Modell verwendet wurde. 
+Informativ ist vielleicht noch, dass wir den `Prior` erfahren, der im Modell verwendet wurde. 
 Dazu später mehr.
 
-
-In dieser Ausgabe sind ein paar Angaben, die wir nicht verstehen, wie `pd`, `Rhat` und `ESS`. Kein Problem: Einfach ignorieren :-)
-
-Wer Näheres wissen will, findet [hier](https://easystats.github.io/easystats/) einen Anfang. Außerdem sei an @mcelreath_statistical_2020 und @gelman_regression_2021 verwiesen.
+:::callout-note
+In dieser Ausgabe sind ein paar Angaben, die wir nicht verstehen, wie `pd`, `Rhat` und `ESS`. Kein Problem: Einfach ignorieren 🤓 
+Wer Näheres wissen will, findet [hier](https://easystats.github.io/easystats/) einen Anfang. Außerdem sei an @mcelreath_statistical_2020 und @gelman_regression_2021 verwiesen. $\square$
+:::
 
 ## Wie tickt `stan_glm()`?
 
@@ -718,22 +754,29 @@ Wer Näheres wissen will, findet [hier](https://easystats.github.io/easystats/) 
 <!-- </div>   -->
 
 
-```{r Kung-7-bis}
-#| echo: false
-#| out-width: "10%"
-#| eval: true
-knitr::include_graphics("img/stanlogo.png")
-```
+:::: {.columns}
 
+::: {.column width="20%"}
+![](img/stanlogo.png){width=50%}
 [Quelle](https://mc-stan.org/)
+:::
 
-Hier ein paar Kernimnfos zu `stan_glm`: 
+::: {.column width="80%"}
+
+
+Hier ein paar Kerninfos zu `stan_glm`: 
 
 - *Stan* ist eine Software zur Berechnung von Bayesmodellen; das Paket `rstanarm` stellt Stan für uns bereit.
 - `stan_glm()` ist für die Berechnung von Regressionsmodellen ausgelegt.
 - Will man nur die Verteilung einer Variablen (wie `heights`) schätzen, so hat man man ... eine Regression ohne Prädiktor.
 - Eine Regression ohne Prädiktor schreibt man auf Errisch so: `y ~ 1`. Die `1` steht also für die nicht vorhandene UV; `y` meint die AV (`height`).
 - `(Intercept)` (Achsenabschnitt) gibt den Mittelwert an.
+
+:::
+
+::::
+
+
 
 
 
@@ -742,12 +785,13 @@ Mehr findet sich in der [Dokumentation von RstanArm](https://mc-stan.org/rstanar
 
 ### Schätzwerte zu den Modellparameter
 
-Die Parameter eines Modells sind die Größen, für die wir eine Priori-Verteilung annehmen sowie einen Likelihood und dann aus den Daten schätzen.
-Ich sage schätzen um hervorzuheben, dass wir die wahren Werte nicht kennen,
+Die Parameter eines Modells sind die Größen, für die wir eine Priori-Verteilung annehmen.
+Außerdem wählen wir einen einen Likelihood-Funktion, so dass wir die Likelihood berechnen können.
+Auf dieser Basis schätzen wir dann die Post-Verteilung.
+Ich sage *schätzen*, um hervorzuheben, dass wir die wahren Werte nicht kennen,
 sondern nur eine Vermutung haben, 
 unsere Ungewissheit vorab also (wie immer) in der Priori-Verteilung festnageln
 und unsere Ungewissheit nach Kenntnis der Daten in der Posteriori-Verteilung quantifizieren.
-
 Wie gerade gesehen,
 lassen sich die Modellparameter (bzw. genauer gesagt deren Schätzungen) einfach mit `parameters(modellname)` auslesen.
 
@@ -772,9 +816,14 @@ In einer Regression ohne Prädiktoren entspricht der Achsenabschnitt dem Mittelw
 daher gibt uns die Spalte `(Intercept)` Aufschluss über unsere Schätzwerte zu $\mu$ (der Körpergröße).
 
 
-:::{#exm-kung1}
+:::{#exr-kung1}
 
 ## Mit welcher Wahrscheinlichkeit ist $\mu>155$? 
+
+
+::: {.callout-tip appearance="minimal" collapse="true"}
+
+### Lösung
 
 ```{r Kung-28a, echo = TRUE}
 
@@ -791,11 +840,15 @@ dass die Kung im Schnitt größer als 155 cm sind.
 Wahrscheinlicher ist jedoch, dass sie kleiner als 155 cm sind. $\square$
 :::
 
+:::
 
-
-:::{#exm-kung2}
+:::{#exr-kung2}
 
 ## Mit welcher Wahrscheinlichkeit ist $\mu>165$? 
+
+::: {.callout-tip appearance="minimal" collapse="true"}
+
+### Lösung
 
 ```{r Kung-28, echo = TRUE}
 names(post_m41) <- 
@@ -815,24 +868,30 @@ Und sind wir mal ehrlich, der Golem tut, was sein:e Herr:in und Meister:in ihm b
 Letztlich liegt es an uns, den Golem auf Spur zu kriegen.
 
 :::
+:::
+
 
 :::{#exm-kung3}
 
 ## Welche mittlere Körpergröße wird mit 95% Wahrscheinlichkeit nicht überschritten, laut dem Modell `m41`?
 
+::: {.callout-tip appearance="minimal" collapse="true"}
+### Lösung
 ```{r Kung-29, echo = TRUE}
 post_m41 %>% 
   summarise(q95 = quantile(mu, .95))
 ```
 
 :::
+:::
 
 
-
-:::{#exm-kung4}
+:::{#exr-kung4}
 
 ## In welchem 90%-PI liegt $\mu$ vermutlich?
 
+::: {.callout-tip appearance="minimal" collapse="true"}
+### Lösung
 ```{r Kung-30, echo = TRUE}
 post_m41 %>% 
   eti()
@@ -842,13 +901,18 @@ post_m41 %>%
 Ein ETI ist synonym zu PI.
 
 :::
+:::
 
-:::{#exm-kung5}
+
+
+:::{#exr-kung5}
 
 ## Mit welcher Unsicherheit ist die Schätzung der mittleren Körpergröße behaftet?
 
 
 
+::: {.callout-tip appearance="minimal" collapse="true"}
+### Lösung
 ```{r eval = FALSE}
 m41 %>% 
   parameters()
@@ -865,7 +929,7 @@ m41 %>%
 
 
 
-Seeing is believing, @fig-m41-params-intercept.
+Seeing is believing, s. @fig-m41-params-intercept.
 
 ```{r}
 #| fig-cap: "Parameter von m41, nur einer: der Intercept"
@@ -879,18 +943,21 @@ m41 %>%
 Das Modell ist sich recht sicher: die Ungewissheit der mittleren Körpergröße liegt bei nicht viel mehr als einem Zentimeter (95%-CI).
 
 :::
+:::
 
 
-:::{#exm-kung6}
+:::{#exr-kung6}
 
 
 ## Was ist der mediane Schätzwert der mittleren Körpergröße, sozusagen der "Best Guess"?
 
+::: {.callout-tip appearance="minimal" collapse="true"}
+### Lösung
 
 `parameters(m41)` hat uns die Antwort schon gegeben: Ca. 155 cm.
 
 :::
-
+:::
 
 
 
@@ -1052,19 +1119,45 @@ write_rds(m42, "objects/m42.rds")
 
 ### Posteriori-Verteilung und Parameter plotten
 
+Leider liefert der Stan-Golem leider keinen braven Tibble (Tabelle) zurück.
 
+>    👨‍🏫 Böser Golem!
 
+>    🤖 Beim nächsten Mal strenge ich mich mehr an!
+
+Daher müssen wir die Ausgabe des Stan-Golemns erst in eine schöne Tabelle umwandeln:
 
 ```{r}
-m42 %>% 
-  as_tibble() %>% 
-  ggplot(aes(x = `(Intercept)`)) +
-  geom_histogram()
+m42_tibble <-
+  as_tibble(m42)
+
+head(m42_tibble)
 ```
 
 
+Außerdem ist der Name der ersten Spalte eigentlich unzulässig, da Spaltennamen in R nicht mit Sonderzeichen anfangen dürfen (sondern mit Buchstaben). Daher müssen wir den Namen mit "Samthandschuhen" anpacken.
+Auf Errisch sind das die Backticks, die wir um den Namen rumwickeln müssen, s. die folgende Syntax.
 
-Ein Vergleich mehrerer Priori-Werte wäre auch nützlich, um ein skeptisches Publikum von der Wahl (bzw. der Indifferenz) der gewählten Priori-Werte zu überzeugen.
+::: {.panel-tabset}
+
+### Mit `{ggpubr}`
+
+```{r}
+m42_tibble |> 
+  gghistogram(x = "`(Intercept)`")  # Aus dem Paket "ggpubr"
+```
+
+### Mit `{ggplot}`
+
+```{r}
+m42_tibble |> 
+  ggplot(aes(x = `(Intercept)`)) +  # Aus dem Paket `ggplot2`
+  geom_histogram()
+```
+
+:::
+
+Als Ausblick: Ein Vergleich mehrerer Priori-Werte wäre auch nützlich, um ein skeptisches Publikum von der Wahl (bzw. der Indifferenz) der gewählten Priori-Werte zu überzeugen.
 
 
 

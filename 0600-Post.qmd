@@ -297,7 +297,7 @@ samples <-
 
 
 ```{r lst-post-sample2}
-#| lst-cap: Wir stellen eine Tabelle mit Stichproben aus der Post-Verteilung
+#| lst-cap: "Wir erstellen die 'Stichproben-Bayesbox': eine Tabelle mit Stichproben aus der Post-Verteilung"
 #| lst-label: lst-post-sample
 #| echo: false
 samples <-
@@ -308,6 +308,8 @@ samples <-
     replace = T)  %>%  # Ziehe mit Zurücklegen
   select(p_grid)
 ```
+
+
 
 Die Wahrscheinlichkeit, einen bestimmten Parameterwert (d.h. aus der Spalte `p_grid`) aus Tabelle `d` zu ziehen, 
 ist proportional zur Posteriori-Wahrscheinlichkeit (`post`) dieses Werts. 
@@ -330,9 +332,9 @@ Künftig werden wir aber, wenn wir mit komplexeren Modellen zu tun haben, nur no
 ```{r QM2-Thema3-Post-befragen-4}
 #| echo: false
 #| label: tbl-postsample1
-#| tbl-cap: Post-Verteilung
+#| tbl-cap: Stichproben-Post-Verteilung
 samples %>% 
-  slice_head(n=5) %>% 
+  slice_head(n = 5) %>% 
   gt() %>% 
   fmt_number(columns = c(1),
              decimals = 3) 
@@ -358,14 +360,15 @@ samples$p_grid[1:100] %>% round(2)
 
 
 
-Wie sieht diese Tabelle wohl als Histogramm^[hier als Balkendiagramm, kommt fast aufs Selbe raus, sieht aber etwas schöner aus in diesem Fall, da er nur wenige Balken sind] aus?
-So sieht sie als Balkendiagramm aus, s.  @fig-samples1.
+
+So sieht unsere "Stichproben-Bayesbox" als Balkendiagramm aus, s.  @fig-samples1.
 
 ::: {.panel-tabset}
 ### Syntax
 ```{r QM2-Thema3-Teil1-3}
 #| eval: false
 #| message: false
+#| fig-asp: 0.4
 samples |> 
   count(p_grid) |> 
   ggbarplot(x = "p_grid", y = "n") 
@@ -408,22 +411,28 @@ Drehen wir mal die Auflösung auf $k=100$ Gitterwerte (Ausprägungen) nach oben.
 
 ```{r QM2-Thema2-kleineModelle-28a}
 #| echo: true
-k <- 100
-n_success <- 6
-n_trials  <- 9
+k <- 100   # <1>
+n_success <- 6  # <2>
+n_trials  <- 9  # <3>
 
 d_k100 <-
   tibble(p_grid = seq(from = 0, 
                       to = 1, 
-                      length.out = k),  # 100 Gitterwerte
-         prior  = 1) %>% 
-  mutate(likelihood = dbinom(n_success, 
+                      length.out = k),  # <4>
+         prior  = 1) %>%   # <5>
+  mutate(likelihood = dbinom(n_success,   # <6>
                              size = n_trials, 
                              prob = p_grid)) %>% 
-  mutate(unstand_post = (likelihood * prior),
+  mutate(unstand_post = (likelihood * prior),  # <7>
          post = unstand_post / sum(unstand_post))
 ```
-
+1. $k=100$ Gitterwerte
+2. 6 Treffer (Wasser)
+3. 9 Versuche
+4. Bayes-Box anlegen mit 100 Zeilen, d.h. 100 Parameterwerten
+5. Apriori indifferent: Alle Hypothesen haben die gleiche Apriori-Plausibilität
+6. Die Likelihood ist binomialverteilt.
+7. Post-Verteilung berechnen wie gewohnt.
 
 
 
@@ -553,7 +562,7 @@ Es gibt zwei Arten von Fragen:
 2. nach Parameterwerten (Quantilen, q)
 
 
-Der Unterschied zwischen beiden Arten von Fragen ist in  @fig-p-vs-q illustriert.
+Der Unterschied zwischen beiden Arten von Fragen ist in  @fig-p-vs-q schematisch illustriert.
 
 ![Fragen nach p vs. Fragen nach q](img/p-vs-q.png){#fig-p-vs-q width="90%" fig-align="center"}
 
@@ -954,7 +963,7 @@ Das können wir mit im Datensatz `samples` so erreichen.
 ```{r}
 samples %>% 
   arrange(p_grid) %>%   # sortiere
-  slice_head(n = 9000) %>%  # nur die ersten 90000
+  slice_head(n = 9000) %>%  # nur die ersten 90%
   summarise(p90 = max(p_grid))
 ```
 
@@ -974,7 +983,7 @@ samples %>%
 
 ### Perzentilintervall (PI)
 
-Intervalle (Bereiche), die die "abzuschneidende" Wahrscheinlichkeitsmasse hälftig auf die beiden Ränder aufteilen, nennen wir *Perzentilintervalle* oder (synonym) *Equal-Tails-Intervalle* (ETI), s. Abb. @fig-eti, rechtes Teildiagramm. $\square$
+Intervalle (Bereiche), die die "abzuschneidende" Wahrscheinlichkeitsmasse hälftig auf die beiden Ränder aufteilen, nennen wir *Perzentilintervalle* oder (synonym) *Equal-Tails-Intervalle* (ETI), s. Abb. @fig-eti, rechtes Teildiagramm.^[Hier auf Basis  der Post-Verteilung `samples`.] $\square$
 :::
 
 
@@ -987,8 +996,8 @@ Intervalle (Bereiche), die die "abzuschneidende" Wahrscheinlichkeitsmasse hälft
 #| label: fig-eti
 #| layout-ncol: 2
 #| fig-subcap:
-#|   - Intervall mit den unteren 80% der Wahrscheinlichkeit
-#|   - Intervall mit den mitteleren 80% der Wahrscheinlichkeit
+#|   - Intervall der Post-Verteilung mit den unteren 80% der Wahrscheinlichkeit 
+#|   - Intervall der Post-Verteilung mit den mitteleren 80% der Wahrscheinlichkeit
 q_80 <- quantile(samples$p_grid, prob = .8)
 q_10_and_90 <- quantile(samples$p_grid, prob = c(.1, .9))
 
@@ -1020,16 +1029,66 @@ p2 <-
   annotate("label", label = round(q_10_and_90[2], 2),
            x = round(q_10_and_90[2], 2), y = 0)  
 
-ggplotly(p1)
-ggplotly(p2)
+p1
+p2
 ```
 
 
 
+
+```{r}
+#| echo: false
+d_anim <-
+  samples_k100 |> 
+  select(p_grid, post) |>
+  mutate(decile = cut(post, 
+                      breaks = quantile(samples_k100$p_grid, probs = seq(0, 1, 0.1)), 
+                      include.lowest = TRUE),
+         decile2 = cut(p_grid, 
+                      breaks = quantile(samples_k100$p_grid, probs = seq(0, 1, 0.1)), 
+                      include.lowest = TRUE, labels = 1:10)) |> 
+  group_by(decile2) |> 
+  mutate(post_max = max(p_grid))
+
+d_anim2 <-
+  d_anim |> 
+  ungroup() |> 
+  select(p_grid)
+
+p_quantiles  <- 
+d_anim |> 
+  ggplot(aes(x = p_grid)) +
+  geom_density(data = d_anim2) + 
+  geom_vline(aes(xintercept = post_max)) +
+  geom_label(aes(label = decile2, x = post_max), y = 0)
+
+```
+
+
+```{r}
+#| echo: false
+#| eval: false
+
+library(gganimate)
+p_quantiles_anim <-
+  p_quantiles +
+  transition_states(decile2, transition_length = 2, state_length = 1) +
+  ggtitle("Dezil: {closest_state}") +
+  enter_fade() +
+  exit_fade()
+
+anim_save("img/p_quantiles_anim.gif", p_quantiles_anim, renderer = gifski_renderer())
+```
+
+
+Das 10%, 20%, ... 100%-Quantil^[d.h. die *Dezile*] (auf Basis von `samples_k100`) sind in @fig-quantiles-anim illustriert.
+
+![Quantile in 10%-Schritenn durch die Verteilung von `samples_k100`](img/p_quantiles_anim.gif){#fig-quantiles-anim width=50%}
+
 ## Schiefe Posteriori-Verteilungen sind möglich
 
 
-Noch einmal zum Globusversuch: Gehen wir von 3 Würfen mit 3 Treffern aus; auf welche Wasseranteile (Parameterwerte) werden wir jetzt schließen?
+Noch einmal zum Globusversuch: Gehen wir von 3 Würfen mit 3 Mal Wasser (Treffer) aus; auf welche Wasseranteile (Parameterwerte) werden wir jetzt schließen?
 
 Vermutlich ziemlich hohe.
 
