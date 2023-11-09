@@ -39,7 +39,8 @@ In diesem Kapitel benötigen Sie folgende R-Pakete.
 #| message: false
 library(tidyverse)
 library(easystats)
-library(rstanarm)
+library(rstanarm)  # Bayes-Golem
+library(ggpubr)  # Datenvisualisierung
 ```
 
 
@@ -90,7 +91,14 @@ d <- read_csv(Kung_path)
 d2 <- 
   d %>% 
   filter(age > 18) 
+```
 
+
+:::{.panel-tabset}
+
+### Mit `ggplot2`
+
+```{r}
 d2 %>% 
   ggplot(
        aes(x = weight, y = height)) +
@@ -99,8 +107,16 @@ d2 %>%
 ```
 
 
+### Mit `ggpubr`
+
+```{r}
+ggscatter(d2,
+          x = "weight", y = "height",
+          add = "reg.line")
+```
 
 
+:::
 
 ### Bei jedem Prädiktorwert eine Post-Verteilung für $\mu$
 
@@ -309,6 +325,7 @@ rm(d2)
 ```{r Post-Regression-3}
 #| echo: true
 #| eval: true
+#| results: hide
 Kung_path <- "https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv"  
 d <- read_csv(Kung_path)  
 
@@ -393,10 +410,11 @@ d2 %>% plot_correlation()
 ```
 
 
-#### Bonus
+:::{#exr-Bonus}
+### EDA-Bericht
 
-Probieren Sie mal die folgende Funktion aus, die Ihnen einen Bericht zur EDA erstellt: `create_report(d2)`.
-
+Probieren Sie mal die folgende Funktion aus, die Ihnen einen Bericht zur EDA erstellt: `create_report(d2)`. $\square$
+:::
 
 
 
@@ -413,9 +431,6 @@ Zieht man von jedem Gewichtswert den Mittelwert ab, so bekommt man die Abweichun
 Wenn man den Prädiktor (`weight`) zentriert hat, ist der Achsenabschnitt, $\alpha$, einfacher zu verstehen.
 In einem Modell mit zentriertem Prädiktor (`weight`) gibt der Achsenabschnitt die Größe einer Person mit durchschnittlichem Gewicht an. 
 Würde man `weight` nicht zentrieren, gibt der Achsenabschnitt die Größe einer Person mit `weight=0` an, was nicht wirklich sinnvoll zu interpretieren ist.
-
-
-
 Vgl. @gelman_regression_2021, Kap. 10.4,  12.2.
 
 
@@ -464,7 +479,8 @@ d3 %>%
   pivot_longer(everything()) %>% 
   ggplot(aes(x = value)) +
   geom_histogram() +
-  facet_wrap(~ name, scales = "free")
+  facet_wrap(~ name, scales = "free") + 
+  theme_minimal()
 ```
 
 
@@ -1019,12 +1035,14 @@ m43a %>%
   fmt_number(columns = 2:4, decimals = 1)
 ```
 
-Hier sind die Zusammenfassungen der Stichproben aus der Post-Verteilung, komfortabel zu erhalten mit dem Befehle `parameters`:
+Hier sind die Zusammenfassungen der Stichproben aus der Post-Verteilung, komfortabel zu erhalten mit dem Befehle `parameters`, s. @tbl-m43a-params.
 
 ```{r Post-Regression-befragen-4, echo = TRUE}
 #| echo: true
 #| results: hide
 #| message: false
+#| tbl-cap: Parameter von m43a
+#| label: tbl-m43a-params
 parameters(m43a)
 ```
 
@@ -1098,12 +1116,12 @@ d3 %>%
     color = "blue")
 ```
 
-Einfacher ist die Syntax vielleicht, wenn man die Funktion `estimate_expectation` benutzt, s. @fig-expect-m43a.
+Einfacher ist die Syntax vielleicht, wenn man die Funktion `estimate_expectation` benutzt, s. @fig-expect-m43a-expect.
 Mit "expectation" sind hier die erwarteten Werte, also die Regressionsgerade, gemeint.
 
 ```{r}
 #| fig-cap: Erwartete Werte des Modell m43a, sprich, die Regressionsgerade
-#| label: fig-expect-m43a
+#| label: fig-expect-m43a-expect
 m43_expect <- estimate_expectation(m43a)
 plot(m43_expect)
 ```
@@ -1113,8 +1131,7 @@ plot(m43_expect)
 
 ### Zentrale Statistiken zu den Parametern
 
-In diesem Modell gibt es drei Parameter: $\alpha, \beta, \sigma$.
-
+In diesem Modell gibt es drei Parameter: $\beta_0, \beta_1, \sigma$.^[In manchen Lehrbüchern wird $\beta_0$ auch als $\alpha$ bezeichnet.]
 Hier folgen einige Beispiele an Fragen, die wir an unser Modell bzw. die Post-Verteilung stellen können.
 
 
@@ -1126,17 +1143,18 @@ Hier folgen einige Beispiele an Fragen, die wir an unser Modell bzw. die Post-Ve
 - Was ist der wahrscheinlichste Wert für z.B: $\beta_1$?
 
 
-Eine nützliche Zusammenfassung der Post-Verteilung bekommt man mit `parameters(modell)`:
+Eine nützliche Zusammenfassung der Post-Verteilung bekommt man mit `parameters(modell)`, s. @tbl-m43a-params.
 
-```{r Post-Regression-befragen-7, echo = TRUE}
-#| eval: false
-m43a %>% 
-  parameters()
-```
+<!-- ```{r Post-Regression-befragen-7, echo = TRUE} -->
+<!-- #| eval: false -->
+<!-- m43a %>%  -->
+<!--   parameters() -->
+<!-- ``` -->
 
 
 ```{r Post-Regression-befragen-7a}
 #| echo: false
+#| eval: false
 m43a %>% 
   parameters() %>% 
   display()
@@ -1159,34 +1177,30 @@ m43a_post %>%
 
 Wie wir gesehen haben, nutzen wir diese Tabelle der Post-Verteilung immer wieder.
 Speichern wir uns sie also als ein Objekt ab, `m43_post`.
-
-
 Jetzt haben wir wieder eine schöne Tabelle mit Stichproben aus der Post-Verteilung,
 die wir wie gewohnt befragen können.
-
-
-
 Eine Visualisierung zeigt gut sowohl Lage- als auch Streuungsmaße der Parameter, zumindest grob.,
 
 
 
 
 
-Oder man erstellt selber ein Diagramm mit `ggplot`.
+Oder man erstellt selber ein Diagramm mit `ggplot` oder `ggpubr`, s. @fig-m43a-post.
 
 
 
 
 ```{r}
+#| label: fig-m43a-post
+#| fig-cap: "Postverteilung für den Parameter Gewicht (zentriert)"
 m43a_post %>% 
   ggplot(aes(x = weight_c)) +
   geom_density(fill = "orange")
 ```
 
 
-Das Diagramm zeigt, dass Mittelwert, Median und Modus eng zusammenliegen.
+@fig-m43a-post zeigt, dass Mittelwert, Median und Modus eng zusammenliegen.
 Zur Erinnerung: Der Modus gibt den häufigsten, d.h. hier also den wahrscheinlichsten, Wert an.
-
 Der Modus wird hier auch *Maximum a Posteriori* (MAP) genannt, daher:
 
 
@@ -1200,11 +1214,11 @@ m43a_post %>%
 
 
 
-Hier ist die Verteilung von $\sigma$ visualisiert, s. @fig-m43a-post.
+Hier ist die Verteilung von $\sigma$ visualisiert, s. @fig-m43a-post2.
 
 
 ```{r}
-#| label: fig-m43a-post
+#| label: fig-m43a-post2
 #| fig-cap: "Die Post-Verteilung für den Parameter sigma, m43a"
 
 m43a_post %>% 
@@ -1214,7 +1228,7 @@ m43a_post %>%
 
 
 Alternativ kann man sich die Verteilung eines Parameters auch so ausgeben lassen,
-gleich mit Intervallgrenzen, z.B. 95%, s.@fig-m43a-plot.
+gleich mit Intervallgrenzen, z.B. 95%, s. @fig-m43a-plot.
 
 ```{r}
 #| label: fig-m43a-plot
@@ -1493,11 +1507,13 @@ Analog können wir fragen,
 wie groß wohl eine Person mit 50 kg im Mittelwert sein wird und wie (un)gewiss wir uns über diesen Mittelwert sind.
 
 
-50 kg, das sind 5 über dem Mittelwert, in zentrierten Einheiten ausgedrückt also `weight_c = 5`. Auch dazu erstellen wir uns eine Tabelle.
+50 kg, das sind 5 über dem Mittelwert, in zentrierten Einheiten ausgedrückt also `weight_c = 5`. Auch dazu erstellen wir uns eine Tabelle, s. @tbl-mu-at-50.
 
 
 
 ```{r mu-at-50, echo = TRUE}
+#| label: tbl-mue-at-50
+#| tbl-cap: Die Verteilung von mu bedingt auf ein Gewicht von 50kg.
 mu_at_50 <-
   mu_at_45 %>% 
   mutate(mu_at_50 = `(Intercept)` + 5 * weight_c)
