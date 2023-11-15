@@ -1974,7 +1974,7 @@ Abbildung&nbsp;10.8: Kausalmodell km1 - Eine Erklärung (von mehreren) für m1 b
 <p><span class="theorem-title"><strong>Beispiel 10.3 </strong></span>In <a href="#fig-km1" class="quarto-xref">Abbildung&nbsp;<span>10.8</span></a> ist <code>living area</code> eine Konfundierungsvariable für den Zusammenhang von <code>bedrooms</code> und <code>price</code>. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="def-confound" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 10.1 (Konfundierungsvariable) </strong></span>Eine Konfundierungsvariable (Konfundierer) ist eine Variable, die den Zusammenhang zwischen UV und AV verzerrt, wenn sie nicht kontrolliert wird <span class="citation" data-cites="vanderweele_definition_2013">(<a href="references.html#ref-vanderweele_definition_2013" role="doc-biblioref"><strong>vanderweele_definition_2013?</strong></a>)</span>. <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 10.1 (Konfundierungsvariable) </strong></span>Eine Konfundierungsvariable (Konfundierer) ist eine Variable, die den Zusammenhang zwischen UV und AV verzerrt, wenn sie nicht kontrolliert wird <span class="citation" data-cites="vanderweele_definition_2013">(<a href="references.html#ref-vanderweele_definition_2013" role="doc-biblioref">VanderWeele und Shpitser 2013</a>)</span>. <span class="math inline">\(\square\)</span></p>
 </div>
 <p>Wenn das Kausalmodell stimmt, dann zeigt <code>m2</code> den kausalen Effekt von <code>livingArea</code>.</p>
 <blockquote class="blockquote">
@@ -2559,6 +2559,10 @@ Abbildung&nbsp;10.25: Der Gespenster-DAG: Eine Identifikation der Kausaleffekt i
 <p>Die Sache ist in diesem Fall chancenlos. Wir müssen diesen DAG verloren geben, <span class="citation" data-cites="mcelreath_statistical_2020">McElreath (<a href="references.html#ref-mcelreath_statistical_2020" role="doc-biblioref">2020</a>)</span>, S. 180.</p>
 </section></section><section id="die-hintertür-schließen" class="level2" data-number="10.6"><h2 data-number="10.6" class="anchored" data-anchor-id="die-hintertür-schließen">
 <span class="header-section-number">10.6</span> Die Hintertür schließen</h2>
+<div id="def-hintertuer" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 10.5 (Hintertür) </strong></span>Eine “Hintertür” ist ein nicht-kausaler Pfad zwischen einer UV und einer AV.</p>
+<p>Ein Hintertürpfad entsteht, wenn es eine alternative Route über eine oder mehrere Variable gibt, dieUV mit der AV verbindet. Dieser Pfad verzerrt die Schätzwerte des kausalen Einflusses, wenn er nicht kontrolliert wird. <span class="math inline">\(\square\)</span></p>
+</div>
 <section id="zur-erinnerung-konfundierung" class="level3" data-number="10.6.1"><h3 data-number="10.6.1" class="anchored" data-anchor-id="zur-erinnerung-konfundierung">
 <span class="header-section-number">10.6.1</span> Zur Erinnerung: Konfundierung</h3>
 <p><em>Forschungsfrage</em>: Wie groß ist der (kausale) Einfluss der Schlafzimmerzahl auf den Verkaufspreis des Hauses?</p>
@@ -2601,11 +2605,36 @@ Abbildung&nbsp;10.27: Unverzerrte Schätzung des kausalen Effekts unserer UV (Zi
 </div>
 <p>Die “Hintertür” der UV (<code>b</code>) ist jetzt zu! Der einzig verbleibende, erste Pfad ist der kausale Pfad und die Assoziation zwischen <code>b</code> und <code>p</code> ist jetzt komplett kausal.</p>
 <p>Eine berühmte Lösung, den kausalen Pfad zu isolieren, ist ein (randomsiertes, kontrolliertes) Experiment. Wenn wir den Häusern zufällig (randomisiert) eine Anzahl von Schlafzimmern (<code>b</code>) zuweisen könnten (unabhängig von ihrer Quadratmeterzahl, <code>a</code>), würde sich der Graph so ändern. Das Experiment <em>entfernt</em> den Einfluss von <code>a</code> auf <code>b</code>. Wenn wir selber die Werte von <code>b</code> einstellen im Rahmen des Experiments, so kann <code>a</code> keine Wirkung auf <code>b</code> haben. Damit wird der zweite Pfad, <span class="math inline">\(b \rightarrow a \rightarrow p\)</span> geschlossen (“blockiert”).</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Die Stärke (gut gemachter) Experimente ist, dass sie kausale Hintertüren schließen. <span class="math inline">\(\square\)</span></p>
+</div>
+</div>
 </section><section id="hintertür-schließen-auch-ohne-experimente" class="level3" data-number="10.6.3"><h3 data-number="10.6.3" class="anchored" data-anchor-id="hintertür-schließen-auch-ohne-experimente">
 <span class="header-section-number">10.6.3</span> Hintertür schließen auch ohne Experimente</h3>
-<p>Konfundierende Pfade zu blockieren zwischen der UV und der AV nennt man auch <em>die Hintertür schließen</em> (backdoor criterion).</p>
-<p>Wir wollen die Hintertüre schließen, da wir sonst nicht den wahren, kausalen Effekt bestimmen können.</p>
+<p>Konfundierende Pfade zu blockieren zwischen der UV und der AV nennt man auch <em>die Hintertür schließen</em> (backdoor criterion). Wir wollen die Hintertüre schließen, da wir sonst nicht den wahren, kausalen Effekt bestimmen können.</p>
 <p>Zum Glück gibt es neben Experimenten noch andere Wege, die Hintertür zu schließen, wie die Konfundierungsvariable <code>a</code> in eine Regression mit aufzunehmen.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tipp
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Kontrollieren Sie Konfundierer, um kausale Hintertüren zu schließen. <span class="math inline">\(\square\)</span></p>
+</div>
+</div>
 <p>Warum blockt das Kontrollieren von <code>a</code>den Pfad <span class="math inline">\(b \leftarrow a \rightarrow p\)</span>? Stellen Sie sich den Pfad als eigenen Modell vor. Sobald Sie <code>a</code> kennen, bringt Ihnen Kenntnis über <code>b</code> kein zusätzliches Wissen über <code>p</code>. Wissen Sie hingegen nichts über <code>a</code>, lernen Sie bei Kenntnis von <code>b</code> auch etwas über <code>p</code>. Konditionieren ist wie “gegeben, dass Sie <code>a</code> schon kennen…”.</p>
 <p><span class="math inline">\(b \perp \!\!\! \perp p \,|\,a\)</span></p>
 </section><section id="die-vier-atome-der-kausalanalyse" class="level3" data-number="10.6.4"><h3 data-number="10.6.4" class="anchored" data-anchor-id="die-vier-atome-der-kausalanalyse">
@@ -2626,7 +2655,7 @@ Abbildung&nbsp;10.28: Die vier Atome der Kausalinferenz
 </section><section id="mediation" class="level3" data-number="10.6.5"><h3 data-number="10.6.5" class="anchored" data-anchor-id="mediation">
 <span class="header-section-number">10.6.5</span> Mediation</h3>
 <div id="def-mediator" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 10.5 (Mediator) </strong></span>Einen Pfad mit drei Knoten (Variablen), die über insgesamt zwei Kanten verbunden sind, wobei die Pfeile von UV zu Mediator und von Mediator zur AV zeigen, nennt man <em>Mediation</em>. Der <em>Mediator</em> ist die Variable zwischen UV und AV [<span class="citation" data-cites="pearl_causal_2016">Pearl, Glymour, und Jewell (<a href="references.html#ref-pearl_causal_2016" role="doc-biblioref">2016</a>)</span>; p.&nbsp;38]. <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 10.6 (Mediator) </strong></span>Einen Pfad mit drei Knoten (Variablen), die über insgesamt zwei Kanten verbunden sind, wobei die Pfeile von UV zu Mediator und von Mediator zur AV zeigen, nennt man <em>Mediation</em>. Der <em>Mediator</em> ist die Variable zwischen UV und AV [<span class="citation" data-cites="pearl_causal_2016">Pearl, Glymour, und Jewell (<a href="references.html#ref-pearl_causal_2016" role="doc-biblioref">2016</a>)</span>; p.&nbsp;38]. <span class="math inline">\(\square\)</span></p>
 </div>
 <p>Die <em>Mediation</em> (synonym: Wirkkette, Rohr, Kette, chain) beschreibt Pfade, in der die Kanten (eines Pfades) die gleiche Wirkrichtung haben: <span class="math inline">\(x \rightarrow m \rightarrow y\)</span>. Anders gesagt: Eine Mediation ist eine Kausalabfolge der Art <span class="math inline">\(x \rightarrow m \rightarrow y\)</span>, s. <a href="#fig-med1" class="quarto-xref">Abbildung&nbsp;<span>10.29</span></a>. Die Variable in der Mitte <span class="math inline">\(m\)</span> der Kette wird auch <em>Mediator</em> genannt, weil sei die Wirkung von X auf Y “vermittelt” oder überträgt. Die Erforschung von Mediation spielt eine recht wichtige Rolle in einigen Wissenschaften, wie der Psychologie.</p>
 <div class="cell" data-hash="1100-kausal_cache/html/fig-med1_3ff849fc99c65c500ae3f75ee14a771f">
@@ -2684,7 +2713,7 @@ Abbildung&nbsp;10.30: Partielle Mediation
 </section></section><section id="der-nachfahre" class="level2" data-number="10.7"><h2 data-number="10.7" class="anchored" data-anchor-id="der-nachfahre">
 <span class="header-section-number">10.7</span> Der Nachfahre</h2>
 <div id="def-Nachfahre" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 10.6 (Nachfahre) </strong></span>Ein <em>Nachfahre</em> (descendent) ist eine Variable die von einer anderen Variable beeinflusst wird, s. <a href="#fig-dag-nachfahre" class="quarto-xref">Abbildung&nbsp;<span>10.31</span></a>. <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 10.7 (Nachfahre) </strong></span>Ein <em>Nachfahre</em> (descendent) ist eine Variable die von einer anderen Variable beeinflusst wird, s. <a href="#fig-dag-nachfahre" class="quarto-xref">Abbildung&nbsp;<span>10.31</span></a>. <span class="math inline">\(\square\)</span></p>
 </div>
 <p>Kontrolliert man einen Nachfahren <code>d</code>, so kontrolliert man damit zum Teil den Vorfahren (die Ursache), <code>m</code>. Der Grund ist, dass <code>d</code> Information beinhaltet über <code>m</code>. Hier wird das Kontrollieren von <code>d</code> den Pfad von <code>x</code> nach <code>y</code> teilweise öffnen, da <code>m</code> eine Kollisionsvariable ist.</p>
 <div class="cell" data-hash="1100-kausal_cache/html/fig-dag-nachfahre_d1a49f9e1e59025d3caba26e5dc1c25b">
@@ -2826,6 +2855,9 @@ Pearl, Judea, Madelyn Glymour, und Nicholas P. Jewell. 2016. <em>Causal Inferenc
 </div>
 <div id="ref-rohrer_thinking_2018" class="csl-entry" role="listitem">
 Rohrer, Julia M. 2018. <span>„Thinking <span>Clearly About Correlations</span> and <span>Causation</span>: <span>Graphical Causal Models</span> for <span>Observational Data</span>“</span>. <em>Advances in Methods and Practices in Psychological Science</em> 1 (1): 27–42. <a href="https://doi.org/10.1177/2515245917745629">https://doi.org/10.1177/2515245917745629</a>.
+</div>
+<div id="ref-vanderweele_definition_2013" class="csl-entry" role="listitem">
+VanderWeele, Tyler J., und Ilya Shpitser. 2013. <span>„On the Definition of a Confounder“</span>. <em>Annals of statistics</em> 41 (1): 196–220. <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4276366/">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4276366/</a>.
 </div>
 </div>
 </section><aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
