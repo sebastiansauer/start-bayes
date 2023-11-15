@@ -22,6 +22,13 @@ Sie können ...
 - künftige, laut Modell zu erwartende Beobachtungen mit der PPV simulieren
 
 
+### Begleitliteratur
+
+Der Stoff dieses Kapitels orientiert sich an @mcelreath_statistical_2020, Kap. 4.4.
+
+
+
+
 
 ### Vorbereitung im Eigenstudium
 
@@ -605,354 +612,6 @@ Lies  etwa so:
 
 
 
-## Vertiefung: Prior-Prädiktiv-Verteilung
-
-🏎️ VERTIEFUNG, nicht prüfungsrelevant 🏎️
-
-### Moment
-
- 🤔 Moment. Dieser Prior, $\beta$ in `m43` erachtet positive und negative Zusammenhang als gleich wahrscheinlich?!
-
-Sind wir wirklich indifferent, ob der Zusammenhang von Gewicht und Größe positiv oder negativ ist? [Nein, sind wir nicht.](https://media.giphy.com/media/daPCSjwus6UR2JxRX1/giphy.gif) 
-    
-
-
-### Priori-Prädiktiv-Verteilung für `m43`
-
-
-
-Was denkt [wir](https://media.giphy.com/media/Aausss8uUBIe3bZ3d2/giphy.gif) bzw. unser Golem *apriori* über den Zusammenhang von Größe und Gewicht?
-Um diese Frage zu beantworten ziehen wir Stichproben aus den Priori-Verteilungen des Modells, also für $\alpha$, $\beta$ und $\sigma$.
-
-
-
-```{r m43-prior-pred}
-m43_prior_pred <-
-    stan_glm(height ~ weight_c, 
-             prior = normal(0, 10),
-             prior_intercept = normal(178, 20),  # mu
-             prior_aux = exponential(0.1),  # sigma
-             refresh = FALSE, 
-             prior_PD = TRUE,  # Schalter für Prior-Pred-Verteilung
-             data = d3)
-
-
-m43_prior_pred_draws <- 
-  m43_prior_pred %>% 
-  as_tibble() %>% 
-  rename(a = `(Intercept)`,
-         b = weight_c) %>% 
-  slice_sample(n = 50)
-```
-
-
-
-```{r}
-#| echo: false
-m43_prior_pred_draws %>% 
-  slice_head(n=5) %>% 
-  gt() %>% 
-  fmt_number(everything(), decimals = 1)
-```
-
-
-
-Jede Zeile definiert eine Regressionsgerade.
-
-
-
-### Prior-Prädiktiv-Simulation für `m43` mit `stan_glm()` 
-
-
-
-
-```{r echo = TRUE, eval = FALSE}
-m43_prior_pred <-
-    stan_glm(height ~ weight_c, 
-             prior = normal(0, 10),  # beta
-             prior_intercept = normal(178, 20),  # alpha
-             prior_aux = exponential(0.1),  # sigma
-             refresh = FALSE, 
-             prior_PD = TRUE,  # DIESER Schalter macht's
-             data = d3)
-
-m43_prior_pred_draws <- 
-  m43_prior_pred %>% 
-  as_tibble() %>% 
-  rename(a = `(Intercept)`,
-         b = weight_c) %>% 
-  slice_sample(n = 50)
-```
-
-
-
-```{r echo = FALSE, eval = FALSE}
-m43a_prior_pred <-
-    stan_glm(height ~ weight_c, 
-             prior = normal(0, 10),  # beta
-             prior_intercept = normal(0, 20),  # alpha
-             prior_aux = exponential(0.1),  # sigma
-             refresh = FALSE, 
-             prior_PD = TRUE,  # DIESER Schalter machts
-             data = d3)
-
-m43a_prior_pred_draws <- 
-  m43a_prior_pred %>% 
-  as_tibble() %>% 
-  rename(a = `(Intercept)`,
-         b = weight_c) %>% 
-  slice_sample(n = 50)
-```
-
-
-
-
-
-
-
-
-
-### Visualisieren der Prior-Prädiktiv-Verteilung
-
-
-
-```{r prior-pv1, echo = TRUE, eval = FALSE, fig.asp = .5}
-d3 %>% ggplot() +
-  geom_point(aes(x = weight_c, y = height)) + 
-  geom_abline(data = m43_prior_pred_draws,
-aes(intercept = a, slope = b), color = "skyblue", size = 0.2) +
-  scale_y_continuous(limits = c(0, 500)) +
-  geom_hline(yintercept = 272, size = .5) +
-  geom_hline(yintercept = 0, linetype = "dashed")
-```
-
-
-
-🤯 Einige dieser Regressionsgeraden sind unsinnig!
-
-
-```{r ref.label = "prior-pv1", eval = TRUE, fig.asp = .3}
-
-```
-
-
-Die durchgezogene horizontale Linie gibt die Größe des [größten Menschens, Robert Pershing Wadlow](https://en.wikipedia.org/wiki/Robert_Wadlow), an.
-
-
-
-
-
-### Ein positiver Wert für $\beta$ ist plausibler
-
-
-#### Oh no
-
-Eine Normalverteilung mit viel Streuung:
-
-```{r Post-Regression-16, fig.asp = .5}
-#| echo: false
-d <-
-  tibble(
-    x = seq(-30,30,.1),
-    y = dnorm(x, mean = 0, sd = 10)
-  )
-
-d %>% 
-  ggplot(aes(x,y)) +
-  geom_line() +
-  scale_y_continuous(breaks = NULL) +
-  labs(title = "mu=0, s=10")
-```
-
-👎 $\beta=-20$ wäre mit diesem Prior gut möglich: Pro kg Gewicht sind Menschen im Schnitt 20cm kleiner, laut dem Modell. Quatsch.
-
-
-
-
-#### Oh yes
-
-Wir bräuchten eher so eine Verteilung, mit mehr Masse auf der positiven Seite (x>0):
-
-```{r Post-Regression-17, fig.asp=.5}
-#| echo: false
-d <-
-  tibble(
-    x = seq(-30,30,.1),
-    y = dnorm(x, mean = 3, sd = 2)
-  )
-
-d %>% 
-  ggplot(aes(x,y)) +
-  geom_line() +
-  scale_y_continuous(breaks = NULL) +
-  labs(title = "mu=5, sd = 3")
-```
-
-👍 Vermutlich besser: Ein Großteil der Wahrscheinlichkeitsmasse ist $X>0$. Allerdings gibt's keine Gewähr, dass unser Prior "richtig" ist.
-
-
-
-
-### Priori-Prädiktiv-Simulation, 2. Versuch
-
-
-
-
-
-```{r echo = TRUE}
-m43a_prior_pred <-
-    stan_glm(
-      height ~ weight_c, 
-      prior = normal(2, 2),  # Regressionsgewicht
-      prior_intercept = normal(178, 20),  # mu
-      prior_aux = exponential(0.1),  # sigma
-      refresh = FALSE, 
-      # Schalter für Prior-Pred-Verteilung:
-      prior_PD = TRUE, 
-      data = d3)
-
-
-m43a_prior_pred_draws <- 
-  m43a_prior_pred %>% 
-  as_tibble() %>% 
-  # Spaltennamen kürzen: 
-  rename(a = `(Intercept)`) %>%  
-  rename(b = weight_c,
-         s = sigma)
-```
-
-
-
-
-
-```{r}
-#| echo: false
-m43a_prior_pred_draws %>% 
-  slice_head(n=5) %>% 
-  gt() %>% 
-  fmt_number(everything(), decimals = 1)
-```
-
-
-
-Das Argument `prior_PD = TRUE` sorgt dafür, dass keine Posteriori-Verteilung, sondern eine Prior-Prädiktiv-Verteilung berechnet wird.
-
-
-
-
-### Visualisieren der Prior-Prädiktiv-Verteilung, `m43a`
-
-
-Unsere Priori-Werte scheinen einigermaßen vernünftige Vorhersagen zu tätigen. Allerdings erwartet unser Golem einige Riesen.
-
-
-```{r, eval = TRUE, fig.asp=.5}
-d3 %>% 
-  ggplot(aes(x = weight_c, y = height)) +
-  geom_point() +
-  geom_abline(data = {m43a_prior_pred_draws %>% slice_head(n=50)},
-              aes(slope = b,
-                  intercept = a),
-              color = "skyblue",
-              size = .2,
-              alpha = .7) +
-  geom_hline(yintercept = 272, size = .5) +
-  geom_hline(yintercept = 0, linetype = "dashed")+
-  scale_y_continuous(limits = c(0, 500)) 
-```
-
-
-Die durchgezogene horizontale Linie gibt die Größe des [größten Menschens, Robert Pershing Wadlow](https://en.wikipedia.org/wiki/Robert_Wadlow), an.
-
-
-
-
-
-
-
-
-### Moment, kann hier jeder machen, was er will?
-
-
-
-Es doch den einen, richtigen, objektiven Priori-Wert geben?!
-
-Kann denn jeder hier machen, was er will?! Wo kommen wir da hin?!
-
-
->    This is a mistake. There is no more a uniquely correct prior than there is a uniquely correct likelihood. Statistical models are machines for inference. Many machines will work, but some work better than others. Priors can be wrong, but only in the same sense that a kind of hammer can be wrong for building a table.  
-
-@mcelreath_statistical_2020, p. 96.
-
-
-
-
-
-### Hier ist unser Modell, `m43a`
-
-
-
-
-\begin{align}
-\text{height}_i &\sim \operatorname{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta \cdot  \text{weight}_i\\
-\alpha &\sim \operatorname{Normal}(178, 20)\\
-\beta &\sim \operatorname{Normal}(5,3)\\
-\sigma &\sim \operatorname{Exp}(0.1)
-\end{align}
-
-
-
-```{r Post-Regression-25, echo = TRUE}
-# Posteriori-Vert. berechnen:
-m43a <-
-  stan_glm(
-    height ~ weight_c,  # Regressionsformel
-    prior = normal(5, 3),  # Regressionsgewicht (beta 1)
-    prior_intercept = normal(178, 20),  # mu
-    prior_aux = exponential(0.1),  # sigma
-    refresh = 0,  # zeig mir keine Details
-    seed = 42,  # Zufallszahlen festlegen
-    data = d3)
-```
-
-
-
-
-
-### Eine Zusammenfassung der Posteriori-Verteilung für `m43a`
-
-
-```{r}
-#| eval: false
-m43a %>% 
-  parameters()
-```
-
-
-
-```{r}
-#| echo: false
-m43a %>% 
-  parameters() %>% 
-  display()
-```
-
-
-
-Unser Modell `m43a` schätzt die typische Körpergröße einer !Kung-Person *mittleren Gewichts* (`weight_c = 0`) auf knapp 155 cm, und ist sich dieses Werts ziemlich sicher.
-Pro Kilogramm kommt (laut unserem Modell) ein knapper Zentimeter hinzu, typischerweise;
-auch hier ist sich das Modell ziemlich sicher, da dass zugehörige 95%-CI keine 20 Zentimenter umfasst.
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1057,7 +716,7 @@ parameters(m43a) %>%
 
 ::: {#def-pd}
 
-## Effektwahrscheinlichkeit
+### Effektwahrscheinlichkeit
 
 Die Kennzahl  `pd` (propability of direction) gibt die *Effektwahrscheinlichkeit* an: Die Wahrscheinlichkeit,
 dass der Effekt positiv (also größer als Null) oder negativ ist (je nachdem ob der Median des Effekts positiv oder negativ ist).
@@ -1578,7 +1237,368 @@ mu_at_45 %>%
 
 
 
+
+
+
+## Prior-Prädiktiv-Verteilung
+
+🏎🏎️ VERTIEFUNG (nicht prüfungsrelevant ) 🏎🏎
+
+
+
+
+### Moment
+
+ 🤔 Moment. Dieser Prior, $\beta$ in `m43` erachtet positive und negative Zusammenhang als gleich wahrscheinlich?!
+
+Sind wir wirklich indifferent, ob der Zusammenhang von Gewicht und Größe positiv oder negativ ist? [Nein, sind wir nicht.](https://media.giphy.com/media/daPCSjwus6UR2JxRX1/giphy.gif) 
+    
+
+
+### Priori-Prädiktiv-Verteilung für `m43`
+
+
+
+Was denkt [wir](https://media.giphy.com/media/Aausss8uUBIe3bZ3d2/giphy.gif) bzw. unser Golem *apriori* über den Zusammenhang von Größe und Gewicht?
+Um diese Frage zu beantworten ziehen wir Stichproben aus den Priori-Verteilungen des Modells, also für $\alpha$, $\beta$ und $\sigma$.
+
+
+
+```{r m43-prior-pred}
+m43_prior_pred <-
+    stan_glm(height ~ weight_c, 
+             prior = normal(0, 10),
+             prior_intercept = normal(178, 20),  # mu
+             prior_aux = exponential(0.1),  # sigma
+             refresh = FALSE, 
+             prior_PD = TRUE,  # Schalter für Prior-Pred-Verteilung
+             data = d3)
+
+
+m43_prior_pred_draws <- 
+  m43_prior_pred %>% 
+  as_tibble() %>% 
+  rename(a = `(Intercept)`,
+         b = weight_c) %>% 
+  slice_sample(n = 50)
+```
+
+
+
+```{r}
+#| echo: false
+m43_prior_pred_draws %>% 
+  slice_head(n=5) %>% 
+  gt() %>% 
+  fmt_number(everything(), decimals = 1)
+```
+
+
+
+Jede Zeile definiert eine Regressionsgerade.
+
+
+
+### Prior-Prädiktiv-Simulation für `m43` mit `stan_glm()` 
+
+
+
+
+```{r echo = TRUE, eval = FALSE}
+m43_prior_pred <-
+    stan_glm(height ~ weight_c, 
+             prior = normal(0, 10),  # beta
+             prior_intercept = normal(178, 20),  # alpha
+             prior_aux = exponential(0.1),  # sigma
+             refresh = FALSE, 
+             prior_PD = TRUE,  # DIESER Schalter macht's
+             data = d3)
+
+m43_prior_pred_draws <- 
+  m43_prior_pred %>% 
+  as_tibble() %>% 
+  rename(a = `(Intercept)`,
+         b = weight_c) %>% 
+  slice_sample(n = 50)
+```
+
+
+
+```{r echo = FALSE, eval = FALSE}
+m43a_prior_pred <-
+    stan_glm(height ~ weight_c, 
+             prior = normal(0, 10),  # beta
+             prior_intercept = normal(0, 20),  # alpha
+             prior_aux = exponential(0.1),  # sigma
+             refresh = FALSE, 
+             prior_PD = TRUE,  # DIESER Schalter machts
+             data = d3)
+
+m43a_prior_pred_draws <- 
+  m43a_prior_pred %>% 
+  as_tibble() %>% 
+  rename(a = `(Intercept)`,
+         b = weight_c) %>% 
+  slice_sample(n = 50)
+```
+
+
+
+
+
+
+
+
+
+### Visualisieren der Prior-Prädiktiv-Verteilung
+
+
+
+```{r prior-pv1, echo = TRUE, eval = FALSE, fig.asp = .5}
+d3 %>% ggplot() +
+  geom_point(aes(x = weight_c, y = height)) + 
+  geom_abline(data = m43_prior_pred_draws,
+aes(intercept = a, slope = b), color = "skyblue", size = 0.2) +
+  scale_y_continuous(limits = c(0, 500)) +
+  geom_hline(yintercept = 272, size = .5) +
+  geom_hline(yintercept = 0, linetype = "dashed")
+```
+
+
+
+🤯 Einige dieser Regressionsgeraden sind unsinnig!
+
+
+```{r ref.label = "prior-pv1", eval = TRUE, fig.asp = .3}
+
+```
+
+
+Die durchgezogene horizontale Linie gibt die Größe des [größten Menschens, Robert Pershing Wadlow](https://en.wikipedia.org/wiki/Robert_Wadlow), an.
+
+
+
+
+
+### Ein positiver Wert für $\beta$ ist plausibler
+
+
+#### Oh no
+
+Eine Normalverteilung mit viel Streuung:
+
+```{r Post-Regression-16, fig.asp = .5}
+#| echo: false
+d <-
+  tibble(
+    x = seq(-30,30,.1),
+    y = dnorm(x, mean = 0, sd = 10)
+  )
+
+d %>% 
+  ggplot(aes(x,y)) +
+  geom_line() +
+  scale_y_continuous(breaks = NULL) +
+  labs(title = "mu=0, s=10")
+```
+
+👎 $\beta=-20$ wäre mit diesem Prior gut möglich: Pro kg Gewicht sind Menschen im Schnitt 20cm kleiner, laut dem Modell. Quatsch.
+
+
+
+
+#### Oh yes
+
+Wir bräuchten eher so eine Verteilung, mit mehr Masse auf der positiven Seite (x>0):
+
+```{r Post-Regression-17, fig.asp=.5}
+#| echo: false
+d <-
+  tibble(
+    x = seq(-30,30,.1),
+    y = dnorm(x, mean = 3, sd = 2)
+  )
+
+d %>% 
+  ggplot(aes(x,y)) +
+  geom_line() +
+  scale_y_continuous(breaks = NULL) +
+  labs(title = "mu=5, sd = 3")
+```
+
+👍 Vermutlich besser: Ein Großteil der Wahrscheinlichkeitsmasse ist $X>0$. Allerdings gibt's keine Gewähr, dass unser Prior "richtig" ist.
+
+
+
+
+### Priori-Prädiktiv-Simulation, 2. Versuch
+
+
+
+
+
+```{r echo = TRUE}
+m43a_prior_pred <-
+    stan_glm(
+      height ~ weight_c, 
+      prior = normal(2, 2),  # Regressionsgewicht
+      prior_intercept = normal(178, 20),  # mu
+      prior_aux = exponential(0.1),  # sigma
+      refresh = FALSE, 
+      # Schalter für Prior-Pred-Verteilung:
+      prior_PD = TRUE, 
+      data = d3)
+
+
+m43a_prior_pred_draws <- 
+  m43a_prior_pred %>% 
+  as_tibble() %>% 
+  # Spaltennamen kürzen: 
+  rename(a = `(Intercept)`) %>%  
+  rename(b = weight_c,
+         s = sigma)
+```
+
+
+
+
+
+```{r}
+#| echo: false
+m43a_prior_pred_draws %>% 
+  slice_head(n=5) %>% 
+  gt() %>% 
+  fmt_number(everything(), decimals = 1)
+```
+
+
+
+Das Argument `prior_PD = TRUE` sorgt dafür, dass keine Posteriori-Verteilung, sondern eine Prior-Prädiktiv-Verteilung berechnet wird.
+
+
+
+
+### Visualisieren der Prior-Prädiktiv-Verteilung, `m43a`
+
+
+Unsere Priori-Werte scheinen einigermaßen vernünftige Vorhersagen zu tätigen. Allerdings erwartet unser Golem einige Riesen.
+
+
+```{r, eval = TRUE, fig.asp=.5}
+d3 %>% 
+  ggplot(aes(x = weight_c, y = height)) +
+  geom_point() +
+  geom_abline(data = {m43a_prior_pred_draws %>% slice_head(n=50)},
+              aes(slope = b,
+                  intercept = a),
+              color = "skyblue",
+              size = .2,
+              alpha = .7) +
+  geom_hline(yintercept = 272, size = .5) +
+  geom_hline(yintercept = 0, linetype = "dashed")+
+  scale_y_continuous(limits = c(0, 500)) 
+```
+
+
+Die durchgezogene horizontale Linie gibt die Größe des [größten Menschens, Robert Pershing Wadlow](https://en.wikipedia.org/wiki/Robert_Wadlow), an.
+
+
+
+
+
+
+
+
+### Moment, kann hier jeder machen, was er will?
+
+
+
+Es doch den einen, richtigen, objektiven Priori-Wert geben?!
+
+Kann denn jeder hier machen, was er will?! Wo kommen wir da hin?!
+
+
+>    This is a mistake. There is no more a uniquely correct prior than there is a uniquely correct likelihood. Statistical models are machines for inference. Many machines will work, but some work better than others. Priors can be wrong, but only in the same sense that a kind of hammer can be wrong for building a table.  
+
+@mcelreath_statistical_2020, p. 96.
+
+
+
+
+
+### Hier ist unser Modell, `m43a`
+
+
+
+
+\begin{align}
+\text{height}_i &\sim \operatorname{Normal}(\mu_i, \sigma) \\
+\mu_i &= \alpha + \beta \cdot  \text{weight}_i\\
+\alpha &\sim \operatorname{Normal}(178, 20)\\
+\beta &\sim \operatorname{Normal}(5,3)\\
+\sigma &\sim \operatorname{Exp}(0.1)
+\end{align}
+
+
+
+```{r Post-Regression-25, echo = TRUE}
+# Posteriori-Vert. berechnen:
+m43a <-
+  stan_glm(
+    height ~ weight_c,  # Regressionsformel
+    prior = normal(5, 3),  # Regressionsgewicht (beta 1)
+    prior_intercept = normal(178, 20),  # mu
+    prior_aux = exponential(0.1),  # sigma
+    refresh = 0,  # zeig mir keine Details
+    seed = 42,  # Zufallszahlen festlegen
+    data = d3)
+```
+
+
+
+
+
+### Eine Zusammenfassung der Posteriori-Verteilung für `m43a`
+
+
+```{r}
+#| eval: false
+m43a %>% 
+  parameters()
+```
+
+
+
+```{r}
+#| echo: false
+m43a %>% 
+  parameters() %>% 
+  display()
+```
+
+
+
+Unser Modell `m43a` schätzt die typische Körpergröße einer !Kung-Person *mittleren Gewichts* (`weight_c = 0`) auf knapp 155 cm, und ist sich dieses Werts ziemlich sicher.
+Pro Kilogramm kommt (laut unserem Modell) ein knapper Zentimeter hinzu, typischerweise;
+auch hier ist sich das Modell ziemlich sicher, da dass zugehörige 95%-CI keine 20 Zentimenter umfasst.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Die PPV befragen
+
+
+🏎🏎️ VERTIEFUNG (nicht prüfungsrelevant ) 🏎🏎
 
 
 
