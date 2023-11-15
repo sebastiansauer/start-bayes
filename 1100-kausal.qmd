@@ -16,7 +16,7 @@ Für dieses Kapitel benötigen Sie folgende R-Pakete:
 
 ```{r libs}
 #| warning: false
-library(dagitty)
+library(dagitty)  # DAGs zeichnen
 library(tidyverse)
 library(rstanarm)
 library(easystats)
@@ -188,7 +188,7 @@ Gleichzeitig hat das Medikament einen (toxischen) Effekt auf die Heilung.
 Verringerter Blutdruck hat einen positiven Einfluss auf die Heilung.
 Sucht man innerhalb der Leute mit gesenktem Blutdruck nach Effekten, findet man nur den toxischen Effekt: Gegeben diesen Blutdruck ist das Medikament schädlich aufgrund des toxischen Effekts. Der positive Effekt der Blutdruck-Senkung ist auf diese Art nicht zu sehen.
 
-Das Kausalmodell ist in @fig-dag-studie-b dargestellt.
+Das Kausalmodell von Studie B ist in @fig-dag-studie-b dargestellt.
 
 
 
@@ -340,16 +340,18 @@ also keine (belastbare) Aussage über den Effekt der Behandlung.
 
 #### Mehr Beispiele
 
-Nehmen Sie Bezug zu folgenden Aussagen:
 
 
->   Studien zeigen, dass Einkommen und Heiraten (bzw. verheiratete sein) hoch korrelieren. Daher wird sich dein Einkommen erhöhen, wenn du heiratest.
+:::{#exm-heiraten}
+Studien zeigen, dass Einkommen und Heiraten (bzw. verheiratete sein) hoch korrelieren. Daher wird sich dein Einkommen erhöhen, wenn du heiratest. $\square$
+:::
 
 
 
 
-
->   Studien zeigen, dass Leute, die sich beeilen, zu spät zu ihrer Besprechung kommen. Daher lieber nicht beeilen, oder du kommst zu spät zu deiner Besprechung.
+:::{#exm-besprechung}
+Studien zeigen, dass Leute, die sich beeilen, zu spät zu ihrer Besprechung kommen. Daher lieber nicht beeilen, oder du kommst zu spät zu deiner Besprechung. $\square$
+:::
 
 
 
@@ -546,7 +548,7 @@ estimate_prediction(m1, dons_new_house) |> display()
 
 
 
-Mit 4 statt 2 Schlafzimmer steigt der Wert auf 250k, laut `m1`, @fig-m1.
+Mit 4 statt 2 Schlafzimmer steigt der Wert auf 250k, laut `m1`, s. @fig-m1.
 
 
 >   "Volltreffer! Jetzt verdien ich 100 Tausend mehr! 🤑 Ich bin der Größte!"
@@ -705,6 +707,13 @@ Don!"
 [Quellcode](https://github.com/sebastiansauer/QM2-Folien/blob/main/Themen/children/Hauspreis-stratifizieren.Rmd)
 
 
+
+::: callout-note
+Aussagen, gleich ob sie statistischer, wissenshaftlicher oder sonstiger Couleur sind, können immer nur dann richtig sein, wenn ihre Annahmen richtig sind. 
+Behauptet etwa ein Modell, dass der Wert einer Immobilie steigt, wenn man mehr Zimmer hat, so ist das kein Naturgesetz, sondern eine Aussage, die nur richtig sein kann, wenn das zugrundeliegende Modell richtig ist. $\square$
+:::
+
+
 ### Kontrollieren von Variablen
 
 
@@ -794,17 +803,21 @@ print(km1)
 ```
 
 Wenn dieses Kausalmodell stimmt, findet man eine *Scheinkorrelation* zwischen `price` und `bedrooms`.
-
 Eine Scheinkorrelation ist ein Zusammenhang, der *nicht* auf eine kausalen Einfluss beruht.
-
-`d_connected` heißt, dass die betreffenden Variablen "verbunden" sind durch einen gerichteten (`d` wie directed) Pfad, durch den die Assoziation (Korrelation) wie durch einen Fluss fließt 🌊. `d_separated` heißt, dass sie nicht `d_connected` sind.
+`d_connected` heißt, dass die betreffenden Variablen "verbunden" sind durch einen gerichteten (`d` wie directed) Pfad, durch den die Assoziation (Korrelation) wie durch einen Fluss fließt 🌊. `d_separated` heißt, dass sie *nicht* `d_connected` sind.
 
 
 ### `m2` kontrolliert die Konfundierungsvariable `livingArea`
 
 
-:::{#def-confound}
+:::{#exm-confound1}
+In @fig-km1 ist `living area` eine Konfundierungsvariable für den Zusammenhang von `bedrooms` und `price`. $\square$
+:::
 
+:::{#def-confound}
+### Konfundierungsvariable
+Eine Konfundierungsvariable (Konfundierer) ist eine Variable, die den Zusammenhang zwischen UV und AV verzerrt, wenn sie nicht kontrolliert wird [@vanderweele_definition_2013]. $\square$
+:::
 
 Wenn das Kausalmodell stimmt, dann zeigt `m2` den kausalen Effekt von `livingArea`.
 
@@ -833,7 +846,15 @@ confounder_triangle(x = "bedrooms",
   theme_dag()
 ```
 
-Durch das Kontrollieren ("adjustieren"), sind `bedrooms` und `price` nicht mehr korreliert, nicht mehr `d_connected`, sondern jetzt `d_separeted`.
+
+
+Durch das Kontrollieren ("adjustieren"), sind `bedrooms` und `price` nicht mehr korreliert, nicht mehr `d_connected`, sondern jetzt `d_separated`.
+
+
+:::{#def-blocking}
+### Blockieren
+Das Kontrollieren eines Konfundierers (wie `living_area`) "blockt" den betreffenden Pfad, führt also dazu, dass über diesen Pfad keine Assoziation (z.B. Korrelation) zwischwen UV (`bedrooms`) und AV (`price`) mehr vorhanden ist. UV und AV sind dann `d_separated` ("getrennt"). $\square$
+:::
 
 
 ### Konfundierer kontrollieren
@@ -843,7 +864,7 @@ Gehen wir in diesem Abschnitt davon aus, dass `km1` richtig ist.
 
 ```{r}
 #| echo: false
-source("https://raw.githubusercontent.com/sebastiansauer/QM2-Folien/41bc43754169f64abd6ad98f8d52b5c0e23eda80/R-Code/controlling-confounder.R")
+source("R-Code/controlling-confounder.R")
 ```
 
 
@@ -876,10 +897,7 @@ Außerdem sieht man im rechten Teildiagramm, dass es ein Kontrollieren der Varia
 
 
 
-[Quellcode](https://github.com/sebastiansauer/QM2-Folien/blob/main/Themen/children/Konfundierer-kontrollieren.Rmd)
-
-
-::: .callout-important
+::: callout-important
 Kontrollieren Sie Konfundierer. $\square$
 :::
 
@@ -916,6 +934,8 @@ Insgesamt gibt es zwei Kausaleinflüsse von `a` auf `p`:
     - $a \rightarrow b \rightarrow p$
 
 Man nennt die mittlere Variable einer Wirkkette auch einen *Mediator* und den Pfad von der UV (`a`) über den Mediator (`b`) zur AV (`p`) auch *Mediation*, s. @fig-m1-mediation.
+
+
 
 
 
@@ -1068,15 +1088,18 @@ $b \indep a$: `bedrooms` sind unabhängig von `livingArea` (`a`)
 
 Was sind DAGs? Wir haben in diesem Kapitel schon viele Beispiele gesehen, z.B.  @fig-km3.
 
-- DAGs sind eine bestimmte Art von Graphen zur Analyse von Kausalstrukturen.
 
-- Ein *Graph* besteht aus Knoten (Variablen) und Kanten (Linien), die die Knoten verbinden.
+:::{#def-dag}
+### DAG
 
-- DAGs sind *gerichtet*; die Pfeile zeigen immer in eine Richtung (und zwar von Ursache zu Wirkung).
+DAGs sind eine bestimmte Art von Graphen zur Analyse von Kausalstrukturen.
+Ein *Graph* besteht aus Knoten (Variablen) und Kanten (Linien), die die Knoten verbinden.
+DAGs sind *gerichtet*; die Pfeile zeigen immer in eine Richtung (und zwar von Ursache zu Wirkung).
+DAGs sind *azyklisch*; die Wirkung eines Knoten darf nicht wieder auf ihn zurückführen. $\square$
+:::
 
-- DAGs sind *azyklisch*; die Wirkung eines Knoten darf nicht wieder auf ihn zurückführen. 
 
-- Ein *Pfad* ist ein Weg durch den DAG, von Knoten zu Knoten über die Kanten, unabhängig von der Pfeilrichtung.
+Ein *Pfad* ist ein Weg durch den DAG, von Knoten zu Knoten über die Kanten, unabhängig von der Pfeilrichtung.
 
 
 
@@ -1253,7 +1276,9 @@ confounder_triangle(x = "Schoki",
 
 ### Kein Zusammenhang von Intelligenz und Schönheit (?)
 
-Gott ist gerecht (?)
+[Gott ist gerecht (?)](https://twitter.com/TheTweetOfGod/status/1462594155176026123)
+
+
 
 Zumindest findet sich in folgenden Daten kein Zusammenhang von Intelligenz (`talent`) und Schönheit (`looks`),
 wie @fig-iq-schoen illustriert.
@@ -1298,8 +1323,6 @@ p_coll1 <-
 p_coll1
 ```
 
-[Gott ist gerecht (?)](https://twitter.com/TheTweetOfGod/status/1462594155176026123)
-
 
 
 
@@ -1337,7 +1360,7 @@ Wie kann das sein?
 
 
 
-## DAG zur Rettung 
+### DAG zur Rettung 
 
 🦹 🦸
 
@@ -1398,14 +1421,24 @@ ggdag_adjust(coll1_dag, var = "date") +
 
 
 
-Als *Kollision* (Kollisionsverzerrung, Auswahlverzerrung, engl. collider) bezeichnet man einen DAG, bei dem eine Wirkung zwei Ursachen hat (eine gemeinsame Wirkung zweier Ursachen).
-Kontrolliert man  die *Wirkung* `m`, so entsteht eine Scheinkorrelation zwischen den Ursachen `x` und `y`.
-Kontrolliert man die Wirkung nicht, so entsteht keine Scheinkorrelation zwischen den Ursachen, s. @fig-coll1-dag, vgl. @rohrer_thinking_2018.
+:::{#def-collision}
+### Kollision
+Als *Kollision* (Kollisionsverzerrung, Auswahlverzerrung, engl. collider) bezeichnet man einen DAG, bei dem eine Wirkung zwei Ursachen hat (eine gemeinsame Wirkung zweier Ursachen) [@pearl_causal_2016; p. 40]0 $\square$
+:::
+.
+Kontrolliert man  die *Wirkung* `m`, so entsteht eine *Scheinkorrelation* zwischen den Ursachen `x` und `y`.
+Kontrolliert man die Wirkung *nicht*, so entsteht *keine Scheinkorrelation* zwischen den Ursachen, s. @fig-coll1-dag, vgl. @rohrer_thinking_2018.
 
 
 ::: callout-important
 Man kann also zu viele oder falsche Prädiktoren einer Regression hinzufügen, so dass die Koeffizienten nicht die kausalen Effekte zeigen, sondern durch Scheinkorrelation verzerrte Werte.
 :::
+
+::: callout-tip
+🙅‍♀️ Kontrollieren Sie keine Kollisionsvariablen. $\square$
+:::
+
+
 
 
 ### Einfaches Beispiel zur Kollision
@@ -1414,12 +1447,15 @@ Man kann also zu viele oder falsche Prädiktoren einer Regression hinzufügen, s
 
 In der Zeitung *Glitzer* werden nur folgende Menschen gezeigt:
 
-- Schöne Menschen
-- Reiche Menschen
+- Schöne Menschen 🪞
+- Reiche Menschen 🤑 
     
 Sehen wir davon aus, dass Schönheit und Reichtum unabhängig voneinander sind.
 
-Wenn ich Ihnen sage, dass Don nicht schön ist, aber in der Glitzer häufig auftaucht, was lernen wir dann über seine finanzielle Situation?^[Don muss reich sein.]
+
+:::{#exr-coll1}
+Wenn ich Ihnen sage, dass Don nicht schön ist, aber in der Glitzer häufig auftaucht, was lernen wir dann über seine finanzielle Situation?^[Don muss reich sein.] $\square$
+:::
 
 
 
@@ -1432,7 +1468,7 @@ Wenn ich Ihnen sage, dass Don nicht schön ist, aber in der Glitzer häufig auft
 
 ### Noch ein einfaches Beispiel zur Kollision
 
->   "So langsam check ich's!" 🧑
+>   "So langsam check ich's!" 🧑^[Super, Don!]
 
 
 
@@ -1957,6 +1993,12 @@ plots(p_conf, p_med, p_coll, p_desc, n_rows = 2)
 
 ### Mediation
 
+
+:::{#def-mediator}
+### Mediator
+Einen Pfad mit drei Knoten (Variablen), die über insgesamt zwei Kanten verbunden sind, wobei die Pfeile von UV zu Mediator und von Mediator zur AV zeigen, nennt man *Mediation*. Der *Mediator* ist die Variable zwischen UV und AV [@pearl_causal_2016; p. 38]. $\square$
+:::
+
 Die *Mediation* (synonym: Wirkkette, Rohr, Kette, chain) beschreibt Pfade, in der die Kanten (eines Pfades) die gleiche Wirkrichtung haben: $x \rightarrow m \rightarrow y$. 
 Anders gesagt: Eine Mediation ist eine Kausalabfolge der Art $x \rightarrow m \rightarrow y$, s. @fig-med1.
 Die Variable in der Mitte $m$ der Kette wird auch *Mediator* genannt,
@@ -1976,6 +2018,15 @@ p_med
 
 Ohne Kontrollieren ist der Pfad offen: Die Assoziation "fließt" den Pfad entlang (in beide Richtungen).
 Kontrollieren blockt (schließt) die Kette (genau wie bei der Gabel).
+
+::: callout-tip
+Kontrollieren Sie den Mediator *nicht*. Der Pfad über den Mediator ist ein "echter" Kausalpfad, keine Scheinkorrelation. $\square$
+:::
+
+::: callout-important
+Das Kontrollieren eines Mediators ist ein Fehler, wenn man am gesamten (totalen) Kausaleffekt von UV zu AV interessiert ist. $\square$
+:::
+
 
 
 Es kann auch angenommen werden, dass der Mediator nicht der einzige Weg von X zu Y ist, s. @fig-part-med.
@@ -2010,7 +2061,11 @@ gg_fancy_dag(dag)
 
 
 
-Ein *Nachfahre* (descendent) ist eine Variable die von einer anderen Variable beeinflusst wird, s. @fig-dag-nachfahre.
+:::{#def-Nachfahre}
+### Nachfahre
+Ein *Nachfahre* (descendent) ist eine Variable die von einer anderen Variable beeinflusst wird, s. @fig-dag-nachfahre. $\square$
+:::
+
 Kontrolliert man einen Nachfahren `d`, so kontrolliert man damit zum Teil den Vorfahren (die Ursache), `m`.
 Der Grund ist, dass `d` Information beinhaltet über `m`.
 Hier wird das Kontrollieren von `d` den Pfad von `x` nach `y` teilweise öffnen, da `m` eine Kollisionsvariable ist.
@@ -2027,11 +2082,13 @@ p_desc
 
 
 
-### Kochrezept zur Analyse von DAGs
+
+
+### Kochrezept zur Analyse von DAGs 👨‍🍳 
 
 Wie kompliziert ein DAG auch aussehen mag, er ist immer aus diesen vier Atomen aufgebaut.
 
-Hier ist ein Rezept, das garantiert, dass Sie welche Variablen Sie kontrollieren sollten und welche nicht:
+Hier ist ein Rezept, das garantiert, dass Sie welche Variablen Sie kontrollieren sollten und welche nicht: 📄 
 
 1. Listen Sie alle Pfade von UV (`X`) zu AV (`Y`) auf.
 2. Beurteilen Sie jeden Pfad, ob er gerade geschlossen oder geöffnet ist.
@@ -2046,6 +2103,9 @@ Hier ist ein Rezept, das garantiert, dass Sie welche Variablen Sie kontrollieren
 UV: $X$, AV: $Y$, drei Covariaten (A, B, C) und ein ungemessene Variable, U
 
 
+::: callout-tip
+Schließen Sie immer offene Hintertüren, um Verzerrungen der Kausaleffekte zu verhinden. $\square$
+:::
 
 
 
