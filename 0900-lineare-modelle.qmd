@@ -67,6 +67,8 @@ Da wir in diesem Kapitel immer mal wieder eine Funktion aus dem R-Paket `{easyst
 ### Begleitvideso
 
 - [Prädiktoren zentrieren](https://youtu.be/3Z1dXPO_MSE)
+- [Post-Verteilung auslesen 1](https://youtu.be/9ZUyN4GUNBY)
+- [ost-Verteilung auslesen 2](https://youtu.be/8NrUQ1_d7vI)
 
 
 ## Post-Verteilung der Regression
@@ -79,9 +81,8 @@ Da wir in diesem Kapitel immer mal wieder eine Funktion aus dem R-Paket `{easyst
 Die (einfache) Regression prüft, inwieweit zwei Variablen, $Y$ und $X$ linear zusammenhängen.
 Je mehr sie zusammenhängen, desto besser kann man $X$ nutzen, um $Y$ vorherzusagen (und umgekehrt).
 Hängen $X$ und $Y$ zusammen, heißt das nicht (unbedingt), dass es einen *kausalen* Zusammenhang zwischen $X$ und $Y$ gibt.
-*Linear* ist ein Zusammenhang, wenn der Zuwachs in $Y$ relativ zu $X$ konstant ist: wenn $X$ um eine Einheit steigt, steigt $Y$ immer um $b$ Einheiten (nicht kausal, sondern deskriptiv gemeint).
-
-[Datenquelle](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv), @mcelreath_statistical_2020.
+*Linear* ist ein Zusammenhang, wenn der Zuwachs in $Y$ relativ zu $X$ konstant ist: wenn $X$ um eine Einheit steigt, steigt $Y$ immer um $b$ Einheiten (nicht kausal, sondern deskriptiv gemeint).^[
+[Datenquelle](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv), @mcelreath_statistical_2020.]
 
 Laden wir die !Kung-Daten und visualisieren wir uns den Zusammenhang zwischen Gewicht (X) und Größe (Y), @fig-kung-zshg.
 
@@ -95,11 +96,15 @@ Kung_path <- "https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/H
 
 d <- read_csv(Kung_path)  
 
-d2 <- 
-  d %>% 
-  filter(age > 18) 
+d2 <- d %>% filter(age > 18) 
 ```
 
+
+:::{#fig-kung-zshg}
+
+
+
+::: {.figure-content}
 
 :::{.panel-tabset}
 
@@ -124,6 +129,13 @@ ggscatter(d2,
 
 
 :::
+:::
+
+
+
+Der Zusammenhang zwischen Gewicht (X) und Größe (Y)
+:::
+
 
 ### Bei jedem Prädiktorwert eine Post-Verteilung für $\mu$
 
@@ -521,16 +533,17 @@ Der Mittelwert $\mu$ für jede Post-Verteilung ergibt sich aus dem linearen Mode
  Die Post-Verteilung berechnet sich auf Basis der Priori-Werte und des Likelihood (Bayes-Formel).
  Wir brauchen Priori-Werte für die Steigung $\beta$ und den Achsenabschnitt $\alpha$ der Regressionsgeraden.
  Außerdem brauchen wir einen Priori-Wert, der die Streuung $\sigma$ der Größe (`height`) angibt; dieser Wert wird als exonentialverteilt angenommen.
- Der Likelihood gibt an, wie wahrscheinlich ein Wert `height` ist, gegeben $\mu$ und $\sigma$.
+ Der Likelihood gibt an, wie wahrscheinlich ein Wert `height` ist, gegeben $\mu$ und $\sigma$. 
+@eq-modm42 stellt die Modelldefinition dar.
 
 
-\begin{align*}
+$$\begin{align*}
 \color{red}{\text{height}_i} & \color{red}\sim \color{red}{\operatorname{Normal}(\mu_i, \sigma)} && \color{red}{\text{Likelihood}} \\
 \color{green}{\mu_i} & \color{green}= \color{green}{\alpha + \beta\cdot \text{weightcentered}_i}  && \color{green}{\text{Lineares Modell} } \\
 \color{blue}\alpha & \color{blue}\sim \color{blue}{\operatorname{Normal}(178, 20)} && \color{blue}{\text{Priori}} \\
 \color{blue}\beta  & \color{blue}\sim \color{blue}{\operatorname{Normal}(0, 10)}  && \color{blue}{\text{Priori}}\\
 \color{blue}\sigma & \color{blue}\sim \color{blue}{\operatorname{Exp}(0.1)}  && \color{blue}{\text{Priori}}
-\end{align*}
+\end{align*}$${#eq-modm42}
 
 
 
@@ -601,11 +614,12 @@ Lies  etwa so:
 \color{blue}\sigma & \color{blue}\sim \color{blue}{\operatorname{Exp}(0.1)}  && \color{blue}{\text{Priori Sigma}}
 \end{align*}
 
-- Parameter sind hypothetische Kreaturen: Man kann sie nicht beobachten, sie existieren nicht wirklich. Ihre Verteilungen nennt man Priori-Verteilungen.
-- $\alpha$ wurde in `m41` als $\mu$ bezeichnet, da wir dort eine "Regression ohne Prädiktoren" berechnet haben.
-- $\sigma$ ist uns schon als Parameter bekannt und behält seine Bedeutung aus dem letzten Kapitel.
-- Da `height` nicht zentriert ist, der Mittelwert von $\alpha$ bei 178 und nicht 0.
-- $\beta$ fasst unser Vorwissen, ob und wie sehr der Zusammenhang zwischen Gewicht und Größe positiv (gleichsinnig) ist.
+Parameter sind hypothetische Kreaturen: Man kann sie nicht beobachten, sie existieren nicht wirklich. Ihre Verteilungen nennt man Priori-Verteilungen.
+$\alpha$ wurde in `m41` als $\mu$ bezeichnet, da wir dort eine "Regression ohne Prädiktoren" berechnet haben.
+$\sigma$ ist uns schon als Parameter bekannt und behält seine Bedeutung aus dem letzten Kapitel.
+Da `height` nicht zentriert ist, der Mittelwert von $\alpha$ bei 178 und nicht 0.
+$\beta$ fasst unser Vorwissen, ob und wie sehr der Zusammenhang zwischen Gewicht und Größe positiv (gleichsinnig) ist.
+Die Anzahl der Prioris entspricht der Anzahl der Parameter des Modells.
 
 
 
@@ -759,8 +773,12 @@ m43a %>%
   head()
 ```
 
-Wir können z.B. ein Lagemaß wie den Median hernehmen, um die "mittlere" Regressionsgerade zu betrachten:
+Wir können z.B. ein Lagemaß wie den Median hernehmen, um die "mittlere" Regressionsgerade zu betrachten.
 
+
+:::{.panel-tabset}
+
+### Mit `ggplot`
 
 ```{r Post-Regression-befragen-6, echo = TRUE, eval = FALSE}
 #| echo: true
@@ -775,17 +793,20 @@ d3 %>%
     color = "blue")
 ```
 
+
+### Mit `easystats`
+
 Einfacher ist die Syntax vielleicht, wenn man die Funktion `estimate_expectation` benutzt, s. @fig-expect-m43a-expect.
 Mit "expectation" sind hier die erwarteten Werte, also die Regressionsgerade, gemeint.
 
 ```{r}
 #| fig-cap: Erwartete Werte des Modell m43a, sprich, die Regressionsgerade
 #| label: fig-expect-m43a-expect
-m43_expect <- estimate_expectation(m43a)
+m43_expect <- estimate_expectation(m43a)   # aus {easystats}
 plot(m43_expect)
 ```
 
-
+:::
 
 
 ### Zentrale Statistiken zu den Parametern
