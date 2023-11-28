@@ -187,16 +187,29 @@ d %>%
 
 Übrigens kann man die Berechnung der Bayes-Box auch automatisieren, s. @tbl-bayes-fun und @lst-bayesfun, z.B. so:^[Alternativ kann man auf die Funktion über das [R-Paket {prada}](https://github.com/sebastiansauer/prada) zugreifen.]
 
+
+Entweder so:
+
+```{r}
+#| eval: false
+source("https://raw.githubusercontent.com/sebastiansauer/prada/master/R/NAME_bayesbox.R") 
+bayesbox(hyps = p_grid, priors = 1, liks = L)
+```
+
+Mit `source` importiert man eine R-Skriptdatei. In diesem Fall steht dort der Code für die Funktion `bayesbox`.
+
+Oder Sie starten das R-Paket, wo die Funktion wohnt:
+
 ```{r}
 #| label: tbl-bayes-fun
 #| tbl-cap: "Eine Bayes-Box 'automatisiert' erstellt, mit Hilfe der Funktion `bayesbox`"
 #| lst-label: lst-bayesfun
 #| lst-cap: Funktion `bayesbox`, auch im Paket `prada` erhältlich
 
-source("https://raw.githubusercontent.com/sebastiansauer/prada/master/R/NAME_bayesbox.R")   # <1>
-bayesbox(hyps = p_grid, priors = 1, liks = L)   # <2>
+library(prada)  # <1>
+bayesbox(hyps = p_grid, priors = 1, liks = L)  # <3>
 ```
-1. Mit `source` importiert man eine R-Skriptdatei. In diesem Fall steht dort der Code für die Funktion `bayesbox`.
+1. Das Paket `prada` steht nicht im Standard-R-App-Store ("CRAN"), sondern auf Github. Sie könnnen es so installieren: `devtools::install_github("sebastiansauer/prada")`.
 2. Die Funktion verhält sich wie eine gewöhnliche Bayes-Box: Bei `hyps` schreibt man die Hypothesen (bzw. Parameterwerte) auf. Bei `priors` die Priori-Werte und bei `liks` die Likelihoods der jeweiligen Hypothesn.
 
 
@@ -824,21 +837,29 @@ Das Quantil von z.B. 25% zeigt die Körpergröße der 25% kleinsten Studentis an
 ```{r QM2-Thema3-Teil1-5}
 #| message: false
 #| echo: true
-speed_gender_height <- read_csv("https://raw.githubusercontent.com/rpruim/OpenIntro/master/data/speed_gender_height.csv")
+# speed_gender_height <- read_csv("https://raw.githubusercontent.com/rpruim/OpenIntro/master/data/speed_gender_height.csv")
+data("speed_gender_height", package = "openintro")  # <1>
 
 height_summary <- 
   speed_gender_height %>% 
-  mutate(height_cm = height*2.54) %>% 
+  mutate(height_cm = height*2.54) %>%  # <2>
   select(height_inch = height, height_cm) %>% 
-  drop_na() %>% 
-  pivot_longer(everything(), names_to = "Einheit", values_to = "Messwert") %>% 
-  group_by(Einheit) %>% 
-  summarise(q25 = quantile(Messwert, prob = .25),
+  drop_na() %>%   # <3>
+  pivot_longer(everything(), names_to = "Einheit", values_to = "Messwert") %>%   # <4>
+  group_by(Einheit) %>%   # <5>
+  summarise(q25 = quantile(Messwert, prob = .25),  # <6>
             q50 = quantile(Messwert, prob = .5),
             q75 = quantile(Messwert, prob = .75))
 
 height_summary
 ```
+1. Daten importieren
+2. Inch in Zentimeter umrechnen
+3. Zeilen mit fehlenden Werten löschen
+4. In die Langform pivotieren
+5. Gruppieren nach Einheit (Inch, Zentimeter)
+6. Quantile berechnen  (Q1, Q2, Q3)
+
 
 Das 25%-Quantil nennt man auch 1. Quartil; das 50%-Quantil (Median) auch 2. Quartil und das 75%-Quantil auch 3. Quartil.
 

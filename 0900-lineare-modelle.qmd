@@ -64,11 +64,31 @@ theme_set(theme_modern())
 Da wir in diesem Kapitel immer mal wieder eine Funktion aus dem R-Paket `{easystats}` verwenden: [Hier](https://easystats.github.io/easystats/articles/list_of_functions.html) finden Sie eine Übersicht aller Funktionen des Pakets.^[Da es viele Funktionen sind, bietet es sich an mit *Strg-F* auf der Webseite nach Ihrem Lieblingsbefehl zu suchen.]
 
 
+### Benötigte Daten
+
+In diesem Kapitel benötigen wir den Datensatz zu den !Kung-Leuten, `Howell1a`, @mcelreath_statistical_2020.
+Sie können ihn [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv) herunterladen.
+
+{{< downloadthis data/Howell1a.csv >}}
+
+```{r Post-Regression-2}
+#| fig-asp: 0.5
+#| message: false
+Kung_path <- "https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv"  # <1>
+
+d <- read_csv(Kung_path)   # <2>
+
+d2 <- d %>% filter(age > 18)  # <3>
+```
+1. Pfad zum Datensatz; Sie müssen online sein, um die Daten herunterzuladen.
+2. Daten einlesen
+3. Auf Erwachsene Personen begrenzen (d.h. Alter > 18)
+
 ### Begleitvideso
 
 - [Prädiktoren zentrieren](https://youtu.be/3Z1dXPO_MSE)
 - [Post-Verteilung auslesen 1](https://youtu.be/9ZUyN4GUNBY)
-- [ost-Verteilung auslesen 2](https://youtu.be/8NrUQ1_d7vI)
+- [Post-Verteilung auslesen 2](https://youtu.be/8NrUQ1_d7vI)
 
 
 ## Post-Verteilung der Regression
@@ -87,17 +107,6 @@ Hängen $X$ und $Y$ zusammen, heißt das nicht (unbedingt), dass es einen *kausa
 Laden wir die !Kung-Daten und visualisieren wir uns den Zusammenhang zwischen Gewicht (X) und Größe (Y), @fig-kung-zshg.
 
 
-```{r Post-Regression-2}
-#| fig-asp: 0.5
-#| message: false
-#| label: fig-kung-zshg
-#| fig-cap: Der Zusammenhang von Größe und Gewicht im !Kung-Datensatz
-Kung_path <- "https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv"
-
-d <- read_csv(Kung_path)  
-
-d2 <- d %>% filter(age > 18) 
-```
 
 
 :::{#fig-kung-zshg}
@@ -134,196 +143,8 @@ ggscatter(d2,
 
 
 Der Zusammenhang zwischen Gewicht (X) und Größe (Y)
+
 :::
-
-
-### Bei jedem Prädiktorwert eine Post-Verteilung für $\mu$
-
-
-Komfort pur: Unser Modell erlaubt uns für jeden beliebigen Wert des Prädiktors eine Post-Verteilung (von $\mu$) zu berechnen.
-
-Hier am Beispiel von `m42`, s. @fig-post42.
-
-```{r m42-read-from-disk, echo = FALSE}
-#| echo: false
-#| output: "hide"
-m42 <- read_rds(paste0(here::here(),"/objects/m42.rds"))
-
-m42_post <- as_tibble(m42)
-names(m42_post) <- c("mu", "sigma")
-```
-
-
-
-
-```{r Post-Regression-10}
-#| echo: false
-
-plot_post_42 <- 
-  m42_post %>% 
-  ggplot() +
-  aes(x = mu) +
-  geom_density(fill = "grey60") +
-  labs(x = expression(mu),
-       title = TeX("Posteriori-Verteilung für $\\mu$, m42")) +
-  scale_y_continuous(breaks = NULL)
-```
-
-
-```{r Plot-condition}
-#| echo: false
-lm1 <- lm(height ~ weight, data = d2)
-
-d_pred <-
-  tibble(weight = c(40, 45, 50, 55),
-         height = predict(lm1, newdata = data.frame(weight)))
-
-
-
-plot_condition <- 
-  d2 %>% 
-  #select(weight, height) %>% 
-  #drop_na() %>% 
-  ggplot(
-       aes(x = weight, y = height)) +
-  geom_point(alpha = .7) +
-  geom_smooth(method = "lm") +
-  geom_point(aes(color = as.factor(weight)), data = d_pred, size = 5, alpha = .5) +
-  labs(color = "Gewicht",
-       x = "Gewicht (weight)",
-       y = "Größe (height)") +
-  scale_color_okabeito()
-
-```
-
-```{r m3}
-#| echo: false
-#| results: "hide"
-#| cache: true
-
-d2 <-
-  d2 %>% 
-  mutate(weight_c = weight - mean(weight))
-
-m43 <- 
-  stan_glm(height ~ weight_c, 
-           prior = normal(0, 10),
-           prior_intercept = normal(178, 20),  # mu
-           prior_aux = exponential(0.1),  # sigma
-           refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
-           data = d2)
-
-m43_prior_pred <-
-    stan_glm(height ~ weight_c, 
-           prior_intercept = normal(178, 20),  # mu
-           prior_aux = exponential(0.1),  # sigma
-           refresh = FALSE, 
-           prior_PD = TRUE,
-           data = d2)
-
-stan_glm(height ~ weight_c, 
-           prior = normal(0, 10),
-           prior_intercept = normal(0, 20),  # mu
-           prior_aux = exponential(0.1),  # sigma
-           refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
-           data = d2)
-
-m43a_prior_pred <-
-    stan_glm(height ~ weight_c, 
-           prior_intercept = normal(0, 20),  # mu
-           prior_aux = exponential(0.1),  # sigma
-           refresh = FALSE, 
-           prior_PD = TRUE,
-           data = d2)
-```
-
-
-
-
-
-
-```{r objects-m43-m43a-to-disk, eval = FALSE}
-#| eval: false
-#| echo: false
-# print(m43)
-# summary(m43_prior_pred)
-# write_rds(m43, "objects/m43.rds")
-# write_rds(m43a, "objects/m43a.rds")
-```
-
-
-
-
-```{r m43-plot}
-#| echo: false
-
-nd <- tibble(
-  weight_c = c(-5, 0, +5, 10)
-)
-
-ppv_m43 <- 
-  posterior_predict(m43, , newdata = nd) %>% 
-  as_tibble() %>% 
-  pivot_longer(everything(), 
-               names_to = "weight_condition",
-               values_to = "h") %>% 
-  mutate(weight =
-           case_when(weight_condition == 1 ~ 40,
-                     weight_condition == 2 ~ 45,
-                     weight_condition == 3 ~ 50,
-                     weight_condition == 4 ~ 55
-                     )) %>% 
-  mutate(weight = as.factor(weight))
-
-
-
-ppv_m43_summary <-
-  ppv_m43 %>% 
-  group_by(weight) %>% 
-  summarise(m = mean(h),
-            s = sd(h))
-
-
-post_at_plot <-
-  ppv_m43 %>% 
-  ggplot() +
-  aes(x = h) +
-  geom_density(aes(fill = weight)) +
-  facet_wrap(~ weight, nrow = 1, scales = "free") +
-  scale_y_continuous(breaks = NULL) +
-  labs(
-       caption = "Horizontale Balken zeigen MW±2sd",
-       x = "Größe",
-       y = "Post-Wskt") +
-  geom_point(data = ppv_m43_summary,
-             aes(x = m,
-                 y = 0),
-             size = 2, color = "blue", alpha = .5) +
-  geom_segment(data = ppv_m43_summary,
-               aes(x = m-2*s,
-                   xend = m+2*s),
-               y = 0,
-               yend = 0,
-               color = "blue",
-               alpha = .5,
-               linewidth = 2) +
-  scale_x_continuous(breaks = c(140, 160)) +
-  scale_fill_okabeito()
-```
-
-
-
-```{r Post-Regression-12, out.width="100%", fig.width=9}
-#| echo: false
-#| fig-asp: 1
-#| label: fig-post42
-#| fig-cap: "Für jeden beliebigen Prädiktorwert kann man eine Post-Verteilung bekommen. A: Regressionsmodell mit einigen ausgewählten Gewichtswerten. B: Für jeden beliebigen Gewichtswert bekommt man eine Post-Verteilung"
-
-
-plots(plot_condition, post_at_plot, n_rows = 2, tags = "A")
-```
-
-
 
 
 
@@ -336,7 +157,7 @@ rm(d2)
 ```
 
 
-[Datenquelle](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv)
+Die Daten können Sie [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv) herunterladen.
 
 
 @tbl-kung1 zeigt die zentralen deskriptiven Statistiken zum !Kung-Datensatz.
@@ -345,7 +166,7 @@ rm(d2)
 #| echo: true
 #| eval: true
 #| results: hide
-Kung_path <- "https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv"  
+Kung_path <- "data/Howell1a.csv"  
 d <- read_csv(Kung_path)  
 
 d2 <- d %>% filter(age > 18)
@@ -944,6 +765,10 @@ auf ein 90%- oder 89%-Intervall auszuweichen, aufgrund der besseren numerischen 
 
 
 
+:::{.panel-tabset}
+
+### 10
+
 Die ersten 10 Stichproben:
 
 ```{r Post-Regression-befragen-10, echo = TRUE}
@@ -959,6 +784,7 @@ d3 %>%
     alpha = .3)
 ```
 
+## 100
 
 Die ersten 100 Stichproben:
 
@@ -975,6 +801,8 @@ d3 %>%
     alpha = .1)
 ```
 
+
+### 1000
 
 Die ersten `1e3` Stichproben:
 
@@ -993,14 +821,18 @@ d3 %>%
 
 
 
+### 1000000
 
-Die ersten 1000000 ... okay, lassen wir es gut sein^[Im Standard beschert uns `stan_glm()` 4000 Stichproben.].
+Die ersten 1000000^[1e6] ... okay, lassen wir es gut sein^[Im Standard beschert uns `stan_glm()` 4000 Stichproben.].
+
+:::
 
 
-
-Einfacher ist die Visualisierung mit `estimate_expectation`:
+Einfacher ist die Visualisierung mit `estimate_expectation`, s. @fig-m43a-estimate-expectation.
 
 ```{r}
+#| fig-cap: Schätzbereich für die bedingten mittleren Körpergröße, also die Regressionsgerade mit Unsicherheitsintervall
+#| label: fig-m43a-estimate-expectation
 estimate_expectation(m43a, seed = 42) %>% plot()
 ```
 
@@ -1008,11 +840,11 @@ estimate_expectation(m43a, seed = 42) %>% plot()
 ### Fragen zu Quantilen des Achsenabschnitts 
 
 :::callout-note
-Zur Erinnerung: Bei einem zentrierten Prädiktor misst der Achsenabschnitt die mittlere Größe.
+Zur Erinnerung: Bei einem zentrierten Prädiktor misst der Achsenabschnitt die mittlere Größe^[$\mu$].
 :::
 
-- Welche mittlere Größe wird mit zu 50%, 90% bzw. 95% Wahrscheinlichkeit nicht überschritten?
-- Welche mittlere Größe mit zu 95% Wskt. nicht unterschritten?
+- Welche mittlere Größe wird mit einer Wahrscheinlichkeit von 50%, 90% bzw. 95% Wahrscheinlichkeit nicht überschritten?
+- Welche mittlere Größe mit Wahrscheinlichkeit von 95% nicht unterschritten?
 - Von wo bis wo reicht der innere 50%-Schätzbereich der mittleren Größe?
 
 
@@ -1117,7 +949,7 @@ Die Wahrscheinlichkeit beträgt `r wskt_klein`.
 <!--   ggplot(aes(x = b)) + -->
 <!--   geom_density() -->
 <!-- ``` -->
-‚
+
 <!-- ] -->
 
 
@@ -1133,6 +965,205 @@ Die Wahrscheinlichkeit beträgt `r wskt_klein`.
 
 
 ## Post-Verteilung bedingt auf einen Prädiktorwert
+
+
+### Bei jedem Prädiktorwert eine Post-Verteilung für $\mu$
+
+
+Komfort pur: Unser Modell erlaubt uns für jeden beliebigen Wert des Prädiktors eine Post-Verteilung (von $\mu$) zu berechnen.
+
+Hier am Beispiel von `m42`, s. @fig-post42.
+
+```{r m42-read-from-disk, echo = FALSE}
+#| echo: false
+#| output: "hide"
+m42 <- read_rds(paste0(here::here(),"/objects/m42.rds"))
+
+m42_post <- as_tibble(m42)
+names(m42_post) <- c("mu", "sigma")
+```
+
+
+
+
+```{r Post-Regression-10}
+#| echo: false
+
+plot_post_42 <- 
+  m42_post %>% 
+  ggplot() +
+  aes(x = mu) +
+  geom_density(fill = "grey60") +
+  labs(x = expression(mu),
+       title = TeX("Posteriori-Verteilung für $\\mu$, m42")) +
+  scale_y_continuous(breaks = NULL)
+```
+
+
+```{r Plot-condition}
+#| echo: false
+lm1 <- lm(height ~ weight, data = d2)
+
+d_pred <-
+  tibble(weight = c(40, 45, 50, 55),
+         height = predict(lm1, newdata = data.frame(weight)))
+
+
+
+plot_condition <- 
+  d2 %>% 
+  #select(weight, height) %>% 
+  #drop_na() %>% 
+  ggplot(
+       aes(x = weight, y = height)) +
+  geom_point(alpha = .7) +
+  geom_smooth(method = "lm") +
+  geom_point(aes(color = as.factor(weight)), data = d_pred, size = 5, alpha = .5) +
+  labs(color = "Gewicht",
+       x = "Gewicht (weight)",
+       y = "Größe (height)") +
+  scale_color_okabeito()
+```
+
+```{r m3}
+#| echo: false
+#| results: "hide"
+#| cache: true
+
+d2 <-
+  d2 %>% 
+  mutate(weight_c = weight - mean(weight))
+
+m43 <- 
+  stan_glm(height ~ weight_c, 
+           prior = normal(0, 10),
+           prior_intercept = normal(178, 20),  # mu
+           prior_aux = exponential(0.1),  # sigma
+           refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
+           data = d2)
+
+m43_prior_pred <-
+    stan_glm(height ~ weight_c, 
+           prior_intercept = normal(178, 20),  # mu
+           prior_aux = exponential(0.1),  # sigma
+           refresh = FALSE, 
+           prior_PD = TRUE,   # THIS LINE MAKES A PRIOR PRED
+           data = d2)
+
+stan_glm(height ~ weight_c, 
+           prior = normal(0, 10),
+           prior_intercept = normal(0, 20),  # mu
+           prior_aux = exponential(0.1),  # sigma
+           refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
+           data = d2)
+
+m43a_prior_pred <-
+    stan_glm(height ~ weight_c, 
+           prior_intercept = normal(0, 20),  # mu
+           prior_aux = exponential(0.1),  # sigma
+           refresh = FALSE, 
+           prior_PD = TRUE,   # THIS LINE MAKES A PRIOR PRED
+           data = d2)
+```
+
+
+
+
+
+
+```{r objects-m43-m43a-to-disk, eval = FALSE}
+#| eval: false
+#| echo: false
+# print(m43)
+# summary(m43_prior_pred)
+# write_rds(m43, "objects/m43.rds")
+# write_rds(m43a, "objects/m43a.rds")
+```
+
+
+
+
+```{r m43-plot}
+#| echo: false
+nd <- tibble(
+  weight_c = c(-5, 0, +5, 10)
+)
+
+m43_post <- 
+  m43 %>% 
+  as_tibble()
+
+m43_post <- 
+m43_post |> 
+  mutate(mu_at_45 = `(Intercept)`,
+         mu_at_40 = mu_at_45 - 5 * weight_c,
+         mu_at_50 = mu_at_45 + 5 * weight_c,
+         mu_at_55 = mu_at_45 + 10 * weight_c)
+
+
+m43_post_long <-
+  m43_post |> 
+  select(starts_with("mu_at_")) |> 
+  pivot_longer(everything(),
+               names_to = "Gewicht",
+               values_to = "h")
+
+m43_post_long_summary <-
+  m43_post_long |> 
+  group_by(Gewicht) |> 
+  summarise(
+    m = mean(h),
+    s = sd(h)) |> 
+  mutate(
+    ci_low = m - 2*s,
+    ci_high = m + 2*s)
+```
+
+
+```{r}
+#| echo: false
+p_post_at <-
+  m43_post_long %>% 
+  ggplot() +
+  aes(x = h) +
+  geom_density(aes(fill = Gewicht)) +
+  facet_wrap(~ Gewicht, nrow = 1, scales = "free") +
+  scale_y_continuous(breaks = NULL) +
+  labs(
+       caption = "Horizontale Balken zeigen MW±2sd",
+       x = "Größe",
+       y = "Post-Wskt") +
+  geom_point(data = m43_post_long_summary,
+             aes(x = m,
+                 y = 0),
+             size = 2, color = "blue", alpha = .5) +
+  geom_segment(data = m43_post_long_summary,
+               aes(x = m-2*s,
+                   xend = m+2*s),
+               y = 0,
+               yend = 0,
+               color = "blue",
+               alpha = .5,
+               linewidth = 2) +
+  scale_x_continuous(breaks = NULL) +
+  scale_fill_okabeito()
+```
+
+
+
+```{r Post-Regression-12, out.width="100%", fig.width=9}
+#| echo: false
+#| fig-asp: 1
+#| label: fig-post42
+#| fig-cap: "Für jeden beliebigen Prädiktorwert kann man eine Post-Verteilung bekommen. A: Regressionsmodell mit einigen ausgewählten Gewichtswerten. B: Für jeden beliebigen Gewichtswert bekommt man eine Post-Verteilung"
+
+
+plots(plot_condition, p_post_at, n_rows = 2, tags = "A")
+```
+
+
+
+
 
 
 ### Visualisierung
@@ -1192,7 +1223,7 @@ wie groß wohl eine Person mit 50 kg im Mittelwert sein wird und wie (un)gewiss 
 
 
 ```{r mu-at-50, echo = TRUE}
-#| label: tbl-mue-at-50
+#| label: tbl-mu-at-50
 #| tbl-cap: Die Verteilung von mu bedingt auf ein Gewicht von 50kg.
 mu_at_50 <-
   mu_at_45 %>% 
@@ -1892,21 +1923,20 @@ ppv_m43a %>%
 
 
 
-- [Bayes-Ziel1](https://datenwerk.netlify.app/posts/bayes-ziel1/bayes-ziel1)
-- [Bayesmod-bestimmen01](https://datenwerk.netlify.app/posts/bayesmod-bestimmen01/bayesmod-bestimmen01)
-- [Likelihood2](https://datenwerk.netlify.app/posts/likelihood2/likelihood2)
-- [Post-befragen1](https://datenwerk.netlify.app/posts/post-befragen1/post-befragen1)
-- [Postvert-Regr-01](https://datenwerk.netlify.app/posts/postvert-regr-01/postvert-regr-01)
-- [regression1a](https://datenwerk.netlify.app/posts/regression1a/regression1a.html)
-- [Regression2](https://datenwerk.netlify.app/posts/regression2/regression2)
-- [Bed-Post-Wskt1](https://datenwerk.netlify.app/posts/bed-post-wskt1/bed-post-wskt1)
-- [Priorwahl1](https://datenwerk.netlify.app/posts/priorwahl1/priorwahl1)
-- [Bayesmod-bestimmen02
-](https://datenwerk.netlify.app/posts/bayesmod-bestimmen02/bayesmod-bestimmen02)
-- [Aussagen-einfache-Regr](https://datenwerk.netlify.app/posts/aussagen-einfache-regr/aussagen-einfache-regr)
-- [Likelihood-identifizieren](https://datenwerk.netlify.app/posts/likelihood-identifizieren/likelihood-identifizieren)
-- [Priorwahl2](https://datenwerk.netlify.app/posts/priorwahl2/priorwahl2)
-- [penguins-stan-01](https://datenwerk.netlify.app/posts/penguins-stan-01/penguins-stan-01.html)
+1. [Bayes-Ziel1](https://datenwerk.netlify.app/posts/bayes-ziel1/bayes-ziel1)
+2. [Bayesmod-bestimmen01](https://datenwerk.netlify.app/posts/bayesmod-bestimmen01/bayesmod-bestimmen01)
+3. [Likelihood2](https://datenwerk.netlify.app/posts/likelihood2/likelihood2)
+4. [Post-befragen1](https://datenwerk.netlify.app/posts/post-befragen1/post-befragen1)
+5. [Postvert-Regr-01](https://datenwerk.netlify.app/posts/postvert-regr-01/postvert-regr-01)
+6. [regression1a](https://datenwerk.netlify.app/posts/regression1a/regression1a.html)
+7. [Regression2](https://datenwerk.netlify.app/posts/regression2/regression2)
+8. [Bed-Post-Wskt1](https://datenwerk.netlify.app/posts/bed-post-wskt1/bed-post-wskt1)
+9. [Priorwahl1](https://datenwerk.netlify.app/posts/priorwahl1/priorwahl1)
+10. [Bayesmod-bestimmen02](https://datenwerk.netlify.app/posts/bayesmod-bestimmen02/bayesmod-bestimmen02)
+11. [Aussagen-einfache-Regr](https://datenwerk.netlify.app/posts/aussagen-einfache-regr/aussagen-einfache-regr)
+12. [Likelihood-identifizieren](https://datenwerk.netlify.app/posts/likelihood-identifizieren/likelihood-identifizieren)
+13. [Priorwahl2](https://datenwerk.netlify.app/posts/priorwahl2/priorwahl2)
+14. [penguins-stan-01](https://datenwerk.netlify.app/posts/penguins-stan-01/penguins-stan-01.html)
 
 
 
