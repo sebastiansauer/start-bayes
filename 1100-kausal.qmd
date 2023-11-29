@@ -33,6 +33,32 @@ library(ggdag)
 theme_set(theme_modern())
 ```
 
+### Daten  {#sec-kausal-daten}
+
+
+Wir nutzen den Datensatz [Saratoga County](https://vincentarelbundock.github.io/Rdatasets/csv/mosaicData/SaratogaHouses.csv); s. @tbl-saratoga.
+Hier gibt es eine 
+[Beschreibung des Datensatzes](https://vincentarelbundock.github.io/Rdatasets/doc/mosaicData/SaratogaHouses.html).
+
+{{< downloadthis data/SaratogaHouses.csv >}}
+
+Sie können ihn entweder über die Webseite herunterladen:
+
+```{r data-saratoga, echo = TRUE}
+#| eval: false
+SaratogaHouses_path <- "https://vincentarelbundock.github.io/Rdatasets/csv/mosaicData/SaratogaHouses.csv"
+
+d <- read.csv(SaratogaHouses_path)
+```
+
+Oder aber über das Paket `mosaic` importieren:
+
+```{r}
+data("SaratogaHouses", package = "mosaicData")
+d <- SaratogaHouses  # kürzerer Name, das ist leichter zu tippen
+```
+
+
 
 ### Lernziele
 
@@ -48,6 +74,24 @@ Sie können ...
 ### Begleitliteratur
 
 Dieses Kapitel vermittelt die Grundlagen der Kausalinferenz mittels graphischer Modelle. Ähnliche Darstellungen wie in diesem Kapitel findet sich bei @rohrer_thinking_2018.
+
+
+### Einstieg
+
+:::{.exm-storks}
+### Von Störchen und Babies
+Kennen Sie die Geschichte von Störchen und Babies? Ich meine nicht die aus dem Biologieunterricht in der fünften Klasse, sondern in einem statistischen Zusammenhang.
+Was war da noch mal die Moral von der Geschichte?^[Nur weil die Variablen `Anzahl_Stoerche` und `Anzahl_Babies` korreliert sind, heißt das nicht, dass das eine die Ursache des anderen sein muss.] $\square$
+:::
+
+:::{.exm-regr-nicht-kausal}
+### Erlaubt eine Regressionsanalyse Kausalschlüsse?
+Findet man in einer Regressionsanalyse einen "Effekt", also ein Regressionsgewicht ungleich Null, heißt das dann, dass die UV die Ursache der AV ist?^[Nein]
+Erklären Sie diesen Sachverhalt genauer. $\square$
+:::
+
+
+
 
 
 ## Statistik, was soll ich tun?
@@ -386,21 +430,10 @@ dass es keine Konfundierung gibt.
 ### Datensatz 'Hauspreise im Saratoga County'
 
 
-Wir nutzen den Datensatz [Saratoga County](https://vincentarelbundock.github.io/Rdatasets/csv/mosaicData/SaratogaHouses.csv); s. @tbl-saratoga.
-Hier gibt es eine 
-[Beschreibung des Datensatzes](https://vincentarelbundock.github.io/Rdatasets/doc/mosaicData/SaratogaHouses.html).
+📺 [Don und Angie](https://www.youtube.com/watch?v=LslpcT8aosI)
 
+Importieren Sie den Datensatz `SaratogaHouses`, s. @sec-kausal-daten.
 
-```{r data-saratoga, echo = TRUE}
-d_path <- "https://vincentarelbundock.github.io/Rdatasets/csv/mosaicData/SaratogaHouses.csv"
-```
-
-
-
-```{r read-data, echo = FALSE}
-#| message: false
-d <- data_read(d_path)  # aus easystats
-```
 
 ```{r}
 #| echo: false
@@ -1269,6 +1302,7 @@ confounder_triangle(x = "Schoki",
 
 
 
+📺 [Kollision](https://www.youtube.com/watch?v=RymOFwVU3PQ)
 
 
 
@@ -2118,6 +2152,9 @@ Hier ist ein Rezept, das garantiert, dass Sie welche Variablen Sie kontrollieren
 
 ## Schließen Sie die Hintertür (wenn möglich)!, `bsp1`
 
+
+📺 [Hintertür schließen](https://www.youtube.com/watch?v=Hns1UIYKTds)
+
 UV: $X$, AV: $Y$, drei Covariaten (A, B, C) und ein ungemessene Variable, U
 
 
@@ -2227,7 +2264,31 @@ impliedConditionalIndependencies(dag_6.2)
 
 ## Fazit
 
+### Ausstieg
 
+📺 [Musterlösung für eine DAG-Prüfungsaufgabe](https://www.youtube.com/watch?v=lHUEURFjW78)
+
+📺 [Musterlösung für schwierige DAG-Prüfungsaufgaben](https://www.youtube.com/watch?v=5HKmOdzuDXw)
+
+:::{#exm-pmi-kausal1}
+### PMI zum heutigen Stoff
+Der Kreativitätsforscher Edward de Bono hat verschiedene "Denkmethoden" vorgestellt, die helfen sollen, Probleme besser zu lösen.
+Eine Methode ist die "PMI-Methode". PMI steht für *Plus*, *Minus*, *Interessant*. Bei Plus und Minus soll man eine Bewertung von Positiven bzw. Negativen bzgl. eines Sachverhaltes anführen. Bei *Interessant* verzichtet man aber explizit auf eine Bewertung (im Sinne von "gut" oder "schlecht") und fokussiert sich auf Interessantes, Überraschendes, Bemerkenswertes (vgl. @DeBono1974).
+
+Führen Sie die PMI-Methode zum heutigen Stoff durch!
+
+1. Plus: Was fanden Sie am heutigen Stoff gut, sinnvoll, nützlich?
+2. Minus: Was finden Sie am heutigen Stoff nicht gut, sinvoll, nützlich?
+3. Interessant: Was finden Sie am heutigen Stoff bemerkenswert, interessant, nachdenkenswert?
+
+Reichen Sie die Antworten an der von der Lehrkraft angezeigten Stelle ein! $\square$
+:::
+
+
+### Zusammenfassung
+
+
+📺 [Kausalmodelle überprüfen](https://www.youtube.com/watch?v=JEHgAJEdIa0)
 
 Wie (und sogar ob) Sie statistische Ergebnisse (z.B. eines Regressionsmodells) interpretieren können, hängt von der *epistemologischen Zielrichtung* der Forschungsfrage ab:
 
@@ -2240,7 +2301,7 @@ Entgegen der verbreiteten Annahme ist es falsch, möglichst viele Prädiktoren i
 Kenntnis der "kausalen Atome" ist Voraussetzung zur Ableitung von Kausalschlüsse in Beobachtungsstudien.
 
 
-## Vertiefung
+### Vertiefung
 
 An weiterführender Literatur sei z.B. @cummiskey_causal_2020, @lubke_why_2020,
 @pearl_causal_2016 und @dablander_introduction_2020 empfohlen.

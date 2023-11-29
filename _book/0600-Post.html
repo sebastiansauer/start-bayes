@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.478">
+<meta name="generator" content="quarto-1.4.513">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -1821,6 +1821,7 @@ Abbildung&nbsp;6.4: Post-Verteilung mit vielen Stichproben und vielen Parameterw
 <section id="die-post-verteilung-befragen" class="level2" data-number="6.3">
 <h2 data-number="6.3" class="anchored" data-anchor-id="die-post-verteilung-befragen"><span class="header-section-number">6.3</span> Die Post-Verteilung befragen</h2>
 <p>So, jetzt befragen wir die Post-Verteilung.</p>
+<p>📺 <a href="https://www.youtube.com/watch?v=yjCMgf6VkLs">Die Post-Verteilung auslesen</a></p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1840,10 +1841,10 @@ Wichtig
 <li>nach Parameterwerten (Quantilen, q)</li>
 </ol>
 <p>Der Unterschied zwischen beiden Arten von Fragen ist in <a href="#fig-p-vs-q" class="quarto-xref">Abbildung&nbsp;<span>6.5</span></a> schematisch illustriert.</p>
-<div id="fig-p-vs-q" class="quarto-figure quarto-figure-center anchored" width="90%" data-fig-align="center">
+<div id="fig-p-vs-q" class="quarto-figure quarto-figure-center anchored" data-fig-align="center" width="90%">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-p-vs-q-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="img/p-vs-q.png" class="img-fluid quarto-figure-center figure-img" style="width:90.0%">
+<img src="img/p-vs-q.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
 </div>
 <figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-p-vs-q-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;6.5: Fragen nach p vs.&nbsp;Fragen nach q
@@ -2100,8 +2101,8 @@ Wichtig
 <h3 data-number="6.3.3" class="anchored" data-anchor-id="zur-erinnerung-quantile"><span class="header-section-number">6.3.3</span> Zur Erinnerung: Quantile</h3>
 <p>Beispiel: Wie groß sind die Studentis (<a href="https://rdrr.io/cran/openintro/man/speed_gender_height.html">Quelle des Datensatzes</a>)?</p>
 <p>Das Quantil von z.B. 25% zeigt die Körpergröße der 25% kleinsten Studentis an, analog für 50%, 75%, in Inches<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>:</p>
-<div class="cell" data-hash="0600-Post_cache/html/QM2-Thema3-Teil1-5_860a680028cb86eb1904af863a052c17">
-<div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># speed_gender_height &lt;- read_csv("https://raw.githubusercontent.com/rpruim/OpenIntro/master/data/speed_gender_height.csv")</span></span>
+<div class="cell" data-hash="0600-Post_cache/html/QM2-Thema3-Teil1-5_62b554f9ccf0ce164ae13ade9461aad9">
+<div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># speed_gender_height &lt;- read.csv("https://raw.githubusercontent.com/rpruim/OpenIntro/master/data/speed_gender_height.csv")</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-2" class="code-annotation-target"><a href="#annotated-cell-9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"speed_gender_height"</span>, <span class="at">package =</span> <span class="st">"openintro"</span>)</span>
 <span id="annotated-cell-9-3"><a href="#annotated-cell-9-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-9-4"><a href="#annotated-cell-9-4" aria-hidden="true" tabindex="-1"></a>height_summary <span class="ot">&lt;-</span> </span>
@@ -3378,8 +3379,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
         typesetMath(container);
         return container.innerHTML

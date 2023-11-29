@@ -64,7 +64,7 @@ theme_set(theme_modern())
 Da wir in diesem Kapitel immer mal wieder eine Funktion aus dem R-Paket `{easystats}` verwenden: [Hier](https://easystats.github.io/easystats/articles/list_of_functions.html) finden Sie eine Übersicht aller Funktionen des Pakets.^[Da es viele Funktionen sind, bietet es sich an mit *Strg-F* auf der Webseite nach Ihrem Lieblingsbefehl zu suchen.]
 
 
-### Benötigte Daten
+### Benötigte Daten {#sec-data-lm}
 
 In diesem Kapitel benötigen wir den Datensatz zu den !Kung-Leuten, `Howell1a`, @mcelreath_statistical_2020.
 Sie können ihn [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv) herunterladen.
@@ -76,7 +76,7 @@ Sie können ihn [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/ma
 #| message: false
 Kung_path <- "https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv"  # <1>
 
-d <- read_csv(Kung_path)   # <2>
+d <- read.csv(Kung_path)   # <2>
 
 d2 <- d %>% filter(age > 18)  # <3>
 ```
@@ -84,11 +84,29 @@ d2 <- d %>% filter(age > 18)  # <3>
 2. Daten einlesen
 3. Auf Erwachsene Personen begrenzen (d.h. Alter > 18)
 
-### Begleitvideso
 
-- [Prädiktoren zentrieren](https://youtu.be/3Z1dXPO_MSE)
-- [Post-Verteilung auslesen 1](https://youtu.be/9ZUyN4GUNBY)
-- [Post-Verteilung auslesen 2](https://youtu.be/8NrUQ1_d7vI)
+### Einstieg
+
+
+:::{#exm-wdh-lm}
+### Grundkonzepte der linearen Regression
+Fassen Sie die Grundkonzepte der linearen Regression kurz zusammen!
+:::
+
+:::{#exm-wdh-post}
+### Was ist eine Post-Verteilung und wozu ist sie gut?
+Erklären Sie kurz, was eine Post-Verteilung ist - insbesondere im Zusammenhang mit den Koeffizienten einer einfachen Regression - und wozu sie gut ist.
+
+
+### Überblick
+
+Dieses Kapitel stellt ein einfaches Regressionsmodell vor, wo die Körpergröße auf das Gewicht zurückgeführt wird; also ein sehr eingängiges Modell.  
+Neu ist dabei lediglich, dass die Parameter des Modells - $\beta_0$, $\beta_1$, $\sigma$ - jetzt über eine Post-Verteilung verfügen. 
+Die Post-Verteilung ist der Zusatznutzen der Bayes-Statistik.
+Die "normale" Regression hat uns nur einzelne Werte für die Modellparameter geliefert ("Punktschätzer"). 
+Mit Bayes haben wir eine ganz Verteilung pro Parameter.
+
+
 
 
 ## Post-Verteilung der Regression
@@ -157,7 +175,7 @@ rm(d2)
 ```
 
 
-Die Daten können Sie [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv) herunterladen.
+Die Daten können Sie [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv) herunterladen, s. @dec-data-lm.
 
 
 @tbl-kung1 zeigt die zentralen deskriptiven Statistiken zum !Kung-Datensatz.
@@ -268,7 +286,7 @@ Probieren Sie mal die folgende Funktion aus, die Ihnen einen Bericht zur EDA ers
 
 
 Zieht man von jedem Gewichtswert den Mittelwert ab, so bekommt man die Abweichung des Gewichts vom Mittelwert (Prädiktor "zentrieren", engl. to *c*enter).
-Wenn man den Prädiktor (`weight`) zentriert hat, ist der Achsenabschnitt, $\alpha$, einfacher zu verstehen.
+Wenn man den Prädiktor (`weight`) zentriert hat, ist der Achsenabschnitt, $\beta_0$, einfacher zu verstehen.
 In einem Modell mit zentriertem Prädiktor (`weight`) gibt der Achsenabschnitt die Größe einer Person mit durchschnittlichem Gewicht an. 
 Würde man `weight` nicht zentrieren, gibt der Achsenabschnitt die Größe einer Person mit `weight=0` an, was nicht wirklich sinnvoll zu interpretieren ist.
 Vgl. @gelman_regression_2021, Kap. 10.4,  12.2.
@@ -330,6 +348,8 @@ Das schwierigste ist dabei, nicht zu vergessen, dass `d3` die Tabelle mit zentri
 
 ## Modell m43: zentrierter Prädiktor
 
+📺 [Prädiktoren zentrieren](https://youtu.be/3Z1dXPO_MSE)
+
 
 Einige Regressionskoeffizienten, wie der Achsenabschnitt (Intercept) sind schwer zu interpretieren:
 Bei einem (erwachsenen) Menschen mit *Gewicht 0*, was wäre wohl die Körpergröße?
@@ -352,7 +372,7 @@ Durch Zentrieren kann man die Ergebnisse einer Regression einfacher interpretier
 Für jede Ausprägung des Prädiktors (`weight_centered`), $wc_i$, wird eine Post-Verteilung für die abhängige Variable (`height`, $h_i$) berechnet.
 Der Mittelwert $\mu$ für jede Post-Verteilung ergibt sich aus dem linearen Modell (unserer Regressionsformel).
  Die Post-Verteilung berechnet sich auf Basis der Priori-Werte und des Likelihood (Bayes-Formel).
- Wir brauchen Priori-Werte für die Steigung $\beta$ und den Achsenabschnitt $\alpha$ der Regressionsgeraden.
+ Wir brauchen Priori-Werte für die Steigung $\beta_1$ und den Achsenabschnitt $\beta_0$ der Regressionsgeraden.
  Außerdem brauchen wir einen Priori-Wert, der die Streuung $\sigma$ der Größe (`height`) angibt; dieser Wert wird als exonentialverteilt angenommen.
  Der Likelihood gibt an, wie wahrscheinlich ein Wert `height` ist, gegeben $\mu$ und $\sigma$. 
 @eq-modm42 stellt die Modelldefinition dar.
@@ -370,7 +390,7 @@ $$\begin{align*}
 
 :::callout-note
 Der Achsenabschnit (engl. *intercept*) eines Regressionsmodell wird in der Literatur oft mit $\beta_0$ bezeichnet,
-aber manchmal auch mit $\alpha$.
+aber manchmal auch mit $\beta_0$.
 Und manchmal mit noch anderen Buchstaben, das Alphabet ist weit. 🤷
 :::
 
@@ -412,16 +432,16 @@ $$
 $$
 
 
- $\mu$ ist jetzt nicht mehr ein Parameter, der (stochastisch) geschätzt werden muss. $\mu$ wird jetzt (deterministisch) *berechnet*. Gegeben $\alpha$ und $\beta$ ist $\mu$ ohne Ungewissheit bekannt.
+ $\mu$ ist jetzt nicht mehr ein Parameter, der (stochastisch) geschätzt werden muss. $\mu$ wird jetzt (deterministisch) *berechnet*. Gegeben $\beta_0$ und $\beta_1$ ist $\mu$ ohne Ungewissheit bekannt.
  $\text{weight}_i$ ist der Prädiktorwert (`weight`) der $i$ten Beobachtung, also einer !Kung-Person (Zeile $i$ im Datensatz).
 Lies  etwa so:
 
->    "Der Mittelwert $\mu_i$ der $i$ten Person berechnet sich als Summe von $\alpha$ und $\beta$ mal  $\text{weight}_i$".
+>    "Der Mittelwert $\mu_i$ der $i$ten Person berechnet sich als Summe von $\beta_0$ und $\beta_1$ mal  $\text{weight}_i$".
 
 
  $\mu_i$ ist eine lineare Funktion von `weight`.
- $\beta$ gibt den Unterschied in `height` zweier Beobachtung an, die sich um eine Einheit in `weight` unterscheiden (Steigung der Regressionsgeraden).
- $\alpha$ gibt an, wie groß $\mu$ ist, wenn `weight` Null ist (Achsenabschnitt, engl. intercept).
+ $\beta_1$ gibt den Unterschied in `height` zweier Beobachtung an, die sich um eine Einheit in `weight` unterscheiden (Steigung der Regressionsgeraden).
+ $\beta_0$ gibt an, wie groß $\mu$ ist, wenn `weight` Null ist (Achsenabschnitt, engl. intercept).
 
 
 
@@ -436,10 +456,10 @@ Lies  etwa so:
 \end{align*}
 
 Parameter sind hypothetische Kreaturen: Man kann sie nicht beobachten, sie existieren nicht wirklich. Ihre Verteilungen nennt man Priori-Verteilungen.
-$\alpha$ wurde in `m41` als $\mu$ bezeichnet, da wir dort eine "Regression ohne Prädiktoren" berechnet haben.
+$\beta_0$ wurde in `m41` als $\mu$ bezeichnet, da wir dort eine "Regression ohne Prädiktoren" berechnet haben.
 $\sigma$ ist uns schon als Parameter bekannt und behält seine Bedeutung aus dem letzten Kapitel.
-Da `height` nicht zentriert ist, der Mittelwert von $\alpha$ bei 178 und nicht 0.
-$\beta$ fasst unser Vorwissen, ob und wie sehr der Zusammenhang zwischen Gewicht und Größe positiv (gleichsinnig) ist.
+Da `height` nicht zentriert ist, der Mittelwert von $\beta_0$ bei 178 und nicht 0.
+$\beta_1$ fasst unser Vorwissen, ob und wie sehr der Zusammenhang zwischen Gewicht und Größe positiv (gleichsinnig) ist.
 Die Anzahl der Prioris entspricht der Anzahl der Parameter des Modells.
 
 
@@ -452,6 +472,10 @@ Die Anzahl der Prioris entspricht der Anzahl der Parameter des Modells.
 
 ## Die Post-Verteilung befragen
 
+
+📺 [Post-Verteilung auslesen 1](https://youtu.be/9ZUyN4GUNBY)
+
+📺 [Post-Verteilung auslesen 2](https://youtu.be/8NrUQ1_d7vI)
 
 ### m43a
 
@@ -513,7 +537,7 @@ damit erstellt er Stichproben, die die Postverteilung schätzen.
 
 
 
-### Mittelwerte von $\alpha$ und $\beta$ aus der Post-Verteilung
+### Mittelwerte von $\beta_0$ und $\beta_1$ aus der Post-Verteilung
 
 
 
@@ -761,7 +785,7 @@ auf ein 90%- oder 89%-Intervall auszuweichen, aufgrund der besseren numerischen 
 :::
 
 
-### Ungewissheit von $\alpha$ und $\beta$ aus der Post-Verteilung visualisiert
+### Ungewissheit von $\beta_0$ und $\beta_1$ aus der Post-Verteilung visualisiert
 
 
 
@@ -1301,7 +1325,7 @@ mu_at_45 %>%
 
 ### Moment
 
- 🤔 Moment. Dieser Prior, $\beta$ in `m43` erachtet positive und negative Zusammenhang als gleich wahrscheinlich?!
+ 🤔 Moment. Dieser Prior, $\beta_1$ in `m43` erachtet positive und negative Zusammenhang als gleich wahrscheinlich?!
 
 Sind wir wirklich indifferent, ob der Zusammenhang von Gewicht und Größe positiv oder negativ ist? [Nein, sind wir nicht.](https://media.giphy.com/media/daPCSjwus6UR2JxRX1/giphy.gif) 
     
@@ -1312,7 +1336,7 @@ Sind wir wirklich indifferent, ob der Zusammenhang von Gewicht und Größe posit
 
 
 Was denkt [wir](https://media.giphy.com/media/Aausss8uUBIe3bZ3d2/giphy.gif) bzw. unser Golem *apriori* über den Zusammenhang von Größe und Gewicht?
-Um diese Frage zu beantworten ziehen wir Stichproben aus den Priori-Verteilungen des Modells, also für $\alpha$, $\beta$ und $\sigma$.
+Um diese Frage zu beantworten ziehen wir Stichproben aus den Priori-Verteilungen des Modells, also für $\beta_0$, $\beta_1$ und $\sigma$.
 
 
 
@@ -1432,7 +1456,7 @@ Die durchgezogene horizontale Linie gibt die Größe des [größten Menschens, R
 
 
 
-### Ein positiver Wert für $\beta$ ist plausibler
+### Ein positiver Wert für $\beta_1$ ist plausibler
 
 
 #### Oh no
@@ -1918,6 +1942,23 @@ ppv_m43a %>%
   eti(ci = .5)
 ```
 
+
+## Fazit
+
+
+
+### Ausstieg
+
+:::{#exm-ausstieg-post}
+### Fassen Sie das Wesentliche zusammen!
+Schreiben Sie 5-10 Sätze zum Wesentlichen Stoff dieses Kapitels und reichen Sie bei der von Lehrkraft vorgegebenen Stelle ein! $\square$
+:::
+
+
+### Vertiefung
+
+@mcelreath_statistical_2020 bietet eine tiefere Darstellung von linearen Modellen auf Basis der Bayes-Statistik, insbesondere Kapitel 4 daraus vertieft die Themen dieses Kapitels. @kurz_statistical_2021 greift die R-Inhalte von @mcelreath_statistical_2020 auf und setzt sie mit anderen R-Methoden um; ein interessanter Blickwinkel, wenn man tiefer in die R-Umsetzung einsteigen möchte.
+@gelman_regression_2021 bieten ebenfalls viele erhellende Einblicke in das Thema Regressionsanalyse, sowohl aus einem frequentistischen als auch aus einer Bayes-Perspektive.
 
 ## Aufgaben
 
