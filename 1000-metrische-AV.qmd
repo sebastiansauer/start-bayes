@@ -68,6 +68,49 @@ theme_set(theme_modern())
 
 
 
+### Benötigte Daten
+
+
+Wir benötigen in diesem Kapitel folgende Datensätz: `kidiq`, `penguins`.
+
+#### `kidiq`
+
+Den Datensatz `kidiq` importieren Sie am einfachsten aus dem R-Paket `rstanarm`, das Sie schon installiert haben.
+
+```{r}
+data("kidiq", package = "rstanarm")
+```
+
+Alternativ können Sie die Daten [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/kidiq.csv) herunterladen.
+
+{{< downloadthis data/kidiq.csv dname="kidiq.csv" >}}
+
+
+#### `penguins`
+
+Sie können den Datensatz `penguins` entweder via dem Pfad importieren:
+
+
+```{r import-penguins}
+#| results: "hide"
+#| message: false
+#| eval: false
+penguins_url <- "https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv"
+
+penguins <- read.csv(penguins_url)
+```
+
+{{< downloadthis data/penguins.csv dname="penguins.csv" >}}
+
+
+Oder via dem zugehörigen R-Paket:
+
+```{r}
+data("penguins", package = "palmerpenguins")
+```
+
+Beide Möglichkeit sind okay.
+
 
 ### Einstieg
 
@@ -90,7 +133,7 @@ Wenn Sie die Skalenniveaus wissen, können Sie die Forschungsfrage korrekt auswe
 Wir werden hier viele der typischen Forschungsfragen (aus psychologischen und ähnlichen Fragestellungen) mit Hilfe von Regressionsmodellen beantworten. Das hat den Vorteil,
 dass sie nicht viele verschiedene Auswertungsmethoden (t-Test, Varianzanalyse, ...) lernen müssen.
 Außerdem ist die Regressionsanalyse (für viele Situationen) die beste Heransgehensweise, da sie viele Möglichkeiten für Erweiterungen bietet.
-Entsprchend ist das Thema dieses Kapitels gängige Forschungsfragen mit Hilfe der Regressionsanalyse zu untersuchen.
+Entsperchend ist das Thema dieses Kapitels gängige Forschungsfragen mit Hilfe der Regressionsanalyse zu untersuchen.
 Wenn Sie die Grundkonzepte der Regression schon kennen,
 wird Ihnen vieles sehr bekannt vorkommen.
 Natürlich würzen wir das Ganze mit einer ordentlichen Portion Post-Verteilungen aus der Bayes-Küche.
@@ -99,136 +142,12 @@ Allerdings kommt auch dabei nichts Wesentliches mehr hinzu, abgesehen von einer 
 
 
 
-
-## Wissenschaft als Gerechtigkeitsprojekt
-
-
-📺 [Gängige Forschungsfragen mit Bayes-Regression untersuchen](https://youtu.be/WQOmGUyMkxU)
-
-### Meinungen als Grundlage der Konfliktlösung ?
-
-
-:::: {.columns}
-
-::: {.column width="50%"}
-Contra:
-
-- "Ich find Masken doof!"
-- "Impfen ist schädlich!"
-- "Corona gibt's gar nicht!"
-:::
-
-::: {.column width="50%"}
-Pro:
-
-- "Ich find Masken gut!"
-- "Impfen ist nützlich!"
-- "Corona ist gefährlich!"
-:::
-
-::::
-
-
-
-
-
-
-
-
-
-Meinungen kennen kein richtig und kein falsch: Meinungen sind keine Fakten. Konflikte können auf Basis von Meinungen nur schwer gelöst werden.
-
-
-
-
-
-### Fakten als Grundlage der Konfliktlösung
-
-Wissenschaft produziert Fakten.
-Da Fakten universell sind (sein können), ist Wissenschaft potenziell ein Weg zur Konfliktlösung.
-Warum helfen Fakten bei Konflikten?
-
-
-Fakten sind neutral gegenüber Personen.
-Fakten bieten daher eine Chance zur fairen Einigung.
-
-
-Wann ist ein Fakt ein Fakt?
-
-
- Fakten müssen vor allem nachprüfbar sein (Daten, Analyse und Bericht müssen offen zugänglich sein).
-
-
-
-### Beispiel Corona: Datenlage spricht zugunsten der Covid19-Impfung
-
-
-
-
->    The effectiveness of full messenger RNA (mRNA) vaccination (≥14 days after the second dose) was 89% (95% confidence interval [CI], 87 to 91) against laboratory-confirmed SARS-CoV-2 infection leading to hospitalization, 90% (95% CI, 86 to 93) against infection leading to an ICU admission, and 91% (95% CI, 89 to 93) against infection leading to an emergency department or urgent care clinic visit.
-
-@thompson_effectiveness_2021; vgl. auch @nasreen_effectiveness_2021; @pormohammad_efficacy_2021
-
-
-
-Drei Anforderungen an die Qualität von Studien:
-
-1. *handwerklich gut*:  z.B. vergleichbare Gruppen, genaue Messinstrumente
-2. *bescheiden*: die Forschungsfrage wird nur dann selbstbewusst beantwortet, wenn es die handwerkliche Qualität der Studie zulässt. Gibt es eine Vielzahl weiterer Studien mit abweichenden Ergebnissen, wird dies bei der Beantwortung der Forschungsfrage berücksichtigt. 
-3. *transparent*: Das Vorgehen, die Hintergründe und Ziele werden offengelegt. Das betrifft auch möglich Befangenheit oder Interessenskonflikte der Autoren und Autorinnen
-
-
-
-### Psychologische Intervention zur Erhöhung der Impfquote
-
-@dai_behavioural_2021 zeigen den Effekt einer psychologischen Intervention zur Erhöhung der Impfquote, s. @fig-dai.
-
-
->   Here we present two sequential randomized controlled trials to test the effect of behavioural interventions on the uptake of COVID-19 vaccines. ... We designed text-based reminders that make vaccination salient and easy, and delivered them to participants drawn from a healthcare system one day (first randomized controlled trial) (n = 93,354 participants; clinicaltrials number NCT04800965) and eight days (second randomized controlled trial) (n = 67,092 individuals; clinicaltrials number NCT04801524) after they received a notification of vaccine eligibility. The first reminder boosted appointment and vaccination rates within the healthcare system by 6.07 (84%) and 3.57 (26%) percentage points, respectively; the second reminder increased those outcomes by 1.65 and 1.06 percentage points, respectively. The first reminder had a greater effect when it was designed to make participants feel ownership of the vaccine dose.
-
-
-```{r out.width="100%"}
-#| echo: false
-#| fig-cap: "a, b, Proportion of participants in each condition who scheduled an appointment for the first dose of the COVID-19 vaccine at UCLA Health between 15:00 h on the first reminder date and 23:59 h on the fifth day following the first reminder date (a) and the proportion of participants in each condition who obtained the first dose of the COVID-19 vaccine at UCLA Health within four weeks of the first reminder date (b). Error bars represent ± 1 s.e.m. The number of participants in each condition (from left to right in each panel) is 18,629, 18,592, 18,757, 18,627 and 18,749."
-#| label: fig-dai 
-knitr::include_graphics("img/41586_2021_3843_Fig2_HTML.png")
-```
-
-[Quelle/Volltext](https://www.nature.com/articles/s41586-021-03843-2)
-
-
-
-
-
-
-### Was heißt "ist effektiv"?
-
-@nasreen_effectiveness_2021  definieren *effectivity*, $e$, so:
-
-
-
-$$e = 1 - C; C= \frac{n_{vacc|pos}}{n_{vacc|neg}}$$
-
-
-- $C$ nennt man das *Chancenverhältnis* (*odds ratio*), es beschreibt einen Bruchterm: $\frac{x}{y}$.
-- $n_{vacc|pos}$: Anzahl der geimpften Personen unter allen Personen mit positiver Corona-Diagnose
-- $n_{vacc|neg}$: Anzahl der geimpften Personen unter allen Personen mit negativer Corona-Diagnose
-
-
-*Beispiel*: Von den 100 Personen mit *positiver* Corona-Diagnose sind 10 geimpft, $n_{vacc|pos}=10$. Von den 100 Personen mit *negativer* Corona-Diagnose sind 90 geimpft, $n_{vacc|neg}=90$
-
-$$C= \frac{10}{90} = \frac{1}{9}; e = 1 - \frac{1}{9} = \frac{8}{9} \approx 0.88$$
-
-
-In diesem Beispiel liegt die Effektvitität $e$ bei knapp 90%.
-
-
 ## Arten von Forschungsfragen
 
 
 ### Nach dem Erkenntnisziel
 
-*Deskriptiv* (beschreibend)
+📄  *Deskriptiv* (beschreibend)
 
 - Wie stark ist der (lineare) Zusammenhang $r$ von Größe und Gewicht?
 - Wie stark ist der (lineare) Zusammenhang $b$ von Lernzeit und Note?
@@ -236,7 +155,7 @@ In diesem Beispiel liegt die Effektvitität $e$ bei knapp 90%.
 
 
 
-*Prädiktiv* (prognostisch, vorhersagend)
+🔮 *Prädiktiv* (prognostisch, vorhersagend)
 
 - Wie schwer ist ein deutscher Mann der Größe 1,80m im Schnitt?
 - Welche Note kann man erwarten, wenn man nichts für die Klausur lernt?
@@ -244,7 +163,7 @@ In diesem Beispiel liegt die Effektvitität $e$ bei knapp 90%.
 
 
 
-*Präskriptiv* (erklärend, kausal)
+🔗 *Präskriptiv* (erklärend, kausal)
 
 - Ist Größe eine Ursache von Gewicht (bei deutschen Männern)?
 - Wenn ich 100 Stunden lerne, welche Note schreibe ich dann?
@@ -254,7 +173,7 @@ In diesem Beispiel liegt die Effektvitität $e$ bei knapp 90%.
 :::callout-note
 Das Erkenntnisziel wissenschaftlicher Studien ist zumeist erklärend.
 Anhand der verwendeten statistischen Methode (z.B. Regressionsanalyse)
-kann man nicht feststellen, zu welchem Erkenntnisziel die Studie gehört.
+kann man *nicht* feststellen, zu welchem Erkenntnisziel die Studie gehört.
 :::
 
 
@@ -275,7 +194,7 @@ Im Folgenden sind beispielhafte, häufig verwendete Arten von Forschungsfragen a
 Für jede Variante ist ein Beispiel, die Modellformel, der Kausalgraph^[auch DAG genannt, s. @sec-kausal], die Forschungsfrage sowie die Grundlagen der Auswertung dargestellt.
 
 
-Dabei wird folgende Nomenklatur verwendet:
+Dabei wird folgende Nomenklatur verwendet, um die Skalenmniveaus der beteiligten Variablen einer Forschungsfrage zu benennen:
 
 
 - `y`: metrische abhängige Variable
@@ -311,7 +230,7 @@ Formaler ausgedrückt und als Behauptung (Hypothese) formuliert, sieht die Forsc
 $$\mu_{x=1|\alpha, \beta, \sigma} \ne \mu_{x=0|\alpha, \beta, \sigma}$${#eq-fofra1}
 
 
-Die Modellformel zur Forschungsfrage lautet: `y ~ b`.
+Die Modellformel zur Forschungsfrage lautet: `y ~ b` bzw. `kid_iq ~ mom_hs`.
 
 
 Der Kausalgraph zur Modellformel sieht aus in @fig-binuv dargestellt.
@@ -319,17 +238,17 @@ Y hat, laut unserem Modell, drei Ursachen:
 
 - b
 - x
-- u, das steht für "unbekannt"^[unkown, sozusagen der unbekannte Gott], also für alle sonstigen Einflüsse
+- u, das steht für "unbekannt"^[unknown, sozusagen der unbekannte Gott, also für alle sonstigen Einflüsse; man kann das "u" ohne Schaden weglassen, da wir es sowieso nicht modellieren. Hier ist es nur aufgeführt, um zu verdeutlichen, dass wir nicht so verwegen sind, zu behaupten, es gäbe keine anderen Einflüsse als `mom_hs` auf die IQ des Kindes.]
 
 
 ```{r out.width = "100%", fig.asp = .5}
 #| label: fig-binuv
-#| fig-cap: "DAG für `y ~ b`"
+#| fig-cap: "DAG für `kid_iq ~ mom_hs`"
 #| echo: false
 
 mein_modell <- "dag{
-b -> y
-u -> y
+mom_hs -> kid_score
+u -> kid_score
 }"
 
 plot(graphLayout(mein_modell))
@@ -350,7 +269,7 @@ m10.1 <- stan_glm(
   data = kidiq)
 ```
 
-Alternativ können Sie die Daten [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/kidiq.csv) herunterladen.
+
 
 Mit `parameters(m10.1)` bekommt man die Parameter des Modells, s. @tbl-m101.
 
@@ -388,16 +307,18 @@ ggplot(kidiq) +
 
 `m10.1: kid_score = 78 + 12*mom_hs + error`
 
-- Der *Achsensabschnitt* (intercept, $\beta_0$ oder auch mit $\alpha$ bezeichnet) ist der mittlere (bzw. vorhergesagte) IQ-Wert von Kindern, deren Mütter über keinen Schulabschluss (`mom_hs = 0`) verfügen:
+Der *Achsensabschnitt* (intercept, $\beta_0$ oder auch mit $\alpha$ bezeichnet) ist der mittlere (bzw. vorhergesagte) IQ-Wert von Kindern, deren Mütter über keinen Schulabschluss (`mom_hs = 0`) verfügen:
 
 `kid_score = 78 + 0*12 + error`
 
-- Das *Regressionsgewicht* (slope, $\beta$) ist der Unterschied im IQ-Wert von Kindern mit Mütter mit Schlulabschluss (im Vergleich zum IQ-Wert von Kindern mit Mütter ohne Schlusabschluss). Dieser Unterschied entspricht der Steigung der Regressionsgeraden.
+Das *Regressionsgewicht* (slope, $\beta_1$, $\beta$) ist der Unterschied im IQ-Wert von Kindern mit Mütter mit Schlulabschluss (im Vergleich zum IQ-Wert von Kindern mit Mütter ohne Schlusabschluss). Dieser Unterschied entspricht der Steigung der Regressionsgeraden.
 
 `kid_score = 78 + 1*12 + error = 90 + error`
 
-- Die Größer der Konfidenzintervalle zeigt, wie genau die Schätzung (Vorhersage) ist bzw. wie stark Prädiktor (UV) und Kriterium (AV) zusammenhängen.
+Der Wert von `error` zeigt, wie genau die Schätzung (Vorhersage) ist bzw. wie stark Prädiktor (UV) und Kriterium (AV) zusammenhängen.
 
+
+`error` entspricht dem Vorhersagefehler, also dem Unterschied vom tatsächlichen IQ-Wert des Kindes ($\y$) zum vom Modell vorhergesagten Wert ($\hat{y}$).
 
 
 ### `m10.1` als Mittelwertsdifferenz 
@@ -407,25 +328,47 @@ ggplot(kidiq) +
 - AV: metrisch (quantitativ)
 
 
-Hey R-Golem! Nimm den Datensatz `kidiq`, gruppiere nach `mom_hs`
-und fasse zusammen anhand des Mittelwerts.
-Die resultierende Zahl soll heißen `kid_score_avg`. 
-An die Arbeit!
+>    👨‍🏫 Hey R-Golem! Nimm den Datensatz `kidiq`, gruppiere nach `mom_hs` und fasse zusammen anhand des Mittelwerts. Die resultierende Zahl soll heißen `kid_score_avg`.  An die Arbeit!
 
-```{r kidqi2-sum, echo = TRUE}
+>    🤖 Loving it!
+
+
+:::{.panel-tabset}
+
+### R-Code
+
+```{r kidqi2-sum}
+#| eval: false
 kidiq %>% 
   group_by(mom_hs) %>% 
   summarise(kid_score_avg = 
               mean(kid_score))
 ```
 
+### Ausgabe
 
-In der frequentistischen Statistik (die mehrheitlich unterricht wird) untersucht man diese Datensituation mit einem *t-Test*.
+```{r kidqi2-sum-output}
+#| echo: false
+kidiq %>% 
+  group_by(mom_hs) %>% 
+  summarise(kid_score_avg = 
+              mean(kid_score)) |> 
+  display()
+```
+
+Der mittlere (average, avg) IQ-Wert unterscheidet sich um ca. 12 Punkte (89.4-77.6), zugunsten der Kinder von Müttern mit Abschluss. 
+:::
+
+
+
+
+### t-Test
+
+In der *frequentistischen* Statistik (die mehrheitlich unterricht wird) untersucht man diese Datensituation - Mittelwertsdifferenz zwischen zwei Gruppen - mit einem *t-Test*.
+
 Der t-Test ist ein inferenzstatistisches Verfahren, das prüft, ob die Mittelwertsdifferenz (in der Population) $\mu_d$ Null ist: $\mu_d = 0$.^[Genauer gesagt wird geprüft, wie wahrscheinlich es auf Basis des Modell ist, noch extremere Ergebnisse zu beachten unter der Annahme, dass die (exakte) Nullhypothese wahr ist. Es ist etwas kompliziert.]
-In der Bayes-Statistik betrachtet man dazu stattdessen die Posteriori-Verteilung (z.B. mit 95%PI).
+In der Bayes-Statistik betrachtet man dazu stattdessen z.B. die Posteriori-Verteilung (z.B. mit 95%PI).
 
-
-Der mittlere (average, avg) IQ-Wert unterscheidet sich um ca. 12 Punkte (89.4-77.6), zugunsten der Kinder von Müttern mit Abschluss. Allerdings gibt es viel Streuung um die Mittelwerte herum.
 
 
 
@@ -435,9 +378,13 @@ Der mittlere (average, avg) IQ-Wert unterscheidet sich um ca. 12 Punkte (89.4-77
 ### Antwort auf die Forschungsfrage, `m10.1`
 
 Betrachten wir die Ergebnisse von `m10.1`.
-Hier sind die ersten paar Zeilen.
 
-```{r echo = TRUE}
+:::{.panel-tabset}
+
+### R-Code
+
+
+```{r m101post-code}
 m10.1_post <-
   m10.1 %>% 
   as_tibble() 
@@ -445,11 +392,15 @@ m10.1_post <-
 names(m10.1_post) <- c("Achsenabschnitt", "momhs", "sigma")  # schönere Namen
 ```
 
+### Ausgabe
+
+Hier sind die ersten paar Zeilen, s. @tbl-m101post.
 
 
-
-```{r m10.1-post}
+```{r m101post-output}
 #| echo: false
+#| label: tbl-m101post
+#| tbl-cap: "m10.1, Postverteilung, ersten paar Zeilen"
 m10.1_post %>% 
  # rename(momhs = mom_hs) %>% 
   slice_sample(n=5) %>% 
@@ -457,6 +408,11 @@ m10.1_post %>%
   fmt_number(1:3, decimals = 1) %>% 
   tab_header("Stichprobe aus der Post-Verteilung")
 ```
+
+:::
+
+
+
 
 Berechnen wir ein 95%-PI von Hand:^[komfortabler geht es mit `eti(m10.1)`.]
 
@@ -500,25 +456,71 @@ die mehr Fundierung bedarf als eine einfache Korrelation bzw. ein
  
 
 
-### Variante zur Forschungsfrage
+<!-- ### Variante zur Forschungsfrage -->
 
 
-Unsere Psychologin könnte auch folgende Hypothese formulieren:
+<!-- Unsere Psychologin könnte auch folgende Hypothese formulieren: -->
 
->    Die Wahrscheinlichkeit für ein Kind mit guten Testwerten (y) ist höher, wenn die Mutter über einen Schulabschluss verfügt.
-
-
-Präziser formuliert:
+<!-- >    Die Wahrscheinlichkeit für ein Kind mit IQ-Testwerten (y) von über 100 Punkten ist höher, wenn die Mutter über einen Schulabschluss verfügt. -->
 
 
-$$Pr(y > 100|x=1, \alpha, \beta, \sigma) > Pr(y > 100|x=0, \alpha, \beta, \sigma)$$
-
-Der vertikale Balken "|" liest sich als "gegeben, dass". 
-Hier wird auf die Wahrscheinlichkeit für ein Testergebnis $y>100$,
-*gegeben, dass* die Mutter über einen Schulabschluss verfügt ($x=1$) 
-und gegeben der Modellparameter $\alpha, \beta, \sigma$.
+<!-- Präziser formuliert: -->
 
 
+<!-- $$Pr(y > 100|x=1, \alpha, \beta, \sigma) > Pr(y > 100|x=0, \alpha, \beta, \sigma)$$ -->
+
+<!-- Der vertikale Balken "|" liest sich als "gegeben, dass".  -->
+<!-- Hier wird auf die Wahrscheinlichkeit für ein Testergebnis $y>100$, -->
+<!-- *gegeben, dass* die Mutter über einen Schulabschluss verfügt ($x=1$)  -->
+<!-- und gegeben der Modellparameter $\alpha, \beta, \sigma$. -->
+
+
+
+### Toleranzbereich
+
+Berechnet man ein Regressionsmodell mit `stan_glm` (🤖😁), dann zieht man dabei Zufallszahlen 🎲.
+Der Hintergrund ist, dass Stan eine Stichproben-Post-Verteilung erstellt, und das Ziehen der Stichproben erfolgt zufällig.
+Das erklärt, warum Ihre Ergebnisse einer Regressionsanalyse mittels `stan_glm` von denen in diesem Buch abweichen können.
+
+Um zu prüfen, ob Ihre Ergebnisse "ähnlich genug" oder "innerhalb eines Toleranzbereichs" sind, kann man die Funktion `is_in_tolerance()` aus dem R-Paket `prada` nutzen.
+
+:::{.callout-note}
+Größe des Toleranzbereichs
+Die Größe des *relativen Toleranzbereichs* ist auf 5% festgelegt.
+Das heißt, ein Unterschied von 5% zwischen einem Referenzwert (dem "wahren" Wert) und Ihrem Wert ist *okay*, also im Toleranzbereich.
+Außerdem gibt es noch einen *absoluten Toleranzbereich*, der auf 5% der SD der AV festgelegt ist (bei Regressionsmodellen).
+Der *größere* der beiden Werte gilt. $\square$
+:::
+
+Zuerst müssen Sie das Paket installieren (von Github, nicht vom Standard-R-App-Store CRAN), das geht z.B. so:
+
+```{r}
+#| eval: false
+library(remotes)  # dieses Paket können Sie mit `install.packages("remotes") installieren
+install_github("sebastiansauer/prada")
+```
+
+Dann starten Sie es wie gewohnt:
+
+```{r}
+library(prada)
+```
+
+
+Dann testen Sie, ob Ihr Modellparameter, z.B. $\beta_1$ innerhalb eines Toleranzbereichs liegt.
+
+Sagen wir der "richtige" oder "wahre" Wert (oder schlicht der Wert einer Musterlösung) für $\beta_0$ ist `77`. Unser Wert sei `77.56`.
+Liegt dieser Wert noch innerhalb eines Toleranzbereichs?
+
+```{r}
+is_in_tolerance(asis = 77.56,  # Ihr Wert
+                tobe = 77,   # Referenzwert
+                tol_rel = .05,   # relative Toleranz
+                tol_abs = .05 * sd(kidiq$kid_score)  # absolute Toleranz
+                )
+```
+
+Ja, unser Wert ist *innerhalb* des Toleranzbereichs. ✅ 
 
 ## Eine metrische plus eine nominale UV 
 
@@ -545,9 +547,9 @@ Laut unserem Modell ist `y` also eine Funktion zweier (kausaler) Einflüsse, `b`
 #| echo: false
 
 mein_modell <- "dag{
-b -> y
-u -> y
-x -> y
+mom_hs -> kid_score
+u -> kidiq
+mom_iq -> kid_score
 }"
 
 plot(graphLayout(mein_modell))
@@ -576,7 +578,7 @@ describe_distribution(kidiq) %>%
 
 
 
-[Datenquelle](https://raw.githubusercontent.com/sebastiansauer/2021-wise/main/Data/kidiq.csv)
+
 
 
 
@@ -584,7 +586,7 @@ describe_distribution(kidiq) %>%
 ### 1 metrischer Prädiktor
 
 
-Berechnen wir folgendens Modell: `kid_score ~ mom_iq` (`m10.2`), s. Tab. @tbl-m102.
+Berechnen wir folgendes Modell: `kid_score ~ mom_iq` (`m10.2`), s. Tab. @tbl-m102.
 
 
 ```{r Thema6-Teil2-3, results = "hide"}
@@ -688,7 +690,7 @@ coef(m10.3)
 ```
 
 
-`m10.3: kid_score = 26 + mom_hs + 0.6*mom_iq + error`
+`m10.3: kid_score = 26 + 0.6*mom_iq + 6*mom_hs + error`
 
 Möchte man nur z.B. den 3. Wert aus diesem Vektor, so kann man schreiben:
 
@@ -746,7 +748,7 @@ Wir berechnen mit m10.4 folgendes Modell: `kid_score ~ mom_hs + mom_iq + mom_hs:
 
 ```{r m10-4, echo = TRUE}
 m10.4 <- 
-  stan_glm(kid_score ~ mom_hs + mom_iq + mom_hs:mom_iq, 
+  stan_glm(kid_score ~  mom_iq + mom_hs + mom_hs:mom_iq, 
            seed = 42,
            data = kidiq, 
            refresh = 0)
@@ -761,6 +763,7 @@ parameters(m10.4) %>%
   display()
 ```
 
+Mit `estimate_expectation(m10.4) |> plot()` kann man es sich visualisieren, s. @fig-m104.
 
 
 ```{r Thema6-Teil2-6, fig.width=8}
@@ -786,7 +789,6 @@ kidiq %>%
 
 
 
-
 Die Modellformel zur Forschungsfrage lautet: `y ~ x + b + x:b`.
 
 
@@ -799,10 +801,10 @@ Der DAG zur Modellformel sieht aus in @fig-yxbi dargestellt.
 #| echo: false
 
 mein_modell <- "dag{
-b -> y
-u -> y
-x -> y
-xb -> y 
+momhs -> kidscore
+u -> kid_score
+momiq -> kidscore
+momiqmom_hs -> kidscore
 }"
 
 plot(graphLayout(mein_modell))
@@ -813,10 +815,10 @@ plot(graphLayout(mein_modell))
 
 ### Interpretation von `m10.4`
 
-- *Achsenabschnitt:* IQ-Schätzwerte für Kinder mit Mütter ohne Abschluss und mit einem IQ von 0. Kaum zu interpretieren.
+*Achsenabschnitt:* IQ-Schätzwerte für Kinder mit Mütter ohne Abschluss und mit einem IQ von 0. Kaum zu interpretieren.
 - `mom_hs`: Unterschied der IQ-Schätzwerte zwischen Kindern mit Mutter ohne bzw. mit Schulabschluss und jeweils mit einem IQ von 0. Puh.
-- `mom_iq`: Unterschied der IQ-Schätzwerte zwischen Kindern mit Müttern, die sich um einen IQ-Punkt unterscheiden aber jeweils ohne Schulabschluss.
-- *Interaktion*: Der Unterschied in den Steigungen der Regressiongeraden, also der Unterschied des Koeffizienten für `mom_iq` zwischen Mütter mit bzw. ohne Schulabschluss.
+`mom_iq`: Unterschied der IQ-Schätzwerte zwischen Kindern mit Müttern, die sich um einen IQ-Punkt unterscheiden aber jeweils ohne Schulabschluss.
+*Interaktion*: Der Unterschied in den Steigungen der Regressiongeraden, also der Unterschied des Koeffizienten für `mom_iq` zwischen Mütter mit bzw. ohne Schulabschluss.
 
 ```
 mom_hs=0:
@@ -831,7 +833,7 @@ kid_score = -11 + 51*1 + 1.1* mom_iq + 0.5*1*mom_iq
           = 40 + 0.6*mom_iq
 ```
 
-@gelman_regression_2021, Kap. 10.3
+
 
 
 
@@ -849,7 +851,7 @@ kid_score = -11 + 51*1 + 1.1* mom_iq + 0.5*1*mom_iq
 
 ## Zentrieren von Prädiktoren
 
-Unter *Zentrieren* (to center) versteht man das Bilden der Differenz eines Messwerts zu seinem Mittelwert.
+Unter *Zentrieren* (to center) versteht man das Bilden der Differenz eines Messwerts zu seinem Mittelwert.^[Vgl. [Abschnitt "UV zentrieren"](https://statistik1.netlify.app/090-regression2.html#uv-zentrieren) im Kursbuch [Statistik1](https://statistik1.netlify.app/).]
 Zentrierte Werte geben also an, wie weit ein Messwert vom mittleren (typischen) Messwert entfernt ist.
 Mit zentrierten Werten ist eine Regression einfacher zu interpretieren.
 Hier zentrieren wir (nur) `mom_iq`.
@@ -895,10 +897,10 @@ parameters(m10.5) %>%
 `m10.5` ist in @fig-m105 dargestellt.
 
 
-```{r plot-m10-5, fig.asp = .4, fig.width=8}
+```{r plot-m10-5, fig.asp = .6, fig.width=8}
 #| echo: false
 #| label: fig-m105
-#| fig-cap: "m10.5: Interaktionsmodell mit zentriertem Prädiktor für mütterlicher Intelligenz"
+#| fig-cap: "m10.5: Interaktionsmodell mit zentriertem Prädiktor für mütterlicher Intelligenz. Wie man sieht, ist der Achsenabschnitt deutlich besser zu interpretieren als in m10.4, s. @fig-m10.4."
 
 kidiq %>% 
   mutate(mom_hs = factor(mom_hs)) %>%  
@@ -928,7 +930,7 @@ Betrachten wir die Vorhersagen von `m10.4`:
 
 ```{r Thema6-Teil2-8, echo = TRUE}
 new <- tibble(mom_hs = 0, mom_iq = mean(kidiq$mom_iq))
-pred_new <- posterior_predict(m10.4, newdata = new)
+pred_new <- predict(m10.4, newdata = new)
 mean(pred_new)
 ```
 
@@ -936,7 +938,7 @@ Und vergleichen wir mit diesen die Vorhersagen von `m10.5`:
 
 ```{r Thema6-Teil2-9, echo = TRUE}
 new <- tibble(mom_hs = 0, mom_iq_c = 0)
-pred_new <- posterior_predict(m10.5, newdata = new)
+pred_new <- predict(m10.5, newdata = new)
 mean(pred_new)
 ```
 
@@ -988,13 +990,6 @@ Im Falle symmetrischer Posteriori-Verteilungen (wie hier) kommen beide Arten von
 </br>
 </br>
 
-
-```{r}
-#| echo: false
-if (knitr:::is_html_output()) {
-  icon_style(fontawesome("bomb", style = "solid"), scale = 2, fill = "red")
-}
-```
 
 
 :::callout-important
@@ -1057,7 +1052,7 @@ Ja, stimmt, an so ein Forschungsprojekt hatten Sie vorher nie auch nur nur im Tr
 
 
 
-Die Modellformel zur Forschungsfrage lautet: `y ~ g`.
+Die allgemeine Modellformel zur Forschungsfrage lautet: `y ~ g`.
 
 
 Der DAG zur Modellformel sieht aus in @fig-yg dargestellt.
@@ -1096,26 +1091,6 @@ Alternativ können wir  die Hypothese prüfen, ob die Mittelwerte "praktisch" gl
 ![Palmer Penguins](img/penguins-logo.png){width="25%"}
 
 [Datenquelle](https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv), [Beschreibung des Datensatzes](https://vincentarelbundock.github.io/Rdatasets/doc/palmerpenguins/penguins.html)
-
-Sie können die Daten entweder via dem Pfad importieren:
-
-
-```{r import-penguins}
-#| results: "hide"
-#| message: false
-#| eval: false
-penguins_url <- "https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv"
-
-penguins <- 
-  read.csv(penguins_url)
-```
-
-Oder via dem zugehörigen R-Paket:
-
-```{r}
-data("penguins", package = "palmerpenguins")
-```
-
 
 Hier ist die Verteilung des Gewichts jeder Spezies im Datensatz, @tbl-penguins.
 
@@ -2126,12 +2101,20 @@ kidiq %>%
 
 
 
+
+
+
+
 ## Modell `m10.10`
 
-Im Modell `m10.10` sind die Prädiktoren z-standardisiesrt.
-Das Standardisieren der AV, `kid_score` ist *nicht* nötig, um den Effekt der Prädiktoren (UV) auf die AV zu untersuchen.
+
+### AV z-transformieren
+
+Im Modell `m10.10` sind die Prädiktoren z-transformiert (standardisiert) *und* die *AV* ebenfalls.
+Das Standardisieren der AV, `kid_score` ist zwar *nicht* nötig, um den Effekt der Prädiktoren (UV) auf die AV zu untersuchen.
 Standardisiert man aber die AV, so liefern die Regressionskoeffizienten (Betas) Aussage darüber,
 um wie viele *SD-*Einheiten sich die AV verändert, wenn sich ein Prädiktor um eine *SD-*Einheit verändert.
+Das kann auch eine interessante(re) Aussage sein.
 
 ```{r m10-10, echo = TRUE}
 m10.10 <- stan_glm(kid_score_z ~ mom_iq_z + mom_age_z, 
@@ -2735,6 +2718,12 @@ neg_am <- predict(m13, newdata = tibble(mpg_z = -1.3))
 Für kleine Werte von `mpg_z` (<1.3) sagt unser Modell *negative* Werte für `am` voraus. Das macht keinen Sinn: Es gibt keine negative Werte von `am`, nur 0 und 1.
 Müssen wir mal bei Gelegenheit besser machen.
 
+
+
+
+### Weiterführende Literatur
+
+Weiter Hinweise zu den Themen dieses Kapitels dazu finden sich bei @gelman_regression_2021, Kap. 10, insbesondere 10.3.
 
 
 
