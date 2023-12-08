@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.513">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Start:Bayes! - 9&nbsp; Schätzen vs.&nbsp;Testen</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./1000-metrische-AV.html" rel="next">
+<link href="./0900-lineare-modelle.html" rel="prev">
+<link href="./img/Golem_hex.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/quarto-contrib/downloadthis-1.9.1/downloadthis.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Keine Treffer",
+    "search-matching-documents-text": "Treffer",
+    "search-copy-link-title": "Link in die Suche kopieren",
+    "search-hide-matches-text": "Zusätzliche Treffer verbergen",
+    "search-more-match-text": "weitere Treffer in diesem Dokument",
+    "search-more-matches-text": "weitere Treffer in diesem Dokument",
+    "search-clear-button-title": "Zurücksetzen",
+    "search-detached-cancel-button-title": "Abbrechen",
+    "search-submit-button-title": "Abschicken",
+    "search-label": "Suchen"
+  }
+}</script><link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./0800-gauss.html">Lineare Modelle</a></li><li class="breadcrumb-item"><a href="./1050-Schaetzen-Testen.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Schätzen vs. Testen</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Start:Bayes!</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/sebastiansauer/start-bayes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Dunkelmodus umschalten"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Suchen"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Organisatorisches</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Einführung</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Wahrscheinlichkeit</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0200-Inferenz.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inferenz</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0300-Wskt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Wahrscheinlichkeit</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0400-Verteilungen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Verteilungen</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Bayes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0500-Globusversuch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Globusversuch</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0600-Post.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Die Post befragen</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Lineare Modelle</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0800-gauss.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Gauss-Modelle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0900-lineare-modelle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Einfache lineare Modelle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1050-Schaetzen-Testen.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Schätzen vs.&nbsp;Testen</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1000-metrische-AV.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Fallbeispiele</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Kausalität</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1150-konfundierung.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Konfundierung</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1180-kausalatome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Die Atome des Kausalität</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Abschluss</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1200-abschluss.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Abschluss</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Inhaltsverzeichnis</h2>
+   
+  <ul>
+<li>
+<a href="#lernsteuerung" id="toc-lernsteuerung" class="nav-link active" data-scroll-target="#lernsteuerung"><span class="header-section-number">9.1</span> Lernsteuerung</a>
+  <ul class="collapse">
+<li><a href="#position-im-modulverlauf" id="toc-position-im-modulverlauf" class="nav-link" data-scroll-target="#position-im-modulverlauf"><span class="header-section-number">9.1.1</span> Position im Modulverlauf</a></li>
+  <li><a href="#lernziele" id="toc-lernziele" class="nav-link" data-scroll-target="#lernziele"><span class="header-section-number">9.1.2</span> Lernziele</a></li>
+  <li><a href="#begleitliteratur" id="toc-begleitliteratur" class="nav-link" data-scroll-target="#begleitliteratur"><span class="header-section-number">9.1.3</span> Begleitliteratur</a></li>
+  <li><a href="#r-pakete" id="toc-r-pakete" class="nav-link" data-scroll-target="#r-pakete"><span class="header-section-number">9.1.4</span> R-Pakete</a></li>
+  <li><a href="#ben%C3%B6tigte-daten" id="toc-benötigte-daten" class="nav-link" data-scroll-target="#ben%C3%B6tigte-daten"><span class="header-section-number">9.1.5</span> Benötigte Daten</a></li>
+  <li><a href="#einstieg" id="toc-einstieg" class="nav-link" data-scroll-target="#einstieg"><span class="header-section-number">9.1.6</span> Einstieg</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sch%C3%A4tzen-oder-testen" id="toc-schätzen-oder-testen" class="nav-link" data-scroll-target="#sch%C3%A4tzen-oder-testen"><span class="header-section-number">9.2</span> Schätzen oder Testen?</a>
+  <ul class="collapse">
+<li><a href="#hypothesen-pr%C3%BCfen" id="toc-hypothesen-prüfen" class="nav-link" data-scroll-target="#hypothesen-pr%C3%BCfen"><span class="header-section-number">9.2.1</span> Hypothesen prüfen</a></li>
+  <li><a href="#beispiele-f%C3%BCr-nullhypothesen" id="toc-beispiele-für-nullhypothesen" class="nav-link" data-scroll-target="#beispiele-f%C3%BCr-nullhypothesen"><span class="header-section-number">9.2.2</span> Beispiele für Nullhypothesen</a></li>
+  <li><a href="#parameter-sch%C3%A4tzen" id="toc-parameter-schätzen" class="nav-link" data-scroll-target="#parameter-sch%C3%A4tzen"><span class="header-section-number">9.2.3</span> Parameter schätzen</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-rope" id="toc-sec-rope" class="nav-link" data-scroll-target="#sec-rope"><span class="header-section-number">9.3</span> ROPE: Bereich von “praktisch Null”</a>
+  <ul class="collapse">
+<li><a href="#alternativen-zu-nullhypothesen" id="toc-alternativen-zu-nullhypothesen" class="nav-link" data-scroll-target="#alternativen-zu-nullhypothesen"><span class="header-section-number">9.3.1</span> Alternativen zu Nullhypothesen</a></li>
+  <li><a href="#praktisch-kein-unterschied-das-rope-konzept" id="toc-praktisch-kein-unterschied-das-rope-konzept" class="nav-link" data-scroll-target="#praktisch-kein-unterschied-das-rope-konzept"><span class="header-section-number">9.3.2</span> “Praktisch” kein Unterschied: Das Rope-Konzept</a></li>
+  <li><a href="#vernachl%C3%A4ssigbarer-regressionseffekt" id="toc-vernachlässigbarer-regressionseffekt" class="nav-link" data-scroll-target="#vernachl%C3%A4ssigbarer-regressionseffekt"><span class="header-section-number">9.3.3</span> Vernachlässigbarer Regressionseffekt</a></li>
+  <li><a href="#hdi-rope-entscheidungsregel-visualisiert" id="toc-hdi-rope-entscheidungsregel-visualisiert" class="nav-link" data-scroll-target="#hdi-rope-entscheidungsregel-visualisiert"><span class="header-section-number">9.3.4</span> HDI-Rope-Entscheidungsregel visualisiert</a></li>
+  <li><a href="#rope-berechnen" id="toc-rope-berechnen" class="nav-link" data-scroll-target="#rope-berechnen"><span class="header-section-number">9.3.5</span> Rope berechnen</a></li>
+  <li><a href="#visualisierung-unserer-rope-werte-m10.6" id="toc-visualisierung-unserer-rope-werte-m10.6" class="nav-link" data-scroll-target="#visualisierung-unserer-rope-werte-m10.6"><span class="header-section-number">9.3.6</span> Visualisierung unserer Rope-Werte, m10.6</a></li>
+  <li><a href="#finetuning-des-rope" id="toc-finetuning-des-rope" class="nav-link" data-scroll-target="#finetuning-des-rope"><span class="header-section-number">9.3.7</span> Finetuning des Rope</a></li>
+  <li><a href="#beantwortung-der-forschungsfrage" id="toc-beantwortung-der-forschungsfrage" class="nav-link" data-scroll-target="#beantwortung-der-forschungsfrage"><span class="header-section-number">9.3.8</span> Beantwortung der Forschungsfrage</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#modellg%C3%BCte" id="toc-modellgüte" class="nav-link" data-scroll-target="#modellg%C3%BCte"><span class="header-section-number">9.4</span> Modellgüte</a>
+  <ul class="collapse">
+<li><a href="#wozu-modellg%C3%BCte" id="toc-wozu-modellgüte" class="nav-link" data-scroll-target="#wozu-modellg%C3%BCte"><span class="header-section-number">9.4.1</span> Wozu Modellgüte?</a></li>
+  <li><a href="#modellg%C3%BCte-mit-r2-bestimmen" id="toc-modellgüte-mit-r2-bestimmen" class="nav-link" data-scroll-target="#modellg%C3%BCte-mit-r2-bestimmen"><span class="header-section-number">9.4.2</span> Modellgüte mit <span class="math inline">\(R^2\)</span> bestimmen</a></li>
+  <li><a href="#definition-vom-klassischen-r2" id="toc-definition-vom-klassischen-r2" class="nav-link" data-scroll-target="#definition-vom-klassischen-r2"><span class="header-section-number">9.4.3</span> Definition vom “klassischen” <span class="math inline">\(R^2\)</span></a></li>
+  <li><a href="#bayes-r2" id="toc-bayes-r2" class="nav-link" data-scroll-target="#bayes-r2"><span class="header-section-number">9.4.4</span> Bayes’ <span class="math inline">\(R^2\)</span></a></li>
+  </ul>
+</li>
+  <li><a href="#fazit" id="toc-fazit" class="nav-link" data-scroll-target="#fazit"><span class="header-section-number">9.5</span> Fazit</a></li>
+  <li><a href="#aufgaben" id="toc-aufgaben" class="nav-link" data-scroll-target="#aufgaben"><span class="header-section-number">9.6</span> Aufgaben</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/1050-Schaetzen-Testen.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./0800-gauss.html">Lineare Modelle</a></li><li class="breadcrumb-item"><a href="./1050-Schaetzen-Testen.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Schätzen vs. Testen</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Schätzen vs.&nbsp;Testen</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><section id="lernsteuerung" class="level2" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="lernsteuerung">
+<span class="header-section-number">9.1</span> Lernsteuerung</h2>
+<section id="position-im-modulverlauf" class="level3" data-number="9.1.1"><h3 data-number="9.1.1" class="anchored" data-anchor-id="position-im-modulverlauf">
+<span class="header-section-number">9.1.1</span> Position im Modulverlauf</h3>
+<p><a href="index.html#fig-modulverlauf" class="quarto-xref">Abbildung&nbsp;<span>1.1</span></a> gibt einen Überblick zum aktuellen Standort im Modulverlauf.</p>
+</section><section id="lernziele" class="level3" data-number="9.1.2"><h3 data-number="9.1.2" class="anchored" data-anchor-id="lernziele">
+<span class="header-section-number">9.1.2</span> Lernziele</h3>
+<p>Nach Absolvieren des jeweiligen Kapitels sollen folgende Lernziele erreicht sein.</p>
+<p>Sie können…</p>
+<ul>
+<li>den Unterschied zwischen dem <em>Schätzen</em> von Modellparametern und dem <em>Testen</em> von Hypothesen erläutern</li>
+<li>Vor- und Nachteile des Schätzens und Testens diskutieren</li>
+<li>Das ROPE-Konzept erläutern und anwenden</li>
+<li>Die Güte von Regressionsmodellen einschätzen und berechnen</li>
+</ul></section><section id="begleitliteratur" class="level3" data-number="9.1.3"><h3 data-number="9.1.3" class="anchored" data-anchor-id="begleitliteratur">
+<span class="header-section-number">9.1.3</span> Begleitliteratur</h3>
+<p>Der Stoff dieses Kapitels orientiert sich an <span class="citation" data-cites="kruschke_rejecting_2018">(<a href="references.html#ref-kruschke_rejecting_2018" role="doc-biblioref">Kruschke 2018</a>)</span>.</p>
+</section><section id="r-pakete" class="level3" data-number="9.1.4"><h3 data-number="9.1.4" class="anchored" data-anchor-id="r-pakete">
+<span class="header-section-number">9.1.4</span> R-Pakete</h3>
+<p>In diesem Kapitel werden folgende R-Pakete benötigt:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/rstanarm/">rstanarm</a></span><span class="op">)</span>   <span class="co"># Bayes-Modelle</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://easystats.github.io/easystats/">easystats</a></span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="benötigte-daten" class="level3" data-number="9.1.5"><h3 data-number="9.1.5" class="anchored" data-anchor-id="benötigte-daten">
+<span class="header-section-number">9.1.5</span> Benötigte Daten</h3>
+<p>Wir benötigen in diesem Kapitel folgenden Datensatz: <code>penguins</code>.</p>
+<p>Sie können den Datensatz <code>penguins</code> entweder via dem Pfad importieren:</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins_url</span> <span class="op">&lt;-</span> <span class="st">"https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv"</span></span>
+<span></span>
+<span><span class="va">penguins</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="va">penguins_url</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><a href="#dnldts19126" onclick="fetch('data:text/csv;base64,cm93bmFtZXMsc3BlY2llcyxpc2xhbmQsYmlsbF9sZW5ndGhfbW0sYmlsbF9kZXB0aF9tbSxmbGlwcGVyX2xlbmd0aF9tbSxib2R5X21hc3NfZyxzZXgseWVhcgoxLEFkZWxpZSxUb3JnZXJzZW4sMzkuMSwxOC43LDE4MSwzNzUwLG1hbGUsMjAwNwoyLEFkZWxpZSxUb3JnZXJzZW4sMzkuNSwxNy40LDE4NiwzODAwLGZlbWFsZSwyMDA3CjMsQWRlbGllLFRvcmdlcnNlbiw0MC4zLDE4LDE5NSwzMjUwLGZlbWFsZSwyMDA3CjQsQWRlbGllLFRvcmdlcnNlbiwsLCwsLDIwMDcKNSxBZGVsaWUsVG9yZ2Vyc2VuLDM2LjcsMTkuMywxOTMsMzQ1MCxmZW1hbGUsMjAwNwo2LEFkZWxpZSxUb3JnZXJzZW4sMzkuMywyMC42LDE5MCwzNjUwLG1hbGUsMjAwNwo3LEFkZWxpZSxUb3JnZXJzZW4sMzguOSwxNy44LDE4MSwzNjI1LGZlbWFsZSwyMDA3CjgsQWRlbGllLFRvcmdlcnNlbiwzOS4yLDE5LjYsMTk1LDQ2NzUsbWFsZSwyMDA3CjksQWRlbGllLFRvcmdlcnNlbiwzNC4xLDE4LjEsMTkzLDM0NzUsLDIwMDcKMTAsQWRlbGllLFRvcmdlcnNlbiw0MiwyMC4yLDE5MCw0MjUwLCwyMDA3CjExLEFkZWxpZSxUb3JnZXJzZW4sMzcuOCwxNy4xLDE4NiwzMzAwLCwyMDA3CjEyLEFkZWxpZSxUb3JnZXJzZW4sMzcuOCwxNy4zLDE4MCwzNzAwLCwyMDA3CjEzLEFkZWxpZSxUb3JnZXJzZW4sNDEuMSwxNy42LDE4MiwzMjAwLGZlbWFsZSwyMDA3CjE0LEFkZWxpZSxUb3JnZXJzZW4sMzguNiwyMS4yLDE5MSwzODAwLG1hbGUsMjAwNwoxNSxBZGVsaWUsVG9yZ2Vyc2VuLDM0LjYsMjEuMSwxOTgsNDQwMCxtYWxlLDIwMDcKMTYsQWRlbGllLFRvcmdlcnNlbiwzNi42LDE3LjgsMTg1LDM3MDAsZmVtYWxlLDIwMDcKMTcsQWRlbGllLFRvcmdlcnNlbiwzOC43LDE5LDE5NSwzNDUwLGZlbWFsZSwyMDA3CjE4LEFkZWxpZSxUb3JnZXJzZW4sNDIuNSwyMC43LDE5Nyw0NTAwLG1hbGUsMjAwNwoxOSxBZGVsaWUsVG9yZ2Vyc2VuLDM0LjQsMTguNCwxODQsMzMyNSxmZW1hbGUsMjAwNwoyMCxBZGVsaWUsVG9yZ2Vyc2VuLDQ2LDIxLjUsMTk0LDQyMDAsbWFsZSwyMDA3CjIxLEFkZWxpZSxCaXNjb2UsMzcuOCwxOC4zLDE3NCwzNDAwLGZlbWFsZSwyMDA3CjIyLEFkZWxpZSxCaXNjb2UsMzcuNywxOC43LDE4MCwzNjAwLG1hbGUsMjAwNwoyMyxBZGVsaWUsQmlzY29lLDM1LjksMTkuMiwxODksMzgwMCxmZW1hbGUsMjAwNwoyNCxBZGVsaWUsQmlzY29lLDM4LjIsMTguMSwxODUsMzk1MCxtYWxlLDIwMDcKMjUsQWRlbGllLEJpc2NvZSwzOC44LDE3LjIsMTgwLDM4MDAsbWFsZSwyMDA3CjI2LEFkZWxpZSxCaXNjb2UsMzUuMywxOC45LDE4NywzODAwLGZlbWFsZSwyMDA3CjI3LEFkZWxpZSxCaXNjb2UsNDAuNiwxOC42LDE4MywzNTUwLG1hbGUsMjAwNwoyOCxBZGVsaWUsQmlzY29lLDQwLjUsMTcuOSwxODcsMzIwMCxmZW1hbGUsMjAwNwoyOSxBZGVsaWUsQmlzY29lLDM3LjksMTguNiwxNzIsMzE1MCxmZW1hbGUsMjAwNwozMCxBZGVsaWUsQmlzY29lLDQwLjUsMTguOSwxODAsMzk1MCxtYWxlLDIwMDcKMzEsQWRlbGllLERyZWFtLDM5LjUsMTYuNywxNzgsMzI1MCxmZW1hbGUsMjAwNwozMixBZGVsaWUsRHJlYW0sMzcuMiwxOC4xLDE3OCwzOTAwLG1hbGUsMjAwNwozMyxBZGVsaWUsRHJlYW0sMzkuNSwxNy44LDE4OCwzMzAwLGZlbWFsZSwyMDA3CjM0LEFkZWxpZSxEcmVhbSw0MC45LDE4LjksMTg0LDM5MDAsbWFsZSwyMDA3CjM1LEFkZWxpZSxEcmVhbSwzNi40LDE3LDE5NSwzMzI1LGZlbWFsZSwyMDA3CjM2LEFkZWxpZSxEcmVhbSwzOS4yLDIxLjEsMTk2LDQxNTAsbWFsZSwyMDA3CjM3LEFkZWxpZSxEcmVhbSwzOC44LDIwLDE5MCwzOTUwLG1hbGUsMjAwNwozOCxBZGVsaWUsRHJlYW0sNDIuMiwxOC41LDE4MCwzNTUwLGZlbWFsZSwyMDA3CjM5LEFkZWxpZSxEcmVhbSwzNy42LDE5LjMsMTgxLDMzMDAsZmVtYWxlLDIwMDcKNDAsQWRlbGllLERyZWFtLDM5LjgsMTkuMSwxODQsNDY1MCxtYWxlLDIwMDcKNDEsQWRlbGllLERyZWFtLDM2LjUsMTgsMTgyLDMxNTAsZmVtYWxlLDIwMDcKNDIsQWRlbGllLERyZWFtLDQwLjgsMTguNCwxOTUsMzkwMCxtYWxlLDIwMDcKNDMsQWRlbGllLERyZWFtLDM2LDE4LjUsMTg2LDMxMDAsZmVtYWxlLDIwMDcKNDQsQWRlbGllLERyZWFtLDQ0LjEsMTkuNywxOTYsNDQwMCxtYWxlLDIwMDcKNDUsQWRlbGllLERyZWFtLDM3LDE2LjksMTg1LDMwMDAsZmVtYWxlLDIwMDcKNDYsQWRlbGllLERyZWFtLDM5LjYsMTguOCwxOTAsNDYwMCxtYWxlLDIwMDcKNDcsQWRlbGllLERyZWFtLDQxLjEsMTksMTgyLDM0MjUsbWFsZSwyMDA3CjQ4LEFkZWxpZSxEcmVhbSwzNy41LDE4LjksMTc5LDI5NzUsLDIwMDcKNDksQWRlbGllLERyZWFtLDM2LDE3LjksMTkwLDM0NTAsZmVtYWxlLDIwMDcKNTAsQWRlbGllLERyZWFtLDQyLjMsMjEuMiwxOTEsNDE1MCxtYWxlLDIwMDcKNTEsQWRlbGllLEJpc2NvZSwzOS42LDE3LjcsMTg2LDM1MDAsZmVtYWxlLDIwMDgKNTIsQWRlbGllLEJpc2NvZSw0MC4xLDE4LjksMTg4LDQzMDAsbWFsZSwyMDA4CjUzLEFkZWxpZSxCaXNjb2UsMzUsMTcuOSwxOTAsMzQ1MCxmZW1hbGUsMjAwOAo1NCxBZGVsaWUsQmlzY29lLDQyLDE5LjUsMjAwLDQwNTAsbWFsZSwyMDA4CjU1LEFkZWxpZSxCaXNjb2UsMzQuNSwxOC4xLDE4NywyOTAwLGZlbWFsZSwyMDA4CjU2LEFkZWxpZSxCaXNjb2UsNDEuNCwxOC42LDE5MSwzNzAwLG1hbGUsMjAwOAo1NyxBZGVsaWUsQmlzY29lLDM5LDE3LjUsMTg2LDM1NTAsZmVtYWxlLDIwMDgKNTgsQWRlbGllLEJpc2NvZSw0MC42LDE4LjgsMTkzLDM4MDAsbWFsZSwyMDA4CjU5LEFkZWxpZSxCaXNjb2UsMzYuNSwxNi42LDE4MSwyODUwLGZlbWFsZSwyMDA4CjYwLEFkZWxpZSxCaXNjb2UsMzcuNiwxOS4xLDE5NCwzNzUwLG1hbGUsMjAwOAo2MSxBZGVsaWUsQmlzY29lLDM1LjcsMTYuOSwxODUsMzE1MCxmZW1hbGUsMjAwOAo2MixBZGVsaWUsQmlzY29lLDQxLjMsMjEuMSwxOTUsNDQwMCxtYWxlLDIwMDgKNjMsQWRlbGllLEJpc2NvZSwzNy42LDE3LDE4NSwzNjAwLGZlbWFsZSwyMDA4CjY0LEFkZWxpZSxCaXNjb2UsNDEuMSwxOC4yLDE5Miw0MDUwLG1hbGUsMjAwOAo2NSxBZGVsaWUsQmlzY29lLDM2LjQsMTcuMSwxODQsMjg1MCxmZW1hbGUsMjAwOAo2NixBZGVsaWUsQmlzY29lLDQxLjYsMTgsMTkyLDM5NTAsbWFsZSwyMDA4CjY3LEFkZWxpZSxCaXNjb2UsMzUuNSwxNi4yLDE5NSwzMzUwLGZlbWFsZSwyMDA4CjY4LEFkZWxpZSxCaXNjb2UsNDEuMSwxOS4xLDE4OCw0MTAwLG1hbGUsMjAwOAo2OSxBZGVsaWUsVG9yZ2Vyc2VuLDM1LjksMTYuNiwxOTAsMzA1MCxmZW1hbGUsMjAwOAo3MCxBZGVsaWUsVG9yZ2Vyc2VuLDQxLjgsMTkuNCwxOTgsNDQ1MCxtYWxlLDIwMDgKNzEsQWRlbGllLFRvcmdlcnNlbiwzMy41LDE5LDE5MCwzNjAwLGZlbWFsZSwyMDA4CjcyLEFkZWxpZSxUb3JnZXJzZW4sMzkuNywxOC40LDE5MCwzOTAwLG1hbGUsMjAwOAo3MyxBZGVsaWUsVG9yZ2Vyc2VuLDM5LjYsMTcuMiwxOTYsMzU1MCxmZW1hbGUsMjAwOAo3NCxBZGVsaWUsVG9yZ2Vyc2VuLDQ1LjgsMTguOSwxOTcsNDE1MCxtYWxlLDIwMDgKNzUsQWRlbGllLFRvcmdlcnNlbiwzNS41LDE3LjUsMTkwLDM3MDAsZmVtYWxlLDIwMDgKNzYsQWRlbGllLFRvcmdlcnNlbiw0Mi44LDE4LjUsMTk1LDQyNTAsbWFsZSwyMDA4Cjc3LEFkZWxpZSxUb3JnZXJzZW4sNDAuOSwxNi44LDE5MSwzNzAwLGZlbWFsZSwyMDA4Cjc4LEFkZWxpZSxUb3JnZXJzZW4sMzcuMiwxOS40LDE4NCwzOTAwLG1hbGUsMjAwOAo3OSxBZGVsaWUsVG9yZ2Vyc2VuLDM2LjIsMTYuMSwxODcsMzU1MCxmZW1hbGUsMjAwOAo4MCxBZGVsaWUsVG9yZ2Vyc2VuLDQyLjEsMTkuMSwxOTUsNDAwMCxtYWxlLDIwMDgKODEsQWRlbGllLFRvcmdlcnNlbiwzNC42LDE3LjIsMTg5LDMyMDAsZmVtYWxlLDIwMDgKODIsQWRlbGllLFRvcmdlcnNlbiw0Mi45LDE3LjYsMTk2LDQ3MDAsbWFsZSwyMDA4CjgzLEFkZWxpZSxUb3JnZXJzZW4sMzYuNywxOC44LDE4NywzODAwLGZlbWFsZSwyMDA4Cjg0LEFkZWxpZSxUb3JnZXJzZW4sMzUuMSwxOS40LDE5Myw0MjAwLG1hbGUsMjAwOAo4NSxBZGVsaWUsRHJlYW0sMzcuMywxNy44LDE5MSwzMzUwLGZlbWFsZSwyMDA4Cjg2LEFkZWxpZSxEcmVhbSw0MS4zLDIwLjMsMTk0LDM1NTAsbWFsZSwyMDA4Cjg3LEFkZWxpZSxEcmVhbSwzNi4zLDE5LjUsMTkwLDM4MDAsbWFsZSwyMDA4Cjg4LEFkZWxpZSxEcmVhbSwzNi45LDE4LjYsMTg5LDM1MDAsZmVtYWxlLDIwMDgKODksQWRlbGllLERyZWFtLDM4LjMsMTkuMiwxODksMzk1MCxtYWxlLDIwMDgKOTAsQWRlbGllLERyZWFtLDM4LjksMTguOCwxOTAsMzYwMCxmZW1hbGUsMjAwOAo5MSxBZGVsaWUsRHJlYW0sMzUuNywxOCwyMDIsMzU1MCxmZW1hbGUsMjAwOAo5MixBZGVsaWUsRHJlYW0sNDEuMSwxOC4xLDIwNSw0MzAwLG1hbGUsMjAwOAo5MyxBZGVsaWUsRHJlYW0sMzQsMTcuMSwxODUsMzQwMCxmZW1hbGUsMjAwOAo5NCxBZGVsaWUsRHJlYW0sMzkuNiwxOC4xLDE4Niw0NDUwLG1hbGUsMjAwOAo5NSxBZGVsaWUsRHJlYW0sMzYuMiwxNy4zLDE4NywzMzAwLGZlbWFsZSwyMDA4Cjk2LEFkZWxpZSxEcmVhbSw0MC44LDE4LjksMjA4LDQzMDAsbWFsZSwyMDA4Cjk3LEFkZWxpZSxEcmVhbSwzOC4xLDE4LjYsMTkwLDM3MDAsZmVtYWxlLDIwMDgKOTgsQWRlbGllLERyZWFtLDQwLjMsMTguNSwxOTYsNDM1MCxtYWxlLDIwMDgKOTksQWRlbGllLERyZWFtLDMzLjEsMTYuMSwxNzgsMjkwMCxmZW1hbGUsMjAwOAoxMDAsQWRlbGllLERyZWFtLDQzLjIsMTguNSwxOTIsNDEwMCxtYWxlLDIwMDgKMTAxLEFkZWxpZSxCaXNjb2UsMzUsMTcuOSwxOTIsMzcyNSxmZW1hbGUsMjAwOQoxMDIsQWRlbGllLEJpc2NvZSw0MSwyMCwyMDMsNDcyNSxtYWxlLDIwMDkKMTAzLEFkZWxpZSxCaXNjb2UsMzcuNywxNiwxODMsMzA3NSxmZW1hbGUsMjAwOQoxMDQsQWRlbGllLEJpc2NvZSwzNy44LDIwLDE5MCw0MjUwLG1hbGUsMjAwOQoxMDUsQWRlbGllLEJpc2NvZSwzNy45LDE4LjYsMTkzLDI5MjUsZmVtYWxlLDIwMDkKMTA2LEFkZWxpZSxCaXNjb2UsMzkuNywxOC45LDE4NCwzNTUwLG1hbGUsMjAwOQoxMDcsQWRlbGllLEJpc2NvZSwzOC42LDE3LjIsMTk5LDM3NTAsZmVtYWxlLDIwMDkKMTA4LEFkZWxpZSxCaXNjb2UsMzguMiwyMCwxOTAsMzkwMCxtYWxlLDIwMDkKMTA5LEFkZWxpZSxCaXNjb2UsMzguMSwxNywxODEsMzE3NSxmZW1hbGUsMjAwOQoxMTAsQWRlbGllLEJpc2NvZSw0My4yLDE5LDE5Nyw0Nzc1LG1hbGUsMjAwOQoxMTEsQWRlbGllLEJpc2NvZSwzOC4xLDE2LjUsMTk4LDM4MjUsZmVtYWxlLDIwMDkKMTEyLEFkZWxpZSxCaXNjb2UsNDUuNiwyMC4zLDE5MSw0NjAwLG1hbGUsMjAwOQoxMTMsQWRlbGllLEJpc2NvZSwzOS43LDE3LjcsMTkzLDMyMDAsZmVtYWxlLDIwMDkKMTE0LEFkZWxpZSxCaXNjb2UsNDIuMiwxOS41LDE5Nyw0Mjc1LG1hbGUsMjAwOQoxMTUsQWRlbGllLEJpc2NvZSwzOS42LDIwLjcsMTkxLDM5MDAsZmVtYWxlLDIwMDkKMTE2LEFkZWxpZSxCaXNjb2UsNDIuNywxOC4zLDE5Niw0MDc1LG1hbGUsMjAwOQoxMTcsQWRlbGllLFRvcmdlcnNlbiwzOC42LDE3LDE4OCwyOTAwLGZlbWFsZSwyMDA5CjExOCxBZGVsaWUsVG9yZ2Vyc2VuLDM3LjMsMjAuNSwxOTksMzc3NSxtYWxlLDIwMDkKMTE5LEFkZWxpZSxUb3JnZXJzZW4sMzUuNywxNywxODksMzM1MCxmZW1hbGUsMjAwOQoxMjAsQWRlbGllLFRvcmdlcnNlbiw0MS4xLDE4LjYsMTg5LDMzMjUsbWFsZSwyMDA5CjEyMSxBZGVsaWUsVG9yZ2Vyc2VuLDM2LjIsMTcuMiwxODcsMzE1MCxmZW1hbGUsMjAwOQoxMjIsQWRlbGllLFRvcmdlcnNlbiwzNy43LDE5LjgsMTk4LDM1MDAsbWFsZSwyMDA5CjEyMyxBZGVsaWUsVG9yZ2Vyc2VuLDQwLjIsMTcsMTc2LDM0NTAsZmVtYWxlLDIwMDkKMTI0LEFkZWxpZSxUb3JnZXJzZW4sNDEuNCwxOC41LDIwMiwzODc1LG1hbGUsMjAwOQoxMjUsQWRlbGllLFRvcmdlcnNlbiwzNS4yLDE1LjksMTg2LDMwNTAsZmVtYWxlLDIwMDkKMTI2LEFkZWxpZSxUb3JnZXJzZW4sNDAuNiwxOSwxOTksNDAwMCxtYWxlLDIwMDkKMTI3LEFkZWxpZSxUb3JnZXJzZW4sMzguOCwxNy42LDE5MSwzMjc1LGZlbWFsZSwyMDA5CjEyOCxBZGVsaWUsVG9yZ2Vyc2VuLDQxLjUsMTguMywxOTUsNDMwMCxtYWxlLDIwMDkKMTI5LEFkZWxpZSxUb3JnZXJzZW4sMzksMTcuMSwxOTEsMzA1MCxmZW1hbGUsMjAwOQoxMzAsQWRlbGllLFRvcmdlcnNlbiw0NC4xLDE4LDIxMCw0MDAwLG1hbGUsMjAwOQoxMzEsQWRlbGllLFRvcmdlcnNlbiwzOC41LDE3LjksMTkwLDMzMjUsZmVtYWxlLDIwMDkKMTMyLEFkZWxpZSxUb3JnZXJzZW4sNDMuMSwxOS4yLDE5NywzNTAwLG1hbGUsMjAwOQoxMzMsQWRlbGllLERyZWFtLDM2LjgsMTguNSwxOTMsMzUwMCxmZW1hbGUsMjAwOQoxMzQsQWRlbGllLERyZWFtLDM3LjUsMTguNSwxOTksNDQ3NSxtYWxlLDIwMDkKMTM1LEFkZWxpZSxEcmVhbSwzOC4xLDE3LjYsMTg3LDM0MjUsZmVtYWxlLDIwMDkKMTM2LEFkZWxpZSxEcmVhbSw0MS4xLDE3LjUsMTkwLDM5MDAsbWFsZSwyMDA5CjEzNyxBZGVsaWUsRHJlYW0sMzUuNiwxNy41LDE5MSwzMTc1LGZlbWFsZSwyMDA5CjEzOCxBZGVsaWUsRHJlYW0sNDAuMiwyMC4xLDIwMCwzOTc1LG1hbGUsMjAwOQoxMzksQWRlbGllLERyZWFtLDM3LDE2LjUsMTg1LDM0MDAsZmVtYWxlLDIwMDkKMTQwLEFkZWxpZSxEcmVhbSwzOS43LDE3LjksMTkzLDQyNTAsbWFsZSwyMDA5CjE0MSxBZGVsaWUsRHJlYW0sNDAuMiwxNy4xLDE5MywzNDAwLGZlbWFsZSwyMDA5CjE0MixBZGVsaWUsRHJlYW0sNDAuNiwxNy4yLDE4NywzNDc1LG1hbGUsMjAwOQoxNDMsQWRlbGllLERyZWFtLDMyLjEsMTUuNSwxODgsMzA1MCxmZW1hbGUsMjAwOQoxNDQsQWRlbGllLERyZWFtLDQwLjcsMTcsMTkwLDM3MjUsbWFsZSwyMDA5CjE0NSxBZGVsaWUsRHJlYW0sMzcuMywxNi44LDE5MiwzMDAwLGZlbWFsZSwyMDA5CjE0NixBZGVsaWUsRHJlYW0sMzksMTguNywxODUsMzY1MCxtYWxlLDIwMDkKMTQ3LEFkZWxpZSxEcmVhbSwzOS4yLDE4LjYsMTkwLDQyNTAsbWFsZSwyMDA5CjE0OCxBZGVsaWUsRHJlYW0sMzYuNiwxOC40LDE4NCwzNDc1LGZlbWFsZSwyMDA5CjE0OSxBZGVsaWUsRHJlYW0sMzYsMTcuOCwxOTUsMzQ1MCxmZW1hbGUsMjAwOQoxNTAsQWRlbGllLERyZWFtLDM3LjgsMTguMSwxOTMsMzc1MCxtYWxlLDIwMDkKMTUxLEFkZWxpZSxEcmVhbSwzNiwxNy4xLDE4NywzNzAwLGZlbWFsZSwyMDA5CjE1MixBZGVsaWUsRHJlYW0sNDEuNSwxOC41LDIwMSw0MDAwLG1hbGUsMjAwOQoxNTMsR2VudG9vLEJpc2NvZSw0Ni4xLDEzLjIsMjExLDQ1MDAsZmVtYWxlLDIwMDcKMTU0LEdlbnRvbyxCaXNjb2UsNTAsMTYuMywyMzAsNTcwMCxtYWxlLDIwMDcKMTU1LEdlbnRvbyxCaXNjb2UsNDguNywxNC4xLDIxMCw0NDUwLGZlbWFsZSwyMDA3CjE1NixHZW50b28sQmlzY29lLDUwLDE1LjIsMjE4LDU3MDAsbWFsZSwyMDA3CjE1NyxHZW50b28sQmlzY29lLDQ3LjYsMTQuNSwyMTUsNTQwMCxtYWxlLDIwMDcKMTU4LEdlbnRvbyxCaXNjb2UsNDYuNSwxMy41LDIxMCw0NTUwLGZlbWFsZSwyMDA3CjE1OSxHZW50b28sQmlzY29lLDQ1LjQsMTQuNiwyMTEsNDgwMCxmZW1hbGUsMjAwNwoxNjAsR2VudG9vLEJpc2NvZSw0Ni43LDE1LjMsMjE5LDUyMDAsbWFsZSwyMDA3CjE2MSxHZW50b28sQmlzY29lLDQzLjMsMTMuNCwyMDksNDQwMCxmZW1hbGUsMjAwNwoxNjIsR2VudG9vLEJpc2NvZSw0Ni44LDE1LjQsMjE1LDUxNTAsbWFsZSwyMDA3CjE2MyxHZW50b28sQmlzY29lLDQwLjksMTMuNywyMTQsNDY1MCxmZW1hbGUsMjAwNwoxNjQsR2VudG9vLEJpc2NvZSw0OSwxNi4xLDIxNiw1NTUwLG1hbGUsMjAwNwoxNjUsR2VudG9vLEJpc2NvZSw0NS41LDEzLjcsMjE0LDQ2NTAsZmVtYWxlLDIwMDcKMTY2LEdlbnRvbyxCaXNjb2UsNDguNCwxNC42LDIxMyw1ODUwLG1hbGUsMjAwNwoxNjcsR2VudG9vLEJpc2NvZSw0NS44LDE0LjYsMjEwLDQyMDAsZmVtYWxlLDIwMDcKMTY4LEdlbnRvbyxCaXNjb2UsNDkuMywxNS43LDIxNyw1ODUwLG1hbGUsMjAwNwoxNjksR2VudG9vLEJpc2NvZSw0MiwxMy41LDIxMCw0MTUwLGZlbWFsZSwyMDA3CjE3MCxHZW50b28sQmlzY29lLDQ5LjIsMTUuMiwyMjEsNjMwMCxtYWxlLDIwMDcKMTcxLEdlbnRvbyxCaXNjb2UsNDYuMiwxNC41LDIwOSw0ODAwLGZlbWFsZSwyMDA3CjE3MixHZW50b28sQmlzY29lLDQ4LjcsMTUuMSwyMjIsNTM1MCxtYWxlLDIwMDcKMTczLEdlbnRvbyxCaXNjb2UsNTAuMiwxNC4zLDIxOCw1NzAwLG1hbGUsMjAwNwoxNzQsR2VudG9vLEJpc2NvZSw0NS4xLDE0LjUsMjE1LDUwMDAsZmVtYWxlLDIwMDcKMTc1LEdlbnRvbyxCaXNjb2UsNDYuNSwxNC41LDIxMyw0NDAwLGZlbWFsZSwyMDA3CjE3NixHZW50b28sQmlzY29lLDQ2LjMsMTUuOCwyMTUsNTA1MCxtYWxlLDIwMDcKMTc3LEdlbnRvbyxCaXNjb2UsNDIuOSwxMy4xLDIxNSw1MDAwLGZlbWFsZSwyMDA3CjE3OCxHZW50b28sQmlzY29lLDQ2LjEsMTUuMSwyMTUsNTEwMCxtYWxlLDIwMDcKMTc5LEdlbnRvbyxCaXNjb2UsNDQuNSwxNC4zLDIxNiw0MTAwLCwyMDA3CjE4MCxHZW50b28sQmlzY29lLDQ3LjgsMTUsMjE1LDU2NTAsbWFsZSwyMDA3CjE4MSxHZW50b28sQmlzY29lLDQ4LjIsMTQuMywyMTAsNDYwMCxmZW1hbGUsMjAwNwoxODIsR2VudG9vLEJpc2NvZSw1MCwxNS4zLDIyMCw1NTUwLG1hbGUsMjAwNwoxODMsR2VudG9vLEJpc2NvZSw0Ny4zLDE1LjMsMjIyLDUyNTAsbWFsZSwyMDA3CjE4NCxHZW50b28sQmlzY29lLDQyLjgsMTQuMiwyMDksNDcwMCxmZW1hbGUsMjAwNwoxODUsR2VudG9vLEJpc2NvZSw0NS4xLDE0LjUsMjA3LDUwNTAsZmVtYWxlLDIwMDcKMTg2LEdlbnRvbyxCaXNjb2UsNTkuNiwxNywyMzAsNjA1MCxtYWxlLDIwMDcKMTg3LEdlbnRvbyxCaXNjb2UsNDkuMSwxNC44LDIyMCw1MTUwLGZlbWFsZSwyMDA4CjE4OCxHZW50b28sQmlzY29lLDQ4LjQsMTYuMywyMjAsNTQwMCxtYWxlLDIwMDgKMTg5LEdlbnRvbyxCaXNjb2UsNDIuNiwxMy43LDIxMyw0OTUwLGZlbWFsZSwyMDA4CjE5MCxHZW50b28sQmlzY29lLDQ0LjQsMTcuMywyMTksNTI1MCxtYWxlLDIwMDgKMTkxLEdlbnRvbyxCaXNjb2UsNDQsMTMuNiwyMDgsNDM1MCxmZW1hbGUsMjAwOAoxOTIsR2VudG9vLEJpc2NvZSw0OC43LDE1LjcsMjA4LDUzNTAsbWFsZSwyMDA4CjE5MyxHZW50b28sQmlzY29lLDQyLjcsMTMuNywyMDgsMzk1MCxmZW1hbGUsMjAwOAoxOTQsR2VudG9vLEJpc2NvZSw0OS42LDE2LDIyNSw1NzAwLG1hbGUsMjAwOAoxOTUsR2VudG9vLEJpc2NvZSw0NS4zLDEzLjcsMjEwLDQzMDAsZmVtYWxlLDIwMDgKMTk2LEdlbnRvbyxCaXNjb2UsNDkuNiwxNSwyMTYsNDc1MCxtYWxlLDIwMDgKMTk3LEdlbnRvbyxCaXNjb2UsNTAuNSwxNS45LDIyMiw1NTUwLG1hbGUsMjAwOAoxOTgsR2VudG9vLEJpc2NvZSw0My42LDEzLjksMjE3LDQ5MDAsZmVtYWxlLDIwMDgKMTk5LEdlbnRvbyxCaXNjb2UsNDUuNSwxMy45LDIxMCw0MjAwLGZlbWFsZSwyMDA4CjIwMCxHZW50b28sQmlzY29lLDUwLjUsMTUuOSwyMjUsNTQwMCxtYWxlLDIwMDgKMjAxLEdlbnRvbyxCaXNjb2UsNDQuOSwxMy4zLDIxMyw1MTAwLGZlbWFsZSwyMDA4CjIwMixHZW50b28sQmlzY29lLDQ1LjIsMTUuOCwyMTUsNTMwMCxtYWxlLDIwMDgKMjAzLEdlbnRvbyxCaXNjb2UsNDYuNiwxNC4yLDIxMCw0ODUwLGZlbWFsZSwyMDA4CjIwNCxHZW50b28sQmlzY29lLDQ4LjUsMTQuMSwyMjAsNTMwMCxtYWxlLDIwMDgKMjA1LEdlbnRvbyxCaXNjb2UsNDUuMSwxNC40LDIxMCw0NDAwLGZlbWFsZSwyMDA4CjIwNixHZW50b28sQmlzY29lLDUwLjEsMTUsMjI1LDUwMDAsbWFsZSwyMDA4CjIwNyxHZW50b28sQmlzY29lLDQ2LjUsMTQuNCwyMTcsNDkwMCxmZW1hbGUsMjAwOAoyMDgsR2VudG9vLEJpc2NvZSw0NSwxNS40LDIyMCw1MDUwLG1hbGUsMjAwOAoyMDksR2VudG9vLEJpc2NvZSw0My44LDEzLjksMjA4LDQzMDAsZmVtYWxlLDIwMDgKMjEwLEdlbnRvbyxCaXNjb2UsNDUuNSwxNSwyMjAsNTAwMCxtYWxlLDIwMDgKMjExLEdlbnRvbyxCaXNjb2UsNDMuMiwxNC41LDIwOCw0NDUwLGZlbWFsZSwyMDA4CjIxMixHZW50b28sQmlzY29lLDUwLjQsMTUuMywyMjQsNTU1MCxtYWxlLDIwMDgKMjEzLEdlbnRvbyxCaXNjb2UsNDUuMywxMy44LDIwOCw0MjAwLGZlbWFsZSwyMDA4CjIxNCxHZW50b28sQmlzY29lLDQ2LjIsMTQuOSwyMjEsNTMwMCxtYWxlLDIwMDgKMjE1LEdlbnRvbyxCaXNjb2UsNDUuNywxMy45LDIxNCw0NDAwLGZlbWFsZSwyMDA4CjIxNixHZW50b28sQmlzY29lLDU0LjMsMTUuNywyMzEsNTY1MCxtYWxlLDIwMDgKMjE3LEdlbnRvbyxCaXNjb2UsNDUuOCwxNC4yLDIxOSw0NzAwLGZlbWFsZSwyMDA4CjIxOCxHZW50b28sQmlzY29lLDQ5LjgsMTYuOCwyMzAsNTcwMCxtYWxlLDIwMDgKMjE5LEdlbnRvbyxCaXNjb2UsNDYuMiwxNC40LDIxNCw0NjUwLCwyMDA4CjIyMCxHZW50b28sQmlzY29lLDQ5LjUsMTYuMiwyMjksNTgwMCxtYWxlLDIwMDgKMjIxLEdlbnRvbyxCaXNjb2UsNDMuNSwxNC4yLDIyMCw0NzAwLGZlbWFsZSwyMDA4CjIyMixHZW50b28sQmlzY29lLDUwLjcsMTUsMjIzLDU1NTAsbWFsZSwyMDA4CjIyMyxHZW50b28sQmlzY29lLDQ3LjcsMTUsMjE2LDQ3NTAsZmVtYWxlLDIwMDgKMjI0LEdlbnRvbyxCaXNjb2UsNDYuNCwxNS42LDIyMSw1MDAwLG1hbGUsMjAwOAoyMjUsR2VudG9vLEJpc2NvZSw0OC4yLDE1LjYsMjIxLDUxMDAsbWFsZSwyMDA4CjIyNixHZW50b28sQmlzY29lLDQ2LjUsMTQuOCwyMTcsNTIwMCxmZW1hbGUsMjAwOAoyMjcsR2VudG9vLEJpc2NvZSw0Ni40LDE1LDIxNiw0NzAwLGZlbWFsZSwyMDA4CjIyOCxHZW50b28sQmlzY29lLDQ4LjYsMTYsMjMwLDU4MDAsbWFsZSwyMDA4CjIyOSxHZW50b28sQmlzY29lLDQ3LjUsMTQuMiwyMDksNDYwMCxmZW1hbGUsMjAwOAoyMzAsR2VudG9vLEJpc2NvZSw1MS4xLDE2LjMsMjIwLDYwMDAsbWFsZSwyMDA4CjIzMSxHZW50b28sQmlzY29lLDQ1LjIsMTMuOCwyMTUsNDc1MCxmZW1hbGUsMjAwOAoyMzIsR2VudG9vLEJpc2NvZSw0NS4yLDE2LjQsMjIzLDU5NTAsbWFsZSwyMDA4CjIzMyxHZW50b28sQmlzY29lLDQ5LjEsMTQuNSwyMTIsNDYyNSxmZW1hbGUsMjAwOQoyMzQsR2VudG9vLEJpc2NvZSw1Mi41LDE1LjYsMjIxLDU0NTAsbWFsZSwyMDA5CjIzNSxHZW50b28sQmlzY29lLDQ3LjQsMTQuNiwyMTIsNDcyNSxmZW1hbGUsMjAwOQoyMzYsR2VudG9vLEJpc2NvZSw1MCwxNS45LDIyNCw1MzUwLG1hbGUsMjAwOQoyMzcsR2VudG9vLEJpc2NvZSw0NC45LDEzLjgsMjEyLDQ3NTAsZmVtYWxlLDIwMDkKMjM4LEdlbnRvbyxCaXNjb2UsNTAuOCwxNy4zLDIyOCw1NjAwLG1hbGUsMjAwOQoyMzksR2VudG9vLEJpc2NvZSw0My40LDE0LjQsMjE4LDQ2MDAsZmVtYWxlLDIwMDkKMjQwLEdlbnRvbyxCaXNjb2UsNTEuMywxNC4yLDIxOCw1MzAwLG1hbGUsMjAwOQoyNDEsR2VudG9vLEJpc2NvZSw0Ny41LDE0LDIxMiw0ODc1LGZlbWFsZSwyMDA5CjI0MixHZW50b28sQmlzY29lLDUyLjEsMTcsMjMwLDU1NTAsbWFsZSwyMDA5CjI0MyxHZW50b28sQmlzY29lLDQ3LjUsMTUsMjE4LDQ5NTAsZmVtYWxlLDIwMDkKMjQ0LEdlbnRvbyxCaXNjb2UsNTIuMiwxNy4xLDIyOCw1NDAwLG1hbGUsMjAwOQoyNDUsR2VudG9vLEJpc2NvZSw0NS41LDE0LjUsMjEyLDQ3NTAsZmVtYWxlLDIwMDkKMjQ2LEdlbnRvbyxCaXNjb2UsNDkuNSwxNi4xLDIyNCw1NjUwLG1hbGUsMjAwOQoyNDcsR2VudG9vLEJpc2NvZSw0NC41LDE0LjcsMjE0LDQ4NTAsZmVtYWxlLDIwMDkKMjQ4LEdlbnRvbyxCaXNjb2UsNTAuOCwxNS43LDIyNiw1MjAwLG1hbGUsMjAwOQoyNDksR2VudG9vLEJpc2NvZSw0OS40LDE1LjgsMjE2LDQ5MjUsbWFsZSwyMDA5CjI1MCxHZW50b28sQmlzY29lLDQ2LjksMTQuNiwyMjIsNDg3NSxmZW1hbGUsMjAwOQoyNTEsR2VudG9vLEJpc2NvZSw0OC40LDE0LjQsMjAzLDQ2MjUsZmVtYWxlLDIwMDkKMjUyLEdlbnRvbyxCaXNjb2UsNTEuMSwxNi41LDIyNSw1MjUwLG1hbGUsMjAwOQoyNTMsR2VudG9vLEJpc2NvZSw0OC41LDE1LDIxOSw0ODUwLGZlbWFsZSwyMDA5CjI1NCxHZW50b28sQmlzY29lLDU1LjksMTcsMjI4LDU2MDAsbWFsZSwyMDA5CjI1NSxHZW50b28sQmlzY29lLDQ3LjIsMTUuNSwyMTUsNDk3NSxmZW1hbGUsMjAwOQoyNTYsR2VudG9vLEJpc2NvZSw0OS4xLDE1LDIyOCw1NTAwLG1hbGUsMjAwOQoyNTcsR2VudG9vLEJpc2NvZSw0Ny4zLDEzLjgsMjE2LDQ3MjUsLDIwMDkKMjU4LEdlbnRvbyxCaXNjb2UsNDYuOCwxNi4xLDIxNSw1NTAwLG1hbGUsMjAwOQoyNTksR2VudG9vLEJpc2NvZSw0MS43LDE0LjcsMjEwLDQ3MDAsZmVtYWxlLDIwMDkKMjYwLEdlbnRvbyxCaXNjb2UsNTMuNCwxNS44LDIxOSw1NTAwLG1hbGUsMjAwOQoyNjEsR2VudG9vLEJpc2NvZSw0My4zLDE0LDIwOCw0NTc1LGZlbWFsZSwyMDA5CjI2MixHZW50b28sQmlzY29lLDQ4LjEsMTUuMSwyMDksNTUwMCxtYWxlLDIwMDkKMjYzLEdlbnRvbyxCaXNjb2UsNTAuNSwxNS4yLDIxNiw1MDAwLGZlbWFsZSwyMDA5CjI2NCxHZW50b28sQmlzY29lLDQ5LjgsMTUuOSwyMjksNTk1MCxtYWxlLDIwMDkKMjY1LEdlbnRvbyxCaXNjb2UsNDMuNSwxNS4yLDIxMyw0NjUwLGZlbWFsZSwyMDA5CjI2NixHZW50b28sQmlzY29lLDUxLjUsMTYuMywyMzAsNTUwMCxtYWxlLDIwMDkKMjY3LEdlbnRvbyxCaXNjb2UsNDYuMiwxNC4xLDIxNyw0Mzc1LGZlbWFsZSwyMDA5CjI2OCxHZW50b28sQmlzY29lLDU1LjEsMTYsMjMwLDU4NTAsbWFsZSwyMDA5CjI2OSxHZW50b28sQmlzY29lLDQ0LjUsMTUuNywyMTcsNDg3NSwsMjAwOQoyNzAsR2VudG9vLEJpc2NvZSw0OC44LDE2LjIsMjIyLDYwMDAsbWFsZSwyMDA5CjI3MSxHZW50b28sQmlzY29lLDQ3LjIsMTMuNywyMTQsNDkyNSxmZW1hbGUsMjAwOQoyNzIsR2VudG9vLEJpc2NvZSwsLCwsLDIwMDkKMjczLEdlbnRvbyxCaXNjb2UsNDYuOCwxNC4zLDIxNSw0ODUwLGZlbWFsZSwyMDA5CjI3NCxHZW50b28sQmlzY29lLDUwLjQsMTUuNywyMjIsNTc1MCxtYWxlLDIwMDkKMjc1LEdlbnRvbyxCaXNjb2UsNDUuMiwxNC44LDIxMiw1MjAwLGZlbWFsZSwyMDA5CjI3NixHZW50b28sQmlzY29lLDQ5LjksMTYuMSwyMTMsNTQwMCxtYWxlLDIwMDkKMjc3LENoaW5zdHJhcCxEcmVhbSw0Ni41LDE3LjksMTkyLDM1MDAsZmVtYWxlLDIwMDcKMjc4LENoaW5zdHJhcCxEcmVhbSw1MCwxOS41LDE5NiwzOTAwLG1hbGUsMjAwNwoyNzksQ2hpbnN0cmFwLERyZWFtLDUxLjMsMTkuMiwxOTMsMzY1MCxtYWxlLDIwMDcKMjgwLENoaW5zdHJhcCxEcmVhbSw0NS40LDE4LjcsMTg4LDM1MjUsZmVtYWxlLDIwMDcKMjgxLENoaW5zdHJhcCxEcmVhbSw1Mi43LDE5LjgsMTk3LDM3MjUsbWFsZSwyMDA3CjI4MixDaGluc3RyYXAsRHJlYW0sNDUuMiwxNy44LDE5OCwzOTUwLGZlbWFsZSwyMDA3CjI4MyxDaGluc3RyYXAsRHJlYW0sNDYuMSwxOC4yLDE3OCwzMjUwLGZlbWFsZSwyMDA3CjI4NCxDaGluc3RyYXAsRHJlYW0sNTEuMywxOC4yLDE5NywzNzUwLG1hbGUsMjAwNwoyODUsQ2hpbnN0cmFwLERyZWFtLDQ2LDE4LjksMTk1LDQxNTAsZmVtYWxlLDIwMDcKMjg2LENoaW5zdHJhcCxEcmVhbSw1MS4zLDE5LjksMTk4LDM3MDAsbWFsZSwyMDA3CjI4NyxDaGluc3RyYXAsRHJlYW0sNDYuNiwxNy44LDE5MywzODAwLGZlbWFsZSwyMDA3CjI4OCxDaGluc3RyYXAsRHJlYW0sNTEuNywyMC4zLDE5NCwzNzc1LG1hbGUsMjAwNwoyODksQ2hpbnN0cmFwLERyZWFtLDQ3LDE3LjMsMTg1LDM3MDAsZmVtYWxlLDIwMDcKMjkwLENoaW5zdHJhcCxEcmVhbSw1MiwxOC4xLDIwMSw0MDUwLG1hbGUsMjAwNwoyOTEsQ2hpbnN0cmFwLERyZWFtLDQ1LjksMTcuMSwxOTAsMzU3NSxmZW1hbGUsMjAwNwoyOTIsQ2hpbnN0cmFwLERyZWFtLDUwLjUsMTkuNiwyMDEsNDA1MCxtYWxlLDIwMDcKMjkzLENoaW5zdHJhcCxEcmVhbSw1MC4zLDIwLDE5NywzMzAwLG1hbGUsMjAwNwoyOTQsQ2hpbnN0cmFwLERyZWFtLDU4LDE3LjgsMTgxLDM3MDAsZmVtYWxlLDIwMDcKMjk1LENoaW5zdHJhcCxEcmVhbSw0Ni40LDE4LjYsMTkwLDM0NTAsZmVtYWxlLDIwMDcKMjk2LENoaW5zdHJhcCxEcmVhbSw0OS4yLDE4LjIsMTk1LDQ0MDAsbWFsZSwyMDA3CjI5NyxDaGluc3RyYXAsRHJlYW0sNDIuNCwxNy4zLDE4MSwzNjAwLGZlbWFsZSwyMDA3CjI5OCxDaGluc3RyYXAsRHJlYW0sNDguNSwxNy41LDE5MSwzNDAwLG1hbGUsMjAwNwoyOTksQ2hpbnN0cmFwLERyZWFtLDQzLjIsMTYuNiwxODcsMjkwMCxmZW1hbGUsMjAwNwozMDAsQ2hpbnN0cmFwLERyZWFtLDUwLjYsMTkuNCwxOTMsMzgwMCxtYWxlLDIwMDcKMzAxLENoaW5zdHJhcCxEcmVhbSw0Ni43LDE3LjksMTk1LDMzMDAsZmVtYWxlLDIwMDcKMzAyLENoaW5zdHJhcCxEcmVhbSw1MiwxOSwxOTcsNDE1MCxtYWxlLDIwMDcKMzAzLENoaW5zdHJhcCxEcmVhbSw1MC41LDE4LjQsMjAwLDM0MDAsZmVtYWxlLDIwMDgKMzA0LENoaW5zdHJhcCxEcmVhbSw0OS41LDE5LDIwMCwzODAwLG1hbGUsMjAwOAozMDUsQ2hpbnN0cmFwLERyZWFtLDQ2LjQsMTcuOCwxOTEsMzcwMCxmZW1hbGUsMjAwOAozMDYsQ2hpbnN0cmFwLERyZWFtLDUyLjgsMjAsMjA1LDQ1NTAsbWFsZSwyMDA4CjMwNyxDaGluc3RyYXAsRHJlYW0sNDAuOSwxNi42LDE4NywzMjAwLGZlbWFsZSwyMDA4CjMwOCxDaGluc3RyYXAsRHJlYW0sNTQuMiwyMC44LDIwMSw0MzAwLG1hbGUsMjAwOAozMDksQ2hpbnN0cmFwLERyZWFtLDQyLjUsMTYuNywxODcsMzM1MCxmZW1hbGUsMjAwOAozMTAsQ2hpbnN0cmFwLERyZWFtLDUxLDE4LjgsMjAzLDQxMDAsbWFsZSwyMDA4CjMxMSxDaGluc3RyYXAsRHJlYW0sNDkuNywxOC42LDE5NSwzNjAwLG1hbGUsMjAwOAozMTIsQ2hpbnN0cmFwLERyZWFtLDQ3LjUsMTYuOCwxOTksMzkwMCxmZW1hbGUsMjAwOAozMTMsQ2hpbnN0cmFwLERyZWFtLDQ3LjYsMTguMywxOTUsMzg1MCxmZW1hbGUsMjAwOAozMTQsQ2hpbnN0cmFwLERyZWFtLDUyLDIwLjcsMjEwLDQ4MDAsbWFsZSwyMDA4CjMxNSxDaGluc3RyYXAsRHJlYW0sNDYuOSwxNi42LDE5MiwyNzAwLGZlbWFsZSwyMDA4CjMxNixDaGluc3RyYXAsRHJlYW0sNTMuNSwxOS45LDIwNSw0NTAwLG1hbGUsMjAwOAozMTcsQ2hpbnN0cmFwLERyZWFtLDQ5LDE5LjUsMjEwLDM5NTAsbWFsZSwyMDA4CjMxOCxDaGluc3RyYXAsRHJlYW0sNDYuMiwxNy41LDE4NywzNjUwLGZlbWFsZSwyMDA4CjMxOSxDaGluc3RyYXAsRHJlYW0sNTAuOSwxOS4xLDE5NiwzNTUwLG1hbGUsMjAwOAozMjAsQ2hpbnN0cmFwLERyZWFtLDQ1LjUsMTcsMTk2LDM1MDAsZmVtYWxlLDIwMDgKMzIxLENoaW5zdHJhcCxEcmVhbSw1MC45LDE3LjksMTk2LDM2NzUsZmVtYWxlLDIwMDkKMzIyLENoaW5zdHJhcCxEcmVhbSw1MC44LDE4LjUsMjAxLDQ0NTAsbWFsZSwyMDA5CjMyMyxDaGluc3RyYXAsRHJlYW0sNTAuMSwxNy45LDE5MCwzNDAwLGZlbWFsZSwyMDA5CjMyNCxDaGluc3RyYXAsRHJlYW0sNDksMTkuNiwyMTIsNDMwMCxtYWxlLDIwMDkKMzI1LENoaW5zdHJhcCxEcmVhbSw1MS41LDE4LjcsMTg3LDMyNTAsbWFsZSwyMDA5CjMyNixDaGluc3RyYXAsRHJlYW0sNDkuOCwxNy4zLDE5OCwzNjc1LGZlbWFsZSwyMDA5CjMyNyxDaGluc3RyYXAsRHJlYW0sNDguMSwxNi40LDE5OSwzMzI1LGZlbWFsZSwyMDA5CjMyOCxDaGluc3RyYXAsRHJlYW0sNTEuNCwxOSwyMDEsMzk1MCxtYWxlLDIwMDkKMzI5LENoaW5zdHJhcCxEcmVhbSw0NS43LDE3LjMsMTkzLDM2MDAsZmVtYWxlLDIwMDkKMzMwLENoaW5zdHJhcCxEcmVhbSw1MC43LDE5LjcsMjAzLDQwNTAsbWFsZSwyMDA5CjMzMSxDaGluc3RyYXAsRHJlYW0sNDIuNSwxNy4zLDE4NywzMzUwLGZlbWFsZSwyMDA5CjMzMixDaGluc3RyYXAsRHJlYW0sNTIuMiwxOC44LDE5NywzNDUwLG1hbGUsMjAwOQozMzMsQ2hpbnN0cmFwLERyZWFtLDQ1LjIsMTYuNiwxOTEsMzI1MCxmZW1hbGUsMjAwOQozMzQsQ2hpbnN0cmFwLERyZWFtLDQ5LjMsMTkuOSwyMDMsNDA1MCxtYWxlLDIwMDkKMzM1LENoaW5zdHJhcCxEcmVhbSw1MC4yLDE4LjgsMjAyLDM4MDAsbWFsZSwyMDA5CjMzNixDaGluc3RyYXAsRHJlYW0sNDUuNiwxOS40LDE5NCwzNTI1LGZlbWFsZSwyMDA5CjMzNyxDaGluc3RyYXAsRHJlYW0sNTEuOSwxOS41LDIwNiwzOTUwLG1hbGUsMjAwOQozMzgsQ2hpbnN0cmFwLERyZWFtLDQ2LjgsMTYuNSwxODksMzY1MCxmZW1hbGUsMjAwOQozMzksQ2hpbnN0cmFwLERyZWFtLDQ1LjcsMTcsMTk1LDM2NTAsZmVtYWxlLDIwMDkKMzQwLENoaW5zdHJhcCxEcmVhbSw1NS44LDE5LjgsMjA3LDQwMDAsbWFsZSwyMDA5CjM0MSxDaGluc3RyYXAsRHJlYW0sNDMuNSwxOC4xLDIwMiwzNDAwLGZlbWFsZSwyMDA5CjM0MixDaGluc3RyYXAsRHJlYW0sNDkuNiwxOC4yLDE5MywzNzc1LG1hbGUsMjAwOQozNDMsQ2hpbnN0cmFwLERyZWFtLDUwLjgsMTksMjEwLDQxMDAsbWFsZSwyMDA5CjM0NCxDaGluc3RyYXAsRHJlYW0sNTAuMiwxOC43LDE5OCwzNzc1LGZlbWFsZSwyMDA5Cg==').then(res => res.blob()).then(blob => {
+      const downloadURL = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.href = downloadURL;
+      a.download = 'penguins.csv.csv'; a.click();
+      window.URL.revokeObjectURL(downloadURL);
+      document.body.removeChild(a);
+        });"><button class="btn btn-default downloadthis  " id="dnldts19126"><i class="bi bi-download"></i> Download </button></a></p>
+<p>Oder via dem zugehörigen R-Paket:</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"penguins"</span>, package <span class="op">=</span> <span class="st">"palmerpenguins"</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Beide Möglichkeit sind okay.</p>
+</section><section id="einstieg" class="level3" data-number="9.1.6"><h3 data-number="9.1.6" class="anchored" data-anchor-id="einstieg">
+<span class="header-section-number">9.1.6</span> Einstieg</h3>
+<p>Betrachten Sie die zwei folgenden Aussagen, die jeweils ein Forschungsziel angeben:</p>
+<ol type="1">
+<li>“Lernen für die Klausur bringt etwas!”</li>
+<li>“Wie viel bringt Lernen für die Klausur?”</li>
+</ol>
+<div id="exm-schaetzen-testen" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 9.1 </strong></span>Diskutieren Sie die epistemologische Ausrichtung sowie mögliches Für und Wider der beiden Ausrichtungen! <span class="math inline">\(\square\)</span></p>
+</div>
+</section></section><section id="schätzen-oder-testen" class="level2" data-number="9.2"><h2 data-number="9.2" class="anchored" data-anchor-id="schätzen-oder-testen">
+<span class="header-section-number">9.2</span> Schätzen oder Testen?</h2>
+<p>Forschungsfragen kann man, allgemein gesprochen, auf zwei Arten beantworten:</p>
+<ol type="1">
+<li>
+<em>Hypothesen prüfend</em>: “Die Daten widerlegen die Hypothese (nicht)”</li>
+<li>
+<em>Parameter schätzend</em>: “Der Effekt von X auf Y liegt zwischen A und B”.</li>
+</ol>
+<section id="hypothesen-prüfen" class="level3" data-number="9.2.1"><h3 data-number="9.2.1" class="anchored" data-anchor-id="hypothesen-prüfen">
+<span class="header-section-number">9.2.1</span> Hypothesen prüfen</h3>
+<p>Hypothesen prüfende Analysen kommen zu einer Ja-Nein-Aussage bzgl. einer Hypothese. Genauer muss man sagen: Im besten Fall kommen sie zu einer Ja-Nein-Aussage. Es kann natürlich sein, dass die Datenlage so nebelig oder das Problem so knifflig ist, dass man ehrlicherweise zugeben muss, dass man sich nicht sicher ist oder sagar komplett im Dunkeln tappt.</p>
+<div id="exm-lernen-hyp" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 9.2 (“Lernen erhöht den Prüfungserfolg”) </strong></span>Die Hypothese <em>Lernen erhöht den Prüfungserfolg</em> kann durch eine Studie und eine entsprechende Analyse grundsätzlich folgende drei Ergebnisse finden. 1) Die Daten widersprechen der Hypothese: Lernen bringt offenbar doch nichts für den Klausurerfolg. 2) Die Daten unterstützen die Hypothese: Lernen erhöht den Prüfungserfolg. 3) Die Daten sind uneindeutig, es ist keine Aussage zum Einfluss von Lernen auf den Prüfungserfolg möglich. <span class="math inline">\(\square\)</span></p>
+</div>
+<p>Das Prüfen einer Hypothese kann zu drei Arten von Ergebnissen führen. Die ersten beiden sind informationsreich, die dritte ist informationsarm.</p>
+<ol type="1">
+<li><p>🟢 Die Daten <em>widersprechen</em> der Hypothese: Auf Basis der Daten (und des Modells) muss man die Hypothese ablehnen (verwerfen, sagt man), also als falsch (falsifziert) betrachten oder zumindest hat die Glaubwürdigkeit der Hypothese gelitten.</p></li>
+<li><p>🟥 Die Daten <em>unterstützen</em> die Hypothese: Auf Basis der Daten (und des Modells) muss man die Hypothese annehmen (oder kann die Gegenthese zumindest nicht verwerfen). Oder zumindest hat die Hypothese an Glaubwürdigkeit gewonnen.</p></li>
+<li><p>❓ Die Datenlage ist <em>unklar</em>; zum Teil unterstützen die Daten die Hypothese zum Teil widersprechen sie ihr. Man kann keine oder kaum Schlüsse aus den Daten ziehen. In diesem Fall gibt es keinen Erkenntnisgewinn.</p></li>
+</ol>
+<p>Hypothesen prüfen ist <em>binär</em> in dem Sinne, dass sie zu “Schwarz-Weiß-Ergebnissen” führen (sofern die Datenlage stark genug ist).</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Eine gängige Variante des Hypothesen testen<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> ist das Testen der Hypothese “kein Effekt” (Null Effekt), man spricht vom <em>Nullhypothesen testen</em>. <span class="math inline">\(\square\)</span></p>
+</div>
+</div>
+</section><section id="beispiele-für-nullhypothesen" class="level3 exm-null" data-number="9.2.2"><h3 data-number="9.2.2" class="anchored" data-anchor-id="beispiele-für-nullhypothesen">
+<span class="header-section-number">9.2.2</span> Beispiele für Nullhypothesen</h3>
+<ul>
+<li>“Lernen bringt nichts”</li>
+<li>“Frauen und Männer parken gleich schnell ein”</li>
+<li>“Es gibt keinen Zusammenhang von Babies und Störchen”</li>
+<li>“Früher war es auch nicht besser (sondern gleich gut)”</li>
+<li>“Bei Frauen ist der Anteil, derer, die Statistik mögen gleich hoch wie bei Männern” (Null Unterschied zwischen den Geschlechtern) <span class="math inline">\(\square\)</span>
+</li>
+</ul></section><p><em>Vorteil</em> des Hypothesen testen ist das klare, einfache Ergebnisse, was die Entscheidungsfindung unterstützen kann, da es die Komplexität reduziert.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Man kann Hypothesen nicht bestätigen
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Karl Poppers These, dass man Hypothesen nicht bestätigen (verifizieren) kann, hat großen Einfluss auf die Wissenschaftstheorie (und Epistemologie allgemein) ausgeübt <span class="citation" data-cites="popper_logik_2013">(<a href="references.html#ref-popper_logik_2013" role="doc-biblioref">Popper 2013</a>)</span>. Schlagend ist das Beispiel zur Hypothese “Alle Schwäne sind weiß”. Auch eine große Stichprobe an weißen Schwänen kann die Wahrheit der Hypothese nicht beweisen. Schließlich ist es möglich, dass wir den schwarzen Schwan einfach noch nicht gefunden haben.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Umgekehrt reicht die (zuverlässige) Beobachtung eines einzelnen schwarzen Schwans, um die Hypothese zu widerlegen (falsifizieren). <span class="math inline">\(\square\)</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wirklich nicht?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In der Wissenschaftspraxis werden die meisten Hypothesen probabilistisch untersucht. Komplett sichere Belege, wie in Poppers Beispiel mit dem schwarzen Schwan, gibt es nicht. Das bedeutet, dass Evidenz im bestätigenden wie im widerlegenden Sinne tendenziell (probabilistisch) zu betrachten ist. Auf dieser Basis und der Basis zuverlässiger, repräsentativer Daten erscheint plausibel, dass Hypothesen sowohl bestätigt als auch widerlegt werden können <span class="citation" data-cites="kruschke_rejecting_2018 morey_bayes_2011">(<a href="references.html#ref-kruschke_rejecting_2018" role="doc-biblioref">Kruschke 2018</a>; <a href="references.html#ref-morey_bayes_2011" role="doc-biblioref">Morey und Rouder 2011</a>)</span>. <span class="math inline">\(\square\)</span></p>
+</div>
+</div>
+<section id="parameter-schätzen" class="level3" data-number="9.2.3"><h3 data-number="9.2.3" class="anchored" data-anchor-id="parameter-schätzen">
+<span class="header-section-number">9.2.3</span> Parameter schätzen</h3>
+<p>Beim Parameter schätzen untersucht man, <em>wie groß</em> ein Effekt ist, etwa der Zusammenhang zwischen X und Y. Es geht also um eine Skalierung, um ein <em>wieviel</em> und nicht um ein “ja/nein”, was beim Hypothesen testen der Fall ist.</p>
+<p>Beim Parameter schätzen gibt es zwei Varianten:</p>
+<ol type="a">
+<li><p>⚫️ Punktschätzung: Das Schätzen eines einzelnen Parameterwerts, sozusagen ein “Best Guess”</p></li>
+<li><p>📏 Bereichsschätzung: Das Schätzen eines Bereichs plausibler oder wahrscheinlicher Parameterwerte</p></li>
+</ol>
+<p>Allerdings kann man das Parameter schätzen auch wie einen Hypothesentest nutzen: Ist ein bestimmter Wert, etwa die Null, nicht im Schätzbereich enthalten, so kann man die Hypothese verwerfen, dass der Parameter gleich diesem Wert (etwa Null) ist.</p>
+<div id="exm-param-hyptest" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 9.3 (Parameterschätzen als Nullhypothesentest) </strong></span>&nbsp;</p>
+<blockquote class="blockquote">
+<p>Forschungsfrage: Sind männliche Pinguine im Schnitt schwerer als weibliche Tiere?</p>
+</blockquote>
+<p><a href="#eq-muf-mum" class="quarto-xref">Gleichung&nbsp;<span>9.1</span></a> formalisiert diese Forschungsfrage als statistische Hypothese <span class="math inline">\(H\)</span>.</p>
+<p><span id="eq-muf-mum"><span class="math display">\[H: \mu_; \ge \mu_F \rightarrow d = \mu_M - \mu_F \ge 0 \tag{9.1}\]</span></span></p>
+<p>Der Unterschied zwischen den Mittelwerten, <span class="math inline">\(d\)</span>, ist genau dann Null, wenn <span class="math inline">\(\beta_1\)</span> in unserem Regressionsmodell <code>m1</code> gleich Null ist. Entsprechend gilt <span class="math inline">\(d \ge 0\)</span> wenn <span class="math inline">\(\beta_1 \ge 0\)</span>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mc-stan.org/rstanarm/reference/stan_glm.html">stan_glm</a></span><span class="op">(</span><span class="va">body_mass_g</span> <span class="op">~</span> <span class="va">sex</span>, </span>
+<span>                  data <span class="op">=</span> <span class="va">penguins</span>, </span>
+<span>                  refresh <span class="op">=</span> <span class="fl">0</span>,  <span class="co"># unterdrückt Ausgabe der Posteriori-Stichproben</span></span>
+<span>                  seed <span class="op">=</span> <span class="fl">42</span>  <span class="co"># zur Reproduzierbarkeit</span></span>
+<span>                  <span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Dann zählen wir einfach den Anteil der Stichproben in der Post-Verteilung für die UV <code>sexmale</code>, die einen Wert größer Null aufweisen:</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m1_post</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">m1</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">m1_post</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">sexmale</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["sexmale < 0"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"FALSE","2":"4000"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>100% (4000 von 4000) Stichproben finden einen Wert größer Null für <code>sexmale</code>, das also weibliche Tiere leichter bzw. männliche Tiere schwerer sind. Entsprechend finden 0% der Stichproben einen Wert, der für das Gegenteil spricht (das weibliche Tiere schwerer wären). Damit resümieren wir, dass unser Modell 100% Wahrscheinlichkeit für die Hypothese einräumt: <span class="math inline">\(p_H = 1\)</span>. <span class="math inline">\(\square\)</span></p>
+</div>
+<p><em>Vorteil</em> der Parameterschätzung ist die Nuanciertheit des Ergebnisses, die der Komplexität echter Systeme besser Rechnung trägt.</p>
+</section></section><section id="sec-rope" class="level2" data-number="9.3"><h2 data-number="9.3" class="anchored" data-anchor-id="sec-rope">
+<span class="header-section-number">9.3</span> ROPE: Bereich von “praktisch Null”</h2>
+<p>📺 <a href="https://youtu.be/k-CB0VGRENY">Teil 2</a></p>
+<p>Nullhypothesen sind fast immer falsch, s. <a href="#fig-nullmeme" class="quarto-xref">Abbildung&nbsp;<span>9.1</span></a>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-nullmeme" class="quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-nullmeme-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/5v5531.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-nullmeme-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.1: Du testest Nullhypothesen?
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p><a href="https://imgflip.com/i/5v5531">Quelle: Imgflip Meme Generator</a></p>
+<blockquote class="blockquote">
+<p>We do not generally use null hypothesis significance testing in our own work. In the fields in which we work, we do not generally think null hyptheses can be true: in social science and public health, just about every treatment one might consider will have <em>some</em> effect, and no comparison or regression coefficient of interest will be exactly zero. We do not find it particularly helpful to formulate and test null hypothess that we knowe ahead of time cannot be true. <span class="citation" data-cites="gelman_regression_2021">(<a href="references.html#ref-gelman_regression_2021" role="doc-biblioref">Gelman, Hill, und Vehtari 2021</a>)</span></p>
+</blockquote>
+<section id="alternativen-zu-nullhypothesen" class="level3" data-number="9.3.1"><h3 data-number="9.3.1" class="anchored" data-anchor-id="alternativen-zu-nullhypothesen">
+<span class="header-section-number">9.3.1</span> Alternativen zu Nullhypothesen</h3>
+<p>Nullhypothesen, <span class="math inline">\(H_0\)</span>, sind z.B.: <span class="math inline">\(\rho=0\)</span>, <span class="math inline">\(\rho_1 = rho_2\)</span>, <span class="math inline">\(\mu_1 = \mu_2\)</span>, <span class="math inline">\(\mu=0\)</span>, <span class="math inline">\(\beta_1=0\)</span>. Nullhypothesen zu testen, ist sehr verbreitet. Ein Grund ist, dass in der Frequentistischen Statistik keine andere Art von Hypothesentest möglich ist<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<p>Ein anderer Grund ist vermutlich, … wir haben es schon immer so gemacht.</p>
+<p>Alternativen zum Testen von Nullhypothesen sind:</p>
+<ul>
+<li>Posteriori-Intervalle (PI oder HDI) berichten</li>
+<li>
+<em>Rope</em>-Konzept <span class="citation" data-cites="kruschke_rejecting_2018">(<a href="references.html#ref-kruschke_rejecting_2018" role="doc-biblioref">Kruschke 2018</a>)</span>
+</li>
+<li>Wahrscheinlichkeit von inhaltlich bedeutsamen Hypothesen quantifizieren.</li>
+<li>Wahrscheinlichkeit quantifizieren, dass der Effekt ein positives bzw. ein negatives Vorzeichen hat.</li>
+</ul></section><section id="praktisch-kein-unterschied-das-rope-konzept" class="level3" data-number="9.3.2"><h3 data-number="9.3.2" class="anchored" data-anchor-id="praktisch-kein-unterschied-das-rope-konzept">
+<span class="header-section-number">9.3.2</span> “Praktisch” kein Unterschied: Das Rope-Konzept</h3>
+<p>📺 <a href="https://www.youtube.com/watch?v=VweMjEBeQFg">ROPE-Video</a></p>
+<div id="exm-rope" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 9.4 (Beispiele für ROPE) </strong></span>Sagen wir, wenn sich zwei Preismittelwerte um höchstens <span class="math inline">\(d=100\)</span>€ unterscheiden, gilt dieser Unterschied für uns als “praktisch gleich”, “praktisch kein Unterschied” bzw. vernachlässigbar.</p>
+<p>Bei Pinguinarten definiert eine Biologin nach umfangreichem Studium der Literatur, dass ein Unterschied von max. 100g “vernachlässigbar wenig” ist.</p>
+<p>Eine findige Geschäftsfrau entscheidet für ihre Firma, dass ein Umssatzunterschied von 100k Euro “praktisch irrelevant” sei. <span class="math inline">\(\square\)</span></p>
+</div>
+<p>Nimmt man (praktisch) keinen Unterschied/Zusammenhang/Effekt an, spricht man von einer <em>Nullhypothese</em>: <span class="math inline">\(H_0\)</span>. Die Wahl von <span class="math inline">\(d\)</span> ist <em>subjektiv</em> in dem Sinne als sie von inhaltlichen Überlegungen geleitet sein sollte. Diesen Bereich bezeichnen wir den <em>Indifferenzbereich</em> (Äquivalenzzone, Bereich eines vernachlässigbaren Unterschieds oder <em>Region of practical equivalence</em>, Rope). Jetzt prüfen wir, ob ein “Großteil” der Posteriori-Stichproben im Rope liegt. Unter “Großteil” wird häufig das <em>95%-HDI</em> verstanden (das ist auch der Standard der R-Funktion <code>rope()</code>, die wir hier nutzen).</p>
+<p><em>Entscheidungsregel</em> nach <span class="citation" data-cites="kruschke_rejecting_2018">Kruschke (<a href="references.html#ref-kruschke_rejecting_2018" role="doc-biblioref">2018</a>)</span>:</p>
+<ul>
+<li>Großteil liegt <em>innerhalb</em> von Rope ➡️ <em>Annahme</em> der Nullhypothese “praktisch kein Effekt”, <span class="math inline">\(H_0\)</span>
+</li>
+<li>Großteil liegt <em>außerhalb</em> von Rope ➡️ <em>Ablehnung</em> der Nullhypothese “praktisch kein Effekt”, <span class="math inline">\(H_0\)</span>
+</li>
+<li>Ansonsten ➡️ keine Entscheidung</li>
+</ul></section><section id="vernachlässigbarer-regressionseffekt" class="level3" data-number="9.3.3"><h3 data-number="9.3.3" class="anchored" data-anchor-id="vernachlässigbarer-regressionseffekt">
+<span class="header-section-number">9.3.3</span> Vernachlässigbarer Regressionseffekt</h3>
+<p><span class="citation" data-cites="kruschke_rejecting_2018">Kruschke (<a href="references.html#ref-kruschke_rejecting_2018" role="doc-biblioref">2018</a>)</span> schlägt vor, einen Regressionskoeffizienten unter folgenden Umständen als “praktisch Null” zu bezeichnen:</p>
+<p>Wenn eine Veränderung über “praktisch den ganzen Wertebereich” von <span class="math inline">\(x\)</span> nur einen vernachlässigbaren Effekt auf <span class="math inline">\(y\)</span> hat. Ein vernachlässigbarer Effekt ist dabei <span class="math inline">\(\hat{y}= \pm 0.1 sd_y\)</span>. Der “praktisch ganze Wertebereich” von <span class="math inline">\(x\)</span> sei <span class="math inline">\(\bar{x} \pm 2 sd_x\)</span>. Resultiert der Vergleich von <span class="math inline">\(\bar{x} -2 sd\)</span> mit <span class="math inline">\(\bar{x}+2sd\)</span> nur eine Veränderung in <span class="math inline">\(\hat{y}\)</span> von <span class="math inline">\(\bar{y} - 0.1sd_y\)</span> auf <span class="math inline">\(\bar{y} + 0.1 sd_y\)</span>, so ist der Regressionskoeffizient praktisch Null, der Effekt also vernachlässigbar. Das impliziert Rope-Grenzen von <span class="math inline">\(\beta_x = \pm 0.05\)</span> für z-standardisierte Variablen.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+ROPE-Defaults
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Im der Voreinstellung umfasst die Größe des ROPE ±5% der SD der AV. <span class="math inline">\(\square\)</span></p>
+</div>
+</div>
+</section><section id="hdi-rope-entscheidungsregel-visualisiert" class="level3" data-number="9.3.4"><h3 data-number="9.3.4" class="anchored" data-anchor-id="hdi-rope-entscheidungsregel-visualisiert">
+<span class="header-section-number">9.3.4</span> HDI-Rope-Entscheidungsregel visualisiert</h3>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-kruschke-rope" class="quarto-figure quarto-figure-center anchored" width="100%" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-kruschke-rope-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/Kruschke-2018-Fig1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-kruschke-rope-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.2: Die Entscheidungsregeln zum ROPE illustiert.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-kruschke-rope" class="quarto-xref">Abbildung&nbsp;<span>9.2</span></a> illustriert die Entscheidungsregel zum ROPE für mehrere Situatioenen <span class="citation" data-cites="kruschke_rejecting_2018">(<a href="references.html#ref-kruschke_rejecting_2018" role="doc-biblioref">Kruschke 2018, Abb. 1</a>, S. 272)</span>:</p>
+<ul>
+<li>Liegt das HDI komplett außerhalb des ROPE, verwirft man die Nullhypothese.</li>
+<li>Liegt das HDI komplett innerhalb des ROPE, akzeptiert man die Nullhypothese.</li>
+<li>Ansonsten ist keine Entscheidung möglich; die Datenlage ist unklar.</li>
+</ul></section><section id="rope-berechnen" class="level3" data-number="9.3.5"><h3 data-number="9.3.5" class="anchored" data-anchor-id="rope-berechnen">
+<span class="header-section-number">9.3.5</span> Rope berechnen</h3>
+<p>Hier ist das Modell, das Gewicht als Funktion der Pinguinart erklärt (<code>m10.6</code>).</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m10.6</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mc-stan.org/rstanarm/reference/stan_glm.html">stan_glm</a></span><span class="op">(</span><span class="va">body_mass_g</span> <span class="op">~</span> <span class="va">species</span>, </span>
+<span>                  data <span class="op">=</span> <span class="va">penguins</span>, </span>
+<span>                  refresh <span class="op">=</span> <span class="fl">0</span>,  <span class="co"># unterdrückt Ausgabe der Posteriori-Stichproben</span></span>
+<span>                  seed <span class="op">=</span> <span class="fl">42</span>  <span class="co"># zur Reproduzierbarkeit</span></span>
+<span>                  <span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Den Rope berechnet man mit <code>rope(model)</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">rope</span><span class="op">(</span><span class="va">m10.6</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Parameter"],"name":[1],"type":["chr"],"align":["left"]},{"label":["CI"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["ROPE_low"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["ROPE_high"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["ROPE_Percentage"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Effects"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Component"],"name":[7],"type":["chr"],"align":["left"]}],"data":[{"1":"(Intercept)","2":"0.95","3":"-80.19545","4":"80.19545","5":"0.0000000","6":"fixed","7":"conditional","_rn_":"1"},{"1":"speciesChinstrap","2":"0.95","3":"-80.19545","4":"80.19545","5":"0.7481579","6":"fixed","7":"conditional","_rn_":"2"},{"1":"speciesGentoo","2":"0.95","3":"-80.19545","4":"80.19545","5":"0.0000000","6":"fixed","7":"conditional","_rn_":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>Die Faktorstufe <code>Chinstrap</code> von <code>species</code> hat doch einen beträchtlichen Teil ihrer Wahrscheinlichkeitsmasse der Posteriori-Verteilung im ROPE. Wir können daher für diese Gruppe das ROPE <em>nicht</em> verwerfen. Die Datenlage ist <em>unklar</em>. Es ist keine abschließende Entscheidung über die Hypothese möglich.</p>
+<p>Aber: <code>Gentoo</code> liegt zu 0% im Rope. Für Gentoo können wir das Rope <em>verwerfen.</em></p>
+<p>Das hört sich abstrakt an? Dann lassen Sie uns das lieber visualisieren.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Die angegebenen Prozentwerte beziehen sich nicht auf die 100% der Post-Verteilung, sondern (in der Voreinstellung) auf das 95%-ETI, s. <code>help(rope)</code>.</p>
+</div>
+</div>
+</section><section id="visualisierung-unserer-rope-werte-m10.6" class="level3" data-number="9.3.6"><h3 data-number="9.3.6" class="anchored" data-anchor-id="visualisierung-unserer-rope-werte-m10.6">
+<span class="header-section-number">9.3.6</span> Visualisierung unserer Rope-Werte, m10.6</h3>
+<ul>
+<li>Ein Großteil der Posteriori-Masse von <code>m10.6</code> liegt <em>nicht</em> innerhalb des Rope.</li>
+<li>Aber können wir umgekehrt sagen, dass ein Großteil außerhalb liegt? Das erkennt man optisch ganz gut.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu">rope</span><span class="op">(</span><span class="va">m10.6</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">scale_fill_okabeito</span><span class="op">(</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="1050-Schaetzen-Testen_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Das ROPE druchkreuzt die “Berge” der Posteriori-Verteilung für Chinstrap deutlich. Aber: Das 95%-HDI liegt nicht komplett innerhalb des Rope. Wir können das Rope für Chinstrap <em>nicht verwerfen</em>, aber auch <em>nicht bestätigen</em>.</p>
+<p>Gentoo hingegen wird vom vom Rope nicht durchkreuzt, es ist weit entfernt vom “blauen Fluss” des Rope: Gentoo liegt außerhalb des Rope. Es gibt einen “substanziellen” Unterschied, größer als das ROPE. Wir verwerfen die “Praktisch-Null-Hypothese” in diesem Fall.</p>
+</section><section id="finetuning-des-rope" class="level3" data-number="9.3.7"><h3 data-number="9.3.7" class="anchored" data-anchor-id="finetuning-des-rope">
+<span class="header-section-number">9.3.7</span> Finetuning des Rope</h3>
+<p>Wir können festlegen, was wir unter “praktischer Äquivalenz” verstehen, also die Grenzen des Ropes verändern. Sagen wir, 100 Gramm sind unsere Grenze für einen vernachlässigbaren Effekt, s. <a href="#fig-rope-range" class="quarto-xref">Abbildung&nbsp;<span>9.3</span></a>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">rope</span><span class="op">(</span><span class="va">m10.6</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu">rope</span><span class="op">(</span><span class="va">m10.6</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">scale_fill_okabeito</span><span class="op">(</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-rope-range" class="quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-rope-range-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="1050-Schaetzen-Testen_files/figure-html/fig-rope-range-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-rope-range-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.3: ROPE mit selber eingestellter Grenze von ±100 (Gramm)
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Im Standard werden 95%-HDI berichtet, das kann man so ändern, wenn man möchte:</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">rope</span><span class="op">(</span><span class="va">m10.6</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>,<span class="fl">100</span><span class="op">)</span>, ci <span class="op">=</span> <span class="fl">.89</span>, ci_method <span class="op">=</span> <span class="st">"ETI"</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>ETI</code> (equal tails interval) steht für ein PI. Jetzt wird berichtet, welcher Teil eines 89%-CI sich im Rope befindet.</p>
+</section><section id="beantwortung-der-forschungsfrage" class="level3" data-number="9.3.8"><h3 data-number="9.3.8" class="anchored" data-anchor-id="beantwortung-der-forschungsfrage">
+<span class="header-section-number">9.3.8</span> Beantwortung der Forschungsfrage</h3>
+<p>Für die Spezeis <em>Gentoo</em> wurde ein substanzieller Gewichtsunterschied zur Referenzgruppe, <em>Adelie</em>, vom Modell entdeckt. Für <em>Chinstrap</em> hingegen ist keine klare inferenzstatistische Aussage hinsichtlich eines Indifferenzbereichs möglich: Es ist plausibel, laut dem Modell, dass es einen praktisch bedeutsamen Unterschied gibt, aber es ist auch plausibel, dass es keinen praktisch bedeutsamen Unterschied gibt.</p>
+</section></section><section id="modellgüte" class="level2" data-number="9.4"><h2 data-number="9.4" class="anchored" data-anchor-id="modellgüte">
+<span class="header-section-number">9.4</span> Modellgüte</h2>
+<!-- ### Was ist ein kleiner, was ein großer Effekt? -->
+<!-- @cohen_statistical_1988 definiert Effektstärken in Bezug auf Mittelwertsvergleiche anhand von $d=(\mu_1 - \mu_o) / \sigma$. -->
+<!-- Für kleine, mittlere und große Werte gab er folgende Richtwerte: -->
+<!-- - klein: $d \approx 0.2$ -->
+<!-- - mittel: $d \approx 0.5$ -->
+<!-- - groß: $d \approx 0.8$ -->
+<!-- Auf dieser Basis schlägt @kruschke_rejecting_2018 einen Rope von $\pm0.1$ vor. -->
+<!-- Fällt ein Intervall (mit vorab definierter Sicherheit, z.B. 95%) komplett in das Rope, so gilt der Effekt als "praktisch null". -->
+<!-- Richtlinien für Effektstärken sind nur Notlösungen, die durch  Sachverstand ersetzt werden sollen, wo immer möglich. -->
+<!-- Man kann Effektstärken ineinander überführen, s. [hier](https://www.escal.site/), z.B. von Korrelation (*r*) zu Cohens *d* oder $R^2$. -->
+<section id="wozu-modellgüte" class="level3" data-number="9.4.1"><h3 data-number="9.4.1" class="anchored" data-anchor-id="wozu-modellgüte">
+<span class="header-section-number">9.4.1</span> Wozu Modellgüte?</h3>
+<p>Hat man ein Modell aufgestellt und geprüft und Ergebnisse erhalten, möchte man wissen, wie belastbar diese Ergebnisse sind. Ein Hinweis zur Belastbarkeit des Modellergebnisse liefern Kennwerte der Modellgüte. Diese Kennwerte zielen z.B. darauf ab, wie <em>präzise</em> die Aussagen des Modells sind. Je präziser die Aussagen eines Modells, desto nützlicher ist es natürlich. Bei einer Parameterschätzung erhält man auch Informationen zur Präzision der Schätzung: Ist der Schätzbereich schmal, so ist die Schätzung präzise (und vice versa). Allerdings könnte ein Modell aus mehreren Parameterschätzungen bestehen, die unterschiedlich präzise sind. Da kann es helfen, eine zusammenfassen Beurteilung zur Präzision, oder allgemeiner zur Güte des Modells, zu erhalten.</p>
+<p>Im Folgenden ist eine Kennzahl von mehreren gebräuchlichen und sinnvollen vorgestellt, <span class="math inline">\(R^2\)</span>.</p>
+</section><section id="modellgüte-mit-r2-bestimmen" class="level3" data-number="9.4.2"><h3 data-number="9.4.2" class="anchored" data-anchor-id="modellgüte-mit-r2-bestimmen">
+<span class="header-section-number">9.4.2</span> Modellgüte mit <span class="math inline">\(R^2\)</span> bestimmen</h3>
+<p><span class="math inline">\(R^2\)</span> gibt den Anteil der Gesamtvarianz (der AV) an, den das Modell erklärt. - Höhere Wert von <span class="math inline">\(R^2\)</span> bedeuten, dass das Modell die Daten besser erklärt. <span class="math inline">\(R^2\)</span> wird normalerweise auf Basis eines Punktschätzers definiert. Solch eine Definition lässt aber viel Information - über die Ungewissheit der Schätzung - außen vor. Daher ist es wünschenswert, diese Information in <span class="math inline">\(R^2\)</span> einfließen zu lassen: <em>Bayes-R-Quadrat</em>.</p>
+<!-- R^2_{Bayes} = \frac{\text{erklärte Varianz}}{\text{erkärte Varianz + Residualvarianz}} = \frac{var_{fit}}{var_{fit}+var_{res}} -->
+<p><!-- - $var_{fit}$ ist die Varianz der vorhergesagten Schätzwerte $\hat{y}_i$. --></p>
+<!-- ```{r echo = TRUE} -->
+<!-- r2(m10.6) -->
+<!-- ``` -->
+<p>Möchte man es ausführlicher, und im Komfort einer Bayes-Analyse schwelgen, so kann man sich die Posteriori-Verteilung von <span class="math inline">\(R2\)</span> ausgeben lassen, s. <a href="#fig-m106-r2" class="quarto-xref">Abbildung&nbsp;<span>9.4</span></a>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m10.6_r2</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">m10.6</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">r2_posterior</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">hdi</span><span class="op">(</span><span class="va">m10.6_r2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-m106-r2" class="quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-m106-r2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="1050-Schaetzen-Testen_files/figure-html/fig-m106-r2-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-m106-r2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;9.4: Die Verteilung von R-Quadrat im Modell m10.6
+</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="definition-vom-klassischen-r2" class="level3" data-number="9.4.3"><h3 data-number="9.4.3" class="anchored" data-anchor-id="definition-vom-klassischen-r2">
+<span class="header-section-number">9.4.3</span> Definition vom “klassischen” <span class="math inline">\(R^2\)</span>
+</h3>
+<p>Wie genau sind die Vorhersagen des Modells? <span class="math inline">\(\sigma\)</span> (Vorhersagefehler) quantifiziert die Streuung der Residuen <span class="math inline">\(r_i = y_i - X_i\hat{\beta}\)</span>, mit <span class="math inline">\(\hat{y}_i = X_i\hat{\beta}\)</span>. Anders gesagt: <span class="math inline">\(\hat{y} = \beta_0 + \beta_1x_1 + \beta_2x_2 + \cdots = X\hat{\beta}\)</span>. Anders gesagt gibt <span class="math inline">\(\sigma\)</span> die “typische” Abweichung einer Beobachtung vom vorhergesagten Wert an. Es ist nützlich, <span class="math inline">\(\sigma\)</span> in Bezug zu setzen zur Streuung der AV, <span class="math inline">\(sd_y=s_y\)</span>: <span class="math inline">\(R^2 = 1- (\hat{\sigma}^2/s^2_y)\)</span>. <span class="math inline">\(R2\)</span> gibt damit den Anteil der vom Modell erklärten Varianz, <span class="math inline">\(V\)</span>, an. Berechnet man das Modell mit der Methode der kleinsten Quadrate (nicht mit Bayes), dann ist der obige Ausdruck äquivalent zu: <span class="math inline">\(R^2=V_{i=1}^n \hat{y}_i/s_y^2\)</span> Die beiden obigen Ausdrücke nehmen <span class="math inline">\(\hat{y}_i\)</span> als fix (sicher) an und vernachlässigen Ungewissheit; sie sind übergewiss aus Bayes-Sicht.</p>
+</section><section id="bayes-r2" class="level3" data-number="9.4.4"><h3 data-number="9.4.4" class="anchored" data-anchor-id="bayes-r2">
+<span class="header-section-number">9.4.4</span> Bayes’ <span class="math inline">\(R^2\)</span>
+</h3>
+<p>Besser ist es (aus Bayes-Sicht), die Ungewissheit der Vorhersagen bei der Berechnung der Modellgüte miteinzubeziehen: <span class="math inline">\(\text{Bayes }R^2 = \frac{\text{erkärte Varianz}}{\text{Erklärte Varianz + Residualvarianz}}= \frac{V_{mod}}{V_{mod} + V_{res}}\)</span>.</p>
+<p><span class="math inline">\(V_{mod}\)</span> ist die Varianz in der PPV mit <span class="math inline">\(s = 1, \ldots, S\)</span> simulierten Stichproben, <span class="math inline">\(V(\hat{y}_i)\)</span> und <span class="math inline">\(V_{res}\)</span> ist die Residualvarianz im Modell. Für jede Stichprobe <span class="math inline">\(s\)</span> berechnet man die vorhergesagten Werte, <span class="math inline">\(\hat{y}_i^s\)</span>, die Residualvarianz <span class="math inline">\(\sigma^2_s\)</span> und den Anteil der erklärten Varianz: <span class="math inline">\(\text{Bayes }R^2_s = \frac{V(\hat{y}_i^s)}{V(\hat{y}_i^s+\sigma_s^2)}\)</span>, vgl. <span class="citation" data-cites="gelman_r-squared_2019">Gelman u.&nbsp;a. (<a href="references.html#ref-gelman_r-squared_2019" role="doc-biblioref">2019</a>)</span>, <span class="citation" data-cites="gelman_regression_2021">Gelman, Hill, und Vehtari (<a href="references.html#ref-gelman_regression_2021" role="doc-biblioref">2021</a>)</span>, Kap. 11.7.</p>
+</section></section><section id="fazit" class="level2" data-number="9.5"><h2 data-number="9.5" class="anchored" data-anchor-id="fazit">
+<span class="header-section-number">9.5</span> Fazit</h2>
+<p>Obwohl das Testen von Hypothesen im Moment verbreiteter ist, spricht einiges zugunsten der Vorzüge der Parameterschätzung. Möchte man aber, um sich bestimmter bestehender Forschung anzunähern, einen Hypothesentest, speziell den Test einer Nullhypothese verwenden, so bietet sich das ROPE-Verfahren an.</p>
+</section><section id="aufgaben" class="level2" data-number="9.6"><h2 data-number="9.6" class="anchored" data-anchor-id="aufgaben">
+<span class="header-section-number">9.6</span> Aufgaben</h2>
+<ol start="2" type="1">
+<li><a href="https://datenwerk.netlify.app/posts/rope-regr/rope-regr.html">rope-regr</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/rope1/rope1.html">rope1</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/rope2/rope2.html">rope2</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/rope3/rope3.html">rope3</a></li>
+</ol>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-gelman_r-squared_2019" class="csl-entry" role="listitem">
+Gelman, Andrew, Ben Goodrich, Jonah Gabry, und Aki Vehtari. 2019. <span>„R-Squared for Bayesian Regression Models“</span>. <em>The American Statistician</em> 73 (3): 307–9. <a href="https://doi.org/10.1080/00031305.2018.1549100">https://doi.org/10.1080/00031305.2018.1549100</a>.
+</div>
+<div id="ref-gelman_regression_2021" class="csl-entry" role="listitem">
+Gelman, Andrew, Jennifer Hill, und Aki Vehtari. 2021. <em>Regression and Other Stories</em>. Analytical Methods for Social Research. <span>Cambridge</span>: <span>Cambridge University Press</span>.
+</div>
+<div id="ref-kruschke_rejecting_2018" class="csl-entry" role="listitem">
+Kruschke, John K. 2018. <span>„Rejecting or <span>Accepting Parameter Values</span> in <span>Bayesian Estimation</span>“</span>. <em>Advances in Methods and Practices in Psychological Science</em> 1 (2): 270–80. <a href="https://doi.org/10.1177/2515245918771304">https://doi.org/10.1177/2515245918771304</a>.
+</div>
+<div id="ref-morey_bayes_2011" class="csl-entry" role="listitem">
+Morey, Richard D., und Jeffrey N. Rouder. 2011. <span>„Bayes Factor Approaches for Testing Interval Null Hypotheses“</span>. <em>Psychological Methods</em> 16 (4): 406–19. <a href="https://doi.org/10.1037/a0024377">https://doi.org/10.1037/a0024377</a>.
+</div>
+<div id="ref-popper_logik_2013" class="csl-entry" role="listitem">
+Popper, Karl. 2013. <em>Logik Der Forschung</em>. Herausgegeben von Herbert Keuth. <span>Akademie Verlag</span>. <a href="https://doi.org/10.1524/9783050063782">https://doi.org/10.1524/9783050063782</a>.
+</div>
+</div>
+</section><aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>vor allem in der Frequentistischen Statistik<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Tatsächlich gibt es schwarze Schwäne, aber nicht in Europa: https://en.wikipedia.org/wiki/Black_swan<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Mittlerweile gibt es Ansätze für einem Verfahren ähnlich dem ROPE-Ansatz, der weiter unten vorgestellt wird.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></aside></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Kopiert");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Kopiert");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    const typesetMath = (el) => {
+      if (window.MathJax) {
+        // MathJax Typeset
+        window.MathJax.typeset([el]);
+      } else if (window.katex) {
+        // KaTeX Render
+        var mathElements = el.getElementsByClassName("math");
+        var macros = [];
+        for (var i = 0; i < mathElements.length; i++) {
+          var texText = mathElements[i].firstChild;
+          if (mathElements[i].tagName == "SPAN") {
+            window.katex.render(texText.data, mathElements[i], {
+              displayMode: mathElements[i].classList.contains('display'),
+              throwOnError: false,
+              macros: macros,
+              fleqn: false
+            });
+          }
+        }
+      }
+    }
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        typesetMath(container);
+        return container.innerHTML
+      } else {
+        typesetMath(note);
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      typesetMath(note);
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+      for (let i=0; i<annoteTargets.length; i++) {
+        const annoteTarget = annoteTargets[i];
+        const targetCell = annoteTarget.getAttribute("data-target-cell");
+        const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+        const contentFn = () => {
+          const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          if (content) {
+            const tipContent = content.cloneNode(true);
+            tipContent.classList.add("code-annotation-tip-content");
+            return tipContent.outerHTML;
+          }
+        }
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          onShow: (instance) => {
+            selectCodeLines(instance.reference);
+            instance.reference.classList.add('code-annotation-active');
+            window.tippy.hideAll();
+          },
+          onHide: (instance) => {
+            unselectCodeLines();
+            instance.reference.classList.remove('code-annotation-active');
+          },
+          maxWidth: 300,
+          delay: [50, 0],
+          duration: [200, 0],
+          offset: [5, 10],
+          arrow: true,
+          appendTo: function(el) {
+            return el.parentElement.parentElement.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'quarto',
+          placement: 'right',
+          popperOptions: {
+            modifiers: [
+            {
+              name: 'flip',
+              options: {
+                flipVariations: false, // true by default
+                allowedAutoPlacements: ['right'],
+                fallbackPlacements: ['right', 'top', 'top-start', 'top-end'],
+              },
+            },
+            {
+              name: 'preventOverflow',
+              options: {
+                mainAxis: false,
+                altAxis: false
+              }
+            }
+            ]        
+          }      
+        };
+        window.tippy(annoteTarget, config); 
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./0900-lineare-modelle.html" class="pagination-link  aria-label=" lineare="" modelle="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Einfache lineare Modelle</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./1000-metrische-AV.html" class="pagination-link" aria-label="<span class='chapter-number'>10</span>&nbsp; <span class='chapter-title'>Fallbeispiele</span>">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Fallbeispiele</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

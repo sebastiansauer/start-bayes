@@ -1,5 +1,5 @@
 
-# Forschungsfragen mit metrischer AV
+# Fallbeispiele
 
 
 
@@ -39,7 +39,7 @@ Der Stoff dieses Kapitels orientiert sich an @mcelreath_statistical_2020, Kap. 4
 
 ### R-Pakete
 
-In diesem Kapite lwerden folgende R-Pakete benötigt:
+In diesem Kapitel werden folgende R-Pakete benötigt:
 
 ```{r}
 #| message: false
@@ -71,7 +71,7 @@ theme_set(theme_modern())
 ### Benötigte Daten
 
 
-Wir benötigen in diesem Kapitel folgende Datensätz: `kidiq`, `penguins`.
+Wir benötigen in diesem Kapitel folgende Datensätze: `kidiq`, `penguins`.
 
 #### `kidiq`
 
@@ -159,7 +159,7 @@ Allerdings kommt auch dabei nichts Wesentliches mehr hinzu, abgesehen von einer 
 
 - Wie schwer ist ein deutscher Mann der Größe 1,80m im Schnitt?
 - Welche Note kann man erwarten, wenn man nichts für die Klausur lernt?
-- Wieviel wird ein Kunde ausgeben, wenn er sich in dieser Variante des Webshops aufhält?
+- Wie viel wird ein Kunde ausgeben, wenn er sich in dieser Variante des Webshops aufhält?
 
 
 
@@ -205,7 +205,9 @@ Dabei wird folgende Nomenklatur verwendet, um die Skalenmniveaus der beteiligten
 
 
 
-## Eine binäre UV
+## `y ~ b`
+
+
 
 
 
@@ -223,6 +225,8 @@ Eine Psychologin, die im öffentlichen Dienst als Schulpsychologin arbeitet, ver
 
 >    Unterscheidet sich der mittlere IQ-Wert (`kid_score`) von Kindern in Abhängigkeit davon, ob ihre jeweilige Mutter über einen Schlusabschluss (`mom_hs`, $x=1$) verfügt (bzw. nicht, $x=0$)? (ceteris paribus)^[Häufig erlaubt uns unser Vorwissen eine gerichtete Hypothese - "größer als/kleiner als" - zu formulieren, anstelle der hier verwendeteten "empirisch ärmeren" einfachen, ungerichteten Ungleichheit. Schöner wäre natürlich noch präziser als "Ich erwarte einen größeren Wert", also z.B. "Ich erwarte einen Wert von 42!"].
 
+
+Die Modellformel zur Forschungsfrage lautet: `y ~  b` bzw. `kid_iq ~ mom_hs`.
 
 Formaler ausgedrückt und als Behauptung (Hypothese) formuliert, sieht die Forschungsfrage so aus (@eq-fofra1):
 
@@ -318,7 +322,7 @@ Das *Regressionsgewicht* (slope, $\beta_1$, $\beta$) ist der Unterschied im IQ-W
 Der Wert von `error` zeigt, wie genau die Schätzung (Vorhersage) ist bzw. wie stark Prädiktor (UV) und Kriterium (AV) zusammenhängen.
 
 
-`error` entspricht dem Vorhersagefehler, also dem Unterschied vom tatsächlichen IQ-Wert des Kindes ($\y$) zum vom Modell vorhergesagten Wert ($\hat{y}$).
+`error` entspricht dem Vorhersagefehler, also dem Unterschied vom tatsächlichen IQ-Wert des Kindes ($y$) zum vom Modell vorhergesagten Wert ($\hat{y}$).
 
 
 ### `m10.1` als Mittelwertsdifferenz 
@@ -522,7 +526,7 @@ is_in_tolerance(asis = 77.56,  # Ihr Wert
 
 Ja, unser Wert ist *innerhalb* des Toleranzbereichs. ✅ 
 
-## Eine metrische plus eine nominale UV 
+## `y ~ x + b`
 
 
 
@@ -534,7 +538,7 @@ Ja, unser Wert ist *innerhalb* des Toleranzbereichs. ✅
 
 
 
-Die Modellformel zur Forschungsfrage lautet: `y ~ x + b`.
+Die Modellformel zur Forschungsfrage lautet: `y ~ x + b` bzw. `kid_score ~ mom_iq + mom_hs`.
 
 
 Der Kausalgraph^[DAG, s. @sec-kausal] zur Modellformel sieht aus in @fig-yxb dargestellt.
@@ -548,7 +552,7 @@ Laut unserem Modell ist `y` also eine Funktion zweier (kausaler) Einflüsse, `b`
 
 mein_modell <- "dag{
 mom_hs -> kid_score
-u -> kidiq
+u -> kid_score
 mom_iq -> kid_score
 }"
 
@@ -733,7 +737,10 @@ plot(estimate_expectation(m10.3a))
 
 
 
-## Interaktion
+## `y ~ x + b + x:b`
+
+
+### Interaktion zur Modellformel hinzufügen
 
 In `m10.3` hat das Modell die Regressionsgeraden gezwungen, parallel zu sein. 
 Betrachtet man das Streudiagramm, so sieht man, das nicht-parallele Geraden besser passen.
@@ -744,7 +751,7 @@ Liegt eine Interaktion vor, so unterscheidet sich die Steigung der Geraden in de
 Liegt keine Interaktion vor, so sind die Geraden parallel.$\square$
 :::
 
-Wir berechnen mit m10.4 folgendes Modell: `kid_score ~ mom_hs + mom_iq + mom_hs:mom_iq`, s. @fig-m104 und @tbl-m104.
+Wir berechnen mit m10.4 das Modell mit folgender Modellformel: `kid_score ~ mom_hs + mom_iq + mom_hs:mom_iq`, s. @fig-m104 und @tbl-m104.
 
 ```{r m10-4, echo = TRUE}
 m10.4 <- 
@@ -801,10 +808,9 @@ Der DAG zur Modellformel sieht aus in @fig-yxbi dargestellt.
 #| echo: false
 
 mein_modell <- "dag{
-momhs -> kidscore
 u -> kid_score
-momiq -> kidscore
-momiqmom_hs -> kidscore
+mom_iq -> kid_score
+momiqmom_hs -> kid_score
 }"
 
 plot(graphLayout(mein_modell))
@@ -849,12 +855,15 @@ kid_score = -11 + 51*1 + 1.1* mom_iq + 0.5*1*mom_iq
 
 
 
-## Zentrieren von Prädiktoren
+## `y ~ x_c + b + x_c:b`
 
-Unter *Zentrieren* (to center) versteht man das Bilden der Differenz eines Messwerts zu seinem Mittelwert.^[Vgl. [Abschnitt "UV zentrieren"](https://statistik1.netlify.app/090-regression2.html#uv-zentrieren) im Kursbuch [Statistik1](https://statistik1.netlify.app/).]
+### Zentrieren von Prädiktoren
+
+Unter *Zentrieren* (to *c*enter) versteht man das Bilden der Differenz eines Messwerts zu seinem Mittelwert.^[Vgl. [Abschnitt "UV zentrieren"](https://statistik1.netlify.app/090-regression2.html#uv-zentrieren) im Kursbuch [Statistik1](https://statistik1.netlify.app/).]
 Zentrierte Werte geben also an, wie weit ein Messwert vom mittleren (typischen) Messwert entfernt ist.
 Mit zentrierten Werten ist eine Regression einfacher zu interpretieren.
-Hier zentrieren wir (nur) `mom_iq`.
+Hier zentrieren wir (nur) `mom_iq`; 
+die zentrierte Variable kennzeichnen wir durch den Suffix `_c`, also `mom_iq_c`.
 
 
 Man könnte auch `mom_hs` zentrieren,
@@ -900,7 +909,7 @@ parameters(m10.5) %>%
 ```{r plot-m10-5, fig.asp = .6, fig.width=8}
 #| echo: false
 #| label: fig-m105
-#| fig-cap: "m10.5: Interaktionsmodell mit zentriertem Prädiktor für mütterlicher Intelligenz. Wie man sieht, ist der Achsenabschnitt deutlich besser zu interpretieren als in m10.4, s. @fig-m10.4."
+#| fig-cap: "m10.5: Interaktionsmodell mit zentriertem Prädiktor für mütterlicher Intelligenz. Wie man sieht, ist der Achsenabschnitt deutlich besser zu interpretieren als in m10.4, s. @fig-m104."
 
 kidiq %>% 
   mutate(mom_hs = factor(mom_hs)) %>%  
@@ -1014,14 +1023,16 @@ Für kausale Aussagen ist mehr nötig, als einen statistischen Zusammenhang fest
 
 
 
-## Eine nominale UV mit mehreren Stufen
+## `y ~ g`
+
+
+Hier untersuchen wir ein Modell mit einer nominalen UV mit mehreren Stufen.
 
 
 
 
 ### Forschungsfrage
 
-*Hintergrund*:
 
 
 Nach Ihrem Studium wurden Sie reich als Unternehmensberater:in;
@@ -1052,7 +1063,7 @@ Ja, stimmt, an so ein Forschungsprojekt hatten Sie vorher nie auch nur nur im Tr
 
 
 
-Die allgemeine Modellformel zur Forschungsfrage lautet: `y ~ g`.
+Die allgemeine Modellformel zur Forschungsfrage lautet: `y ~ g`. 
 
 
 Der DAG zur Modellformel sieht aus in @fig-yg dargestellt.
@@ -1167,10 +1178,11 @@ ggviolin(penguins,
 
 
 
-### Mittlere Gewichtsunterschiede in der Population
+### Gewicht pro Spezies, `m10.6`
 
 Berechnen wir das mittlere Gewicht pro Spezies (Gruppe) der Pinguine, s. `m10.6` und @tbl-m106-params.
 
+Die Modellformel  für `m10.6` lautet also `body_mass_g ~ species`.
 
 
 ```{r m106, echo = TRUE}
@@ -1249,7 +1261,7 @@ In der Bayes-Statistik nutzt man - wie immer - primär die Post-Verteilung, um F
 
 
 
-## Priori-Werte
+### Priori-Werte ändern
 
 Unser Modell `m10.6` hat schwach informierte (weakly informative) Priors.
 Für Achsenabschnitt und die Regressionskoeffizienten trifft unser Golem Stan folgende Annahmen in der Voreinstellung:
@@ -1265,6 +1277,9 @@ Mehr Infos kann man sich so ausgeben lassen: `prior_summary(modell)`:
 ```{r}
 prior_summary(m10.6)
 ```
+
+
+
 
 Wo man man über mehr inhaltliches Wissen verfügt, so wird man die Prioris anpassen wollen, z.B.:
 
@@ -1392,279 +1407,8 @@ hdi(m10.6a) |> display()
 
 
 
-## Modellgüte mit R-Quadrat bestimmen
 
-### Modellgüte mit $R^2$ bestimmen
-
-
-
-$R^2$ gibt den Anteil der Gesamtvarianz (der AV) an, den das Modell erklärt.
-- Höhere Wert von $R^2$ bedeuten, dass das Modell die Daten besser erklärt.
-$R^2$ wird normalerweise auf Basis eines Punktschätzers definiert.
-Solch eine Definition lässt aber viel Information - über die Ungewissheit der Schätzung - außen vor.
-Daher ist es wünschenswert, diese Information in $R^2$ einfließen zu lassen: *Bayes-R-Quadrat*.
-
-
-
-
-
-<!-- R^2_{Bayes} = \frac{\text{erklärte Varianz}}{\text{erkärte Varianz + Residualvarianz}} = \frac{var_{fit}}{var_{fit}+var_{res}} -->
-
-<!-- - $var_{fit}$ ist die Varianz der vorhergesagten Schätzwerte $\hat{y}_i$. -->
-
-
-
-```{r echo = TRUE}
-r2(m10.6)
-```
-
-
-Möchte man es ausführlicher, und im Komfort einer Bayes-Analyse schwelgen,
-so kann man sich die Posteriori-Verteilung von $R2$ ausgeben lassen, s. @fig-m106-r2.
-
-```{r}
-#| fig.cap: "Die Verteilung von R-Quadrat im Modell m10.6"
-#| label: fig-m106-r2
-m10.6_r2 <-
-m10.6 %>% 
-  r2_posterior() %>% 
-  as_tibble()
-
-hdi(m10.6_r2) %>% 
-  plot()
-```
-
-
-
-
-### Definition vom "klassischen" $R^2$
-
-
-
-
-Wie genau sind die Vorhersagen des Modells? $\sigma$ (Vorhersagefehler) quantifiziert die Streuung der Residuen $r_i = y_i - X_i\hat{\beta}$, mit $\hat{y}_i = X_i\hat{\beta}$. 
-Anders gesagt: $\hat{y} = \beta_0 + \beta_1x_1 + \beta_2x_2 + \cdots = X\hat{\beta}$.
-Anders gesagt gibt $\sigma$ die "typische" Abweichung einer Beobachtung vom vorhergesagten Wert an.
-Es ist nützlich, $\sigma$ in Bezug zu setzen zur Streuung der AV, $sd_y=s_y$:
-$R^2 = 1- (\hat{\sigma}^2/s^2_y)$.
-$R2$ gibt damit den Anteil der vom Modell erklärten Varianz, $V$, an.
-Berechnet man das Modell mit der Methode der kleinsten Quadrate (nicht mit Bayes), dann ist der obige Ausdruck äquivalent zu:
-$R^2=V_{i=1}^n \hat{y}_i/s_y^2$
-Die beiden obigen Ausdrücke nehmen $\hat{y}_i$ als fix (sicher) an und vernachlässigen Ungewissheit; sie sind übergewiss aus Bayes-Sicht.
-
-
-
-
-### Bayes' $R^2$
-
-Besser ist es (aus Bayes-Sicht), die Ungewissheit der Vorhersagen bei der Berechnung der Modellgüte miteinzubeziehen:
-$\text{Bayes }R^2 = \frac{\text{erkärte Varianz}}{\text{Erklärte Varianz + Residualvarianz}}= \frac{V_{mod}}{V_{mod} + V_{res}}$.
-
-$V_{mod}$ ist die Varianz in der PPV mit $s = 1, \ldots, S$ simulierten Stichproben, $V(\hat{y}_i)$ und $V_{res}$ ist die Residualvarianz im Modell.
-Für jede Stichprobe $s$ berechnet man die vorhergesagten Werte, $\hat{y}_i^s$, die Residualvarianz $\sigma^2_s$ und den Anteil der erklärten Varianz:
-$\text{Bayes }R^2_s = \frac{V(\hat{y}_i^s)}{V(\hat{y}_i^s+\sigma_s^2)}$, vgl. 
-@gelman_r-squared_2019, @gelman_regression_2021, Kap. 11.7.
-
-
-
-
-
-## Nullhypothesen sind praktisch immer falsch  {#sec-rope}
-
-
-📺 [Teil 2](https://youtu.be/k-CB0VGRENY)
-
-
-
-
-Nullhypothesen sind fast immer falsch, s. @fig-nullmeme.
-
-
-```{r meme-null}
-#| echo: false
-#| label: fig-nullmeme
-#| fig-cap: "Du testest Nullhypothesen?"
-knitr::include_graphics("img/5v5531.jpg")
-```
-
-[Quelle: Imgflip Meme Generator](https://imgflip.com/i/5v5531)
-
-
-
-
-
-
-
->   We do not generally use null hypothesis significance testing in our own work. In the fields in which we work, we do not generally think null hyptheses can be true: in social science and public health, just about every treatment one might consider will have *some* effect, and no comparison or regression coefficient of interest will be exactly zero. We do not find it particularly helpful to formulate and test null hypothess that we knowe ahead of time cannot be true.
-
-
-@gelman_regression_2021
-
-
-
-
-
-
-### Alternativen zu Nullhypothesen
-
-
-Nullhypothesen, $H_0$, sind z.B.: $\rho=0$, $\rho_1 = rho_2$, $\mu_1 = \mu_2$, $\mu=0$, $\beta_1=0$.
-Nullhypothesen zu testen, ist sehr verbreitet.
-Ein Grund ist, dass in der Frequentistischen Statistik keine andere Art von Hypothesentest möglich ist^[Mittlerweile gibt es Ansätze für einem Verfahren ähnlich dem ROPE-Ansatz, der weiter unten vorgestellt wird.]
-
-Ein anderer Grund ist vermutlich, ... wir haben es schon immer so gemacht.
-
-Alternativen zum Testen von Nullhypothesen sind: 
-
-- Posteriori-Intervalle (PI oder HDI) berichten
-- *Rope*-Konzept [@kruschke_rejecting_2018]
-- Wahrscheinlichkeit von inhaltlich bedeutsamen Hypothesen quantifizieren.
-- Wahrscheinlichkeit quantifizieren, dass der Effekt ein positives bzw. ein negatives Vorzeichen hat.
-
-
-
-
-
-
-### "Praktisch" kein Unterschied: Das Rope-Konzept
-
-
-📺 [ROPE-Video](https://www.youtube.com/watch?v=VweMjEBeQFg)
-
-
-Sagen wir, wenn sich zwei Preismittelwerte um höchstens $d=100$€ unterscheiden, gilt dieser Unterschied für uns als "praktisch gleich", "praktisch kein Unterschied" bzw. vernachlässigbar.
-Nimmt man (praktisch) keinen Unterschied/Zusammenhang/Effekt an, spricht man von einer *Nullhypothese*: $H_0$.
-Die Wahl von $d$ ist *subjektiv* in dem Sinne als sie von inhaltlichen Überlegungen geleitet sein sollte.
-Diesen Bereich bezeichnen wir den *Indifferenzbereich* (Äquivalenzzone, Bereich eines vernachlässigbaren Unterschieds oder *Region of practical equivalence*, Rope). 
-Jetzt prüfen wir, ob ein "Großteil" der Posteriori-Stichproben im Rope liegt.
-Unter "Großteil" wird häufig das *95%-HDI* verstanden (das ist auch der Standard der R-Funktion `rope()`, die wir hier nutzen).
-
-
-
-*Entscheidungsregel* nach @kruschke_rejecting_2018:
-
-- Großteil liegt *innerhalb* von Rope  ➡️ *Annahme* der Nullhypothese "praktisch kein Effekt", $H_0$
-- Großteil liegt *außerhalb* von Rope  ➡️ *Ablehnung* der Nullhypothese "praktisch kein Effekt", $H_0$
-- Ansonsten  ➡️  keine Entscheidung 
-
-
-
-
-
-
-### HDI-Rope-Entscheidungsregel visualisiert
-
-```{r out.width="100%"}
-#| echo: false
-#| fig-align: "center"
-#| fig-cap: "Die Entscheidungsregeln zum ROPE illustiert."
-#| label: fig-kruschke-rope
-knitr::include_graphics("img/Kruschke-2018-Fig1.png")
-```
-
-@fig-kruschke-rope illustriert die Entscheidungsregel zum ROPE 
-für mehrere Situatioenen [@kruschke_rejecting_2018, Abbildung 1, S. 272]:
-
-- Liegt das HDI komplett außerhalb des ROPE, verwirft man die Nullhypothese.
-- Liegt das HDI komplett innerhalb des ROPE, akzeptiert man die Nullhypothese.
-- Ansonsten ist keine Entscheidung möglich; die Datenlage ist unklar.
-
-
-
-### Rope berechnen
-
-Den Rope berechnet man mit `rope(model)`.
-
-
-```{r}
-rope(m10.6)
-```
-
-Die Faktorstufe `Chinstrap` von `species` hat doch einen beträchtlichen Teil ihrer Wahrscheinlichkeitsmasse der Posteriori-Verteilung im ROPE. 
-
-Wir können daher für diese Gruppe  das ROPE *nicht* verwerfen.
-
-Aber: `Gentoo` liegt zu 0% im Rope. Für Gentoo können wir das Rope verwerfen.
-
-Das hört sich abstrakt an? Dann lassen Sie uns das lieber visualisieren.
-
-:::callout-note
-Die angegebenen Prozentwerte beziehen sich nicht auf die 100% der Post-Verteilung, sondern (in der Voreinstellung) auf das 95%-ETI, s. `help(rope)`.
-:::
-
-
-### Visualisierung unserer Rope-Werte, m10.6
-
-- Ein Großteil der Posteriori-Masse von `m10.6` liegt  *nicht* innerhalb des Rope. 
-- Aber können wir umgekehrt sagen, dass ein Großteil außerhalb liegt? Das erkennt man optisch ganz gut.
-
-```{r fig.asp = .5}
-plot(rope(m10.6)) + scale_fill_okabeito()
-```
-
-
-Das ROPE druchkreuzt die "Berge" der Posteriori-Verteilung für Chinstrap deutlich.
-Aber: Das 95%-HDI liegt nicht komplett innerhalb des Rope.
-Wir können das Rope für Chinstrap *nicht verwerfen*, aber auch *nicht bestätigen*.
-
-Gentoo hingegen wird vom vom Rope nicht durchkreuzt, 
-es ist weit entfernt vom "blauen Fluss" des Rope: Gentoo liegt außerhalb des Rope. 
-Es gibt einen "substanziellen" Unterschied, größer als das ROPE. 
-Wir verwerfen die "Praktisch-Null-Hypothese" in diesem Fall.
-
-
-
-
-### Finetuning des Rope
-
-Wir können festlegen, was wir unter "praktischer Äquivalenz" verstehen,
-also die Grenzen des Ropes verändern.
-Sagen wir, 100 Gramm sind unsere Grenze für einen vernachlässigbaren Effekt, s. @fig-rope-range.
-
-
-```{r echo = TRUE, results="hide"}
-#| label: fig-rope-range
-#| fig-cap: ROPE mit selber eingestellter Grenze von ±100 (Gramm)
-rope(m10.6, range = c(-100, 100))
-plot(rope(m10.6, range = c(-100, 100))) + scale_fill_okabeito()
-```
-
-
-
-
-
-
-Im Standard werden 95%-HDI berichtet, das kann man so ändern, wenn man möchte:
-
-```{r echo=TRUE, eval = FALSE}
-rope(m10.6, range = c(-100,100), ci = .89, ci_method = "ETI")
-```
-
-`ETI` (equal tails interval) steht für ein PI.
-Jetzt wird berichtet, welcher Teil eines 89%-CI sich im Rope befindet.
-
-
-
-
-
-
-### Beantwortung der Forschungsfrage
-
-
-Für die Spezeis *Gentoo* wurde ein substanzieller Gewichtsunterschied zur Referenzgruppe, Adelie, vom Modell entdeckt. Für *Chinstrap* hingegen  ist keine klare inferenzstatistische Aussage hinsichtlich eines Indifferenzbereichs möglich: Es ist plauibel, laut dem Modell, dass es einen praktisch bedeutsamen Unterschied gibt, aber es ist auch plausibel, dass es keinen praktisch bedeutsamen Unterschied gibt.
-
-
-
-
-
-
-
-
-
-
-
-
-## Mehrere metrische UV
+## `y ~ x1 + x2`
 
 
 
@@ -1678,13 +1422,6 @@ Für die Spezeis *Gentoo* wurde ein substanzieller Gewichtsunterschied zur Refer
 - Es geht rein darum, Zusammenhänge in den Daten - bzw. in der Population - aufzuzeigen.
 - Viele Forschungsfagen gehen allerdings weiter und haben explizit Kausalwirkungen im Fokus. Für solche Fragen ist eine deskriptive Untersuchung nicht geeignet, sondern eine Kausalanalyse ist nötig.
 
-
-[Datenquelle](https://raw.githubusercontent.com/sebastiansauer/Lehre/data/main/Data/kidiq.csv) als CSV-Datei oder alternativ:
-
-```{r echo = TRUE}
-library(rstanarm)
-data("kidiq")
-```
 
 
 
@@ -1710,8 +1447,8 @@ data("kidiq")
 
 
 
-
-### Korrelationen zur Forschungsfrage
+Es ist hilfreich, sich die Korrelationen zwischen den (metrischen) Variablen zu betrachten,
+bevor man ein (Regressions-)Modell aufstellt.
 
 
 ```{r echo = TRUE, eval = FALSE}
@@ -2009,7 +1746,6 @@ Das kann man mit *z-Standardisierung* erreichen.
 $$z = \frac{x - \bar{x}}{sd(x)}$$
 
 ```{r kidiq2, echo = TRUE}
-data("kidiq")
 kidiq2 <- 
   kidiq %>% 
   mutate(mom_iq_z = ((mom_iq - mean(mom_iq)) / sd(mom_iq)))  %>% 
@@ -2090,7 +1826,6 @@ kidiq %>%
 #| echo: false
 #| label: tbl-scale-manual
 #| tbl-cap: Z-Standardisierung ohne Extrapaket"
-data(kidiq)
 kidiq %>% 
   mutate(mom_iq_z2 = scale(mom_iq),
          mom_age_z2 = scale(mom_age),
@@ -2105,12 +1840,12 @@ kidiq %>%
 
 
 
-## Modell `m10.10`
+## `y_c ~ x1_c + x2_c`
 
 
 ### AV z-transformieren
 
-Im Modell `m10.10` sind die Prädiktoren z-transformiert (standardisiert) *und* die *AV* ebenfalls.
+In diese Abschnitt berechnen wir ein Modell (Modell `m10.10`), in dem die Prädiktoren z-transformiert sind (standardisiert) *und* die *AV* ebenfalls.
 Das Standardisieren der AV, `kid_score` ist zwar *nicht* nötig, um den Effekt der Prädiktoren (UV) auf die AV zu untersuchen.
 Standardisiert man aber die AV, so liefern die Regressionskoeffizienten (Betas) Aussage darüber,
 um wie viele *SD-*Einheiten sich die AV verändert, wenn sich ein Prädiktor um eine *SD-*Einheit verändert.
@@ -2164,43 +1899,6 @@ plot(eti(m10.10)) + scale_fill_okabeito()
 
 
 
-
-### Was ist ein kleiner, was ein großer Effekt?
-
-@cohen_statistical_1988 definiert Effektstärken in Bezug auf Mittelwertsvergleiche anhand von $d=(\mu_1 - \mu_o) / \sigma$.
-Für kleine, mittlere und große Werte gab er folgende Richtwerte:
-
-- klein: $d \approx 0.2$
-- mittel: $d \approx 0.5$
-- groß: $d \approx 0.8$
-
-Auf dieser Basis schlägt @kruschke_rejecting_2018 einen Rope von $\pm0.1$ vor.
-Fällt ein Intervall (mit vorab definierter Sicherheit, z.B. 95%) komplett in das Rope, so gilt der Effekt als "praktisch null".
-Richtlinien für Effektstärken sind nur Notlösungen, die durch  Sachverstand ersetzt werden sollen, wo immer möglich.
-Man kann Effektstärken ineinander überführen, s. [hier](https://www.escal.site/), z.B. von Korrelation (*r*) zu Cohens *d* oder $R^2$.
-
-
-
-
-### Vernachlässigbarer Regressionseffekt
-
-@kruschke_rejecting_2018 schlägt vor, einen Regressionskoeffizienten unter folgenden Umständen als "praktisch Null" zu bezeichnen:
-
-
-
-Wenn eine Veränderung über "praktisch den ganzen Wertebereich" von $x$ nur einen vernachlässigbaren Effekt auf $y$ hat.
-Ein vernachlässigbarer Effekt ist dabei $\hat{y}= \pm 0.1 sd_y$.
-Der "praktisch ganze Wertebereich" von $x$ sei $\bar{x} \pm 2 sd_x$.
-Resultiert der Vergleich von $\bar{x} -2 sd$ mit $\bar{x}+2sd$ nur eine Veränderung in $\hat{y}$ von $\bar{y} - 0.1sd_y$ auf $\bar{y} + 0.1 sd_y$, so ist der Regressionskoeffizient praktisch Null, der Effekt also vernachlässigbar.
-Das impliziert Rope-Grenzen von $\beta_x = \pm 0.05$ für z-standardisierte Variablen.
-
-
-
-
-
-
-
-
 ### Modellgüte
 
 ```{r m10-10-r2}
@@ -2221,7 +1919,7 @@ Vergleicht man viele Modelle aufs Geratewohl, so muss man von zufällig hohen We
 
 
 Wenn Sie aber unbedingt eine "objektive" Antwort auf die Frage "wie viel ist viel?" haben wollen,
-ziehen wir Herrn Cohen zu Rate:
+ziehen wir Herrn Cohen zu Rate, der eine Antwort auf die Frage "Wieviel ist viel?" gegeben hat [@cohen_power_1992]:
 
 
 ```{r}
@@ -2240,6 +1938,8 @@ Stan hat für uns folgende Prioris ausgesucht:
 prior_summary(m10.10)  # aus rstanarm
 ```
 
+
+>   🤖  Nix zu danken!
 
 Wie gesagt, Stan nimmt dafür einfach die empirischen Mittelwerte und Streuungen her^[Nicht unbedingt die feine bayesianische Art, denn die Prioris sollten ja eigentlich apriori, also vor Kenntnis der Daten, bestimmt werden. Auf der anderen Seite behauptet Stan, von uns zur Rede gestellt, dass die empirischen Mittelwerte ja doch gute Schätzer der echten Parameter sein müssten, wenn die Stichprobe, die wir ihm angeschleppt hätten, tatsächlich gut ist...].
 
@@ -2263,6 +1963,10 @@ Dadurch, dass nicht nur UV, sondern auch AV zentriert (und in der Streuung auf 1
 
 Schreibt man einen Bericht, so bietet es sich an, die Modelldefinition *zumindest* im Anhang aufzuführen.
 
+
+:::{#exm-anz-mod-m1010}
+### Anzahl der Modellparameter
+Wie viele Modellparameter hat `m10.10`?^[4: $\alpha, \beta_1, \beta_2, \sigma$]
 
 ### Beantwortung der Forschungsfrage
 
@@ -2298,10 +2002,10 @@ wenn wir sie a) explizit untersuchen, b) sich in der Literatur Belege dafür fin
 ### Verwandtheit von Korrelation und Regression
 
 
- Sind X und Y *z-standardisiert*, so sind Korrelation und Regression identisch.
+ Sind X und Y *z-standardisiert*, so sind Korrelation und Regression identisch, s. @eq-br.
 
 
-$$b = r \frac{sd_x}{sd_y}$$
+$$b = r \frac{sd_x}{sd_y}$${#eq-br}
 
 Berechnen wir dazu ein einfaches Modell mit z-standardisierten Variablen 
 und betrachten die Punktschätzer für die Regressionskoeffizienten:
@@ -2332,12 +2036,12 @@ kidiq_z %>%
 ### Prüfen der Linearitätsannahme
 
 
-Zentrale Annahme: Die AV ist eine *lineare* Funktion der einzelnen Prädiktoren: 
+Zentrale Annahme eines linearen Modells: Die AV ist eine *lineare* Funktion der einzelnen Prädiktoren, s. @eq-lm1.
 
-$$y= \alpha + \beta_1x_1 + \beta_2 x_2 + \cdots .$$ 
+$$y= \alpha + \beta_1x_1 + \beta_2 x_2 + \cdots $${#eq-lm1} 
 
-Hingegen ist es weniger, dass die AV (y) normalverteilt ist.
-Zwar nimmt die Regression häufig normalverteilte Residuen an, aber diese Annahme ist nicht wichtig, wenn es nur darum geht, die Regressionskoeffizienten zu schätzen [@gelman_regression_2021].
+Hingegen ist es weniger wichtig, dass die AV (y) normalverteilt ist.
+Zwar nimmt die Regression häufig normalverteilte Residuen an^[was auf normal verteilte AV hinauslaufen kann aber nicht muss], aber diese Annahme ist nicht wichtig, wenn es nur darum geht, die Regressionskoeffizienten zu schätzen [@gelman_regression_2021].
 
 
 
@@ -2400,8 +2104,6 @@ Unser Modell - bzw. die Stichproben unserer Posteriori-Verteilung, $y_{rep}$ ver
 
 ```{r kidiq3}
 #| echo: false
-set.seed(42)
-data(kidiq)
 kidiq3 <- 
   kidiq %>% 
   standardize(append = TRUE) %>% 
@@ -2524,10 +2226,6 @@ Unten rechts (D): Die Residuen von `mom_age_c` sind *stark* mit der AV assoziier
 
 
 Eine multiple Regression liefert die gleichen Regressionskoeffizienten wie die Modelle aus Teildiagrammen (C) und (D).
-
-
-
-
 
 
 
@@ -2668,6 +2366,8 @@ Eine Kurzdarstellung des Bayes-Inferenz findet sich [in diesem Post](https://dat
 
 📺 [Musterlösung und Aufgabe im Detail besprochen - Bayes-Modell: CovidIstress](https://www.youtube.com/watch?v=5A5bDNeB6sA)
 
+
+
 ### Ausblick: Binäre AV
 
 
@@ -2721,9 +2421,7 @@ Müssen wir mal bei Gelegenheit besser machen.
 
 
 
-### Weiterführende Literatur
 
-Weiter Hinweise zu den Themen dieses Kapitels dazu finden sich bei @gelman_regression_2021, Kap. 10, insbesondere 10.3.
 
 
 
@@ -2756,7 +2454,9 @@ Kontinuierliches Lernen ist der Schlüssel zum Erfolg.
 Genug für heute. 👍 
 
 
-### Vertiefung
+### Weiterführende Literatur
+
+Weiter Hinweise zu den Themen dieses Kapitels dazu finden sich bei @gelman_regression_2021, Kap. 10, insbesondere 10.3.
 
 @gelman_regression_2021 bieten einen Zugang mittleren Anspruchs zur Regressionsmodellierung. Das Buch ist von einem weltweit führenden Statistiker geschrieben und vermittelt tiefe Einblicke bei gleichzeitig überschaubarem mathematischen Aufwand. 
 
@@ -2783,15 +2483,7 @@ Für das vorliegende Kapitel sind insbesondere daraus die Kapitel 6,7, und 10 re
 3. [Regr-Bayes-interpret](https://datenwerk.netlify.app/posts/regr-bayes-interpret/regr-bayes-interpret)
 3. [Regr-Bayes-interpret03](https://datenwerk.netlify.app/posts/regr-bayes-interpret03/regr-bayes-interpret03)
 3. [Regr-Bayes-interpret02](https://datenwerk.netlify.app/posts/regr-bayes-interpret03/regr-bayes-interpret02)
-2. [rope-regr](https://datenwerk.netlify.app/posts/rope-regr/rope-regr.html)
-3. [rope1](https://datenwerk.netlify.app/posts/rope1/rope1.html)
-3. [rope2](https://datenwerk.netlify.app/posts/rope2/rope2.html)
-3. [rope3](https://datenwerk.netlify.app/posts/rope3/rope3.html)
 3. [rope4](https://datenwerk.netlify.app/posts/rope4/rope4.html)
-
-
-
-
 
 
 

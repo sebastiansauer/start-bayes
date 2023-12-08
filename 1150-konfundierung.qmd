@@ -695,8 +695,11 @@ estimate_prediction(m2, data = tibble(bedrooms = 2, livingArea = 1200))
 
 
 
-Andere, aber ähnliche Frage: Wieviel kostet ein Haus mit sagen wir 4 Zimmer *gemittelt* über die verschiedenen Größen von `livingArea`? Stellen Sie sich alle Häuser mit 4 Zimmern vor (also mit verschiedenen Wohnflächen). Wir möchten nur wissen, was so ein Haus "im Mittel" kostet.
-Wir möchten also die Mittelwerte pro `bedroom` schätzen, gemittelt für jeden Wert von `bedroom` über `livingArea`.
+Andere, aber ähnliche Frage: Wieviel kostet ein Haus mit sagen wir 4 Zimmer *gemittelt* über die verschiedenen Größen von `livingArea`? 
+Stellen Sie sich alle Häuser mit 4 Zimmern vor (also mit verschiedenen Wohnflächen). 
+Wir möchten nur wissen, was so ein Haus "im Mittel" kostet.
+Wir möchten also die Mittelwerte pro `bedroom` schätzen, 
+gemittelt für jeden Wert von `bedroom` über `livingArea`.
 Die Ergebnisse stehen in @tbl-m2-estimate-pred2 und sind in @fig-m2-preds visualisiert.
 
 ```{r m2-pred-means}
@@ -764,11 +767,15 @@ Behauptet etwa ein Modell, dass der Wert einer Immobilie steigt, wenn man mehr Z
 
 💡 Durch das Aufnehmen von Prädiktoren in die multiple Regression werden die Prädiktoren *kontrolliert* (adjustiert, konditioniert):
 
-Die Koeffizienten einer multiplen Regression zeigen den Zusammenhang $\beta$ des einen Prädiktors mit $y$, wenn man den (oder die) anderen Prädiktoren statistisch *konstant hält*. 
+Die Koeffizienten einer multiplen Regression zeigen den Zusammenhang $\beta$ des einen Prädiktors mit $y$, 
+wenn man den (oder die) anderen Prädiktoren statistisch *konstant hält*. 
 
-Man nennt die Koeffizienten einer multiplen Regression daher auch *parzielle Regressionskoeffizienten*. Manchmal spricht man, eher umgangssprachlich, auch vom "Netto-Effekt" eines Prädiktors, oder davon, dass ein Prädiktor "bereinigt" wurde vom (linearen) Einfluss der anderen Prädiktoren auf $y$.
+Man nennt die Koeffizienten einer multiplen Regression daher auch *parzielle Regressionskoeffizienten*. 
+Manchmal spricht man, eher umgangssprachlich, auch vom "Netto-Effekt" eines Prädiktors, 
+oder davon, dass ein Prädiktor "bereinigt" wurde vom (linearen) Einfluss der anderen Prädiktoren auf $y$.
 
-Damit kann man die Regressionskoeffizienten so interpretieren, dass Sie den Effekt des Prädiktors $x_1$ auf $y$ anzeigen *unabhängig* vom Effekt der anderen Prädiktoren, $x_2,x_3,...$ auf $y$.
+Damit kann man die Regressionskoeffizienten so interpretieren, 
+dass Sie den Effekt des Prädiktors $x_1$ auf $y$ anzeigen *unabhängig* vom Effekt der anderen Prädiktoren, $x_2,x_3,...$ auf $y$.
 
 Man kann sich dieses Konstanthalten vorstellen als eine Aufteilung in Gruppen: Der Effekt eines Prädiktors $x_1$ wird für jede Ausprägung (Gruppe) des Prädiktors $x_2$ berechnet.
 
@@ -799,9 +806,10 @@ Das Hinzufügen von Prädiktoren kann die Gewichte der übrigen Prädiktoren än
 
 
 :::callout-important
-In Beobachtungsstudien hilft nur ein (korrektes) Kausalmodell. Ohne Kausalmodell ist es nutzlos, die Regressionskoeffizienten (oder eine andere Statistik) zur Erklärung der Ursachen heranzuziehen:
+In Beobachtungsstudien hilft nur ein (korrektes) Kausalmodell. 
+Ohne Kausalmodell ist es *nutzlos*, die Regressionskoeffizienten (oder eine andere Statistik) zur Erklärung der Ursachen heranzuziehen:
 Die Regressionskoeffizienten können sich wild ändern, wenn man Prädiktoren hinzufügt oder weglässt. 
-Es können sich sogar die Vorzeichen der Regressionsgewichte ändern;
+Es können sich sogar die *Vorzeichen der Regressionsgewichte ändern*;
 in dem Fall spricht man von einem Simpson-Paradox.
 :::
 
@@ -861,7 +869,9 @@ In @fig-km1 ist `living area` eine Konfundierungsvariable für den Zusammenhang 
 
 :::{#def-confound}
 ### Konfundierungsvariable
-Eine Konfundierungsvariable (Konfundierer) ist eine Variable, die den Zusammenhang zwischen UV und AV verzerrt, wenn sie nicht kontrolliert wird [@vanderweele_definition_2013]. $\square$
+Eine Konfundierungsvariable (Konfundierer) ist eine Variable, 
+die den Zusammenhang zwischen UV und AV verzerrt, 
+wenn sie nicht kontrolliert wird [@vanderweele_definition_2013]. $\square$
 :::
 
 Wenn das Kausalmodell stimmt, dann zeigt `m2` den kausalen Effekt von `livingArea`.
@@ -893,12 +903,16 @@ confounder_triangle(x = "bedrooms",
 
 
 
-Durch das Kontrollieren ("adjustieren"), sind `bedrooms` und `price` nicht mehr korreliert, nicht mehr `d_connected`, sondern jetzt `d_separated`.
+Durch das Kontrollieren ("adjustieren"), sind `bedrooms` und `price` nicht mehr korreliert, 
+nicht mehr `d_connected`, sondern jetzt `d_separated`.
 
 
 :::{#def-blocking}
 ### Blockieren
-Das Kontrollieren eines Konfundierers (wie `living_area`) "blockt" den betreffenden Pfad, führt also dazu, dass über diesen Pfad keine Assoziation (z.B. Korrelation) zwischwen UV (`bedrooms`) und AV (`price`) mehr vorhanden ist. UV und AV sind dann `d_separated` ("getrennt"). $\square$
+Das Kontrollieren eines Konfundierers (wie `living_area`) "blockt" den betreffenden Pfad, 
+führt also dazu, 
+dass über diesen Pfad keine Assoziation (z.B. Korrelation) zwischwen UV (`bedrooms`) und AV (`price`) mehr vorhanden ist. 
+UV und AV sind dann `d_separated` ("getrennt"). $\square$
 :::
 
 
@@ -914,7 +928,8 @@ source("R-Code/controlling-confounder.R")
 
 
 
-*Ohne* Kontrollieren der Konfundierungsvariablen: Regressionsmodell `y ~ x`, @fig-p-konf1, links:
+*Ohne* Kontrollieren der Konfundierungsvariablen:
+Regressionsmodell `y ~ x`, @fig-p-konf1, links:
 Es wird (fälschlich) eine Korrelation zwischen `x` und `y`  angezeigt: Scheinkorrelation.
 *Mit* Kontrollieren der Konfundierungsvariablen: Regressionsmodell `y ~ x + group`, @fig-p-konf1, rechts.
 
@@ -935,7 +950,8 @@ p_konf2
 
 
 @fig-p-konf1, rechts, zeigt korrekt, dass es keine Korrelation zwischen `x` und `y` gibt, wenn `group` kontrolliert wird.
-Außerdem sieht man im rechten Teildiagramm, dass es ein Kontrollieren der Variable `group` durch Aufnahme als Prädiktor in die Regressionsgleichung einem Stratifizieren entspricht (getrennte Berechnung der Regressionsgerade pro Gruppe).
+Außerdem sieht man im rechten Teildiagramm, 
+dass es ein Kontrollieren der Variable `group` durch Aufnahme als Prädiktor in die Regressionsgleichung einem Stratifizieren entspricht (getrennte Berechnung der Regressionsgerade pro Gruppe).
 
 
 
@@ -1099,10 +1115,13 @@ Ein Modell, in dem alle Variablen miteinander korreliert sind,
 nennt man auch *satuiert* oder saturiertes Modell.
 So ein Modell ist empirisch *schwach*.
 Denn: Behauptet ein Modell, 
-dass die Korrelation zwischen zwei Variablen irgendeinen Wert zwischen -1 und +1 beträgt (nur nicht exakt Null), so ist das eine sehr schwache Aussage (und kaum zu falsifizieren). 
+dass die Korrelation zwischen zwei Variablen irgendeinen Wert zwischen -1 und +1 beträgt (nur nicht exakt Null), 
+so ist das eine sehr schwache Aussage (und kaum zu falsifizieren). 
 So ein Modell ist wissenschaftlich wenig wert. 
-Das ist so ähnlich wie ein Modell, das voraussagt,
-dass es morgen irgendeine Temperatur hat zwischen -30 und +30 Grad (nur nicht exakt Null). Trifft diese Temperaturvorhersage ein,
+Das ist so ähnlich wie ein Modell, 
+das voraussagt,
+dass es morgen irgendeine Temperatur hat zwischen -30 und +30 Grad (nur nicht exakt Null). 
+Trifft diese Temperaturvorhersage ein,
 so werden wir nicht gerade beeindruckt sein. 🥱
 :::
 
@@ -1319,7 +1338,8 @@ so wie wir das hier tun.
 
 ### Vertiefung
 
-Es gibt viel Literatur zu dem Thema Kausalinferenz. Ein Artikel, der einen vertieften Einblick in das Thema Konfundierung liefert z.B. @tennant_use_2020 oder @suttorp_graphical_2015.
+Es gibt viel Literatur zu dem Thema Kausalinferenz. Ein Artikel, 
+der einen vertieften Einblick in das Thema Konfundierung liefert z.B. @tennant_use_2020 oder @suttorp_graphical_2015.
 Allerdings sollte man neben Konfundierung noch die drei anderen "Atome" der Kausalinferenz - Kollision, Mediation (und Nachfahre) - kennen, um gängige Fragen der Kausalinferenz bearbeiten zu können.
 
 
