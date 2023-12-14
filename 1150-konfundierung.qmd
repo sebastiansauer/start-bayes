@@ -230,7 +230,7 @@ Die Daten stammen aus einer (fiktiven) klinischen Studie, $n=700$, hoher Qualit�
 Bei geringem Blutdruck scheint das Medikament zu schaden.
 Bei hohem Blutdrck scheint das Medikamenet auch zu schaden.
 Aber *insgesamt* (Summe über beide Gruppe) *nicht*, da scheint es zu nutzen?!
-Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, wenn er den Blutdruck nicht kennt? @pearl_causal_2016
+Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, wenn er den Blutdruck nicht kennt [@pearl_causal_2016]?
 
 
 #### Kausalmodell zur Studie B
@@ -261,6 +261,12 @@ dag_studie_b <-
           toxic -> recovery
           }
       ")
+
+
+coordinates(dag_studie_b) <-
+  list(x = c(drug = 0, pressure = 1, toxic = 1, recovery  = 2),
+       y = c(drug = 1, pressure = 0, toxic = 2, recovery = 1))
+
 
 plot(dag_studie_b)
 ```
@@ -343,14 +349,15 @@ Die Behandlung hat einen Einfluss auf die Heilung.
 Damit gibt es eine Mediation ("Kette") von Größe $\rightarrow$ Behandlung $\rightarrow$ Heilung.
 Darüber hinaus gibt es noch einen Einfluss von Größe der Nierensteine auf die Heilung.
 
-Das Kausalmodell ist in @fig-dag-studie-c dargestellt; @fig-dag-studie-c2 visualisiert alternativ.
+Das Kausalmodell ist in @fig-dag-studie-c dargestellt; @fig-dag-studie-c2 visualisiert alternativ. Beide Varianten zeigen das Gleiche. Sie können sich einen aussuchen. Hier sind beide Varianten gezeigt, damit Sie wissen, dass verschiedene Darstellungsformen möglich sind.
 
 Sollte man hier `size` kontrollieren,
 wenn man den Kausaleffekt von `treatment` schätzen möchte? 
 Oder lieber nicht kontrollieren?
 
+:::{.panel-tabset}
 
-
+### DAG links-rechts
 
 ```{r dag-studie-c}
 #| echo: false
@@ -373,6 +380,7 @@ plot(dag_studie_c)
 
 ```
 
+### DAG oben-unten
 
 ```{r dag-c2}
 #| echo: false
@@ -620,7 +628,7 @@ Zur Erinnerung: "4e+05" ist die Kurzform der wissenschaftlichen Schreibweise und
 
 `estimate_expectation(m1, dons_new_house)` erstellt *Konfidenzintervalle*.  berücksichtigt also nur *eine Quelle* von Ungewissheit:
 
-- Ungewissheiten in den Parametern (Modellkoeffizienten, $\beta_0, \beta_1, ...$)
+- Ungewissheiten in den Parametern (Modellkoeffizienten)
 
 
 Die Schätzbereiche sind in dem Fall deutlich kleiner, s. @tbl-m1-dons-new.
@@ -635,7 +643,7 @@ estimate_expectation(m1, dons_new_house)
 ```{r plot-m1-dons-new-house-show}
 #| echo: false
 #| label: tbl-m1-dons-new
-#| fig-cap: "Ungewissheit für die Parameter, also die Regressionsgerade, nicht die Beobachtungen"
+#| tbl-cap: "Ungewissheit für die Parameter, also die Regressionsgerade, nicht die Beobachtungen"
 estimate_expectation(m1, dons_new_house) |> display()
 ```
 
@@ -1004,18 +1012,20 @@ Man nennt die mittlere Variable einer Wirkkette auch einen *Mediator* und den Pf
 #| echo: false
 #| fig-cap: "Der Effekt von livingArea wird über den Mediator bedrooms auf price vermittelt."
 #| label: fig-m1-mediation
-km2 <- 
-  dagify(
-  b ~ a,
-  p ~ a,
-  p ~ b,
-  labels = c(b = "bedrooms",
-             p = "price",
-             a = "livingArea")) %>% 
-    ggdag(use_labels = "label") +
-  theme_dag()
+km_med <-
+  dagitty("dag{
+          bedrooms -> price
+          area -> price
+          area -> bedrooms
+          }
+      ")
 
-print(km2)
+coordinates(km_med) <-
+  list(x = c(area = 0, bedrooms = 1, price  = 2),
+       y = c(area = 0, bedrooms = -1, price = 0))
+
+
+plot(km_med)
 ```
 
 
@@ -1172,14 +1182,14 @@ Der DAG von `km1` ist in @fig-km1 zu sehen.
 
 ### Leider passen potenziell viele DAGs zu einer Datenlage
 
-`b`: bedrooms, `p`: price, `a` area (living area)
 
+Auf Basis der in Dons Modell dargestellten (Un-)Abhängigkeiten der Variablen sind noch weitere Kausalmodelle möglich.
+
+In @fig-kms sind diesen weiteren, möglichen Kausalmodelle für Dons Modell dargestellt. Dabei sind folgende Abkürzungen verwendet: `b`: bedrooms, `p`: price, `a` area (living area).
 
 Ja, der Job der Wissenschaft ist kein Zuckerschlecken.
 Aber wenn es einfach wäre, die Kausalstruktur der Phänomene zu entdecken,
 wären sie längst erkannt, und alle Probleme der Menschheit gelöst.
-
-In @fig-kms sind mögliche Kausalmodelle für Dons Studie dargestellt.
 
 
 ```{r dag-km1, fig.width=9}
