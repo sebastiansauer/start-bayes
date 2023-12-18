@@ -3,6 +3,11 @@
 
 ## Lernsteuerung
 
+
+\newcommand{\indep}{\perp \!\!\! \perp}
+
+
+
 ### Position im Modulverlauf
 
 @fig-modulverlauf gibt einen Überblick zum aktuellen Standort im Modulverlauf.
@@ -242,9 +247,9 @@ ggdag_adjust(coll1_dag, var = "date") +
 
 :::{#def-collision}
 ### Kollision
-Als *Kollision* (Kollisionsverzerrung, Auswahlverzerrung, engl. collider) bezeichnet man einen DAG, bei dem eine Wirkung zwei Ursachen hat (eine gemeinsame Wirkung zweier Ursachen) [@pearl_causal_2016; p. 40]0 $\square$
+Als *Kollision* (Kollisionsverzerrung, Auswahlverzerrung, engl. collider) bezeichnet man einen DAG, bei dem eine Wirkung zwei Ursachen hat (eine gemeinsame Wirkung zweier Ursachen) [@pearl_causal_2016, p. 40]. $\square$
 :::
-.
+
 Kontrolliert man  die *Wirkung* `m`, so entsteht eine *Scheinkorrelation* zwischen den Ursachen `x` und `y`.
 Kontrolliert man die Wirkung *nicht*, so entsteht *keine Scheinkorrelation* zwischen den Ursachen, s. @fig-coll1-dag, vgl. @rohrer_thinking_2018.
 
@@ -358,9 +363,11 @@ Bei positiver `eignung` wird ein Studium aufgenommen (`studium = 1`) ansonsten n
 
 
 
-`eignung` (fürs Studium) sei definiert als die Summe von `iq` und `fleiss`, plus etwas Glück:
+`eignung` (fürs Studium) sei definiert als die Summe von `iq` und `fleiss`, plus etwas Glück, s. @lst-studium.
 
 ```{r d-eignung, echo = TRUE}
+#| lst-label: lst-studium
+#| lst-cap: Eignung ist die Summe von Fleiss und Intelligenz, plus ein Quentchen Glück
 set.seed(42)  # Reproduzierbarkeit
 N <- 1e03  
 
@@ -379,7 +386,7 @@ Laut unserem Modell setzt sich Eignung zur Hälfte aus Intelligenz und zur Hälf
 
 
 
-### Schlagzeile "Schlauheit macht Studentis faul!"
+### Schlagzeile "Fleiß macht blöd!"
 
 Eine Studie untersucht den Zusammenhang von Intelligenz (iq) und Fleiß (f) bei Studentis (s).
 Ergebnis: Ein *negativer* Zusammenhang!?
@@ -425,7 +432,6 @@ d_eignung %>%
 
 
 IQ ist *nicht* unabhängig von Fleiß in unseren Daten, sondern abhängig.
-
 Nichtwissenschaftliche Berichte, etwa in einigen Medien,
 greifen gerne Befunde über Zusammenhänge auf und interpretieren die Zusammenhänge
 -- oft vorschnell -- als kausal.^[Ehrlicherweise muss man zugeben, dass auch wissenschaftliche Berichte Daten über Zusammenhänge gerne kausal interpretieren, oft vorschnell.]
@@ -435,6 +441,11 @@ greifen gerne Befunde über Zusammenhänge auf und interpretieren die Zusammenh�
 
 
 ### Kollisionsverzerrung nur bei Stratifizierung
+
+:::{#def-stratifizieren}
+### Stratifizieren
+Durch Stratifizieren wird eine Stichprobe in (homogene) Untergruppen unterteilt (sog. *Strata*). $\square$
+:::
 
 Nur durch das Stratifizieren (Aufteilen in Subgruppen, Kontrollieren, Adjustieren) tritt die Scheinkorrelation auf, s. @fig-eignung-strat.
 
@@ -448,7 +459,7 @@ Nur durch das Stratifizieren (Aufteilen in Subgruppen, Kontrollieren, Adjustiere
 
 ```{r}
 #| echo: false
-#| fig-cap: "Stratifizierung und Scheinkorrelation"
+#| fig-cap: "Stratifizierung und Scheinkorrelation. A: Keine Stratifizierung und keine Scheinkorrelation. B: Stratifizierung und Scheinkorrelation"
 #| label: fig-eignung-strat
 p1 <- d_eignung %>% 
  ggplot(aes(x = fleiss, y = iq)) +
@@ -466,6 +477,7 @@ d_eignung %>%
 
 
 plots(p1, p2,
+      tags = "A",
       title = c("Kein Stratifizierung, keine Scheinkorrelation",
                "Mit Stratifizierung gibt es Scheinkorrelation"))
 ```
@@ -534,9 +546,7 @@ Aber was ist, wenn wir vielleicht eine *u*nbekannte Variable übersehen haben? (
 
 ### Der Gespenster-DAG
 
-👻
-
-Es gibt "unheilbare" DAGs, nennen wir sie "Gespenster-DAGs",
+👻 Es gibt "unheilbare" DAGs, nennen wir sie "Gespenster-DAGs",
 in denen es nicht möglich ist, einen (unverzerrten) Kausaleffekt zu bestimmen,
 s. @fig-dag-ghost.
 Letztlich sagt uns der DAG bzw. unsere Analyse zum DAG:
@@ -551,20 +561,7 @@ Oder sammele mehr Daten."
 #| fig-cap: "Der Gespenster-DAG: Eine Identifikation der Kausaleffekt ist nicht (vollständig) möglich."
 #| out-width: "50%"
 
-# source: https://bookdown.org/content/4857/the-haunted-dag-the-causal-terror.html#confronting-confounding
-gg_fancy_dag <- function(d, x = 1, y = 1, circle = "U") {
-  
-  d %>% 
-    ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
-    geom_dag_point(aes(color = name == circle),
-                   alpha = 1/2, size = 6.5, show.legend = F) +
-    geom_point(x = x, y = y, 
-               size = 6.5, shape = 1, stroke = 1, color = "orange") +
-    geom_dag_text(color = "black") +
-    geom_dag_edges() + 
-    scale_color_manual(values = c("steelblue", "orange")) +
-    theme_dag()
-}
+source("funs/gg_fancy_dag.R")
 
 coll4_dag <-
   dagitty("dag
@@ -590,16 +587,13 @@ dagify(E ~ G + U,
 
 
 
-- `U` könnte ein ungemessener Einfluss sein, der auf `E` und `K` wirkt, etwa *Nachbarschaft*.
-
-- Die Großeltern wohnen woanders (in Spanien), daher wirkt die Nachbarschaft der Eltern und Kinder nicht auf sie.
-
-- `E` ist sowohl für `G` als auch für `U` eine Wirkung, also eine Kollisionsvariable auf diesem Pfad.
-
-- Wenn wir `E` kontrollieren, wird es den Pfad $G \rightarrow K$ verzerren, auch wenn wir niemals `U` messen.
+`U` könnte ein ungemessener Einfluss sein, der auf `E` und `K` wirkt, etwa *Nachbarschaft*.
+Die Großeltern wohnen woanders (in Spanien), daher wirkt die Nachbarschaft der Eltern und Kinder nicht auf sie.
+`E` ist sowohl für `G` als auch für `U` eine Wirkung, also eine Kollisionsvariable auf diesem Pfad.
+Wenn wir `E` kontrollieren, wird es den Pfad $G \rightarrow K$ verzerren, auch wenn wir niemals `U` messen.
 
 
-Die Sache ist in diesem Fall chancenlos. Wir müssen diesen DAG verloren geben, @mcelreath_statistical_2020, S. 180.
+Die Sache ist in diesem Fall chancenlos. Wir müssen diesen DAG verloren geben, @mcelreath_statistical_2020, S. 180; ein Gespenster-DAG. 👻 
 
 
 
@@ -626,8 +620,7 @@ Die Sache ist in diesem Fall chancenlos. Wir müssen diesen DAG verloren geben, 
 ### Hintertür
 
 Eine "Hintertür"  ist ein nicht-kausaler Pfad zwischen einer UV und einer AV. 
-
-Ein Hintertürpfad entsteht, wenn es eine alternative Route über eine oder mehrere Variable gibt, dieUV mit der AV verbindet. Dieser Pfad verzerrt die Schätzwerte des kausalen Einflusses, wenn er nicht kontrolliert wird. $\square$
+Ein Hintertürpfad entsteht, wenn es eine alternative Route über eine oder mehrere Variable gibt, die UV mit der AV verbindet. Dieser Pfad verzerrt die Schätzwerte des kausalen Einflusses, wenn er nicht kontrolliert wird. $\square$
 :::
 
 
@@ -653,19 +646,8 @@ Das Kausalmodell ist in @fig-dag-don1 dargestellt.
 #| fig-cap: "Der Preis wird sowohl von der Zimmerzahl als auch der Wohnfläche beeinflusst"
 #| out-width: "50%"
 
+source("funs/gg_simple_dag.R")
 
-# source: https://bookdown.org/content/4857/the-haunted-dag-the-causal-terror.html#confronting-confounding
-
-
-gg_simple_dag <- function(d) {
-  
-  d %>% 
-    ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
-    geom_dag_point(color = "steelblue", alpha = 1/2, size = 6.5) +
-    geom_dag_text(color = "black") +
-    geom_dag_edges() + 
-    theme_dag()
-}
 
 dag_coords <-
   tibble(name = c("a", "b", "p"),
@@ -684,11 +666,11 @@ dagify(p ~ a + b,
  Der Grund für die Konfundierung sind die zwei Pfade zwischen `b` und `p`:
  
 1. $b \rightarrow p$
-2. $b \rightarrow a \rightarrow p$
+2. $b \leftarrow a \rightarrow p$
 
 Beide Pfade erzeugen (statistische) Assoziation zwischen `b` und `p`.
 Aber nur der erste Pfad ist kausal; der zweite ist nichtkausal.
-Gäbe es nur nur den zweiten Pfad und wir würden `b` ändern, so würde sich `p` nicht ändern.
+Gäbe es nur nur den zweiten Pfad und wir würden `b` ändern, so würde sich `p` *nicht* ändern.
 
 
 
@@ -719,15 +701,15 @@ Die "Hintertür" der UV (`b`) ist jetzt zu!
 Der einzig verbleibende, erste Pfad ist der kausale Pfad und die Assoziation zwischen `b` und `p` ist jetzt komplett kausal.
 
 
-Eine berühmte Lösung, den kausalen Pfad zu isolieren, ist ein (randomsiertes, kontrolliertes) Experiment.
+Eine berühmte Lösung, den kausalen Pfad zu isolieren, ist ein (randomisiertes, kontrolliertes^[engl. randomized, controlled trial, RCT]) Experiment.
 Wenn wir den Häusern zufällig (randomisiert) eine Anzahl von Schlafzimmern (`b`) zuweisen könnten (unabhängig von ihrer Quadratmeterzahl, `a`), würde sich der Graph so ändern.
 Das Experiment *entfernt* den Einfluss von `a` auf `b`.
 Wenn wir selber die Werte von `b` einstellen im Rahmen des Experiments, so kann `a` keine Wirkung auf `b` haben.
-Damit wird der zweite Pfad, $b \rightarrow a \rightarrow p$ geschlossen ("blockiert").
+Damit wird der zweite Pfad, $b \leftarrow a \rightarrow p$ geschlossen ("blockiert").
 
 
 ::: callout-important
-Die Stärke (gut gemachter) Experimente ist, dass sie kausale Hintertüren schließen. $\square$
+Die Stärke von (gut gemachten) Experimente ist, dass sie kausale Hintertüren schließen. Damit erlauben sie (korrekte) Kausalaussagen. $\square$
 :::
 
 
@@ -851,6 +833,10 @@ p_med
 ```
 
 
+:::{#exm-mediator}
+### Mediator kontrollieren?
+Sollte man den Mediator `m` in @fig-med1 kontrollieren, wenn man den Kausaleffekt von `x` auf `y` schätzen möchte?^[Nein, durch das Kontrollieren von `m` wird der Kausalpfad von `x` zu `y` geschlossen. Es kann keine kausale Assoziation von `x` auf `y` mehr "fließen".] $\square$
+:::
 
 
 Ohne Kontrollieren ist der Pfad offen: Die Assoziation "fließt" den Pfad entlang (in beide Richtungen).
