@@ -654,6 +654,7 @@ Zur Erinnerung: "4e+05" ist die Kurzform der wissenschaftlichen Schreibweise und
 ### R-Funktionen, um Beobachtungen vorhersagen 
 
 
+`predict(m1, dons_new_house)` oder `point_estimate(m1, dons_new_house)` sagt einen *einzelnen Wert* vorher (den sog. Punktschätzer der Vorhersage).^[Bei `predict` ist dieser Wert der Median der Post-Verteilung; bei `point_estimate` kann man sich aussuchen, ob der Median, der Mittelwert oder der wahrscheinlichste Wert der Post-Verteilung als Schätzwert verwendet wird.]  Ein Intervall wird *nicht* ausgegeben.
 
 `estimate_prediction(m1, dons_new_house)` erstellt *Vorhersageintervalle*, berücksichtigt also *zwei Quellen* von Ungewissheit:
 
@@ -1209,7 +1210,11 @@ DAGs sind *azyklisch*; die Wirkung eines Knoten darf nicht wieder auf ihn zurüc
 :::
 
 
-Ein *Pfad* ist ein Weg durch den DAG, von Knoten zu Knoten über die Kanten, unabhängig von der Pfeilrichtung.
+:::{#def-pfad}
+### Pfad
+
+Ein *Pfad* ist ein Weg durch den DAG, von Knoten zu Knoten über die Kanten, unabhängig von der Pfeilrichtung. $\square$
+:::
 
 
 
@@ -1277,10 +1282,14 @@ also mit mehr Variablen.
 Etwas verursachen kann man auch (hochtrabend) als "Kausation" bezeichnen.
 
 :::callout-note
-Weiß man, was die Wirkung $W$ einer Handlung $H$ (Intervention) ist,  so hat man $H$ als Ursache von $W$ erkannt.
+Weiß man, was die Wirkung $W$ einer Handlung $H$ (Intervention) ist,  so hat man $H$ als Ursache von $W$ erkannt [@mcelreath_statistical_2020]. $\square$
 :::
   
-@mcelreath_statistical_2020
+
+:::{#def-abh}
+### Kausale Abhängigkeit
+Ist $X$ die Ursache von $Y$, so hängt $Y$ von $X$ ab: $Y$ ist (kausal) *abhängig* von $X$. $\square$
+:::
 
 
 Viele Menschen denken - fälschlich - dass Korrelation Kausation bedeuten muss, s. @fig-xkcd-causation.
@@ -1307,9 +1316,10 @@ knitr::include_graphics("img/correlation.png")
 
 
 
-
-
-Der "Schoki-DAG" in @fig-schoki-dag zeigt den DAG für das Schokoloaden-Nobelpreis-Modell.
+:::{#exm-schokidag}
+### Der Schoki-Dag
+Der "Schoki-DAG" in @fig-schoki-dag zeigt den DAG für das Schokoloaden-Nobelpreis-Modell. $\square$
+:::
 
 ```{r schok-dag, fig.width=7}
 #| echo: false
@@ -1337,18 +1347,21 @@ confounder_triangle(x = "Schoki",
 
 Sind zwei Variablen korreliert (abhängig, assoziiert), so kann es dafür zwei Gründe geben:
 
-- Kausaler Zusammenhang
-- Nichtkausaler Zusammenhang ("Scheinkorrelation")
-    
-Eine mögliche Ursache einer Scheinkorrelation ist Konfundierung.
+1. Kausaler ("echter") Zusammenhang
+2. Nichtkausaler Zusammenhang ("Scheinkorrelation")
 
-Konfundierung kann man entdecken, indem man die angenommene Konfundierungsvariable kontrolliert (adjustiert), z.B. indem man ihn als Prädiktor in eine Regression aufnimmt.
+Man ist daran interessiert, echten (also kausalen) Zusammenhang aufzudecken^[zu "identifizieren"] und Scheinkorrelation auszuschließen.
+
+Eine von zwei möglichen Ursachen einer Scheinkorrelation ist Konfundierung.^[Die andere Ursache ist die Kollisionsverzerrung, s. #sec-kausal.]
+
+Konfundierung kann man aufdecken, indem man die angenommene Konfundierungsvariable kontrolliert (adjustiert), z.B. indem man ihn als Prädiktor in eine Regression aufnimmt.
 
 Ist die Annahme einer Konfundierung korrekt, so löst sich der Scheinzusammenhang nach dem Adjustieren auf.
 
 Löst sich der Scheinzusammenhang nicht auf, sondern drehen sich die Vorzeichen der Zusammenhänge nach Adjustieren um, so spricht man einem *Simpson-Paradox*.
 
-Die Daten alleine können nie sagen, welches Kausalmodell der Fall ist in einer Beobachtungsstudie. Fachwissen (inhaltliches wissenschaftliches Wissen) ist nötig, um DAGs auszuschließen.
+Die *Daten alleine* können *nie* sagen, welches Kausalmodell der Fall ist in einer Beobachtungsstudie. 
+Fachwissen (inhaltliches wissenschaftliches Wissen) ist nötig, um DAGs auszuschließen.
 
 
 
