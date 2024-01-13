@@ -1017,7 +1017,7 @@ knitr::kable(d)
 
 Es ergeben sich folgende Wahrscheinlichkeiten:
 
-$P(A) = 2/4; P(B) = 2/4; P(A \cap B) = 1/4; P(A|B) = 1/2$
+$Pr(A) = 2/4; Pr(B) = 2/4; Pr(A \cap B) = 1/4; Pr(A|B) = 1/2$
 
 
 #### Rechenregel
@@ -1026,8 +1026,16 @@ Die Wahrscheinlichkeit für $A$, wenn $B$ schon eingetreten ist, berechnet sich 
 
 $$Pr(A|B) = \frac{Pr(A \cap B)}{Pr(B)}$${#eq-pr-cond}
 
+Außerdem gilt analog
+
+$$Pr(B|A) = \frac{Pr(B \cap A)}{Pr(A)}$${#eq-pr-cond2}
 
 
+Stochastische Unabhängigkeit ist symmetrisch: Wenn $A$ unabhängig zu $B$ ist auch $B$ unabhängig zu $A$,
+
+$$Pr(A|B) = Pr(A) \leftrightarrow Pr(B|A) = Pr(A)$${#eq-indep-symm}
+
+Man beachte, dass stochastische Unabhängigkeit und kausale Unabhängigkeit unterschiedliche Dinge sind [@henze_stochastik_2019]: Stochastische Unabhängigkeit impliziert nicht kausale Unahbängigkeit.
 
 :::{#exm-klausur-bed-wskt}
 ### Lernen und Klausur bestehen
@@ -1066,7 +1074,7 @@ Pr(B |\neg L) &= \frac{Pr(B \cap \neg L)}{Pr(\neg L)} \\
 \end{aligned}
 
 Die Wahrscheinlichkeit, zu bestehen, wenn man nicht gelernt hat, liegt bei 1 von 15,
-also ca. 7%.$\square$
+also ca. 7%.^[$Pr(L).85; Pr(\neg L) = .15; Pr(B) =.81; Pr(\neg B) = .19$]\square$
 :::
 
 
@@ -1087,10 +1095,18 @@ Dann gilt:^[Exakte Gleichheit ist in dieser Welt empirisch schwer zu finden. Dah
 
 
 
-$$P(A|B) = P(A) = P(A|\neg B). \square$${#eq-indep}
+$$Pr(A|B) = Pr(A) = Pr(A|\neg B). \square$${#eq-indep}
 
 Die Unabhängigkeit von $A$ und $B$ wird manchmal so in Kurzschreibweise ausgedrückt: $\indep(A, B) \square$.
 :::
+
+
+Setzt man @eq-pr-cond2 in @eq-indep (linke Seite) ein, so folgt^[Vgl. @eq-multtheorem]
+
+$$Pr(B \cap A) = Pr(A) \cdot Pr(B).$${#eq-indep2}
+
+
+
 
 
 :::{#exm-indep1}
@@ -1106,11 +1122,22 @@ Ich vermute, dass die Ereignisse $A$, "Augenfarbe ist blau", und $B$, "Ich liebe
 #| echo: false
 data("titanic_train")
 
+titanic2 <- 
+titanic_train %>%
+  select(Pclass, Survived, Embarked, Age) %>%
+  mutate(Survived = factor(Survived)) |> 
+  filter(Embarked %in% c("C", "Q", "S")) %>%
+  mutate(Survived = factor(Survived)) |> 
+  mutate(Age_prime_num = isprime(Age),
+         Age_prime = case_when(
+           Age_prime_num == 0 ~ "prime",
+           TRUE ~ "non-prime"
+         ),
+         Age_prime = factor(Age_prime)) %>%
+  mutate(Survived = factor(Survived))
 
 plottitanic1 <-
-titanic_train %>%
-  select(Pclass, Survived) %>%
-  mutate(Survived = factor(Survived)) %>%
+  titanic2 |> 
   ggplot(aes(x = Pclass)) +
   geom_bar(aes(fill = Survived), position = "fill") +
   theme(legend.position = "bottom")  +
@@ -1118,30 +1145,19 @@ titanic_train %>%
 
 
 plottitanic2 <-
-titanic_train %>%
-  select(Survived, Embarked) %>%
-  filter(Embarked %in% c("C", "Q", "S")) %>%
-  mutate(Survived = factor(Survived)) %>%
+  titanic2 |> 
   ggplot(aes(x = Embarked)) +
   geom_bar(aes(fill = Survived), position = "fill") +
   theme(legend.position = "bottom") +
   scale_fill_okabeito()
 
-
-
-
-
 plottitanic3 <-
-  titanic_train %>%
-  select(Survived, Age) %>%
-  mutate(Age_prime = isprime(Age),
-         Age_prime = factor(Age_prime)) %>%
-  mutate(Survived = factor(Survived)) %>%
+  titanic2 |> 
   ggplot(aes(x = Age_prime)) +
   geom_bar(aes(fill = Survived), position = "fill") +
   theme(legend.position = "bottom") +
   scale_x_discrete(breaks = c(0, 2),
-                     labels = c("Nicht Prim", "Prim")) +
+                   labels = c("Nicht Prim", "Prim")) +
   scale_fill_okabeito()
 
 # plottitanic3
@@ -1152,8 +1168,38 @@ plottitanic3 <-
 
 :::{#exm-titanic}
 ### Überleben auf der Titanic
-*Abhängig*, s. @fig-abh, links: Überleben auf der Titanic ist offenbar *abhängig* von der Passagierklasse.
-Auf der anderen Seite: Das Ereignis *Überleben* auf der Titanic ist *un*abhängig vom Ereignis *Alter ist eine Primzahl*, s. @fig-abh, rechts.$\square$
+S. @fig-abh, links: Überleben (Ü) auf der Titanic ist offenbar *abhängig* von der Passagierklasse ($K_1, K_2, K_3$). 
+In @fig-abh, links gilt also $Pr(Ü|K_1) \ne Pr(Ü|K_2) \ne Pr(Ü|K_3) \ne Pr(Ü)$.
+
+Auf der anderen Seite: Das Ereignis *Überleben* (Ü) auf der Titanic ist *un*abhängig vom Ereignis *Alter ist eine Primzahl* (P), s. @fig-abh, rechts.
+Also: $Pr(Ü|P) = Pr(Ü|\neg P) = Pr(Ü)$, vgl. @tbl-titanic-prime. 
+
+```{r}
+#| tbl-cap: "Kontingenztablle (Häufigkeiten) für 'Überleben auf der Titanic' und 'Alter ist Primzahl'. Wie man sieht, gibt es keine stochastische Abhängigkeit."
+#| label: tbl-titanic-prime
+#| echo: false
+titanic2 |> 
+  count(Survived, Age_prime) |> 
+  group_by(Survived) |> 
+  mutate(prop = n/sum(n)) |> 
+  gt::gt() |> 
+  gt::fmt_number(columns = prop, decimals = 2)
+```
+
+
+```{r}
+#| echo: false
+#| eval: false
+titanic2 |> 
+  select(Survived, Age_prime) |> 
+  table() |> 
+  prop.table(margin = 1) |> 
+  round(2) |> 
+  as.data.frame() |> 
+  kable()
+```
+
+
 :::
 
 
@@ -1179,7 +1225,7 @@ plottitanic3
 
 
 
-Zur Ab- bzw. Un-Abhängigkeit zweier Variablen, an Beispielen illustriert.
+
 
 
 
@@ -1753,7 +1799,6 @@ Das [Video zu Bayes von 3b1b](https://youtu.be/HZGCoVF3YvM) verdeutlicht das Vor
 ## Aufgaben
 
 Bearbeiten Sie die Aufgabe in der angegeben Literatur.
-
 
 1. [Additionssatz1](https://datenwerk.netlify.app/posts/additionssatz1/additionssatz1)
 2. [Nerd-gelockert](https://datenwerk.netlify.app/posts/nerd-gelockert/nerd-gelockert) 
