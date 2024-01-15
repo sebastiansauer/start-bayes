@@ -1048,6 +1048,63 @@ plot_condition <-
        x = "Gewicht (weight)",
        y = "Größe (height)") +
   scale_color_okabeito()
+
+
+k <- 3
+n <- 50
+sigma <- sigma(lm1)
+ab <- coef(lm1); a <- ab[1]; b <- ab[2]
+
+x <- seq(-k*sigma, k*sigma, length.out = n)
+y <- dnorm(x, 0, sigma)/dnorm(0, 0, sigma) * 1
+
+x0 <- 40
+y0 <- a+b*x0
+path1 <- data.frame(x = y + x0, y = x + y0)
+segment1 <- data.frame(x = x0, y = y0 - k*sigma, xend = x0, yend = y0 + k*sigma)
+
+x0 <- 45
+y0 <- a+b*x0
+path2 <- data.frame(x = y + x0, y = x + y0)
+segment2 <- data.frame(x = x0, y = y0 - k*sigma, xend = x0, yend = y0 + k*sigma)
+
+x0 <- 50
+y0 <- a+b*x0
+path3 <- data.frame(x = y + x0, y = x + y0)
+segment3 <- data.frame(x = x0, y = y0 - k*sigma, xend = x0, yend = y0 + k*sigma)
+
+
+x0 <- 55
+y0 <- a+b*x0
+path4 <- data.frame(x = y + x0, y = x + y0)
+segment4 <- data.frame(x = x0, y = y0 - k*sigma, xend = x0, yend = y0 + k*sigma)
+
+plot_condition_with_cond_post <- 
+plot_condition +
+  geom_path(aes(x,y), data = path1, 
+            color = okabeito_colors()[1]) +
+  geom_segment(aes(x=x,y=y,xend=xend,yend=yend), 
+               data = segment1,
+               color = okabeito_colors()[1]) +
+  
+  geom_path(aes(x,y), data = path2, 
+            color = okabeito_colors()[2]) +
+  geom_segment(aes(x=x,y=y,xend=xend,yend=yend), 
+               data = segment2,
+               color = okabeito_colors()[2]) +
+  
+   geom_path(aes(x,y), data = path3, 
+            color = okabeito_colors()[3]) +
+  geom_segment(aes(x=x,y=y,xend=xend,yend=yend), 
+               data = segment3,
+               color = okabeito_colors()[3]) +
+  
+   geom_path(aes(x,y), data = path4, 
+            color = okabeito_colors()[4]) +
+  geom_segment(aes(x=x,y=y,xend=xend,yend=yend), 
+               data = segment4,
+               color = okabeito_colors()[4]) 
+
 ```
 
 ```{r m3}
@@ -1180,10 +1237,11 @@ p_post_at <-
 #| echo: false
 #| fig-asp: 1
 #| label: fig-post42
-#| fig-cap: "Für jeden beliebigen Prädiktorwert kann man eine Post-Verteilung bekommen. A: Regressionsmodell mit einigen ausgewählten Gewichtswerten. B: Für jeden beliebigen Gewichtswert bekommt man eine Post-Verteilung"
+#| fig-cap: "Für jeden beliebigen Prädiktorwert kann man eine Post-Verteilung bekommen. A: Regressionsmodell mit einigen ausgewählten Gewichtswerten. Es ist jeweils die Wahrscheinlichkeitsverteilung für den vorhergesagten Y-Wert dargestellt (hier sind die Verteilungen zu groß dargestellt zur besseren Sichtbarkeit). B: Für jeden beliebigen Gewichtswert (Y) bekommt man eine (auf den jeweiligen X-Wert bedingten) Post-Verteilung."
 
 
-plots(plot_condition, p_post_at, n_rows = 2, tags = "A")
+plots(plot_condition_with_cond_post, p_post_at, 
+      n_rows = 2, tags = "A")
 ```
 
 
