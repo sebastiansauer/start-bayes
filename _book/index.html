@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.513">
+<meta name="generator" content="quarto-1.4.544">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Sebastian Sauer">
 <title>Start:Bayes!</title>
@@ -80,6 +80,7 @@ div.csl-indent {
     "search-more-match-text": "weitere Treffer in diesem Dokument",
     "search-more-matches-text": "weitere Treffer in diesem Dokument",
     "search-clear-button-title": "Zurücksetzen",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Abbrechen",
     "search-submit-button-title": "Abschicken",
     "search-label": "Suchen"
@@ -87,7 +88,32 @@ div.csl-indent {
 }</script><meta name="mermaid-theme" content="neutral">
 <script src="site_libs/quarto-diagram/mermaid.min.js"></script><script src="site_libs/quarto-diagram/mermaid-init.js"></script><link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="styles.css">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="styles.css">
 </head>
 <body class="nav-sidebar floating">
 
@@ -109,7 +135,7 @@ div.csl-indent {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Start:Bayes!</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/sebastiansauer/start-bayes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/sebastiansauer/start-bayes" title="Quellcode" class="quarto-navigation-tool px-1" aria-label="Quellcode"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Dunkelmodus umschalten"><i class="bi"></i></a>
 </div>
     </div>
@@ -292,12 +318,14 @@ div.csl-indent {
   <li><a href="#voraussetzungen" id="toc-voraussetzungen" class="nav-link" data-scroll-target="#voraussetzungen"><span class="header-section-number">1.1.5</span> Voraussetzungen</a></li>
   </ul>
 </li>
-  <li><a href="#hinweise" id="toc-hinweise" class="nav-link" data-scroll-target="#hinweise"><span class="header-section-number">1.2</span> Hinweise</a></li>
-  <li><a href="#tutorium" id="toc-tutorium" class="nav-link" data-scroll-target="#tutorium"><span class="header-section-number">1.3</span> Tutorium</a></li>
-  <li><a href="#pr%C3%BCfung" id="toc-prüfung" class="nav-link" data-scroll-target="#pr%C3%BCfung"><span class="header-section-number">1.4</span> Prüfung</a></li>
-  <li><a href="#zitation" id="toc-zitation" class="nav-link" data-scroll-target="#zitation"><span class="header-section-number">1.5</span> Zitation</a></li>
-  <li><a href="#zum-autor" id="toc-zum-autor" class="nav-link" data-scroll-target="#zum-autor"><span class="header-section-number">1.6</span> Zum Autor</a></li>
-  <li><a href="#technische-details" id="toc-technische-details" class="nav-link" data-scroll-target="#technische-details"><span class="header-section-number">1.7</span> Technische Details</a></li>
+  <li><a href="#lernhilfen" id="toc-lernhilfen" class="nav-link" data-scroll-target="#lernhilfen"><span class="header-section-number">1.2</span> Lernhilfen</a></li>
+  <li><a href="#software" id="toc-software" class="nav-link" data-scroll-target="#software"><span class="header-section-number">1.3</span> Software</a></li>
+  <li><a href="#hinweise" id="toc-hinweise" class="nav-link" data-scroll-target="#hinweise"><span class="header-section-number">1.4</span> Hinweise</a></li>
+  <li><a href="#tutorium" id="toc-tutorium" class="nav-link" data-scroll-target="#tutorium"><span class="header-section-number">1.5</span> Tutorium</a></li>
+  <li><a href="#pr%C3%BCfung" id="toc-prüfung" class="nav-link" data-scroll-target="#pr%C3%BCfung"><span class="header-section-number">1.6</span> Prüfung</a></li>
+  <li><a href="#zitation" id="toc-zitation" class="nav-link" data-scroll-target="#zitation"><span class="header-section-number">1.7</span> Zitation</a></li>
+  <li><a href="#zum-autor" id="toc-zum-autor" class="nav-link" data-scroll-target="#zum-autor"><span class="header-section-number">1.8</span> Zum Autor</a></li>
+  <li><a href="#reroduzierbarkeit" id="toc-reroduzierbarkeit" class="nav-link" data-scroll-target="#reroduzierbarkeit"><span class="header-section-number">1.9</span> Reroduzierbarkeit</a></li>
   </ul>
 </li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></nav>
@@ -321,7 +349,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Veröffentlichungsdatum</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">15. Januar 2024</p>
+      <p class="date">17. Januar 2024</p>
     </div>
   </div>
   
@@ -374,9 +402,9 @@ div.csl-indent {
 </ol></section><section id="modulüberblick" class="level3" data-number="1.1.3"><h3 data-number="1.1.3" class="anchored" data-anchor-id="modulüberblick">
 <span class="header-section-number">1.1.3</span> Modulüberblick</h3>
 <p><a href="#fig-modulverlauf" class="quarto-xref">Abbildung&nbsp;<span>1.1</span></a> gibt einen Überblick zu den Inhalten des Kurses.</p>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-modulverlauf" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-modulverlauf" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-modulverlauf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
 <pre class="mermaid mermaid-js" data-label="fig-modulverlauf">flowchart LR
@@ -396,7 +424,7 @@ div.csl-indent {
 </pre>
 </div>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-modulverlauf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-modulverlauf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;1.1: Modulverlauf im Überblick. Die einezlenn Schritte entsprechen in etwa den Kapiteln dieses Buchs.
 </figcaption></figure>
 </div>
@@ -419,8 +447,8 @@ Tipp
 </div>
 </div>
 <div class="cell">
-<div id="tbl-modulverlauf" class="cell anchored">
-<figure class="quarto-float quarto-float-tbl figure"><figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-modulverlauf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-modulverlauf" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-modulverlauf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tabelle&nbsp;1.1: Themen des Moduls im Zeitverlauf
 </figcaption><div aria-describedby="tbl-modulverlauf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -864,7 +892,7 @@ Tabelle&nbsp;1.1: Themen des Moduls im Zeitverlauf
   text-indent: 25px;
 }
 </style>
-<table class="gt_table cell table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table do-not-create-environment cell table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <colgroup>
 <col style="width: 5%">
 <col style="width: 20%">
@@ -974,13 +1002,21 @@ Tabelle&nbsp;1.1: Themen des Moduls im Zeitverlauf
 <span class="header-section-number">1.1.5</span> Voraussetzungen</h3>
 <p>Für dieses Kurs wird folgendes Wissen vorausgesetzt:</p>
 <ul>
-<li>grundlegende Kenntnis im Umgang mit R, möglichst auch mit dem tidyverse</li>
+<li>grundlegende Kenntnis im Umgang mit R, möglichst auch mit dem <code>tidyverse</code>
+</li>
 <li>grundlegende Kenntnis der deskriptiven Statistik</li>
 <li>grundlegende Kenntnis der Regressionsanalyse</li>
 </ul>
 <p>Dieses Wissen wird z.B. im <a href="https://statistik1.netlify.app/">Online-Buch “Statistik1”</a> vermittelt. Alle Inhalte daraus werden in diesem Kurs benötigt.</p>
-</section></section><section id="hinweise" class="level2" data-number="1.2"><h2 data-number="1.2" class="anchored" data-anchor-id="hinweise">
-<span class="header-section-number">1.2</span> Hinweise</h2>
+</section></section><section id="lernhilfen" class="level2" data-number="1.2"><h2 data-number="1.2" class="anchored" data-anchor-id="lernhilfen">
+<span class="header-section-number">1.2</span> Lernhilfen</h2>
+<p><a href="https://hinweisbuch.netlify.app/hinweise-lernhilfen-frame">Hier</a> finden Sie einen Überblick zu Lernhilfen.</p>
+</section><section id="software" class="level2" data-number="1.3"><h2 data-number="1.3" class="anchored" data-anchor-id="software">
+<span class="header-section-number">1.3</span> Software</h2>
+<p>Sie benötigen R, RStudio und einige R-Pakete insbesondere <code>rstanarm</code> für diesen Kurs.</p>
+<p><a href="https://hinweisbuch.netlify.app/hinweise-software">Hier</a> finden Sie <em>Installationshinweise.</em></p>
+</section><section id="hinweise" class="level2" data-number="1.4"><h2 data-number="1.4" class="anchored" data-anchor-id="hinweise">
+<span class="header-section-number">1.4</span> Hinweise</h2>
 <ul>
 <li><p>📺 <a href="https://www.youtube.com/watch?v=QNMVi6IqQ90&amp;list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN">Playlist QM2</a>)</p></li>
 <li><p><a href="https://hinweisbuch.netlify.app/hinweise-lernhilfen-frame">Lernhilfen</a></p></li>
@@ -988,12 +1024,12 @@ Tabelle&nbsp;1.1: Themen des Moduls im Zeitverlauf
 <li><p><a href="https://hinweisbuch.netlify.app/hinweise-unterricht-frame">Unterrichtsorganisation</a></p></li>
 <li><p>Der Unterricht zu diesem Modul wird nur ein Mal pro Jahr angeboten (also nur jedes zweite Semester).</p></li>
 <li><p>Eine Prüfung in diesem Modul ist jedes Semester möglich.</p></li>
-</ul></section><section id="tutorium" class="level2" data-number="1.3"><h2 data-number="1.3" class="anchored" data-anchor-id="tutorium">
-<span class="header-section-number">1.3</span> Tutorium</h2>
+</ul></section><section id="tutorium" class="level2" data-number="1.5"><h2 data-number="1.5" class="anchored" data-anchor-id="tutorium">
+<span class="header-section-number">1.5</span> Tutorium</h2>
 <p>Für dieses Modul wird ggf. ein Tutorium angeboten.</p>
 <p>Der Besuch des Tutoriums ist zu empfehlen. Arbeiten Sie auch das Materials auf der <a href="https://qm2-tutorium.netlify.app/">Webseite des Tutoriums</a> durch.</p>
-</section><section id="prüfung" class="level2" data-number="1.4"><h2 data-number="1.4" class="anchored" data-anchor-id="prüfung">
-<span class="header-section-number">1.4</span> Prüfung</h2>
+</section><section id="prüfung" class="level2" data-number="1.6"><h2 data-number="1.6" class="anchored" data-anchor-id="prüfung">
+<span class="header-section-number">1.6</span> Prüfung</h2>
 <p>Das Prüfungsformat ist: <em>Open-Book-Prüfung</em>.</p>
 <ul>
 <li><p><a href="https://hinweisbuch.netlify.app/hinweise-pruefung-allgemein-frame">Allgemeine Prüfungshinweise</a></p></li>
@@ -1001,13 +1037,14 @@ Tabelle&nbsp;1.1: Themen des Moduls im Zeitverlauf
 <li><p><a href="https://hinweisbuch.netlify.app/hinweise-pruefung-klausur-frame">Hinweise zu quantitativen Prüfungen</a></p></li>
 <li><p><a href="https://hinweisbuch.netlify.app/hinweise-pruefungsvorbereitung-frame">Prüfungsvorbereitung</a></p></li>
 </ul>
-<p>In <a href="1200-abschluss.html" class="quarto-xref"><span>Kapitel&nbsp;13</span></a> finden sich weitere Hinweise auch mit Blick zu Aufgabensammlungen.</p>
-</section><section id="zitation" class="level2" data-number="1.5"><h2 data-number="1.5" class="anchored" data-anchor-id="zitation">
-<span class="header-section-number">1.5</span> Zitation</h2>
+<p>In <a href="1200-abschluss.html" class="quarto-xref"><span>Kapitel 13</span></a> finden sich weitere Hinweise auch mit Blick zu Aufgabensammlungen.</p>
+</section><section id="zitation" class="level2" data-number="1.7"><h2 data-number="1.7" class="anchored" data-anchor-id="zitation">
+<span class="header-section-number">1.7</span> Zitation</h2>
 <p>Bitte zitieren Sie dieses Buch wie folgt:</p>
 <blockquote class="blockquote">
 <p>Sauer, S. (2023). <em>Start:Bayes!</em>. https://start-bayes.netlify.app/</p>
 </blockquote>
+<p>Hier sind die maschinenlesbaren Zitationsinfos (Bibtex-Format), die Sie in Ihre Literatursoftware importieren können:</p>
 <pre><code>@book{sauer_statistik1_2022,
     title = {Statistik1},
     rights = {All rights reserved},
@@ -1015,16 +1052,18 @@ Tabelle&nbsp;1.1: Themen des Moduls im Zeitverlauf
     author = {Sauer, Sebastian},
     date = {2023},
 }</code></pre>
-</section><section id="zum-autor" class="level2" data-number="1.6"><h2 data-number="1.6" class="anchored" data-anchor-id="zum-autor">
-<span class="header-section-number">1.6</span> Zum Autor</h2>
-<p>Nähere Hinweise zum Autor, Sebastian Sauer, finden Sie <a href="https://sebastiansauer-academic.netlify.app/">hier</a>.</p>
+<p>Hier ist die DOI:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><a href="https://zenodo.org/doi/10.5281/zenodo.8279807"><img src="https://zenodo.org/badge/532213155.svg" class="img-fluid figure-img" alt="DOI"></a></p>
 <figcaption>DOI</figcaption></figure>
 </div>
-</section><section id="technische-details" class="level2" data-number="1.7"><h2 data-number="1.7" class="anchored" data-anchor-id="technische-details">
-<span class="header-section-number">1.7</span> Technische Details</h2>
-<p>Dieses Dokument wurde erzeugt am/um 2024-01-13 10:19:30.</p>
+</section><section id="zum-autor" class="level2" data-number="1.8"><h2 data-number="1.8" class="anchored" data-anchor-id="zum-autor">
+<span class="header-section-number">1.8</span> Zum Autor</h2>
+<p>Nähere Hinweise zum Autor, Sebastian Sauer, finden Sie <a href="https://sebastiansauer-academic.netlify.app/">hier</a>.</p>
+</section><section id="reroduzierbarkeit" class="level2" data-number="1.9"><h2 data-number="1.9" class="anchored" data-anchor-id="reroduzierbarkeit">
+<span class="header-section-number">1.9</span> Reroduzierbarkeit</h2>
+<p>Hier sind einige technische Details zur Reproduzierbarkeit des Buchs.</p>
+<p>Dieses Dokument wurde erzeugt am/um 2024-01-17 21:50:58.</p>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-3_11336f607b51b0e2a47f95b379c0448b">
 <pre><code>## ─ Session info ───────────────────────────────────────────────────────────────
 ##  setting  value
@@ -1361,27 +1400,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
@@ -1396,10 +1414,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             break;
           }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -1408,8 +1430,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
-      return note.innerHTML;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {
@@ -1615,7 +1644,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
               options: {
                 flipVariations: false, // true by default
                 allowedAutoPlacements: ['right'],
-                fallbackPlacements: ['right', 'top', 'top-start', 'top-end'],
+                fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
               },
             },
             {
@@ -1680,4 +1709,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-</body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></div></div></footer></body></html>
