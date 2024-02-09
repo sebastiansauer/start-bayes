@@ -11,4 +11,45 @@
 4. FRAGE: Woher weiß ich, dass ich die Prädiktoren vorher zentrieren muss? Kann man das aus der Aufgabenstellung irgendwie herauslesen? Z.B. wie bei Tutorium Aufgabe 10.1 d). -- ANTWORT: Es gibt mehrere Gründe, Variablen zu zentrieren, dazu zählen 1) bessere Interpretation des Intercepts, 2) bessere Interpretation von Interaktionseffekten, 3) Verringerung von Kollinearität. Die Steigung (beta 1) verändert sich (fast immer) aber nicht durch das Zentrieren, ebenso wie R-Quadrat.
 
 
+5. FRAGE: Bei der Bearbeitung der Prüfung heute ist ein Fehler aufgekommen, den ich bis jetzt nicht verstehe. Deshalb war es auch für mich nicht möglich die Aufgabe zu bearbeiten. Die AV high Aufteilung in die Werte 0 und 1 (0 = AV <= median (AV)) (1 =AV > median(AV) hat geklappt.
+Die UV high Aufteilung in die Werte 0 und 1 (0 = UV <= median (UV)) (1 =UV > median(UV) hat dabei aber nicht geklappt.
+Anstatt die Werte 0 und 1 bei der neuen UV_high Spalte zu bekommen, kommen nur Nas raus. Auch mit dem Befehl drop_na hat es nicht geklappt. Dies habe ich nicht nur mit dem RStudio auf meinem Computer versucht sondern auch über die Cloud über mein IPad. (Bei beiden Geräten kam es zuvor noch nie zu Problemen) Hier mein R-Code:
+
+
+```{r}
+#| message: false
+library(tidyverse)
+#library(easystats)
+#library(rstanarm)
+
+data("msleep", package = "ggplot2")
+
+msleep1 <-
+  msleep |> 
+    mutate(av_high = case_when(awake > median(awake) ~ 1,
+                               awake <= median(awake) ~ 0))
+
+msleep2 <-
+  msleep1 |> 
+    mutate(uv_high = case_when(sleep_rem > median(sleep_rem) ~ 1,
+                               sleep_rem <= median(sleep_rem) ~ 0))
+  
+msleep2 |> 
+count(uv_high)
+```
+
+ANTWORT: Sie haben nicht die fehlenden Werte ausgeschlossen. Wenn Sie die fehlenden Wert ausschließen, dann klappt es:
+
+
+```{r}
+msleep2 <-
+  msleep1 |> 
+  drop_na(sleep_rem) |>  # fehlende Werte aus `sleep_rem` entfernen
+    mutate(uv_high = case_when(sleep_rem > median(sleep_rem) ~ 1,
+                               sleep_rem <= median(sleep_rem) ~ 0))
+  
+msleep2 |> 
+count(uv_high)
+```
+
 

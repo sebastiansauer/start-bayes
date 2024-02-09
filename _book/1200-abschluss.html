@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.544">
+<meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Start:Bayes! - 13&nbsp; Abschluss</title>
 <style>
@@ -414,7 +414,7 @@ window.Quarto = {
 </ul></section><section id="benötigte-r-pakete" class="level3" data-number="13.1.2"><h3 data-number="13.1.2" class="anchored" data-anchor-id="benötigte-r-pakete">
 <span class="header-section-number">13.1.2</span> Benötigte R-Pakete</h3>
 <p>In diesem Kapitel benötigen Sie folgende R-Pakete.</p>
-<div class="cell" data-hash="1200-abschluss_cache/html/unnamed-chunk-1_039e535893c313ba58abb29e4752749a">
+<div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://easystats.github.io/easystats/">easystats</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/rstanarm/">rstanarm</a></span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -439,22 +439,22 @@ window.Quarto = {
 <span class="header-section-number">13.2.1</span> Post-Präd-Verteilung (PPV) und Post-Verteilung verwechseln 🤷</h3>
 <p>🏎 🏎 Vertiefung: Dieser Abschnitt ist nicht prüfungsrelevant. 🏎️ 🏎</p>
 <p>Berechnen wir unser Standard-mtcars-Modell: <code>mpg ~ hp</code>.</p>
-<div class="cell" data-hash="1200-abschluss_cache/html/m1_1708e90e62eda16d73328332f58e4c6e">
+<div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mc-stan.org/rstanarm/reference/stan_glm.html">stan_glm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">hp</span>, data <span class="op">=</span> <span class="va">mtcars</span>, refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Die <em>Post-Verteilung</em> zeigt Stichproben zu den Parameterwerten, s. <a href="#tbl-post-m1" class="quarto-xref">Tabelle&nbsp;<span>13.1</span></a>.</p>
-<div class="cell" data-hash="1200-abschluss_cache/html/tbl-post-m1_617de115afeae87ce00aff0da9e3102b">
+<div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">post_verteilung</span> <span class="op">&lt;-</span> <span class="va">m1</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">post_verteilung</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="tbl-post-m1" class="cell quarto-float anchored" data-hash="1200-abschluss_cache/html/tbl-post-m1_617de115afeae87ce00aff0da9e3102b">
+<div id="tbl-post-m1" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-post-m1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tabelle&nbsp;13.1: Postverteilung in Stichprobenform (m1)
 </figcaption><div aria-describedby="tbl-post-m1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["(Intercept)"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["hp"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["sigma"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"28.65852","2":"-0.06622882","3":"3.493673"},{"1":"31.66530","2":"-0.07025969","3":"4.187901"},{"1":"29.82845","2":"-0.06049547","3":"4.095313"},{"1":"30.30605","2":"-0.06219338","3":"4.826977"},{"1":"31.46416","2":"-0.08155849","3":"3.881575"},{"1":"29.88082","2":"-0.07123389","3":"4.002564"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["(Intercept)"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["hp"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["sigma"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"28.88237","2":"-0.04933309","3":"4.031083"},{"1":"28.15858","2":"-0.05843584","3":"5.000400"},{"1":"32.33903","2":"-0.07453341","3":"5.048232"},{"1":"31.64452","2":"-0.07162598","3":"3.561679"},{"1":"28.71255","2":"-0.05874985","3":"4.520694"},{"1":"29.62507","2":"-0.06900292","3":"4.271953"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[5],"max":[5]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -464,11 +464,11 @@ Tabelle&nbsp;13.1: Postverteilung in Stichprobenform (m1)
 </div>
 <p>Diese Tabelle kann man hernehmen, um Fragen zu Post-Verteilung zu beantworten. Häufig ist es aber bequemer, z.B. mit <code>parameters(m1)</code> Post-Intervalle und Punktschätzer auszulesen.</p>
 <p>Die <em>Posterior-Prädiktiv-Verteilung (PPV)</em> zeigt die Vorhersagen, also keine Parameterwerte, sondern Beobachtungen.</p>
-<div class="cell" data-hash="1200-abschluss_cache/html/unnamed-chunk-3_95a0a2d4f1f99b1a065dfbf9c0059729">
+<div class="cell">
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["value"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Mazda RX4","2":"27.23196"},{"1":"Mazda RX4 Wag","2":"19.08143"},{"1":"Datsun 710","2":"19.52209"},{"1":"Hornet 4 Drive","2":"22.62790"},{"1":"Hornet Sportabout","2":"14.26644"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["value"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Mazda RX4","2":"22.70425"},{"1":"Mazda RX4 Wag","2":"25.36519"},{"1":"Datsun 710","2":"25.81817"},{"1":"Hornet 4 Drive","2":"21.17388"},{"1":"Hornet Sportabout","2":"20.75181"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[5],"max":[5]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -479,7 +479,7 @@ Tabelle&nbsp;13.1: Postverteilung in Stichprobenform (m1)
 <span class="header-section-number">13.2.2.1</span> Quantil für <span class="math inline">\(p\)</span>
 </h4>
 <p>Ein <span class="math inline">\(p\)</span>-Quantil teilt eine Verteilung in zwei Teile, und zwar so, dass mind. <span class="math inline">\(p\)</span> kleiner oder gleich dem <span class="math inline">\(p\)</span>-Quantil sind. s. <a href="#fig-quantil" class="quarto-xref">Abbildung&nbsp;<span>13.1</span></a>.</p>
-<div class="cell" data-hash="1200-abschluss_cache/html/fig-quantil_f19f2b232eec676ef738918e3742fcd4">
+<div class="cell">
 <div class="cell-output-display">
 <div id="fig-quantil" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-quantil-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -496,7 +496,7 @@ Abbildung&nbsp;13.1: 50%-Quantil
 <span class="header-section-number">13.2.2.2</span> Verteilungsfunktion <span class="math inline">\(F\)</span>
 </h4>
 <p><span class="math inline">\(F(x)\)</span> gibt die Wahrscheinlichkeit an der Stelle <span class="math inline">\(x\)</span> an, dass <span class="math inline">\(X\)</span> einen Wert kleiner oder gleich <span class="math inline">\(x\)</span> annimmt, s. <a href="#fig-F" class="quarto-xref">Abbildung&nbsp;<span>13.2</span></a>.</p>
-<div class="cell" data-hash="1200-abschluss_cache/html/fig-F_4384fc4a95573a9be5d66ec708f5da54">
+<div class="cell">
 <div class="cell-output-display">
 <div id="fig-F" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-F-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -525,15 +525,15 @@ Hinweis
 <p>Zur Erinnerung: <code>mpg ~ hp*vs</code> ist synonym zu (aber kürzer als) <code>mpg ~ hp + vs + hp:vs</code>.</p>
 </div>
 </div>
-<div class="cell" data-hash="1200-abschluss_cache/html/m2_9d2e6155ef260773b8165548ac3e870a">
+<div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mc-stan.org/rstanarm/reference/stan_glm.html">stan_glm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">hp</span><span class="op">*</span><span class="va">vs</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span>  <span class="co"># mit Interaktionseffekt</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Modellkoeffizienten, s. <a href="#tbl-m2-params" class="quarto-xref">Tabelle&nbsp;<span>13.2</span></a>.</p>
-<div class="cell" data-hash="1200-abschluss_cache/html/unnamed-chunk-4_8bcf34859f47940c46613033fb0258cc">
+<div class="cell">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">parameters</span><span class="op">(</span><span class="va">m2</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="1200-abschluss_cache/html/tbl-m2-params_86f84ae6efd19a6e41d281687e20bc6e">
-<div id="tbl-m2-params" class="cell quarto-float anchored" data-hash="1200-abschluss_cache/html/tbl-m2-params_86f84ae6efd19a6e41d281687e20bc6e">
+<div class="cell">
+<div id="tbl-m2-params" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-m2-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tabelle&nbsp;13.2: Parameter von m2
 </figcaption><div aria-describedby="tbl-m2-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -560,38 +560,38 @@ Tabelle&nbsp;13.2: Parameter von m2
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">(Intercept)</td>
-<td style="text-align: center;">24.58</td>
-<td style="text-align: center;">(19.05, 30.23)</td>
+<td style="text-align: center;">24.62</td>
+<td style="text-align: center;">(18.87, 30.21)</td>
 <td style="text-align: center;">100%</td>
-<td style="text-align: center;">0.999</td>
-<td style="text-align: center;">2272.00</td>
+<td style="text-align: center;">1.003</td>
+<td style="text-align: center;">2246.00</td>
 <td style="text-align: center;">Normal (20.09 +- 15.07)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">hp</td>
 <td style="text-align: center;">-0.04</td>
 <td style="text-align: center;">(-0.07, -0.01)</td>
-<td style="text-align: center;">99.58%</td>
-<td style="text-align: center;">1.000</td>
+<td style="text-align: center;">99.75%</td>
+<td style="text-align: center;">1.003</td>
 <td style="text-align: center;">2257.00</td>
 <td style="text-align: center;">Normal (0.00 +- 0.22)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">vs</td>
-<td style="text-align: center;">14.03</td>
-<td style="text-align: center;">(4.82, 22.98)</td>
-<td style="text-align: center;">99.90%</td>
-<td style="text-align: center;">1.001</td>
-<td style="text-align: center;">1900.00</td>
+<td style="text-align: center;">14.05</td>
+<td style="text-align: center;">(4.82, 23.14)</td>
+<td style="text-align: center;">99.85%</td>
+<td style="text-align: center;">1.002</td>
+<td style="text-align: center;">1792.00</td>
 <td style="text-align: center;">Normal (0.00 +- 29.89)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">hp:vs</td>
 <td style="text-align: center;">-0.11</td>
-<td style="text-align: center;">(-0.20, -0.03)</td>
-<td style="text-align: center;">99.65%</td>
+<td style="text-align: center;">(-0.19, -0.03)</td>
+<td style="text-align: center;">99.30%</td>
 <td style="text-align: center;">1.001</td>
-<td style="text-align: center;">2111.00</td>
+<td style="text-align: center;">1941.00</td>
 <td style="text-align: center;">Normal (0.00 +- 0.31)</td>
 </tr>
 </tbody>
@@ -602,7 +602,7 @@ Tabelle&nbsp;13.2: Parameter von m2
 </div>
 </div>
 <p><a href="#tbl-m2-params" class="quarto-xref">Tabelle&nbsp;<span>13.2</span></a> zeigt die Visualisierung der Parameter von m2.</p>
-<div class="cell" data-hash="1200-abschluss_cache/html/fig-m2-params_95bf850631e50f3741830ad048b0d327">
+<div class="cell">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu">parameters</span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-m2-params" class="quarto-figure quarto-figure-center quarto-float anchored">
@@ -652,11 +652,11 @@ Abbildung&nbsp;13.3: Parameter von m2 visualisiert
 <section id="zentraler-kennwert-der-bayes-statistik-post-verteilung" class="level3" data-number="13.4.1"><h3 data-number="13.4.1" class="anchored" data-anchor-id="zentraler-kennwert-der-bayes-statistik-post-verteilung">
 <span class="header-section-number">13.4.1</span> Zentraler Kennwert der Bayes-Statistik: Post-Verteilung</h3>
 <p>Berechnen wir wieder ein einfaches<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Modell: <code>mpg ~ hp</code>.</p>
-<div class="cell" data-hash="1200-abschluss_cache/html/m3_eeb32c233768045100c2fd79e6ea1277">
+<div class="cell">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mc-stan.org/rstanarm/reference/stan_glm.html">stan_glm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">hp</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Und schauen wir uns die Post-Verteilung an, mit eingezeichnetem HDI, s. <a href="#fig-post-m3" class="quarto-xref">Abbildung&nbsp;<span>13.4</span></a>.</p>
-<div class="cell" data-hash="1200-abschluss_cache/html/fig-post-m3_1fe3eee14af2d1b3dad5b2652d2378da">
+<div class="cell">
 <div class="cell-output-display">
 <div id="fig-post-m3" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-post-m3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -694,7 +694,7 @@ Hinweis
 </section><section id="dag-mit-doppelter-konfundierung" class="level3" data-number="13.5.2"><h3 data-number="13.5.2" class="anchored" data-anchor-id="dag-mit-doppelter-konfundierung">
 <span class="header-section-number">13.5.2</span> DAG mit doppelter Konfundierung</h3>
 <p>Puh, jetzt kommt ein wilder DAG, s. <a href="#fig-dag-wild" class="quarto-xref">Abbildung&nbsp;<span>13.5</span></a>.</p>
-<div class="cell" data-hash="1200-abschluss_cache/html/fig-dag-wild_5222408500c6b6481d6cdcbcd7e26c10">
+<div class="cell">
 <div class="cell-output-display">
 <div id="fig-dag-wild" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-dag-wild-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -715,7 +715,7 @@ Abbildung&nbsp;13.5: Ein DAG mit doppelter Konfundierung. Ist hier noch zu helfe
 </section><section id="dag-mit-vielen-variablen" class="level3" data-number="13.5.3"><h3 data-number="13.5.3" class="anchored" data-anchor-id="dag-mit-vielen-variablen">
 <span class="header-section-number">13.5.3</span> DAG mit vielen Variablen</h3>
 <p>Je nach dem wie komplex Ihre Theorie ist, ist Ihr DAG auch komplex, s. <a href="#fig-dag-komplex" class="quarto-xref">Abbildung&nbsp;<span>13.6</span></a>.</p>
-<div class="cell" data-hash="1200-abschluss_cache/html/fig-dag-komplex_f2a6021aab21bfca91776192545a4e7e">
+<div class="cell">
 <div class="cell-output-display">
 <div id="fig-dag-komplex" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-dag-komplex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -741,7 +741,7 @@ Abbildung&nbsp;13.6: Ein DAG mit vielen Variablen
 <p>UV: <em>SUS</em>, AV: <em>EGC</em></p>
 <p>Berechnen Sie die minimale Adjustierungsmenge, um den kausalen Effekt der UV auf die AV zu identifizieren!</p>
 <p><a href="#fig-van-kampen" class="quarto-xref">Abbildung&nbsp;<span>13.7</span></a> zeigt den DAG von van Kampen (2014) zu den Symptomen der Schizophrenie.</p>
-<div class="cell" data-hash="1200-abschluss_cache/html/fig-van-kampen_207a105200b07136593889c74dab0bdd">
+<div class="cell">
 <div class="cell-output-display">
 <div id="fig-van-kampen" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-van-kampen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -794,7 +794,54 @@ Abbildung&nbsp;13.7: Ein DAG zu den Symptomen der Schizophrenie
 <li><p>FRAGE: Wie bereite ich mich gut auf die Prüfung vor? – ANTWORT: <a href="https://hinweisbuch.netlify.app/hinweise-pruefungsvorbereitung-frame">Hier</a> finden Sie Tipps zur Prüfungsvorbereitung.</p></li>
 <li><p>FRAGE: Wenn man ‘(Intercept)’ benutzt, welche Anführungszeichen sind die richtigen? Bei verschiedenen Anführungszeichen, also ’ oder ` oder ´ kommen entweder keine oder sogar verschiedene Ergebnisse raus. – ANTWORT: Normalerweise ist innerhalb von R-Befehlen aus dem Tidyverse keine Anführungsstriche für Spaltennamen nötig. Wenn es allerdings ein “verbotener” Name ist, muss man aufpassen. <code>(Intercept)</code> ist so ein verbotener Variablenname. Warum verboten? Ein “braver” Variablenname (in R) muss mit einem Buchstaben beginnen und darf keine Sonderzeichen (<code>(, {, #,</code> etc.) enthalten. Hat man aber einen an sich unerlaubten Variablennamen, so kann man den trotzdem verwenden, <em>wenn</em> man ihn mit Backticks (`) umgibt, also wie in <code>\(Intercept)\</code>). Doppelte und einfache Anführungsstriche sind in R übrigens beide okay, wenn man etwa einen String (Text) auszeichnen will, aber im Rahmen von Tidyverse nicht nötig für Variablennamen.</p></li>
 <li><p>FRAGE: Woher weiß ich, dass ich die Prädiktoren vorher zentrieren muss? Kann man das aus der Aufgabenstellung irgendwie herauslesen? Z.B. wie bei Tutorium Aufgabe 10.1 d). – ANTWORT: Es gibt mehrere Gründe, Variablen zu zentrieren, dazu zählen 1) bessere Interpretation des Intercepts, 2) bessere Interpretation von Interaktionseffekten, 3) Verringerung von Kollinearität. Die Steigung (beta 1) verändert sich (fast immer) aber nicht durch das Zentrieren, ebenso wie R-Quadrat.</p></li>
-</ol></section><section id="viel-erfolg-bei-der-prüfung" class="level2" data-number="13.8"><h2 data-number="13.8" class="anchored" data-anchor-id="viel-erfolg-bei-der-prüfung">
+<li><p>FRAGE: Bei der Bearbeitung der Prüfung heute ist ein Fehler aufgekommen, den ich bis jetzt nicht verstehe. Deshalb war es auch für mich nicht möglich die Aufgabe zu bearbeiten. Die AV high Aufteilung in die Werte 0 und 1 (0 = AV &lt;= median (AV)) (1 =AV &gt; median(AV) hat geklappt. Die UV high Aufteilung in die Werte 0 und 1 (0 = UV &lt;= median (UV)) (1 =UV &gt; median(UV) hat dabei aber nicht geklappt. Anstatt die Werte 0 und 1 bei der neuen UV_high Spalte zu bekommen, kommen nur Nas raus. Auch mit dem Befehl drop_na hat es nicht geklappt. Dies habe ich nicht nur mit dem RStudio auf meinem Computer versucht sondern auch über die Cloud über mein IPad. (Bei beiden Geräten kam es zuvor noch nie zu Problemen) Hier mein R-Code:</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://easystats.github.io/easystats/">easystats</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/rstanarm/">rstanarm</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"msleep"</span>, package <span class="op">=</span> <span class="st">"ggplot2"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">msleep1</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">msleep</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>av_high <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span><span class="va">awake</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">awake</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>                               <span class="va">awake</span> <span class="op">&lt;=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">awake</span><span class="op">)</span> <span class="op">~</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">msleep2</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">msleep1</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>uv_high <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span><span class="va">sleep_rem</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">sleep_rem</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>                               <span class="va">sleep_rem</span> <span class="op">&lt;=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">sleep_rem</span><span class="op">)</span> <span class="op">~</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="va">msleep2</span> <span class="op">|&gt;</span> </span>
+<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">uv_high</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["uv_high"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"NA","2":"83"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[5],"max":[5]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>ANTWORT: Sie haben nicht die fehlenden Werte ausgeschlossen. Wenn Sie die fehlenden Wert ausschließen, dann klappt es:</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">msleep2</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">msleep1</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">sleep_rem</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>uv_high <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span><span class="va">sleep_rem</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">sleep_rem</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>                               <span class="va">sleep_rem</span> <span class="op">&lt;=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">sleep_rem</span><span class="op">)</span> <span class="op">~</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="va">msleep2</span> <span class="op">|&gt;</span> </span>
+<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">uv_high</span><span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["uv_high"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"0","2":"31"},{"1":"1","2":"30"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[5],"max":[5]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="viel-erfolg-bei-der-prüfung" class="level2" data-number="13.8"><h2 data-number="13.8" class="anchored" data-anchor-id="viel-erfolg-bei-der-prüfung">
 <span class="header-section-number">13.8</span> Viel Erfolg bei der Prüfung!</h2>
 <p>🥳🏆🍀🍀🍀</p>
 </section><section id="section" class="level2" data-number="13.9"><h2 data-number="13.9" class="anchored" data-anchor-id="section">
