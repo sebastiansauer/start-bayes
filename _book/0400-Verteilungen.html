@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.513">
+<meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Start:Bayes! - 4&nbsp; Verteilungen</title>
 <style>
@@ -114,6 +114,7 @@ div.csl-indent {
     "search-more-match-text": "weitere Treffer in diesem Dokument",
     "search-more-matches-text": "weitere Treffer in diesem Dokument",
     "search-clear-button-title": "Zurücksetzen",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Abbrechen",
     "search-submit-button-title": "Abschicken",
     "search-label": "Suchen"
@@ -121,7 +122,32 @@ div.csl-indent {
 }</script><meta name="mermaid-theme" content="neutral">
 <script src="site_libs/quarto-diagram/mermaid.min.js"></script><script src="site_libs/quarto-diagram/mermaid-init.js"></script><link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="styles.css">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="styles.css">
 </head>
 <body class="nav-sidebar floating">
 
@@ -143,7 +169,7 @@ div.csl-indent {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Start:Bayes!</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/sebastiansauer/start-bayes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/sebastiansauer/start-bayes" title="Quellcode" class="quarto-navigation-tool px-1" aria-label="Quellcode"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Dunkelmodus umschalten"><i class="bi"></i></a>
 </div>
     </div>
@@ -425,27 +451,27 @@ div.csl-indent {
 </ul></section></section><section id="zufallsvariable" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="zufallsvariable">
 <span class="header-section-number">4.2</span> Zufallsvariable</h2>
 <div id="exm-thesis" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.1 </strong></span>Schorsch sucht eine Betreuerin für seine Abschlussarbeit. An die ideale Betreuerin setzt er 4 Kriterien an: a) klare, schriftliche fixierte Rahmenbedingungen, b) viel Erfahrung, c) guten Ruf und d) interessante Forschungsinteressen. Je mehr dieser 4 Kriterien erfüllt sind, desto besser. Schorsch geht davon aus, dass die 4 Kriterien voneinander unabhängig sind (ob eines erfüllt ist oder nicht, ändert nichts an der Wahrscheinlichkeit eines anderen Kriteriums). Schorsch interessiert sich also für die <em>Anzahl</em> der erfüllten Kriterien, also eine Zahl von 0 bis 4. Er schätzt die Wahrscheinlichkeit für einen “Treffer” in jedem seiner 4 Kriterien auf 50%. Viel Glück, Schorsch! Sein Zufallsexperiment hat 16 Ausgänge, s. <a href="#fig-4muenzen" class="quarto-xref">Abbildung&nbsp;<span>4.1</span></a> und <a href="#tbl-schorsch-zufall" class="quarto-xref">Tabelle&nbsp;<span>4.1</span></a>. Ganz schön komplex. Eigentlich würden ihm ja eine Darstellung mit 5 Ergebnissen, also der “Gutachter-Score” von 0 bis 4 ja reichen. Wie können wir es übersichtlicher für Schorsch?<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 4.1</strong></span> Schorsch sucht eine Betreuerin für seine Abschlussarbeit. An die ideale Betreuerin setzt er 4 Kriterien an: a) klare, schriftliche fixierte Rahmenbedingungen, b) viel Erfahrung, c) guten Ruf und d) interessante Forschungsinteressen. Je mehr dieser 4 Kriterien erfüllt sind, desto besser. Schorsch geht davon aus, dass die 4 Kriterien voneinander unabhängig sind (ob eines erfüllt ist oder nicht, ändert nichts an der Wahrscheinlichkeit eines anderen Kriteriums). Schorsch interessiert sich also für die <em>Anzahl</em> der erfüllten Kriterien, also eine Zahl von 0 bis 4. Er schätzt die Wahrscheinlichkeit für einen “Treffer” in jedem seiner 4 Kriterien auf 50%. Viel Glück, Schorsch! Sein Zufallsexperiment hat 16 Ausgänge, s. <a href="#fig-4muenzen" class="quarto-xref">Abbildung&nbsp;<span>4.1</span></a> und <a href="#tbl-schorsch-zufall" class="quarto-xref">Tabelle&nbsp;<span>4.1</span></a>. Ganz schön komplex. Eigentlich würden ihm ja eine Darstellung mit 5 Ergebnissen, also der “Gutachter-Score” von 0 bis 4 ja reichen. Wie können wir es übersichtlicher für Schorsch?<span class="math inline">\(\square\)</span></p>
 </div>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-4muenzen_6a91f133e6881f44cf5a11b244fbc931">
 <div class="cell-output-display">
-<div id="fig-4muenzen" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-4muenzen" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-4muenzen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-4muenzen-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-4muenzen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-4muenzen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.1: Ein Baumdiagramm mit 16 Ausgängen, analog zur 4 Münzwürfen. Jede Münze ist in einer anderen Farbe dargestellt. Der Knoten ‘1’ ist der Start, da ist noch keine Münze geworfen.
 </figcaption></figure>
 </div>
 </div>
 </div>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/tbl-schorsch-zufall_239b904b49388f7f8ca5b1ab0e49ccd1">
-<div id="tbl-schorsch-zufall" class="cell anchored" data-hash="0400-Verteilungen_cache/html/tbl-schorsch-zufall_239b904b49388f7f8ca5b1ab0e49ccd1">
-<figure class="quarto-float quarto-float-tbl figure"><figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-schorsch-zufall-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-schorsch-zufall" class="cell quarto-float anchored" data-hash="0400-Verteilungen_cache/html/tbl-schorsch-zufall_239b904b49388f7f8ca5b1ab0e49ccd1">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-schorsch-zufall-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tabelle&nbsp;4.1: Schorschs Zufallsexperiment, Auszug der Elementarereignisse
 </figcaption><div aria-describedby="tbl-schorsch-zufall-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="cell table table-sm table-striped small">
+<table class="do-not-create-environment cell table table-sm table-striped small">
 <thead><tr class="header">
 <th style="text-align: left;">i</th>
 <th style="text-align: left;">Elementarereignis</th>
@@ -512,19 +538,19 @@ Tabelle&nbsp;4.1: Schorschs Zufallsexperiment, Auszug der Elementarereignisse
 </div>
 <p>Schorsch braucht also eine übersichtlichere Darstellung; die Zahl der Treffer und ihre Wahrscheinlichkeit würde ihm ganz reichen. In vielen Situationen ist man an der <em>Anzahl der Treffer</em> interessiert. Die Wahrscheinlichkeit für eine bestimmte Trefferanzahl bekommt man einfach durch Addieren der Wahrscheinlichkeiten der zugehörigen Elementarereignisse, s. <a href="#tbl-schorsch-zufall" class="quarto-xref">Tabelle&nbsp;<span>4.1</span></a>. Hier kommt die <em>Zufallsvariable</em> ins Spiel. Wir nutzen sie, um die Anzahl der Treffer in einem Zufallsexperiment zu zählen.</p>
 <div id="def-zufallsvariable" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.1 (Zufallsvariable) </strong></span>Die Zuordnung der Elementarereignisse eines Zufallsexperiments zu genau einer Zahl <span class="math inline">\(\in \mathbb{R}\)</span> nennt man Zufallsvariable.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 4.1 (Zufallsvariable)</strong></span> Die Zuordnung der Elementarereignisse eines Zufallsexperiments zu genau einer Zahl <span class="math inline">\(\in \mathbb{R}\)</span> nennt man Zufallsvariable.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Die den Elementarereignissen zugewiesenen Zahlen nennt man <em>Realisationen</em> oder Ausprägungen der Zufallsvariablen.</p>
 <div id="exm-lotto" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.2 (Lotto) </strong></span>Ein Lottospiel hat ca. 14 Millionen Elementarereignisse. Die Zufallsvariable “Anzahl der Treffer” hat nur 7 Realisationen: 0,1,…,6.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 4.2 (Lotto)</strong></span> Ein Lottospiel hat ca. 14 Millionen Elementarereignisse. Die Zufallsvariable “Anzahl der Treffer” hat nur 7 Realisationen: 0,1,…,6.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Es hat sich eingebürgert, Zufallszahlen mit <span class="math inline">\(X\)</span> zu bezeichnen (oder anderen Buchstaben weit hinten aus dem Alphabet).</p>
 <p>Man schreibt kurz: <span class="math inline">\(X: \Omega \rightarrow \mathbb{R}\)</span>. Um die Vorschrift der Zuordnung genauer zu bestimmen, kann man folgende Kurzschreibweise nutzen:</p>
 <p><span class="math inline">\({\displaystyle X(\omega )={\begin{cases}1,&amp;{\text{wenn }}\omega ={\text{Kopf}},\\[6pt]0,&amp;{\text{wenn }}\omega ={\text{Zahl}}.\end{cases}}}\)</span></p>
 <p><a href="#fig-zv" class="quarto-xref">Abbildung&nbsp;<span>4.2</span></a> stellt diese Abbildung dar.</p>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-zv" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-zv" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-zv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
 <pre class="mermaid mermaid-js" data-label="fig-zv">flowchart LR
@@ -547,7 +573,7 @@ Tabelle&nbsp;4.1: Schorschs Zufallsexperiment, Auszug der Elementarereignisse
 </pre>
 </div>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-zv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.2: Eine Zufallsvariable ist eine Abbildung vom Ereignisraum zu den Realisationen der Zufallsvariable. Außerdem sieht man, wie Zufallsvariablen genutzt werden, um Wahrsscheinlichkeiten zu bestimmen.
 </figcaption></figure>
 </div>
@@ -565,18 +591,18 @@ Abbildung&nbsp;4.2: Eine Zufallsvariable ist eine Abbildung vom Ereignisraum zu 
 <p>Eine diskrete Zufallsvariable ist dadurch gekennzeichnet, dass nur bestimmte Realisationen möglich sind, zumeist natürliche Zahlen, wie 0, 1, 2,…, . <a href="#fig-zuv-disk" class="quarto-xref">Abbildung&nbsp;<span>4.3</span></a> versinnbildlicht die Zufallsvariable des “Gutachter-Scores”, s. <a href="#exm-thesis" class="quarto-xref">Beispiel&nbsp;<span>4.1</span></a>.</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-zuv-disk_293e5409f89c493c5fafc04722f40bcd">
 <div class="cell-output-display">
-<div id="fig-zuv-disk" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-zuv-disk" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-zuv-disk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-zuv-disk-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-zuv-disk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zuv-disk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.3: Sinnbild einer diskreten Zufallsvariablen X für Schorschs Suche nach einer Betreuerin seiner Abschlussarbeit. X gibt den Score der Gutachterin wider.
 </figcaption></figure>
 </div>
 </div>
 </div>
 <div id="exm-zv-disk" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.3 (Diskrete Zufallsvariablen) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Beispiel 4.3 (Diskrete Zufallsvariablen)</strong></span> &nbsp;</p>
 <ul>
 <li>Anzahl der Bewerbungen bis zum ersten Job-Interview</li>
 <li>Anzahl Anläufe bis zum Bestehen der Statistik-Klausur</li>
@@ -588,27 +614,27 @@ Abbildung&nbsp;4.3: Sinnbild einer diskreten Zufallsvariablen X für Schorschs S
 </ul>
 </div>
 <div id="exm-zweiwuerfel" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.4 </strong></span>Der zweifache Würfelwurf ist ein typisches Lehrbuchbeispiel für eine diskrete Zufallsvariable.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Hier ist <span class="math inline">\(S\)</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> die Augen<em>s</em>umme des zweifachen Würfelwurfs und <span class="math inline">\(S\)</span> ist eine Zahl zwischen 2 und 12. Für jede Realisation <span class="math inline">\(X=x\)</span> kann die Wahrscheinlichkeit berechnen, <a href="#fig-zweiwuerfel-vert" class="quarto-xref">Abbildung&nbsp;<span>4.4</span></a> versinnbildlicht die Wahrscheinlichkeit für jede Realisation von <span class="math inline">\(X\)</span>.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 4.4</strong></span> Der zweifache Würfelwurf ist ein typisches Lehrbuchbeispiel für eine diskrete Zufallsvariable.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Hier ist <span class="math inline">\(S\)</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> die Augen<em>s</em>umme des zweifachen Würfelwurfs und <span class="math inline">\(S\)</span> ist eine Zahl zwischen 2 und 12. Für jede Realisation <span class="math inline">\(X=x\)</span> kann die Wahrscheinlichkeit berechnen, <a href="#fig-zweiwuerfel-vert" class="quarto-xref">Abbildung&nbsp;<span>4.4</span></a> versinnbildlicht die Wahrscheinlichkeit für jede Realisation von <span class="math inline">\(X\)</span>.<span class="math inline">\(\square\)</span></p>
 </div>
-<div id="fig-zweiwuerfel-vert" class="quarto-figure quarto-figure-center anchored" width="50%">
+<div id="fig-zweiwuerfel-vert" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-zweiwuerfel-vert-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/Dice_Distribution_(bar).svg.png" class="img-fluid figure-img" style="width:50.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-zweiwuerfel-vert-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zweiwuerfel-vert-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.4: Augensumme des zweifachen Würfelwurfs; für jede Realisation von S ist die zugehörige Wahrscheinlichkeit dargestellt. Bildquelle: Tim Stellmach, Wikipedia, PD
 </figcaption></figure>
 </div>
 <p><em>Wahrscheinlichkeitsverteilungen</em> dienen dazu, den Realisationen einer Zufallsvariablen eine Wahrscheinlichkeit zuzuordnen.</p>
 <div id="def-wvert-disk" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.2 (Diskrete Wahrscheinlichkeitsverteilung) </strong></span>Eine <em>diskrete</em> Wahrscheinlichkeitsverteilung der (diskreten) Zufallsvariablen <span class="math inline">\(X\)</span> ordnet jeder der <span class="math inline">\(k\)</span> Ausprägungen <span class="math inline">\(X=x\)</span> eine Wahrscheinlichkeit <span class="math inline">\(p\)</span> zu.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 4.2 (Diskrete Wahrscheinlichkeitsverteilung)</strong></span> Eine <em>diskrete</em> Wahrscheinlichkeitsverteilung der (diskreten) Zufallsvariablen <span class="math inline">\(X\)</span> ordnet jeder der <span class="math inline">\(k\)</span> Ausprägungen <span class="math inline">\(X=x\)</span> eine Wahrscheinlichkeit <span class="math inline">\(p\)</span> zu.<span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-babies" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.5 (Wahrscheinlichkeit des Geschlechts bei der Geburt) </strong></span>So hat die Variable <em>Geschlecht eines Babies</em> die beiden Ausprägungen <em>Mädchen</em> und <em>Junge</em> mit den Wahrscheinlichkeiten <span class="math inline">\(p_M = 51.2\%\)</span> bzw. <span class="math inline">\(p_J = 48.8\%\)</span>, laut einer Studie <span class="citation" data-cites="gelman_regression_2021">(<a href="references.html#ref-gelman_regression_2021" role="doc-biblioref">Gelman, Hill, und Vehtari 2021</a>)</span>.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 4.5 (Wahrscheinlichkeit des Geschlechts bei der Geburt)</strong></span> So hat die Variable <em>Geschlecht eines Babies</em> die beiden Ausprägungen <em>Mäd. h.n</em> und <em>Junge</em> mit den Wahrscheinlichkeiten <span class="math inline">\(p_M = 51.2\%\)</span> bzw. <span class="math inline">\(p_J = 48.8\%\)</span>, laut einer Studie <span class="citation" data-cites="gelman_regression_2021">(<a href="references.html#ref-gelman_regression_2021" role="doc-biblioref">Gelman, Hill, und Vehtari 2021</a>)</span>.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Zwischen der deskriptiven Statistik und der Wahrscheinlichkeitstheorie bestehen enge Parallelen, <a href="#tbl-wkeit-desk" class="quarto-xref">Tabelle&nbsp;<span>4.2</span></a> stellt einige zentrale Konzepte gegenüber.</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/tbl-wkeit-desk_e59a84c79669cd50c54bce76778934b7">
-<div id="tbl-wkeit-desk" class="cell anchored" data-hash="0400-Verteilungen_cache/html/tbl-wkeit-desk_e59a84c79669cd50c54bce76778934b7">
-<figure class="quarto-float quarto-float-tbl figure"><figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-wkeit-desk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-wkeit-desk" class="cell quarto-float anchored" data-hash="0400-Verteilungen_cache/html/tbl-wkeit-desk_e59a84c79669cd50c54bce76778934b7">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-wkeit-desk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tabelle&nbsp;4.2: Gegenüberstellung von Wahrscheinlichkeitstheorie und deskriptiver Statistik
 </figcaption><div aria-describedby="tbl-wkeit-desk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1052,7 +1078,7 @@ Tabelle&nbsp;4.2: Gegenüberstellung von Wahrscheinlichkeitstheorie und deskript
   text-indent: 25px;
 }
 </style>
-<table class="gt_table cell table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table do-not-create-environment cell table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <thead><tr class="header gt_col_headings">
 <th id="Wahrscheinlichkeitstheorie" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Wahrscheinlichkeitstheorie</th>
 <th id="Desktiptive.Statistik" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Desktiptive.Statistik</th>
@@ -1095,11 +1121,11 @@ Tabelle&nbsp;4.2: Gegenüberstellung von Wahrscheinlichkeitstheorie und deskript
 <div class="column" style="width:50%;">
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-2dice-prob_512145fff6b537d03fe34aa45423878f">
 <div class="cell-output-display">
-<div id="fig-2dice-prob" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-2dice-prob" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-2dice-prob-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-2dice-prob-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-2dice-prob-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-2dice-prob-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.5: Wahrscheinlichkeitsverteilung der Zufallsvariable “Augenzahl im zweifachen Würfelwurf”
 </figcaption></figure>
 </div>
@@ -1108,11 +1134,11 @@ Abbildung&nbsp;4.5: Wahrscheinlichkeitsverteilung der Zufallsvariable “Augenza
 </div><div class="column" style="width:50%;">
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-2dice-sim_9b3694dda1b52a0bebcb655df02e362a">
 <div class="cell-output-display">
-<div id="fig-2dice-sim" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-2dice-sim" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-2dice-sim-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-2dice-sim-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-2dice-sim-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-2dice-sim-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.6: (relative und absolute) Häufigkeiten des zweifachen Würfelwurfs, 1000 Mal wiederholt
 </figcaption></figure>
 </div>
@@ -1121,13 +1147,13 @@ Abbildung&nbsp;4.6: (relative und absolute) Häufigkeiten des zweifachen Würfel
 </div>
 </div>
 <div id="exm-wert-wuerfel" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.6 (Wahrscheinlichkeitsfunktion eines Würfels) </strong></span><a href="#fig-w-wuerfel" class="quarto-xref">Abbildung&nbsp;<span>4.7</span></a> zeigt die Wahrscheinlichkeitsfunktion eines einfachen Würfelwurfs.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 4.6 (Wahrscheinlichkeitsfunktion eines Würfels)</strong></span> <a href="#fig-w-wuerfel" class="quarto-xref">Abbildung&nbsp;<span>4.7</span></a> zeigt die Wahrscheinlichkeitsfunktion eines einfachen Würfelwurfs.<span class="math inline">\(\square\)</span></p>
 </div>
-<div id="fig-w-wuerfel" class="quarto-figure quarto-figure-center anchored" width="33%">
+<div id="fig-w-wuerfel" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-w-wuerfel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/220px-Fair_dice_probability_distribution.svg.png" class="img-fluid figure-img" style="width:33.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-w-wuerfel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-w-wuerfel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.7: Wahrscheinlichkeitsfunktion eines einfachen Würfelwurfs, Bildrechte: Olex Alexandrov, Wikipedia, PD
 </figcaption></figure>
 </div>
@@ -1139,11 +1165,11 @@ Abbildung&nbsp;4.7: Wahrscheinlichkeitsfunktion eines einfachen Würfelwurfs, Bi
 <div class="column" style="width:70%;">
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-mtcars-freq_a45b3ed287b1bd08125ed628383d0258">
 <div class="cell-output-display">
-<div id="fig-mtcars-freq" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-mtcars-freq" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-mtcars-freq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-mtcars-freq-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-mtcars-freq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mtcars-freq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.8: Häufigkeitsverteilung von <code>cyl</code> und <code>hp</code> (diskretisiert in 10 Körbe oder Gruppen)
 </figcaption></figure>
 </div>
@@ -1151,8 +1177,8 @@ Abbildung&nbsp;4.8: Häufigkeitsverteilung von <code>cyl</code> und <code>hp</co
 </div>
 </div><div class="column" style="width:30%;">
 <div class="cell" data-hash="0400-Verteilungen_cache/html/tbl-hauef-tab_2d932ceb78a7cc6c0bcc3dc3972a6035">
-<div id="tbl-hauef-tab" class="cell anchored" data-hash="0400-Verteilungen_cache/html/tbl-hauef-tab_2d932ceb78a7cc6c0bcc3dc3972a6035">
-<figure class="quarto-float quarto-float-tbl figure"><figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-hauef-tab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-hauef-tab" class="cell quarto-float anchored" data-hash="0400-Verteilungen_cache/html/tbl-hauef-tab_2d932ceb78a7cc6c0bcc3dc3972a6035">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-hauef-tab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tabelle&nbsp;4.3: Eine diskrete Häufigkeitsverteilung, dargestellt in einer Häufigkeitstabelle
 </figcaption><div aria-describedby="tbl-hauef-tab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1172,19 +1198,19 @@ Tabelle&nbsp;4.3: Eine diskrete Häufigkeitsverteilung, dargestellt in einer Hä
 </section><section id="wahrscheinlichkeitsfunktion" class="level4" data-number="4.2.1.2"><h4 data-number="4.2.1.2" class="anchored" data-anchor-id="wahrscheinlichkeitsfunktion">
 <span class="header-section-number">4.2.1.2</span> Wahrscheinlichkeitsfunktion</h4>
 <div id="def-w-fun" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.3 (Wahrscheinlichkeitsfunktion) </strong></span>Die Funktion <span class="math inline">\(f\)</span>, die den möglichen Realisationen <span class="math inline">\(x_i\)</span> der diskreten Zufallsvariablen <span class="math inline">\(X\)</span> die Eintrittswahrscheinlichkeiten zuordnet, heißt Wahrscheinlichkeitsfunktion.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 4.3 (Wahrscheinlichkeitsfunktion)</strong></span> Die Funktion <span class="math inline">\(f\)</span>, die den möglichen Realisationen <span class="math inline">\(x_i\)</span> der diskreten Zufallsvariablen <span class="math inline">\(X\)</span> die Eintrittswahrscheinlichkeiten zuordnet, heißt Wahrscheinlichkeitsfunktion.<span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-w-fun" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.7 </strong></span>Die Wahrscheinlichkeitsfunktion für <span class="math inline">\(X\)</span> “Augensumme im zweifachen Würfelwurf” ist in <a href="#fig-2dice-prob" class="quarto-xref">Abbildung&nbsp;<span>4.5</span></a> visualisiert.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 4.7</strong></span> Die Wahrscheinlichkeitsfunktion für <span class="math inline">\(X\)</span> “Augensumme im zweifachen Würfelwurf” ist in <a href="#fig-2dice-prob" class="quarto-xref">Abbildung&nbsp;<span>4.5</span></a> visualisiert.<span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-muenz" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.8 </strong></span>Die Wahrscheinlichkeitsfunktion für <span class="math inline">\(X\)</span> “Treffer im einfachen Münzwurf, mit Zahl ist Treffer” ist <span class="math inline">\(Pr(X=1)=1/2.\)</span>, vgl. <a href="#fig-zv" class="quarto-xref">Abbildung&nbsp;<span>4.2</span></a>.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 4.8</strong></span> Die Wahrscheinlichkeitsfunktion für <span class="math inline">\(X\)</span> “Treffer im einfachen Münzwurf, mit Zahl ist Treffer” ist <span class="math inline">\(Pr(X=1)=1/2.\)</span>, vgl. <a href="#fig-zv" class="quarto-xref">Abbildung&nbsp;<span>4.2</span></a>.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>💡 Einfach gesprochen gibt die Wahrscheinlichkeitsfunktion die Wahrscheinlichkeit einer bestimmten Realisation einer Zufallsvariable an.</p>
 </section><section id="verteilungsfunktion" class="level4" data-number="4.2.1.3"><h4 data-number="4.2.1.3" class="anchored" data-anchor-id="verteilungsfunktion">
 <span class="header-section-number">4.2.1.3</span> Verteilungsfunktion</h4>
 <div id="def-vert-fun" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.4 (Verteilungsfunktion) </strong></span>Die Verteilungsfunktion <span class="math inline">\(F\)</span> gibt die Wahrscheinlichkeit an, dass die diskrete Zufallsvariable <span class="math inline">\(X\)</span> eine Realisation annimmt, die kleiner oder gleich <span class="math inline">\(x\)</span> ist.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 4.4 (Verteilungsfunktion)</strong></span> Die Verteilungsfunktion <span class="math inline">\(F\)</span> gibt die Wahrscheinlichkeit an, dass die diskrete Zufallsvariable <span class="math inline">\(X\)</span> eine Realisation annimmt, die kleiner oder gleich <span class="math inline">\(x\)</span> ist.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Die Berechnung von <span class="math inline">\(F(x)\)</span> erfolgt, indem die Wahrscheinlichkeiten aller möglichen Realisationen <span class="math inline">\(x_i\)</span>, die kleiner oder gleich dem vorgegebenen Realisationswert <span class="math inline">\(x\)</span> sind, addiert werden:</p>
 <p><span class="math inline">\(F(x) = \sum_{x_ \le x} Pr(X=x_i).\)</span></p>
@@ -1193,11 +1219,11 @@ Tabelle&nbsp;4.3: Eine diskrete Häufigkeitsverteilung, dargestellt in einer Hä
 <div class="column" style="width:50%;">
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-kum-h-vert_96b473c30b59c84de4b73c6844123450">
 <div class="cell-output-display">
-<div id="fig-kum-h-vert" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-kum-h-vert" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-kum-h-vert-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-kum-h-vert-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-kum-h-vert-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-kum-h-vert-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.9: Verteilungsfunktion <span class="math inline">\(F(X \le x_i)\)</span> für die Zufallsvariable “Augenzahl im zweifachen Würfelwurf”
 </figcaption></figure>
 </div>
@@ -1206,11 +1232,11 @@ Abbildung&nbsp;4.9: Verteilungsfunktion <span class="math inline">\(F(X \le x_i)
 </div><div class="column" style="width:50%;">
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-kum-h-vert-emp_f9555fdf75c03247dc9b3e8106784bf5">
 <div class="cell-output-display">
-<div id="fig-kum-h-vert-emp" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-kum-h-vert-emp" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-kum-h-vert-emp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-kum-h-vert-emp-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-kum-h-vert-emp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-kum-h-vert-emp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.10: Empirische Verteilungsfunktion (kumulierte Häufigkeitsverteilung) <span class="math inline">\(F(X \le x_i)\)</span> von 1000 zweifachen Münzwürfen
 </figcaption></figure>
 </div>
@@ -1224,21 +1250,21 @@ Abbildung&nbsp;4.10: Empirische Verteilungsfunktion (kumulierte Häufigkeitsvert
 <p><a href="#fig-zv-stetig-groesse" class="quarto-xref">Abbildung&nbsp;<span>4.11</span></a> versinnbildlicht die stetige Zufallsvariable “Körpergröße”, die (theoretisch, in Annäherung) jeden beliebigen Wert zwischen 0 und (vielleicht) 3m annehmen kann.</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-zv-stetig-groesse_dbc606a14b0ea37b4b426ffdef0e614f">
 <div class="cell-output-display">
-<div id="fig-zv-stetig-groesse" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-zv-stetig-groesse" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-zv-stetig-groesse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-zv-stetig-groesse-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-zv-stetig-groesse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zv-stetig-groesse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.11: Sinnbild für eine stetige Zufallsvariable X “Körpergröße”
 </figcaption></figure>
 </div>
 </div>
 </div>
 <div id="def-zv-stetig" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.5 (Stetige Zufallsvariable) </strong></span>Eine stetige Zufallsvariable gleicht einer diskreten, nur dass alle Werte im Intervall erlaubt sind.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 4.5 (Stetige Zufallsvariable)</strong></span> Eine stetige Zufallsvariable gleicht einer diskreten, nur dass alle Werte im Intervall erlaubt sind.<span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-zu-stetig" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.9 </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Beispiel 4.9</strong></span> &nbsp;</p>
 <ul>
 <li>Spritverbrauch</li>
 <li>Körpergewicht von Professoren</li>
@@ -1248,27 +1274,27 @@ Abbildung&nbsp;4.11: Sinnbild für eine stetige Zufallsvariable X “Körpergrö
 </ul>
 </div>
 <div id="exr-bus-42" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 4.1 (Warten auf den Bus, 42 Sekunden) </strong></span>Sie stehen an der Bushaltestellen und warten auf den Bus. Langweilig. Da kommt Ihnen ein Gedanken in den Sinn: Wie hoch ist wohl die Wahrscheinlichkeit, dass Sie <em>exakt</em> 42 Sekunden auf den Bus warten müssen, s. <a href="#fig-p42" class="quarto-xref">Abbildung&nbsp;<span>4.13</span></a>? Weiterhin überlegen Sie, dass davon auszugehen ist, dass jede Wartezeit zwischen 0 und 10 Minuten gleich wahrscheinlich ist. Spätestens nach 10 Minuten kommt der Bus, so ist die Taktung (extrem zuverlässig). Exakt heißt <em>exakt</em>, also nicht 42.1s, nicht 42.01s, nicht 42.001s, etc. bis zur x-ten Dezimale.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 4.1 (Warten auf den Bus, 42 Sekunden)</strong></span> Sie stehen an der Bushaltestellen und warten auf den Bus. Langweilig. Da kommt Ihnen ein Gedanken in den Sinn: Wie hoch ist wohl die Wahrscheinlichkeit, dass Sie <em>exakt</em> 42 Sekunden auf den Bus warten müssen, s. <a href="#fig-p42" class="quarto-xref">Abbildung&nbsp;<span>4.13</span></a>? Weiterhin überlegen Sie, dass davon auszugehen ist, dass jede Wartezeit zwischen 0 und 10 Minuten gleich wahrscheinlich ist. Spätestens nach 10 Minuten kommt der Bus, so ist die Taktung (extrem zuverlässig). Exakt heißt <em>exakt</em>, also nicht 42.1s, nicht 42.01s, nicht 42.001s, etc. bis zur x-ten Dezimale.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Nicht so einfach (?). Hingegen ist die Frage, wie hoch die Wahrscheinlichkeit ist, zwischen 0 und 5 Minuten auf den Bus zu warten (<span class="math inline">\(0&lt;x&lt;5\)</span>), einfach: Sie beträgt 50%, wie man in <a href="#fig-p05" class="quarto-xref">Abbildung&nbsp;<span>4.12</span></a> gut sehen kann.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<div id="fig-p05" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-p05" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-p05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/p_bus2.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-p05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-p05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.12: Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minuten auf den Bus zu warten? 50 Prozent!
 </figcaption></figure>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-p42_a9999790d6ce8c5f2e4c874923f3b8c1">
 <div class="cell-output-display">
-<div id="fig-p42" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-p42" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-p42-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-p42-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-p42-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-p42-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.13: Wie groß ist die Wahrscheinlichkeit, genau 42 Sekunden auf den Bus zu warten? Hm.
 </figcaption></figure>
 </div>
@@ -1279,14 +1305,14 @@ Abbildung&nbsp;4.13: Wie groß ist die Wahrscheinlichkeit, genau 42 Sekunden auf
 <p>Vergleicht man <a href="#fig-p42" class="quarto-xref">Abbildung&nbsp;<span>4.13</span></a> und <a href="#fig-p05" class="quarto-xref">Abbildung&nbsp;<span>4.12</span></a> kommt man (vielleicht) zu dem Schluss, dass die Wahrscheinlichkeit exakt 42s auf den Bus zu warten, praktisch Null ist. Der Grund ist, dass die Fläche des Intervalls gegen Null geht, wenn das Intervall immer schmäler wird. Aus diesem Grund kann man bei stetigen Zufallszahlen nicht von einer Wahrscheinlichkeit eines bestimmten Punktes <span class="math inline">\(X=x\)</span> sprechen. Für einen bestimmten Punkt <span class="math inline">\(X=x\)</span> kann man aber die <em>Dichte</em> der Wahrscheinlichkeit angeben.</p>
 <p>Was gleich ist in beiden Situationen (<span class="math inline">\(Pr(X=.42)\)</span> und <span class="math inline">\(Pr(0&lt;x&lt;0.5)\)</span>) ist die <em>Wahrscheinlichkeitsdichte</em>, <span class="math inline">\(f\)</span>. In <a href="#fig-p42" class="quarto-xref">Abbildung&nbsp;<span>4.13</span></a> und <a href="#fig-p05" class="quarto-xref">Abbildung&nbsp;<span>4.12</span></a> ist die Wahrscheinlichkeitsdichte gleich, <span class="math inline">\(f=1/10=0.1\)</span>.</p>
 <div id="def-wdichte" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.6 (Wahrscheinlichkeitsdichte) </strong></span>Die Wahrscheinlichkeitsdichte <span class="math inline">\(f(x)\)</span> gibt an, wie viel Wahrscheinlichkeitsmasse pro Einheit von <span class="math inline">\(X\)</span> an an der Stelle <span class="math inline">\(x\)</span> ist.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 4.6 (Wahrscheinlichkeitsdichte)</strong></span> Die Wahrscheinlichkeitsdichte <span class="math inline">\(f(x)\)</span> gibt an, wie viel Wahrscheinlichkeitsmasse pro Einheit von <span class="math inline">\(X\)</span> an an der Stelle <span class="math inline">\(x\)</span> ist.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Die Wahrscheinlichkeitsdichte zeigt an, an welchen Stellen <span class="math inline">\(x\)</span> die Wahrscheinlichkeit besonders “geballt” oder “dicht” sind, s. <a href="#fig-wdichte-sinnbild" class="quarto-xref">Abbildung&nbsp;<span>4.14</span></a>.</p>
-<div id="fig-wdichte-sinnbild" class="quarto-figure quarto-figure-center anchored" width="33%">
+<div id="fig-wdichte-sinnbild" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-wdichte-sinnbild-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/260px-Integral_as_region_under_curve.svg.png" class="img-fluid figure-img" style="width:33.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-wdichte-sinnbild-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wdichte-sinnbild-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.14: Die Wahrscheinlichkeit, dass eine Zufallsvariable einen Wert zwischen und annimmt, entspricht dem Inhalt der Fläche unter dem Graph der Wahrscheinlichkeitsdichtefunktion. Bildrechte: 4C, Wikipedia, CC-BY-SA .
 </figcaption></figure>
 </div>
@@ -1295,17 +1321,17 @@ Abbildung&nbsp;4.14: Die Wahrscheinlichkeit, dass eine Zufallsvariable einen Wer
 <div class="columns">
 <div class="column" style="width:50%;">
 <div id="def-vert-fun-stetig" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.7 </strong></span>Die Verteilungsfunktion einer stetigen Zufallsvariablen gibt wie im diskreten Fall an, wie groß die Wahrscheinlichkeit für eine Realisation kleiner oder gleich einem vorgegebenen Realisationswert <span class="math inline">\(x\)</span> ist.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 4.7</strong></span> Die Verteilungsfunktion einer stetigen Zufallsvariablen gibt wie im diskreten Fall an, wie groß die Wahrscheinlichkeit für eine Realisation kleiner oder gleich einem vorgegebenen Realisationswert <span class="math inline">\(x\)</span> ist.<span class="math inline">\(\square\)</span></p>
 <p>Die Verteilungsfunktion <span class="math inline">\(F(x)\)</span> ist analog zur kumulierten Häufigkeitsverteilung zu verstehen, vgl. <a href="#fig-F-Bus" class="quarto-xref">Abbildung&nbsp;<span>4.15</span></a>.</p>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-F-Bus_8b1136e3a2f25b66307882e2423fe304">
 <div class="cell-output-display">
-<div id="fig-F-Bus" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-F-Bus" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-F-Bus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-F-Bus-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-F-Bus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-F-Bus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.15: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 </figcaption></figure>
 </div>
@@ -1314,10 +1340,10 @@ Abbildung&nbsp;4.15: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 </div>
 </div>
 <div id="def-wvert-stetig" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.8 (Stetige Wahrscheinlichkeitsverteilung) </strong></span>Bei <em>stetigen</em> Zufallsvariablen <span class="math inline">\(X\)</span> geht man von unendlich vielen Ausprägungen aus; die Wahrscheinlichkeit einer bestimmten Ausprägung ist (praktisch) Null: <span class="math inline">\(Pr(X=x_j)=0, \quad j=1,...,+\infty \square\)</span>.</p>
+<p><span class="theorem-title"><strong>Definition 4.8 (Stetige Wahrscheinlichkeitsverteilung)</strong></span> Bei <em>stetigen</em> Zufallsvariablen <span class="math inline">\(X\)</span> geht man von unendlich vielen Ausprägungen aus; die Wahrscheinlichkeit einer bestimmten Ausprägung ist (praktisch) Null: <span class="math inline">\(Pr(X=x_j)=0, \quad j=1,...,+\infty \square\)</span>.</p>
 </div>
 <div id="exm-groesse" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.10 (Wahrscheinlichkeitsverteilung für die Körpergröße) </strong></span>So ist die Wahrscheinlichkeit, dass eine Person exakt 166,66666666… cm groß ist, (praktisch) Null. Man gibt stattdessen die <em>Dichte</em> der Wahrscheinlichkeit an: Das ist die Wahrscheinlichkeit(smasse) pro Einheit von <span class="math inline">\(X\)</span>.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 4.10 (Wahrscheinlichkeitsverteilung für die Körpergröße)</strong></span> So ist die Wahrscheinlichkeit, dass eine Person exakt 166,66666666… cm groß ist, (praktisch) Null. Man gibt stattdessen die <em>Dichte</em> der Wahrscheinlichkeit an: Das ist die Wahrscheinlichkeit(smasse) pro Einheit von <span class="math inline">\(X\)</span>.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Für praktische Fragen berechnet man zumeist die Wahrscheinlichkeit von Intervallen, s. <a href="#fig-wdichte-sinnbild" class="quarto-xref">Abbildung&nbsp;<span>4.14</span></a>.</p>
 </section></section></section><section id="wichtige-verteilngen" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="wichtige-verteilngen">
@@ -1331,30 +1357,30 @@ Abbildung&nbsp;4.15: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <p>Abb. <a href="#fig-uniform" class="quarto-xref">Abbildung&nbsp;<span>4.16</span></a> zeigt ein Beispiel für eine (stetige) Gleichverteilung.</p>
 <div id="fig-uniform" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-uniform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-uniform" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-uniform-1" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-uniform" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-uniform-1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-uniform-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-uniform-1.png" class="img-fluid figure-img" data-ref-parent="fig-uniform" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-uniform-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-uniform-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Beispiel a: Gleichverteilung min=-1, max=1. Dichte: 1/2
 </figcaption></figure>
 </div>
 </div>
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-uniform" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-uniform-2" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-uniform" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-uniform-2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-uniform-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-uniform-2.png" class="img-fluid figure-img" data-ref-parent="fig-uniform" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-uniform-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-uniform-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Beispiel b: Gleichverteilung min=0, max=3. Dichte: 1/3
 </figcaption></figure>
 </div>
 </div>
 </div>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-uniform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-uniform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.16: Stetige Gleichverteilung; man beachte jeweils die Y-Achse
 </figcaption></figure>
 </div>
@@ -1376,7 +1402,7 @@ Abbildung&nbsp;4.16: Stetige Gleichverteilung; man beachte jeweils die Y-Achse
 </div>
 <p>Auf Deutsch heißt das:</p>
 <blockquote class="blockquote">
-<p>👨‍🏫 “Hey R, ich hätte gerne eine (daher <code>n = 1</code>) Zufallszahl (<em>r</em> wie <em>random</em>), die gleichverteilt ist (<em>uniform</em>) mit <code>min = 0</code> und <code>max = 10</code>.</p>
+<p>👨‍🏫 “Hey R, ich hätte gerne eine (d. h.r <code>n = 1</code>) Zufallszahl (<em>r</em> wie <em>random</em>), die gleichverteilt ist (<em>uniform</em>) mit <code>min = 0</code> und <code>max = 10</code>.</p>
 </blockquote>
 <blockquote class="blockquote">
 <p>🤖 Jawohl, oh herrliches Leberwesen</p>
@@ -1392,11 +1418,11 @@ Abbildung&nbsp;4.16: Stetige Gleichverteilung; man beachte jeweils die Y-Achse
 </div>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-simu-gleichvert_135261872a28c2aa1c1c9626e11d31be">
 <div class="cell-output-display">
-<div id="fig-simu-gleichvert" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-simu-gleichvert" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-simu-gleichvert-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-simu-gleichvert-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-simu-gleichvert-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-simu-gleichvert-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.17: Simulation einer gleichverteiluten Zufallsvariablen
 </figcaption></figure>
 </div>
@@ -1412,8 +1438,8 @@ Abbildung&nbsp;4.17: Simulation einer gleichverteiluten Zufallsvariablen
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell" data-hash="0400-Verteilungen_cache/html/tbl-count-simu-bus_4169b876af22989a5be123b9af262cc8">
-<div id="tbl-count-simu-bus" class="cell anchored" data-hash="0400-Verteilungen_cache/html/tbl-count-simu-bus_4169b876af22989a5be123b9af262cc8">
-<figure class="quarto-float quarto-float-tbl figure"><figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-count-simu-bus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-count-simu-bus" class="cell quarto-float anchored" data-hash="0400-Verteilungen_cache/html/tbl-count-simu-bus_4169b876af22989a5be123b9af262cc8">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-count-simu-bus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tabelle&nbsp;4.4: Häufigkiten auslesen anstelle von Integralen berechnen
 </figcaption><div aria-describedby="tbl-count-simu-bus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1431,13 +1457,13 @@ Tabelle&nbsp;4.4: Häufigkiten auslesen anstelle von Integralen berechnen
 </div>
 <p>Das Zeichen <code>&amp;</code> ist das logische UND, also die Schnittmenge der zwei Mengen <span class="math inline">\(A := \{x|x&gt;3\}\)</span> und <span class="math inline">\(B := \{x|x&lt;5\}\)</span>, also <span class="math inline">\(A \cap B\)</span>.</p>
 <p>Wie man sieht, fallen ca. 20% der Stichproben in den entsprechenden Bereich.</p>
-<p>Da viele Probleme, wenn sie komplexer werden, kaum noch “analytisch” (d.h. wie Ausrechnen von Integralen) lösbar sind, greift man in der modernen (Analyse-)Welt oft lieber auf Simulationsverfahren zurück - Dank sei den schnellen Rechnern. Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen zurückgeführt.</p>
+<p>Da viele Probleme, wenn sie komplexer werden, kaum noch “analytisch” (d. h. wie Ausrechnen von Integralen) lösbar sind, greift man in der modernen (Analyse-)Welt oft lieber auf Simulationsverfahren zurück - Dank sei den schnellen Rechnern. Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen zurückgeführt.</p>
 </section></section><section id="sec-bin-distrib" class="level3" data-number="4.3.2"><h3 data-number="4.3.2" class="anchored" data-anchor-id="sec-bin-distrib">
 <span class="header-section-number">4.3.2</span> Binomialverteilung</h3>
 <section id="grundlagen-1" class="level4" data-number="4.3.2.1"><h4 data-number="4.3.2.1" class="anchored" data-anchor-id="grundlagen-1">
 <span class="header-section-number">4.3.2.1</span> Grundlagen</h4>
 <div id="def-binvert" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.9 (Binomialverteilung) </strong></span>Die Binomialverteilung dient zur Darstellung der Wahrscheinlichkeit der Ergebnisse eines <span class="math inline">\(n\)</span>-fach wiederholten binomialen Zufallexperiments, eines Zufallsexperiments mit <em>zwei</em><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Ergebnissen bzw. Elementarereignissen also. Dabei interessiert die Anzahl der <span class="math inline">\(x\)</span> Treffer. Typisches Beispiel ist ein (wiederholter) Münzwurf. Bei jeder Wiederholung des Zufallexperiments bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (<em>Ziehen mit Zurücklegen</em>, ZmZ). Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit eines bestimmten Ergebnisses im zweiten Wurf, etc.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 4.9 (Binomialverteilung)</strong></span> Die Binomialverteilung dient zur Darstellung der Wahrscheinlichkeit der Ergebnisse eines <span class="math inline">\(n\)</span>-fach wiederholten binomialen Zufallexperiments, eines Zufallsexperiments mit <em>zwei</em><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Ergebnissen bzw. Elementarereignissen also. Dabei interessiert die Anzahl der <span class="math inline">\(x\)</span> Treffer. Typisches Beispiel ist ein (wiederholter) Münzwurf. Bei jeder Wiederholung des Zufallexperiments bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (<em>Ziehen mit Zurücklegen</em>, ZmZ). Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit eines bestimmten Ergebnisses im zweiten Wurf, etc.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Für eine binomialverteilte Zufallsvariable <span class="math inline">\(X\)</span> schreibt man kurz (s. <a href="#eq-binvert" class="quarto-xref">Gleichung&nbsp;<span>4.1</span></a>):</p>
 <p><span id="eq-binvert"><span class="math display">\[X \sim \text{Bin}(n, x) \tag{4.1}\]</span></span></p>
@@ -1446,11 +1472,11 @@ Tabelle&nbsp;4.4: Häufigkiten auslesen anstelle von Integralen berechnen
 <p>Stellen wir uns eine Kistchen<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> mit 5 Losen vor, darunter 2 <em>T</em>reffer (Gewinn) und 3 <em>N</em>ieten, s. Abb. <a href="#fig-urne" class="quarto-xref">Abbildung&nbsp;<span>4.18</span></a>. Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut.</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-urne_53e830d4b0a277720b15714eb9c26276">
 <div class="cell-output-display">
-<div id="fig-urne" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-urne" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-urne-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-urne-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-urne-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-urne-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.18: Ein Kästchen mit 5 Losen, darunter 2 Treffer und 3 Nieten.
 </figcaption></figure>
 </div>
@@ -1470,9 +1496,9 @@ Wichtig
 </div>
 </div>
 <div id="exr-bin1" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 4.2 (Vier Lose, zwei Treffer) </strong></span>Wie groß ist die Wahrscheinlichkeit von <span class="math inline">\(A^{\prime}\)</span>, d.h. bei <span class="math inline">\(n=4\)</span> Zügen <span class="math inline">\(x=2\)</span> Treffer zu erzielen (und <span class="math inline">\(n-x=2\)</span> Nieten), gegeben dass die Trefferwahrscheinlichkeit bei <span class="math inline">\(p=2/4\)</span> liegt? Wir ziehen dabei <em>ohne</em> Zurücklegen (ZoZ). Außerdem sind die Lose nicht zu unterscheiden (abgesehen davon, ob es Treffer oder Nieten sind).<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 4.2 (Vier Lose, zwei Treffer)</strong></span> Wie groß ist die Wahrscheinlichkeit von <span class="math inline">\(A^{\prime}\)</span>, d. h. bei <span class="math inline">\(n=4\)</span> Zügen <span class="math inline">\(x=2\)</span> Treffer zu erzielen (und <span class="math inline">\(n-x=2\)</span> Nieten), gegeben dass die Trefferwahrscheinlichkeit bei <span class="math inline">\(p=2/4\)</span> liegt? Wir ziehen dabei <em>ohne</em> Zurücklegen (ZoZ). Außerdem sind die Lose nicht zu unterscheiden (abgesehen davon, ob es Treffer oder Nieten sind).<span class="math inline">\(\square\)</span></p>
 </div>
-<p>Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen (Multiplikationssatz, <a href="0300-Wskt.html#eq-multtheorem" class="quarto-xref">Gleichung&nbsp;<span>3.5</span></a>), vgl. <a href="0300-Wskt.html#fig-dreimuenzen" class="quarto-xref">Abbildung&nbsp;<span>3.15</span></a>. Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit, <span class="math inline">\(W\)</span> (Additionssatz). Das ist einfach, dauert aber. In diesem Fall ist die Wahrscheinlichkeit eines (günstigen) Pfades, <span class="math inline">\(A\)</span>:</p>
+<p>Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen (Multiplikationssatz, <a href="0300-Wskt.html#eq-multtheorem" class="quarto-xref">Gleichung&nbsp;<span>3.8</span></a>), vgl. <a href="0300-Wskt.html#fig-dreimuenzen" class="quarto-xref">Abbildung&nbsp;<span>3.15</span></a>. Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit, <span class="math inline">\(W\)</span> (Additionssatz). Das ist einfach, dauert aber. In diesem Fall ist die Wahrscheinlichkeit eines (günstigen) Pfades, <span class="math inline">\(A\)</span>:</p>
 <p><span class="math inline">\(Pr(A) = Pr(T)^2 \cdot Pr(N)^2 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right) ^2\)</span>.</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-29_9dbe02106b8055c246c71474155eecc7">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_a</span> <span class="op">=</span> <span class="op">(</span><span class="fl">2</span><span class="op">/</span><span class="fl">5</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="fl">3</span><span class="op">/</span><span class="fl">5</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
@@ -1487,15 +1513,15 @@ Wichtig
 <span><span class="co">## [1] 0.3456</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Mithilfe der Formel der Binomialverteilung lässt sich das Ergebnis, die Wahrscheinlichkeit von <span class="math inline">\(A^{\prime}\)</span> schneller ausrechnen. Einfach gesprochen sieht sie so aus:</p>
-<p><span class="math display">\[Pr(A^{\prime}) = k \cdot Pr(A)\]</span> Dabei steht <span class="math inline">\(k\)</span> für die Anzahl der günstigen Pfade und <span class="math inline">\(Pr(A)\)</span> für die Wahrscheinlichkeit eines günstigen Pfades (d.h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.</p>
+<p><span class="math display">\[Pr(A^{\prime}) = k \cdot Pr(A)\]</span> Dabei steht <span class="math inline">\(k\)</span> für die Anzahl der günstigen Pfade und <span class="math inline">\(Pr(A)\)</span> für die Wahrscheinlichkeit eines günstigen Pfades (d. h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.</p>
 <p>Die Anzahl der Pfade kann man mit dem <em>Binomialkoeffizient</em> ausrechnen, den man so darstellt, s. <a href="#eq-binkoeff" class="quarto-xref">Gleichung&nbsp;<span>4.2</span></a>.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
 <div id="def-binkoeff" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.10 (Binomialkoeffizient) </strong></span>Der Binomialkoeffizient gibt an, auf wie vielen verschiedenen Arten man aus einer Menge von <span class="math inline">\(n\)</span> verschiedenen Objekten <span class="math inline">\(k\)</span> Objekte ziehen kann (ohne Zurücklegen und ohne Beachtung der Reihenfolge).</p>
+<p><span class="theorem-title"><strong>Definition 4.10 (Binomialkoeffizient)</strong></span> Der Binomialkoeffizient gibt an, auf wie vielen verschiedenen Arten man aus einer Menge von <span class="math inline">\(n\)</span> verschiedenen Objekten <span class="math inline">\(k\)</span> Objekte ziehen kann (ohne Zurücklegen und ohne Beachtung der Reihenfolge).</p>
 <p><span id="eq-binkoeff"><span class="math display">\[k = \tbinom{n}{k}= \frac{n!}{k!(n-k)!}  \tag{4.2}\]</span></span></p>
 <p>Lies: “Wähle aus <span class="math inline">\(n\)</span> möglichen Ereignissen (Pfade im Baum) <span class="math inline">\(k\)</span> günstige Ereignisse (günstige Pfade) oder kürzer”k aus n”.</p>
 </div>
 <div id="exm-binkoeff" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.11 (Lotto) </strong></span>Wie viele Zahlenkombinationen gibt es im Lotto für 6 Richtige? Der Binomialkoeffizient verrät es uns: <span class="math inline">\(\tbinom{49}{6}= 13\,983\,816\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 4.11 (Lotto)</strong></span> Wie viele Zahlenkombinationen gibt es im Lotto für 6 Richtige? Der Binomialkoeffizient verrät es uns: <span class="math inline">\(\tbinom{49}{6}= 13\,983\,816\square\)</span></p>
 </div>
 <p>Auf Errisch geht das so:</p>
 <div class="columns">
@@ -1515,7 +1541,7 @@ Wichtig
 </div>
 <p>Hier ist ein Überblick der möglichen 6 günstigen Ereigniise des Experiments (2 Treffer bei 4 Versuchen): 1. TTNN, 2. TNTN, 3. TNNT, 4. NTTN ,5. NTNT, 6. NNTT.</p>
 <div id="exm-befördern" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.12 (Beförderung) </strong></span>Aus einem Team mit 25 Personen sollen 11 Personen befördert werden. Wie viele mögliche Kombinationen (von beförderten Personen) können gebildet werden?</p>
+<p><span class="theorem-title"><strong>Beispiel 4.12 (Beförderung)</strong></span> Aus einem Team mit 25 Personen sollen 11 Personen befördert werden. Wie viele mögliche Kombinationen (von beförderten Personen) können gebildet werden?</p>
 <p><span class="math inline">\(\tbinom{25}{11} = \frac{25!}{11!\cdot(25-11)!} = 4\,457\,400\)</span></p>
 <p>In Errisch:</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-33_9b5147386732e0cff30a2e0cfcb4d88c">
@@ -1546,7 +1572,7 @@ Wichtig
 <span><span class="co">## [1] 0.3456</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="exm-binom" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.13 (Pumpstation-Beispiel zur Binomialverteilung) </strong></span>In einer Pumpstation arbeiten 7 Motoren, die wir als identisch annehmen. Mit einer Wahrscheinlichkeit von 5% fällt ein Motor aus und ist für den Rest des Tages nicht einsatzbereit. Der Betrieb kann aufrecht erhalten werden, solange mindestens 5 Motoren arbeiten. Wie groß ist die Wahrscheinlichkeit, dass die Pumpstation aus dem Betrieb fällt?</p>
+<p><span class="theorem-title"><strong>Beispiel 4.13 (Pumpstation-Beispiel zur Binomialverteilung)</strong></span> In einer Pumpstation arbeiten 7 Motoren, die wir als identisch annehmen. Mit einer Wahrscheinlichkeit von 5% fällt ein Motor aus und ist für den Rest des Tages nicht einsatzbereit. Der Betrieb kann aufrecht erhalten werden, solange mindestens 5 Motoren arbeiten. Wie groß ist die Wahrscheinlichkeit, dass die Pumpstation aus dem Betrieb fällt?</p>
 <p><span class="math inline">\(Pr(X=k)\)</span> (oder kurz: <span class="math inline">\(Pr(k)\)</span>) gibt die Wahrscheinlichkeit (Wahrscheinlichkeitsfunktion) an für das Ereignis, dass <em>k</em> Motoren arbeiten.</p>
 <p>Lassen wir R mal <span class="math inline">\(Pr(X=5)\)</span> ausrechnen.</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-35_740bd35640496d4cc87f3c0c5ddd1159">
@@ -1578,7 +1604,7 @@ Wichtig
 <span><span class="co">## [1] 0.996243</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Die Wahrscheinlichkeit, dass mind. 5 Motoren arbeiten beträgt also 0.9962.</p>
-<p>Das Komplement zu diesem Ereignis ist, dass <em>nicht</em> mind. 5 Motoren arbeiten, also <em>höchstens 4</em> und es daher zu einem Ausfall kommt.</p>
+<p>Das Komplement zu diesem Ereignis ist, dass <em>nicht</em> mind. 5 Motoren arbeiten, also <em>höchstens 4</em> und es d. h.r zu einem Ausfall kommt.</p>
 <p>Natürlich gilt <span class="math inline">\(Pr(\bar{X}) = 1- Pr(X)\)</span>.</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-38_ef1b639f339144b1f4b49b13281a7aff">
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_weniger_als_4</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">p_mind_5</span></span>
@@ -1587,30 +1613,30 @@ Wichtig
 </div>
 <div id="fig-motoren" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-motoren-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-motoren" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-motoren-1" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-motoren" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-motoren-1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-motoren-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-motoren-1.png" class="img-fluid figure-img" data-ref-parent="fig-motoren" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-motoren-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-motoren-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) In ‘normaler’ Wahrscheinlichkeit, 0&lt;p&lt;1
 </figcaption></figure>
 </div>
 </div>
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-motoren" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-motoren-2" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-motoren" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-motoren-2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-motoren-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-motoren-2.png" class="img-fluid figure-img" data-ref-parent="fig-motoren" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-motoren-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-motoren-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) In Log-Einheiten (Basis 2), ‘Halbierungen’
 </figcaption></figure>
 </div>
 </div>
 </div>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-motoren-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-motoren-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.19: Wahrscheinlichkeit, dass genau k = 0..7 Motoren laufen
 </figcaption></figure>
 </div>
@@ -1650,18 +1676,18 @@ Logarithmus
 </div>
 </div>
 <div id="exm-log2-1" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.14 </strong></span><span class="math inline">\(ld(1/2) = -1:\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 4.14</strong></span> <span class="math inline">\(ld(1/2) = -1:\)</span></p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-41_b9c3e2ca9b5929dde221961f5ea32053">
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">.5</span>, base <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">## [1] -1</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>1/2 ist genau “minus 1 Verdopplung” von 1 entfernt, d.h. eine Halbierung.</p>
+<p>1/2 ist genau “minus 1 Verdopplung” von 1 entfernt, d. h. eine Halbierung.</p>
 <p><span class="math inline">\(ld(1/4) = -2:\)</span></p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-42_64c80947bac0e8deebc5a89b62a209b3">
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">4</span>, base <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">## [1] -2</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>1/2 ist genau “minus 2 Verdopplungen” von 1 entfernt, d.h. zwei Halbierungen.</p>
+<p>1/2 ist genau “minus 2 Verdopplungen” von 1 entfernt, d. h. zwei Halbierungen.</p>
 <p><span class="math inline">\(ld(1/8) = -3:\)</span></p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-43_3a873f66697fbc616e471e430737a098">
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">8</span>, base <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -1670,7 +1696,7 @@ Logarithmus
 <p>1/8 (0.125) ist 3 Halbierungen von 1 entfernt.<span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-klausur20" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.15 (Klausur mit 20-Richtig-Falsch-Fragen) </strong></span>Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen. Wie groß ist die Wahrscheinlichkeit, durch bloßes Münze werfen genau 15 Fragen richtig zu raten?<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></p>
+<p><span class="theorem-title"><strong>Beispiel 4.15 (Klausur mit 20-Richtig-Falsch-Fragen)</strong></span> Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen. Wie groß ist die Wahrscheinlichkeit, durch bloßes Münze werfen genau 15 Fragen richtig zu raten?<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/QM2-Thema2-kleineModelle-23_28e2613fbd6ac8a8600c39d683d00a8a">
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">15</span>, size <span class="op">=</span> <span class="fl">20</span>, prob <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span></span>
 <span><span class="co">## [1] 0.01478577</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1684,7 +1710,7 @@ Logarithmus
 <p>Die Wahrscheinlichkeit 0, 1, 2, … oder 15 Treffer zu erzielen, liegt also bei gut 99%.</p>
 </div>
 <div id="exm-globus4" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.16 (3 Münzwürfe mit 3 Treffern) </strong></span>Was ist die Wahrscheinlichkeit bei 3 Münzwürfen (genau) 3 Treffer (Kopf) zu erzielen?</p>
+<p><span class="theorem-title"><strong>Beispiel 4.16 (3 Münzwürfe mit 3 Treffern)</strong></span> Was ist die Wahrscheinlichkeit bei 3 Münzwürfen (genau) 3 Treffer (Kopf) zu erzielen?</p>
 <p>Das ist eine Frage an die Binomialverteilung; in R kann man das mit der Funktion <code>dbinom</code> beantworten.</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/QM2-Thema2-kleineModelle-24_af9ec3926a8e5a45403d756ab2d9a701">
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">3</span>, size <span class="op">=</span> <span class="fl">3</span>, prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
@@ -1697,24 +1723,28 @@ Logarithmus
 
 </div>
 <div class="cell quarto-layout-panel" data-layout-ncol="2" data-hash="0400-Verteilungen_cache/html/p-bin-exms_6e38622559a2828bccd86ebbf37754fb">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-figure quarto-figure-center quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="0400-Verteilungen_files/figure-html/p-bin-exms-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>n=3, p=1/2</figcaption></figure>
 </div>
-<div class="quarto-figure quarto-figure-center quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="0400-Verteilungen_files/figure-html/p-bin-exms-2.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>n=9, p=.7</figcaption></figure>
 </div>
 </div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <p>Verschiedene Binomialverteilungen</p>
 </div>
 </div>
 </div>
 <div id="exr-binom" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 4.3 </strong></span>🏋️️ Was fällt Ihnen bei der Binomialverteilung auf? Ist sie symmetrisch? Verändert sich die Wahrscheinlichkeit linear?</p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 4.3</strong></span> 🏋️️ Was fällt Ihnen bei der Binomialverteilung auf? Ist sie symmetrisch? Verändert sich die Wahrscheinlichkeit linear?</p>
 </div>
 </section><section id="simulieren-wir-eine-binomialverteilung" class="level4" data-number="4.3.2.5"><h4 data-number="4.3.2.5" class="anchored" data-anchor-id="simulieren-wir-eine-binomialverteilung">
 <span class="header-section-number">4.3.2.5</span> Simulieren wir eine Binomialverteilung</h4>
@@ -1724,7 +1754,7 @@ Logarithmus
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">## [1] 1</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Mit <code><a href="https://rdrr.io/r/base/sample.html">sample()</a></code> ziehen wir eine Stichprobe aus dem Ereignisraum <code>x</code>, hier 0 und 1. Dabei vereinbaren wir (willkürlich), dass 0 für “Kopf” steht und 1 für “Zahl”. <code>size = 1</code> bedeutet, wir werfen die Münze ein Mal (d.h. Stichprobengröße <em>size</em> ist 1).</p>
+<p>Mit <code><a href="https://rdrr.io/r/base/sample.html">sample()</a></code> ziehen wir eine Stichprobe aus dem Ereignisraum <code>x</code>, hier 0 und 1. Dabei vereinbaren wir (willkürlich), dass 0 für “Kopf” steht und 1 für “Zahl”. <code>size = 1</code> bedeutet, wir werfen die Münze ein Mal (d. h. Stichprobengröße <em>size</em> ist 1).</p>
 <p>Okay, noch an Bord? Dann werfen wir die Münze 10 Mal:</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/unnamed-chunk-46_416576f48af02d3df5c31b5bf8624a60">
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">10</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -1768,8 +1798,8 @@ Hinweis
 <span>  <span class="op">)</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/tbl-muenz_2428c4ed7285ee74681f81f8ff1d5e59">
-<div id="tbl-muenz" class="cell anchored" data-hash="0400-Verteilungen_cache/html/tbl-muenz_2428c4ed7285ee74681f81f8ff1d5e59">
-<figure class="quarto-float quarto-float-tbl figure"><figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-muenz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-muenz" class="cell quarto-float anchored" data-hash="0400-Verteilungen_cache/html/tbl-muenz_2428c4ed7285ee74681f81f8ff1d5e59">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-muenz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tabelle&nbsp;4.5: Die kumulierte Summe beim Münzwurf (nur die ersten paar Zeilen)
 </figcaption><div aria-describedby="tbl-muenz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1786,11 +1816,11 @@ Tabelle&nbsp;4.5: Die kumulierte Summe beim Münzwurf (nur die ersten paar Zeile
 <p>Und hier der Anteil von “Zahl” im Verlauf unserer Münzwürfe, s. <a href="#fig-lln" class="quarto-xref">Abbildung&nbsp;<span>4.20</span></a>.<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a></p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-lln_efc1e7bc0b72ad36392696d121361d62">
 <div class="cell-output-display">
-<div id="fig-lln" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-lln" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-lln-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-lln-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-lln-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lln-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.20: Das Gesetz der großen Zahl am Beispiel der Stabilisierung des Trefferanteils beim wiederholten Münzwurf
 </figcaption></figure>
 </div>
@@ -1814,26 +1844,26 @@ Das Gesetz der großen Zahl
 </section></section><section id="normalverteilung" class="level3" data-number="4.3.3"><h3 data-number="4.3.3" class="anchored" data-anchor-id="normalverteilung">
 <span class="header-section-number">4.3.3</span> Normalverteilung</h3>
 <div id="def-nv" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.11 (Normalverteilung) </strong></span>Normalverteilungen haben eine charakteristische Glockenform; sie sind symmetrisch<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a>. Normalverteilungen können sich unterscheiden in ihrem Mittelwert <span class="math inline">\(\mu\)</span> und ihrer Streuung, <span class="math inline">\(\sigma\)</span>. Diese beiden Größen (“Parameter”) determinieren den Graphen einer bestimmten Normalverteilungsfunktion, s. <a href="#fig-norms" class="quarto-xref">Abbildung&nbsp;<span>4.21</span></a>. Sind diese beiden Parameter bekannt, so ist die Dichte jedes beliebigen Datenpunkts (aus dieser Normalverteilung) bestimmt.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 4.11 (Normalverteilung)</strong></span> Normalverteilungen haben eine charakteristische Glockenform; sie sind symmetrisch<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a>. Normalverteilungen können sich unterscheiden in ihrem Mittelwert <span class="math inline">\(\mu\)</span> und ihrer Streuung, <span class="math inline">\(\sigma\)</span>. Diese beiden Größen (“Parameter”) determinieren den Graphen einer bestimmten Normalverteilungsfunktion, s. <a href="#fig-norms" class="quarto-xref">Abbildung&nbsp;<span>4.21</span></a>. Sind diese beiden Parameter bekannt, so ist die Dichte jedes beliebigen Datenpunkts (aus dieser Normalverteilung) bestimmt.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Eine normalverteilte Zufallsvariable <span class="math inline">\(X\)</span> mit einem bestimmten Mittelwert und einer bestimmten Streuung schreibt man kurz so:</p>
 <p><span class="math display">\[X \sim \mathcal{N}(\mu, \sigma)\]</span></p>
 <div id="def-parameter" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.12 (Parameter) </strong></span>Ein Parameter (einer Verteilung) legt die “Varianten” einer Verteilung fest. Durch die Wahl der Parameterwerte nimmt eine Verteilung eine genaue Form an.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 4.12 (Parameter)</strong></span> Ein Parameter (einer Verteilung) legt die “Varianten” einer Verteilung fest. Durch die Wahl der Parameterwerte nimmt eine Verteilung eine genaue Form an.<span class="math inline">\(\square\)</span></p>
 </div>
-<div id="fig-norms" class="quarto-figure quarto-figure-center anchored" data-fig-align="center" width="50%">
+<div id="fig-norms" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-norms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/normals.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-norms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-norms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.21: Beispiele von Normalverteilungen mit verschiedenen Mittelwerten und Streuungen, Quelle: Wikipedia
 </figcaption></figure>
 </div>
 <p>Beispiel: Wie groß sind Studentis (<a href="https://rdrr.io/cran/openintro/man/speed_gender_height.html">Quelle des Datensatzes</a>)?</p>
-<p>Das Quantil von z.B. 25% zeigt die Körpergröße der 25% kleinsten Studentis an, analog für 50%, 75%, vgl. <a href="#tbl-quantiles" class="quarto-xref">Tabelle&nbsp;<span>4.6</span></a>.</p>
+<p>Das Quantil von z. B. 25% zeigt die Körpergröße der 25% kleinsten Studentis an, analog für 50%, 75%, vgl. <a href="#tbl-quantiles" class="quarto-xref">Tabelle&nbsp;<span>4.6</span></a>.</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/tbl-quantiles_16a08152757f6439021c62ae6a8e4cb3">
-<div id="tbl-quantiles" class="cell anchored" data-hash="0400-Verteilungen_cache/html/tbl-quantiles_16a08152757f6439021c62ae6a8e4cb3">
-<figure class="quarto-float quarto-float-tbl figure"><figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-quantiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-quantiles" class="cell quarto-float anchored" data-hash="0400-Verteilungen_cache/html/tbl-quantiles_16a08152757f6439021c62ae6a8e4cb3">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-quantiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tabelle&nbsp;4.6: Quantile der Körpergrößen von Studentis
 </figcaption><div aria-describedby="tbl-quantiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -2277,7 +2307,7 @@ Tabelle&nbsp;4.6: Quantile der Körpergrößen von Studentis
   text-indent: 25px;
 }
 </style>
-<table class="gt_table cell table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table do-not-create-environment cell table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <thead><tr class="header gt_col_headings">
 <th id="q25" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">q25</th>
 <th id="q50" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">q50</th>
@@ -2298,11 +2328,11 @@ Tabelle&nbsp;4.6: Quantile der Körpergrößen von Studentis
 <p><a href="#fig-quantiles" class="quarto-xref">Abbildung&nbsp;<span>4.22</span></a> zeigt eine Visualisierung der Quantile.</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-quantiles_86e060cd53a370172347aa33d51c05c9">
 <div class="cell-output-display">
-<div id="fig-quantiles" class="quarto-figure quarto-figure-center anchored" width="1152">
+<div id="fig-quantiles" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-quantiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-quantiles-1.png" class="img-fluid figure-img" width="1152">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-quantiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quantiles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.22: Quantile verschieden visualisiert
 </figcaption></figure>
 </div>
@@ -2338,22 +2368,22 @@ Hinweis
 <p>Die Summe vieler (gleich starker) Zufallswerte (aus der gleichen Verteilung) erzeugt eine Normalverteilung; egal aus welcher Verteilung die Zufallswerte kommen (Zentraler Grenzwertsatz), vgl. <a href="#fig-fussball" class="quarto-xref">Abbildung&nbsp;<span>4.23</span></a>.</p>
 <div class="cell" data-layout-align="center" data-hash="0400-Verteilungen_cache/html/fig-fussball_4869e4e0e5a7304d5c0571e3c6f9885a">
 <div class="cell-output-display">
-<div id="fig-fussball" class="quarto-figure quarto-figure-center anchored" width="100%" data-fig-align="center">
+<div id="fig-fussball" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-fussball-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-fussball-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-fussball-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fussball-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.23: Entstehen einer Normalverteilung durch Addition vieler unabhgängiger Ereignisse
 </figcaption></figure>
 </div>
 </div>
 </div>
 <p>Verwechseln Sie die Normalverteilung nicht mit der Paranormalverteilung, s. <a href="#fig-paranormal" class="quarto-xref">Abbildung&nbsp;<span>4.24</span></a>.</p>
-<div id="fig-paranormal" class="quarto-figure quarto-figure-center anchored" width="30%">
+<div id="fig-paranormal" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-paranormal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/ch33910f1.jpg" class="img-fluid figure-img" style="width:30.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-paranormal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-paranormal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.24: Die Paranormalverteilung
 </figcaption></figure>
 </div>
@@ -2362,18 +2392,18 @@ Abbildung&nbsp;4.24: Die Paranormalverteilung
 <p>Bei randlastigen Verteilungen (“fat tails”) kommen Extremereignisse viel häufiger vor als bei Normalverteilungen. Deshalb ist es wichtig sein, zu wissen, ob eine Normalverteilung oder eine randlastige Verteilung vorliegt. Viele statistische Methoden sind nicht zuverlässig bei (stark) randlastigen Methoden. <a href="#fig-fat" class="quarto-xref">Abbildung&nbsp;<span>4.25</span></a> grenzt eine Normalverteilung von einer “Fat-Tail-Verteilung” ab.</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-fat_7c67d7093cc04f8914ba8acce0ef1976">
 <div class="cell-output-display">
-<div id="fig-fat" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-fat" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-fat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-fat-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-fat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.25: Normalverteilung vs.&nbsp;randlastige Verteilungen
 </figcaption></figure>
 </div>
 </div>
 </div>
 <div id="exm-normal-rand" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.17 (Beispiele für Normal- und randlastige Verteilungen) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Beispiel 4.17 (Beispiele für Normal- und randlastige Verteilungen)</strong></span> &nbsp;</p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p>Normal verteilt:</p>
@@ -2390,7 +2420,7 @@ Abbildung&nbsp;4.25: Normalverteilung vs.&nbsp;randlastige Verteilungen
 <ul>
 <li>Vermögen</li>
 <li>Verkaufte Bücher (Anzahl)</li>
-<li>Ruhm (z.B. Anzahl Follower auf Instagram)</li>
+<li>Ruhm (z. B. Anzahl Follower auf Instagram)</li>
 <li>Aktienkurse (Kurswert)</li>
 <li>Erdbeben (Stärke)</li>
 <li>Anzahl von Todesopfern in Pandemien</li>
@@ -2420,11 +2450,11 @@ Abbildung&nbsp;4.25: Normalverteilung vs.&nbsp;randlastige Verteilungen
 </div>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-normal1_23818891ff785aceeef3dbd8b3b0b135">
 <div class="cell-output-display">
-<div id="fig-normal1" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-normal1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-normal1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-normal1-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-normal1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-normal1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.26: Wir basteln uns eine Normalverteilung
 </figcaption></figure>
 </div>
@@ -2435,13 +2465,13 @@ Abbildung&nbsp;4.26: Wir basteln uns eine Normalverteilung
 <p>Die Normalverteilung wird auch <em><a href="https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F">Gauss</a>-Verteilung</em> oder <em>Glockenkurve</em> genannt.</p>
 </section><section id="simulation-einer-normalverteilung" class="level4" data-number="4.3.3.5"><h4 data-number="4.3.3.5" class="anchored" data-anchor-id="simulation-einer-normalverteilung">
 <span class="header-section-number">4.3.3.5</span> Simulation einer Normalverteilung</h4>
-<p>R hat eine Funktion eingebaut zur Erzeugung von Zufallszahlen (Zufallszahlengenerator), z.B. normalverteilte. Man übergibt dieser Funktion den gewünschten Mittelwert und die gewünschte Streuung und die Funktion zieht dann zufällig Werte aus dieser Verteilung.</p>
+<p>R hat eine Funktion eingebaut zur Erzeugung von Zufallszahlen (Zufallszahlengenerator), z. B. normalverteilte. Man übergibt dieser Funktion den gewünschten Mittelwert und die gewünschte Streuung und die Funktion zieht dann zufällig Werte aus dieser Verteilung.</p>
 <p>Diesen Zufallszahlengenerator kann man mit einem Duschkopf vergleichen, s. <a href="#fig-shower" class="quarto-xref">Abbildung&nbsp;<span>4.27</span></a>. An diesem Duschkopf kann man einen Schwenker einstellen, der den Duschkopf ausrichtet, also steuert, ob die Wassertropfen weit in die eine oder die andere Richtugn fallen. Zweitens hat unser Duschkopf noch einen Streuregler, der den Wasserstrahl entweder eng bündelt<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> oder weit auseinanderfächert. Im ersten Fall fällt der Wasserstrahl eng und schmal aus. Im zweiten Fall fällt der Wasserstrahl breit aus.</p>
-<div id="fig-shower" class="quarto-figure quarto-figure-center anchored" width="50%">
+<div id="fig-shower" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-shower-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/shower-data.png" class="img-fluid figure-img" style="width:50.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-shower-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-shower-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.27: Zufallszahlengenerator als Duschkopf
 </figcaption></figure>
 </div>
@@ -2501,18 +2531,18 @@ Abbildung&nbsp;4.27: Zufallszahlengenerator als Duschkopf
 <p>Die Verteilung der Zufallsvariablen IQ ist normalverteilt mit einem Mittelwert von 100 und einer Streuung von 15, s. <a href="#fig-norm-100-15" class="quarto-xref">Abbildung&nbsp;<span>4.28</span></a>:</p>
 <p><span class="math inline">\(IQ \sim \mathcal{N}(100,15)\)</span></p>
 <div id="exr-iq" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 4.4 (Wie schlau muss man (nicht) sein?) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 4.4 (Wie schlau muss man (nicht) sein?)</strong></span> &nbsp;</p>
 <ul>
 <li>Wie schlau muss man sein, um zu den unteren 75%, 50%, 25%, 5%, 1% zu gehören?</li>
 <li>Anders gesagt: Welcher IQ-Wert wird von 75%, 50%, … der Leute nicht überschritten?<span class="math inline">\(\square\)</span>
 </li>
 </ul>
 </div>
-<div id="fig-norm-100-15" class="quarto-figure quarto-figure-center anchored" width="50%">
+<div id="fig-norm-100-15" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-norm-100-15-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/norm-100-15.png" class="img-fluid figure-img" style="width:50.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-norm-100-15-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-norm-100-15-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.28: Visualisierung der theoretischen IQ-Verteilung
 </figcaption></figure>
 </div>
@@ -2535,8 +2565,8 @@ Abbildung&nbsp;4.28: Visualisierung der theoretischen IQ-Verteilung
 </div>
 </div><div class="column" style="width:25%;">
 <div class="cell" data-hash="0400-Verteilungen_cache/html/tbl-quantiles2_e34ffca143acc2c1b0a04509aae3e348">
-<div id="tbl-quantiles2" class="cell anchored" data-hash="0400-Verteilungen_cache/html/tbl-quantiles2_e34ffca143acc2c1b0a04509aae3e348">
-<figure class="quarto-float quarto-float-tbl figure"><figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-quantiles2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-quantiles2" class="cell quarto-float anchored" data-hash="0400-Verteilungen_cache/html/tbl-quantiles2_e34ffca143acc2c1b0a04509aae3e348">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-quantiles2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tabelle&nbsp;4.7: Quantile der IQ-Verteilung
 </figcaption><div aria-describedby="tbl-quantiles2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -2980,7 +3010,7 @@ Tabelle&nbsp;4.7: Quantile der IQ-Verteilung
   text-indent: 25px;
 }
 </style>
-<table class="gt_table cell table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table do-not-create-environment cell table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <thead><tr class="header gt_col_headings">
 <th id="p" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">p</th>
 <th id="q" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">q</th>
@@ -3017,9 +3047,9 @@ Tabelle&nbsp;4.7: Quantile der IQ-Verteilung
 </div>
 </div>
 <p>Das <em>Quantil</em> <span class="math inline">\(q\)</span> zur kumulierten Wahrscheinlichkeit <span class="math inline">\(p=75\)</span> ist 110, etc.</p>
-<p>Umgekehrt können wir uns auch fragen: Gegeben einer Realisation der Zufallsvariablen (z.B. IQ), was ist die zugehörige Wahrscheinlichkeit (Wert der Verteilungsfunktion?)</p>
+<p>Umgekehrt können wir uns auch fragen: Gegeben einer Realisation der Zufallsvariablen (z. B. IQ), was ist die zugehörige Wahrscheinlichkeit (Wert der Verteilungsfunktion?)</p>
 <div id="exr-schlau2" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 4.5 (Wie schlau muss man (nicht) sein, Teil 2) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 4.5 (Wie schlau muss man (nicht) sein, Teil 2)</strong></span> &nbsp;</p>
 <ul>
 <li>Welcher Anteil der Fläche unter der Kurve <span class="math inline">\(p\)</span> gehört zu den IQ-Werten 75, 100, 115, 130?</li>
 <li>Anders gesagt: Welcher Anteil der Wahrscheinlichkeitsmasse der Verteilung liegt unter IQ=75, IQ=100, etc.?<span class="math inline">\(\square\)</span>
@@ -3056,8 +3086,8 @@ Hinweis
 </div>
 </div>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/tbl-iq100_6ef1d914f9bc28c8ca17e515f4d464d2">
-<div id="tbl-iq100" class="cell anchored" data-hash="0400-Verteilungen_cache/html/tbl-iq100_6ef1d914f9bc28c8ca17e515f4d464d2">
-<figure class="quarto-float quarto-float-tbl figure"><figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-iq100-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-iq100" class="cell quarto-float anchored" data-hash="0400-Verteilungen_cache/html/tbl-iq100_6ef1d914f9bc28c8ca17e515f4d464d2">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-iq100-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tabelle&nbsp;4.8: Wahrscheinlichkeit für iq &lt; 100
 </figcaption><div aria-describedby="tbl-iq100-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -3501,7 +3531,7 @@ Tabelle&nbsp;4.8: Wahrscheinlichkeit für iq &lt; 100
   text-indent: 25px;
 }
 </style>
-<table class="gt_table cell table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table do-not-create-environment cell table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <thead><tr class="header gt_col_headings">
 <th id="p_100" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">p_100</th>
 <th id="n" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">n</th>
@@ -3532,20 +3562,20 @@ Tabelle&nbsp;4.8: Wahrscheinlichkeit für iq &lt; 100
 <span class="header-section-number">4.3.3.7</span> Quantile der Normalverteilung</h4>
 <p>💡 Zur Erinnerung: <em>Quantile</em> teilen eine Verteilung so ein, dass ein Anteil <span class="math inline">\(p\)</span> kleiner oder gleich und der andere Teil <span class="math inline">\(1-p\)</span> größer dem Quantil <span class="math inline">\(q\)</span> ist.</p>
 <div id="exm-quantil" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.18 </strong></span>“50%-Quantil = 100” meint, dass 50% der Elemente der Verteilung einen Wert kleiner oder gleich als 100 haben. Man schreibt auch: <code>q(.5) = 100</code>.</p>
+<p><span class="theorem-title"><strong>Beispiel 4.18</strong></span> “50%-Quantil = 100” meint, dass 50% der Elemente der Verteilung einen Wert kleiner oder gleich als 100 haben. Man schreibt auch: <code>q(.5) = 100</code>.</p>
 </div>
 <p>💡 Zur Erinnerung: Die <em>Verteilungsfunktion F</em> (für einen Wert <span class="math inline">\(x\)</span> der Zufallsvariable <span class="math inline">\(X\)</span>) gibt die Wahrscheinlichkeit an, dass <span class="math inline">\(X\)</span> einen Wert höchstens so groß wie <span class="math inline">\(x\)</span> annimmt. Sie zeigt also die kumulierte Wahrscheinlichkeit <span class="math inline">\([-\infty, q)\)</span>.</p>
 <div id="exm-f" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.19 </strong></span>“F(100) = 50%” meint: Die Wahrscheinlichkeit für eine Ausprägung von höchstens als 100 beträgt 50%.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 4.19</strong></span> “F(100) = 50%” meint: Die Wahrscheinlichkeit für eine Ausprägung von höchstens als 100 beträgt 50%.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Schauen wir uns die Quantile der Normalverteilung einmal näher an. Wir gehen von einer Normalverteilung aus, wie sie zur Beschreibung von Intelligenz (IQ) verwendet wird, s. <a href="#fig-nv-quants" class="quarto-xref">Abbildung&nbsp;<span>4.29</span></a>.</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-nv-quants_50e3feebe01222435b976dd507132819">
 <div class="cell-output-display">
-<div id="fig-nv-quants" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-nv-quants" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-nv-quants-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-nv-quants-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-nv-quants-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nv-quants-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.29: Quantile der Normalverteiltung
 </figcaption></figure>
 </div>
@@ -3559,21 +3589,21 @@ Abbildung&nbsp;4.29: Quantile der Normalverteiltung
 <p>Betrachten wir einige wichtigen Quantile, s. <a href="#fig-nv-quants2" class="quarto-xref">Abbildung&nbsp;<span>4.30</span></a>.</p>
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-nv-quants2_7e3b0dfc401fe1b438e1f8576104094a">
 <div class="cell-output-display">
-<div id="fig-nv-quants2" class="quarto-figure quarto-figure-center anchored" width="960">
+<div id="fig-nv-quants2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-nv-quants2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-nv-quants2-1.png" class="img-fluid figure-img" width="960">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-nv-quants2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nv-quants2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.30: Verschiedene Quantil der Normalverteilung
 </figcaption></figure>
 </div>
 </div>
 </div>
-<div id="fig-quantnormanim" class="quarto-figure quarto-figure-center anchored" width="50%">
+<div id="fig-quantnormanim" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-quantnormanim-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/normal_distribution_animation.gif" class="img-fluid figure-img" style="width:50.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-quantnormanim-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quantnormanim-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.31: Die Quantile für 10%, 20%, … 100% visualisiert
 </figcaption></figure>
 </div>
@@ -3583,11 +3613,11 @@ Abbildung&nbsp;4.31: Die Quantile für 10%, 20%, … 100% visualisiert
 <div class="column" style="width:50%;">
 <div class="cell" data-hash="0400-Verteilungen_cache/html/fig-snv_b2315dc0bb979b8a4ab638759a94c559">
 <div class="cell-output-display">
-<div id="fig-snv" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-snv" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-snv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0400-Verteilungen_files/figure-html/fig-snv-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-snv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-snv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.32: Normalverteilung mit Mittelwert 0 und SD 1, auch <em>Standard-Normalverteilung</em> genannt
 </figcaption></figure>
 </div>
@@ -3607,11 +3637,11 @@ Abbildung&nbsp;4.32: Normalverteilung mit Mittelwert 0 und SD 1, auch <em>Standa
 <p>Dem Mathematiker <a href="https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F">Carl Friedrich Gauss</a> (s. <a href="#fig-gauss" class="quarto-xref">Abbildung&nbsp;<span>4.33</span></a>) wird die Ehre zuerkannt, die Normalverteilung eingeführt zu haben.</p>
 <div class="cell" data-layout-align="center" data-hash="0400-Verteilungen_cache/html/fig-gauss_6e0b09d7252541e607f7ed6bce3b72f8">
 <div class="cell-output-display">
-<div id="fig-gauss" class="quarto-figure quarto-figure-center anchored" width="341" data-fig-align="center">
+<div id="fig-gauss" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-gauss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/10_Deutsche_Mark_-_detail.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="341">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-gauss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gauss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.33: Zehn-Mark-Geldschein mit Gauss und Normalverteilung
 </figcaption></figure>
 </div>
@@ -3734,7 +3764,7 @@ Hinweis
 </section></section></section><section id="vertiefung" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="vertiefung">
 <span class="header-section-number">4.4</span> Vertiefung</h2>
 <p><span class="citation" data-cites="bourier_2018">Bourier (<a href="references.html#ref-bourier_2018" role="doc-biblioref">2018</a>)</span>, Kap. 6.2 und 7.1 erläutert einige (grundlegende) theoretische Hintergründe zu diskreten Zufallsvariablen und Wahrscheinlichkeitsverteilungen. Wichtigstes Exemplar ist dabei die Binomialverteilung.</p>
-<p><span class="citation" data-cites="mittag_statistik_2020">Mittag und Schüller (<a href="references.html#ref-mittag_statistik_2020" role="doc-biblioref">2020</a>)</span> stellen in Kap. 12 und 13 Zufallsvariablen vor; zum Teil geht die Darstellung dort über die Lernziele bzw. Inhalte dieses Kurses hinaus.</p>
+<p><span class="citation" data-cites="mittag_statistik_2020">(<a href="references.html#ref-mittag_statistik_2020" role="doc-biblioref"><strong>mittag_statistik_2020?</strong></a>)</span> stellen in Kap. 12 und 13 Zufallsvariablen vor; zum Teil geht die Darstellung dort über die Lernziele bzw. Inhalte dieses Kurses hinaus.</p>
 </section><section id="aufgaben" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="aufgaben">
 <span class="header-section-number">4.5</span> Aufgaben</h2>
 <p>Zusätzlich zu den Aufgaben in der genannten Literatur sind folgende Aufgaben zu empfehlen.</p>
@@ -3775,16 +3805,13 @@ Gelman, Andrew, Jennifer Hill, und Aki Vehtari. 2021. <em>Regression and Other S
 <div id="ref-mcelreath_statistical_2020" class="csl-entry" role="listitem">
 McElreath, Richard. 2020. <em>Statistical Rethinking: A <span>Bayesian</span> Course with Examples in <span>R</span> and <span>Stan</span></em>. 2. Aufl. <span>CRC</span> Texts in Statistical Science. <span>Boca Raton</span>: <span>Taylor and Francis, CRC Press</span>.
 </div>
-<div id="ref-mittag_statistik_2020" class="csl-entry" role="listitem">
-Mittag, Hans-Joachim, und Katharina Schüller. 2020. <em>Statistik: Eine Einführung mit interaktiven Elementen</em>. <span>Berlin, Heidelberg</span>: <span>Springer Berlin Heidelberg</span>. <a href="https://doi.org/10.1007/978-3-662-61912-4">https://doi.org/10.1007/978-3-662-61912-4</a>.
 </div>
-</div>
-</section><aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
 <ol>
 <li id="fn1"><p>da einfach und deutlich<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>S wie Summe<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>Machen Sie das mal ohne Computer, wenn Sie ein Wochenende lang Langeweile haben.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>Alternativ kann man z.B. auch <code>ggplot</code> verwenden: <code>ggplot(x_simu_df, aes(x = x_simu)) +  geom_histogram(bins = 50)</code>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Alternativ kann man z. B. auch <code>ggplot</code> verwenden: <code>ggplot(x_simu_df, aes(x = x_simu)) +  geom_histogram(bins = 50)</code>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>von lat. <em>bis</em> “zweimal”<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6"><p>In den Lehrbüchern häufig als Urne bezeichnet, was den bösen Spott von “Friedhofstatistik” nach sich zog.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn7"><p>wobei gelten muss <span class="math inline">\(n \ge k\)</span><a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
@@ -3794,11 +3821,11 @@ Mittag, Hans-Joachim, und Katharina Schüller. 2020. <em>Statistik: Eine Einfüh
 <li id="fn11"><p>R meckert nicht bei langweiligen Aufgaben.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn12"><p><code><a href="https://rpkgs.datanovia.com/ggpubr/">library(ggpubr); ggline(muenz_tab, x = "id", y = "x_cumsum")</a></code><a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn13"><p>Was “einigermaßen” bedeuten soll, ist kein statistischer Begriff, sondern einer, der im echten Leben von den Menschen beantwortet werden muss, die eine Entscheidung zu treffen haben.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn14"><p>d.h. die Schiefe (<code>skewness</code>) ist 0<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>d. h. die Schiefe (<code>skewness</code>) ist 0<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn15"><p>Das Zeichen <span class="math inline">\(y \propto x\)</span> bedeutet “x ist proportional zu y”, also <span class="math inline">\(y = mx\)</span>.<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn16"><p>Massagedusche, behauptet der Hersteller<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn17"><p>“Ziemlich” ist natürlich subjektiv; je nach Situation kann es zu viel oder nicht zu viel sein.<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol></aside></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</ol></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -4070,27 +4097,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
@@ -4105,10 +4111,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             break;
           }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -4117,8 +4127,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
-      return note.innerHTML;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {
@@ -4324,7 +4341,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
               options: {
                 flipVariations: false, // true by default
                 allowedAutoPlacements: ['right'],
-                fallbackPlacements: ['right', 'top', 'top-start', 'top-end'],
+                fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
               },
             },
             {
@@ -4392,4 +4409,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-</body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/0400-Verteilungen.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></div></div></footer></body></html>

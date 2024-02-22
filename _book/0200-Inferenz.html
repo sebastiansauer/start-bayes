@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.513">
+<meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Start:Bayes! - 2&nbsp; Inferenz</title>
 <style>
@@ -114,6 +114,7 @@ div.csl-indent {
     "search-more-match-text": "weitere Treffer in diesem Dokument",
     "search-more-matches-text": "weitere Treffer in diesem Dokument",
     "search-clear-button-title": "Zurücksetzen",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Abbrechen",
     "search-submit-button-title": "Abschicken",
     "search-label": "Suchen"
@@ -121,7 +122,32 @@ div.csl-indent {
 }</script><meta name="mermaid-theme" content="neutral">
 <script src="site_libs/quarto-diagram/mermaid.min.js"></script><script src="site_libs/quarto-diagram/mermaid-init.js"></script><link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="styles.css">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="styles.css">
 </head>
 <body class="nav-sidebar floating">
 
@@ -143,7 +169,7 @@ div.csl-indent {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Start:Bayes!</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/sebastiansauer/start-bayes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/sebastiansauer/start-bayes" title="Quellcode" class="quarto-navigation-tool px-1" aria-label="Quellcode"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Dunkelmodus umschalten"><i class="bi"></i></a>
 </div>
     </div>
@@ -432,7 +458,7 @@ div.csl-indent {
 <p>📺 <a href="https://www.youtube.com/watch?v=gcwWwBy0kPI&amp;list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN&amp;index=2">Ja, wozu ist Statistik eigentlich da?</a></p>
 <p>Ja, diese Frage haben Sie sich auch schon mal gestellt? Abb. <a href="#fig-goals" class="quarto-xref">Abbildung&nbsp;<span>2.1</span></a> gibt einen Überblick über die Ziele der Statistik.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Nach dieser Einteilung lassen sich drei Arten von Zielen unterscheiden: Beschreiben, Vorhersagen und Erklären.</p>
 <div id="exm-ziele-stat" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 2.1 (Beispiele für die Zielarten statistischer Analysen) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Beispiel 2.1 (Beispiele für die Zielarten statistischer Analysen)</strong></span> &nbsp;</p>
 <ul>
 <li>Beschreiben: “Wie groß ist der Gender-Paygap in der Branche X im Zeitraum Y?”</li>
 <li>Vorhersagen: Wenn eine Person, Mr.&nbsp;X, 100 Stunden auf die Statistikklausur lernen, welche Note kann diese Person dann erwarten?</li>
@@ -440,10 +466,10 @@ div.csl-indent {
 </li>
 </ul>
 </div>
-<p>Für die Wissenschaft ist <em>Erklären</em> das wichtigste Ziel. Bei wenig beackerten Wissenschaftsfeldern ist das <em>Beschreiben</em> ein sinnvoller erster Schritt, der allerdings nicht Stolperfallen ist, wie in <a href="1150-konfundierung.html" class="quarto-xref"><span>Kapitel&nbsp;11</span></a> erläutert. <em>Vorhersagen</em> ist mehr für die Praxis als für die Wissenschaft relevant.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
-<div class="cell">
+<p>Für die Wissenschaft ist <em>Erklären</em> das wichtigste Ziel. Bei wenig beackerten Wissenschaftsfeldern ist das <em>Beschreiben</em> ein sinnvoller erster Schritt, der allerdings nicht Stolperfallen ist, wie in <a href="1150-konfundierung.html" class="quarto-xref"><span>Kapitel 11</span></a> erläutert. <em>Vorhersagen</em> ist mehr für die Praxis als für die Wissenschaft relevant.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-goals" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-goals" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-goals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
 <pre class="mermaid mermaid-js" data-label="fig-goals">flowchart TD 
@@ -462,7 +488,7 @@ div.csl-indent {
 </pre>
 </div>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-goals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-goals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;2.1: Eine Einteilung der Ziele von statistischen Analysen
 </figcaption></figure>
 </div>
@@ -477,7 +503,7 @@ Abbildung&nbsp;2.1: Eine Einteilung der Ziele von statistischen Analysen
 <!-- ### Inferenz als Generalisieren -->
 <p>📺 <a href="https://www.youtube.com/watch?v=QNMVi6IqQ90&amp;list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN">Was ist Inferenz?</a></p>
 <p>Statistische Inferenz hat zum Ziel, vom Teil aufs Ganze zu schließen, bzw. vom Konkreten auf das Abstrakte.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
-<p>Typischerweise untersuchen im Rahmen einer statistischen Analyse eine <em>Stichprobe</em>, wie z.B. Ihr Freundeskreis, der leichtsinnig genug war, auf Ihre WhatsApp-Nachricht “Tolle Studie zu dem Geheimnis des Glücks!!!” zu klicken. Ihr Freundeskreis ist ein <em>Teil</em> der Menschen (z.B. aus Deutschland), also eine Stichprobe. Schauen wir uns den Unterschied zwischen Stichprobe und Population näher an.</p>
+<p>Typischerweise untersuchen im Rahmen einer statistischen Analyse eine <em>Stichprobe</em>, wie z. B. Ihr Freundeskreis, der leichtsinnig genug war, auf Ihre WhatsApp-Nachricht “Tolle Studie zu dem Geheimnis des Glücks!!!” zu klicken. Ihr Freundeskreis ist ein <em>Teil</em> der Menschen (z. B. aus Deutschland), also eine Stichprobe. Schauen wir uns den Unterschied zwischen Stichprobe und Population näher an.</p>
 </section><section id="stichprobe-vs.-population" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="stichprobe-vs.-population">
 <span class="header-section-number">2.3</span> Stichprobe vs.&nbsp;Population</h2>
 <p>Nehmen wir an, wir möchten herausfinden, wie groß der Anteil der R-Fans in der Population der Studierenden ist. Den Anteil der F-Fans bezeichnen wir der Einfachheit halber hier mit <code>A</code><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
@@ -485,30 +511,30 @@ Abbildung&nbsp;2.1: Eine Einteilung der Ziele von statistischen Analysen
 <p>Wir müssen also den Anteil der R-Fans <em>in der Population</em> auf Basis des Anteils <em>in der Stichprobe</em> schließen: Wir verallgemeinern oder generalisieren von der Stichprobe auf die Grundgesamtheit, s. Abb. <a href="#fig-pop" class="quarto-xref">Abbildung&nbsp;<span>2.2 (a)</span></a> und <a href="#fig-sample" class="quarto-xref">Abbildung&nbsp;<span>2.2 (b)</span></a>.</p>
 <div id="fig-pop-sample" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pop-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-pop-sample" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-pop" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-pop-sample" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-pop" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-pop-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/pvoll.png" class="img-fluid figure-img" data-ref-parent="fig-pop-sample">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-pop-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pop-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Population
 </figcaption></figure>
 </div>
 </div>
-<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-pop-sample" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-sample" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-pop-sample" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-sample" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/psti.png" class="img-fluid figure-img" data-ref-parent="fig-pop-sample">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Sample
 </figcaption></figure>
 </div>
 </div>
 </div>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-pop-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pop-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;2.2: Population vs.&nbsp;Sample. Autor: Karsten Lübke. OEM
 </figcaption></figure>
 </div>
@@ -534,40 +560,40 @@ Hinweis
 <p>Statistik gibt es in zwei Geschmacksrichtungen, könnte man sagen: Deskriptiv- und Inferenzstatistik, s. Abb. <a href="#fig-inf1" class="quarto-xref">Abbildung&nbsp;<span>2.3</span></a>.</p>
 <p>Vereinfacht gesprochen fasst die Deskriptivstatistik Daten (einer Stichprobe) zu einer einzelnen Kennzahl zusammen.</p>
 <div id="exm-desk" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 2.2 </strong></span>In einem Hörsaal sitzen 100 Studis. Alle schreiben Ihre Körpergröße auf einen Zettel. Die Dozentin sammelt die Zettel ein und rechnet dann den Mittelwert der Körpergröße der anwesenden Studentis aus. Voilà: Deskriptive Statistik!<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 2.2</strong></span> In einem Hörsaal sitzen 100 Studis. Alle schreiben Ihre Körpergröße auf einen Zettel. Die Dozentin sammelt die Zettel ein und rechnet dann den Mittelwert der Körpergröße der anwesenden Studentis aus. Voilà: Deskriptive Statistik!<span class="math inline">\(\square\)</span></p>
 </div>
-<div id="fig-inf1" class="quarto-figure quarto-figure-center anchored" width="70%" data-fig-align="center">
+<div id="fig-inf1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-inf1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/desk_vs_inf-crop.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-inf1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-inf1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;2.3: Deskriptiv- vs.&nbsp;Inferenzstatistik
 </figcaption></figure>
 </div>
 <div id="exr-smple-pop" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 2.1 </strong></span>🏋 Schließen Sie die Augen und zeichnen Sie obiges Diagramm, <a href="#fig-inf1" class="quarto-xref">Abbildung&nbsp;<span>2.3</span></a>!<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 2.1</strong></span> 🏋 Schließen Sie die Augen und zeichnen Sie obiges Diagramm, <a href="#fig-inf1" class="quarto-xref">Abbildung&nbsp;<span>2.3</span></a>!<span class="math inline">\(\square\)</span></p>
 </div>
 <div id="def-desk" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.1 (Deskriptivstatistik) </strong></span><em>Deskriptivstastistik</em> fasst Stichprobenmerkmale zu Kennzahlen (Statistiken) zusammen.</p>
+<p><span class="theorem-title"><strong>Definition 2.1 (Deskriptivstatistik)</strong></span> <em>Deskriptivstastistik</em> fasst Stichprobenmerkmale zu Kennzahlen (Statistiken) zusammen.</p>
 </div>
 </section><section id="inferenzstatistik" class="level3 {def-inf}" data-number="2.3.2"><h3 data-number="2.3.2" class="anchored" data-anchor-id="inferenzstatistik">
 <span class="header-section-number">2.3.2</span> Inferenzstatistik</h3>
-<p><em>Inferenzstatistik</em> schließt von Statistiken auf Parameter (ein <em>Parameter</em> meint hier eine Kennzahl von einer Grundgesamtheit, z.B. die Streuung).</p>
+<p><em>Inferenzstatistik</em> schließt von Statistiken auf Parameter (ein <em>Parameter</em> meint hier eine Kennzahl von einer Grundgesamtheit, z. B. die Streuung).</p>
 <p>Inferenz bedeutet Schließen; auf Basis von vorliegenden Wissen wird neues Wissen generiert.</p>
 <p>Inferenzstatistik ist ein Verfahren, das mathematische Modelle (oft aus der Stochastik) verwendet, um ausgehend von einer bestimmten Datenlage, die eine Stichprobe einer Grundgesamtheit darstellt, allgemeine Schlüsse zu ziehen.</p>
 </section><div id="exr-inf" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 2.2 </strong></span>🏋️️ Heute Nacht vor dem Schlafen wiederholen Sie die Definition. Üben Sie jetzt schon mal.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 2.2</strong></span> 🏋️️ Heute Nacht vor dem Schlafen wiederholen Sie die Definition. Üben Sie jetzt schon mal.<span class="math inline">\(\square\)</span></p>
 </div>
 <section id="deskriptiv--und-inferenzstatistik-gehen-hand-in-hand" class="level3" data-number="2.3.3"><h3 data-number="2.3.3" class="anchored" data-anchor-id="deskriptiv--und-inferenzstatistik-gehen-hand-in-hand">
 <span class="header-section-number">2.3.3</span> Deskriptiv- und Inferenzstatistik gehen Hand in Hand</h3>
 <p>Für jede beliebige Statistik (Kennzahl von Stichprobendaten) kann man die Methoden der Inferenzstatistik verwenden, um den zugehörigen Kennwert (Parameter) der Population zu bestimmen, s. Tabelle <a href="#tbl-kennwerte" class="quarto-xref">Tabelle&nbsp;<span>2.1</span></a>. Da man die Parameter der Population so gut wie nie sicher kennt (schließlich hat man meist nur Auszüge, Teile der Population, also Stichproben), muss man sich mit <em>Schätzwerten</em> begnügen. Schätzwerte macht man kenntlich mit einem “Dach-Zeichen” über dem Parameter, also z.b. <span class="math inline">\(\hat{\mu}\)</span>, lies: “mü-Dach”.</p>
 <div class="cell" data-hash="0200-Inferenz_cache/html/tbl-kennwerte_5870dddd4e1807d187471ebbe4328cda">
-<div id="tbl-kennwerte" class="cell anchored" data-hash="0200-Inferenz_cache/html/tbl-kennwerte_5870dddd4e1807d187471ebbe4328cda">
-<figure class="quarto-float quarto-float-tbl figure"><figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-kennwerte-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="tbl-kennwerte" class="cell quarto-float anchored" data-hash="0200-Inferenz_cache/html/tbl-kennwerte_5870dddd4e1807d187471ebbe4328cda">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-kennwerte-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tabelle&nbsp;2.1: Bezeichnungen für Kennwerte
 </figcaption><div aria-describedby="tbl-kennwerte-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="cell table table-sm table-striped small">
+<table class="do-not-create-environment cell table table-sm table-striped small">
 <thead><tr class="header">
 <th style="text-align: left;">Kennwert</th>
 <th style="text-align: left;">Stichprobe</th>
@@ -619,12 +645,12 @@ Tabelle&nbsp;2.1: Bezeichnungen für Kennwerte
 </div>
 <p>Für Statistiken (Daten einer Stichprobe) verwendet man <em>lateinische</em> Buchstaben; für Parameter (Population) verwendet man <em>griechische</em> Buchstaben.</p>
 <div id="exr-greek" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 2.3 </strong></span>🏋️ Geben Sie die griechischen Buchstaben für typische Statistiken an. Ohne auf die Tabelle zu schauen.😜<span class="math inline">\(\square\)</span>!</p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 2.3</strong></span> 🏋️ Geben Sie die griechischen Buchstaben für typische Statistiken an. Ohne auf die Tabelle zu schauen.😜<span class="math inline">\(\square\)</span>!</p>
 </div>
 </section><section id="schätzen-von-parametern-einer-grundgesamtheit" class="level3" data-number="2.3.4"><h3 data-number="2.3.4" class="anchored" data-anchor-id="schätzen-von-parametern-einer-grundgesamtheit">
 <span class="header-section-number">2.3.4</span> Schätzen von Parametern einer Grundgesamtheit</h3>
 <p>Meist begnügt man sich beim Analysieren von Daten nicht mit Aussagen für eine Stichprobe, sondern will auf eine Grundgesamtheit verallgemeinern.</p>
-<p>Leider sind die Parameter einer Grundgesamtheit zumeist unbekannt, daher muss man sich mit <em>Schätzungen</em> begnügen.</p>
+<p>Leider sind die Parameter einer Grundgesamtheit zumeist unbekannt, d. h.r muss man sich mit <em>Schätzungen</em> begnügen.</p>
 <p>Schätzwerte werden mit einem “Dach” über dem Kennwert gekennzeichnet, s. letzte Spalte in <a href="#tbl-kennwerte" class="quarto-xref">Tabelle&nbsp;<span>2.1</span></a>.</p>
 <p>In der angewandten Forschung interessieren häufig Fragen wie: “Welche Entscheidung ist (wahrscheinlich) besser?”. Da bekanntlich (fast) keine Aussagen sicher sind, spielt <em>Wahrscheinlichkeit</em> eine wichtige Rolle in den Forschungsfragen bzw. in deren Antworten.</p>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -641,11 +667,11 @@ Hinweis
 </div>
 </div>
 <div id="exm-inf" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 2.3 </strong></span>Sie testen zwei Varianten Ihres Webshops (V1 und V2), die sich im Farbschema unterscheiden und ansonsten identisch sind: Hat das Farbschema einen Einfluss auf den Umsatz?</p>
+<p><span class="theorem-title"><strong>Beispiel 2.3</strong></span> Sie testen zwei Varianten Ihres Webshops (V1 und V2), die sich im Farbschema unterscheiden und ansonsten identisch sind: Hat das Farbschema einen Einfluss auf den Umsatz?</p>
 <p>Dazu vergleichen Sie den mittleren Umsatz pro Tag von V1 vs.&nbsp;V2, <span class="math inline">\(\bar{X}_{V1}\)</span> und <span class="math inline">\(\bar{X}_{V2}\)</span>. Die Mittelwerte unterscheiden sich etwas, <span class="math inline">\(\bar{X}_{V1} &gt; \bar{X}_{V2}\)</span>. Sind diese Unterschiede “zufällig” oder “substanziell”? Gilt also <span class="math inline">\(\mu_{V1} &gt; \mu_{V2}\)</span> oder gilt <span class="math inline">\(\mu_{V1} \le \mu_{V2}\)</span>? Wie groß ist die Wahrscheinlichkeit<span class="math inline">\(Pr(\mu_{V1} &gt; \mu_{V2})\)</span>?</p>
 </div>
 <div id="exr-pred-maint" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 2.4 </strong></span>🏋️ VERTIEFUNG <em>Predictive Maintenance</em> ist ein Anwendungsfeld inferenzstatistischer Modellierung. Lesen Sie dazu S. 3 <a href="https://www.rolandberger.com/publications/publication_pdf/roland_berger_vdma_predictive_maintenance_d_1.pdf">dieses Berichts</a>!<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 2.4</strong></span> 🏋️ VERTIEFUNG <em>Predictive Maintenance</em> ist ein Anwendungsfeld inferenzstatistischer Modellierung. Lesen Sie dazu S. 3 <a href="https://www.rolandberger.com/publications/publication_pdf/roland_berger_vdma_predictive_maintenance_d_1.pdf">dieses Berichts</a>!<span class="math inline">\(\square\)</span></p>
 </div>
 </section></section><section id="modellieren" class="level2" data-number="2.4"><h2 data-number="2.4" class="anchored" data-anchor-id="modellieren">
 <span class="header-section-number">2.4</span> Modellieren</h2>
@@ -655,15 +681,16 @@ Hinweis
 <p>Nun ist die Welt ein weites Feld. Jedes Detail zu berücksichtigen ist nicht möglich. Wir müssen die Sache vereinfachen: Alle Informationen ausblenden, die nicht zwingend nötig sind. Aber gleichzeitig die Strukturelemente der wirklichen Welt, die für unsere Fragestellung zentral ist, beibehalten.</p>
 <p>Dieses Tun nennt man <em>Modellieren</em>: Man erstellt sich ein Modell.</p>
 <div id="def-model" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.2 (Modell) </strong></span>Ein Modell ist ein vereinfachtes Abbild der Wirklichkeit.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 2.2 (Modell)</strong></span> Ein Modell ist ein vereinfachtes Abbild der Wirklichkeit.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Der Nutzen eines Modells ist, einen (übermäßig) komplexen Sachverhalt zu vereinfachen oder überhaupt erst handhabbar zu machen. Man versucht zu vereinfachen, ohne Wesentliches wegzulassen. Der Speck muss weg, sozusagen. Das Wesentliche bleibt.</p>
 <p>Auf die Statistik bezogen heißt das, dass man einen Datensatz dabei so zusammenfasst, damit man das Wesentliche erkennt. Was ist das “Wesentliche”? Oft interessiert man sich für die Ursachen eines Phänomens. Etwa: “Wie kommt es bloß, dass ich ohne zu lernen die Klausur so gut bestanden habe?”<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> Noch allgemeiner ist man dabei häufig am Zusammenhang von <code>X</code> und <code>Y</code> interessiert, s. <a href="#fig-xy" class="quarto-xref">Abbildung&nbsp;<span>2.4</span></a>, die ein Sinnbild von statistischen Modellen widergibt.</p>
-<div id="fig-xy" class="quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-xy" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-xy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div>
+<p></p><figure class="figure"></figure><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart LR
 X --&gt; Y
@@ -673,17 +700,18 @@ X1 --&gt; Y2
 X2 --&gt; Y2
 </pre>
 </div>
+<p></p>
 </div>
 </div>
 </div>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-xy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-xy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;2.4: oben: Sinnbild eines statistischen Modells; unten: Sinnbild eines statistischen Modells, mit zwei Inputvariablen (Ursachen)
 </figcaption></figure>
 </div>
 <p>Man kann <a href="#fig-xy" class="quarto-xref">Abbildung&nbsp;<span>2.4</span></a> als ein Sinnbild einer (mathematischen) Funktion lesen.</p>
 <div id="def-fun" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.3 </strong></span>Eine Funktion <span class="math inline">\(f\)</span> setzt zwei Größen in Beziehung.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 2.3</strong></span> Eine Funktion <span class="math inline">\(f\)</span> setzt zwei Größen in Beziehung.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>In Mathe-Sprech:</p>
 <p><span class="math inline">\(f: X \rightarrow Y\)</span></p>
@@ -709,11 +737,11 @@ Hinweis
 </section></section><section id="regression" class="level2" data-number="2.5"><h2 data-number="2.5" class="anchored" data-anchor-id="regression">
 <span class="header-section-number">2.5</span> Regression</h2>
 <p>Einflussreiche Leute schwören auf die Regressionsanalyse (<a href="#fig-gandalf" class="quarto-xref">Abbildung&nbsp;<span>2.5</span></a>).</p>
-<div id="fig-gandalf" class="quarto-figure quarto-figure-center anchored" width="50%" data-fig-align="center">
+<div id="fig-gandalf" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-gandalf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/einring.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-gandalf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gandalf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;2.5: One regression
 </figcaption></figure>
 </div>
@@ -721,7 +749,7 @@ Abbildung&nbsp;2.5: One regression
 <iframe width="780" height="500" src="https://gallery.shinyapps.io/simple_regression/" title="DIY: Regressionsgerade zum selber bauen"></iframe>
 <p><a href="https://shinyapps.org/showapp.php?app=https://shiny.psy.lmu.de/felix/lmfit&amp;by=Felix%20Sch%C3%B6nbrodt&amp;title=Find-a-fit!&amp;shorttitle=Find-a-fit!">Hier</a> finden Sie eine ähnliche App, die Ihnen gestattet, selber Hand an eine Regressionsgerade zu legen.</p>
 <div id="exr-setosa-vis" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 2.5 (VERTIEFUNG Regression mit Animationen erklärt) </strong></span>Lesen Sie <a href="https://setosa.io/ev/ordinary-least-squares-regression/">diesen Post</a>, der Ihnen mit Hilfe von Bildern und Animationen (okay, und etwas) Text die Grundlagen der Regressionsanalyse erklärt.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 2.5 (VERTIEFUNG Regression mit Animationen erklärt)</strong></span> Lesen Sie <a href="https://setosa.io/ev/ordinary-least-squares-regression/">diesen Post</a>, der Ihnen mit Hilfe von Bildern und Animationen (okay, und etwas) Text die Grundlagen der Regressionsanalyse erklärt.<span class="math inline">\(\square\)</span></p>
 </div>
 <section id="regression-zum-modellieren" class="level3" data-number="2.5.1"><h3 data-number="2.5.1" class="anchored" data-anchor-id="regression-zum-modellieren">
 <span class="header-section-number">2.5.1</span> Regression zum Modellieren</h3>
@@ -740,11 +768,11 @@ Hinweis
 </div>
 </div>
 <p>Alternativ zur Regression könnte man sich in den Wald der statistischen Verfahren begeben, <a href="https://web.archive.org/web/20091029162244/http://www.wiwi.uni-muenster.de/ioeb/en/organisation/pfaff/stat_overview_table.html">wie hier von der Uni Münster als Ausschnitt (!) aufgeführt</a>. Auf dieser Basis kann man meditieren, welches statistischen Verfahren man für eine bestimmte Fragestellung verwenden sollte, s. Abb. <a href="#fig-choose-test" class="quarto-xref">Abbildung&nbsp;<span>2.6</span></a>. Muss man aber nicht.</p>
-<div id="fig-choose-test" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-choose-test" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-choose-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/choose-test.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-choose-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-choose-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;2.6: Wähle deine Statistik mit Bedacht. Oder wähle die Regressionsanalyse.
 </figcaption></figure>
 </div>
@@ -774,30 +802,30 @@ Hinweis
 <p>Anhand von <a href="#eq-lm" class="quarto-xref">Gleichung&nbsp;<span>2.1</span></a> erkennt man auch, warum man von einem <em>linearen Modell</em> spricht: Y wird als gewichteter Mittelwert mehrerer Summanden (<span class="math inline">\(X_1, X_2, ...\)</span>) berechnet.</p>
 <div id="fig-regr-rules" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-regr-rules-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-rules" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-regr-rules-1" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-rules" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-regr-rules-1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-regr-rules-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0200-Inferenz_files/figure-html/fig-regr-rules-1.png" class="img-fluid figure-img" data-ref-parent="fig-regr-rules" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-rules-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-rules-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Einfache Regression (ein Prädiktor: hp)
 </figcaption></figure>
 </div>
 </div>
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-rules" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-regr-rules-2" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-rules" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-regr-rules-2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-regr-rules-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0200-Inferenz_files/figure-html/fig-regr-rules-2.png" class="img-fluid figure-img" data-ref-parent="fig-regr-rules" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-rules-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-rules-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Multiple Regression (zwei Prädiktoren: hp und am)
 </figcaption></figure>
 </div>
 </div>
 </div>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-regr-rules-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-regr-rules-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;2.7: Die Regressionsgerade in voller Pracht
 </figcaption></figure>
 </div>
@@ -819,15 +847,15 @@ Wichtig
 <p>Nichts Genaues weiß man nicht: Schließt man von einem Teil auf das Ganze, so geschieht das unter Unsicherheit. Man spricht von <em>Ungewissheit</em>, da man die Unsicherheit das Wissen über die Genauigkeit des Schließens betrifft.</p>
 </div>
 </div>
-<p>Schließt man etwa, dass in einer Grundgesamtheit der Anteil der R-Fans bei 42% liegt, so geschieht das unter Unsicherheit; es ist ungewiss. Man ist sich nicht sicher, dass es wirklich 42% in der Population sind - und nicht etwa etwas mehr oder etwas weniger. Schließlich hat man <em>nicht</em> die ganze Population gesehen bzw. vermessen. <em>Sicher</em> ist man sich hingegen für die Stichprobe (Messfehler einmal ausgeblendet). Zur Bemessung der Unsicherheit (Ungewissheit) bedient man sich der Wahrscheinlichkeitsrechnung (wo immer möglich). Die Wahrscheinlichkeitstheorie bzw. -rechnung wird daher auch als die Mathematik des Zufalls bezeichnet.</p>
+<p>Schließt man etwa, dass in einer Grundgesamtheit der Anteil der R-Fans bei 42% liegt, so geschieht das unter Unsicherheit; es ist ungewiss. Man ist sich nicht sicher, dass es wirklich 42% in der Population sind - und nicht etwa etwas mehr oder etwas weniger. Schließlich hat man <em>nicht</em> die ganze Population gesehen bzw. vermessen. <em>Sicher</em> ist man sich hingegen für die Stichprobe (Messfehler einmal ausgeblendet). Zur Bemessung der Unsicherheit (Ungewissheit) bedient man sich der Wahrscheinlichkeitsrechnung (wo immer möglich). Die Wahrscheinlichkeitstheorie bzw. -rechnung wird d. h.r auch als die Mathematik des Zufalls bezeichnet.</p>
 <div id="def-zufall" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.4 (Zufälliges Ereignis) </strong></span>Unter einem zufälligen (engl. random) Ereignis verstehen wir ein Ereignis, das nicht (komplett) vorherzusehen ist, wie etwa die Augenzahl Ihres nächsten Würfelwurfs. Zufällig bedeutet nicht (zwangsläufig), dass das Ereignisse keine Ursachen besitzt. So gehorchen die Bewegungen eines Würfels den Gesetzen der Physik, nur sind uns diese oder die genauen Randbedingungen nicht (ausreichend) bekannt.</p>
+<p><span class="theorem-title"><strong>Definition 2.4 (Zufälliges Ereignis)</strong></span> Unter einem zufälligen (engl. random) Ereignis verstehen wir ein Ereignis, das nicht (komplett) vorherzusehen ist, wie etwa die Augenzahl Ihres nächsten Würfelwurfs. Zufällig bedeutet nicht (zwangsläufig), dass das Ereignisse keine Ursachen besitzt. So gehorchen die Bewegungen eines Würfels den Gesetzen der Physik, nur sind uns diese oder die genauen Randbedingungen nicht (ausreichend) bekannt.</p>
 </div>
 <div id="exr-muenz" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 2.6 </strong></span>🏋 Welche physikalischen Randbedingungen wirken wohl auf einen Münzwurf ein?<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 2.6</strong></span> 🏋 Welche physikalischen Randbedingungen wirken wohl auf einen Münzwurf ein?<span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-muenz" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 2.4 (Beispiele zur Quantifizierung von Ungewissheit) </strong></span>Aussagen mit Unsicherheit können unterschiedlich präzise formuliert sein.</p>
+<p><span class="theorem-title"><strong>Beispiel 2.4 (Beispiele zur Quantifizierung von Ungewissheit)</strong></span> Aussagen mit Unsicherheit können unterschiedlich präzise formuliert sein.</p>
 <ul>
 <li><p>Morgen regnet’s <span class="math inline">\(\Leftrightarrow\)</span> Morgen wird es hier mehr als 0 mm Niederschlag geben (<span class="math inline">\(p=97\%\)</span>).</p></li>
 <li><p>Methode <span class="math inline">\(A\)</span> ist besser als Methode <span class="math inline">\(B\)</span> <span class="math inline">\(\Leftrightarrow\)</span> Mit einer Wahrscheinlichkeit von 57% ist der Mittelwert von <span class="math inline">\(Y\)</span> für Methode <span class="math inline">\(A\)</span> höher als für Methode <span class="math inline">\(B\)</span>.</p></li>
@@ -836,7 +864,7 @@ Wichtig
 </ul>
 </div>
 <div id="exr-ungewiss" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 2.7 </strong></span>🏋 Geben Sie weitere Beispiele an!</p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 2.7</strong></span> 🏋 Geben Sie weitere Beispiele an!</p>
 </div>
 </section><section id="zwei-arten-von-ungewissheit" class="level3" data-number="2.6.2"><h3 data-number="2.6.2" class="anchored" data-anchor-id="zwei-arten-von-ungewissheit">
 <span class="header-section-number">2.6.2</span> Zwei Arten von Ungewissheit</h3>
@@ -845,9 +873,9 @@ Wichtig
 <li><p>Wie (un)gewiss ist man sich über die Regressionsgewichte?</p></li>
 <li><p>Wie (un)gewiss ist man sich über die Genauigkeit der Vorhersage (des Modells)?</p></li>
 </ol>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-zwei-arten" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-zwei-arten" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-zwei-arten-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
 <pre class="mermaid mermaid-js" data-label="fig-zwei-arten">flowchart LR
@@ -857,7 +885,7 @@ X2 -. Genauigkeit des Modells .-&gt; B
 </pre>
 </div>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-zwei-arten-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zwei-arten-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;2.8: Zwei Arten der Ungewissheit beim Modellieren
 </figcaption></figure>
 </div>
@@ -867,7 +895,7 @@ Abbildung&nbsp;2.8: Zwei Arten der Ungewissheit beim Modellieren
 <span class="header-section-number">2.6.2.1</span> Ungewissheit der Modellkoeffizienten</h4>
 <p>Wie man in <a href="#fig-regr-div" class="quarto-xref">Abbildung&nbsp;<span>2.9</span></a> sieht, können sich die Koeffizienten (Achsenabschnitt und Steigung) unterscheiden. Woran liegt das?</p>
 <div id="exm-flights" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 2.5 (Stichproben der New Yorker Flüge) </strong></span>Nehmen wir an, wir ziehen ein paar Zufallstichproben aus der Menge (Population) aller Flüge, die in New York im Jahre 2013 gestartet sind. In jeder Stichprobe berechnen wir eine Regression zwischen Flugzeit und Verspätung des Flugs am Ankunftsort. Sicherlich werden sich die Stichproben in ihren Kennwerten, z.B. in den Koeffizienten der genannten Regression, unterscheiden.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 2.5 (Stichproben der New Yorker Flüge)</strong></span> Nehmen wir an, wir ziehen ein paar Zufallstichproben aus der Menge (Population) aller Flüge, die in New York im Jahre 2013 gestartet sind. In jeder Stichprobe berechnen wir eine Regression zwischen Flugzeit und Verspätung des Flugs am Ankunftsort. Sicherlich werden sich die Stichproben in ihren Kennwerten, z. B. in den Koeffizienten der genannten Regression, unterscheiden.<span class="math inline">\(\square\)</span></p>
 </div>
 <div class="cell" data-hash="0200-Inferenz_cache/html/unnamed-chunk-8_ce218e4c592f61174360335f31b1772d">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/nycflights13">nycflights13</a></span><span class="op">)</span></span>
@@ -879,40 +907,40 @@ Abbildung&nbsp;2.8: Zwei Arten der Ungewissheit beim Modellieren
 </div>
 <div id="fig-regr-div" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-regr-div-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-div" style="flex-basis: 33.3%;justify-content: center;">
-<div id="fig-regr-div-1" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-div" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-regr-div-1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-regr-div-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0200-Inferenz_files/figure-html/fig-regr-div-1.png" class="img-fluid figure-img" data-ref-parent="fig-regr-div" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-div-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-div-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Stichprobe 1
 </figcaption></figure>
 </div>
 </div>
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-div" style="flex-basis: 33.3%;justify-content: center;">
-<div id="fig-regr-div-2" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-div" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-regr-div-2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-regr-div-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0200-Inferenz_files/figure-html/fig-regr-div-2.png" class="img-fluid figure-img" data-ref-parent="fig-regr-div" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-div-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-div-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Stichprobe 2
 </figcaption></figure>
 </div>
 </div>
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-div" style="flex-basis: 33.3%;justify-content: center;">
-<div id="fig-regr-div-3" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-div" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-regr-div-3" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-regr-div-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0200-Inferenz_files/figure-html/fig-regr-div-3.png" class="img-fluid figure-img" data-ref-parent="fig-regr-div" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-div-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-div-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (c) Stichprobe 3
 </figcaption></figure>
 </div>
 </div>
 </div>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-regr-div-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-regr-div-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;2.9: Regressionsanalysen mit verschiedenen Koeffizienten aufgrund der Zufälligkeit des Stichprobenziehens
 </figcaption></figure>
 </div>
@@ -937,46 +965,46 @@ Wichtig
 <p>Diese Art der Ungewissheit ist nicht von Interesse, wenn man nur an Modellkoeffizienten interessiert ist. Sie ist dann interessant, wenn man für einzelne Fälle eine Vorherage macht und sich fragt, wie zuverlässig diese Vorhersage ist.</p>
 <div id="fig-resid-var" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-resid-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-resid-var" style="flex-basis: 33.3%;justify-content: center;">
-<div id="fig-resid-var-1" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-resid-var" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-resid-var-1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-resid-var-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0200-Inferenz_files/figure-html/fig-resid-var-1.png" class="img-fluid figure-img" data-ref-parent="fig-resid-var" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-resid-var-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-resid-var-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) geringer Vorhersagefehler (hohe Vorhersagegüte)
 </figcaption></figure>
 </div>
 </div>
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-resid-var" style="flex-basis: 33.3%;justify-content: center;">
-<div id="fig-resid-var-2" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-resid-var" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-resid-var-2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-resid-var-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0200-Inferenz_files/figure-html/fig-resid-var-2.png" class="img-fluid figure-img" data-ref-parent="fig-resid-var" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-resid-var-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-resid-var-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) hoher Vorhersagefehler
 </figcaption></figure>
 </div>
 </div>
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-resid-var" style="flex-basis: 33.3%;justify-content: center;">
-<div id="fig-resid-var-3" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-resid-var" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-resid-var-3" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-resid-var-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0200-Inferenz_files/figure-html/fig-resid-var-3.png" class="img-fluid figure-img" data-ref-parent="fig-resid-var" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-resid-var-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-resid-var-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (c) auch hoher Vorhsagefehler
 </figcaption></figure>
 </div>
 </div>
 </div>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-resid-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-resid-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;2.10: Regressionsanalyse mit gleicher Regressionsgerade, aber unterschiedlicher Vorhersagegüte
 </figcaption></figure>
 </div>
 </section></section><section id="ich-weiß-was-ich-nicht-weiß-ungewissheit-angeben" class="level3" data-number="2.6.3"><h3 data-number="2.6.3" class="anchored" data-anchor-id="ich-weiß-was-ich-nicht-weiß-ungewissheit-angeben">
 <span class="header-section-number">2.6.3</span> Ich weiß, was ich nicht weiß: Ungewissheit angeben</h3>
-<p>Streng genommen ist eine Inferenz ohne Angabe der Ungewissheit (Genauigkeit der Schätzung) wertlos. Angenommen, jemand sagt, dass sie den Anteil der R-Fans (in der Population) auf 42% schätzt, lässt aber offen wie <em>sicher</em> (präzise) die Schätzung (der Modellparameter) ist. Wir wissen also nicht, ob z.B. 2% oder 82% noch erwartbar sind. Oder ob man im Gegenteil mit hoher Sicherheit sagen kann, die Schätzung schließt sogar 41% oder 43% aus.</p>
+<p>Streng genommen ist eine Inferenz ohne Angabe der Ungewissheit (Genauigkeit der Schätzung) wertlos. Angenommen, jemand sagt, dass sie den Anteil der R-Fans (in der Population) auf 42% schätzt, lässt aber offen wie <em>sicher</em> (präzise) die Schätzung (der Modellparameter) ist. Wir wissen also nicht, ob z. B. 2% oder 82% noch erwartbar sind. Oder ob man im Gegenteil mit hoher Sicherheit sagen kann, die Schätzung schließt sogar 41% oder 43% aus.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -999,7 +1027,7 @@ Wichtig
 </ol></section><section id="visualisierung-von-ungewissheit" class="level3" data-number="2.6.4"><h3 data-number="2.6.4" class="anchored" data-anchor-id="visualisierung-von-ungewissheit">
 <span class="header-section-number">2.6.4</span> Visualisierung von Ungewissheit</h3>
 <div id="def-punktschaetzer" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.5 (Punktschätzer) </strong></span>Gibt man nur einen Punktwert an, wie 42%, als Ergebnis einer Inferenz, spricht man von einem <em>Punktschätzer</em>.</p>
+<p><span class="theorem-title"><strong>Definition 2.5 (Punktschätzer)</strong></span> Gibt man nur einen Punktwert an, wie 42%, als Ergebnis einer Inferenz, spricht man von einem <em>Punktschätzer</em>.</p>
 <p>Punktschätzer beinhalten <em>keine Angabe</em> der Schätz(un)genauigkeit, s. Abb. <a href="#fig-ungewiss2" class="quarto-xref">Abbildung&nbsp;<span>2.11</span></a>, links. Rot markiert: Die Punktschätzung von <code>mpg</code> für <code>hp=200</code>.</p>
 </div>
 <!-- ![Eine Punktschätzung der Regressionsgeraden und die zugehörige Ungewissheit Ungewissheit](img/fig-punktschaetzer.png){#fig-punktschaetzer2} -->
@@ -1009,50 +1037,50 @@ Wichtig
 <!-- ![Das Vorhersageintevall zeigt eine Punktschätzung und ihre Ungewissheit](img/fig-predintervall.png){fig-ungewiss2 width="50%"} -->
 <div id="fig-ungewiss2" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-ungewiss2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-ungewiss2" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-ungewiss2-1" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-ungewiss2" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-ungewiss2-1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-ungewiss2-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0200-Inferenz_files/figure-html/fig-ungewiss2-1.png" class="img-fluid figure-img" data-ref-parent="fig-ungewiss2" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-ungewiss2-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-ungewiss2-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Eine Punktschätzung der Regressionsgeraden und die zugehörige Ungewissheit der Koeffizienten
 </figcaption></figure>
 </div>
 </div>
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-ungewiss2" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-ungewiss2-2" class="quarto-figure quarto-figure-center anchored" width="672">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-ungewiss2" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-ungewiss2-2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-ungewiss2-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="0200-Inferenz_files/figure-html/fig-ungewiss2-2.png" class="img-fluid figure-img" data-ref-parent="fig-ungewiss2" width="672">
 </div>
-<figcaption class="figure quarto-subfloat-caption quarto-subfloat-fig" id="fig-ungewiss2-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-ungewiss2-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Das Vorhersageintevall zur Regressionsgeraden zeigt die Ungewissheit für die jeweiligen Beobachtungen
 </figcaption></figure>
 </div>
 </div>
 </div>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-ungewiss2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ungewiss2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;2.11: Die zwei Arten der Ungewissheit visualisiert
 </figcaption></figure>
 </div>
 <p><a href="#fig-ungewiss2" class="quarto-xref">Abbildung&nbsp;<span>2.11</span></a> zeigt auch, dass für eine Beobachtung mit <code>hp=200</code> der <em>Punktschätzer</em> der geschätzte Wert von <code>mpg</code> bei ca <code>16.5</code> liegt. Das ist sozusagen unser <em>Best Guess</em>. Weiterhin ist (in grün) das <em>Vorhersageintervall</em> für <code>hp=200</code> angezeigt. Für Beobachtungen mit <code>hp=200</code> liegt der Bereich plausibler <code>mpg</code>-Werte in dem (grün) markierten Bereich (ca. 8 bis 25).</p>
 <div id="def-vorhersageintervall" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.6 (Vorhersageintervall) </strong></span>Ein Vorhersageintervall zeigt den Bereich plausibler Werte (laut unserer Analyse) für eine Beobachtung mit bestimmten Prädiktor-Werten.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 2.6 (Vorhersageintervall)</strong></span> Ein Vorhersageintervall zeigt den Bereich plausibler Werte (laut unserer Analyse) für eine Beobachtung mit bestimmten Prädiktor-Werten.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Wie man sieht, wird die Ungewissheit <em>größer</em>, wenn man beide Arten der Ungewissheit berücksichtigt. Das Vorhersage-Intervall berücksichtigt Ungewissheit in <span class="math inline">\(\beta_0, \beta_1, \epsilon\)</span> bei der Vorhersage von <span class="math inline">\(\hat{y_i}\)</span>.</p>
 <div id="exr-zweifache-ungewissheit" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 2.8 </strong></span>🏋 Geben Sie ein vergleichbares Beispiel an!</p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 2.8</strong></span> 🏋 Geben Sie ein vergleichbares Beispiel an!</p>
 </div>
 </section><section id="konfidenzintervall" class="level3" data-number="2.6.5"><h3 data-number="2.6.5" class="anchored" data-anchor-id="konfidenzintervall">
 <span class="header-section-number">2.6.5</span> Konfidenzintervall</h3>
 <p>Wir sehen in <a href="#fig-ungewiss2" class="quarto-xref">Abbildung&nbsp;<span>2.11</span></a>, dass ein “Ungewissheitskorridor” angegeben wird für die Lage der Regressionsgerade (linkes Teildiagramm) bzw. für den Bereich plausibler Vorhersagen im konkreten Fall einer Beobachtung mit bestimmten X-Wert. Entsprechend wird nicht ein <em>Punktschätzer</em>, sondern ein <em>Schätzbereich</em> angegeben. Man spricht auch von einem <em>Konfidenzintervall</em> oder <em>Unsicherheitsbereich</em>.<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></p>
 <div id="def-konfintervall" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.7 (Konfidenzintervall) </strong></span>Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schätzbereiche. Die Grenzen eines Konfindenzintervall markieren einen Bereich plausibler Werte für einen Parameter.</p>
+<p><span class="theorem-title"><strong>Definition 2.7 (Konfidenzintervall)</strong></span> Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schätzbereiche. Die Grenzen eines Konfindenzintervall markieren einen Bereich plausibler Werte für einen Parameter.</p>
 </div>
 <p>Es gibt verschiedene Arten, Konfidenzintervalle zu berechnen; wir sprechen in späteren Kapiteln dazu ausführlicher. Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben. Im Kontext der Bayes-Analyse - auf der dieser Kurs aufbaut - ist ein Konfidenzintervall einfach zu interpretieren. Sagen wir, wir finden, dass in einem Modell ein 95%-Konfidenzintervall für den Anteil der R-Fans angegeben wird, dass sich von 40 bis 44 Prozent erstreckt. Dieser Befund lässt sich so interpretieren: “Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95% im Bereich von 44 bis 44 Prozentpunkten.”</p>
 <div id="exm-ungewisskorr" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 2.6 </strong></span>Geben Sie Beispiele für Konfidenzintervalle an.</p>
+<p><span class="theorem-title"><strong>Beispiel 2.6</strong></span> Geben Sie Beispiele für Konfidenzintervalle an.</p>
 </div>
 </section></section><section id="klassische-vs.-bayes-inferenz" class="level2" data-number="2.7"><h2 data-number="2.7" class="anchored" data-anchor-id="klassische-vs.-bayes-inferenz">
 <span class="header-section-number">2.7</span> Klassische vs.&nbsp;Bayes-Inferenz</h2>
@@ -1077,7 +1105,7 @@ Abbildung&nbsp;2.11: Die zwei Arten der Ungewissheit visualisiert
 <em>Wenn</em> das Vorwissen gut ist, wird die Vorhersage durch das Vorwissen genauer, ansonsten ungenauer.</li>
 <li>Die Wahl des Vorwissens muss explizit (kritisierbar) sein.</li>
 <li>In der Bayes-Inferenz sind Wahrscheinlichkeitsaussagen für Hypothesen möglich.</li>
-<li>Die Bayes-Inferenz erfordert mitunter viel Rechenzeit und ist daher erst in den letzten Jahren (für gängige Computer) komfortabel geworden.</li>
+<li>Die Bayes-Inferenz erfordert mitunter viel Rechenzeit und ist d. h.r erst in den letzten Jahren (für gängige Computer) komfortabel geworden.</li>
 </ul></section>
 </div>
 </div>
@@ -1090,26 +1118,26 @@ Abbildung&nbsp;2.11: Die zwei Arten der Ungewissheit visualisiert
 <blockquote class="blockquote">
 <p>Wie wahrscheinlich ist der Wert der Teststatistik (oder noch extremere Werte), vorausgesetzt die Nullhypothese gilt und man wiederholt den Versuch unendlich oft (mit gleichen Bedingungen, aber zufällig verschieden und auf Basis unseres Modells)?</p>
 </blockquote>
-<p>Findet man <span class="math inline">\(p&lt;.05\)</span> (oder einen anderen Prozentwert, aber meistens wird 5% hergenommen), so spricht man von “(statistischer) Signifikanz” und nimmt dies als Beleg, dass man einen Effekt gefunden hat, die Hypothese eines Nulleffekts (z.B. kein Zusammenhang von X und Y) also verwerfen kann. Faktisch entscheidet man sich, die Forschungshypothese weiterhin als “vorläufig gültig” oder zumindest als “nicht widerlegt” zu betrachten.</p>
+<p>Findet man <span class="math inline">\(p&lt;.05\)</span> (oder einen anderen Prozentwert, aber meistens wird 5% hergenommen), so spricht man von “(statistischer) Signifikanz” und nimmt dies als Beleg, dass man einen Effekt gefunden hat, die Hypothese eines Nulleffekts (z. B. kein Zusammenhang von X und Y) also verwerfen kann. Faktisch entscheidet man sich, die Forschungshypothese weiterhin als “vorläufig gültig” oder zumindest als “nicht widerlegt” zu betrachten.</p>
 <div id="exr-p" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 2.9 </strong></span>🏋 Recherchieren Sie eine Definition des p-Werts und lesen Sie sie einem Freund. Beobachten sie die Reaktionen auf ihre Erklärung.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 2.9</strong></span> 🏋 Recherchieren Sie eine Definition des p-Werts und lesen Sie sie einem Freund. Beobachten sie die Reaktionen auf ihre Erklärung.<span class="math inline">\(\square\)</span></p>
 </div>
 <p>Der p-Wert wird oft falsch verstanden <span class="citation" data-cites="badenes-ribera_misconceptions_2016-1">(<a href="references.html#ref-badenes-ribera_misconceptions_2016-1" role="doc-biblioref">Badenes-Ribera u.&nbsp;a. 2016</a>)</span>. Aber er ist auch nicht leicht zu verstehen, meint Meister Yoda, s. <a href="#fig-yoda" class="quarto-xref">Abbildung&nbsp;<span>2.12</span></a>. Hier sind einige <em>FALSCHE</em> Interpretationen zum p-Wert laut der Autoren:</p>
 <ul>
 <li>🙅‍♀ Der p-Wert würde die Wahrscheinlichkeit der Nullhypothese oder der Forschungshypothese angeben. 🙊</li>
 <li>🙅‍♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen.</li>
 </ul>
-<div id="fig-yoda" class="quarto-figure quarto-figure-center anchored" width="50%">
+<div id="fig-yoda" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-yoda-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/pvalue_yoda.jpg" class="img-fluid figure-img" style="width:50.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-yoda-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-yoda-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;2.12: Der p-Wert ist wenig intuitiv, meint Meister Yoda
 </figcaption></figure>
 </div>
 <p>Die Definition der Konfidenzintervalls in Frquentistischer Lesart lautet:</p>
 <blockquote class="blockquote">
-<p>Der Konfidenzbereich, z.B. von 95%, repräsentiert den Anteil der Konfidenzintervalle bei sehr vielen (oder undentlich vielen) Wiederholungen des Experiments, die den echten Parameterwert enthalten.</p>
+<p>Der Konfidenzbereich, z. B. von 95%, repräsentiert den Anteil der Konfidenzintervalle bei sehr vielen (oder undentlich vielen) Wiederholungen des Experiments, die den echten Parameterwert enthalten.</p>
 </blockquote>
 </section><section id="bayes-statistik" class="level4" data-number="2.7.3.2"><h4 data-number="2.7.3.2" class="anchored" data-anchor-id="bayes-statistik">
 <span class="header-section-number">2.7.3.2</span> Bayes-Statistik</h4>
@@ -1119,11 +1147,11 @@ Abbildung&nbsp;2.12: Der p-Wert ist wenig intuitiv, meint Meister Yoda
 </section></section><section id="frequentist-und-bayesianer" class="level3" data-number="2.7.4"><h3 data-number="2.7.4" class="anchored" data-anchor-id="frequentist-und-bayesianer">
 <span class="header-section-number">2.7.4</span> Frequentist und Bayesianer</h3>
 <p>Im Cartoon 1132 <a href="https://xkcd.com/">von xkcd</a> wird sich über das Nicht-Berücksichtigen von Vorab-Informationen (Prior-Verteilung) lustig gemacht, s. <a href="#fig-xkcd-bayes" class="quarto-xref">Abbildung&nbsp;<span>2.13</span></a>.</p>
-<div id="fig-xkcd-bayes" class="quarto-figure quarto-figure-center anchored" width="50%">
+<div id="fig-xkcd-bayes" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-xkcd-bayes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="img/frequentists_vs_bayesians_2x.png" class="img-fluid figure-img" style="width:50.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-xkcd-bayes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-xkcd-bayes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;2.13: Frequentist wettet mit Bayesianer
 </figcaption></figure>
 </div>
@@ -1188,7 +1216,7 @@ Poldrack, Russell. 2022. <em>Statistical Thinking for the 21st Century</em>. <a 
 Wasserstein, Ronald L., und Nicole A. Lazar. 2016. <span>„The <span>ASA</span> Statement on P-<span>Values</span>: <span>Context</span>, Process, and Purpose“</span>. <em>The American Statistician</em> 70 (2): 129–33. <a href="https://doi.org/10.1080/00031305.2016.1154108">https://doi.org/10.1080/00031305.2016.1154108</a>.
 </div>
 </div>
-</section><aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
 <ol>
 <li id="fn1"><p>Ziele existieren nicht “in echt” in der Welt. Wir denken sie uns aus. Ziele haben also keine ontologische Wirklichkeit, sie sind epistemologische Dinge (existieren nur in unserem Kopf). Das heißt, dass man sich nach Beliebem Ziele ausdenken kann. Allerdings hilft es, wenn man andere Menschen vom Nutzen der eigenen Ideen überzeugen kann…<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>Vielleicht hat Ihr Dozent Sie schon mal mit einem Prognosewettbewerb gequält? Ja? Genau! In einem Prognosewettbewerb ist das Ziel eine - natürlich möglichst exakte - Vorhersage zu treffen.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
@@ -1200,7 +1228,7 @@ Wasserstein, Ronald L., und Nicole A. Lazar. 2016. <span>„The <span>ASA</span>
 <li id="fn8"><p>Der Datensatz <code>mtcars</code> wird gerne als Studienobjekt verwendet, da er einfach ist und für viele Beispiele geeignet. Wenn Sie sich einen Sachverhalt an einem einfachen Datensatz vergegenwärtigen wollen, bietet sich auch der Datensatz <code>mtcars</code> an. Zudem ist er “fest in R eingebaut”; mit <code>data(mtcars)</code> können Sie ihn verfügbar machen.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn9"><p><span class="math inline">\(\sigma\)</span>, das griechische <em>s</em> für Streuung (um die Regressionsgerade herum), manchmal wird auch e wie <em>error</em> verwendet<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn10"><p>Tatsächlich gibt es mehrere Synonyme oder ähnliche Begriffe für Konfidenzintervall. Wir kommen später darauf detaillierter zu sprechen.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol></aside></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</ol></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -1472,27 +1500,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
@@ -1507,10 +1514,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             break;
           }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -1519,8 +1530,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
-      return note.innerHTML;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {
@@ -1726,7 +1744,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
               options: {
                 flipVariations: false, // true by default
                 allowedAutoPlacements: ['right'],
-                fallbackPlacements: ['right', 'top', 'top-start', 'top-end'],
+                fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
               },
             },
             {
@@ -1794,4 +1812,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-</body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/0200-Inferenz.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></div></div></footer></body></html>
