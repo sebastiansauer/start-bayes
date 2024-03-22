@@ -53,3 +53,35 @@ count(uv_high)
 ```
 
 
+6. FRAGE: Ich habe meine Lösungswege mit Ihren abgeglichen und finde keinen bedeutenden Unterschied. Dennoch erhalte ich andere Ergebnisse, welche nicht im Toleranzbereich liegen. Um das nochmals zu überprüfen, habe ich Ihre Lösungswege 1:1 in mein RStudio übertragen, aber auch dann erhalte ich nicht die angegebene Lösung. -- ANTWORT: Es sollte ein Modell berechnet werden mit z-transformierten Variablen. Für die UV war der ROPE anzugeben. Leider haben Sie vergessen, die Daten zu z-transformieren.
+
+Hier ist das Modell *ohne* z-Transformation:
+
+```{r}
+library(rstanarm)
+library(easystats)
+library(dplyr)
+
+penguins <- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv")
+
+m1 <- stan_glm(bill_length_mm ~ year, data = penguins)
+
+rope(m1)
+```
+
+Hier ist das Modell *mit* z-Transformation:
+
+```{r}
+p2 <- 
+  penguins |> 
+  select(bill_length_mm, year) |> 
+  standardise()
+
+m2 <- stan_glm(bill_length_mm ~ year, data = p2)
+
+rope(m2)
+```
+
+
+Der Wert von `m2` findet sich in der Musterlösung. Man beachte, dass sich die Rope-Werte von `m1` und `m2` deutlich unterscheiden.
+
