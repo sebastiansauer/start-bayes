@@ -324,6 +324,8 @@ Unter "Großteil" wird häufig das *95%-HDI* verstanden (das ist auch der Standa
 - Ansonsten  ➡️  keine Entscheidung 
 
 
+Mit "Großteil" meinen wir (per Default) das 95%-HDI (der Posteriori-Verteilung).
+
 ### Vernachlässigbarer Regressionseffekt
 
 @kruschke_rejecting_2018 schlägt vor, einen Regressionskoeffizienten unter folgenden Umständen als "praktisch Null" zu bezeichnen:
@@ -394,16 +396,34 @@ Die angegebenen Prozentwerte beziehen sich nicht auf die 100% der Post-Verteilun
 :::
   
 
-Das hört sich abstrakt an? Dann lassen Sie uns das lieber visualisieren.
+Das hört sich abstrakt an? Dann lassen Sie uns das lieber visualisieren. 🎨
 
 
 ### Visualisierung unserer Rope-Werte, m10.6
   
-- Ein Großteil der Posteriori-Masse von `m10.6` liegt  *nicht* innerhalb des Rope. 
-- Aber können wir umgekehrt sagen, dass ein Großteil außerhalb liegt? Das erkennt man optisch ganz gut.
+Ein Großteil der Posteriori-Masse von `m10.6` liegt  *nicht* innerhalb des Rope. 
+Aber können wir umgekehrt sagen, dass ein Großteil außerhalb liegt? Das erkennt man optisch ganz gut, s. @fig-rope-penguins.
 
-```{r fig.asp = .5}
+```{r}
+#| eval: false
+rope(m10.6) %>% plot()
+```
+
+
+```{r}
+#| label: fig-rope-penguins
+#| layout-ncol: 2
+#| echo: false
+#| fig-cap: "Rope und HDI überlappen bei Chinstrap, aber nicht bei Gentoo. Im ersten Fall nehmen wir die Rope-Null-Hypothese an, im zweiten Fall verwerfen wir sie."
+#| fig-subcap: 
+#|   - "Diagramm mit `rope(m10.6) %>% plot()`"
+#|   - "Diagramm mit `parameters(m10.6) %>% plot()`"
 plot(rope(m10.6)) + scale_fill_okabeito()
+
+parameters(m10.6) %>% 
+  plot() +
+  geom_rect(aes(xmin = 0-80, xmax = 0+80, ymin = -Inf, ymax = Inf), 
+              fill = "blue", alpha = 0.2, color = NA)
 ```
 
 
@@ -415,6 +435,10 @@ Gentoo hingegen wird vom vom Rope nicht durchkreuzt,
 es ist weit entfernt vom "blauen Fluss" des Rope: Gentoo liegt außerhalb des Rope. 
 Es gibt einen "substanziellen" Unterschied, größer als das ROPE. 
 Wir verwerfen die "Praktisch-Null-Hypothese" in diesem Fall.
+
+
+
+
 
 
 

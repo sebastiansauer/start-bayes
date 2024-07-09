@@ -54,7 +54,7 @@ library(easystats)
 
 ```{r libs-hidden}
 #| include: false
-library(icons)
+#library(icons)
 library(gt)
 library(ggridges)
 library(plotly)
@@ -363,6 +363,35 @@ kidiq %>%
 Der mittlere (average, avg) IQ-Wert unterscheidet sich um ca. 12 Punkte (89.4-77.6), zugunsten der Kinder von Müttern mit Abschluss. 
 :::
 
+### Rope
+
+Prüfen wir, ob der Effekt der UV "praktisch Null" ist; dazu nutzen wir das ROPE-Verfahren.
+
+```{r}
+rope(m10.1)
+```
+
+Das Ergebnis zeigt uns, dass es 0% Überlappung vom Rope und dem 95%-HDI (der Posterior-Verteilung) gibt.
+
+Fazit: Wir verwerfen die Praktisch-Null-Hypothese. Adios!
+@fig-rope-m101 visualisiert die Erstreckung der Posteriori-Verteilung (und des 95%-HDI) sowie des Rope.
+
+
+```{r}
+#| label: fig-rope-m101
+#| layout-ncol: 2
+#| echo: false
+#| fig-cap: "Rope und HDI überlappen nicht. Wir verwerfen die Praktisch-Null-Hypothese."
+#| fig-subcap: 
+#|   - "Diagramm mit rope(m10.1) %>% plot()"
+#|   - "Diagramm mit parameters(m10.1) %>% plot()"
+rope(m10.1) %>% plot()
+parameters(m10.1) %>% 
+  plot() +
+  geom_rect(aes(xmin = 0-2, xmax = 0+2, ymin = -Inf, ymax = Inf), 
+              fill = "blue", alpha = 0.2, color = NA)
+```
+
 
 
 
@@ -372,6 +401,8 @@ In der *frequentistischen* Statistik (die mehrheitlich unterricht wird) untersuc
 
 Der t-Test ist ein inferenzstatistisches Verfahren, das prüft, ob die Mittelwertsdifferenz (in der Population) $\mu_d$ Null ist: $\mu_d = 0$.^[Genauer gesagt wird geprüft, wie wahrscheinlich es auf Basis des Modell ist, noch extremere Ergebnisse zu beachten unter der Annahme, dass die (exakte) Nullhypothese wahr ist. Es ist etwas kompliziert.]
 In der Bayes-Statistik betrachtet man dazu stattdessen z.B. die Posteriori-Verteilung (z.B. mit 95%PI).
+
+Alternativ zum t-Test kann man - unabhängig, ob man Frequentistisch oder Bayesianisch unterwegs ist - mit einer Regression vom Typ `y ~ b` das gleiche Ergebnis erreichen.^[Genauer gesagt, erlaubt der t-Test in der Form des Welche-Tests auch Abweichungen von der Varianzhomogenität der gestesten Gruppen. Die Regression geht hingegen von Varianzhomogenität (Homoskedastizität) aus. Allerdings ist diese Annahme nicht von besonderer Bedeutung, wenn es um die Regressionskoeffizienten geht.]
 
 
 
