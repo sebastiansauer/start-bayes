@@ -48,8 +48,8 @@ Sie können ...
 - erläutern, in welchem Zusammenhang Ungewissheit zur Inferenzstatistik steht
 - anhand von Beispielen erklären, was ein statistisches Modell ist
 - die Grundkonzepte der Regression angeben
-- Unterschiede zwischen klassischer und Bayes-Inferenz benennen
-- Vor- und Nachteile der klassischen vs. Bayes-Inferenz diskutieren
+- Unterschiede zwischen frequentistischer ("klassischer") und Bayes-Inferenz benennen
+- Vor- und Nachteile der frequentistischen vs. Bayes-Inferenz diskutieren
 - Die grundlegende Herangehensweise zur Berechnung des p-Werts informell erklären
 
 
@@ -169,13 +169,24 @@ Wir müssen also den Anteil der R-Fans *in der Population* auf Basis des Anteils
 Wir verallgemeinern oder generalisieren von der Stichprobe auf die Grundgesamtheit, s. Abb. @fig-pop und @fig-sample.
 
 
-:::{#fig-pop-sample layout-ncol=2}
-![Population](img/pvoll.png){#fig-pop}
 
+:::: {layout-ncol="2"}
+
+:::{#population}
+![Population](img/pvoll.png){#fig-pop}
+:::
+
+
+:::{#sample}
 ![Sample](img/psti.png){#fig-sample}
+:::
+
+
 
 Population vs. Sample. Autor: Karsten Lübke. OEM
-:::
+::::
+
+<!-- Quelle: LAYOUT in PDF: https://github.com/quarto-dev/quarto-cli/discussions/7497 -->
 
 
 <!-- ![Population](img/pvoll.png){#fig-pop width="40%"} -->
@@ -224,7 +235,7 @@ In einem Hörsaal sitzen 100 Studis. Alle schreiben Ihre Körpergröße auf eine
 
 :::{def-inf}
 ### Inferenzstatistik
-*Inferenzstatistik* schließt von Statistiken auf Parameter (ein *Parameter* meint hier eine Kennzahl von einer Grundgesamtheit, z.B. die Streuung).
+*Inferenzstatistik* ist ein Verfahren zum Schließen von Statistiken (Kennzahl einer Grundgesamtheit) auf *Parameter* (eine Kennzahl  einer Grundgesamtheit).
 
 
 Inferenz bedeutet Schließen; auf Basis von vorliegenden Wissen wird neues Wissen generiert.
@@ -253,16 +264,16 @@ Schätzwerte macht man kenntlich mit einem "Dach-Zeichen" über dem Parameter, a
 #| tbl-cap: Bezeichnungen für Kennwerte
 #| message: false
 x <- tribble(
-    ~Kennwert, ~Stichprobe, ~Grundgesamtheit, ~Schätzwert,
-  "Mittelwert", "$\\bar{X}$", "$\\mu$ (mü)", "$\\hat{\\mu}$",
-  "Streuung", "$sd$", "$\\sigma$ (sigma)", "$\\hat{\\sigma}$",
+    ~Kennwert, ~Stichprobe, ~`Grundgesamtheit (Aussprache)`, ~Schätzwert,
+   "Mittelwert", "$\\bar{X}$", "$\\mu$ (mü)" ,      "$\\hat{\\mu}$",
+  "Streuung",     "$sd$",      "$\\sigma$ (sigma)", "$\\hat{\\sigma}$",
   "Anteil", "$p$", "$\\pi$ (pi)", "$\\hat{\\pi}$",
   "Korrelation", "$r$", "$\\rho$ (rho)", "$\\hat{\\rho}$" ,
   "Regression", "$b$", "$\\beta$ (beta)", "$\\hat{\\beta}$"
 
 )
 
-kable(x, escape = FALSE, booktabs = TRUE, format = "simple") 
+knitr::kable(x, escape = FALSE, booktabs = TRUE, format = "simple") 
 ```
 
 
@@ -314,7 +325,7 @@ Wie groß ist die Wahrscheinlichkeit$Pr(\mu_{V1} > \mu_{V2})$?
 
 ### Modellieren als Grundraster des Erkennens
 
-In der Wissenschaft - wie auch oft in der Technik, Wirtschaft oder im Alltag - betrachtet man einen Teil der Welt näher, meist mit dem Ziel, eine Entscheidung zu treffen, was man tun wird oder mit dem Ziel, etwas zu lernen.
+In der Wissenschaft -- wie auch oft in der Technik, Wirtschaft oder im Alltag -- betrachtet man einen Teil der Welt näher, meist mit dem Ziel, eine Entscheidung zu treffen, was man tun wird oder mit dem Ziel, etwas zu lernen.
 
 Nun ist die Welt ein weites Feld. 
 Jedes Detail zu berücksichtigen ist nicht möglich.
@@ -404,6 +415,11 @@ Einflussreiche Leute schwören auf die Regressionsanalyse (@fig-gandalf).
 
 
 
+
+
+::: {.content-visible when-format="html"}
+
+
 Nutzen Sie die folgende App, um die Regressionskoeffizienten, Steigung (slope) und Achsenabschnitt (Intercept), zu optimieren.
 Dabei meint "optimieren", die Abweichungen (Residuen, Residualfehler; die roten Balken in der App) zu minimieren.
 
@@ -411,8 +427,10 @@ Dabei meint "optimieren", die Abweichungen (Residuen, Residualfehler; die roten 
 <iframe width="780" height="500" src="https://gallery.shinyapps.io/simple_regression/" title="DIY: Regressionsgerade zum selber bauen"></iframe>
 ```
 
+:::
 
-[Hier](https://shinyapps.org/showapp.php?app=https://shiny.psy.lmu.de/felix/lmfit&by=Felix%20Sch%C3%B6nbrodt&title=Find-a-fit!&shorttitle=Find-a-fit!) finden Sie eine ähnliche App, die Ihnen gestattet, selber Hand an eine Regressionsgerade zu legen.
+
+[Hier](https://shinyapps.org/showapp.php?app=https://shiny.psy.lmu.de/felix/lmfit&by=Felix%20Sch%C3%B6nbrodt&title=Find-a-fit!&shorttitle=Find-a-fit!) finden Sie eine App, die Ihnen gestattet, selber Hand an eine Regressionsgerade zu legen.
 
 
 :::{#exr-setosa-vis}
@@ -440,7 +458,7 @@ Regression + Inferenz = 💖
 Alternativ zur Regression könnte man sich in den Wald der statistischen Verfahren begeben, [wie hier von der Uni Münster als Ausschnitt (!) aufgeführt](https://web.archive.org/web/20091029162244/http://www.wiwi.uni-muenster.de/ioeb/en/organisation/pfaff/stat_overview_table.html).
 Auf dieser Basis kann man meditieren,
 welches statistischen Verfahren man für eine bestimmte Fragestellung verwenden sollte, s. Abb.  @fig-choose-test.
-Muss man aber nicht.
+Muss man aber nicht -- man kann stattdessen die Regression benutzen.
 
 ![Wähle deine Statistik mit Bedacht. Oder wähle die Regressionsanalyse.](img/choose-test.png){#fig-choose-test}
 
@@ -942,7 +960,7 @@ Man spricht auch von einem *Konfidenzintervall* oder *Unsicherheitsbereich*.^[Ta
 
 ::: {#def-konfintervall}
 
-## Konfidenzintervall
+### Konfidenzintervall
 
 Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schätzbereiche. Die Grenzen eines Konfindenzintervall markieren einen Bereich plausibler Werte für einen Parameter. 
 
@@ -951,7 +969,7 @@ Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schä
 
 Es gibt verschiedene Arten, Konfidenzintervalle zu berechnen; wir sprechen in späteren Kapiteln dazu ausführlicher. Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben.  Im Kontext der Bayes-Analyse - auf der dieser Kurs aufbaut - ist ein Konfidenzintervall einfach zu interpretieren. 
 Sagen wir, wir finden, dass in einem Modell ein 95%-Konfidenzintervall für den Anteil der R-Fans angegeben wird, dass sich von 40 bis 44 Prozent erstreckt.
-Dieser Befund lässt sich so interpretieren: “Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95% im Bereich von 44 bis 44 Prozentpunkten.”
+Dieser Befund lässt sich so interpretieren: “Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95% im Bereich von 44 bis 44 Prozentpunkten.” Diese (einfache) Interpretation ist im Frequentismus *nicht* möglich.
 
 
 
@@ -960,19 +978,19 @@ Dieser Befund lässt sich so interpretieren: “Laut Modell liegt der gesuchte A
 Geben Sie Beispiele für Konfidenzintervalle an.
 :::
 
-## Klassische vs. Bayes-Inferenz
+##  Frequentismus vs. Bayes-Inferenz
 
 
 ::::{.columns}
 :::{.column}
-### Klassische Inferenz: Frequentismus
+###  Frequentismus: Klassische Inferenz
 
 -   Die Berücksichtigung von Vorwissen zum Sachgegenstand wird vom Frequentismus als subjektiv zurückgewiesen.
 -   Nur die Daten selber fliesen in die Ergebnisse ein, keine Vorannahmen.
 -   Wahrscheinlichkeit wird über relative Häufigkeiten definiert.
--   Es ist *nicht* möglich, die Wahrscheinlichkeit einer Hypothese anzugeben.
--   Stattdessen wird angegeben, wie häufig eine vergleichbare Datenlage zu erwarten ist, wenn die Hypothese gilt und der Versuch sehr häufig wiederholt ist.
--   Ein Großteil der Forschung (in den Sozialwissenschaften) verwendet diesen Ansatz.
+-   Es ist *nicht* möglich, die Wahrscheinlichkeit einer Hypothese bzw. eines Werts in der Population (eines Parameters) anzugeben.
+-   Stattdessen wird angegeben, wie häufig eine vergleichbare Datenlage zu erwarten ist, wenn der Versuch sehr häufig wiederholt ist.
+-   Ein Großteil der Forschung (in den Sozialwissenschaften) verwendet (aktuell) diesen Ansatz.
 :::
 
 
@@ -988,9 +1006,11 @@ Geben Sie Beispiele für Konfidenzintervalle an.
 ::::
 
 
-### Vergleich von Wahrscheinlichkeitsaussagen
 
-#### Frequentismus
+
+### Frequentismus
+
+#### Der p-Wert
 
 Die zentrale Statistik des Frequentismus heißt der *p-Wert*
 
@@ -1011,19 +1031,75 @@ Aber er ist auch nicht leicht zu verstehen, meint Meister Yoda, s. @fig-yoda.
 Hier sind einige *FALSCHE* Interpretationen zum p-Wert laut der Autoren:
 
 - 🙅‍♀ Der p-Wert würde die Wahrscheinlichkeit der Nullhypothese oder der Forschungshypothese angeben. 🙊 
-- 🙅‍♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. 
+- 🙅‍♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. 🙊 
 
 
-![Der p-Wert ist wenig intuitiv, meint Meister Yoda](img/pvalue_yoda.jpg){#fig-yoda width=50%}
+![Der p-Wert ist wenig intuitiv, meint Meister Yoda](img/pvalue-yoda.jpg){#fig-yoda width=50%}
+
+
+#### Konfidenzintervalle
+
+Die korrekte Definition der Konfidenzintervalls in *frequentistischer* Lesart lautet:
 
 
 
-
-Die Definition der Konfidenzintervalls in Frquentistischer Lesart lautet:
-
+>   Der Konfidenzbereich, z.B. von 95%, repräsentiert den Anteil der Konfidenzintervalle bei sehr vielen (oder undentlich vielen) Wiederholungen des Experiments, die den echten Parameterwert enthalten [@hoekstra_robust_2014-2].
 
 
->   Der Konfidenzbereich, z.B. von 95%, repräsentiert den Anteil der Konfidenzintervalle bei sehr vielen (oder undentlich vielen) Wiederholungen des Experiments, die den echten Parameterwert enthalten.
+::: {.content-visible when-format="html"}
+
+Die folgende Visualisierung (@fig-sim-ci) zeigt das Prinzip frequentistischer Konfidenzintervalle: *Auf Dauer* enthalten 95% der Stichproben den wahren Wert (in der Population).
+
+{{< include children/sim-ci.qmd >}}
+
+:::
+
+
+:::{.callout-important}
+Ein frequentistisches Konfidenzintervall macht keine Aussage zur Wahrscheinlichkeit eines Werts in der Population (eines Parameters). Stattdessen wird eine Aussage über das Ergebnis einer sehr häufig wiederholten Stichprobenziehung berichtet. Ob ein bestimmtes (unseres, Ihres) den wahren Wert enthält, bzw. mit welcher Wahrscheinlichkeit es den wahren Wert enthält, darüber macht das frequentistische Konfidenzintervball keine Aussagen. $\square$
+:::
+
+#### Aus der Forschung
+
+
+Frequentistische Konfidenzintervalle werden oft falsch verstanden, wie die folgende Studie zeigt. Das liegt aber nicht daran, dass die Menschen zu dumm sind, sondern dass frequentistische Konfidenzintervalle für viele Menschen kontraintuitiv sind.
+
+@hoekstra_robust_2014-2 berichten von einer Studie, in der $n=442$ Bachelor-Studentis, $n=34$ Master-Studentis und $n=120$ Forschende befragt wurden.
+
+Den Versuchpersonen wurde folgender Fragebogen vorgelegt, s. @fig-bumbledorf.
+
+![Frageobgen zu Konfidenzintervallen](img/bumbledorf.png){#fig-bumbledorf}
+
+Kurz gesagt war die Frage, die die Befragten beantworten sollten:
+
+>    In einem Experiment wird ein 95%-Konfidenzintervall mit dem Bereich von 0.1 bis 0.4 beichtet. Welcher der folgenden sechs Aussagen sind richtig bzw. falsch?
+
+Mit "Konfidenzintervall" meinen die Forschenden ein *frequentistisches* Konfidenzintervall.
+
+Alle diese sechs Aussagen sind *FALSCH*. Die Aussagen lauten:
+
+
+
+1. Die Wahrscheinlichkeit, dass der wahre Mittelwert größer als 0 ist, beträgt mindestens 95 %.
+
+2. Die Wahrscheinlichkeit, dass der wahre Mittelwert gleich 0 ist, ist kleiner als 5 %.
+
+3. Die „Nullhypothese“, dass der wahre Mittelwert gleich 0 ist, ist wahrscheinlich falsch.
+
+4. Es gibt eine 95%ige Wahrscheinlichkeit, dass der wahre Mittelwert zwischen 0,1 und 0,4 liegt.
+
+5. Wir können mit 95%iger Sicherheit sagen, dass der wahre Mittelwert zwischen 0,1 und 0,4 liegt.
+
+6. Wenn wir das Experiment immer wieder wiederholen würden, dann liegt der wahre Mittelwert in 95 % der Fälle zwischen 0,1 und 0,4.
+
+
+Aussagen 1-4 weisen den Hypothesen bzw. den Parametern eine Wahrscheinlichkeit zu, was im Frequentismus nicht erlaubt ist. Aussagen 5-6 spezifizieren die Grenzen des Schätzintervalls, allerdings kann das Konfidenzintervall nur Aussagen zu den zugrundeliegenden Stichproben, nicht zum Schätzintervall, machen.
+
+
+Die Ergebnisse zeigen, dass die Aussagen mehrheitlich *falsch* verstanden wurden, also mit "stimmt" angekreuzt wurden, s. @fig-ci-wrong.
+
+![Eine hohe Zustimmung zu den sechs falschen Aussagen](img/ci-wrong.png){#fig-ci-wrong width=75%}
+
 
 #### Bayes-Statistik
 
@@ -1031,6 +1107,11 @@ Die zentrale Statistik der Bayes-Statistik ist die *Posteriori-Verteilung*.
 
 Die Posteriori-Verteilung beantwortet uns die Frage: "Wie wahrscheinlich ist die Forschungshypothese (oder Varianten von ihr), jetzt, nachdem wir die Daten kennen, auf Basis unseres Modells?"
 
+
+In der Bayes-Statistik sind Aussagen folgender Art erlaubt:
+
+>    Mit einer Wahrscheinlichkeit von 95% ist der neue Webshop besser als der alte.
+>    Mit einer Wahrscheinlichkeit von 89% liegt die Wirksamkeit des neuen Medikaments zwischen 0.1 und 0.4.
 
 
 

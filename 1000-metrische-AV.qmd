@@ -786,11 +786,13 @@ Liegt eine Interaktion vor, so unterscheidet sich die Steigung der Geraden in de
 Liegt keine Interaktion vor, so sind die Geraden parallel.$\square$
 :::
 
-Wir berechnen mit m10.4 das Modell mit folgender Modellformel: `kid_score ~ mom_hs + mom_iq + mom_hs:mom_iq`, s. @fig-m104 und @tbl-m104.
+Wir berechnen mit m10.4 das Modell mit folgender Modellformel: `kid_score ~ mom_hs + mom_iq + mom_hs:mom_iq`, s. @list-m104, @fig-m104 und @tbl-m104.
 
 ```{r m10-4, echo = TRUE}
+#| lst-cap: "Die Modelldefition von m10.4 mit stanglm"
+#| lst-label: lst-m104
 m10.4 <- 
-  stan_glm(kid_score ~  mom_iq + mom_hs + mom_hs:mom_iq, 
+  stan_glm(kid_score ~ mom_iq + mom_hs + mom_hs:mom_iq, 
            seed = 42,
            data = kidiq, 
            refresh = 0)
@@ -816,13 +818,13 @@ kidiq %>%
   mutate(mom_hs = factor(mom_hs)) %>%  
   ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
   geom_point(alpha = .7) +
-  geom_abline(slope = coef(m10.4)[3],
+  geom_abline(slope = coef(m10.4)[2],
               intercept = coef(m10.4)[1],
-              size = 1,
+              linewidth = 1,
               color =  "#56B4E9E6" ) +
-  geom_abline(slope = coef(m10.4)[3]+coef(m10.4)[3]*coef(m10.4)[4],
-              intercept = coef(m10.4)[1] + coef(m10.4)[2],
-              size = 2,
+  geom_abline(slope = coef(m10.4)[2]+coef(m10.4)[4],
+              intercept = coef(m10.4)[1] + coef(m10.4)[3],
+              linewidth = 2,
               color = "#009E73E6") +
   scale_color_manual(values = c( "#56B4E9E6" , "#009E73E6")) +
   scale_x_continuous(limits = c(0, 140))
@@ -861,23 +863,42 @@ plot(graphLayout(mein_modell))
 `mom_iq`: Unterschied der IQ-Schätzwerte zwischen Kindern mit Müttern, die sich um einen IQ-Punkt unterscheiden aber jeweils ohne Schulabschluss.
 *Interaktion*: Der Unterschied in den Steigungen der Regressiongeraden, also der Unterschied des Koeffizienten für `mom_iq` zwischen Mütter mit bzw. ohne Schulabschluss.
 
+Für beide Gruppen, `mom_hs=0` und `mom_hs=1` gilt folgende Regressionsformel, s. @eq-lm4.
+
+
+$$\text{kid_score} = \text{intercept} + \beta_1 \cdot \text{mom_hs} + \beta_2 \cdot \text{mom_iq} + \beta_3 \cdot \text{mom_hs} \cdot \text{mom_iq}$$ {#eq-lm4}
+
+Auf Errisch schreibt mit @eq-lm4 so (s. @list-m104): 
+
+`kid_score ~ mom_iq + mom_hs + mom_hs:mom_iq`
+
+Trägt man die Werte der Koeffizienten ($\beta_0, \beta_1, \beta_2, \beta_3$) ein, so erhält man @eq-lm4-with-values.
+
+$$\text{kid_score} = -10 + 50\cdot \text{mom_hs} + 1.1 \cdot \text{mom_iq} + (-0.5) \cdot \text{mom_hs} \cdot \text{mom_iq}$$ {#eq-lm4-with-values}
+
+$\beta_3$ gibt den Interaktionseffekt an.
+
+Teilen wir die Regressionsformel einmal auf die beiden Gruppen (`mom_hs=0` bzw. `mom_hs=1`) auf:
+
+
+`mom_hs=0`:
+
 ```
-mom_hs=0:
-kid_score = -11 + 51*0 + 1.1* mom_iq + 0.5*0*mom_iq
+kid_score = -10 + 50*0 + 1.1*mom_iq  - 0.5*0*mom_iq
+          = -10 + 1.1*mom_iq
+```
 
-          = -11 + 1.1*mom_iq
+`mom_hs=1`: 
 
-
-mom_hs=1: 
-kid_score = -11 + 51*1 + 1.1* mom_iq + 0.5*1*mom_iq
-
-          = 40 + 0.6*mom_iq
+```
+kid_score = -10 + 50*1 + 1.0*mom_iq - 0.5*1*mom_iq
+          = 40 + 0.5*mom_iq
 ```
 
 
 
 
-
+::: {.content-visible when-format="html"}
 
 
 ### Nach der Interpretation von 20 unzentrierten Koeffizienten
@@ -885,7 +906,7 @@ kid_score = -11 + 51*1 + 1.1* mom_iq + 0.5*1*mom_iq
 
 <iframe src="https://giphy.com/embed/Zaej3GIZTzCI8" width="480" height="306" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/muppets-rachel-maddow-kermit-Zaej3GIZTzCI8">via GIPHY</a></p>
 
-
+:::
 
 
 
@@ -1631,6 +1652,7 @@ coef(m10.9)
 
 
 
+::: {.content-visible when-format="html"}
 
 ### 3D-Visualisierung eines Modells mit zwei Prädiktoren 1
 
@@ -1672,7 +1694,7 @@ if (knitr:::is_latex_output()) {
 ```
 
 
-
+:::
 
 
 ### Visualisierung mit Farbe statt 3. Dimension
@@ -2458,7 +2480,7 @@ Müssen wir mal bei Gelegenheit besser machen.
 
 
 
-
+::: {.content-visible when-format="html"}
 
 ### Genug für heute
 
@@ -2476,6 +2498,7 @@ if (knitr:::is_html_output()) {
 [Quelle](https://giphy.com/gifs/XIqCQx02E1U9W)
 
 
+:::
 
 
 
