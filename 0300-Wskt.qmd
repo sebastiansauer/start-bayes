@@ -1088,7 +1088,7 @@ Hammer!
 
 ::::: {.content-visible when-format="html"}
 
-@fig-schema-p illustriert *gemeinsame Wahrscheinlichkeit*, $P(A \cap B)$, und *bedingte Wahrscheinlichkeit*, $P(A|B)$.
+@fig-schema-p illustriert *unbedingte Wahrscheinlichkeit*, $Pr(A), Pr(B)$, *gemeinsame Wahrscheinlichkeit* $P(A \cap B)$, und *bedingte Wahrscheinlichkeit*, $P(A|B)$.
 
 
 ::::{#fig-schema-p}
@@ -1248,7 +1248,7 @@ Betrachten wir @tbl-kalt-regen-filter. Dort sind sind vier Tage aufgelistet, mit
 ```{r}
 #| echo: false
 #| label: tbl-kalt-regen-filter
-#| tbl-cap: "Die Tabelle zeigt vier Tage, an denen es jeweils kalt ist (oder nicht) bzw. regnet (oder nicht). Die bedingte Wahrscheinlichkeit $Pr(\\text{Regen}|\\text{kalt})$ entspricht dem Anteil der Zeilen, wenn für 'kalt' ein Filter in der Tabelle gesetzt ist."
+#| tbl-cap: "Die Tabelle zeigt vier Tage, an denen es jeweils kalt ist (oder nicht) bzw. regnet (oder nicht). Die bedingte Wahrscheinlichkeit $Pr(\\text{Regen}|\\text{kalt})$ entspricht dem Anteil der Zeilen mit Regen, wenn für 'kalt' ein Filter in der Tabelle gesetzt ist."
 d_kalt_regen |>  
   datatable(filter = "top", options = list(pageLength = 4))
 ```
@@ -1270,7 +1270,7 @@ Es ergeben sich folgende Wahrscheinlichkeiten:
 $Pr(A) = 2/4; Pr(B) = 2/4; Pr(A \cap B) = 1/4; Pr(A|B) = 1/2$
 
 
-### Rechenregel
+
 
 Die Wahrscheinlichkeit für $A$, wenn $B$ schon eingetreten ist, berechnet sich so, s. @eq-pr-cond und @fig-b-geg-a.
 
@@ -1477,7 +1477,7 @@ Liegt keine Unabhängigkeit vor, so spricht man von (stochatistischer) *Abhängi
 
 $$Pr(A|B) \ne Pr(A) \ne Pr(A|\neg B)$${#eq-abh}
 
-@eq-abh gilt natürlich in der Form für alle anderen Variablen ebenso, s. z.B. @eq-abh2.
+@eq-abh gilt natürlich in dieser Form für alle anderen Variablen ebenso, s. z.B. @eq-abh2.
 
 $$Pr(B|A) \ne Pr(B) \ne Pr(B|\neg A)$${#eq-abh2}
 
@@ -1770,14 +1770,11 @@ Wie man in @fig-baum-abh nachrechnen kann gilt also: $P(A\cap B) = P(A) \cdot P(
 :::{#exm-kaltregen}
 ### Kalt und Regen
 
-Von @mcelreath_statistical_2020 stammt diese Verdeutlichung der gemeinsamen Wahrscheinlichkeit:
-
+Von @mcelreath_statistical_2020 stammt diese Verdeutlichung der gemeinsamen Wahrscheinlichkeit.
 Was ist die Wahrscheinlichkeit für das gemeinsame Auftreten von *kalt ❄ und Regen ⛈️*? 
-
 Die Wahrscheinlichkeit für kalt und Regen ist die Wahrscheinlichkeit von *Regen* ⛈, wenn's *kalt* ❄ ist mal die Wahrscheinlichkeit von *Kälte* ❄.
 
 Ebenfalls gilt:
-
 Die Wahrscheinlichkeit für kalt und Regen ist die Wahrscheinlichkeit von *Kälte* ❄, wenn's *regnet* ⛈️ mal die Wahrscheinlichkeit von *Regen* ⛈️.
 
 Das Gesagte als Emoji-Gleichung ist in @eq-kalt-regen-emoji dargestellt.
@@ -1829,7 +1826,8 @@ Sie müssen in der App noch die Zahl der Bohnen ($n$) und die Zahl der scheußli
 
 :::{#def-kettenregel}
 ### Kettenregel
-Allgemein gesagt, spricht man von der *Kettenregel* der Wahrscheinlichkeitsrechnung, s. @eq-kette.
+Allgemein gesagt, spricht man von der *Kettenregel* der Wahrscheinlichkeitsrechnung, 
+wenn man die gemeinsame Wahrscheinlichkeit auf die bedingte zurückführt, s. @eq-kette.
 
 $$P(A\cap B) = P(A) \cdot P(B|A) = P(B) \cdot P(A|B) \square$${#eq-kette}
 
@@ -1847,7 +1845,7 @@ In Worten: Die Wahrscheinlichkeit von $A$ gegeben $B$ ist gleich der Wahrscheinl
 
 
 
-:::{exr-baum3}
+:::{#exr-baum3}
 ### Baumdiagramm sucht Problem
 
 Überlegen Sie sich eine Problemstellung (Aufgabenstellung), die mit [dieser Baumdiagramm-App](
@@ -1928,10 +1926,10 @@ Pr_nicht_keine_Bohne <- round(1 - Pr_keine_Bohne, 2)
 
 
 Es ist die gleich Aufgabe wie @exm-bertie-botts, aber jetzt lautet die Frage: 
-Wie groß ist die Wahrscheinlichkeit, *mindestens eine* scheußliche Bohne zu erwischen?^[Die Wahrscheinlichkeit *keine* scheußliche Bohne zu ziehen ist $17/20 \cdot 16/19 \cdot 15/18) \approx `r Pr_keine_Bohne`$. Daher ist die gesuchte Wahrscheinlichkeit (mindestens eine scheußliche Bohne) das Komplement davon:  $`r Pr_nicht_keine_Bohne`$.]
-
-$\square$
+Wie groß ist die Wahrscheinlichkeit, *mindestens eine* scheußliche Bohne zu erwischen?^[Die Wahrscheinlichkeit *keine* scheußliche Bohne zu ziehen ist $17/20 \cdot 16/19 \cdot 15/18) \approx `r Pr_keine_Bohne`$. Daher ist die gesuchte Wahrscheinlichkeit (mindestens eine scheußliche Bohne) das Komplement davon:  $`r Pr_nicht_keine_Bohne`$.] $\square$
 :::
+
+
 
 
 ### Baumsammlung
