@@ -1,4 +1,4 @@
-# Globusversuch
+# Bayes-Globus 
 
 
 
@@ -507,6 +507,132 @@ uniform_Plot <- function(a, b){
 }
 uniform_Plot(0, 1)
 ```
+
+
+
+
+## Bayes' Theorem
+
+### Wozu wird Bayes in der Praxis genutzt?
+
+
+
+
+In der Praxis nutzt man Bayes häufig, wenn man Daten zu einer Wirkung $W$ hat,
+und auf die Ursache $U$ zurückschließen möchte, sinngemäß:
+
+$$W \quad \underrightarrow{Bayes} \quad U$$
+
+Dann kann man @eq-bayes1 so schreiben, s. @eq-bayes2:
+
+$$P(U|W) = \frac{ P(U) \cdot P(W|U) }{P(W)}$${#eq-bayes2}
+
+Eine ähnliche Situation, die in der Praxis häufig ist,
+dass man Daten $D$ hat und auf die Wahrscheinlichkeit einer Hypothese $H$ schließen möchte, s. @eq-bayes3.
+
+$$D \quad \underrightarrow{Bayes} \quad H$$
+
+
+$$P(H|D) = \frac{ P(H) \cdot P(D|H) }{P(D)}$${#eq-bayes3}
+
+@eq-bayes3 fragt nach $P(H|D)$:
+
+>    Was ist die Wahrscheinlichkeit der Hypothese H, jetzt wo wir die Daten haben (und ein Modell?)
+
+Und antwortet so (@eq-bayes3):
+
+>    Diese Wahrscheinlichkeit entspricht der Grundrate (Apriori-Wahrscheinlichkeit) der Hypothese mal der Plausibilität (Likelihood) der Daten unter Annahme (gegeben) der Hypothese. Aus Standardisierungsgründen dividiert man noch die totale Wahrscheinlichkeit der Daten über alle Hypothesen.
+
+
+
+### Bayes als Baum
+
+Gesucht sei $P(A_1|B)$.
+
+Für Bayes' Formel^[synonym: Satz von Bayes] setzt man die Wahrscheinlichkeit des  *günstigen* Ast zur Wahrscheinlichkeit aller relevanten Äste, $P(B)$.
+
+:::{#exm-bayes1}
+### Maschine produziert Ausschuss
+
+Die drei Maschinen $M_1, M_2, M_3$ produzieren den gleichen Artikel. Ihr jeweiliger Anteil, an der Produktion liegt bei 60%, 10% bzw. 30%. 
+Die jeweilige Ausschussquote liegt bei 5, 2, bzw. 4%, s. @fig-tot-wskt2.
+*Aufgabe*: Wie groß ist die Wahrscheinlichkeit, dass ein defektes Teil von Maschine 1 produziert wurde?$\square$
+:::
+
+
+
+Der günstige (gesuchte) Ast ist hier schwarz gedruckt, die übrigen Äste gestrichelt, s. @fig-tot-wskt2. $A_i$ zeigt das Ereignis, dass der Artikel von Maschine $i$ produziert wurde. $B$ ist das Ereignis "Artikel ist Ausschuss".
+
+```{mermaid}
+%%| fig-cap: Günstige Pfade
+%%| label: fig-tot-wskt2
+flowchart LR
+  A[Start] -->|0.6|B[A1]
+  A -.->|0.1|C[A2]
+  A -.->|0.3|D[A3]
+  B --->|0.05|E[B]
+  B -.->|0.95|F[Nicht-B]
+  C -.->|0.02|G[B]
+  C -.->|0.98|H[Nicht-B]
+  D -.->|0.04|I[B]
+  D -.->|0.96|J[Nicht-B]
+```
+
+
+$$P(A|B) = \frac{P(A1 \cap B)}{P(B)} = \frac{0.6 \cdot 0.05}{0.03 + 0.002 + 0.012} = \frac{0.03}{0.044} \approx 0.68$$
+
+
+$P(A|B)$ beträgt also ca. 68%.
+
+Zur Erinnerung: $P(B)$ ist die totale Wahrscheinlichkeit.
+
+
+
+
+### Bayes als bedingte Wahrscheinlichkeit
+
+
+Bayes' Theorem ist auch nur eine normale bedingte Wahrscheinlichkeit:
+
+
+$P(A|B) = \frac{\overbrace{ P(A\cap B)}^\text{umformen}}{P(B)}$
+
+$P(A| B)$ kann man  umformen, s. @eq-bayes1:
+
+$$P(A|B) =\frac{P(A\cap B)}{P(B)} = \frac{P(B|A) \cdot P(A)}{P(B)}$$ {#eq-bayes1}
+
+Man kann sich Bayes' Theorem  auch wie folgt herleiten:
+
+
+
+$P(A\cap B) = P(B \cap A) = P(A) \cdot P(B|A) = P(B) \cdot P(A|B)$
+
+Dann lösen wir nach P$(A|B)$ auf:
+
+
+$P(A|B) = \frac{P(A) \cdot P(B|A)}{P(B)}$
+
+
+
+### Zusammengesetzte Hypothesen
+
+Das ist vielleicht ein bisschen fancy,
+aber man kann Bayes' Theorem auch nutzen, um die Wahrscheinlichkeit einer *zusammengesetzten Hypothese* zu berechnen: $H = H_1 \cap H_2$. 
+Ein Beispiel wäre: "Was ist die Wahrscheinlichkeit, dass es Regen ($R$) *und* Blitzeis ($B$) gibt, wenn es kalt ($K$) ist?".
+
+Das sieht dann so aus, @eq-bayes4:
+
+$$
+\begin{aligned}
+P(R \cap B |K) &= \frac{ P(R \cap B) \cdot P(K|R \cap B) }{P(D)} \\
+&= \frac{ P(R ) \cdot P(B) \cdot P(K|R \cap B) }{P(D)}
+\end{aligned}
+$${#eq-bayes4}
+
+
+Hier haben wir $P(R \cap B)$  aufgelöst in $P(R) \cdot P(B)$,
+das ist nur zulässig, wenn $R$ und $B$ unabhängig sind.
+
 
 
 
