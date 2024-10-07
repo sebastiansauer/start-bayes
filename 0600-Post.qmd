@@ -125,10 +125,9 @@ d <-                                                    # <3>
 2. *L*ikelihood mit 6 Treffern bei 9 Würfen und das Ganze jeweils für alle 11 Parameterwerte
 3. Dann packen wir alles in eine Tabelle.
 
-:::: {.columns}
+::::: {.columns}
 
-::: {.column width="50%"}
-Abb. @fig-post1 zeigt die resultierende Bayes-Box; vor allem ist die Post-Verteilung wichtig.
+:::: {.column width="50%"}
 
 
 ```{r}
@@ -136,6 +135,9 @@ Abb. @fig-post1 zeigt die resultierende Bayes-Box; vor allem ist die Post-Vertei
 library(ggpubr)
 ggline(d, x = "p_grid", y = "post") 
 ```
+
+::: {.content-visible when-format="html"}
+Abb. @fig-post1 zeigt die resultierende Bayes-Box; vor allem ist die Post-Verteilung wichtig.
 
 ```{r plot-post-d}
 #| echo: false
@@ -157,11 +159,31 @@ d %>%
 ggplotly(p_d)
 ```
 
-
-
 :::
 
-::: {.column width="50%"}
+::: {.content-visible unless-format="html"}
+Abb. @fig-post1a zeigt die resultierende Bayes-Box; vor allem ist die Post-Verteilung wichtig.
+```{r plot-post-d}
+#| echo: false
+#| label: fig-post1a
+#| fig-cap: Die Postverteilung für W=6, N=9, k=10
+#
+
+p_d <-
+d %>% 
+  ggplot() +
+  aes(x = p_grid, y = post) +
+  geom_point(alpha = .5, size = 3) +
+  geom_line() +
+  scale_y_continuous("Posterior-Wahrscheinlichkeit", 
+                     breaks = NULL) +
+  theme_minimal()  
+```
+
+:::
+::::
+
+:::: {.column width="50%"}
 
 
 
@@ -178,9 +200,9 @@ d %>%
 ```
 
 
-:::
-
 ::::
+
+:::::
 
 
 ### Bayes-Box automatisiert
@@ -544,8 +566,9 @@ d_k100_samples <-
   slice_sample(n = 1e6, weight_by = post, replace = T) 
 
 
-mode <- map_estimate(d_k100_samples$p_grid) %>% round(2)
-avg <- mean(d_k100_samples$p_grid) %>% round(2)
+mode_df <- bayestestR::map_estimate(d_k100_samples$p_grid) 
+mode_rounded <- mode_df$MAP_Estimate %>% round(2)
+mavg <- mean(d_k100_samples$p_grid) %>% round(2)
 md <- median(d_k100_samples$p_grid) %>% round(2)
 
 p_100_samples <-
@@ -554,13 +577,13 @@ ggplot(aes(x = p_grid)) +
   geom_density(fill = "grey40") +
   scale_x_continuous("Anteil Wasser (p)", limits = c(0, 1)) +
   labs(y = "",
-       caption = paste0("Modus: ", mode, "; MW: ", avg, "; Md: ", md)) +
-  geom_vline(xintercept = c(mode), color = "#E69F00FF")  +
-  geom_vline(xintercept = c(avg), color = "#56B4E9FF")  +
+       caption = paste0("Modus: ", mode_rounded, "; MW: ", mavg, "; Md: ", md)) +
+  geom_vline(xintercept = c(mode_rounded), color = "#E69F00FF")  +
+  geom_vline(xintercept = c(mavg), color = "#56B4E9FF")  +
   geom_vline(xintercept = c(md), color = "#009E73FF")  +
   theme_minimal() +
-  annotate("label", x = mode, y = 0, label = glue::glue("Modus: {mode}"), fill = "#E69F00FF") +
-  annotate("label", x = avg, y = 1, label = glue::glue("MW: {mode}"), fill = "#56B4E9FF") +
+  annotate("label", x = mode_rounded, y = 0, label = glue::glue("Modus: {mode_rounded}"), fill = "#E69F00FF") +
+  annotate("label", x = mavg, y = 1, label = glue::glue("MW: {mavg}"), fill = "#56B4E9FF") +
   annotate("label", x = md, y = 2, label = glue::glue("Median: {md}"), fill = "#009E73FF")
 
 p_100_samples
@@ -1115,9 +1138,13 @@ anim_save("img/p_quantiles_anim.gif", p_quantiles_anim, renderer = gifski_render
 ```
 
 
+::: {.content-visible when-format="html"}
+
 Das 10%, 20%, ... 100%-Quantil^[d.h. die *Dezile*] (auf Basis von `samples_k100`) sind in @fig-quantiles-anim illustriert.
 
-![Quantile in 10%-Schritenn durch die Verteilung von `samples_k100`](img/p_deciles.gif  ){#fig-quantiles-anim width=50%}
+
+![Quantile in 10%-Schritenn durch die Verteilung von `samples_k100`](img/p_deciles.gif){#fig-quantiles-anim width=50%}
+:::
 
 ## Schiefe Posteriori-Verteilungen sind möglich
 

@@ -48,8 +48,8 @@ Sie können ...
 - erläutern, in welchem Zusammenhang Ungewissheit zur Inferenzstatistik steht
 - anhand von Beispielen erklären, was ein statistisches Modell ist
 - die Grundkonzepte der Regression angeben
-- Unterschiede zwischen klassischer und Bayes-Inferenz benennen
-- Vor- und Nachteile der klassischen vs. Bayes-Inferenz diskutieren
+- Unterschiede zwischen frequentistischer ("klassischer") und Bayes-Inferenz benennen
+- Vor- und Nachteile der frequentistischen vs. Bayes-Inferenz diskutieren
 - Die grundlegende Herangehensweise zur Berechnung des p-Werts informell erklären
 
 
@@ -169,13 +169,24 @@ Wir müssen also den Anteil der R-Fans *in der Population* auf Basis des Anteils
 Wir verallgemeinern oder generalisieren von der Stichprobe auf die Grundgesamtheit, s. Abb. @fig-pop und @fig-sample.
 
 
-:::{#fig-pop-sample layout-ncol=2}
-![Population](img/pvoll.png){#fig-pop}
 
+:::: {layout-ncol="2"}
+
+:::{#population}
+![Population](img/pvoll.png){#fig-pop}
+:::
+
+
+:::{#sample}
 ![Sample](img/psti.png){#fig-sample}
+:::
+
+
 
 Population vs. Sample. Autor: Karsten Lübke. OEM
-:::
+::::
+
+<!-- Quelle: LAYOUT in PDF: https://github.com/quarto-dev/quarto-cli/discussions/7497 -->
 
 
 <!-- ![Population](img/pvoll.png){#fig-pop width="40%"} -->
@@ -226,7 +237,7 @@ In einem Hörsaal sitzen 100 Studis. Alle schreiben Ihre Körpergröße auf eine
 
 :::{#def-inf}
 ### Inferenzstatistik
-*Inferenzstatistik* schließt von Statistiken auf Parameter (ein *Parameter* meint hier eine Kennzahl von einer Grundgesamtheit, z.B. die Streuung).
+*Inferenzstatistik* ist ein Verfahren zum Schließen von Statistiken (Kennzahl einer Grundgesamtheit) auf *Parameter* (eine Kennzahl  einer Grundgesamtheit).
 
 
 Inferenz bedeutet Schließen; auf Basis von vorliegenden Wissen wird neues Wissen generiert.
@@ -255,16 +266,16 @@ Schätzwerte macht man kenntlich mit einem "Dach-Zeichen" über dem Parameter, a
 #| tbl-cap: Bezeichnungen für Kennwerte
 #| message: false
 x <- tribble(
-    ~Kennwert, ~Stichprobe, ~Grundgesamtheit, ~Schätzwert,
-  "Mittelwert", "$\\bar{X}$", "$\\mu$ (mü)", "$\\hat{\\mu}$",
-  "Streuung", "$sd$", "$\\sigma$ (sigma)", "$\\hat{\\sigma}$",
+    ~Kennwert, ~Stichprobe, ~`Grundgesamtheit (Aussprache)`, ~Schätzwert,
+   "Mittelwert", "$\\bar{X}$", "$\\mu$ (mü)" ,      "$\\hat{\\mu}$",
+  "Streuung",     "$sd$",      "$\\sigma$ (sigma)", "$\\hat{\\sigma}$",
   "Anteil", "$p$", "$\\pi$ (pi)", "$\\hat{\\pi}$",
   "Korrelation", "$r$", "$\\rho$ (rho)", "$\\hat{\\rho}$" ,
   "Regression", "$b$", "$\\beta$ (beta)", "$\\hat{\\beta}$"
 
 )
 
-kable(x, escape = FALSE, booktabs = TRUE, format = "simple") 
+knitr::kable(x, escape = FALSE, booktabs = TRUE, format = "simple") 
 ```
 
 
@@ -316,13 +327,17 @@ Wie groß ist die Wahrscheinlichkeit$Pr(\mu_{V1} > \mu_{V2})$?
 
 ### Modellieren als Grundraster des Erkennens
 
-In der Wissenschaft - wie auch oft in der Technik, Wirtschaft oder im Alltag - betrachtet man einen Teil der Welt näher, 
+
+In der Wissenschaft -- wie auch oft in der Technik, Wirtschaft oder im Alltag --
+betrachtet man einen Teil der Welt näher, 
 meist mit dem Ziel, eine Entscheidung zu treffen, was man tun wird oder mit dem Ziel, etwas zu lernen.
 
 Nun ist die Welt ein weites Feld. 
 Jedes Detail zu berücksichtigen ist nicht möglich.
-Wir müssen die Sache vereinfachen: Alle Informationen ausblenden, die nicht zwingend nötig sind.
-Aber gleichzeitig die Strukturelemente der wirklichen Welt, die für unsere Fragestellung zentral ist, beibehalten.
+Wir müssen die Sache vereinfachen: Alle Informationen ausblenden, 
+die nicht zwingend nötig sind.
+Aber gleichzeitig die Strukturelemente der wirklichen Welt, 
+die für unsere Fragestellung zentral ist, beibehalten.
 
 Dieses Tun nennt man *Modellieren*: Man erstellt sich ein Modell.
 
@@ -338,8 +353,12 @@ Der Speck muss weg, sozusagen. Das Wesentliche bleibt.
 Auf die Statistik bezogen heißt das,
 dass man einen Datensatz dabei so zusammenfasst,
 damit man das Wesentliche erkennt.
-Was ist das "Wesentliche"? Oft interessiert man sich für die Ursachen eines Phänomens. Etwa: "Wie kommt es bloß, dass ich ohne zu lernen die Klausur so gut bestanden habe?"^[Das ist natürlich nur ein fiktives, komplett unrealistisches Beispiel, das auch unklaren Ursachen den Weg auf diese Seite gefunden hat.]
-Noch allgemeiner ist man dabei häufig am Zusammenhang von `X ` und `Y` interessiert, s. @fig-xy, die ein Sinnbild von statistischen Modellen widergibt.
+Was ist das "Wesentliche"? Oft interessiert man sich für die Ursachen eines Phänomens. 
+Etwa: "Wie kommt es bloß, dass ich ohne zu lernen die Klausur so gut bestanden 
+habe?"^[Das ist natürlich nur ein fiktives, komplett unrealistisches Beispiel, 
+das auch unklaren Ursachen den Weg auf diese Seite gefunden hat.]
+Noch allgemeiner ist man dabei häufig am Zusammenhang von `X ` und `Y` interessiert, 
+s. @fig-xy, die ein Sinnbild von statistischen Modellen widergibt.
 
 
 
@@ -366,7 +385,8 @@ oben: Sinnbild eines statistischen Modells; unten: Sinnbild eines statistischen 
 Man kann @fig-xy als ein Sinnbild einer (mathematischen) Funktion lesen.
 
 :::{#def-fun}
-Eine Funktion $f$ setzt zwei Größen in Beziehung.$\square$
+### Funktion
+Eine Funktion $f$ setzt zwei Größen in Beziehung. $\square$
 :::
 
 In Mathe-Sprech:
@@ -406,15 +426,43 @@ Einflussreiche Leute schwören auf die Regressionsanalyse (@fig-gandalf).
 
 
 
-Nutzen Sie die folgende App, um die Regressionskoeffizienten, Steigung (slope) und Achsenabschnitt (Intercept), zu optimieren.
-Dabei meint "optimieren", die Abweichungen (Residuen, Residualfehler; die roten Balken in der App) zu minimieren.
-
-```{=html}
-<iframe width="780" height="500" src="https://gallery.shinyapps.io/simple_regression/" title="DIY: Regressionsgerade zum selber bauen"></iframe>
-```
 
 
-[Hier](https://shinyapps.org/showapp.php?app=https://shiny.psy.lmu.de/felix/lmfit&by=Felix%20Sch%C3%B6nbrodt&title=Find-a-fit!&shorttitle=Find-a-fit!) finden Sie eine ähnliche App, die Ihnen gestattet, selber Hand an eine Regressionsgerade zu legen.
+::: {.content-visible when-format="html"}
+
+@fig-linfun zeigt ein interaktives Beispiel einer linearen Funktion. 
+Sie können Punkte per Klick/Touch hinzufügen.
+
+
+:::{#fig-linfun}
+
+::: {.figure-content}
+
+<!-- ```{=html} -->
+<!-- <iframe width="500" height="400" src="https://www.geogebra.org/m/vfjW1dZt" title="Visualisierung eines Geradenmodells"></iframe> -->
+<!-- ``` -->
+
+
+
+{{< include children/regression-interactive.qmd >}}
+
+:::
+
+Interaktives Beispiel für eines lineares Modell. Fügen Sie Punkte per Klick/Touch hinzu.
+
+:::
+
+
+
+Alternativ können Sie [diese App](https://gallery.shinyapps.io/simple_regression/) njutzen, Regressionskoeffizienten, Steigung (slope) und Achsenabschnitt (Intercept), zu optimieren.
+Dabei meint "optimieren", die Abweichungen (Residuen, Residualfehler; die roten Balken in der App) zu minimieren.^[<https://gallery.shinyapps.io/simple_regression/>]
+
+
+
+:::
+
+
+[Hier](https://shinyapps.org/showapp.php?app=https://shiny.psy.lmu.de/felix/lmfit&by=Felix%20Sch%C3%B6nbrodt&title=Find-a-fit!&shorttitle=Find-a-fit!) finden Sie eine App, die Ihnen gestattet, selber Hand an eine Regressionsgerade zu legen.
 
 
 :::{#exr-setosa-vis}
@@ -443,7 +491,7 @@ Regression + Inferenz = 💖
 Alternativ zur Regression könnte man sich in den Wald der statistischen Verfahren begeben, [wie hier von der Uni Münster als Ausschnitt (!) aufgeführt](https://web.archive.org/web/20091029162244/http://www.wiwi.uni-muenster.de/ioeb/en/organisation/pfaff/stat_overview_table.html).
 Auf dieser Basis kann man meditieren,
 welches statistischen Verfahren man für eine bestimmte Fragestellung verwenden sollte, s. Abb.  @fig-choose-test.
-Muss man aber nicht.
+Muss man aber nicht -- man kann stattdessen die Regression benutzen.
 
 ![Wähle deine Statistik mit Bedacht. Oder wähle die Regressionsanalyse.](img/choose-test.png){#fig-choose-test}
 
@@ -452,6 +500,14 @@ Es ist meist einfacher und nützlicher, die Regression zu verwenden, anstelle de
 :::
 
 
+
+:::{#exm-spezialfaelle-regr}
+Typische Spezialfälle der Regression sind 
+
+- t-Test: UV: zweistufig nominal, AV: metrisch
+- ANOVA: UV: mehrstufig nominal, AV: metrisch 
+- Korrelation: Wenn UV und AV z-standradisiert sind (d.h. Mittelwert von 0 und Standardabweichung von 1 haben), dann ist die Korrelation gleich dem Regressionskoeffizienten $\beta_1$ (bei einer einfachen Regression mit einer einzigen UV). $\square$
+:::
 
 
 
@@ -522,17 +578,20 @@ ggplot(mtcars) +
 
 ### Inferenz beinhaltet Ungewissheit
 
-Inferenzstatistische Schlüsse sind mit Unsicherheit behaftet: Schließlich kennt man nur einen Teil (die Stichprobe) eines Ganzen (die Population), möchte aber vom Teil auf das Ganze schließen.
+Inferenzstatistische Schlüsse sind mit Unsicherheit (Ungewissheit) behaftet: Schließlich kennt man nur einen Teil (die Stichprobe) eines Ganzen (die Population), 
+möchte aber vom Teil auf das Ganze schließen.
 
 
 
 :::callout-important
-Nichts Genaues weiß man nicht: Schließt man von einem Teil auf das Ganze, so geschieht das unter Unsicherheit. Man spricht von *Ungewissheit*, da man die Unsicherheit das Wissen über die Genauigkeit des Schließens betrifft.
+Nichts Genaues weiß man nicht: Schließt man von einem Teil auf das Ganze, 
+so geschieht das unter Unsicherheit. Man spricht von *Ungewissheit*, da man die Unsicherheit das Wissen über die Genauigkeit des Schließens betrifft.
 :::
 
 
 Schließt man etwa, dass in einer Grundgesamtheit der Anteil der R-Fans bei 42% liegt, so geschieht das unter Unsicherheit; es ist ungewiss.
-Man ist sich nicht sicher, dass es wirklich 42% in der Population sind - und nicht etwa etwas mehr oder etwas weniger.
+Man ist sich nicht sicher, dass es wirklich 42% in der Population sind - 
+und nicht etwa etwas mehr oder etwas weniger.
 Schließlich hat man *nicht* die ganze Population gesehen bzw. vermessen. 
 *Sicher* ist man sich hingegen für die Stichprobe (Messfehler einmal ausgeblendet).
 Zur Bemessung der Unsicherheit (Ungewissheit) bedient man sich der Wahrscheinlichkeitsrechnung (wo immer möglich).
@@ -541,9 +600,12 @@ Die Wahrscheinlichkeitstheorie bzw. -rechnung wird daher auch als die Mathematik
 ::: {#def-zufall}
 
 ## Zufälliges Ereignis
-Unter einem zufälligen (engl. random) Ereignis verstehen wir ein Ereignis, das nicht (komplett) vorherzusehen ist, 
-wie etwa die Augenzahl Ihres nächsten Würfelwurfs. Zufällig bedeutet nicht (zwangsläufig), dass das Ereignisse keine Ursachen besitzt. 
-So gehorchen die Bewegungen eines Würfels den Gesetzen der Physik, nur sind uns diese oder die genauen Randbedingungen nicht (ausreichend) bekannt.
+Unter einem zufälligen (engl. random) Ereignis verstehen wir ein Ereignis, 
+das nicht (komplett) vorherzusehen ist, 
+wie etwa die Augenzahl Ihres nächsten Würfelwurfs. Zufällig bedeutet nicht (zwangsläufig), 
+dass das Ereignisse keine Ursachen besitzt. 
+So gehorchen die Bewegungen eines Würfels den Gesetzen der Physik, 
+nur sind uns diese oder die genauen Randbedingungen nicht (ausreichend) bekannt.
 
 :::
 
@@ -572,23 +634,33 @@ Aussagen mit Unsicherheit können unterschiedlich präzise formuliert sein.
 :::
 
 
+### Wahrscheinlichkeit
+
+Die Wahrscheinlichkeitsrechnung ist die typische Methode, um Ungewissheit zu präzisieren, d.h. zu quantifizieren.
+
+:::{#def-wskt}
+### Wahrscheinlichkeit
+Die Wahrscheinlichkeit ist ein Maß dafür, für wie sicher jemand es hält, dass ein Ereignis eintritt. Die Wahrscheinlichkeit eines Ereignisses wird als Zahl zwischen 0 und 1 angegeben, wobei 0 bedeutet, dass das Ereignis als unmöglich angesehen wird, und 1 bedeutet, dass das Ereignis als sicher betrachtet wird. $\square$
+:::
+
+
 
 ### Zwei Arten von Ungewissheit
 
 Im Modellieren im Allgemeinen und in Regressionsmodellen im Besonderen lassen sich (mindestens) zwei Arten von Ungewissheiten angeben, s. auch Abb. @fig-zwei-arten.
 
 
-1. Wie (un)gewiss ist man sich über die Regressionsgewichte?
+1. Wie (un)gewiss ist man sich über die *Regressionsgewichte*?
 
-2. Wie (un)gewiss ist man sich über die Genauigkeit der Vorhersage (des Modells)?
+2. Wie (un)gewiss ist man sich über die *Korrektheit* des Modells? (Sind alle relevanten Variablen im Modell enthalten? Sind die Annahmen des Modells erfüllt?
 
 
 ```{mermaid}
 %%| label: fig-zwei-arten
 %%| fig-cap: Zwei Arten der Ungewissheit beim Modellieren
 flowchart LR
-X1 -->|Werte von Steigung und Achsenabschnitt?|B
-X2 -. Genauigkeit des Modells .-> B
+X1 -->|Präzision von Steigung und Achsenabschnitt?|B
+X2 -. Korrektheit des Modells? .-> B
 
 ```
 
@@ -600,7 +672,8 @@ Woran liegt das?
 
 :::{#exm-flights}
 ### Stichproben der New Yorker Flüge
-Nehmen wir an, wir ziehen ein paar Zufallstichproben aus der Menge (Population) aller Flüge, die in New York im Jahre 2013 gestartet sind.
+Nehmen wir an, wir ziehen ein paar Zufallstichproben aus der Menge (Population) aller Flüge, 
+die in New York im Jahre 2013 gestartet sind.
 In jeder Stichprobe berechnen wir eine Regression zwischen Flugzeit und Verspätung des Flugs am Ankunftsort.
 Sicherlich werden sich die Stichproben in ihren Kennwerten, z.B. in den Koeffizienten der genannten Regression, unterscheiden.$\square$
 :::
@@ -662,21 +735,24 @@ Zumeist unterscheiden sich die Stichproben; theoretisch könnten sie aber auch r
 Stichproben-Kennwerte schwanken um den tatsächlichen Wert in der Population herum.$\square$
 :::
 
-Um diese Ungewissheit, die sich in den Schwankungen der Stichproben-Regressionskoeffizienten ausdrückt, anzuzeigen, ist ein "grauer Schleier" um die Regressionsgeraden in @fig-regr-div gekennzeichnet.
-Dieser grauer Schleier gibt also eine Spannbreite anderer, plausibler Ergebnisse an, die sich in einer anderen Stichprobe auch manifestieren könnten.
+Um diese Ungewissheit, die sich in den Schwankungen der Stichproben-Regressionskoeffizienten ausdrückt, anzuzeigen, 
+ist ein "grauer Schleier" um die Regressionsgeraden in @fig-regr-div gekennzeichnet.
+Dieser grauer Schleier gibt also eine Spannbreite anderer, 
+plausibler Ergebnisse an, die sich in einer anderen Stichprobe auch manifestieren könnten.
 
 
 
-#### Ungewissheit der Modellgüte
+#### Ungewissheit zur Korrektheit des Modells
 
 Angenommen, wir sind uns *sicher* über die Werte der Modellparameter,
 also über die Lage der Regressionsgeraden, anschaulich gesprochen.
-Dann bliebe immer noch Ungewissheit zur Modellgüte.
-Ein bestimmtes Modell kann genau oder ungenaue Vorhersagen abgeben;
-das ist die zweite Art der Ungewissheit.
+Dann bliebe immer noch Ungewissheit, inwieweit das Modell korrekt spezifiziert ist: 
+Sind genau die richtigen Variablen im Modell enthalten?
 
-Diese Art der Ungewissheit ist nicht von Interesse, wenn man nur an Modellkoeffizienten interessiert ist.
-Sie ist dann interessant, wenn man für einzelne Fälle eine Vorherage macht und sich fragt, wie zuverlässig diese Vorhersage ist.
+
+Diese Art der Ungewissheit ist dann interessant, 
+wenn man für einzelne Fälle eine Vorhersage macht und sich fragt, 
+wie präzise diese Vorhersage ist.
 
 
 ```{r}
@@ -685,7 +761,7 @@ Sie ist dann interessant, wenn man für einzelne Fälle eine Vorherage macht und
 #| fig-subcap: 
 #|   - geringer Vorhersagefehler (hohe Vorhersagegüte)
 #|   - hoher Vorhersagefehler
-#|   - auch hoher Vorhsagefehler
+#|   - auch hoher Vorhersagefehler
 #| echo: false
 #| layout-ncol: 3
 
@@ -732,19 +808,21 @@ ggplot(d1, aes(x, y3)) +
 
 
 Streng genommen ist eine Inferenz ohne Angabe der Ungewissheit (Genauigkeit der Schätzung) wertlos.
-Angenommen, jemand sagt, dass sie den Anteil der R-Fans (in der Population) auf 42% schätzt, lässt aber offen wie *sicher* (präzise) die Schätzung (der Modellparameter) ist.
+Angenommen, jemand sagt, dass sie den Anteil der R-Fans (in der Population) auf 42% schätzt, 
+lässt aber offen wie *sicher* (präzise) die Schätzung (der Modellparameter) ist.
 Wir wissen also nicht, ob z.B. 2% oder 82% noch erwartbar sind. Oder ob man im Gegenteil mit hoher Sicherheit sagen kann, die Schätzung schließt sogar 41% oder 43% aus.
 
 :::callout-important
-Schließt man auf eine Population, schätzt also die Modellparameter, so sollte stets die (Un-)Genauigkeit der Schätzung, also die Ungewissheit des Modells, angegeben sein.$\square$
+Schließt man auf eine Population, schätzt also die Modellparameter, 
+so sollte stets die (Un-)Genauigkeit der Schätzung, also die Ungewissheit des Modells, angegeben sein.$\square$
 :::
 
 
 
 Im Rahmen der Regressionsanalyse schlägt sich die Ungewissheit an zwei Stellen nieder:
 
-1.  zur Lage der Regressionsgeraden, $\beta_0$, $\beta_1$
-2.  zur Modellgüte bzw. zum Vorhersagefehler, $\sigma$ ^[$\sigma$, das griechische *s* für Streuung (um die Regressionsgerade herum), manchmal wird auch e wie *error* verwendet]
+1.  zur Präzision der Regressionsgeraden $\beta_0$, $\beta_1$
+2.  zur Modellgüte ($R^2$) bzw. zum Vorhersagefehler, $\sigma$^[$\sigma$, das griechische *s* für Streuung (um die Regressionsgerade herum), manchmal wird auch e wie *error* verwendet]
 
 
 
@@ -959,21 +1037,24 @@ Man spricht auch von einem *Konfidenzintervall* oder *Unsicherheitsbereich*.^[Ta
 
 ::: {#def-konfintervall}
 
-## Konfidenzintervall
+### Konfidenzintervall
 
-Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schätzbereiche. 
-Die Grenzen eines Konfindenzintervall markieren einen Bereich plausibler Werte für einen Parameter. 
+Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schätzbereiche für Parameter wie Regressionskoeffizienten . 
+Die Grenzen eines Konfidenzintervall markieren einen Bereich plausibler Werte für einen Parameter. 
 
 :::
 
 
-Es gibt verschiedene Arten, Konfidenzintervalle zu berechnen; wir sprechen in späteren Kapiteln dazu ausführlicher.
-Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben.  
+
+Es gibt verschiedene Arten, Konfidenzintervalle zu berechnen; 
+wir sprechen in späteren Kapiteln dazu ausführlicher.
+Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben. 
 Im Kontext der Bayes-Analyse - auf der dieser Kurs aufbaut - ist ein Konfidenzintervall einfach zu interpretieren. 
 Sagen wir, wir finden, dass in einem Modell ein 95%-Konfidenzintervall für den Anteil der R-Fans angegeben wird, 
 dass sich von 40 bis 44 Prozent erstreckt.
-Dieser Befund lässt sich so interpretieren: 
-“Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95% im Bereich von 44 bis 44 Prozentpunkten.”
+Dieser Befund lässt sich so interpretieren: “Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95% im Bereich von 44 bis 44 Prozentpunkten.” 
+Diese (einfache) Interpretation ist im Frequentismus *nicht* möglich.
+
 
 
 
@@ -982,19 +1063,19 @@ Dieser Befund lässt sich so interpretieren:
 Geben Sie Beispiele für Konfidenzintervalle an.
 :::
 
-## Klassische vs. Bayes-Inferenz
+##  Frequentismus vs. Bayes-Inferenz
 
 
 ::::{.columns}
 :::{.column}
-### Klassische Inferenz: Frequentismus
+###  Frequentismus: Klassische Inferenz
 
 -   Die Berücksichtigung von Vorwissen zum Sachgegenstand wird vom Frequentismus als subjektiv zurückgewiesen.
 -   Nur die Daten selber fliesen in die Ergebnisse ein, keine Vorannahmen.
 -   Wahrscheinlichkeit wird über relative Häufigkeiten definiert.
--   Es ist *nicht* möglich, die Wahrscheinlichkeit einer Hypothese anzugeben.
--   Stattdessen wird angegeben, wie häufig eine vergleichbare Datenlage zu erwarten ist, wenn die Hypothese gilt und der Versuch sehr häufig wiederholt ist.
--   Ein Großteil der Forschung (in den Sozialwissenschaften) verwendet diesen Ansatz.
+-   Es ist *nicht* möglich, die Wahrscheinlichkeit einer Hypothese bzw. eines Werts in der Population (eines Parameters) anzugeben.
+-   Stattdessen wird angegeben, wie häufig eine vergleichbare Datenlage zu erwarten ist, wenn der Versuch sehr häufig wiederholt ist.
+-   Ein Großteil der Forschung (in den Sozialwissenschaften) verwendet (aktuell) diesen Ansatz.
 :::
 
 
@@ -1010,9 +1091,11 @@ Geben Sie Beispiele für Konfidenzintervalle an.
 ::::
 
 
-### Vergleich von Wahrscheinlichkeitsaussagen
 
-#### Frequentismus
+
+### Frequentismus
+
+#### Der p-Wert
 
 Die zentrale Statistik des Frequentismus heißt der *p-Wert*
 
@@ -1034,19 +1117,87 @@ Aber er ist auch nicht leicht zu verstehen, meint Meister Yoda, s. @fig-yoda.
 Hier sind einige *FALSCHE* Interpretationen zum p-Wert laut der Autoren:
 
 - 🙅‍♀ Der p-Wert würde die Wahrscheinlichkeit der Nullhypothese oder der Forschungshypothese angeben. 🙊 
-- 🙅‍♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. 
+- 🙅‍♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. 🙊 
 
 
-![Der p-Wert ist wenig intuitiv, meint Meister Yoda](img/pvalue_yoda.jpg){#fig-yoda width=50%}
+![Der p-Wert ist wenig intuitiv, meint Meister Yoda](img/pvalue-yoda.jpg){#fig-yoda width=50%}
+
+
+#### Konfidenzintervalle
+
+Die korrekte Definition der Konfidenzintervalls in *frequentistischer* Lesart lautet:
 
 
 
-
-Die Definition der Konfidenzintervalls in Frquentistischer Lesart lautet:
-
+>   Der Konfidenzbereich, z.B. von 95%, repräsentiert den Anteil der Konfidenzintervalle bei sehr vielen (oder undentlich vielen) Wiederholungen des Experiments, die den echten Parameterwert enthalten [@hoekstra_robust_2014-2].
 
 
->   Der Konfidenzbereich, z.B. von 95%, repräsentiert den Anteil der Konfidenzintervalle bei sehr vielen (oder undentlich vielen) Wiederholungen des Experiments, die den echten Parameterwert enthalten.
+::::: {.content-visible when-format="html"}
+
+Die folgende Visualisierung (@fig-sim-ci) zeigt das Prinzip frequentistischer Konfidenzintervalle: *Auf Dauer* enthalten 95% der Stichproben den wahren Wert (in der Population).
+
+
+::::{#fig-sim-ci}
+
+::: {.figure-content}
+
+<br><br><br> <!-- Insert vertical space here -->
+
+
+{{< include children/sim-ci.qmd >}}
+
+:::
+
+Ein frequentistisches 95%-Konfidenzintervall: Auf Dauer enthalten 95% der Konfidenzintervalle den wahren Wert in der Population.
+
+::::
+:::::
+
+:::{.callout-important}
+Ein frequentistisches Konfidenzintervall macht keine Aussage zur Wahrscheinlichkeit eines Werts in der Population (eines Parameters). Stattdessen wird eine Aussage über das Ergebnis einer sehr häufig wiederholten Stichprobenziehung berichtet. Ob ein bestimmtes (unseres, Ihres) den wahren Wert enthält, bzw. mit welcher Wahrscheinlichkeit es den wahren Wert enthält, darüber macht das frequentistische Konfidenzintervball keine Aussagen. $\square$
+:::
+
+#### Aus der Forschung
+
+
+Frequentistische Konfidenzintervalle werden oft falsch verstanden, wie die folgende Studie zeigt. Das liegt aber nicht daran, dass die Menschen zu dumm sind, sondern dass frequentistische Konfidenzintervalle für viele Menschen kontraintuitiv sind.
+
+@hoekstra_robust_2014-2 berichten von einer Studie, in der $n=442$ Bachelor-Studentis, $n=34$ Master-Studentis und $n=120$ Forschende befragt wurden.
+
+Den Versuchpersonen wurde folgender Fragebogen vorgelegt, s. @fig-bumbledorf.
+
+![Frageobgen zu Konfidenzintervallen](img/bumbledorf.png){#fig-bumbledorf}
+
+Kurz gesagt war die Frage, die die Befragten beantworten sollten:
+
+>    In einem Experiment wird ein 95%-Konfidenzintervall mit dem Bereich von 0.1 bis 0.4 beichtet. Welcher der folgenden sechs Aussagen sind richtig bzw. falsch?
+
+Mit "Konfidenzintervall" meinen die Forschenden ein *frequentistisches* Konfidenzintervall.
+
+Alle diese sechs Aussagen sind *FALSCH*. Die Aussagen lauten:
+
+
+
+1. Die Wahrscheinlichkeit, dass der wahre Mittelwert größer als 0 ist, beträgt mindestens 95 %.
+
+2. Die Wahrscheinlichkeit, dass der wahre Mittelwert gleich 0 ist, ist kleiner als 5 %.
+
+3. Die „Nullhypothese“, dass der wahre Mittelwert gleich 0 ist, ist wahrscheinlich falsch.
+
+4. Es gibt eine 95%ige Wahrscheinlichkeit, dass der wahre Mittelwert zwischen 0,1 und 0,4 liegt.
+
+5. Wir können mit 95%iger Sicherheit sagen, dass der wahre Mittelwert zwischen 0,1 und 0,4 liegt.
+
+6. Wenn wir das Experiment immer wieder wiederholen würden, dann liegt der wahre Mittelwert in 95 % der Fälle zwischen 0,1 und 0,4.
+
+
+Aussagen 1-4 weisen den Hypothesen bzw. den Parametern eine Wahrscheinlichkeit zu, was im Frequentismus nicht erlaubt ist. Aussagen 5-6 spezifizieren die Grenzen des Schätzintervalls, allerdings kann das Konfidenzintervall nur Aussagen zu den zugrundeliegenden Stichproben, nicht zum Schätzintervall, machen.
+
+
+Die Ergebnisse zeigen, dass die Aussagen mehrheitlich *falsch* verstanden wurden, also mit "stimmt" angekreuzt wurden, s. @fig-ci-wrong.
+
+![Eine hohe Zustimmung zu den sechs falschen Aussagen](img/ci-wrong.png){#fig-ci-wrong width=75%}
+
 
 #### Bayes-Statistik
 
@@ -1054,6 +1205,11 @@ Die zentrale Statistik der Bayes-Statistik ist die *Posteriori-Verteilung*.
 
 Die Posteriori-Verteilung beantwortet uns die Frage: "Wie wahrscheinlich ist die Forschungshypothese (oder Varianten von ihr), jetzt, nachdem wir die Daten kennen, auf Basis unseres Modells?"
 
+
+In der Bayes-Statistik sind Aussagen folgender Art erlaubt:
+
+>    Mit einer Wahrscheinlichkeit von 95% ist der neue Webshop besser als der alte.
+>    Mit einer Wahrscheinlichkeit von 89% liegt die Wirksamkeit des neuen Medikaments zwischen 0.1 und 0.4.
 
 
 
