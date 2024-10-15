@@ -9,43 +9,28 @@ viewof settings = Inputs.form([
   Inputs.range([0.01, 5], {value: 1, label: tex`\text{SD, }\sigma`, step: 0.01}),
   Inputs.range([0, 99], {value: 90, label: "Konfidenzlevel", step: 1}),
   Inputs.range([0, 200], {value: 50, label: "n", step: 1})
-  ])
-```
+])
 
-```{ojs}
-//| echo: false
 viewof nrep = Scrubber(d3.ticks(1, 1000, 1000), {
   autoplay: false,
   loop: false,
   initial: 1,
   delay: 500,
-  format: x => `Anzahl von Stichproben = ${x.toFixed(0)}`
+  format: x => `number of datasets = ${x.toFixed(0)}`
 })
-```
 
-```{ojs}
-//| echo: false
 textinfo = md`
-Von insgesamt ${nrep} Stichproben, ${d3.sum(data.map(d => d.rep <= nrep && (mu >= d.lower && mu <= d.upper)))} (**<span style="color:red">${(d3.sum(data.map(d => d.rep <= nrep && (mu >= d.lower && mu <= d.upper)))*100/nrep).toFixed(3)}%</span>**) von den ${confidence}% Konfindenzintervallen enthielten den wahren (tatsächlichen) Populationswert ${tex`\mu= `} ${mu}.
+Von insgesamt ${nrep} Stichproben, ${d3.sum(dataci.map(d => d.rep <= nrep && (mu >= d.lower && mu <= d.upper)))} (**<span style="color:red">${(d3.sum(dataci.map(d => d.rep <= nrep && (mu >= d.lower && mu <= d.upper)))*100/nrep).toFixed(3)}%</span>**) von den ${confidence}% Konfindenzintervallen enthielten den wahren (tatsächlichen) Populationswert ${tex`\mu= `} ${mu}.
 `
-```
 
-
-```{ojs}
-//| echo: false
 lockvertical = Inputs.toggle({label: "Achse einrasten", value: false})
-```
 
-
-
-```{ojs}
-//| echo: false
 plt = Plot.plot({
   style: {fontSize: "12px"},
   width: 960,
   y: {
     label: "mean",
-    domain: lockvertical ? [mu- 3, mu + 3] : [mu - 5*sigma/Math.sqrt(nobs),mu + 5*sigma/Math.sqrt(nobs)]
+    domain: lockvertical ? [mu - 3, mu + 3] : [mu - 5 * sigma / Math.sqrt(nobs), mu + 5 * sigma / Math.sqrt(nobs)]
   },
   x: {
     label: "Stichprobennummer",
@@ -53,7 +38,7 @@ plt = Plot.plot({
   },
   marks: [
     Plot.ruleX([0]),    
-    Plot.ruleX(data, {
+    Plot.ruleX(dataci, {
       filter: d => (d.rep <= nrep && mu >= d.lower && mu <= d.upper),
       x: "rep",
       y1: "lower",
@@ -61,9 +46,9 @@ plt = Plot.plot({
       stroke: "steelblue",
       strokeWidth: 1.5
     }),
-    Plot.dot(data, {filter: d => (d.rep <= nrep && mu >= d.lower && mu <= d.upper), x: "rep", y: "xbar", fill: "steelblue", r: 3}),
+    Plot.dot(dataci, {filter: d => (d.rep <= nrep && mu >= d.lower && mu <= d.upper), x: "rep", y: "xbar", fill: "steelblue", r: 3}),
 
-    Plot.ruleX(data, {
+    Plot.ruleX(dataci, {
       filter: d => d.rep <= nrep && (mu < d.lower || mu > d.upper),
       x: "rep",
       y1: "lower",
@@ -71,58 +56,32 @@ plt = Plot.plot({
       stroke: "orange",
       strokeWidth: 1.5
     }),
-    Plot.dot(data, {filter: d => d.rep <= nrep && (mu < d.lower || mu > d.upper), x: "rep", y: "xbar", fill: "orange", r: 3}),
+    Plot.dot(dataci, {filter: d => d.rep <= nrep && (mu < d.lower || mu > d.upper), x: "rep", y: "xbar", fill: "orange", r: 3}),
     Plot.ruleY([mu], {stroke: "#D22B2B", strokeWidth: 1.5})
-
   ]
 })
-```
 
-
-
-```{ojs}
-//| echo: false
 jstat = require('jstat')
 import {Scrubber} from "@mbostock/scrubber"
 
 function simulate_means(mu, sigma, nobs, nrep){
-  
-  const tvalue = jstat.studentt.inv(1-(1-(confidence/100))/2, nobs-1);
-  var data = [];
+  const tvalue = jstat.studentt.inv(1 - (1 - (confidence / 100)) / 2, nobs - 1);
+  var dataci = [];
   for (let j = 1; j <= nrep; j++){
-        let sample = d3.range(nobs).map(d => d3.randomNormal(mu,sigma)())
-        let xbar = d3.mean(sample)
-        let s = jstat.stdev(sample, true) 
-        let lower = xbar - tvalue*s/Math.sqrt(nobs)
-        let upper = xbar + tvalue*s/Math.sqrt(nobs)
-        data.push({rep: j, xbar: xbar, lower: lower, upper: upper})
+    let sample = d3.range(nobs).map(() => d3.randomNormal(mu, sigma)());
+    let xbar = d3.mean(sample);
+    let s = jstat.stdev(sample, true); 
+    let lower = xbar - tvalue * s / Math.sqrt(nobs);
+    let upper = xbar + tvalue * s / Math.sqrt(nobs);
+    dataci.push({rep: j, xbar: xbar, lower: lower, upper: upper});
   }
-  return data
+  return dataci;
 }
-```
 
-
-```{ojs}
-//| echo: false
 mu = 1
 sigma = 1
 confidence = 90
 nobs = 50
+
+dataci = simulate_means(mu, sigma, nobs, 1000)
 ```
-
-
-```{ojs}
-//| echo: false
-data = {
-  nobs;
-  mu;
-  sigma;
-  const d = new Date();
-  let time = d.getTime();
-  const data = simulate_means(mu, sigma, nobs, 1000)
-  return data
-}
-```
-
-
-Quelle: <https://observablehq.com/@mattiasvillani/confidence-interval-for-a-mean>
