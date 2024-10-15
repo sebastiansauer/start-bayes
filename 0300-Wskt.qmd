@@ -43,7 +43,9 @@ plot16a <-
            color = "#56B4E9FF", alpha = .5, fill = "#56B4E9FF") +
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
-  theme_minimal()
+  theme_minimal()  +
+  theme(axis.text = element_text(size = 18)) +
+  labs(x = "", y = "")
 
 
 plot_pr_b <-
@@ -57,7 +59,9 @@ plot_pr_b <-
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
   annotate("label", x = .5, y = .75, label = "Pr(B) = 50%") +
-  theme_minimal()
+  theme_minimal() +
+  theme(axis.text = element_text(size = 18)) +
+  labs(x = "", y = "")
 
 plot_pr_a <-
   ggplot(data.frame(A = c(0, 1),
@@ -70,7 +74,9 @@ plot_pr_a <-
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
   annotate("label", x = .75, y = .5, label = "Pr(A) = 50%") +
-  theme_minimal()
+  theme_minimal()  +
+  theme(axis.text = element_text(size = 18)) +
+  labs(x = "", y = "")
 
 
 plot_pr_ab <-
@@ -90,7 +96,10 @@ ggplot(data.frame(A = c(0, 1),
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
   annotate(geom = "label", x = .75, y = 0.75, label = "A,B", color = "#E69F00FF") +
-  theme_minimal()
+  theme_minimal()  +
+  theme(axis.text = element_text(size = 18)) +
+  labs(x = "", y = "")
+
 
 
 
@@ -112,7 +121,9 @@ plot_pr_b_geg_a <-
            color = "#E69F00FF", alpha = .3, fill = "#E69F00FF", linewidth = 2) +
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
-  annotate(geom = "label", x = .75, y = 0.75, label = "B|A", color = "#E69F00FF")
+  annotate(geom = "label", x = .75, y = 0.75, label = "B|A", color = "#E69F00FF")  +
+  theme(axis.text = element_text(size = 18)) +
+  labs(x = "", y = "")
 
 
 ```
@@ -405,7 +416,7 @@ Die leere Menge $\varnothing$ heißt das *umögliche*, der Grundraum $\Omega$ he
 Alois behauptet, er habe mit seinem Würfel eine 7 geworfen.
 Schorsch ergänzt, sein Würfel liege auf einer Ecke, so dass keine Augenzahl oben liegt.
 Draco hat seinen Würfel runtergeschluckt. 
-Schorschs und Alois' Ereignisse sind *unmöglich*, nach unserer Vorstellung des Zufallsexperiments.$\square$
+Dracos und Alois' Ereignisse sind *unmögliche Ereignisse*, zumindest nach unserer Vorstellung des Zufallsexperiments.$\square$
 :::
 
 
@@ -418,7 +429,8 @@ Nach dem der Würfel geworfen wurde, liegt eine Augenzahl zwischen 1 und 6 oben.
 :::{#def-elementarereignis}
 ### Elementarereignis
 
-Jede einelementige Teilmenge $\{\omega\}$ von $\Omega$ heißt *Elementarereignis* (häufig mit $A$ bezeichnet).^[Ein *Ergebnis* ist ein Element von $\Omega$. Elementarereignisse sind die einelementigen Teilmengen von $\Omega$. Konzeptionell sind die beiden Begriffe sehr ähnlich, vgl. <https://de.wikipedia.org/wiki/Ergebnis_(Stochastik)>. Wir werden uns hier auf den Begriff *Elementarereignis* konzentrieren und den Begriff *Ergebnis* nicht weiter verwenden.] $\square$
+Jede einelementige Teilmenge $\{\omega\}$ von $\Omega$ heißt *Elementarereignis* (häufig mit $A$ bezeichnet).
+^[Ein *Ergebnis* ist ein Element von $\Omega$. Elementarereignisse sind die einelementigen Teilmengen von $\Omega$. Konzeptionell sind die beiden Begriffe sehr ähnlich, vgl. <https://de.wikipedia.org/wiki/Ergebnis_(Stochastik)>. Wir werden uns hier auf den Begriff *Elementarereignis* konzentrieren und den Begriff *Ergebnis* nicht weiter verwenden.] $\square$
 :::
 
 
@@ -427,7 +439,7 @@ Jede einelementige Teilmenge $\{\omega\}$ von $\Omega$ heißt *Elementarereignis
 
 - Sie spielen Mensch-ärger-dich-nicht. Und brauchen dringend eine `6`. Sie würfeln. Das Ereignis $A = \{1\}$ tritt ein.^[Na toll.]
 
-- Sie schreiben eine Statistik-Klausur. Irgendwie haben Sie das Gefühl, das Ergebnis ist eine Zufallsexperiment... Jedenfalls können nach Adam Riese zwei Dinge passieren: $\Omega= \{\text{bestehen, nicht bestehen}\}$.
+- Sie schreiben eine Statistik-Klausur. Irgendwie haben Sie das Gefühl, das Ergebnis sei ein Zufallsexperiment... Jedenfalls können nach Adam Riese zwei Dinge passieren: $\Omega= \{\text{bestehen, nicht bestehen}\}$.
 Das erste der beiden Elementarereignisse tritt ein. Yeah!
 
 - Sie führen eine Studie durch zur Wirksamkeit einer Lern-App. Es ist nicht klar, ob die App wirklich was bringt für den Lernerfolg. Vereinfacht gesprochen ist der Grundraum dieses Experiments: $\Omega = \{\text{schadet, bringt nichts, nützt}\}$.
@@ -518,8 +530,10 @@ Jetzt gehen wir die Sache noch etwas näher an.
 
 ### Formallogische Wahrscheinlichkeit
 
-Die formallogische Konzeption von Wahrscheinlichkeit sieht Wahrscheinlichkeit als Erweiterung der formalen Logik. In der formalen Logik ist ein Ereignis entweder *falsch* oder *wahr*. 
-In der formallogischen Konzeption wird der Platz zwischen "falsch" (0) und "richtig" (1) als die (nicht sichere) Wahrscheinlichkeit $0<p<1$, gesehen [@briggs_uncertainty:_2016], s. @fig-prob-logic.
+Die formallogische Konzeption von Wahrscheinlichkeit sieht Wahrscheinlichkeit als Erweiterung der formalen Logik.^[Manchmal wird diese Art der Wahrscheinlichkeit auch *epistemologische* Wahrscheinlichkeit genannt.] 
+In der formalen Logik ist ein Ereignis entweder *falsch* oder *wahr*. 
+In der formallogischen Konzeption wird der Platz zwischen "falsch" (0) und "richtig" (1
+als die (nicht sichere) Wahrscheinlichkeit $0<p<1$, gesehen [@briggs_uncertainty:_2016], s. @fig-prob-logic.
 
 
 ![Wahrscheinlichkeit als Erweiterung der Logik](img/prob-logic.png){#fig-prob-logic}
@@ -574,7 +588,9 @@ $$Pr(A)=\frac{\text{Anzahl Treffer}}{\text{Anzahl möglicher Ergebnisse}}$${#eq-
 
 In Ermangelung einer Theorie zum Verhalten eines (uns) unbekannten Zufallsvorgangs und unter der Vermutung, dass die Elementarereignisse nicht gleichwahrscheinlich sind, bleibt uns ein einfacher (aber aufwändiger) Ausweg: Ausprobieren.
 
-Angenommen, ein Statistik-Dozent, bekannt für seine Vorliebe zum Glücksspiel und scheinbar endlosen Glückssträhnen (er wirft andauernd eine 6) hat seinen Lieblingswürfel versehentlich liegen gelassen. 
+Angenommen, ein Statistik-Dozent, bekannt für seine Vorliebe zum Glücksspiel und 
+mit scheinbar endlosen Glückssträhnen (er wirft andauernd eine 6), 
+hat seinen Lieblingswürfel versehentlich liegen gelassen. 
 Das ist *die* Gelegenheit!
 Sie greifen sich den Würfel, und ... Ja, was jetzt?
 Nach kurzer Überlegung kommen Sie zum Entschluss, den Würfel einem "Praxistest" zu unterziehen: 
@@ -634,7 +650,7 @@ Und tatsächlich besteht die Gefahr, dass die so ermittelten Wahrscheinlichkeite
 
 Allerdings kann diese Art von Wahrscheinlichkeitsermittlung auch sehr wertvoll sein.
 In komplizierten Situation im echten Leben^[die sog. "Praxis"] kommt man oft in die Situation, 
-dass weder die epistemologische noch die frequentistische Variante verwendet werden kann.
+dass weder die formallogischen noch die frequentistische Variante verwendet werden kann.
 Dann muss man auf Schätzungen, Vorwissen, Erfahrung, theoretischen Überlegungen etc. zurückgreifen.
 
 
@@ -804,11 +820,13 @@ daher kommt eine Eselbrücke gelesen, s. @fig-esel.
 
 :::{#def-menge-komplement}
 ### Komplementärereignis
-Ein Ereignis $A$ ist genau dann ein Komplementärereignis zu $B$, wenn es genau die Elementarereignisse von $\Omega$ umfasst, die nicht Elementarereignis des anderen Ereignisses sind, s. @fig-neg.$\square$
+Ein Ereignis $A$ ist genau dann ein Komplementärereignis zu $B$, 
+wenn es genau die Elementarereignisse von $\Omega$ umfasst, 
+die nicht Elementarereignis des anderen Ereignisses sind, s. @fig-neg.$\square$
 :::
 
 
-Man schreibt für das Komplementärereignis von $A$ oft $\bar{A}$ oder $\neg A$^[manchmal auch $A^C$; *C* wie *c*omplementary event]; lies "Nicht-A" oder "A-quer".
+Man schreibt für das Komplementärereignis^[synonym: Komplement] von $A$ oft $\bar{A}$ oder $\neg A$^[manchmal auch $A^C$; *C* wie *c*omplementary event]; lies "Nicht-A" oder "A-quer".
 
 
 :::::{#exm-mengen-komplement}
@@ -845,7 +863,8 @@ Ein Beispiel für ein Komplement
 :::{#def-mengen-diff}
 ### Logische Differenz
 Die logische Differenz der Ereignisse $A$ und $B$ ist das Ereignis, 
-das genau aus den Elementarereignissen besteht von $A$ besteht, die nicht zugleich Elementarereignis von $B$ sind, s. @fig-setminus.$\square$
+das genau aus den Elementarereignissen besteht von $A$ besteht, 
+die nicht zugleich Elementarereignis von $B$ sind, s. @fig-setminus.$\square$
 :::
 
 Die logische Differenz von $A$ zu $B$ schreibt man häufig so: $A \setminus B$; lies "A minus B".
@@ -982,25 +1001,38 @@ keine `6` zu würfeln, liegt bei $2/3$.]
 ## Additionssatz 
 
 Der Additionssatz wird verwendet, wenn wir an der Wahrscheinlichkeit interessiert sind, 
-dass *mindestens eines der Ereignisse* eintritt.
+dass *mindestens eines der Ereignisse* A und B eintritt.
+"Mindestens eines der Ereignisse A und " schreibt man $A \cup B$ und sagt "A vereinigt B".
 
 ### Disjunkte Ereignisse
 
-Gegeben sei $\Omega = {1,2,3,4,5,6}$ beim normalen Würfelwurf. Als Sinnbild: $\boxed{1\; 2\; 3\; 4\; 5\; 6}$.
+Gegeben sei $\Omega = {1,2,3,4,5,6}$ beim normalen Würfelwurf. 
+Als Sinnbild: $\boxed{1\; 2\; 3\; 4\; 5\; 6}$.
 Gesucht sei die Wahrscheinlichkeit des Ereignis $A=\{1,2\}$, das also eine 1 oder  
-eine 2 geworfen wird..
+eine 2 geworfen wird.
+Man beachte, dass die beiden Ergebnisse disjunkt sind, s. @fig-add-disjunkt.
 
 
 $\boxed{\boxed{1\; 2}\; \color{gray}{ 3\; 4\; 5\; 6}}$
 
-Die Wahrscheinlichkeit für $A$ ist die Summe der Wahrscheinlichkeiten der einzlnen Ereignisse:
+Die Wahrscheinlichkeit für $A$ ist die Summe der Wahrscheinlichkeiten der einzelnen Ereignisse (*1* und *2*):
 
 $P(1 \cup 2) = \frac{1}{6} + \frac{1}{6} = \frac{2}{6}$
 
 
+:::{#def-add-disjunkt}
+### Additionssatz für disjunkte Ereignisse
+Die Wahrscheinlichkeit, dass mindestens eines der beiden Ereignisse eintritt, ist die Summe der Einzelwahrscheinlichkeiten. $\square$
+:::
+
+
+
+
 :::{#exm-sonntag}
 Was ist die Wahrscheinlichkeit, an einem Samstag oder Sonntag geboren zu sein?
-Unter der (vereinfachten) Annahme, dass alle Jahre zu gleichen Teilen aus allen Wochentagen bestehen und dass an allen Tagen gleich viele Babies geworden werden^[vermutlich gibt es noch mehr Annahmen, die wir uns explizit machen sollten.], ist die Antwort $Pr(A)=1/7 + 1/7 = 2/7$.$\square$
+Unter der (vereinfachten) Annahme, dass alle Jahre zu gleichen Teilen aus allen
+Wochentagen bestehen und dass an allen Tagen gleich viele Babies geworden
+werden^[vermutlich gibt es noch mehr Annahmen, die wir uns explizit machen sollten.], ist die Antwort $Pr(A)=1/7 + 1/7 = 2/7$.$\square$
 :::
 
 
@@ -1008,12 +1040,15 @@ Unter der (vereinfachten) Annahme, dass alle Jahre zu gleichen Teilen aus allen 
 ### Allgemein (disjunkt oder nicht disjunkt)
 
 
-Bei der Addition der Wahrscheinlichkeiten für $A$ und $B$ wird der Schnitt $A\cap B$ *doppelt* erfasst.^[sofern sie nicht disjunkt sind, aber wenn sie disjunkt sind, so ist der Schnitt gleich Null und wir machen auch dann nichts falsch.] Er muss daher noch abgezogen werden, s. @fig-add.
+Bei der Addition der Wahrscheinlichkeiten für $A$ und $B$ wird der Schnitt $A\cap B$ (der Überlappungsbereich) *doppelt* erfasst.^[sofern sie nicht disjunkt sind, 
+aber wenn sie disjunkt sind, so ist der Schnitt gleich Null und wir machen auch 
+dann nichts falsch.] Der Überlappungsbereich muss daher noch abgezogen werden, s. @fig-add.
 
 
 :::{#def-additionssatz}
 ### Allgemeiner Additionssatz
-Die Wahrscheinlichkeit, dass mindestens eines der beiden Ereignisse $A$ und $B$ eintritt, ist gleich der Summe ihrer Wahrscheinlichkeiten minus ihrer gemeinsamen Wahrscheinlichkeit, s. @eq-add und @fig-add.
+Die Wahrscheinlichkeit, dass mindestens eines der beiden Ereignisse $A$ und $B$ eintritt, 
+ist gleich der Summe ihrer Wahrscheinlichkeiten minus ihrer gemeinsamen Wahrscheinlichkeit, s. @eq-add und @fig-add.
 
 $$P(A \cup B) = P(A) + P(B) - P(A\cap B) \square$${#eq-add}
 :::
@@ -1046,12 +1081,12 @@ $$P(A \cup B) = P(A) + P(B) - P(A\cap B) \square$${#eq-add}
 In einem angewandten Psychologie-Studiengang sind die Studis verdonnert, zwei Statistik-Module ($S1, S2$) zu belegen.
 Die meisten bestehen ($B$), einige leider nicht ($N$), s. @tbl-klausur2.
 
-Ereignis $A$ ist "Klausur Statistik 1" mit den Ergebnissen "bestanden" und "nicht bestanden". 
-Ereignis $B$ ist analog für "Klausur Statistik 2".
+Ereignis $S_1B$ sei "Klausur Statistik 1 bestanden"
+Ereignis $S_2B$ ist analog für "Klausur Statistik 2".
 
-Wir suchen die Wahrscheinlichkeit, mindestens eine der beiden Klausuren zu bestehen: 
-$Pr(S_1B \cup S_2B)$.
-Nennen wir das Ereignise $A$.
+Wir suchen die Wahrscheinlichkeit des Ereignisses A, mindestens eine der beiden Klausuren zu bestehen: 
+$Pr(A) = Pr(S_1B \cup S_2B)$.
+
 
 
 
@@ -1509,7 +1544,8 @@ plottitanic3
 ### Abhängigkeit
 
 Liegt keine Unabhängigkeit vor, so spricht man von (stochatistischer) *Abhängigkeit*, s. @eq-abh. 
-In diesem Fall verändert sich unser Wissen über die Wahrscheinlihkeit von $A$, wenn wir wissen, 
+In diesem Fall verändert sich unser Wissen über die Wahrscheinlihkeit von $A$, 
+wenn wir wissen, 
 dass $B$ eingetroffen ist, s. @eq-abh.
 
 $$Pr(A|B) \ne Pr(A) \ne Pr(A|\neg B)$${#eq-abh}
@@ -1533,7 +1569,8 @@ wenn wir wissen, dass *L* nicht vorliegt. $\square$
 ### Zusammenhang von Covidsterblichkeit und Impfquote
 
 
-Sind die Ereignisse *Tod durch Covid*  bzw. *Impfquote* ($A$) und *Land*^[hier mit den zwei Ausprägungen *DEU* und *USA*] ($B$) voneinander abhängig (s. @fig-covid1)?
+Sind die Ereignisse *Tod durch Covid*  bzw. *Impfquote* ($A$) 
+und *Land*^[hier mit den zwei Ausprägungen *DEU* und *USA*] ($B$) voneinander abhängig (s. @fig-covid1)?
 
 ```{r covid1}
 #| message: false
@@ -1613,9 +1650,10 @@ Daten von Our World in Data, <https://ourworldindata.org/covid-deaths>.]
 
 ### Unabhängigkeit ist symmetrisch
 
-Stochastische Unabhängigkeit ist symmetrisch: Wenn $A$ unabhängig zu $B$ ist auch $B$ unabhängig zu $A$,
+Stochastische Unabhängigkeit ist symmetrisch: 
+Wenn $A$ unabhängig zu $B$ ist auch $B$ unabhängig zu $A$, s. @eq-indep-symm.
 
-$$Pr(A|B) = Pr(A) \leftrightarrow Pr(B|A) = Pr(A)$${#eq-indep-symm}
+$$Pr(A|B) = Pr(A) \leftrightarrow Pr(B|A) = Pr(B)$${#eq-indep-symm}
 
 Man beachte, dass stochastische Unabhängigkeit und kausale Unabhängigkeit unterschiedliche Dinge sind [@henze_stochastik_2019]: 
 Stochastische Unabhängigkeit impliziert nicht kausale Unabhängigkeit.
@@ -1634,10 +1672,12 @@ Stochastische Unabhängigkeit impliziert nicht kausale Unabhängigkeit.
 
 ## Multiplikationssatz
 
-Gegeben seien die Ereignisse $A$ und $B$. Der Multiplikationssatz wird verwendet, 
+Gegeben seien die Ereignisse $A$ und $B$. 
+Der Multiplikationssatz wird verwendet, 
 wenn wir an der Wahrscheinlichkeit interessiert sind, 
 dass *beide Ereignisse* $A$ und $B$ eintreten, 
 s. @fig-ab.
+Man schreibt "A und B" als $A \cap B$ und liest "A geschnitten B".
 
 ```{r, ref.label = "fig-ab"}
 #| out-width: 50%
@@ -1649,8 +1689,10 @@ s. @fig-ab.
 :::{#exm-kalt-regen-mult}
 ### Wieder kalt und Regen
 Es ist eine Sache, zu fragen, wie wahrscheinlich ist ist, dass *k*alt ist, 
-wenn es *r*egnet (bei *R*egen): $Pr(k|R)$. Eine andere Sache ist es,
-nach der Wahrscheinlichkeit zu fragen, dass es gleichzeitig kalt ist und regnet, 
+wenn es *r*egnet (bei *R*egen): $Pr(k|R)$. 
+Eine andere Sache ist es,
+nach der Wahrscheinlichkeit zu fragen, 
+dass es gleichzeitig kalt ist und regnet, 
 dass also beide Ereignisse (kalt und Regen) eintreten: $Pr(k \cap R)$. $\square$
 :::
 
@@ -1714,8 +1756,10 @@ Die Wahrscheinlichkeit, dass zwei (oder mehr) unabhängige Ereignisse $A$ und $B
 ist gleich dem Produkt ihrer jeweiligen Wahrscheinlichkeiten, s. @eq-multtheorem. $\square$
 :::
 
-$$Pr(A \cap B) = Pr(AB) = Pr(A) \cdot Pr(B) = Pr(B\cap A) = Pr(B) \cdot Pr(A)$$ {#eq-multtheorem}
-:::
+$$Pr(A \cap B) = Pr(A) \cdot Pr(B)$$ {#eq-multtheorem}
+
+Man beachte, dass es egal ist, ob $A$ gemeinsam mit $B$ oder $B$ gemeinsam mit $A$ eintreten: $Pr(A \cap B) = Pr(B \cap A)$.^[Man spricht auch von *Symmetrie* der Multiplikation.]
+
 
 
 Mit [dieser App](https://www.geogebra.org/m/gzxz57ak) können Sie das Baumdiagramm für den zweifachen Münzwurf näher erkunden.
@@ -1790,7 +1834,9 @@ Hier ist unsere Urne:
 
 $$\boxed{\color{red}{R, R, R, R}, \color{blue}B}$$
 
-Wie groß ist die Wahrscheinlichkeit, dass bei zwei Ziehungen ohne Zurücklegen (*ZOZ*) *zwei rote Kugeln* gezogen werden [@bourier_2018], S. 47. Ereignis A: "Kugel im 1. Zug hat die Farbe Rot". Ereignis B: "Kugel im 2. Zug hat die Farbe Rot".
+Wie groß ist die Wahrscheinlichkeit, dass bei zwei Ziehungen ohne Zurücklegen (*ZOZ*) *zwei rote Kugeln* gezogen werden [@bourier_2018], S. 47. 
+Ereignis A: "Kugel im 1. Zug hat die Farbe Rot". 
+Ereignis B: "Kugel im 2. Zug hat die Farbe Rot".
 
 Und jetzt ziehen wir. Hier ist das Baumdiagramm, s.  @fig-baum-abh.
 
@@ -1799,16 +1845,17 @@ Und jetzt ziehen wir. Hier ist das Baumdiagramm, s.  @fig-baum-abh.
 %%| fig-cap: "Baumdiagramm für ein ein zweistufiges Zufallsereignis, wobei der 2. Zug (Stufe) abhängig ist vom 1. Zug."
 %%| label: fig-baum-abh
 flowchart LR
-  A[Start] -->|4/5|B[1. Zug: R]
-  A -->|1/5|C[1. Zug: B]
-  B -->|3/4|D[2. Zug: R]
-  B -->|1/4|E[2. Zug: B]
-  D --- H[Fazit: RR: 4/5*3/4 = 12/20]
-  E --- I[Fazit: RB: 4/5*1/4 = 4/20]
-  C -->|4/4|F[2. Zug: R]
-  C -->|0/4|G[2. Zug: B]
-  F --- J[Fazit: BR: 1/5*4/4 = 4/20]
-  G --- K[Fazit: BB: 1/5*0/4 = 0/20]
+  A[Start] -->|4/5|B[Zug 1 - R]
+  A -->|1/5|C[Zug 1 - B]
+  B -->|3/4|D[Zug 2 - R]
+  B -->|1/4|E[Zug 2 -  B]
+  D --- H[Fazit: RR - 4/5*3/4 = 12/20]
+  E --- I[Fazit: RB - 4/5*1/4 = 4/20]
+  C -->|4/4|F[Zug 2 - R]
+  C -->|0/4|G[Zug 2 - B]
+  F --- J[Fazit: BR - 1/5*4/4 = 4/20]
+  G --- K[Fazit: BB - 1/5*0/4 = 0/20]
+  
 ```
 
 
@@ -1817,7 +1864,11 @@ Wie man in @fig-baum-abh nachrechnen kann gilt also: $P(A\cap B) = P(A) \cdot P(
 :::
 
 
+:::{#def-gem-wskt-abh}
+Die Wahrscheinlichkeit, dass zwei abhängige Ereignisse $A$ und $B$ *gemeinsam* eintreten, ist gleich dem Produkt der Wahrscheinlichkeit von $A$ und der bedingten Wahrscheinlichkeit von $B$ gegeben $A$, s. @eq-gem-wskt-abh. $\square$
+:::
 
+$$Pr(A \cap B) = Pr(A) \cdot Pr(B|A)$$ {#eq-gem-wskt-ab
 
 
 
@@ -1835,9 +1886,10 @@ wenn's *regnet* ⛈️ mal die Wahrscheinlichkeit von *Regen* ⛈️.
 
 Das Gesagte als Emoji-Gleichung ist in @eq-kalt-regen-emoji dargestellt.
 
-$$P(❄️ \text{ und } ⛈️) = P(⛈️ |❄️ ) \cdot P(❄️) =  P(❄️ |⛈️ ) \cdot P(⛈️) = P(⛈ \text{ und }   ❄️)$${#eq-kalt-regen-emoji}
+$$P(❄️ \text{ und } ⛈️) = P(⛈️ |❄️ ) \cdot P(❄️) =  P(❄️ |⛈️ ) \cdot P(⛈️)$${#eq-kalt-regen-emoji}
 
-Man kann also die "Gleichung drehen".^[Da $P(A\cap B)=Pr(B \cap A)$]$\square$
+
+Man kann  die "Gleichung drehen": $$P(❄️ \text{ und } ⛈️) = P(⛈️ \text{ und } ❄️$${#eq-kalt-regen-emoji2} $\square$
 :::
 
 
@@ -1850,21 +1902,23 @@ Man kann also die "Gleichung drehen".^[Da $P(A\cap B)=Pr(B \cap A)$]$\square$
 — Ron Weasley zu Harry Potter^[Quelle: <https://harrypotter.fandom.com/de/wiki/Bertie_Botts_Bohnen_jeder_Geschmacksrichtung>]
 
 In einem Beutel liegen $n=20$ *Bertie Botts Bohnen jeder Geschmacksrichtung*.
-Uns wurde verraten, dass fast alle gut schmecken, also z.B. nach Schokolade, Pfefferminz oder Marmelade. Leider gibt es aber auch $x=3$ furchtbar scheußliche Bohnen (Ohrenschmalz-Geschmacksrichtung oder Schlimmeres).
-Sie haben sich nun bereit erklärt, $k=3$ Bohnen zu ziehen. 
+Uns wurde verraten, dass fast alle gut schmecken, also z.B. nach Schokolade, 
+Pfefferminz oder Marmelade. Leider gibt es aber auch $x=2$ furchtbar 
+scheußliche Bohnen (Ohrenschmalz-Geschmacksrichtung oder Schlimmeres).
+Sie haben sich nun bereit erklärt, $k=2$ Bohnen zu ziehen. 
 Und zu essen, und zwar direkt und sofort!
 Also, jetzt heißt es tapfer sein. Ziehen und runter damit!
 
 Wie groß ist die Wahrscheinlichkeit, *genau eine* scheußliche Bohne zu erwischen?
 
-Es gibt drei Pfade für 1 Treffer bei 3 Wiederholungen: 
+Es gibt 2 Pfade für 1 Treffer bei 2 Wiederholungen (Züge aus dem Beutel): 
 
 ```{r}
-Pfad1 <- 3/20 * 17/19 * 16/18
-Pfad2 <- 17/20 * 3/19 * 16/18
-Pfad3 <- 17/20 * 16/19 * 3/18
+Pfad1 <- 3/20 * 17/19  # scheußliche Bohne im 1. Zug
+Pfad2 <- 17/20 * 3/19  # scheußliche Bohne im 2. Zug
 
-Gesamt_Pr <- Pfad1 + Pfad2 + Pfad3
+
+Gesamt_Pr <- Pfad1 + Pfad2 
 Gesamt_Pr
 ```
 
@@ -1920,7 +1974,9 @@ https://www.geogebra.org/m/WVKur4yM) gelöst werden kann.$\square$
 :::{#exm-bourier-s56}
 ### Gesamter Ausschussanteil
 Die folgende Aufgabe bezieht sich auf @bourier_2018, S. 56. 
-Drei Maschinen produzieren einen Artikel. Die Maschinen haben einen Anteil an der Produktion von 60, 10 bzw. 30% und eine Ausschussquote von 5,2 bzw. 4%. 
+Drei Maschinen ($M_1, M_2, M_3$) produzieren einen Artikel. 
+Die Maschinen haben einen Anteil an der Produktion von 60, 10 bzw. 30% und eine Ausschussquote von 5,2 bzw. 4%. 
+Sei $M$ das Ereignis, dass ein Artikel von Maschine $M$ stammt, und $S$ (Schrott) das Ereignis, dass ein Artikel Ausschuss (Schrott) ist.
 Wie groß ist der Ausschussanteil insgesamt (über alle drei Maschinen?) 
 Anders gesagt: Wie hoch ist die Wahrscheinlichkeit, dass ein zufällig gezogener Artikel Ausschuss ist. @fig-tot-wskt zeigt das Baumdiagramm für die Aufgabe. $\square$
 :::
@@ -1929,15 +1985,15 @@ Anders gesagt: Wie hoch ist die Wahrscheinlichkeit, dass ein zufällig gezogener
 %%| fig-cap: Totale Wahrscheinlichkeit
 %%| label: fig-tot-wskt
 flowchart LR
-  A[Start] -->|0.6|B[A1]
-  A -->|0.1|C[A2]
-  A -->|0.3|D[A3]
-  B -->|0.05|E[B]
-  B -.->|0.95|F[Nicht-B]
-  C -->|0.02|G[B]
-  C -.->|0.98|H[Nicht-B]
-  D -->|0.04|I[B]
-  D -.->|0.96|J[Nicht-B]
+  A[Start] -->|0.6|B[M1]
+  A -->|0.1|C[M2]
+  A -->|0.3|D[M3]
+  B -->|0.05|E[S]
+  B -.->|0.95|F[Nicht-S]
+  C -->|0.02|G[S]
+  C -.->|0.98|H[Nicht-S]
+  D -->|0.04|I[S]
+  D -.->|0.96|J[Nicht-S]
 ```
 
 
@@ -1987,7 +2043,9 @@ Pr_nicht_keine_Bohne <- round(1 - Pr_keine_Bohne, 2)
 
 
 Es ist die gleich Aufgabe wie @exm-bertie-botts, aber jetzt lautet die Frage: 
-Wie groß ist die Wahrscheinlichkeit, *mindestens eine* scheußliche Bohne zu erwischen?^[Die Wahrscheinlichkeit *keine* scheußliche Bohne zu ziehen ist $17/20 \cdot 16/19 \cdot 15/18) \approx `r Pr_keine_Bohne`$. Daher ist die gesuchte Wahrscheinlichkeit (mindestens eine scheußliche Bohne) das Komplement davon:  $`r Pr_nicht_keine_Bohne`$.] $\square$
+Wie groß ist die Wahrscheinlichkeit, *mindestens eine* scheußliche Bohne bei 3 Zügen zu erwischen?^[Die Wahrscheinlichkeit *keine* scheußliche Bohne zu ziehen ist $17/20 \cdot 16/19 \cdot 15/18) \approx `r Pr_keine_Bohne`$. 
+Daher ist die gesuchte Wahrscheinlichkeit (mindestens eine scheußliche Bohne) 
+das Komplement davon:  $`r Pr_nicht_keine_Bohne`$.] $\square$
 :::
 
 
