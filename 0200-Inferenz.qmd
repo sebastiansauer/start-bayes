@@ -55,7 +55,7 @@ Sie können ...
 
 ### Begleitliteratur
 
-Bei @gelman_regression_2021, Kap. 1 findet sich eine Darstellung ähnlich zu der in diesem Kapitel.
+Bei @gelman2021, Kap. 1 findet sich eine Darstellung ähnlich zu der in diesem Kapitel.
 
 
 
@@ -129,7 +129,6 @@ flowchart TD
 
 ```{r}
 #| include: false
-#library(kableExtra)
 library(tidyverse)
 library(knitr)
 library(easystats)
@@ -149,7 +148,13 @@ library(easystats)
 
 
 
-Statistische Inferenz hat zum Ziel, vom Teil aufs Ganze zu schließen, bzw. vom Konkreten auf das Abstrakte.^[Statistische Inferenz sieht sich drei "Herausforderungen" gegenüber, laut  @gelman_regression_2021, Kap. 1.1.; Diese betreffen das Schließen (oder Generalisieren) vom Einzelfall auf das Allgemeine: 1. Von der Stichprobe aus die Grundgesamtheit (Population), 2. Von der Experimental- auf die Kontrollgruppe (Kausalinferenz), 3. Von einem Messwert auf das zugrundeliegende Konstrukt. In diesem Kurs beschäftigen wir uns mit den ersten beiden Herausforderungen.]
+Statistische Inferenz hat zum Ziel, vom Teil aufs Ganze zu schließen, bzw. vom Konkreten auf das Abstrakte.
+^[Statistische Inferenz sieht sich drei "Herausforderungen" gegenüber, laut  @gelman2021, Kap. 1.1.; 
+Diese betreffen das Schließen (oder Generalisieren) vom Einzelfall auf das Allgemeine: 
+1. Von der Stichprobe aus die Grundgesamtheit (Population), 
+2. Von der Experimental- auf die Kontrollgruppe (Kausalinferenz), 
+3. Von einem Messwert auf das zugrundeliegende Konstrukt. 
+In diesem Kurs beschäftigen wir uns mit den ersten beiden Herausforderungen.]
 
 
 Typischerweise untersuchen im Rahmen einer statistischen Analyse eine *Stichprobe*, 
@@ -328,16 +333,18 @@ Wie groß ist die Wahrscheinlichkeit$Pr(\mu_{V1} > \mu_{V2})$?
 ### Modellieren als Grundraster des Erkennens
 
 
+In
 In der Wissenschaft -- wie auch oft in der Technik, Wirtschaft oder im Alltag --
 betrachtet man einen Teil der Welt näher, 
 meist mit dem Ziel, eine Entscheidung zu treffen, was man tun wird oder mit dem Ziel, etwas zu lernen.
-
 Nun ist die Welt ein weites Feld. 
 Jedes Detail zu berücksichtigen ist nicht möglich.
-Wir müssen die Sache vereinfachen: Alle Informationen ausblenden, 
-die nicht zwingend nötig sind.
+Wir müssen die Sache vereinfachen: 
+Alle Informationen ausblenden, die nicht zwingend nötig sind.
 Aber gleichzeitig die Strukturelemente der wirklichen Welt, 
 die für unsere Fragestellung zentral ist, beibehalten.
+
+
 
 Dieses Tun nennt man *Modellieren*: Man erstellt sich ein Modell.
 
@@ -347,12 +354,21 @@ Ein Modell ist ein vereinfachtes Abbild der Wirklichkeit.$\square$
 :::
 
 Der Nutzen eines Modells ist, einen (übermäßig) komplexen Sachverhalt zu vereinfachen oder überhaupt erst handhabbar zu machen.
-Man versucht zu vereinfachen, ohne Wesentliches wegzulassen. 
+Man versucht zu vereinfachen, 
+ohne Wesentliches wegzulassen. 
 Der Speck muss weg, sozusagen. Das Wesentliche bleibt.
 
 Auf die Statistik bezogen heißt das,
 dass man einen Datensatz dabei so zusammenfasst,
 damit man das Wesentliche erkennt.
+
+Was ist das "Wesentliche"? 
+Oft interessiert man sich für die Ursachen eines Phänomens. 
+Etwa: "Wie kommt es bloß, dass ich ohne zu lernen die Klausur so gut bestanden habe?"^[Das ist natürlich nur ein fiktives, 
+komplett unrealistisches Beispiel, das auch unklaren Ursachen den Weg auf diese Seite gefunden hat.]
+Noch allgemeiner ist man dabei häufig am Zusammenhang von `X ` und `Y` interessiert, 
+s. @fig-xy, die ein Sinnbild von statistischen Modellen widergibt.
+
 Was ist das "Wesentliche"? Oft interessiert man sich für die Ursachen eines Phänomens. 
 Etwa: "Wie kommt es bloß, dass ich ohne zu lernen die Klausur so gut bestanden 
 habe?"^[Das ist natürlich nur ein fiktives, komplett unrealistisches Beispiel, 
@@ -410,7 +426,7 @@ die das forschungsleitende Interesse zusammenfasst.
 
 ### Vertiefung
 
-Lesen Sie die Einführung zum Thema Modellieren bei @poldrack_statistical_2022 (Kap. 5.1).
+Lesen Sie die Einführung zum Thema Modellieren bei @poldrack2022 (Kap. 5.1).
 
 
 :::callout-note
@@ -536,7 +552,7 @@ In allgemeiner Form schreibt man die Regressionsgleichung so, s. @eq-lm
 
 $$y = \beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k + \epsilon$${#eq-lm}
 
-Man nennt alle $\beta_0, \beta_1, \beta_2, ...$ die *Koeffizienten*, *Regressionsgewichte* oder *Parameter* des Modells [@gelman_regression_2021].
+Man nennt alle $\beta_0, \beta_1, \beta_2, ...$ die *Koeffizienten*, *Regressionsgewichte* oder *Parameter* des Modells [@gelman2021].
 :::
 
 Anhand von @eq-lm erkennt man auch, warum man von einem *linearen Modell* spricht: 
@@ -578,20 +594,25 @@ ggplot(mtcars) +
 
 ### Inferenz beinhaltet Ungewissheit
 
-Inferenzstatistische Schlüsse sind mit Unsicherheit (Ungewissheit) behaftet: Schließlich kennt man nur einen Teil (die Stichprobe) eines Ganzen (die Population), 
-möchte aber vom Teil auf das Ganze schließen.
+
+Inferenzstatistische Schlüsse sind mit Unsicherheit (Ungewissheit) behaftet: Schließlich kennt man nur einen Teil (die Stichprobe) eines Ganzen (die Population), möchte aber vom Teil auf das Ganze schließen.
+
 
 
 
 :::callout-important
-Nichts Genaues weiß man nicht: Schließt man von einem Teil auf das Ganze, 
-so geschieht das unter Unsicherheit. Man spricht von *Ungewissheit*, da man die Unsicherheit das Wissen über die Genauigkeit des Schließens betrifft.
+Nichts Genaues weiß man nicht: 
+Schließt man von einem Teil auf das Ganze, so geschieht das unter Unsicherheit. 
+Man spricht von *Ungewissheit*, da man sich auf die *Unsicherheit das Wissen* über die Genauigkeit des Schließens bezieht
 :::
 
 
-Schließt man etwa, dass in einer Grundgesamtheit der Anteil der R-Fans bei 42% liegt, so geschieht das unter Unsicherheit; es ist ungewiss.
-Man ist sich nicht sicher, dass es wirklich 42% in der Population sind - 
-und nicht etwa etwas mehr oder etwas weniger.
+
+Schließt man etwa, dass in einer Grundgesamtheit der Anteil der R-Fans bei 42% liegt, 
+so geschieht das unter Unsicherheit; es ist ungewiss.
+Man ist sich nicht sicher, 
+dass es wirklich 42% in der Population sind - und nicht etwa etwas mehr oder etwas weniger.
+
 Schließlich hat man *nicht* die ganze Population gesehen bzw. vermessen. 
 *Sicher* ist man sich hingegen für die Stichprobe (Messfehler einmal ausgeblendet).
 Zur Bemessung der Unsicherheit (Ungewissheit) bedient man sich der Wahrscheinlichkeitsrechnung (wo immer möglich).
@@ -600,13 +621,12 @@ Die Wahrscheinlichkeitstheorie bzw. -rechnung wird daher auch als die Mathematik
 ::: {#def-zufall}
 
 ## Zufälliges Ereignis
-Unter einem zufälligen (engl. random) Ereignis verstehen wir ein Ereignis, 
-das nicht (komplett) vorherzusehen ist, 
+
+Unter einem zufälligen (engl. random) Ereignis verstehen wir ein Ereignis, das nicht (komplett) vorherzusehen ist, 
 wie etwa die Augenzahl Ihres nächsten Würfelwurfs. Zufällig bedeutet nicht (zwangsläufig), 
 dass das Ereignisse keine Ursachen besitzt. 
 So gehorchen die Bewegungen eines Würfels den Gesetzen der Physik, 
 nur sind uns diese oder die genauen Randbedingungen nicht (ausreichend) bekannt.
-
 :::
 
 :::{#exr-muenz}
@@ -636,13 +656,16 @@ Aussagen mit Unsicherheit können unterschiedlich präzise formuliert sein.
 
 ### Wahrscheinlichkeit
 
-Die Wahrscheinlichkeitsrechnung ist die typische Methode, um Ungewissheit zu präzisieren, d.h. zu quantifizieren.
+
 
 :::{#def-wskt}
 ### Wahrscheinlichkeit
-Die Wahrscheinlichkeit ist ein Maß dafür, für wie sicher jemand es hält, dass ein Ereignis eintritt. Die Wahrscheinlichkeit eines Ereignisses wird als Zahl zwischen 0 und 1 angegeben, wobei 0 bedeutet, dass das Ereignis als unmöglich angesehen wird, und 1 bedeutet, dass das Ereignis als sicher betrachtet wird. $\square$
+Die Wahrscheinlichkeit ist ein Maß dafür, für wie sicher jemand es hält, dass ein Ereignis eintritt. Die Wahrscheinlichkeit eines Ereignisses wird als Zahl zwischen 0 und 1 angegeben, wobei 0 bedeutet, dass das Ereignis als unmöglich angesehen wird, und 1 bedeutet, dass das Ereignis als sicher betrachtet wird. 
+Je näher die Wahrscheinlichkeit bei 0 (1) liegt, desto sicherer sind wir,
+dass das Ereignis (nicht) der Fall ist.$\square$
 :::
 
+Die Wahrscheinlichkeitsrechnung ist die typische Methode, um Ungewissheit zu präzisieren, d.h. zu quantifizieren.
 
 
 ### Zwei Arten von Ungewissheit
@@ -904,11 +927,6 @@ plot2 <-
            color = "red",
            alpha = .5,
            size = 5)
-
-
-# plots(plot1, plot2, n_rows = 1,
-#       title = c("Eine Punktschätzung mittels einer Regressionsanalyse \nohne (links) bzw. mit Ungewissheitsintervall (rechts, in grau)"))
-
 ```
 
 
@@ -972,16 +990,6 @@ mtcars <-
   mtcars %>% 
   mutate(upr = predict(lm1, interval = "prediction")[, 3],
          lwr = predict(lm1, interval = "prediction")[, 2])
-
-# pred_interval2 <-
-#   predict(lm1_glm,
-#           newdata = data.frame(hp = pred_interval$hp),
-#           interval = "prediction") %>%
-#   as_tibble() %>%
-#   rename(mpg = fit) %>% 
-#   mutate(hp = pred_interval$hp)
-
-
 
 p_ungewiss2 <- ggplot(mtcars) +
   aes(x = hp, y = mpg) +
@@ -1103,8 +1111,11 @@ Der p-Wert ist so definiert, vgl. @wasserstein_asa_2016:
 
 >   Wie wahrscheinlich ist der Wert der Teststatistik (oder noch extremere Werte), vorausgesetzt die Nullhypothese gilt und man wiederholt den Versuch unendlich oft (mit gleichen Bedingungen, aber zufällig verschieden und auf Basis unseres Modells)?
 
-Findet man $p<.05$ (oder einen anderen Prozentwert, aber meistens wird 5% hergenommen), so spricht man von "(statistischer) Signifikanz" und nimmt dies als Beleg, dass man einen Effekt gefunden hat, die Hypothese eines Nulleffekts (z.B. kein Zusammenhang von X und Y) also verwerfen kann.
-Faktisch entscheidet man sich, die Forschungshypothese weiterhin als "vorläufig gültig" oder zumindest als "nicht widerlegt" zu betrachten.
+Findet man $p<.05$ (oder einen anderen Prozentwert, aber meistens wird 5% hergenommen), 
+so spricht man von "(statistischer) Signifikanz" und nimmt dies als Beleg, dass man einen Effekt gefunden hat, 
+die Hypothese eines Nulleffekts (z.B. kein Zusammenhang von X und Y) also verwerfen kann.
+Faktisch entscheidet man sich, die Forschungshypothese weiterhin als "vorläufig gültig" 
+oder zumindest als "nicht widerlegt" zu betrachten.
 
 
 :::{#exr-p}
@@ -1112,7 +1123,7 @@ Faktisch entscheidet man sich, die Forschungshypothese weiterhin als "vorläufig
 Beobachten sie die Reaktionen auf Ihre Erklärung.$\square$
 :::
 
-Der p-Wert wird oft falsch verstanden [@badenes-ribera_misconceptions_2016-1].
+Der p-Wert wird oft falsch verstanden [@badenes-ribera2016].
 Aber er ist auch nicht leicht zu verstehen, meint Meister Yoda, s. @fig-yoda.
 Hier sind einige *FALSCHE* Interpretationen zum p-Wert laut der Autoren:
 
@@ -1129,7 +1140,8 @@ Die korrekte Definition der Konfidenzintervalls in *frequentistischer* Lesart la
 
 
 
->   Der Konfidenzbereich, z.B. von 95%, repräsentiert den Anteil der Konfidenzintervalle bei sehr vielen (oder undentlich vielen) Wiederholungen des Experiments, die den echten Parameterwert enthalten [@hoekstra_robust_2014-2].
+>   Der Konfidenzbereich, z.B. von 95%, repräsentiert den Anteil der Konfidenzintervalle bei sehr vielen (oder undentlich vielen) Wiederholungen des Experiments, 
+die den echten Parameterwert enthalten [@hoekstra2014].
 
 
 ::::: {.content-visible when-format="html"}
@@ -1172,7 +1184,7 @@ wie die folgende Studie zeigt.
 Das liegt aber nicht daran, dass die Menschen zu dumm sind, 
 sondern dass frequentistische Konfidenzintervalle für viele Menschen kontraintuitiv sind.
 
-@hoekstra_robust_2014-2 berichten von einer Studie, in der $n=442$ Bachelor-Studentis, $n=34$ Master-Studentis und $n=120$ Forschende befragt wurden.
+@hoekstra2014 berichten von einer Studie, in der $n=442$ Bachelor-Studentis, $n=34$ Master-Studentis und $n=120$ Forschende befragt wurden.
 
 Den Versuchpersonen wurde folgender Fragebogen vorgelegt, s. @fig-bumbledorf.
 
@@ -1265,7 +1277,7 @@ Unser Vorwissen lässt uns allerdings trotzdem an der Hellsichtigkeit des Betrun
 
 ### Beispiel zum Nutzen von Apriori-Wissen 2
 
-Eine Studie [@gelman_regression_2021] fand einen "großen Effekt" auf das Einkommen von Babies, die eine Stunde pro Woche während zwei Jahren an einem psychosozialen Entwicklungsprogramm teilnahmen (im Vergleich zu einer Kontrollgruppe), $n=127$.
+Eine Studie [@gelman2021] fand einen "großen Effekt" auf das Einkommen von Babies, die eine Stunde pro Woche während zwei Jahren an einem psychosozialen Entwicklungsprogramm teilnahmen (im Vergleich zu einer Kontrollgruppe), $n=127$.
 Nach 20 Jahren war das mittlere Einkommen der Experimentalgruppe um 42% höher (als in der Kontrollgruppe) mit einem Konfidenzintervall von \[+2%,+98%\].
 
 Allerdings lässt uns unser Vorwissen vermuten, dass so ein Treatment das Einkommen nach 20 Jahren kaum verdoppeln lässt. Wir würden den Effekt lieber in einem konservativeren Intervall schätzen (enger um Null).

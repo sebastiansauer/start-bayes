@@ -28,14 +28,14 @@ Sie können ...
 
 ### Begleitliteratur
 
-Der Stoff dieses Kapitels deckt sich (weitgehend) mit @bourier_2018, Kap. 6.1 und 6.3 sowie 7.1 und und 7.2.
+Der Stoff dieses Kapitels deckt sich (weitgehend) mit @bourier2011, Kap. 6.1 und 6.3 sowie 7.1 und und 7.2.
 
 
 ### Vorbereitung im Eigenstudium
 
 
 
-Lesen Sie selbständig, zusätzlich  zum Stoff dieses Kapitels noch @bourier_2018; dort folgende Abschnitte:
+Lesen Sie selbständig, zusätzlich  zum Stoff dieses Kapitels, noch @bourier2011; dort folgende Abschnitte:
 
 - Kap. 6.1 (Zum Begriff Zufallsvariable)
 - Kap. 6.3 (Stetige Zufallsvariablen)
@@ -46,7 +46,7 @@ Lesen Sie selbständig, zusätzlich  zum Stoff dieses Kapitels noch @bourier_201
 Lösen Sie auch die Übungsaufgaben dazu.
 
 
-Weitere Übungsaufgaben finden Sie im dazugehörigen Übungsbuch, @bourier_statistik-ubungen_2022.
+Weitere Übungsaufgaben finden Sie im dazugehörigen Übungsbuch, @bourier2022.
 
 
 ### Prüfungsrelevanter Stoff
@@ -59,6 +59,7 @@ Beachten Sie, dass neben den Inhalten des Kapitels auch stets der vorzubereitend
 ```{r}
 #| message: false
 library(tidyverse)
+library(ggpubr)  # für Plots
 ```
 
 
@@ -124,13 +125,17 @@ scale_colour_discrete <- function(...)
 
 :::{#exm-thesis}
 Schorsch sucht eine Betreuerin für seine Abschlussarbeit.
-An die ideale Betreuerin setzt er 4 Kriterien an: a) klare, schriftliche fixierte Rahmenbedingungen, b) viel Erfahrung, c) guten Ruf und d) interessante Forschungsinteressen.
+An die ideale Betreuerin setzt er 4 Kriterien an: 
+a) klare, schriftliche fixierte Rahmenbedingungen, 
+b) viel Erfahrung, 
+c) guten Ruf und 
+d) interessante Forschungsinteressen.
 Je mehr dieser 4 Kriterien erfüllt sind, desto besser. 
 Schorsch geht davon aus, dass die 4 Kriterien voneinander unabhängig sind (ob eines erfüllt ist oder nicht, ändert nichts an der Wahrscheinlichkeit eines anderen Kriteriums).
 Schorsch interessiert sich also für die *Anzahl* der erfüllten Kriterien, also eine Zahl von 0 bis 4.
 Er schätzt die Wahrscheinlichkeit für einen "Treffer" in jedem seiner 4 Kriterien auf 50%.
 Viel Glück, Schorsch!
-Sein Zufallsexperiment hat 16 Ausgänge, s. @fig-4muenzen und @tbl-schorsch-zufall. Ganz schön komplex.
+Sein Zufallsexperiment hat 16 Ausgänge (Knoten 16 bis 31), s. @fig-4muenzen und @tbl-schorsch-zufall. Ganz schön komplex.
 Eigentlich würden ihm ja eine Darstellung mit 5 Ergebnissen, also der "Gutachter-Score" von 0 bis 4 ja reichen. 
 Wie können wir es übersichtlicher für Schorsch?$\square$
 :::
@@ -156,13 +161,13 @@ my_tree %>%
   mutate(muenze = factor(muenze)) %>% 
   ggraph(circular = FALSE) +
   geom_edge_link() +
-   geom_node_label(mapping = aes(label = lab, fill = muenze)) +
+  geom_node_label(mapping = aes(label = lab, fill = muenze)) +
   coord_flip() +
   scale_y_reverse() +
-  # scale_fill_manual(values = c("0" = "red", "1" = "blue", "2" = "green", "3" = "purple", "4" = "orange"),
-  #                   name = "Muenze") +
   theme_void() +
-  theme(text = element_text(size = 12))
+  theme(text = element_text(size = 12)) +
+  labs(fill = "Münze ") +
+  guides(fill = guide_legend(override.aes = aes("")))  # Suppress the 'a'
 ```
 
 
@@ -197,7 +202,8 @@ Wir nutzen sie, um die Anzahl der Treffer in einem Zufallsexperiment zu zählen.
 
 :::{#def-zufallsvariable}
 ### Zufallsvariable
-Die Zuordnung der Elementarereignisse eines Zufallsexperiments zu genau einer Zahl $\in \mathbb{R}$ nennt man Zufallsvariable.$\square$
+Die Zuordnung der Elementarereignisse eines Zufallsexperiments zu genau einer Zahl 
+$\in \mathbb{R}$ nennt man Zufallsvariable.$\square$
 :::
 
 Die den Elementarereignissen zugewiesenen Zahlen nennt man *Realisationen* oder Ausprägungen der Zufallsvariablen.
@@ -209,7 +215,9 @@ Ein Lottospiel hat ca. 14 Millionen Elementarereignisse. Die Zufallsvariable "An
 
 Es hat sich eingebürgert, Zufallszahlen mit $X$ zu bezeichnen (oder anderen Buchstaben weit hinten aus dem Alphabet).
 
-Man schreibt kurz: $X: \Omega \rightarrow \mathbb{R}$. Um die Vorschrift der Zuordnung genauer zu bestimmen, kann man folgende Kurzschreibweise nutzen:
+Man schreibt für eine Zufallsvariable kurz: $X: \Omega \rightarrow \mathbb{R}$.
+"X ist eine Zufallsvariable, die jedem Elementarereignis $\omega$ eine reelle Zahl zuordnet."
+Um die Vorschrift der Zuordnung genauer zu bestimmen, kann man folgende Kurzschreibweise nutzen:
 
 
 ${\displaystyle X(\omega )={\begin{cases}1,&{\text{wenn }}\omega ={\text{Kopf}},\\[6pt]0,&{\text{wenn }}\omega ={\text{Zahl}}.\end{cases}}}$
@@ -220,14 +228,14 @@ ${\displaystyle X(\omega )={\begin{cases}1,&{\text{wenn }}\omega ={\text{Kopf}},
 
 
 ```{mermaid}
-%%| fig-cap: Eine Zufallsvariable ist eine Abbildung vom Ereignisraum zu den Realisationen der Zufallsvariable. Außerdem sieht man, wie Zufallsvariablen genutzt werden, um Wahrsscheinlichkeiten zu bestimmen.
+%%| fig-cap: Eine Zufallsvariable ist eine Abbildung eines Ereignisses im Ereignisraum zu den Realisationen der Zufallsvariable. Außerdem sieht man, wie Zufallsvariablen genutzt werden, um Wahrscheinlichkeiten zu bestimmen.
 %%| label: fig-zv
 flowchart LR
-  subgraph A[Ereignisse<br> im Ereignisraum]
+  subgraph A[Ereignis]
     Kopf
     Zahl
   end
-  subgraph B[Realisationen der <br>Zufallsvariable]
+  subgraph B[Realisation]
     null[0]
     eins[1]
   end
@@ -313,7 +321,7 @@ Eine *diskrete* Wahrscheinlichkeitsverteilung der (diskreten) Zufallsvariablen $
 
 :::{#exm-babies}
 ### Wahrscheinlichkeit des Geschlechts bei der Geburt
-So hat die Variable *Geschlecht eines Babies* die beiden Ausprägungen *Mädchen* und *Junge* mit den Wahrscheinlichkeiten $p_M = 51.2\%$ bzw. $p_J = 48.8\%$, laut einer Studie [@gelman_regression_2021].$\square$
+So hat die Variable *Geschlecht eines Babies* die beiden Ausprägungen *Mädchen* und *Junge* mit den Wahrscheinlichkeiten $p_M = 51.2\%$ bzw. $p_J = 48.8\%$, laut einer Studie [@gelman2021].$\square$
 :::
 
 
@@ -1610,7 +1618,7 @@ Sie und 100 Ihrer besten Freunde stehen auf der Mittellinie eines Fußballfelds.
 source(paste0(here::here(),"/R-Code/img13.R"))
 ```
 
-[@mcelreath_statistical_2020]
+[@mcelreath2020]
 
 
 
@@ -2192,11 +2200,11 @@ Quelle: Uni Greifswald, Public domain, via Wikimedia Commons
 ::: callout-note
 *Ontologische Begründung*
 
-- Wirken viele, gleichstarke Einflüsse additiv zusammen, entsteht eine Normalverteilung  [@mcelreath_statistical_2020], Kap. 4.1.4.
+- Wirken viele, gleichstarke Einflüsse additiv zusammen, entsteht eine Normalverteilung  [@mcelreath2020], Kap. 4.1.4.
 
 *Epistemologische Begründung*
 
-- Wenn wir nur wissen, dass eine Variable über einen endlichen Mittelwert und eine endliche Varianz verfügt und wir keine weiteren Annahmen treffen bzw. über kein weiteres Vorwissen verfügen, dann ist die Normalverteilung die plausibelste Verteilung (maximale Entropie) [@mcelreath_statistical_2020], Kap. 7 und 10.
+- Wenn wir nur wissen, dass eine Variable über einen endlichen Mittelwert und eine endliche Varianz verfügt und wir keine weiteren Annahmen treffen bzw. über kein weiteres Vorwissen verfügen, dann ist die Normalverteilung die plausibelste Verteilung (maximale Entropie) [@mcelreath2020], Kap. 7 und 10.
 :::
 
 
@@ -2339,9 +2347,9 @@ Quelle: Uni Greifswald, Public domain, via Wikimedia Commons
 
 ## Vertiefung
 
-@bourier_2018, Kap. 6.2 und 7.1 erläutert einige (grundlegende) theoretische Hintergründe zu diskreten Zufallsvariablen und Wahrscheinlichkeitsverteilungen. Wichtigstes Exemplar ist dabei die Binomialverteilung.
+@bourier2011, Kap. 6.2 und 7.1 erläutert einige (grundlegende) theoretische Hintergründe zu diskreten Zufallsvariablen und Wahrscheinlichkeitsverteilungen. Wichtigstes Exemplar ist dabei die Binomialverteilung.
 
-@mittag_statistik_2020 stellen in Kap. 12 und 13 Zufallsvariablen vor; zum Teil geht die Darstellung dort über die Lernziele bzw. Inhalte dieses Kurses hinaus.
+@mittag2020 stellen in Kap. 12 und 13 Zufallsvariablen vor; zum Teil geht die Darstellung dort über die Lernziele bzw. Inhalte dieses Kurses hinaus.
 
 
 ## Aufgaben
@@ -2350,13 +2358,11 @@ Quelle: Uni Greifswald, Public domain, via Wikimedia Commons
 Zusätzlich zu den Aufgaben in der genannten Literatur sind folgende Aufgaben zu empfehlen.
 
 - [Quiz (Aufgabensammlung) zu Verteilungen](https://datenwerk.netlify.app/#category=Verteilungen-Quiz)
-
 - [Bsp-Binomial](https://datenwerk.netlify.app/posts/bsp-binomial/bsp-binomial)
 - [wuerfel01](https://datenwerk.netlify.app/posts/wuerfel01/wuerfel01.html)
 - [wuerfel02](https://datenwerk.netlify.app/posts/wuerfel02/wuerfel02.html)
 - [wuerfel03](https://datenwerk.netlify.app/posts/wuerfel03/wuerfel03.html)
 - [wuerfel04](https://datenwerk.netlify.app/posts/wuerfel04/wuerfel04.html)
-
 - [iq01](https://datenwerk.netlify.app/posts/iq01/iq01)
 - [iq02](https://datenwerk.netlify.app/posts/iq02/iq02)
 - [iq03](https://datenwerk.netlify.app/posts/iq03/iq03)
@@ -2368,7 +2374,6 @@ Zusätzlich zu den Aufgaben in der genannten Literatur sind folgende Aufgaben zu
 <!-- - [iq09](https://datenwerk.netlify.app/posts/iq09/iq09) -->
 <!-- - [iq10](https://datenwerk.netlify.app/posts/iq010/iq10) -->
 - [Bus1](https://datenwerk.netlify.app/posts/bus1/bus1)
-
 - [alphafehler-inflation2](https://datenwerk.netlify.app/posts/alphafehler-inflation2/alphafehler-inflation2.html)
 - [alphafehler-inflation3](https://datenwerk.netlify.app/posts/alphafehler-inflation3/alphafehler-inflation3.html)
 - [alphafehler-inflation4](https://datenwerk.netlify.app/posts/alphafehler-inflation4/alphafehler-inflation4.html)
