@@ -228,7 +228,7 @@ ${\displaystyle X(\omega )={\begin{cases}1,&{\text{wenn }}\omega ={\text{Kopf}},
 
 
 ```{mermaid}
-%%| fig-cap: Eine Zufallsvariable ist eine Abbildung eines Ereignisses im Ereignisraum zu den Realisationen der Zufallsvariable. Außerdem sieht man, wie Zufallsvariablen genutzt werden, um Wahrscheinlichkeiten zu bestimmen.
+%%| fig-cap: Eine Zufallsvariable ist eine Abbildung eines Ereignisses im Ereignisraum zu den Realisationen der Zufallsvariable. Außerdem sieht man, wie diskrete Wahrscheinlichkeitsfunktionen genutzt werden, um den numerischen Ausgängen eines Zufallsexperiments eine Wahrscheinlichkeit zuzuordnen, d.h. um Wahrscheinlichkeiten zu bestimmen.
 %%| label: fig-zv
 flowchart LR
   subgraph A[Ereignis]
@@ -794,8 +794,12 @@ uniform_Plot(0, 3)
 
 
 
-@fig-uniform, links: Bei $X=0$ hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von 50%, da der Bereich $[-0.5, +0.5]$ die Hälfte (50%) der Wahrscheinlichkeitsmasse der Verteilung beinhaltet. Bei jedem anderen Punkt $x$ ist die Dichte gleich.
-@fig-uniform, rechts: Bei $X=0$ hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von ca. 33%, da der Bereich $[-0.5, +0.5]$ ein Drittel der Wahrscheinlichkeitsmasse der Verteilung beinhaltet. Bei jedem anderen Punkt $x$ ist die Dichte gleich.
+@fig-uniform, links: Bei $X=0$ hat *eine Einheit* von $X$ (d.h. von -0.5 bis +0.5) die Wahrscheinlichkeitsmasse von 50%, 
+da der Bereich $[-0.5, +0.5]$ die Hälfte (50%) der Wahrscheinlichkeitsmasse der Verteilung beinhaltet. 
+Bei jedem anderen Punkt $x$ ist die Dichte gleich.
+@fig-uniform, rechts: Bei $X=0$ hat *eine Einheit* von $X$ die Wahrscheinlichkeitsmasse von ca. 33%, 
+da der Bereich $[-0.5, +0.5]$ ein Drittel der Wahrscheinlichkeitsmasse der Verteilung beinhaltet. 
+Bei jedem anderen Punkt $x$ ist die Dichte gleich.
 Definierendes Kennzeichen einer Gleichverteilung ist die *konstante Dichte*.
 
 
@@ -833,6 +837,7 @@ Auf Errisch heißt das Zauberwort `runif()`:
 
 ```{r}
 #| eval: false
+set.seed(42)  # Zufallszahl festlegen, nur für Reproduzierbarkeit
 runif(n = 1, min = 0, max = 10)
 ```
 
@@ -939,7 +944,7 @@ x_simu_df %>%
 
 
 
-Das Zeichen `&` ist das logische UND, also die Schnittmenge der zwei Mengen $A := \{x|x>3\}$ und $B := \{x|x<5\}$, 
+Das Zeichen `&` ist das logische UND, also die Schnittmenge der zwei Mengen $A$ ($X$ ist größer als 3) und $B$ ($X$ ist kleiner als 5), d.h. $A := \{x|x>3\}$ und $B := \{x|x<5\}$, 
 also $A \cap B$.
 
 Wie man sieht, fallen ca. 20% der Stichproben in den entsprechenden Bereich. 
@@ -963,20 +968,21 @@ Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen z
 ### Binomialverteilung
 Die Binomialverteilung dient zur Darstellung der Wahrscheinlichkeit der Ergebnisse eines $n$-fach wiederholten binomialen Zufallexperiments,
 eines Zufallsexperiments mit *zwei*^[von lat. *bis* "zweimal"] Ergebnissen bzw. Elementarereignissen also. 
-Dabei interessiert die Anzahl der $x$ Treffer.
+Dabei interessiert die Anzahl der $k$ Treffer.
 Typisches Beispiel ist ein (wiederholter) Münzwurf.
 Bei jeder Wiederholung des Zufallexperiments bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (*Ziehen mit Zurücklegen*, ZmZ). 
-Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit eines bestimmten Ergebnisses im zweiten Wurf, etc.$\square$ 
+Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit eines bestimmten Ergebnisses im zweiten Wurf, etc.^[sog. "iid": *independent and identically distributed*.]$\square$ 
 :::
 
 Für eine binomialverteilte Zufallsvariable $X$ schreibt man kurz (s. @eq-binvert): 
 
-$$X \sim \text{Bin}(n, x)$${#eq-binvert}
+$$X \sim \text{Bin}(n, k)$${#eq-binvert}
 
 
 #### Veranschaulichung
 
-Stellen wir uns eine Kistchen^[In den Lehrbüchern häufig als Urne bezeichnet, was den bösen Spott von "Friedhofstatistik" nach sich zog.] mit 5 Losen vor, darunter 2 *T*reffer (Gewinn) und 3 *N*ieten, s. Abb. @fig-urne.
+Stellen wir uns eine Kistchen^[In den Lehrbüchern häufig als Urne bezeichnet, was den bösen Spott von "Friedhofstatistik" nach sich zog.] mit $n=5$ Losen vor, 
+darunter $k=2$ *T*reffer (Gewinn) und $5-2=3$ *N*ieten, s. Abb. @fig-urne.
 Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut.
 
 
@@ -1013,15 +1019,15 @@ Um die Wahrscheinlichkeitsverteilung einer binomialverteilte Zufallsvariable aus
 
 :::{#exr-bin1}
 ### Vier Lose, zwei Treffer
-Wie groß ist die Wahrscheinlichkeit von $A^{\prime}$, d.h. bei $n=4$ Zügen $x=2$ Treffer zu erzielen (und $n-x=2$ Nieten), gegeben dass die Trefferwahrscheinlichkeit bei $p=2/4$ liegt?
+Wie groß ist die Wahrscheinlichkeit von $A^{\prime}$, d.h. bei $n=4$ Zügen $k=2$ Treffer zu erzielen (und $n-k=2$ Nieten), gegeben dass die Trefferwahrscheinlichkeit bei $p=2/4$ liegt?
 Wir ziehen dabei *ohne* Zurücklegen (ZoZ). Außerdem sind die Lose nicht zu unterscheiden (abgesehen davon, ob es Treffer oder Nieten sind).$\square$
 :::
 
 
 Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen  (Multiplikationssatz, @eq-multtheorem), vgl. @fig-dreimuenzen.
-Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit, $W$ (Additionssatz).
+Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit (Additionssatz).
 Das ist einfach, dauert aber.
-In diesem Fall ist die Wahrscheinlichkeit eines (günstigen) Pfades, $A$:
+In diesem Fall ist die Wahrscheinlichkeit *eines* (günstigen) Pfades, $A$:
 
 $Pr(A) = Pr(T)^2 \cdot Pr(N)^2 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right) ^2$.
 
@@ -1133,15 +1139,17 @@ $$Pr(X=k|p,n) = \frac{n}{k!(n-k)!}p^k(1-p)^{n-k}$${#eq-binomial}
 
  @eq-binomial kann wie folgt auf Deutsch übersetzen:
 
->   Die Wahrscheinlichkeit für das Ereignis "W,L" gegeben p berechnet als Produkt von zwei Termen. Erstens der Quotient von der Fakultät von W plus L im Zähler und im Nenner das Produkt von erstens der Fakultät von W mit zweitens der Fakultät von L. Der zweite Term ist das Produkt von p hoch W mal der komplementären Wahrscheinlichkeit von p hoch L.
+>   Die Wahrscheinlichkeit für das Ereignis $X$ gegeben $p$ und $n$ berechnet als Produkt von zwei Termen. Der erste Term ist der Quotient von der Fakultät von n im Zähler und im Nenner das Produkt von erstens der Fakultät von k mit zweitens der Fakultät von (n-k). Der zweite Term ist das Produkt von p hoch k mal der komplementären Wahrscheinlichkeit von p hoch (n-k).
 
 Oder noch kürzer:
 
->    Die Wahrscheinlichkeit für das Ereignis "W,L" gegeben p berechnet als Produkt von zwei Termen. Erstens der Anzahl der günstigen Pfade, k und zweitens der Wahrscheinlichkeit für einen günstigen Pfad, P(A).
+>    Die Wahrscheinlichkeit für das Ereignis "X" gegeben p und k berechnet als Produkt von zwei Termen. Erstens der Anzahl der günstigen Pfade, k und zweitens der Wahrscheinlichkeit für einen günstigen Pfad, P(A).
 
 
-Puh, Formeln sind vielleicht doch ganz praktisch, wenn man sich diese lange Übersetzung der Formel in Prosa duchliest.
-Noch praktischer ist es aber, dass es Rechenmaschinen gibt, die die Formel kennen und für uns ausrechnen. 
+Puh, Formeln sind vielleicht doch ganz praktisch, w
+enn man sich diese lange Übersetzung der Formel in Prosa duchliest.
+Noch praktischer ist es aber, dass es Rechenmaschinen gibt, 
+die die Formel kennen und für uns ausrechnen. 
 Los, R, mach mal.
 
 
@@ -1208,9 +1216,9 @@ p_mind_5
 Die Wahrscheinlichkeit, dass mind. 5 Motoren arbeiten beträgt also `r round(p_mind_5, 4)`.
 
 
-Das Komplement zu diesem Ereignis ist, dass *nicht* mind. 5 Motoren arbeiten, also *höchstens 4* und es daher zu einem Ausfall kommt.
-
-Natürlich gilt $Pr(\bar{X}) = 1- Pr(X)$.
+Das komplementäre Ereignis zu diesem Ereignis ist, dass *nicht* mind. 5 Motoren arbeiten, 
+also *höchstens 4* und es daher zu einem Ausfall kommt.
+Es gilt also $Pr(\bar{X}) = 1- Pr(X)$.
 
 ```{r}
 p_weniger_als_4 <- 1 - p_mind_5
@@ -1252,7 +1260,7 @@ ps_df |>
 ```
 
 
-Alternativ kann man mit der Verteilungsfunktion rechnen: $Pr(X \le 4)$.
+Alternativ kann man mit der Verteilungsfunktion `pbinom()` rechnen, die $Pr(X \le 4)$ berechnet.
 
 
 
@@ -1263,7 +1271,7 @@ In R kann man die Funktion `pbinom()` nutzen (p für (kumulierte) Wahrscheinlich
 pbinom(q = 4, size = 7, prob = .95)
 ```
 
-`q = 4` steht für $X \le 4$, also für höchstens 4 Treffer (arbeitende Motoren); `size = 7` meint die Stichprobengröße, hier 7 Motoren.$\square$
+`q = 4` steht für $X \le 4$, also für höchstens 4 Treffer (arbeitende Motoren); `size = 7` meint die Stichprobengröße, hier 7 Motoren; `prob` gibt die Trefferwahrscheinlichkeit an. $\square$
 
 :::
 
@@ -1295,7 +1303,7 @@ $ld(1/4) = -2:$
 ```{r}
 log(1/4, base = 2)
 ```
-1/2 ist genau "minus 2 Verdopplungen" von 1 entfernt, d.h. zwei Halbierungen.
+1/4 ist genau "minus 2 Verdopplungen" von 1 entfernt, d.h. zwei Halbierungen.
 
 $ld(1/8) = -3:$
 ```{r}
@@ -1313,13 +1321,17 @@ log(1/8, base = 2)
 
 ## Klausur mit 20-Richtig-Falsch-Fragen
 
-Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen. Wie groß ist die Wahrscheinlichkeit, durch bloßes Münze werfen genau 15 Fragen richtig zu raten?^[Hey, endlich mal was für echte Leben!]
+Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen.
+Wie groß ist die Wahrscheinlichkeit, 
+durch bloßes Münze werfen genau 15 Fragen richtig zu raten?^[Hey, endlich mal was für echte Leben!]
 
 ```{r QM2-Thema2-kleineModelle-23, echo = TRUE}
+# Wskt für genau 15 Treffer bei 20 Versuchen mit einer fairen Münze:
 dbinom(x = 15, size = 20, prob = .5)
 ```
 
-Um *höchstens* 15 Treffer zu erzielen, müssten wir die Wahrscheinlichkeiten von 0 bis 15 Treffern addieren.
+Um *höchstens* 15 Treffer zu erzielen, 
+müssten wir die Wahrscheinlichkeiten von 0 bis 15 Treffern addieren.
 
 Praktischerweise gibt es einen R-Befehl, der das für uns übernimmt:
 
@@ -1857,7 +1869,7 @@ $IQ \sim \mathcal{N}(100,15)$
 
 ::: {.column width="70%"}
 
-Ziehen wir zufällig $1e4$ Stichproben aus $\mathcal{N}(100,15)$ und berechnen die Quantile, s. @tbl-quantiles2.
+Ziehen wir zufällig $1e4$ (10000) Stichproben aus $\mathcal{N}(100,15)$ und berechnen die Quantile mit dem R-Befehl `quantile()`, s. @tbl-quantiles2.
 
 ```{r echo = TRUE}
 d <-
@@ -1999,7 +2011,7 @@ Wir gehen von einer Normalverteilung aus, wie sie zur Beschreibung von Intellige
 ```{r }
 #| echo: false
 #| label: fig-nv-quants
-#| fig-cap: Quantile der Normalverteiltung
+#| fig-cap: Quantile der IQ-Verteilung (normalverteilt mit MW=100 und SD=15)
 
   
 
@@ -2032,7 +2044,7 @@ pnorm(100, mean = 100, sd = 15)  # Verteilungsfunktion für IQ=100
 ```
 
 
-Betrachten wir einige wichtigen Quantile, s. @fig-nv-quants2.
+Betrachten wir einige häufig verwendete Quantile für die IQ-Verteilung, s. @fig-nv-quants2.
 
 ```{r}
 #| echo: false
@@ -2144,12 +2156,15 @@ q_p69 <-
 ```
 
 ::: {.content-visible when-format="html"}
-![Die Quantile für 10%, 20%, ... 100% (die Dezile) visualisiert](img/normal_distribution_animation.gif){#fig-quantnormanim width=50%}
+![Die Quantile einer Standardnormalverteilung für 10%, 20%, ... 100% (die Dezile) visualisiert](img/normal_distribution_animation.gif){#fig-quantnormanim width=50%}
 
 :::
 
 #### Standardnormalverteilung
 
+Bei einer Standardnormalverteilung gilt, s. @eq-standardnormal:
+
+$$X \sim \mathcal{N}(0, 1)$${eq-standardnormal}
 
 :::: {.columns}
 
@@ -2347,9 +2362,11 @@ Quelle: Uni Greifswald, Public domain, via Wikimedia Commons
 
 ## Vertiefung
 
-@bourier2011, Kap. 6.2 und 7.1 erläutert einige (grundlegende) theoretische Hintergründe zu diskreten Zufallsvariablen und Wahrscheinlichkeitsverteilungen. Wichtigstes Exemplar ist dabei die Binomialverteilung.
+@bourier2011, Kap. 6.2 und 7.1 erläutert einige (grundlegende) theoretische Hintergründe zu diskreten Zufallsvariablen und Wahrscheinlichkeitsverteilungen. 
+Wichtigstes Exemplar für den Stoff dieses Kapitels ist dabei die Binomialverteilung.
 
-@mittag2020 stellen in Kap. 12 und 13 Zufallsvariablen vor; zum Teil geht die Darstellung dort über die Lernziele bzw. Inhalte dieses Kurses hinaus.
+@mittag2020 stellen in Kap. 12 und 13 Zufallsvariablen vor; 
+zum Teil geht die Darstellung dort über die Lernziele bzw. Inhalte dieses Kurses hinaus.
 
 
 ## Aufgaben
