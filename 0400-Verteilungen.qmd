@@ -21,6 +21,7 @@ Sie können ...
 - den Begriff der Zufallsvariablen erläutern
 - die Begriffe von Wahrscheinlichkeitsdichte und Verteilungsfunktion erläutern 
 - den Begriff einer Gleichverteilung erläutern 
+- Den Begriff einer Binomialverteilung erläutern
 - die Parameter einer Normalverteilung nennen und erläutern
 - zentrale Konzepte in R umsetzen
 
@@ -765,7 +766,7 @@ Man gibt stattdessen die *Dichte* der Wahrscheinlichkeit an: Das ist die Wahrsch
 
 Für praktische Fragen berechnet man zumeist die Wahrscheinlichkeit von Intervallen, s. @fig-wdichte-sinnbild.
 
-## Wichtige Verteilngen
+## Wichtige Verteilungen
 
 📺 [Einstieg in Verteilungen](https://www.youtube.com/watch?v=HKWwondYsW8&list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN&index=5)
 
@@ -970,7 +971,7 @@ Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen z
 #### Grundlagen
 
 :::{#def-binvert}
-### Binomialverteilung
+#### Binomialverteilung
 Die Binomialverteilung dient zur Darstellung der Wahrscheinlichkeit der Ergebnisse eines $n$-fach wiederholten binomialen Zufallexperiments,
 eines Zufallsexperiments mit *zwei*^[von lat. *bis* "zweimal"] Ergebnissen bzw. Elementarereignissen also. 
 Dabei interessiert die Anzahl der $k$ Treffer.
@@ -1017,60 +1018,73 @@ ggplot(d) +
 
 :::callout-important
 
-Um die Wahrscheinlichkeitsverteilung einer binomialverteilte Zufallsvariable ausrechnen zu können, muss man zwei Dinge wissen: Erstens die Anzahl der Züge, $n$ (Stichprobengröße) und zweitens die Trefferwahrscheinlichkeit, $p$. 
+Um die Wahrscheinlichkeitsverteilung einer binomialverteilte Zufallsvariable ausrechnen zu können, muss man zwei Dinge wissen: Erstens die Anzahl der Münzwürfe, $n$ (Stichprobengröße) und zweitens die Trefferwahrscheinlichkeit, $p$. Mit diesen Informationen kann man z.B. ausrechnen, wie groß die Wahrscheinlichkeit ist, bei 5 Würfen 2 Treffer zu erzielen.
 
 :::
 
 
 :::{#exr-bin1}
-### Vier Lose, zwei Treffer
-Wie groß ist die Wahrscheinlichkeit von $A^{\prime}$, d.h. bei $n=4$ Zügen $k=2$ Treffer zu erzielen (und $n-k=2$ Nieten), gegeben dass die Trefferwahrscheinlichkeit bei $p=2/4$ liegt?
-Wir ziehen dabei *ohne* Zurücklegen (ZoZ). Außerdem sind die Lose nicht zu unterscheiden (abgesehen davon, ob es Treffer oder Nieten sind).$\square$
+#### Fünf Lose, zwei Treffer
+Wie groß ist die Wahrscheinlichkeit bei $n=5$ Zügen $k=2$ Treffer zu erzielen (und $n-k=3$ Nieten)? (Nennen wir dieses Ereignis der Kürze halber $A^{\prime}$ ).
+Im ersten Zug ist die Trefferwahrscheinlichkeit $p=2/5$ und die 
+Nietenwahrscheinlichkeit $1-p=3/5$.
+Wir ziehen dabei *mit* Zurücklegen (ZmZ). 
+Außerdem sind die Lose nicht zu unterscheiden (abgesehen davon, ob es Treffer oder Nieten sind).$\square$
 :::
 
 
-Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen  (Multiplikationssatz, @eq-multtheorem), vgl. @fig-dreimuenzen.
-Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit (Additionssatz).
-Das ist einfach, dauert aber.
+Mit Blick auf @exr-bin1: 
+Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen
+(*Multiplikationssatz*, @eq-multtheorem), vgl. @fig-dreimuenzen.
+Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit (*Additionssatz*, @eq-add-disjunkt).
+Diagramme zeichnen ist einfach, dauert aber.
+Schneller geht es, wenn man rechnet. 
 In diesem Fall ist die Wahrscheinlichkeit *eines* (günstigen) Pfades, $A$:
 
-$Pr(A) = Pr(T)^2 \cdot Pr(N)^2 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right) ^2$.
+$Pr(A) = Pr(T)^2 \cdot Pr(N)^2 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right)^3$.
 
 ```{r}
-p_a = (2/5)^2 * (3/5)^2
+p_a = (2/5)^2 * (3/5)^3
 p_a
 ```
 
-Etwas mühevolles Zählen der Pfade würde uns zeigen, dass es $k=6$ Pfade gibt, die alle die gleiche Wahrscheinlichkeit, $Pr(A)$, aufweisen.
-Damit beträgt die Wahrscheinlichkeit des gesuchten Ereignisses $A^{\prime}$ (2 Treffer bei 4 Zügen):
-
-$Pr(A^{\prime}) = 6 \cdot Pr(A)$.
+Etwas mühevolles Zählen der Pfade würde uns zeigen, dass es $k=10$ Pfade gibt, die alle die gleiche Wahrscheinlichkeit, $Pr(A)$, aufweisen.
+Wir könnten auch R auffordern, den Binomialkoeffizienten zu verwenden, um die Anzahl der Pfade zu berechnen, s. @eq-binkoeff:
 
 ```{r}
-p_a_strich = 6 * p_a
-p_a_strich
+choose(5,2)
 ```
 
 
-Mithilfe der Formel der Binomialverteilung lässt sich das Ergebnis, die Wahrscheinlichkeit von $A^{\prime}$  schneller ausrechnen. 
-Einfach gesprochen sieht sie so aus:
+
+Damit beträgt die Wahrscheinlichkeit des gesuchten Ereignisses $A^{\prime}$ (2 Treffer bei 5 Zügen):
+
+$Pr(A^{\prime}) = 10 \cdot Pr(A)$.
+
+```{r}
+p_a_strich = 10 * p_a
+p_a_strich
+```
 
 
 
 $$Pr(A^{\prime}) = k \cdot Pr(A)$$
 Dabei steht $k$ für die Anzahl der günstigen Pfade und $Pr(A)$ für die Wahrscheinlichkeit eines günstigen Pfades (d.h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.
 
-Die Anzahl der Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt, s. @eq-binkoeff.^[wobei gelten muss $n \ge k$]
 
-:::{#def-binkoeff}
-### Binomialkoeffizient
-Der Binomialkoeffizient gibt an, auf wie vielen verschiedenen Arten man aus einer Menge von $n$ verschiedenen Objekten $k$ Objekte ziehen kann (ohne Zurücklegen und ohne Beachtung der Reihenfolge).
-
-$$k = \tbinom{n}{k}= \frac{n!}{k!(n-k)!} $${#eq-binkoeff}
+#### Binomialverteilung mit R
 
 
-Lies: "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige Ereignisse (günstige Pfade) oder kürzer "k aus n".\square
-:::
+Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen.
+
+Die Wahrscheinlichkeit, bei 5 Zügen 2 Treffer zu erzielen mit $p=2/5$ (unter der Annahme einer Binomialverteilung) lässt sich so mit R berechnen:
+
+```{r}
+dbinom(x = 2, size = 5, prob = 2/5)
+```
+
+
+
 
 :::{#exm-binkoeff}
 ### Lotto
@@ -1086,7 +1100,7 @@ Auf Errisch geht das so:
 :::: {.columns}
 
 ::: {.column width="50%"}
->    👨‍🏫 Hey R, Wie viele Möglichkeiten gibt es, aus $n=4$ Pfaden $k=2$ auszuwählen?
+>    👨‍🏫 Hey R, Wie viele Möglichkeiten gibt es, aus $n=5$ Losen $k=2$ auszuwählen?
 
 
 :::
@@ -1094,24 +1108,46 @@ Auf Errisch geht das so:
 ::: {.column width="50%"}
 >    🤖 Äh, Moment, oh herzliches Leberwesen
 ```{r}
-choose(4,2)
+choose(5,2)
 ```
 :::
 
 ::::
 
-Hier ist ein Überblick der möglichen 6 günstigen Ereigniise des Experiments (2 Treffer bei 4 Versuchen):
-1. TTNN, 2. TNTN, 3. TNNT, 4. NTTN ,5. NTNT, 6. NNTT.
+
+:::{#exm-2aus4}
+Hier ist ein Überblick der möglichen 6 günstigen Ereignisse des Experiments (2 Treffer bei 4 Versuchen):
+1. TTNN, 2. TNTN, 3. TNNT, 4. NTTN ,5. NTNT, 6. NNTT. 
+
+```{r}
+choose(4, 2)
+```
+
+
+$\square$
+:::
+
+:::{exm-2aus5}
+Hier sind die 10 Kombinationen, um aus 5 Losen genau 2 Treffer und 3 Nieten zu ziehen:
+
+TTNNN, TNTNN, TNNTN, TNNNT, NTTNN, NTNTN, NTNNT, NNTTN, NNTNT, NNNTT $\square$
+:::
+
 
 ```{r}
 #| echo: false
 # Define the values of n and k
-n <- 4  # Total number of items
+n <- 5  # Total number of items
 k <- 2  # Number of items to choose
 
 # Generate all combinations
 combinations <- combn(n, k) |> t() |> as_tibble()
 ```
+
+:::
+
+
+
 
 
 
@@ -1129,46 +1165,6 @@ choose(n = 25, k = 11)
 
 Es gibt 4457400 Kombinationen von Teams; dabei ist die Reihenfolge der Ziehung nicht berücksichtigt.$\square$
 :::
-
-
-#### Formel der Binomialverteilung
-
-
-@eq-binomial zeigt die mathematische Definition der Binomialverteilung.
-Dabei liegt immer ein Zufallsversuch mit $n$ Durchgängen und $k$ Treffern zugrunde. Jeder Durchgang hat die Trefferwahrscheinlichkeit $p$ und jeder Durchgang ist unabhängig von allen anderen.
-
-
-
-$$Pr(X=k|p,n) = \frac{n}{k!(n-k)!}p^k(1-p)^{n-k}$${#eq-binomial}
-
-
- @eq-binomial kann wie folgt auf Deutsch übersetzen:
-
->   Die Wahrscheinlichkeit für das Ereignis $X$ gegeben $p$ und $n$ berechnet als Produkt von zwei Termen. Der erste Term ist der Quotient von der Fakultät von n im Zähler und im Nenner das Produkt von erstens der Fakultät von k mit zweitens der Fakultät von (n-k). Der zweite Term ist das Produkt von p hoch k mal der komplementären Wahrscheinlichkeit von p hoch (n-k).
-
-Oder noch kürzer:
-
->    Die Wahrscheinlichkeit für das Ereignis "X" gegeben p und k berechnet als Produkt von zwei Termen. Erstens der Anzahl der günstigen Pfade, k und zweitens der Wahrscheinlichkeit für einen günstigen Pfad, P(A).
-
-
-Puh, Formeln sind vielleicht doch ganz praktisch, w
-enn man sich diese lange Übersetzung der Formel in Prosa duchliest.
-Noch praktischer ist es aber, dass es Rechenmaschinen gibt, 
-die die Formel kennen und für uns ausrechnen. 
-Los, R, mach mal.
-
-
-
-#### Rechnen mit R
-
-
-Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen.
-
-Die Wahrscheinlichkeit, bei 4 Zügen 2 Treffer zu erzielen mit $p=2/5$ unter der Annahme einer Binomialverteilung lässt sich so mit R berechnen:
-
-```{r}
-dbinom(x = 2, size = 4, prob = 2/5)
-```
 
 
 
@@ -1290,10 +1286,73 @@ $F(X=x) = Pr(X \le x)$
 :::
 
 
-:::{.callout-note}
-### Logarithmus
-Der Logarithmus zur Basis 2^[als "Logarithmus Dualis", ld, bezeichnet] gibt die "Verdopplungen" bzw. "Halbierungen" der Wahrscheinlichkeit an, wobei $ld(1/2) = -1.\square$
+### Vertiefung
+
+
+
+
+
+#### Formel der Binomialverteilung
+
+
+
+
+@eq-binomial zeigt die mathematische Definition der Binomialverteilung.
+Dabei liegt immer ein Zufallsversuch mit $n$ Durchgängen und $k$ Treffern zugrunde. Jeder Durchgang hat die Trefferwahrscheinlichkeit $p$ und jeder Durchgang ist unabhängig von allen anderen.
+
+
+
+$$Pr(X=k|p,n) = \frac{n}{k!(n-k)!}p^k(1-p)^{n-k}$${#eq-binomial}
+
+
+ @eq-binomial kann wie folgt auf Deutsch übersetzen:
+
+>   Die Wahrscheinlichkeit für das Ereignis $X$ gegeben $p$ und $n$ berechnet als Produkt von zwei Termen. Der erste Term ist der Quotient von der Fakultät von n im Zähler und im Nenner das Produkt von erstens der Fakultät von k mit zweitens der Fakultät von (n-k). Der zweite Term ist das Produkt von p hoch k mal der komplementären Wahrscheinlichkeit von p hoch (n-k).
+
+Oder noch kürzer:
+
+>    Die Wahrscheinlichkeit für das Ereignis "X" gegeben p und k berechnet als Produkt von zwei Termen. Erstens der Anzahl der günstigen Pfade, k und zweitens der Wahrscheinlichkeit für einen günstigen Pfad, P(A).
+
+
+
+
+Die Anzahl der (günstigen) Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt, s. @eq-binkoeff.^[wobei gelten muss $n \ge k$]
+
+:::{#def-binkoeff}
+#### Binomialkoeffizient
+Der Binomialkoeffizient gibt an, auf wie vielen verschiedenen Arten man aus einer Menge von $n$ verschiedenen Objekten $k$ Objekte ziehen kann (ohne Zurücklegen und ohne Beachtung der Reihenfolge).
+
+$$k = \tbinom{n}{k}= \frac{n!}{k!(n-k)!} $${#eq-binkoeff}
+
+
+Lies: "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige Ereignisse (günstige Pfade) oder kürzer "k aus n".\square
 :::
+
+
+
+Puh, Formeln sind vielleicht doch ganz praktisch, 
+wenn man sich diese lange Übersetzung der Formel in Prosa duchliest.
+Noch praktischer ist es aber, dass es Rechenmaschinen gibt, 
+die die Formel kennen und für uns ausrechnen. 
+
+
+
+
+#### Logarithmus
+
+Ein Logarithmus ist die Umkehrung der Potenzierung.
+
+Der Logarithmus beantwortet folgende Frage:
+Mit welchem Exponenten muss ich eine bestimmte Zahl (die Basis) potenzieren, um eine andere Zahl zu erhalten? Die Antwort auf diese Frage ist der Logarithmus.
+
+Formal ausgedrückt:
+
+:::{#def-logarithmus}
+Der Logarithmus von einer Zahl $a$ zur Basis $b$ ist die Zahl $x$, mit der man $b$ potenzieren muss, um $a$ zu erhalten. $\square$
+:::
+
+Der Logarithmus zur Basis 2^[als "Logarithmus Dualis", ld, bezeichnet] gibt die "Verdopplungen" bzw. "Halbierungen" der Wahrscheinlichkeit an, wobei $ld(1/2) = -1.\square$
+
 
 
 :::{#exm-log2-1}
@@ -1324,7 +1383,7 @@ log(1/8, base = 2)
 
 ::: {#exm-klausur20}
 
-## Klausur mit 20-Richtig-Falsch-Fragen
+#### Klausur mit 20-Richtig-Falsch-Fragen
 
 Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen.
 Wie groß ist die Wahrscheinlichkeit, 
@@ -1354,7 +1413,7 @@ Die Wahrscheinlichkeit 0, 1, 2, ... oder 15 Treffer zu erzielen, liegt also bei 
 
 ::: {#exm-globus4}
 
-## 3 Münzwürfe mit 3 Treffern
+#### 3 Münzwürfe mit 3 Treffern
 
 Was ist die Wahrscheinlichkeit bei 3 Münzwürfen (genau) 3 Treffer (Kopf) zu erzielen?
 
@@ -1394,7 +1453,7 @@ binomial_plot(9, .7)
 :::
 
 
-#### Simulieren wir eine Binomialverteilung
+#### Simulieren wir eine Binomialverteilung 
 
 
 Die Binomialverteilung lässt sich gut als "Münzwurf-Verteilung" auffassen.
@@ -1495,7 +1554,7 @@ Grob gesagt scheint sich ein Münzwurf nach, naja, vielleicht 500 Würfen "einig
 
 
 ::: callout-important
-### Das Gesetz der großen Zahl
+#### Das Gesetz der großen Zahl
 
 Zieht man (zufällig) immer mehr Werte aus einer Verteilung (mit endlichem Mittelwert), nähert sich der Mittelwert der Stichprobe immer mehr mit dem Mittelwert (oft als *Erwartungswert* bezeichnet) der Verteilung an.
 :::
@@ -1518,8 +1577,11 @@ source(paste0(here::here(),"/R-Code/img15.R"))
 ### Normalverteilung
 
 
+#### Grundlagen
+
+
 :::{#def-nv}
-### Normalverteilung
+#### Normalverteilung
 Normalverteilungen haben eine charakteristische Glockenform;
 sie sind symmetrisch^[d.h. die Schiefe (`skewness`) ist 0].
 Normalverteilungen können sich unterscheiden in ihrem  Mittelwert $\mu$ und ihrer Streuung, $\sigma$.
@@ -1532,7 +1594,7 @@ Eine normalverteilte Zufallsvariable $X$ mit einem bestimmten Mittelwert und ein
 $$X \sim \mathcal{N}(\mu, \sigma)$$
 
 ::: {#def-parameter}
-### Parameter
+#### Parameter
 
 Ein Parameter (einer Verteilung) legt die "Varianten" einer Verteilung fest. Durch die Wahl der Parameterwerte nimmt eine Verteilung eine genaue Form an.$\square$
 
@@ -1624,232 +1686,9 @@ Das 25%-Quantil nennt man *1. Quartil*, das 50%-Quantil auch *2. Quartil*, das 7
 
 
 
-
-#### Normal auf dem Fußballfeld
-
-Sie und 100 Ihrer besten Freunde stehen auf der Mittellinie eines Fußballfelds. Auf Kommando werfen alle jeweils eine Münze; bei Kopf geht man einen Schritt nach links, bei Zahl nach rechts. Das wird 16 Mal wiederholt. Wie wird die Verteilung der Positionen wohl aussehen?
-
-
-```{r Normalverteilung-6, fig.asp = .45, fig.width=7}
-#| echo: false
-source(paste0(here::here(),"/R-Code/img13.R"))
-```
-
-[@mcelreath2020]
-
-
-
-
-
-
-
-#### Normal durch Addieren
-
-Die Summe vieler (gleich starker) Zufallswerte (aus der gleichen Verteilung) erzeugt eine Normalverteilung; egal aus welcher Verteilung die Zufallswerte kommen (Zentraler Grenzwertsatz), vgl. @fig-fussball.
-
-
-```{r Normalverteilung-7, out.width="100%", fig.asp = 0.5, fig.align="center", fig.width=7}
-#| echo: false
-#| fig-cap: "Entstehen einer Normalverteilung durch Addition vieler unabhgängiger Ereignisse"
-#| label: fig-fussball
-source(paste0(here::here(),"/R-Code/img14.R"))
-```
-
-
-
 Verwechseln Sie die Normalverteilung nicht mit der Paranormalverteilung, s. @fig-paranormal.
 
 ![Die Paranormalverteilung](img/ch33910f1.jpg){#fig-paranormal width=30%}
-
-
-
-
-
-
-
-#### Normalverteilung vs. randlastige Verteilungen
-
-
-
-Bei randlastigen Verteilungen ("fat tails") kommen Extremereignisse viel häufiger vor als bei Normalverteilungen. Deshalb ist es wichtig sein, zu wissen, ob eine Normalverteilung oder eine randlastige Verteilung vorliegt. Viele statistische Methoden sind nicht zuverlässig bei (stark) randlastigen Methoden. @fig-fat grenzt eine Normalverteilung von einer "Fat-Tail-Verteilung" ab.
-
-
-```{r Normalverteilung-9, fig.asp=0.5}
-#| echo: false
-#| fig-cap: Normalverteilung vs. randlastige Verteilungen
-#| label: fig-fat
-ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
-  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1), color = "#E69F00FF") +
-  labs(y = "Dichte", x = "Merkmal, X") +
-  stat_function(fun = dt, n = 101, args = list(df = 1, ncp =0), color = "#56B4E9FF") +
-  labs(caption = "orange: Normalverteilung\n blau: randlastige Verteilung (t-Verteilung mit df=1)")
-```
-
-
-:::::{#exm-normal-rand}
-### Beispiele für Normal- und randlastige Verteilungen
-
-
-:::: {.columns}
-
-::: {.column width="50%"}
-Normal verteilt:
-
-- Größe 
-- Münzwürfe
-- Gewicht
-- IQ
-- Blutdruck
-- Ausschuss einer Maschine
-:::
-
-::: {.column width="50%"}
-Randlastig verteilt:
-
-- Vermögen
-- Verkaufte Bücher (Anzahl)
-- Ruhm (z.B. Anzahl Follower auf Instagram)
-- Aktienkurse (Kurswert)
-- Erdbeben (Stärke)
-- Anzahl von Todesopfern in Pandemien
-- Anzahl von Todesopfern in Kriege
-- Erfolg auf Tinder (Anzahl erfolgreicher Matches)
-- Meteroritengröße (Volumen)
-- Stadtgrößen (Einwohnerzahl)
-
-:::
-
-::::
-
-:::::
-
-
-
-
-
-#### Formel der Normalverteilung
-
-Vereinfacht ausgedrückt lässt die Normalverteilung $\mathcal{N}$ durch Exponenzieren einer Quadratfunktion beschreiben:
-
-$$\mathcal{N} \propto e^{-x^2}$$
-
-mit $e=2.71...$, der Eulerschen Zahl.^[Das Zeichen $y \propto x$ bedeutet "x ist proportional zu y", also $y = mx$.]
-
-
-Wie man sieht (@fig-normal1) ergibt sich eine Normalverteilung. 
-
-
-```{r norm, eval = FALSE, echo = TRUE}
-d <-
-  tibble(
-    x = seq(-3, 3, 
-            length.out = 100),
-    y = exp(-x^2)
-  )
-
-ggline(d, x = "x",y = "y")  # aus {ggpubr}
-```
-
-
-
-```{r Normalverteilung-10, echo = FALSE}
-#| fig-asp: 0.5
-#| label: fig-normal1
-#| fig-cap: "Wir basteln uns eine Normalverteilung"
-d <-
-  tibble(
-    x = seq(-3, 3, 
-            length.out = 100),
-    y = exp(-x^2)
-  )
-
-d %>% 
-  ggplot() +
-  aes(x = x, y = y) +
-  geom_line()
-```
-
-
-Eine Normalverteilung mit $\mu=0$ und $\sigma=1$ nennt man auch *Standardnormalverteilung* und 
-man schreibt:
-
-
-$$IQ \sim \mathcal{N}(0,1)$$
-
-Die Normalverteilung wird auch *[Gauss](https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F)-Verteilung* oder *Glockenkurve* genannt.
-
-
-
-
-
-#### Simulation einer Normalverteilung
-
-
-R hat eine Funktion eingebaut zur Erzeugung von Zufallszahlen (Zufallszahlengenerator), z.B. normalverteilte.
-Man übergibt dieser Funktion den gewünschten Mittelwert und die gewünschte Streuung und die Funktion zieht dann zufällig Werte aus dieser Verteilung.
-
-Diesen Zufallszahlengenerator kann man mit einem Duschkopf vergleichen, s. @fig-shower.
-An diesem Duschkopf kann man einen Schwenker einstellen, der den Duschkopf
-ausrichtet, also steuert, ob die Wassertropfen weit in die eine oder die andere
-Richtugn fallen.
-Zweitens hat unser Duschkopf noch einen Streuregler,
-der den Wasserstrahl entweder eng bündelt^[Massagedusche, behauptet der Hersteller] oder weit auseinanderfächert. Im ersten Fall fällt der Wasserstrahl eng und schmal aus. Im zweiten Fall fällt der Wasserstrahl breit aus.
-
-![Zufallszahlengenerator als Duschkopf](img/shower-data.png){#fig-shower width="50%"}
-
-[Quelle](https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models): John Kruschke.
-
-
-
-Eine Zufallszahl (*r*andom number), die *norm*alverteilt ist, mit $\mu=0$ und $\sigma=1$ kann man in R so erzeugen:
-
-
-```{r}
-rnorm(n = 1, mean = 0, sd = 1)
-```
-
-
-
-Ein Fallbeispiel: Der Inhalt einer Tüte mit Zucker, $X$, sei normalverteilt mit $\mu = 10002$ g und $\sigma=1.5$ g. Aus vertragsrechtlichen Gründen darf das Füllgewicht von 1000g nicht unterschritten werden, sonst drohen Konventionalstrafen.
-
-Wie groß ist die Wahrscheinlichkeit, dass 1000g unterschritten werden?
-
-
-Simulieren wir uns 1e4 Zuckertüten!
-
-```{r}
-n <- 1e4
-d <- 
-  tibble(
-    id = 1:n,
-    x = rnorm(n = n, mean = 1002, sd = 1.5)
-  )
-
-head(d)
-```
-
-
-Zählen wir, viele der Zuckertüten ein Gewicht von weniger als 1000g aufweisen:
-
-
-```{r}
-d %>% 
-  count(x < 1000)
-```
-
-
-Ein ziemlich^["Ziemlich" ist natürlich subjektiv; je nach Situation kann es zu viel oder nicht zu viel sein.] kleiner Anteil. Rechnen wir uns noch die Anteile (*prop*ortion) aus:
-
-```{r}
-d %>% 
-  count(x < 1000) %>% 
-  mutate(prop = n/1e4)
-```
-
-
-
-
-
 
 
 #### IQ-Verteilung
@@ -1859,7 +1698,7 @@ Die Verteilung der Zufallsvariablen IQ ist normalverteilt mit einem Mittelwert v
 $IQ \sim \mathcal{N}(100,15)$
 
 :::{#exr-iq}
-### Wie schlau muss man (nicht) sein?
+#### Wie schlau muss man (nicht) sein?
 - Wie schlau muss man sein, um zu den unteren 75%, 50%, 25%, 5%, 1% zu gehören?
 - Anders gesagt: Welcher IQ-Wert wird von 75%, 50%, ... der Leute nicht überschritten?$\square$
 :::
@@ -1921,7 +1760,7 @@ Umgekehrt können wir uns auch fragen: Gegeben einer Realisation der Zufallsvari
 
 
 :::{#exr-schlau2}
-### Wie schlau muss man (nicht) sein, Teil 2
+#### Wie schlau muss man (nicht) sein, Teil 2
 - Welcher Anteil der Fläche unter der Kurve $p$ gehört zu den IQ-Werten 75, 100, 115, 130?
 - Anders gesagt: Welcher Anteil der Wahrscheinlichkeitsmasse der Verteilung liegt unter IQ=75, IQ=100, etc.?$\square$
 :::
@@ -2198,11 +2037,46 @@ In Summe liegen 100% der Wahrscheinlichkeitsmasse unter der Kurve.
 ::::
 
 
+##### Vertiefung
+
+
+
+##### Normal auf dem Fußballfeld
+
+Sie und 100 Ihrer besten Freunde stehen auf der Mittellinie eines Fußballfelds. Auf Kommando werfen alle jeweils eine Münze; bei Kopf geht man einen Schritt nach links, bei Zahl nach rechts. Das wird 16 Mal wiederholt. Wie wird die Verteilung der Positionen wohl aussehen?
+
+
+```{r Normalverteilung-6, fig.asp = .45, fig.width=7}
+#| echo: false
+source(paste0(here::here(),"/R-Code/img13.R"))
+```
+
+[@mcelreath2020]
 
 
 
 
-#### Normalverteilung als konservative Wahl
+
+
+
+##### Normal durch Addieren
+
+Die Summe vieler (gleich starker) Zufallswerte (aus der gleichen Verteilung) erzeugt eine Normalverteilung; egal aus welcher Verteilung die Zufallswerte kommen (Zentraler Grenzwertsatz), vgl. @fig-fussball.
+
+
+```{r Normalverteilung-7, out.width="100%", fig.asp = 0.5, fig.align="center", fig.width=7}
+#| echo: false
+#| fig-cap: "Entstehen einer Normalverteilung durch Addition vieler unabhgängiger Ereignisse"
+#| label: fig-fussball
+source(paste0(here::here(),"/R-Code/img14.R"))
+```
+
+
+
+
+
+
+##### Normalverteilung als konservative Wahl
 
 Dem Mathematiker [Carl Friedrich Gauss](https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F) (s. @fig-gauss) wird die Ehre zuerkannt,
 die Normalverteilung eingeführt zu haben.
@@ -2228,137 +2102,189 @@ Quelle: Uni Greifswald, Public domain, via Wikimedia Commons
 :::
 
 
-<!-- ### Zweidimensionale Normalverteilung, unkorreliert -->
-
-
-<!-- ```{r Normalverteilung-11, out.width="70%", fig.align="center"} -->
-<!-- #| echo: false -->
-<!-- knitr::include_graphics("https://github.com/sebastiansauer/QM2-Folien/raw/main/img/mult-norm.png") -->
-<!-- ``` -->
-
-
-<!-- [Quelle](https://tex.stackexchange.com/questions/31708/draw-a-bivariate-normal-distribution-in-tikz) -->
-
-<!-- [Vgl. auch dieses Diagramm](http://ballistipedia.com/index.php?title=File:Bivariate.png)] -->
 
 
 
-
-<!-- ### 2D-Normalverteilung mit R, unkorreliert -->
-
-<!-- $r(X,Y) = 0$ -->
+##### Normalverteilung vs. randlastige Verteilungen
 
 
 
-
-<!-- ```{r norm-plot1} -->
-<!-- #| echo: false -->
-<!-- #| eval: false -->
-<!-- #| fig-asp: 1 -->
-<!-- #| out-width: "50%" -->
-<!-- d1 <-  -->
-<!--   tibble(  -->
-<!--     x=rnorm(1e4),  -->
-<!--     y=rnorm(1e4) -->
-<!--   ) -->
-
-<!-- ggplot(d1) + -->
-<!--   aes(x, y) + -->
-<!--   geom_hex()  -->
-
-<!-- ggplot(d1) + -->
-<!--   aes(x, y) + -->
-<!--   geom_density2d() -->
-<!-- ``` -->
-
-<!-- [[ggplot-Referenz](https://ggplot2.tidyverse.org/reference/geom_density_2d.html), [Quellcode](https://www.r-graph-gallery.com/2d-density-plot-with-ggplot2.html)] -->
-
-<!-- Mit `scale_fill_continuous(type = "viridis")`kann man die Farbpalette der Füllfarbe ändern. Nicht so wichtig. -->
+Bei randlastigen Verteilungen ("fat tails") kommen Extremereignisse viel häufiger vor als bei Normalverteilungen. Deshalb ist es wichtig sein, zu wissen, ob eine Normalverteilung oder eine randlastige Verteilung vorliegt. Viele statistische Methoden sind nicht zuverlässig bei (stark) randlastigen Methoden. @fig-fat grenzt eine Normalverteilung von einer "Fat-Tail-Verteilung" ab.
 
 
-<!-- ```{r Normalverteilung-2-bis} -->
-<!-- #| echo: false -->
-<!-- #| eval: true -->
-<!-- #| fig-asp: 1 -->
-<!-- #| out-width: "50%" -->
-<!-- d1 <-  -->
-<!--   tibble(  -->
-<!--     x=rnorm(1e4),  -->
-<!--     y=rnorm(1e4) -->
-<!--   ) -->
-
-<!-- ggplot(d1) + -->
-<!--   aes(x, y) + -->
-<!--   geom_hex() + -->
-<!--   scale_fill_viridis_c() + -->
-<!--   theme(legend.position = "bottom") -->
-
-<!-- ggplot(d1) + -->
-<!--   aes(x, y) + -->
-<!--   geom_density2d() -->
-<!-- ``` -->
+```{r Normalverteilung-9, fig.asp=0.5}
+#| echo: false
+#| fig-cap: Normalverteilung vs. randlastige Verteilungen
+#| label: fig-fat
+ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1), color = "#E69F00FF") +
+  labs(y = "Dichte", x = "Merkmal, X") +
+  stat_function(fun = dt, n = 101, args = list(df = 1, ncp =0), color = "#56B4E9FF") +
+  labs(caption = "orange: Normalverteilung\n blau: randlastige Verteilung (t-Verteilung mit df=1)")
+```
 
 
+:::::{#exm-normal-rand}
+##### Beispiele für Normal- und randlastige Verteilungen
 
-<!-- ### 2D-Normalverteilung mit R, korreliert, r=0.7 -->
 
+:::: {.columns}
 
+::: {.column width="50%"}
+Normal verteilt:
 
-<!-- Die ersten paar Zeilen der Daten: -->
+- Größe 
+- Münzwürfe
+- Gewicht
+- IQ
+- Blutdruck
+- Ausschuss einer Maschine
+:::
 
-<!-- ```{r Normalverteilung-3-bis, echo = FALSE} -->
-<!-- d2 <- rnorm_multi( -->
-<!--   n = 1e4, -->
-<!--   mu = c(0,0), -->
-<!--   sd = c(1, 1), -->
-<!--   r = (0.7) -->
-<!-- ) -->
-<!-- ``` -->
+::: {.column width="50%"}
+Randlastig verteilt:
 
-<!-- ```{r Normalverteilung-4-bis} -->
-<!-- #| echo: false -->
-<!-- d2 %>%  -->
-<!--   head(n=3) %>%  -->
-<!--   gt() %>%  -->
-<!--   fmt_number(columns = everything()) -->
-<!-- ``` -->
+- Vermögen
+- Verkaufte Bücher (Anzahl)
+- Ruhm (z.B. Anzahl Follower auf Instagram)
+- Aktienkurse (Kurswert)
+- Erdbeben (Stärke)
+- Anzahl von Todesopfern in Pandemien
+- Anzahl von Todesopfern in Kriege
+- Erfolg auf Tinder (Anzahl erfolgreicher Matches)
+- Meteroritengröße (Volumen)
+- Stadtgrößen (Einwohnerzahl)
 
-<!-- Berechnen wir die Korrelation `r`: -->
+:::
 
-<!-- ```{r Normalverteilung-5-bis, echo = TRUE, eval = FALSE} -->
-<!-- d2 %>%  -->
-<!--   summarise( -->
-<!--     r = cor(X1,X2), -->
-<!--     n = n() -->
-<!--   ) -->
-<!-- ``` -->
+::::
 
-<!-- ```{r Normalverteilung-6-bis} -->
-<!-- #| echo: false -->
-<!-- d2 %>%  -->
-<!--   summarise( -->
-<!--     r = cor(X1,X2), -->
-<!--     n = n() -->
-<!--   ) %>%  -->
-<!--   gt() %>%  -->
-<!--   fmt_number(columns = everything()) -->
-<!-- ``` -->
+:::::
 
 
 
 
-<!-- ```{r Normalverteilung-7-bis} -->
-<!-- #| echo: false -->
-<!-- ggplot(d2) + -->
-<!--   aes(X1, X2) + -->
-<!--   geom_hex() + -->
-<!--   scale_fill_viridis_c() + -->
-<!--   theme(legend.position = "bottom") -->
 
-<!-- ggplot(d2) + -->
-<!--   aes(X1, X2) + -->
-<!--   geom_density2d() -->
-<!-- ``` -->
+##### Formel der Normalverteilung
+
+Vereinfacht ausgedrückt lässt die Normalverteilung $\mathcal{N}$ durch Exponenzieren einer Quadratfunktion beschreiben:
+
+$$\mathcal{N} \propto e^{-x^2}$$
+
+mit $e=2.71...$, der Eulerschen Zahl.^[Das Zeichen $y \propto x$ bedeutet "x ist proportional zu y", also $y = mx$.]
+
+
+Wie man sieht (@fig-normal1) ergibt sich eine Normalverteilung. 
+
+
+```{r norm, eval = FALSE, echo = TRUE}
+d <-
+  tibble(
+    x = seq(-3, 3, 
+            length.out = 100),
+    y = exp(-x^2)
+  )
+
+ggline(d, x = "x",y = "y")  # aus {ggpubr}
+```
+
+
+
+```{r Normalverteilung-10, echo = FALSE}
+#| fig-asp: 0.5
+#| label: fig-normal1
+#| fig-cap: "Wir basteln uns eine Normalverteilung"
+d <-
+  tibble(
+    x = seq(-3, 3, 
+            length.out = 100),
+    y = exp(-x^2)
+  )
+
+d %>% 
+  ggplot() +
+  aes(x = x, y = y) +
+  geom_line()
+```
+
+
+Eine Normalverteilung mit $\mu=0$ und $\sigma=1$ nennt man auch *Standardnormalverteilung* und 
+man schreibt:
+
+
+$$IQ \sim \mathcal{N}(0,1)$$
+
+Die Normalverteilung wird auch *[Gauss](https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F)-Verteilung* oder *Glockenkurve* genannt.
+
+
+
+
+
+##### Simulation einer Normalverteilung
+
+
+R hat eine Funktion eingebaut zur Erzeugung von Zufallszahlen (Zufallszahlengenerator), z.B. normalverteilte.
+Man übergibt dieser Funktion den gewünschten Mittelwert und die gewünschte Streuung und die Funktion zieht dann zufällig Werte aus dieser Verteilung.
+
+Diesen Zufallszahlengenerator kann man mit einem Duschkopf vergleichen, s. @fig-shower.
+An diesem Duschkopf kann man einen Schwenker einstellen, der den Duschkopf
+ausrichtet, also steuert, ob die Wassertropfen weit in die eine oder die andere
+Richtugn fallen.
+Zweitens hat unser Duschkopf noch einen Streuregler,
+der den Wasserstrahl entweder eng bündelt^[Massagedusche, behauptet der Hersteller] oder weit auseinanderfächert. Im ersten Fall fällt der Wasserstrahl eng und schmal aus. Im zweiten Fall fällt der Wasserstrahl breit aus.
+
+![Zufallszahlengenerator als Duschkopf](img/shower-data.png){#fig-shower width="50%"}
+
+[Quelle](https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models): John Kruschke.
+
+
+
+Eine Zufallszahl (*r*andom number), die *norm*alverteilt ist, mit $\mu=0$ und $\sigma=1$ kann man in R so erzeugen:
+
+
+```{r}
+rnorm(n = 1, mean = 0, sd = 1)
+```
+
+
+
+Ein Fallbeispiel: Der Inhalt einer Tüte mit Zucker, $X$, sei normalverteilt mit $\mu = 10002$ g und $\sigma=1.5$ g. Aus vertragsrechtlichen Gründen darf das Füllgewicht von 1000g nicht unterschritten werden, sonst drohen Konventionalstrafen.
+
+Wie groß ist die Wahrscheinlichkeit, dass 1000g unterschritten werden?
+
+
+Simulieren wir uns 1e4 Zuckertüten!
+
+```{r}
+n <- 1e4
+d <- 
+  tibble(
+    id = 1:n,
+    x = rnorm(n = n, mean = 1002, sd = 1.5)
+  )
+
+head(d)
+```
+
+
+Zählen wir, viele der Zuckertüten ein Gewicht von weniger als 1000g aufweisen:
+
+
+```{r}
+d %>% 
+  count(x < 1000)
+```
+
+
+Ein ziemlich^["Ziemlich" ist natürlich subjektiv; je nach Situation kann es zu viel oder nicht zu viel sein.] kleiner Anteil. Rechnen wir uns noch die Anteile (*prop*ortion) aus:
+
+```{r}
+d %>% 
+  count(x < 1000) %>% 
+  mutate(prop = n/1e4)
+```
+
+
 
 
 
