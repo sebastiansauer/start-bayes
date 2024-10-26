@@ -21,7 +21,7 @@ Sie können ...
 - den Begriff der Zufallsvariablen erläutern
 - die Begriffe von Wahrscheinlichkeitsdichte und Verteilungsfunktion erläutern 
 - den Begriff einer Gleichverteilung erläutern 
-- Den Begriff einer Binomialverteilung erläutern
+- den Begriff einer Binomialverteilung erläutern
 - die Parameter einer Normalverteilung nennen und erläutern
 - zentrale Konzepte in R umsetzen
 
@@ -768,11 +768,13 @@ Für praktische Fragen berechnet man zumeist die Wahrscheinlichkeit von Interval
 
 ## Wichtige Verteilungen
 
+Im Folgenden sind einige wichtige Verteilungen aufgeführt, die in diesem Skript (und in der Statistik und Wahrscheinlichkeitstheorie) eine zentrale Rolle spielen.
+
 📺 [Einstieg in Verteilungen](https://www.youtube.com/watch?v=HKWwondYsW8&list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN&index=5)
 
-### Gleichverteilung
+## Gleichverteilung
 
-#### Indifferenz als Grundlage
+### Indifferenz als Grundlage
 
 Eine Gleichverteilung nimmt an, dass jeder Wert im Ergebnisraum der zugehörigen Zufallsvariable *gleichwahrscheinlich* ist.
 Wenn man keinen hinreichenden Grund hat, eine Realisation einer Zufallsvariablen für plausibler als einen anderen zu halten,
@@ -810,7 +812,7 @@ Definierendes Kennzeichen einer Gleichverteilung ist die *konstante Dichte*.
 
 
 
-#### Simulation
+### Simulation
 
 
 Möchte man die Verteilungsfunktion einer stetigen Zufallsvariablen berechnen,
@@ -844,7 +846,8 @@ Auf Errisch heißt das Zauberwort `runif()`:
 ```{r}
 #| eval: false
 set.seed(42)  # Zufallszahl festlegen, nur für Reproduzierbarkeit
-runif(n = 1, min = 0, max = 10)
+# "r" wie random, "unif" wie "uniform" (gleich):
+runif(n = 1, min = 0, max = 10) 
 ```
 
 
@@ -966,18 +969,19 @@ Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen z
 
 
 
-### Binomialverteilung {#sec-bin-distrib}
+## Binomialverteilung {#sec-bin-distrib}
 
-#### Grundlagen
+### Grundlagen
 
 :::{#def-binvert}
 #### Binomialverteilung
 Die Binomialverteilung dient zur Darstellung der Wahrscheinlichkeit der Ergebnisse eines $n$-fach wiederholten binomialen Zufallexperiments,
 eines Zufallsexperiments mit *zwei*^[von lat. *bis* "zweimal"] Ergebnissen bzw. Elementarereignissen also. 
 Dabei interessiert die Anzahl der $k$ Treffer.
-Typisches Beispiel ist ein (wiederholter) Münzwurf.
-Bei jeder Wiederholung des Zufallexperiments bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (*Ziehen mit Zurücklegen*, ZmZ). 
-Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit eines bestimmten Ergebnisses im zweiten Wurf, etc.^[sog. "iid": *independent and identically distributed*.]$\square$ 
+Typisches Beispiel ist ein (wiederholter) Münzwurf.^[Bei jeder Wiederholung des Zufallexperiments 
+bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (*Ziehen mit Zurücklegen*, ZmZ). 
+Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit 
+eines bestimmten Ergebnisses im zweiten Wurf, etc., sog. "iid": *independent and identically distributed*.]$\square$ 
 :::
 
 Für eine binomialverteilte Zufallsvariable $X$ schreibt man kurz (s. @eq-binvert): 
@@ -985,105 +989,205 @@ Für eine binomialverteilte Zufallsvariable $X$ schreibt man kurz (s. @eq-binver
 $$X \sim \text{Bin}(n, k)$${#eq-binvert}
 
 
-#### Veranschaulichung
 
-Stellen wir uns eine Kistchen^[In den Lehrbüchern häufig als Urne bezeichnet, was den bösen Spott von "Friedhofstatistik" nach sich zog.] mit $n=5$ Losen vor, 
-darunter $k=2$ *T*reffer (Gewinn) und $5-2=3$ *N*ieten, s. Abb. @fig-urne.
-Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut.
+
+Stellen wir uns eine Kistchen^[In den Lehrbüchern häufig als Urne bezeichnet, was den bösen Spott von "Friedhofstatistik" nach sich zog.] mit sehr vielen^[praktisch unendlich vielen] Losen vor, 
+darunter 2/5 *T*reffer (Gewinn) und 3/5 *N*ieten, s. Abb. @fig-urne.
+Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut. 
+Jetzt ziehen wir z.B. drei Lose.
+Wie groß ist die Wahrscheinlichkeit, davon 2 Treffer zu erzielen?
 
 
 
 ```{r echo = FALSE}
-#| fig-cap: Ein Kästchen mit 5 Losen, darunter 2 Treffer und 3 Nieten.
+#| fig-cap: Ein Loskästchen mit 2/5 Treffer und 3/5 Nieten
 #| label: fig-urne
-#| fig-asp: 0.2
-d <- 
-  tibble(id = 1:5,
+#| fig-asp: 0.3
+#| echo: false  
+
+
+
+d <- tibble(id = 1:5,
          event = c("T", "T", "N", "N", "N"))
 
-
-ggplot(d) +
-  aes(x = id) +
+p_urn <- 
+  ggplot(d) +
+  aes(x = id, label = id) +
   theme_minimal() +
   annotate("rect", xmin = 0, xmax = 6, ymin = 0, ymax = 2, fill = "grey80", alpha = .8) +
   geom_point(size = 10, y = 1, aes(color = event) )+
+  geom_text(aes(label = id), y = 1) +
+  theme(axis.text = element_blank()) +
+  labs(x = "", color = "") +
+  scale_color_okabeito()
+
+d2 <-
+  tibble(id = 1:1e3,
+         Treffer = sample(0:1, 1e3, replace = TRUE, prob = c(3/5, 2/5)))  |> 
+  mutate(Treffer = ifelse(Treffer == 1, "Treffer", "Niete"))
+
+p_urn2 <- 
+  ggplot(d2) +
+  aes(color = Treffer) +
+  geom_jitter(aes(x = 1, y = 1)) +
+  scale_color_okabeito() +
+  theme_void()
+
+p_urn2
+  
+```
+
+
+
+### Möglichkeiten zählen
+
+
+:::{#exm-bin1}
+### Drei Lose gekauft, davon zwei Treffer?
+Wie groß ist die Wahrscheinlichkeit bei $n=3$ Zügen $k=2$ Treffer zu erzielen (und $n-k=1$ Niete)? (Nennen wir dieses Ereignis der Kürze halber $A^{\prime}$ ).
+De Trefferwahrscheinlichkeit ist (bei jedem Zug) $p=2/5$ und die 
+Nietenwahrscheinlichkeit $1-p=3/5$.$\square$
+:::
+
+
+Mit Blick auf @exm-bin1: 
+Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen
+(*Multiplikationssatz*, @eq-multtheorem), vgl. @fig-baum3.
+Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit (*Additionssatz*, @eq-add-disjunkt).
+Diagramme zeichnen ist einfach, dauert aber.
+
+
+Beachtet man die *verschiedenen Reihenfolgen nicht*  (in @fig-baum3), 
+so zählt man 3 günstige Pfade (vgl. @fig-sort3):
+
+1. TTN
+2. TNT
+3. NTT.
+
+
+
+```{r}
+#| fig-cap: Wie viele Möglichkeiten gibt es, 3 Lose zu sortieren, von denen 2 Treffer sind und 1 Niete?
+#| label: fig-sort3
+#| fig-asp: 0.2
+#| echo: false
+
+d <- 
+  tibble(id = 1:3,
+         event = c("T", "T", "N"))
+
+p_urn2 <- ggplot(d) +
+  aes(x = id) +
+  theme_minimal() +
+  annotate("rect", xmin = 0, xmax = 4, ymin = 0, ymax = 2, fill = "grey80", alpha = .8) +
+  geom_point(size = 10, y = 1, aes(color = event) )+
   geom_text(aes(label = event), y = 1) +
   theme(axis.text = element_blank()) +
-  labs(x = "", fill = "")
+  labs(x = "", color = "")
+
+p_urn2
 ```
 
 
 
 
+Wir haben also die Möglichkeiten (2 Treffer und 1 Niete zu erhalten)
 
-:::callout-important
+- *ohne Beachtung der Reihenfolge* und
+- *ohne Zurücklegen* (der Möglichkeiten)
 
-Um die Wahrscheinlichkeitsverteilung einer binomialverteilte Zufallsvariable ausrechnen zu können, muss man zwei Dinge wissen: Erstens die Anzahl der Münzwürfe, $n$ (Stichprobengröße) und zweitens die Trefferwahrscheinlichkeit, $p$. Mit diesen Informationen kann man z.B. ausrechnen, wie groß die Wahrscheinlichkeit ist, bei 5 Würfen 2 Treffer zu erzielen.
-
-:::
-
-
-:::{#exr-bin1}
-#### Fünf Lose, zwei Treffer
-Wie groß ist die Wahrscheinlichkeit bei $n=5$ Zügen $k=2$ Treffer zu erzielen (und $n-k=3$ Nieten)? (Nennen wir dieses Ereignis der Kürze halber $A^{\prime}$ ).
-Im ersten Zug ist die Trefferwahrscheinlichkeit $p=2/5$ und die 
-Nietenwahrscheinlichkeit $1-p=3/5$.
-Wir ziehen dabei *mit* Zurücklegen (ZmZ). 
-Außerdem sind die Lose nicht zu unterscheiden (abgesehen davon, ob es Treffer oder Nieten sind).$\square$
-:::
+gezählt.
 
 
-Mit Blick auf @exr-bin1: 
-Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen
-(*Multiplikationssatz*, @eq-multtheorem), vgl. @fig-dreimuenzen.
-Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit (*Additionssatz*, @eq-add-disjunkt).
-Diagramme zeichnen ist einfach, dauert aber.
+
+
+```{mermaid}
+%%| fig-cap: "Baumdiagramm für das Ziehen von 2 Treffern und 1 Niete"
+%%| label: fig-baum3
+flowchart LR
+  A[Start] -->B[Zug 1 - T]
+  A -->C[Zug 1 - T]
+  A -->D[Zug 1 - N]
+  B -->E[Zug 2 - T]
+  B -->F[Zug 2 -  N]
+  C -->G[Zug 2 - T]
+  C -->H[Zug 2 - N]
+  D -->I[Zug 2 - T]
+  D -->J[Zug 2 - T]
+  E -->K[Zug 3 - N]
+  F -->L[Zug 3 - T]
+  G -->M[Zug 3 - N]
+  H -->N[Zug 3 - T]
+  I -->O[Zug 3 - T]
+  J -->P[Zug 3 - T]
+  K -->Q[TTN]
+  L -->R[TNT]
+  M -->S[TTN]
+  N -->T[TNT]
+  O -->U[NTT]
+  P -->V[NTT]
+  
+```
+
+
 Schneller geht es, wenn man rechnet. 
-In diesem Fall ist die Wahrscheinlichkeit *eines* (günstigen) Pfades, $A$:
-
-$Pr(A) = Pr(T)^2 \cdot Pr(N)^2 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right)^3$.
+Wir könnten auch R auffordern, die Anzahl der günstigen Pfade zu berechnen, s. @eq-binkoeff:
 
 ```{r}
-p_a = (2/5)^2 * (3/5)^3
+choose(3,2)
+```
+
+
+
+
+### Anzahl Pfade mal Pfad-Wahrscheinlichkeit
+
+
+
+In diesem Fall ist die Wahrscheinlichkeit *eines* (günstigen) Pfades, $A$:
+
+$Pr(A) = Pr(T)^2 \cdot Pr(N)^1 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right)^1$.
+
+```{r}
+p_a = (2/5)^2 * (3/5)^1
 p_a
 ```
 
-Etwas mühevolles Zählen der Pfade würde uns zeigen, dass es $k=10$ Pfade gibt, die alle die gleiche Wahrscheinlichkeit, $Pr(A)$, aufweisen.
-Wir könnten auch R auffordern, den Binomialkoeffizienten zu verwenden, um die Anzahl der Pfade zu berechnen, s. @eq-binkoeff:
+Damit ist die Wahrscheinlichkeit des gesuchten Ereignisses $A^{\prime}$ (2 Treffer bei 3 Zügen) gleich der Anzahl der günstigen Pfade mal der Wahrscheinlichkeit eines Pfades, , s. @eq-binkoeff-hand:
+
+$Pr(A^{\prime}) = 3 \cdot Pr(A)$.
 
 ```{r}
-choose(5,2)
-```
-
-
-
-Damit beträgt die Wahrscheinlichkeit des gesuchten Ereignisses $A^{\prime}$ (2 Treffer bei 5 Zügen):
-
-$Pr(A^{\prime}) = 10 \cdot Pr(A)$.
-
-```{r}
-p_a_strich = 10 * p_a
+p_a_strich = 3 * p_a
 p_a_strich
 ```
 
+Die Wahrscheinlichkeit, bei 3 Zügen 2 Treffer zu erzielen, beträgt also ca. 29%.
 
 
-$$Pr(A^{\prime}) = k \cdot Pr(A)$$
-Dabei steht $k$ für die Anzahl der günstigen Pfade und $Pr(A)$ für die Wahrscheinlichkeit eines günstigen Pfades (d.h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.
+
+$$Pr(A^{\prime}) = k \cdot Pr(A)$${#eq-binkoeff-hand}
+
+Dabei steht $k$ für die Anzahl der günstigen Pfade und $Pr(A)$ für die Wahrscheinlichkeit eines günstigen Pfades 
+(d.h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.
 
 
-#### Binomialverteilung mit R
+### Rechnen mit der Binomialverteilung
+
+
+
 
 
 Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen.
+Das ist komfortabler als selber rechenn.
 
-Die Wahrscheinlichkeit, bei 5 Zügen 2 Treffer zu erzielen mit $p=2/5$ (unter der Annahme einer Binomialverteilung) lässt sich so mit R berechnen:
+Die Wahrscheinlichkeit,  2 Treffer bei 3 Zügen zu erzielen mit $p=2/5$:
 
 ```{r}
-dbinom(x = 2, size = 5, prob = 2/5)
+dbinom(x = 2, size = 3, prob = 2/5)
 ```
 
-
+Dabei gehen wir davon aus, dass die Wahrscheinlichkeit eines Treffers stets $p=2/5$ beträgt.
 
 
 :::{#exm-binkoeff}
@@ -1094,30 +1198,55 @@ Der Binomialkoeffizient verrät es uns:
 $\tbinom{49}{6}= 13\,983\,816\square$
 :::
 
-Auf Errisch geht das so:
+<!-- Auf Errisch geht das so: -->
 
 
-:::: {.columns}
+<!-- :::: {.columns} -->
 
-::: {.column width="50%"}
->    👨‍🏫 Hey R, Wie viele Möglichkeiten gibt es, aus $n=5$ Losen $k=2$ auszuwählen?
+<!-- ::: {.column width="50%"} -->
+<!-- >    👨‍🏫 Hey R, Wie viele Möglichkeiten gibt es, aus $n=3$ Zügen $k=2$ auszuwählen? -->
 
 
-:::
+<!-- ::: -->
 
-::: {.column width="50%"}
->    🤖 Äh, Moment, oh herzliches Leberwesen
-```{r}
-choose(5,2)
-```
-:::
+<!-- ::: {.column width="50%"} -->
+<!-- >    🤖 Äh, Moment, oh herzliches Leberwesen -->
+<!-- ```{r} -->
+<!-- choose(5,2) -->
+<!-- ``` -->
+<!-- ::: -->
 
-::::
+<!-- :::: -->
+
+
+
+<!-- :::{#exm-2aus3} -->
+<!-- Wie viele Möglichkeiten gibt es,  2 Treffer bei 3 Zügen zu erzielen? -->
+
+<!-- ```{r} -->
+<!-- choose(4, 2) -->
+<!-- ``` -->
+<!-- ::: -->
+
 
 
 :::{#exm-2aus4}
-Hier ist ein Überblick der möglichen 6 günstigen Ereignisse des Experiments (2 Treffer bei 4 Versuchen):
+Wie viele Möglichkeiten gibt es,  2 Treffer bei 4 Zügen zu erzielen?
+
 1. TTNN, 2. TNTN, 3. TNNT, 4. NTTN ,5. NTNT, 6. NNTT. 
+
+$\tbinom{4}{2} = \frac{4!}{2! \cdot (4-2)!} \overset{\text{kürzen}}= \frac{2\cdot 3}{1}=6$ 
+
+Es sind also 6 Möglichkeiten. 
+
+
+
+```{r}
+anzahl_pfade_2_aus_4 <- 
+  factorial(4) / (factorial(2) * factorial(4-2))
+anzahl_pfade_2_aus_4
+```
+
 
 ```{r}
 choose(4, 2)
@@ -1127,10 +1256,24 @@ choose(4, 2)
 $\square$
 :::
 
-:::{exm-2aus5}
+:::{#exm-2aus5}
 Hier sind die 10 Kombinationen, um aus 5 Losen genau 2 Treffer und 3 Nieten zu ziehen:
 
-TTNNN, TNTNN, TNNTN, TNNNT, NTTNN, NTNTN, NTNNT, NNTTN, NNTNT, NNNTT $\square$
+TTNNN, TNTNN, TNNTN, TNNNT, NTTNN, NTNTN, NTNNT, NNTTN, NNTNT, NNNTT 
+
+```{r}
+choose(5, 2)
+```
+
+
+
+```{r}
+anzahl_pfade_2_aus_5 <- 
+  factorial(5) / (factorial(2) * factorial(5-2))
+anzahl_pfade_2_aus_5
+```
+
+$\square$
 :::
 
 
@@ -1144,7 +1287,7 @@ k <- 2  # Number of items to choose
 combinations <- combn(n, k) |> t() |> as_tibble()
 ```
 
-:::
+
 
 
 
@@ -1286,9 +1429,6 @@ $F(X=x) = Pr(X \le x)$
 :::
 
 
-### Vertiefung
-
-
 
 
 
@@ -1334,6 +1474,12 @@ Puh, Formeln sind vielleicht doch ganz praktisch,
 wenn man sich diese lange Übersetzung der Formel in Prosa duchliest.
 Noch praktischer ist es aber, dass es Rechenmaschinen gibt, 
 die die Formel kennen und für uns ausrechnen. 
+
+
+
+
+### Vertiefung
+
 
 
 
@@ -1574,10 +1720,10 @@ source(paste0(here::here(),"/R-Code/img15.R"))
 
 
 
-### Normalverteilung
+## Normalverteilung
 
 
-#### Grundlagen
+### Grundlagen
 
 
 :::{#def-nv}
@@ -1691,14 +1837,14 @@ Verwechseln Sie die Normalverteilung nicht mit der Paranormalverteilung, s. @fig
 ![Die Paranormalverteilung](img/ch33910f1.jpg){#fig-paranormal width=30%}
 
 
-#### IQ-Verteilung
+### IQ-Verteilung
 
 Die Verteilung der Zufallsvariablen IQ ist normalverteilt mit einem Mittelwert von 100 und einer Streuung von 15, s. @fig-norm-100-15:
 
 $IQ \sim \mathcal{N}(100,15)$
 
 :::{#exr-iq}
-#### Wie schlau muss man (nicht) sein?
+### Wie schlau muss man (nicht) sein?
 - Wie schlau muss man sein, um zu den unteren 75%, 50%, 25%, 5%, 1% zu gehören?
 - Anders gesagt: Welcher IQ-Wert wird von 75%, 50%, ... der Leute nicht überschritten?$\square$
 :::
@@ -1760,7 +1906,7 @@ Umgekehrt können wir uns auch fragen: Gegeben einer Realisation der Zufallsvari
 
 
 :::{#exr-schlau2}
-#### Wie schlau muss man (nicht) sein, Teil 2
+### Wie schlau muss man (nicht) sein, Teil 2
 - Welcher Anteil der Fläche unter der Kurve $p$ gehört zu den IQ-Werten 75, 100, 115, 130?
 - Anders gesagt: Welcher Anteil der Wahrscheinlichkeitsmasse der Verteilung liegt unter IQ=75, IQ=100, etc.?$\square$
 :::
@@ -1826,7 +1972,7 @@ Die *Verteilungsfunktion* (der Anteil der Wahrscheinlichkeitsmasse), `p`, für I
 
 
 
-#### Quantile der Normalverteilung 
+### Quantile der Normalverteilung 
 
 
 
@@ -2004,11 +2150,11 @@ q_p69 <-
 
 :::
 
-#### Standardnormalverteilung
+### Standardnormalverteilung
 
 Bei einer Standardnormalverteilung gilt, s. @eq-standardnormal:
 
-$$X \sim \mathcal{N}(0, 1)$${eq-standardnormal}
+$$X \sim \mathcal{N}(0, 1)$${#eq-standardnormal}
 
 :::: {.columns}
 
@@ -2037,11 +2183,11 @@ In Summe liegen 100% der Wahrscheinlichkeitsmasse unter der Kurve.
 ::::
 
 
-##### Vertiefung
+### Vertiefung
 
 
 
-##### Normal auf dem Fußballfeld
+#### Normal auf dem Fußballfeld
 
 Sie und 100 Ihrer besten Freunde stehen auf der Mittellinie eines Fußballfelds. Auf Kommando werfen alle jeweils eine Münze; bei Kopf geht man einen Schritt nach links, bei Zahl nach rechts. Das wird 16 Mal wiederholt. Wie wird die Verteilung der Positionen wohl aussehen?
 
@@ -2059,7 +2205,7 @@ source(paste0(here::here(),"/R-Code/img13.R"))
 
 
 
-##### Normal durch Addieren
+#### Normal durch Addieren
 
 Die Summe vieler (gleich starker) Zufallswerte (aus der gleichen Verteilung) erzeugt eine Normalverteilung; egal aus welcher Verteilung die Zufallswerte kommen (Zentraler Grenzwertsatz), vgl. @fig-fussball.
 
@@ -2076,7 +2222,7 @@ source(paste0(here::here(),"/R-Code/img14.R"))
 
 
 
-##### Normalverteilung als konservative Wahl
+#### Normalverteilung als konservative Wahl
 
 Dem Mathematiker [Carl Friedrich Gauss](https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F) (s. @fig-gauss) wird die Ehre zuerkannt,
 die Normalverteilung eingeführt zu haben.
@@ -2105,7 +2251,7 @@ Quelle: Uni Greifswald, Public domain, via Wikimedia Commons
 
 
 
-##### Normalverteilung vs. randlastige Verteilungen
+#### Normalverteilung vs. randlastige Verteilungen
 
 
 
@@ -2125,7 +2271,7 @@ ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
 
 
 :::::{#exm-normal-rand}
-##### Beispiele für Normal- und randlastige Verteilungen
+#### Beispiele für Normal- und randlastige Verteilungen
 
 
 :::: {.columns}
@@ -2165,7 +2311,7 @@ Randlastig verteilt:
 
 
 
-##### Formel der Normalverteilung
+#### Formel der Normalverteilung
 
 Vereinfacht ausgedrückt lässt die Normalverteilung $\mathcal{N}$ durch Exponenzieren einer Quadratfunktion beschreiben:
 
@@ -2220,7 +2366,7 @@ Die Normalverteilung wird auch *[Gauss](https://de.wikipedia.org/wiki/Carl_Fried
 
 
 
-##### Simulation einer Normalverteilung
+#### Simulation einer Normalverteilung
 
 
 R hat eine Funktion eingebaut zur Erzeugung von Zufallszahlen (Zufallszahlengenerator), z.B. normalverteilte.
@@ -2305,6 +2451,21 @@ zum Teil geht die Darstellung dort über die Lernziele bzw. Inhalte dieses Kurse
 
 Zusätzlich zu den Aufgaben in der genannten Literatur sind folgende Aufgaben zu empfehlen.
 
+
+
+
+
+### Paper-Pencil-Aufgaben
+
+
+
+- [alphafehler-inflation3](https://datenwerk.netlify.app/posts/alphafehler-inflation3/alphafehler-inflation3.html)
+- [alphafehler-inflation4](https://datenwerk.netlify.app/posts/alphafehler-inflation4/alphafehler-inflation4.html)
+- [Quiz zum Thema Verteilungen](https://datenwerk.netlify.app/#category=Verteilungen-Quiz24)
+
+### Aufgaben, für die man einen Computer braucht
+
+- [alphafehler-inflation2](https://datenwerk.netlify.app/posts/alphafehler-inflation2/alphafehler-inflation2.html)
 - [Quiz (Aufgabensammlung) zu Verteilungen](https://datenwerk.netlify.app/#category=Verteilungen-Quiz)
 - [Bsp-Binomial](https://datenwerk.netlify.app/posts/bsp-binomial/bsp-binomial)
 - [wuerfel01](https://datenwerk.netlify.app/posts/wuerfel01/wuerfel01.html)
@@ -2322,9 +2483,6 @@ Zusätzlich zu den Aufgaben in der genannten Literatur sind folgende Aufgaben zu
 <!-- - [iq09](https://datenwerk.netlify.app/posts/iq09/iq09) -->
 <!-- - [iq10](https://datenwerk.netlify.app/posts/iq010/iq10) -->
 - [Bus1](https://datenwerk.netlify.app/posts/bus1/bus1)
-- [alphafehler-inflation2](https://datenwerk.netlify.app/posts/alphafehler-inflation2/alphafehler-inflation2.html)
-- [alphafehler-inflation3](https://datenwerk.netlify.app/posts/alphafehler-inflation3/alphafehler-inflation3.html)
-- [alphafehler-inflation4](https://datenwerk.netlify.app/posts/alphafehler-inflation4/alphafehler-inflation4.html)
 
 
 ## ---
