@@ -32,11 +32,14 @@ Sie können ...
 Der Stoff dieses Kapitels deckt sich (weitgehend) mit @bourier2011, Kap. 6.1 und 6.3 sowie 7.1 und und 7.2.
 
 
+
 ### Vorbereitung im Eigenstudium
 
+Dieses Kapitel setzt einige Grundbegriffe voraus,
+wie im Buch [Statistik1]() vorgestellt, insbesondere im Kapitel ["Rahmen"](https://statistik1.netlify.app/010-rahmen#was-sind-daten).
+Benötigt wird auch der Begriff der [Normalverteilung](https://statistik1.netlify.app/040-verbildlichen#normalverteilung) sowie der Begriff der [Quantile](https://statistik1.netlify.app/050-zusammenfassen.html#quantile).
 
-
-Lesen Sie selbständig, zusätzlich  zum Stoff dieses Kapitels, noch @bourier2011; dort folgende Abschnitte:
+Lesen Sie selbständig, zusätzlich  zum Stoff dieses Kapitels, noch in @bourier2011 folgende Abschnitte:
 
 - Kap. 6.1 (Zum Begriff Zufallsvariable)
 - Kap. 6.3 (Stetige Zufallsvariablen)
@@ -977,7 +980,7 @@ Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen z
 #### Binomialverteilung
 Die Binomialverteilung dient zur Darstellung der Wahrscheinlichkeit der Ergebnisse eines $n$-fach wiederholten binomialen Zufallexperiments,
 eines Zufallsexperiments mit *zwei*^[von lat. *bis* "zweimal"] Ergebnissen bzw. Elementarereignissen also. 
-Dabei interessiert die Anzahl der $k$ Treffer.
+Dabei interessiert die Anzahl der $k$ Treffer (aber nicht die Reihenfolge).
 Typisches Beispiel ist ein (wiederholter) Münzwurf.^[Bei jeder Wiederholung des Zufallexperiments 
 bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (*Ziehen mit Zurücklegen*, ZmZ). 
 Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit 
@@ -989,13 +992,15 @@ Für eine binomialverteilte Zufallsvariable $X$ schreibt man kurz (s. @eq-binver
 $$X \sim \text{Bin}(n, k)$${#eq-binvert}
 
 
-
+:::{#exm-binom1}
+Anwendungsbeispiele: Wie viele defekte Teile sind in einer Stichprobe von produzierten Schrauben zu erwarten? Wie wahrscheinlich ist es, dass das neue Blutdruck-Medikament einer bestimmten Anzahl von Menschen hilft? Wie viele Personen stimmen in einer Umfrage der Frage "Ich halte die öffentlich-rechtlichen Sender für wichtig." zu? $\square$
+:::
 
 Stellen wir uns eine Kistchen^[In den Lehrbüchern häufig als Urne bezeichnet, was den bösen Spott von "Friedhofstatistik" nach sich zog.] mit sehr vielen^[praktisch unendlich vielen] Losen vor, 
 darunter 2/5 *T*reffer (Gewinn) und 3/5 *N*ieten, s. Abb. @fig-urne.
-Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut. 
+Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut.^[Da *sehr* viele Lose im Kästchen liegen, ist es praktisch egal, ob wir das Los wieder zurücklegen. Die Wahrscheinlichkeit für einen Treffer ändert sich (so gut wie) nicht.] 
 Jetzt ziehen wir z.B. drei Lose.
-Wie groß ist die Wahrscheinlichkeit, davon 2 Treffer zu erzielen?
+Wie groß ist die Wahrscheinlichkeit, davon 2 Treffer zu erzielen (egal in welcher Reihenfolge)?
 
 
 
@@ -1169,7 +1174,7 @@ Die Wahrscheinlichkeit, bei 3 Zügen 2 Treffer zu erzielen, beträgt also ca. 29
 $$Pr(A^{\prime}) = k \cdot Pr(A)$${#eq-binkoeff-hand}
 
 Dabei steht $k$ für die Anzahl der günstigen Pfade und $Pr(A)$ für die Wahrscheinlichkeit eines günstigen Pfades 
-(d.h. 2 Treffer und 2 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.
+(d.h. 2 Treffer und 1 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.
 
 
 ### Rechnen mit der Binomialverteilung
@@ -1478,6 +1483,78 @@ die die Formel kennen und für uns ausrechnen.
 
 
 
+::: {#exm-klausur20}
+
+#### Klausur mit 20-Richtig-Falsch-Fragen
+
+Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen.
+Wie groß ist die Wahrscheinlichkeit, 
+durch bloßes Münze werfen genau 15 Fragen richtig zu raten?^[Hey, endlich mal was für echte Leben!]
+
+```{r QM2-Thema2-kleineModelle-23, echo = TRUE}
+# Wskt für genau 15 Treffer bei 20 Versuchen mit einer fairen Münze:
+dbinom(x = 15, size = 20, prob = .5)
+```
+
+Um *höchstens* 15 Treffer zu erzielen, 
+müssten wir die Wahrscheinlichkeiten von 0 bis 15 Treffern addieren.
+
+Praktischerweise gibt es einen R-Befehl, der das für uns übernimmt:
+
+```{r}
+pbinom(q = 15, size = 20, prob = .5)
+```
+
+
+Die Wahrscheinlichkeit 0, 1, 2, ... oder 15 Treffer zu erzielen, liegt also bei gut 99%.
+
+
+:::
+
+
+
+::: {#exm-globus4}
+
+#### 3 Münzwürfe mit 3 Treffern
+
+Was ist die Wahrscheinlichkeit bei 3 Münzwürfen (genau) 3 Treffer (Kopf) zu erzielen, s. @fig-p-bin-exms?
+
+Das ist eine Frage an die Binomialverteilung;
+in R kann man das mit der Funktion `dbinom` beantworten.
+
+```{r QM2-Thema2-kleineModelle-24, echo = TRUE}
+dbinom(x = 3, size = 3, prob = 1/2)
+```
+
+Die Lösung lautet also $p=1/8 = .125.\qquad \square$
+
+:::
+
+
+<!-- Todo: XXX -->
+
+```{r QM2-Thema2-kleineModelle-25}
+#| echo: false
+#| label: fig-p-bin-exms
+#| fig-cap: "Verschiedene Binomialverteilungen"
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - "n=3, p=1/2"
+#|   - "n=9, p=.7"
+
+binomial_plot(3, 1/2)
+
+binomial_plot(9, .7)
+```
+
+
+
+
+:::{#exr-binom}
+🏋️️ Was fällt Ihnen bei der Binomialverteilung auf? Ist sie symmetrisch? Verändert sich die Wahrscheinlichkeit linear?
+:::
+
+
 ### Vertiefung
 
 
@@ -1525,78 +1602,6 @@ log(1/8, base = 2)
 
 
 
-
-
-::: {#exm-klausur20}
-
-#### Klausur mit 20-Richtig-Falsch-Fragen
-
-Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen.
-Wie groß ist die Wahrscheinlichkeit, 
-durch bloßes Münze werfen genau 15 Fragen richtig zu raten?^[Hey, endlich mal was für echte Leben!]
-
-```{r QM2-Thema2-kleineModelle-23, echo = TRUE}
-# Wskt für genau 15 Treffer bei 20 Versuchen mit einer fairen Münze:
-dbinom(x = 15, size = 20, prob = .5)
-```
-
-Um *höchstens* 15 Treffer zu erzielen, 
-müssten wir die Wahrscheinlichkeiten von 0 bis 15 Treffern addieren.
-
-Praktischerweise gibt es einen R-Befehl, der das für uns übernimmt:
-
-```{r}
-pbinom(q = 15, size = 20, prob = .5)
-```
-
-
-Die Wahrscheinlichkeit 0, 1, 2, ... oder 15 Treffer zu erzielen, liegt also bei gut 99%.
-
-
-:::
-
-
-
-::: {#exm-globus4}
-
-#### 3 Münzwürfe mit 3 Treffern
-
-Was ist die Wahrscheinlichkeit bei 3 Münzwürfen (genau) 3 Treffer (Kopf) zu erzielen?
-
-Das ist eine Frage an die Binomialverteilung;
-in R kann man das mit der Funktion `dbinom` beantworten.
-
-```{r QM2-Thema2-kleineModelle-24, echo = TRUE}
-dbinom(x = 3, size = 3, prob = 1/2)
-```
-
-Die Lösung lautet also $p=1/8 = .125.\qquad \square$
-
-:::
-
-
-<!-- Todo: XXX -->
-
-```{r QM2-Thema2-kleineModelle-25}
-#| echo: false
-#| label: p-bin-exms
-#| fig-cap: "Verschiedene Binomialverteilungen"
-#| layout-ncol: 2
-#| fig-subcap: 
-#|   - "n=3, p=1/2"
-#|   - "n=9, p=.7"
-
-binomial_plot(3, 1/2)
-
-binomial_plot(9, .7)
-```
-
-
-
-
-:::{#exr-binom}
-🏋️️ Was fällt Ihnen bei der Binomialverteilung auf? Ist sie symmetrisch? Verändert sich die Wahrscheinlichkeit linear?
-:::
 
 
 #### Simulieren wir eine Binomialverteilung 
@@ -1847,7 +1852,7 @@ $IQ \sim \mathcal{N}(100,15)$
 ### Wie schlau muss man (nicht) sein?
 - Wie schlau muss man sein, um zu den unteren 75%, 50%, 25%, 5%, 1% zu gehören?
 - Anders gesagt: Welcher IQ-Wert wird von 75%, 50%, ... der Leute nicht überschritten?$\square$
-:::
+:::   
 
 
 ![Visualisierung der theoretischen IQ-Verteilung](img/norm-100-15.png){#fig-norm-100-15 width="50%"}
@@ -2461,6 +2466,12 @@ Zusätzlich zu den Aufgaben in der genannten Literatur sind folgende Aufgaben zu
 
 - [alphafehler-inflation3](https://datenwerk.netlify.app/posts/alphafehler-inflation3/alphafehler-inflation3.html)
 - [alphafehler-inflation4](https://datenwerk.netlify.app/posts/alphafehler-inflation4/alphafehler-inflation4.html)
+- [iq1a](https://datenwerk.netlify.app/posts/iq01a/)
+- [iq2a](https://datenwerk.netlify.app/posts/iq02a/)
+- [iq3a](https://datenwerk.netlify.app/posts/iq03a/)
+- [simu-uniform](https://datenwerk.netlify.app/posts/simu-uniform/)
+- [simu-unif2](https://datenwerk.netlify.app/posts/simu-unif2/)
+- [simu-unif3](https://datenwerk.netlify.app/posts/simu-unif3/)
 - [Quiz zum Thema Verteilungen](https://datenwerk.netlify.app/#category=Verteilungen-Quiz24)
 
 ### Aufgaben, für die man einen Computer braucht
