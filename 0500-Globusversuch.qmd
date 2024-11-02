@@ -33,6 +33,7 @@ Sie können ...
 - Unterschiede zwischen Modellen und der Realität erläutern
 - die Binomialverteilung heranziehen, um geeignete (einfache) Modelle zu erstellen (für binomial verteilte Zufallsvariablen)
 - die weite Einsetzbarkeit anhand mehrerer Beispiele exemplifizieren
+- das Bayes-Modell anhand bekannter Formeln herleiten
 - Post-Wahrscheinlichkeiten anhand der Gittermethode berechnen
 
 
@@ -342,14 +343,30 @@ Die Binomialverteilung zeigt die Verteilung der Häufigkeit (Wahrscheinlichkeit)
 
 Praktischerweise ist die Binomialverteilung in R eingebaut, wie wir gleich sehen werden.
 
-Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (Wahrscheinlichkeit), um 2 mal $W$ bei $N=W+L=3$ Würfen zu bekommen, wenn wir von $\pi=1/2$ ausgehen?^[Allgemeiner spricht man auch von 2 Treffern bei 3 Würfen (d.h. 1 "Nicht-Treffer", den wir als "Niete" bezeichnen). Treffer werden oft mit `1`  und Nieten mit `0` bezeichnet].
+Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (Wahrscheinlichkeit), 
+
+um 2 mal $W$ bei $N=W+L=3$ Würfen zu bekommen, wenn wir von $\pi=1/2$ ausgehen?
+^[Allgemeiner spricht man auch von 2 Treffern bei 3 Würfen 
+(d.h. 1 "Nicht-Treffer", den wir als "Niete" bezeichnen). 
+Treffer werden oft mit `1`  und Nieten mit `0` bezeichnet], 
+s. @lst-dbinom1, @fig-binom1a und @eq-dbinom1.
 
 
 ```{r QM2-Thema2-kleineModelle-21a, echo = TRUE}
+#| lst-cap: "Binomialvertielung mit R für x=2, n=3, p=1/2"
+#| lst-label: lst-dbinom1
 dbinom(x = 2, size = 3, prob = 1/2)
 ```
 
 
+$$\begin{aligned}
+Pr(W=2 | \pi=1/2, n=3) &=\\ 
+\tbinom{3}{2} \cdot (1/2)^2 \cdot (1/2)^1 &=\\
+\frac{3!}{2!1!} \cdot (1/2)^3 &= \\
+3 \cdot 1/8 = 3/8 &= 0.375
+\end{aligned}$${#eq-dbinom1}
+
+Wenn man sich den entsprechenden Baum anschauen würe: 
 Von den 8 Endkonten bzw. Pfaden sind 3 günstig. 
 Demnach ist die Wahrscheinlichkeit des gesuchten Ereignis (2 Treffer bei 3 Würfen, binomialverteilt) gleich 3 von 8 (alle Pfade sind gleich wahrscheinlich);
 3/8 sind 0.375.
@@ -395,16 +412,25 @@ Für mehr Würfe würde das Diagramm irgendwann unübersichtlich werden.
 
 
 
-Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (Wahrscheinlichkeit), um 6 mal $W$ bei $N=W+L=9$ Würfen zu bekommen, wenn wir von $p=1/2$ ausgehen?
+Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (Wahrscheinlichkeit), 
+um 6 mal $W$ bei $N=W+L=9$ Würfen zu bekommen, wenn wir von $p=1/2$ ausgehen?
 
 ```{r QM2-Thema2-kleineModelle-21, echo = TRUE}
 dbinom(x = 6, size = 9, prob = 1/2)
 ```
 
+Oder, synonym, wenn man einen Taschenrechner (oder R als Taschenrechner) benutzt:
+
+```{r}
+choose(9, 6) * (1/2)^6 * (1/2)^3
+```
 
 
 
-@fig-bin-klein zeigt die Binomialverteilung $X \sim Bin(9, 1/2)$.
+
+@fig-bin-klein zeigt die Binomialverteilung $X \sim Bin(9, 1/2)$:
+Die jeweilige Wahrscheinlichkeit für $k=0,1,\ldots, 9$ Treffer bei $n=9$ Versuchen mit
+Trefferwahrscheinlichkeit $p=1/2$.
 
 
 ```{r QM2-Thema2-kleineModelle-25}
@@ -436,7 +462,7 @@ my_tree %>%
   ggraph(circular = TRUE) +
   geom_edge_link() +
   geom_node_label(mapping = aes(label = lab), size = 1) +
-  coord_flip() +
+  coord_fliPr() +
   scale_y_reverse() +
   theme_void()
 
@@ -462,7 +488,8 @@ Das ist 1 günstiger Pfad von 512 Pfaden.
 
 
 
-`dbinom` gibt uns die Wahrscheinlichkeit von `x` Treffern, bei `size` Versuchen zurück, wobei eine Binomialverteilung angenommen wird mit Trefferwahrscheinlichkeit `prob`.
+`dbinom` gibt uns die Wahrscheinlichkeit von `x` Treffern, bei `size` Versuchen zurück, 
+wobei eine Binomialverteilung angenommen wird mit Trefferwahrscheinlichkeit `prob`.
 
 
 
@@ -472,9 +499,9 @@ Wir fassen das Globusmodell so zusammen, s. @eq-globus1.
 
 $$W \sim \text{Bin}(N,\pi)$${#eq-globus1}
 
-Lies: "W ist *bin*omial verteilt mit den Parametern $N$ und $\pi$". $N$ gibt die Anzahl der Globuswürfe an: $N=W+L$.
+Lies: "W ist *bin*omial verteilt mit den Parametern $N$ und $\pi$". $N$ gibt die Anzahl der Globuswürfe an: $n=W+L$.
 
-Unser Vorab-Wissen zu $p$ sei, dass uns alle Werte gleich plausibel erscheinen ("uniform"):
+Unser Vorab-Wissen zu $p$ sei, dass uns alle Werte gleich ("uniform") plausibel erscheinen:
 
 $$\pi \sim \text{Unif}(0,1).$$
 
@@ -519,7 +546,7 @@ $$W \quad \underrightarrow{Bayes} \quad U$$
 
 Dann kann man @eq-bayes1 so schreiben, s. @eq-bayes2:
 
-$$P(U|W) = \frac{ P(U) \cdot P(W|U) }{P(W)}$${#eq-bayes2}
+$$Pr(U|W) = \frac{ Pr(U) \cdot Pr(W|U) }{Pr(W)}$${#eq-bayes2}
 
 Eine ähnliche Situation, die in der Praxis häufig ist,
 dass man Daten $D$ hat und auf die Wahrscheinlichkeit einer Hypothese $H$ schließen möchte, s. @eq-bayes3.
@@ -527,9 +554,9 @@ dass man Daten $D$ hat und auf die Wahrscheinlichkeit einer Hypothese $H$ schlie
 $$D \quad \underrightarrow{Bayes} \quad H$$
 
 
-$$P(H|D) = \frac{ P(H) \cdot P(D|H) }{P(D)}$${#eq-bayes3}
+$$rPr(H|D) = \frac{ Pr(H) \cdot Pr(D|H) }{Pr(D)}$${#eq-bayes3}
 
-@eq-bayes3 fragt nach $P(H|D)$:
+@eq-bayes3 fragt nach $Pr(H|D)$:
 
 >    Was ist die Wahrscheinlichkeit der Hypothese H, jetzt wo wir die Daten haben (und ein Modell?)
 
@@ -541,9 +568,9 @@ Und antwortet so (@eq-bayes3):
 
 ### Bayes als Baum
 
-Gesucht sei $P(A_1|B)$.
+Gesucht sei $Pr(A_1|B)$.
 
-Für Bayes' Formel^[synonym: Satz von Bayes] setzt man die Wahrscheinlichkeit des  *günstigen* Ast zur Wahrscheinlichkeit aller relevanten Äste, $P(B)$.
+Für Bayes' Formel^[synonym: Satz von Bayes] setzt man die Wahrscheinlichkeit des  *günstigen* Ast zur Wahrscheinlichkeit aller relevanten Äste, $Pr(B)$.
 
 :::{#exm-bayes1}
 ### Maschine produziert Ausschuss
@@ -573,42 +600,47 @@ flowchart LR
 ```
 
 
-$$P(A|B) = \frac{P(A1 \cap B)}{P(B)} = \frac{0.6 \cdot 0.05}{0.03 + 0.002 + 0.012} = \frac{0.03}{0.044} \approx 0.68$$
+$$Pr(A|B) = \frac{Pr(A1 \cap B)}{Pr(B)} = \frac{0.6 \cdot 0.05}{0.03 + 0.002 + 0.012} = \frac{0.03}{0.044} \approx 0.68$$
 
 
-$P(A|B)$ beträgt also ca. 68%.
+$Pr(A|B)$ beträgt also ca. 68%.
 
-Zur Erinnerung: $P(B)$ ist die totale Wahrscheinlichkeit.
+Zur Erinnerung: $Pr(B)$ ist die totale Wahrscheinlichkeit.
 
 
 
 
 ### Bayes als bedingte Wahrscheinlichkeit
 
+Bayes' Theorem wird häufig verwendet,
+um die Wahrscheinlichkeit einer Hypothese,
+gegeben einer bestimmten Datenlage, zu berechnen,
+also $Pr(H|D)$.
+Dabei ist Bayes' Theorem nichts anderes als eine normale bedingte Wahrscheinlichkeit.
 
-Bayes' Theorem ist auch nur eine normale bedingte Wahrscheinlichkeit:
 
 
-$P(A|B) = \frac{\overbrace{ P(A\cap B)}^\text{umformen}}{P(B)}$
+$Pr(H|D) = \frac{\overbrace{ Pr(H\cap D)}^\text{umformen}}{Pr(D)}$
 
-$P(A| B)$ kann man  umformen, s. @eq-bayes1:
+$Pr(H| D)$ kann man  umformen, 
+dann erhält man Bayes' Theorem, s. @eq-bayes1:
 
-$$P(A|B) =\frac{P(A\cap B)}{P(B)} = \frac{P(B|A) \cdot P(A)}{P(B)}$$ {#eq-bayes1}
+$$Pr(H|D) =\frac{Pr(D\cap H)}{Pr(D)} = \frac{Pr(D|H) \cdot Pr(H)}{Pr(D)}$$ {#eq-bayes1}
 
 Man kann sich Bayes' Theorem  auch wie folgt herleiten:
 
 
 
-$P(A\cap B) = P(B \cap A) = P(A) \cdot P(B|A) = P(B) \cdot P(A|B)$
+$Pr(D\cap H) = Pr(D \cap H) = Pr(D) \cdot Pr(H|D) = Pr(H) \cdot Pr(D|H)$
 
-Dann lösen wir nach P$(A|B)$ auf:
-
-
-$P(A|B) = \frac{P(A) \cdot P(B|A)}{P(B)}$
+Dann lösen wir nach P$(H|D)$ auf, s. @eq-bayes2.
 
 
+$$Pr(H|D) = \frac{Pr(H) \cdot Pr(D|H)}{Pr(D)}$${#eq-bayes2}
 
-### Zusammengesetzte Hypothesen
+
+
+### Vertiefung: Zusammengesetzte Hypothesen
 
 Das ist vielleicht ein bisschen fancy,
 aber man kann Bayes' Theorem auch nutzen, um die Wahrscheinlichkeit einer *zusammengesetzten Hypothese* zu berechnen: $H = H_1 \cap H_2$. 
@@ -618,13 +650,13 @@ Das sieht dann so aus, @eq-bayes4:
 
 $$
 \begin{aligned}
-P(R \cap B |K) &= \frac{ P(R \cap B) \cdot P(K|R \cap B) }{P(D)} \\
-&= \frac{ P(R ) \cdot P(B) \cdot P(K|R \cap B) }{P(D)}
+Pr(R \cap B |K) &= \frac{ Pr(R \cap B) \cdot Pr(K|R \cap B) }{Pr(D)} \\
+&= \frac{ Pr(R ) \cdot Pr(B) \cdot Pr(K|R \cap B) }{Pr(D)}
 \end{aligned}
 $${#eq-bayes4}
 
 
-Hier haben wir $P(R \cap B)$  aufgelöst in $P(R) \cdot P(B)$,
+Hier haben wir $Pr(R \cap B)$  aufgelöst in $Pr(R) \cdot Pr(B)$,
 das ist nur zulässig, wenn $R$ und $B$ unabhängig sind.
 
 
