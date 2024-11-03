@@ -34,7 +34,7 @@ Sie können ...
 - die Binomialverteilung heranziehen, um geeignete (einfache) Modelle zu erstellen (für binomial verteilte Zufallsvariablen)
 - die weite Einsetzbarkeit anhand mehrerer Beispiele exemplifizieren
 - das Bayes-Modell anhand bekannter Formeln herleiten
-- Post-Wahrscheinlichkeiten anhand der Gittermethode berechnen
+- Post-Wahrscheinlichkeiten anhand der Bayesbox berechnen
 
 
 ### Begleitliteratur
@@ -235,6 +235,7 @@ $$W \quad L \quad W \quad W \quad W \quad L \quad W \quad L \quad W$$
 Also $W=6$ (Wasser, d.h. "Treffer") und $L=3$ (Land) ($n=9$ Versuche).
 
 :::{#exr-globe1}
+### Spin the Globe
 🏋️️ Besorgen Sie sich einen Globus (zur Not eine Münze) und stellen Sie den Versuch nach!$\square$
 :::
 
@@ -355,9 +356,16 @@ Wahrscheinlichkeit der Ereignisse (z.B. 2 Mal Kopf) beim wiederholten Münzwurf
 ### Binomialverteilung mit R
 
 
-Praktischerweise ist die Binomialverteilung in R eingebaut, wie wir gleich sehen werden.
+Praktischerweise ist die Binomialverteilung in R eingebaut,  
+hier ist Pseudocode für Ihre Anwendung:
 
-Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (Wahrscheinlichkeit), 
+```{r}
+#| eval: false
+dbinom(x = <Anzahl der Treffer>, size = <Anzahl der Würfe>, prob = <Wahrscheinlichkeit>)
+```
+
+
+Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (d.h. die Wahrscheinlichkeit), 
 um 2 mal $W$ bei $n=W+L=3$ Würfen zu bekommen, wenn wir von $\pi=1/2$ ausgehen?
 ^[Allgemeiner spricht man auch von 2 Treffern bei 3 Würfen 
 (d.h. 1 "Nicht-Treffer", den wir als "Niete" bezeichnen). 
@@ -366,9 +374,10 @@ s. @lst-dbinom1, @fig-binom1a und @eq-dbinom1.
 
 
 ```{r QM2-Thema2-kleineModelle-21a, echo = TRUE}
-#| lst-cap: "Binomialvertielung mit R für x=2, n=3, p=1/2"
+#| lst-cap: "Binomialverteilung mit R für x=2, n=3, p=1/2"
 #| lst-label: lst-dbinom1
-dbinom(x = 2, size = 3, prob = 1/2)
+loesung <- dbinom(x = 2, size = 3, prob = 1/2)
+loesung
 ```
 
 Oder von Hand gerechnet:
@@ -380,7 +389,7 @@ Pr(W=2 | \pi=1/2, n=3) &=\\
 3 \cdot 1/8 = 3/8 &= 0.375
 \end{aligned}$${#eq-dbinom1}
 
-Wenn man sich den entsprechenden Baum anschauen würe: 
+Wenn man sich den entsprechenden Baum anschaut (s. @fig-binom1a): 
 Von den 8 Endkonten bzw. Pfaden sind 3 günstig. 
 Demnach ist die Wahrscheinlichkeit des gesuchten Ereignis (2 Treffer bei 3 Würfen, binomialverteilt) gleich 3 von 8 (alle Pfade sind gleich wahrscheinlich);
 3/8 sind 0.375.
@@ -393,7 +402,7 @@ Demnach ist die Wahrscheinlichkeit des gesuchten Ereignis (2 Treffer bei 3 Würf
 ```{mermaid}
 %%| echo: false
 %%| label: fig-binom1a
-%%| fig-cap: Wir werfen den Globus (oder eine Münze) 3 Mal
+%%| fig-cap: "Wir werfen den Globus (oder eine Münze) 3 Mal. Die Knoten sind der Übersicht halber mit fortlaufenden Buchstaben (von A bis P) bezeichnet"
 flowchart TD
   A[A - Start] -. 1/2 .-> B[B - 0]
   A -. 1/2 .-> C[C - 1]
@@ -607,73 +616,11 @@ Und antwortet so (@eq-bayes3):
 >    Diese Wahrscheinlichkeit entspricht der Grundrate (Apriori-Wahrscheinlichkeit) der Hypothese mal der Plausibilität (Likelihood) der Daten unter Annahme (gegeben) der Hypothese. Aus Standardisierungsgründen dividiert man noch die totale Wahrscheinlichkeit der Daten über alle Hypothesen.
 
 
-
-### Bayes als Baum
-
-Bayes' Theorem kann man sich als als Baumdiagramm vor Augen führen,
-@fig-tot-wskt2.
-
-Gesucht sei $Pr(M_1|A)$,
-also: die Wahrscheinlichkeit,
-dass das Teil von Maschine 1 produziert wurde, gegeben, dass es Ausschuss ist.
-Gegeben sind die Wahrscheinlichkeiten, dass Machine $i$ das Teil produziert hat, $Pr(M_i)$. Außerdem sind die Wahrscheinlichkeiten, dass das Teil Ausschuss ist, $Pr(A|M_i)$, bekannt.
-
-Das Diagramm löst die Aufgabe für uns;
-es zeigt damit die Anwendung von Bayes' Theorem auf.
-
-Um $Pr(M_1|A)$ zu erhalten,
-setzt man die Wahrscheinlichkeit
-des  *günstigen* Asts ins Verhältnis zur Wahrscheinlichkeit 
-*aller relevanten* Äste, $Pr(A)$.
-
-:::{#exm-bayes1}
-### Maschine produziert Ausschuss
-
-Die drei Maschinen $M_1, M_2, M_3$ produzieren den gleichen Artikel. Ihr jeweiliger Anteil, an der Produktion liegt bei 60%, 10% bzw. 30%. 
-Die jeweilige Ausschussquote liegt bei 5, 2, bzw. 4%, s. @fig-tot-wskt2.
-
-*Aufgabe*: Wie groß ist die Wahrscheinlichkeit, dass ein defektes Teil von Maschine 1 produziert wurde? Berechnen Sie diese Wahrscheinlichkeit.$\square$
-:::
+Für unser Globusbeispiel:
 
 
+>    Wie wahrscheinlich ist denn jetzt ein bestimmter Wasseranteil auf der Erde, $\pi$, (gegeben den Daten, $W=6$ und $L=3$)? Also, wie wahrscheinlich ist z.B. ein Wasseranteil von 70% oder von 50%?
 
-Der günstige (gesuchte) Ast, $Pr(M1 \cap A)$, ist hier fett gedruckt, s. @fig-tot-wskt2. 
-In @fig-tot-wskt2 zeigen die runden Kästchen am Ende der Pfade die Wahrscheinlichkeiten des jeweiligen Pfades an.
-
-
-
-
-
-```{mermaid}
-%%| fig-cap: Günstige Pfade
-%%| label: fig-tot-wskt2
-flowchart LR
-  A[Start] ==>|0.60|B[M1]
-  A --->|0.10|C[M2]
-  A --->|0.30|D[M3]
-  B ==>|0.05|E[A]
-  B -->|0.95|F[Nicht-A]
-  C --->|0.02|G[A]
-  C --->|0.98|H[Nicht-A]
-  D --->|0.04|I[A]
-  D --->|0.96|J[Nicht-A]
-  E --- K((0.030))
-  F --- L((0.570))
-  G --- M((0.002))
-  H --- N((0.098))
-  I --- O((0.012))
-  J --- P((0.288))
-```
-
-
-
-$$Pr(M1|A) = \frac{Pr(M1 \cap A)}{Pr(A)} = \frac{0.6 \cdot 0.05}{0.03 + 0.002 + 0.012} = \frac{0.03}{0.044} \approx 0.68$$
-
-
-$Pr(M1|A)$ beträgt also ca. 68%.
-
-Zur Erinnerung: $Pr(A)$ ist die totale Wahrscheinlichkeit
-(dass ein produziertes Teil Ausschuss ist).
 
 
 
@@ -690,7 +637,7 @@ Dabei ist Bayes' Theorem nichts anderes als eine normale bedingte Wahrscheinlich
 
 $Pr(H|D) = \frac{\overbrace{ Pr(H\cap D)}^\text{umformen}}{Pr(D)}$
 
-$Pr(H| D)$ kann man  umformen (vgl. @eq-pr-cond),
+$Pr(H| D)$ kann man  umformen (vgl. @eq-pr-cond und @def-gem-wskt-abh),
 dann erhält man Bayes' Theorem, s. @eq-bayes1:
 
 $$Pr(H|D) =\frac{Pr(D\cap H)}{Pr(D)} = \frac{Pr(D|H) \cdot Pr(H)}{Pr(D)}$$ {#eq-bayes1}
@@ -823,7 +770,7 @@ Dazu gehen wir so vor:
 ### Die Idee der Bayes-Box
 
 1.  Teile den Wertebereich des Parameters in ein "Gitter" auf, z.B. $0.1, 0.2, ..., 0.9, 1$.
-2.  Wähle den Priori-Wert des Parameters für jeden Gitterwert, z.B. 1/10 bei einer Gleichverteilung von 0 bis 1.
+2.  Wähle den Priori-Wert des Parameters für jeden Parameterwert, z.B. 1/11 bei einer Gleichverteilung von 0 bis 1.
 3.  Berechne den Likelihood für jeden Parameterwert.
 4.  Berechne den unstandardisierten Posteriori-Wert für jeden Parameterwert (Produkt von Priori und Likelihood).
 5.  Standardisiere den Posteriori-Wert durch teilen anhand der Summe alle unstand. Posteriori-Werte.
@@ -833,15 +780,15 @@ Für jeden Parameterwert berechnen wir eine (Post-)Wahrscheinlichkeit.^[Ein Para
 Häufig entspricht eine Hypothese einem Parameterwert, 
 etwa wenn man sagt: "Ich glaube, die Münze ist fair", was auf einem Parameterwert von 50% herausläuft.
 Dazu geben wir an, für wie wahrscheinlich wie apriori^[synonym: priori] 
--- also bevor wir irgendwelche Daten erheben -- jeden einzelnen Gitterwert halten.
-Wir machen es uns hier einfach und halten jeden Gitterwert für gleich wahrscheinlich. 
+-- also bevor wir irgendwelche Daten erheben -- jeden einzelnen Parameterwert halten.
+Wir machen es uns hier einfach und halten jeden Parameterwert für gleich wahrscheinlich. 
 Tatsächlich ist der konkrete Wert hier egal, entscheidend ist das Verhältnis der Apriori-Werte zueinander: 
-Geben wir einigen Gitterwerten den Wert 2, aber anderen den Wert 1, 
+Geben wir einigen Parameterwerten den Wert 2, aber anderen den Wert 1, 
 so halten wir Erstere für (apriori) doppelt so plausibel wie Letztere.
 Der Likelihood wird in diesem Beispiel mit der Binomialverteilung berechnet 
 (da wir ein binäres Ereignis, $W$ oder $L$, haben).
 Der Likelihood gibt an, 
-wie wahrscheinlich ein Gitterwert ist gegeben einem bestimmten apriori gewählten Parameterwert.
+wie wahrscheinlich ein Parameterwert ist gegeben einem bestimmten apriori gewählten Parameterwert.
 Die "End-Wahrscheinlichkeit", die unstandardisierte Post-Wahrscheinlichkeit, 
 die "hinten rauskommt" ist das Produkt von Priori-Wert und Likelihood.
 Anschaulich gesprochen: Die Priori-Werte werden mit den Likelihoodwerten gewichtet^[synonym: Die Likelihoodwerte werden mit den Apriori-Werten gewichtet.].
@@ -854,7 +801,7 @@ Damit haben wir dann die Ansprüche an eine Wahrscheinlichkeitsverteilung erfül
 ### Bayes-Box in R berechnen
 
 Legen wir uns ein Gitter mit Parameterwerten ($\pi$) an, um deren Posteriori-Wahrscheinlichkeit zu berechnen.
-Konkret gesprochen: Wir listen jeden möglichen Wasseranteil ($\pi$) auf,
+Konkret gesprochen: Wir listen jeden für uns interessanten Wasseranteil ($\pi$) auf,
 also $\pi=0, 0.1, 0.2, ..., 1$.
 Diese Parameterwerte sind die Hypothesen, die wir testen wollen,
 s. @lst-wasseranteile.
@@ -862,8 +809,8 @@ s. @lst-wasseranteile.
 
 ```{r p-gitter}
 #| lst-label: lst-wasseranteile
-#| lst-cap: "Gitter für Wasseranteile: 0, 0.1, 0.2, ..., 1"
-wasseranteile <- seq(from = 0, to = 1, by = 0.1)  # parameterwerte
+#| lst-cap: "Parameterwerte (Gitter) für Wasseranteile: 0, 0.1, 0.2, ..., 1"
+wasseranteile <- seq(from = 0, to = 1, by = 0.1)  # Parameterwerte
 wasseranteile
 ```
 
@@ -885,7 +832,7 @@ d <-
     # definiere die Hypothesen (die Parameterwerte, p): 
     p = wasseranteile,
     # Lege den Priori-Wert fest:
-    Priori  = .1) |> 
+    Priori  = 1/11) |> 
     mutate(
       # berechne Likelihood für jeden Wasseranteil (Parameterwert):
       Likelihood = Likelihood,
@@ -901,7 +848,7 @@ Die Bayes-Box (@tbl-globus) zeigt, wie sich die Post-Verteilung berechnet.
 
 ```{r QM2-Thema2-kleineModelle-29}
 #| label: tbl-globus
-#| tbl-cap: "Die Bayes-Box für den Globusversuch, k=6 Treffer, n=9 Versuche, Apriori-Wahrscheinlichkeit Pr(H)=0.1, und Wasseranteile p von 0 bis 1"
+#| tbl-cap: "Die Bayes-Box für den Globusversuch, k=6 Treffer, n=9 Versuche, Apriori-Wahrscheinlichkeit Pr(H)=9%, und Wasseranteile p von 0 bis 1"
 #| echo: false
 d %>% 
   mutate(id = 1:11) %>% 
@@ -911,17 +858,23 @@ d %>%
 
 
 Für jede Hypothese (Spalte `id`) berechnen wir die *unstandardisierte*
-Posteriori-Wahrscheinlichkeit als Produkt von Priori und Likelihood, s. @eq-postunstand.
+Posteriori-Wahrscheinlichkeit als Produkt von Priori und Likelihood, s. @eq-postunstand.    
 
 $$\text{Post}_{\text{unstand}} = \text{Priori} \cdot \text{Likelihood}$${#eq-postunstand}
 
 Um zur *standardisierten* Posteriori-Wahrscheinlichkeit zu gelangten,
 teilen wir in jeder Zeile der Bayesbox (also für jede Hypothese) 
 die unstandardisierte Post-Wahrscheinlichkeit durch die Summe 
-der unstandardisierten Post-Wahrscheinlichkeiten, $Pr(D) = 0.1$.
+der unstandardisierten Post-Wahrscheinlichkeiten, s. @eq-poststand-allgemein.
+
+
+$$\text{Post} = \frac{\text{Post}_{\text{unstand}}}{\text{Evidenz}} = \frac{Pr(H) \cdot Pr(H|D)}{Pr(D)}$${#eq-poststand-allgemein}
+
+Dabei haben wir die Priori-Wahrscheinlihkeit für alle Parameterwerte als gleich angenommen, da wir keinerlei Vorwissen hatten, $Pr(H_i) = 1/11$.
+Die Evidenz berechnet sich als Summe der unstandardisierten Post-Wahrscheinlichkeiten, $Pr(D) = 0.09$.
 
 :::callout-note
-Wenn der Priori-Wert für jeden Gitterwert gleich ist, dann ist der Likelihood gleich der unstandardisierten Post-Wahrscheinlichkeit.$\square$
+Wenn der Priori-Wert für jeden Parameterwert gleich ist, dann ist der Likelihood gleich der unstandardisierten Post-Wahrscheinlichkeit.$\square$
 :::
 
 
@@ -1070,8 +1023,78 @@ aber ähnlichen Darstellung wie in diesem Kapitel.
 
 
 
+### Bayes als Baum
 
-### Vertiefung: Zusammengesetzte Hypothesen
+Bayes' Theorem kann man sich als als Baumdiagramm vor Augen führen,
+@fig-tot-wskt2.
+
+Gesucht sei $Pr(M_1|A)$,
+also: die Wahrscheinlichkeit,
+dass das Teil von Maschine 1 produziert wurde, gegeben, dass es Ausschuss ist.
+Gegeben sind die Wahrscheinlichkeiten, dass Machine $i$ das Teil produziert hat, $Pr(M_i)$. Außerdem sind die Wahrscheinlichkeiten, dass das Teil Ausschuss ist, $Pr(A|M_i)$, bekannt.
+
+Das Diagramm löst die Aufgabe für uns;
+es zeigt damit die Anwendung von Bayes' Theorem auf.
+
+Um $Pr(M_1|A)$ zu erhalten,
+setzt man die Wahrscheinlichkeit
+des  *günstigen* Asts ins Verhältnis zur Wahrscheinlichkeit 
+*aller relevanten* Äste, $Pr(A)$.
+
+:::{#exm-bayes1}
+### Maschine produziert Ausschuss
+
+Die drei Maschinen $M_1, M_2, M_3$ produzieren den gleichen Artikel. Ihr jeweiliger Anteil, an der Produktion liegt bei 60%, 10% bzw. 30%. 
+Die jeweilige Ausschussquote liegt bei 5, 2, bzw. 4%, s. @fig-tot-wskt2.
+
+*Aufgabe*: Wie groß ist die Wahrscheinlichkeit, dass ein defektes Teil von Maschine 1 produziert wurde? Berechnen Sie diese Wahrscheinlichkeit.$\square$
+:::
+
+
+
+Der günstige (gesuchte) Ast, $Pr(M1 \cap A)$, ist hier fett gedruckt, s. @fig-tot-wskt2. 
+In @fig-tot-wskt2 zeigen die runden Kästchen am Ende der Pfade die Wahrscheinlichkeiten des jeweiligen Pfades an.
+
+
+
+
+
+```{mermaid}
+%%| fig-cap: Günstige Pfade
+%%| label: fig-tot-wskt2
+flowchart LR
+  A[Start] ==>|0.60|B[M1]
+  A --->|0.10|C[M2]
+  A --->|0.30|D[M3]
+  B ==>|0.05|E[A]
+  B -->|0.95|F[Nicht-A]
+  C --->|0.02|G[A]
+  C --->|0.98|H[Nicht-A]
+  D --->|0.04|I[A]
+  D --->|0.96|J[Nicht-A]
+  E --- K((0.030))
+  F --- L((0.570))
+  G --- M((0.002))
+  H --- N((0.098))
+  I --- O((0.012))
+  J --- P((0.288))
+```
+
+
+
+$$Pr(M1|A) = \frac{Pr(M1 \cap A)}{Pr(A)} = \frac{0.6 \cdot 0.05}{0.03 + 0.002 + 0.012} = \frac{0.03}{0.044} \approx 0.68$$
+
+
+$Pr(M1|A)$ beträgt also ca. 68%.
+
+Zur Erinnerung: $Pr(A)$ ist die totale Wahrscheinlichkeit
+(dass ein produziertes Teil Ausschuss ist).
+
+
+
+
+
+### Zusammengesetzte Hypothesen
 
 Das ist vielleicht ein bisschen fancy,
 aber man kann Bayes' Theorem auch nutzen, um die Wahrscheinlichkeit einer *zusammengesetzten Hypothese* zu berechnen: $H = H_1 \cap H_2$. 
@@ -1096,6 +1119,10 @@ das ist nur zulässig, wenn $R$ und $B$ unabhängig sind.
 
 
 ## Aufgaben
+
+### Papier-und-Bleistift-Aufgaben
+
+1. [Verteilungen-Quiz-01](https://datenwerk.netlify.app/posts/verteilungen-quiz-01/verteilungen-quiz-01)
 
 Alle Aufgaben mit dem Tag [rethink-chap2](https://datenwerk.netlify.app/#category=rethink-chap2).
 
