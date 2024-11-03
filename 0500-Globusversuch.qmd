@@ -50,6 +50,11 @@ Der Stoff dieses Kapitels deckt einen Teil aus @mcelreath2020, Kap. 2, ab. @mcel
 - [Statistik 1, Kap. "Daten Einlesen"](https://statistik1.netlify.app/020-r)
 
 
+### Begleitvideos
+
+- 📺 [Globusversuch](https://www.youtube.com/watch?v=fGlt9Ld4xzk&list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN&index=6)
+
+
 ### Benötigte R-Pakete
 
 
@@ -194,7 +199,7 @@ Vergleichen wir die kleine Welt unserer Modellen (@tbl-klein-gross), wie z.B. Be
 
 
 
-::: exm-bayes-lernen
+:::{exm-bayes-lernen}
 ### Die Bayes-Formel und Lernen
 🏋 Bayes-Inferenz ähnelt dem Lernen von Menschen. Geben Sie ein Beispiel von Lernen bei Menschen, das oben dargestelltem Prozess ähnelt!$\square$
 :::
@@ -210,12 +215,12 @@ Vergleichen wir die kleine Welt unserer Modellen (@tbl-klein-gross), wie z.B. Be
 
 :::{#exm-fofra1}
 ### Wasseranteil auf der Erdoberfläche
-Unsere Forschungsfrage lautet, mit welchem Anteil die Erde wohl mit Wasser bedeckt ist (@fig-erde)? Um möglichst wenig schreiben zu müssen, schreiben wir für "angenommener Wasseranteil auf der Erdoberfläche" kurz $p$ (wie proportion, Anteil). $\square$
+Unsere Forschungsfrage lautet, mit welchem Anteil die Erde wohl mit Wasser bedeckt ist (@fig-erde)? Um möglichst wenig schreiben zu müssen, schreiben wir für "angenommener Wasseranteil auf der Erdoberfläche" kurz $p$ oder $\pi$ (p wie proportion, Anteil). $\square$
 :::
 
-![Die Erde. Schön! Und mit viel Wasser, ca. 70% der Erdoberfläche sind mit Wasser bedeckt.](img/earth.png){#fig-erde width="10%" fig-align="center"}
+![Die Erde. Schön! Und mit viel Wasser, ca. 70% der Erdoberfläche sind mit Wasser bedeckt. 
+[Quelle](https://pngimg.com/image/25340), Lizenz: CC 4.0 BY-NC](img/earth.png){#fig-erde width="10%" fig-align="center"}
 
-[Quelle](https://pngimg.com/image/25340) CC 4.0 BY-NC
 
 Analog können wir uns vorstellen, 11 Wissenschaftlis haben jeweils eine andere Hypothese zum Wasseranteil, $\pi$, der Erde. Die erste Person hat die Hypothese $\pi_1 = 0$, die zweite Person geht von $\pi_2 = 0.1$ aus ... die 11. Person von $\pi_{11} = 1$.
  
@@ -227,7 +232,7 @@ So sah *mein*^[*Ihr* Ergebnis kann anders aussehen, schließlich ist es ja Zufal
 $$W \quad L \quad W \quad W \quad W \quad L \quad W \quad L \quad W$$
 
 
-Also $W=6$ und $L=3$.
+Also $W=6$ (Wasser, d.h. "Treffer") und $L=3$ (Land) ($n=9$ Versuche).
 
 :::{#exr-globe1}
 🏋️️ Besorgen Sie sich einen Globus (zur Not eine Münze) und stellen Sie den Versuch nach!$\square$
@@ -256,25 +261,6 @@ Was wären die Konsequenzen?$\square$
 
 
 
-### Ein paar Fachbegriffe
-
-
-:::{#def-priori}
-### Priori-Verteilung
-Für jede Hypothese haben wir ein Vorab-Wissen, das die jeweilige Plausibilität der Hypothese angibt: *Priori-Verteilung*.$\square$
-:::
-
-:::{#def-L}
-### Likelihood
-Für jede Hypothese (d.h. jeden *Parameterwert* $\pi$) möchten wir wissen, wie wahrscheinlich die Daten sind (unter der Annahme, dass die Hypothese richtig ist). Kurz: Wir suchen die *Likelihood*. 
-Anders gesagt: Die Likelihood sagt uns, wie gut die Daten zu einer bestimmten Hypothese passen.$\square$
-:::
-
-:::{#def-post1}
-### Posteriori-Verteilung
-Dann gewichten wir den Likelihood mit dem Vorabwissen, so dass wir die *Posteriori-Verteilung*^[ Anstatt von *Priori* liest man auch *Prior*; anstatt *Posteriori* auch *Posterior*] bekommen.$\square$
-:::
-
 
 ### Bayes-Updates
 
@@ -299,6 +285,31 @@ Anders gesagt: Das Vorwissen wird anhand der Erkenntnisse (der Daten) aktualisie
 graph LR
 A[Priori-Vert.]-->B[Likelihood]-->C[Post-Vert.]-->A
 ```
+
+
+
+
+### Ein paar Definitionen
+
+
+:::{#def-priori}
+### Priori-Verteilung
+Für jede Hypothese haben wir ein Vorab-Wissen, das die jeweilige Plausibilität der Hypothese angibt: *Priori-Verteilung* (synonym: Apriori-Verteilung).$\square$
+:::
+
+:::{#def-L}
+### Likelihood
+Für jede Hypothese (d.h. jeden *Parameterwert* $\pi$) möchten wir wissen, wie wahrscheinlich die Daten sind (unter der Annahme, dass die Hypothese richtig ist). Kurz: Wir suchen die *Likelihood*. 
+Anders gesagt: Die Likelihood sagt uns, wie gut die Daten zu einer bestimmten Hypothese passen.$\square$
+:::
+
+:::{#def-post1}
+### Posteriori-Verteilung
+Dann gewichten wir den Likelihood mit dem Vorabwissen, so dass wir die *Posteriori-Verteilung*^[ Anstatt von *Priori* liest man auch *Prior*; anstatt *Posteriori* auch *Posterior*] bekommen.$\square$
+:::
+
+
+
 
 
 
@@ -328,14 +339,17 @@ Die Wahrscheinlichkeitsverteilung ist bei jedem Wurf identisch.].
 Der Wasseranteil der Erde bleibt während des Versuchs gleich (durchaus plausibel).
 
 Lassen Sie uns im Folgenden die Wahrscheinlichkeit ($Pr$), $W$ mal Wasser und $L$ mal Land zu beobachten, wenn die Wahrscheinlichkeit für Wasser $\pi$ beträgt, so bezeichnen: $(Pr(W,L | \pi))$.
-Diese Wahrscheinlichkeit, $(Pr(W,L | \pi))$, kann man mit der *Binomialverteilung* berechnen.
+Diese Wahrscheinlichkeit, $Pr(W,L | \pi)$, kann man mit der *Binomialverteilung* berechnen.
 
-Möchte man die Wahrscheinlichkeit ansprechen für das Ereignis "5 mal Wasser und 2 mal Land, 
-wenn wir von einem Wasseranteil von 70% ausgehen", so würden wir kurz schreiben: $Pr(W=5, L=2 | \pi=.7)$.
-Oder noch kürzer:  $Pr(W=5 | \pi=.7)$, 
-denn bei 7 Würfen, von denen 5 $W$ gezeigt haben, ist die Anzahl von $L$ festgelegt. 
+Möchte man die Wahrscheinlichkeit ansprechen für das Ereignis "6 mal Wasser und 3 mal Land, 
+wenn wir von einem Wasseranteil von 70% ausgehen", so würden wir kurz schreiben: $Pr(W=6, L=3 | \pi=.7)$.
+Oder man könnte (synonym) schreiben:  $Pr(W=6 | \pi=.7, n=9)$.
 
-Die Binomialverteilung zeigt die Verteilung der Häufigkeit (Wahrscheinlichkeit) der Ereignisse (z.B. 2 Mal Kopf) beim wiederholten Münzwurf (und allen vergleichbaren Zufallsexperimenten): "Münzwurfverteilung", s. Kap. @sec-bin-distrib.
+
+Zur Erinnerung: Die Binomialverteilung zeigt die Verteilung der
+Wahrscheinlichkeit der Ereignisse (z.B. 2 Mal Kopf) beim wiederholten Münzwurf
+(und allen vergleichbaren Zufallsexperimenten): 
+"Münzwurfverteilung", s. Kap. @sec-bin-distrib.
 
 
 ### Binomialverteilung mit R
@@ -344,8 +358,7 @@ Die Binomialverteilung zeigt die Verteilung der Häufigkeit (Wahrscheinlichkeit)
 Praktischerweise ist die Binomialverteilung in R eingebaut, wie wir gleich sehen werden.
 
 Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (Wahrscheinlichkeit), 
-
-um 2 mal $W$ bei $N=W+L=3$ Würfen zu bekommen, wenn wir von $\pi=1/2$ ausgehen?
+um 2 mal $W$ bei $n=W+L=3$ Würfen zu bekommen, wenn wir von $\pi=1/2$ ausgehen?
 ^[Allgemeiner spricht man auch von 2 Treffern bei 3 Würfen 
 (d.h. 1 "Nicht-Treffer", den wir als "Niete" bezeichnen). 
 Treffer werden oft mit `1`  und Nieten mit `0` bezeichnet], 
@@ -358,6 +371,7 @@ s. @lst-dbinom1, @fig-binom1a und @eq-dbinom1.
 dbinom(x = 2, size = 3, prob = 1/2)
 ```
 
+Oder von Hand gerechnet:
 
 $$\begin{aligned}
 Pr(W=2 | \pi=1/2, n=3) &=\\ 
@@ -412,25 +426,10 @@ Für mehr Würfe würde das Diagramm irgendwann unübersichtlich werden.
 
 
 
-Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (Wahrscheinlichkeit), 
-um 6 mal $W$ bei $N=W+L=9$ Würfen zu bekommen, wenn wir von $p=1/2$ ausgehen?
-
-```{r QM2-Thema2-kleineModelle-21, echo = TRUE}
-dbinom(x = 6, size = 9, prob = 1/2)
-```
-
-Oder, synonym, wenn man einen Taschenrechner (oder R als Taschenrechner) benutzt:
-
-```{r}
-choose(9, 6) * (1/2)^6 * (1/2)^3
-```
-
-
-
 
 @fig-bin-klein zeigt die Binomialverteilung $X \sim Bin(9, 1/2)$:
 Die jeweilige Wahrscheinlichkeit für $k=0,1,\ldots, 9$ Treffer bei $n=9$ Versuchen mit
-Trefferwahrscheinlichkeit $p=1/2$.
+Trefferwahrscheinlichkeit $\pi=1/2$.
 
 
 ```{r QM2-Thema2-kleineModelle-25}
@@ -462,7 +461,7 @@ my_tree %>%
   ggraph(circular = TRUE) +
   geom_edge_link() +
   geom_node_label(mapping = aes(label = lab), size = 1) +
-  coord_fliPr() +
+  coord_flip() +
   scale_y_reverse() +
   theme_void()
 
@@ -472,43 +471,91 @@ my_tree %>%
 Jetzt folgen einige Beispiele.
 
 
+
+:::{#exm-globus697-dbinom}
+### Globus mit 6 Treffern bei 9 Würfen, p=1/2
+Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (Wahrscheinlichkeit), 
+um 6 mal $W$ bei $N=W+L=9$ Würfen zu bekommen, wenn wir von $p=1/2$ ausgehen?
+
+```{r QM2-Thema2-kleineModelle-21, echo = TRUE}
+dbinom(x = 6, size = 9, prob = 1/2)
+```
+
+Oder, synonym, wenn man einen Taschenrechner (oder R als Taschenrechner) benutzt:
+
+```{r}
+choose(9, 6) * (1/2)^6 * (1/2)^3
+```
+
+$\square$
+:::
+
+
 ::: {#exm-globus2}
 
-## Globus mit 9 Treffern bei 9 Würfen
+### Globus mit 9 Treffern bei 9 Würfen, p=1/2
 
-Was ist die Wahrscheinlichkeit für $W=9$ bei $N=9$ und $p=1/2$?
+Was ist die Wahrscheinlichkeit,
+gegeben $W=9$ bei $n=9$ und $\pi=1/2$?
 
-```{r QM2-Thema2-kleineModelle-22, echo = TRUE}
+```{r QM2-Thema2-kleineModelle-22a, echo = TRUE}
 dbinom(x = 9, size = 9, prob = 1/2)
 ```
 
-Das ist 1 günstiger Pfad von 512 Pfaden.
+Das ist 1 günstiger Pfad von 512 Pfaden, also $Pr(W=9|\pi=1/2, n=9)=1/512$.
 
 :::
 
 
+:::{#exm-globus697}
 
-`dbinom` gibt uns die Wahrscheinlichkeit von `x` Treffern, bei `size` Versuchen zurück, 
+### Globus mit 6 Treffern bei 9 Würfen, p=70%
+
+Was ist die Wahrscheinlichkeit für $W=6$,
+gegeben $n=9$ und $p=.7$?
+
+```{r QM2-Thema2-kleineModelle-22, echo = TRUE}
+dbinom(x = 6, size = 9, prob = .7)
+```
+
+Mit Taschenrechner gerechnet:
+
+```{r}
+choose(9,6) * (.7)^6 * (.3)^3
+```
+
+$\square$
+:::
+
+
+
+Zur Erinnerung: Die Funktion `dbinom` gibt uns die Wahrscheinlichkeit von `x` Treffern, 
+bei `size` Versuchen zurück, 
 wobei eine Binomialverteilung angenommen wird mit Trefferwahrscheinlichkeit `prob`.
 
 
 
 ### Unser Modell ist geboren
 
-Wir fassen das Globusmodell so zusammen, s. @eq-globus1.
+Wir fassen das allgemeine Globusmodell so zusammen, s. @eq-globus1.
 
-$$W \sim \text{Bin}(N,\pi)$${#eq-globus1}
+$$W \sim \text{Bin}(n,\pi)$${#eq-globus1}
 
-Lies: "W ist *bin*omial verteilt mit den Parametern $N$ und $\pi$". $N$ gibt die Anzahl der Globuswürfe an: $n=W+L$.
+Lies: "W ist *bin*omial verteilt mit den Parametern $n$ und $\pi$". $n$ gibt die Anzahl der Globuswürfe an: $n=W+L$.
 
-Unser Vorab-Wissen zu $p$ sei, dass uns alle Werte gleich ("uniform") plausibel erscheinen:
+
+Mit einem konkretes Beispiel: $W \sim \text{Bin}(9, 0.7)$ bedeutet, 
+dass wir von 9 Würfen ausgehen und eine Wahrscheinlichkeit für Wasser von 70% annehmen.
+
+Unser Vorab-  bzw. Apriori-Wissen zu $p$ sei, dass uns alle Werte gleich ("uniform") plausibel erscheinen:
 
 $$\pi \sim \text{Unif}(0,1).$$
 
 Lies: "$\pi$ ist gleich (uniform) verteilt mit der Untergrenze 0 und der Obergrenze 1".
 
 Man könnte auch sagen: Wir haben praktisch kein Vorwissen, wir sind erstmal (aprior) indifferent,
-jeder Parameterwert erscheint uns erstmal gleich wahrscheinlich.
+jeder Parameterwert erscheint uns erstmal gleich wahrscheinlich, 
+s. @fig-unif01
 
 
 
@@ -521,8 +568,9 @@ jeder Parameterwert erscheint uns erstmal gleich wahrscheinlich.
 ```{r QM2-Thema2-kleineModelle-26}
 #| echo: false
 #| fig-cap: "Gleichverteilung mit Parametern min=0 und max=1"
-#| label: fig-unif
-#| eval: false
+#| label: fig-unif01
+#| eval: true
+#| out-width: 50%
 
 source("funs/uniform_plot.R")
 
@@ -539,22 +587,16 @@ uniform_plot(0, 1)
 
 
 
-In der Praxis nutzt man Bayes häufig, wenn man Daten zu einer Wirkung $W$ hat,
-und auf die Ursache $U$ zurückschließen möchte, sinngemäß:
+In der Praxis nutzt man Bayes häufig,
+wenn man Daten $D$ gesammelt hat,
+und wissen möchte,
+wie wahrscheinlich eine Hypothese $H$ ist,
+im Lichte dieser gesammelten Daten, s. @eq-bayes3.
 
-$$W \quad \underrightarrow{Bayes} \quad U$$
-
-Dann kann man @eq-bayes1 so schreiben, s. @eq-bayes2:
-
-$$Pr(U|W) = \frac{ Pr(U) \cdot Pr(W|U) }{Pr(W)}$${#eq-bayes2}
-
-Eine ähnliche Situation, die in der Praxis häufig ist,
-dass man Daten $D$ hat und auf die Wahrscheinlichkeit einer Hypothese $H$ schließen möchte, s. @eq-bayes3.
-
-$$D \quad \underrightarrow{Bayes} \quad H$$
+<!-- $$D \quad \underrightarrow{Bayes} \quad H$$ -->
 
 
-$$rPr(H|D) = \frac{ Pr(H) \cdot Pr(D|H) }{Pr(D)}$${#eq-bayes3}
+$$Pr(H|D) = \frac{ Pr(H) \cdot Pr(D|H) }{Pr(D)}$${#eq-bayes3}
 
 @eq-bayes3 fragt nach $Pr(H|D)$:
 
@@ -568,44 +610,70 @@ Und antwortet so (@eq-bayes3):
 
 ### Bayes als Baum
 
-Gesucht sei $Pr(A_1|B)$.
+Bayes' Theorem kann man sich als als Baumdiagramm vor Augen führen,
+@fig-tot-wskt2.
 
-Für Bayes' Formel^[synonym: Satz von Bayes] setzt man die Wahrscheinlichkeit des  *günstigen* Ast zur Wahrscheinlichkeit aller relevanten Äste, $Pr(B)$.
+Gesucht sei $Pr(M_1|A)$,
+also: die Wahrscheinlichkeit,
+dass das Teil von Maschine 1 produziert wurde, gegeben, dass es Ausschuss ist.
+Gegeben sind die Wahrscheinlichkeiten, dass Machine $i$ das Teil produziert hat, $Pr(M_i)$. Außerdem sind die Wahrscheinlichkeiten, dass das Teil Ausschuss ist, $Pr(A|M_i)$, bekannt.
+
+Das Diagramm löst die Aufgabe für uns;
+es zeigt damit die Anwendung von Bayes' Theorem auf.
+
+Um $Pr(M_1|A)$ zu erhalten,
+setzt man die Wahrscheinlichkeit
+des  *günstigen* Asts ins Verhältnis zur Wahrscheinlichkeit 
+*aller relevanten* Äste, $Pr(A)$.
 
 :::{#exm-bayes1}
 ### Maschine produziert Ausschuss
 
 Die drei Maschinen $M_1, M_2, M_3$ produzieren den gleichen Artikel. Ihr jeweiliger Anteil, an der Produktion liegt bei 60%, 10% bzw. 30%. 
 Die jeweilige Ausschussquote liegt bei 5, 2, bzw. 4%, s. @fig-tot-wskt2.
-*Aufgabe*: Wie groß ist die Wahrscheinlichkeit, dass ein defektes Teil von Maschine 1 produziert wurde?$\square$
+
+*Aufgabe*: Wie groß ist die Wahrscheinlichkeit, dass ein defektes Teil von Maschine 1 produziert wurde? Berechnen Sie diese Wahrscheinlichkeit.$\square$
 :::
 
 
 
-Der günstige (gesuchte) Ast ist hier schwarz gedruckt, die übrigen Äste gestrichelt, s. @fig-tot-wskt2. $A_i$ zeigt das Ereignis, dass der Artikel von Maschine $i$ produziert wurde. $B$ ist das Ereignis "Artikel ist Ausschuss".
+Der günstige (gesuchte) Ast, $Pr(M1 \cap A)$, ist hier fett gedruckt, s. @fig-tot-wskt2. 
+In @fig-tot-wskt2 zeigen die runden Kästchen am Ende der Pfade die Wahrscheinlichkeiten des jeweiligen Pfades an.
+
+
+
+
 
 ```{mermaid}
 %%| fig-cap: Günstige Pfade
 %%| label: fig-tot-wskt2
 flowchart LR
-  A[Start] -->|0.6|B[A1]
-  A -.->|0.1|C[A2]
-  A -.->|0.3|D[A3]
-  B --->|0.05|E[B]
-  B -.->|0.95|F[Nicht-B]
-  C -.->|0.02|G[B]
-  C -.->|0.98|H[Nicht-B]
-  D -.->|0.04|I[B]
-  D -.->|0.96|J[Nicht-B]
+  A[Start] ==>|0.60|B[M1]
+  A --->|0.10|C[M2]
+  A --->|0.30|D[M3]
+  B ==>|0.05|E[A]
+  B -->|0.95|F[Nicht-A]
+  C --->|0.02|G[A]
+  C --->|0.98|H[Nicht-A]
+  D --->|0.04|I[A]
+  D --->|0.96|J[Nicht-A]
+  E --- K((0.030))
+  F --- L((0.570))
+  G --- M((0.002))
+  H --- N((0.098))
+  I --- O((0.012))
+  J --- P((0.288))
 ```
 
 
-$$Pr(A|B) = \frac{Pr(A1 \cap B)}{Pr(B)} = \frac{0.6 \cdot 0.05}{0.03 + 0.002 + 0.012} = \frac{0.03}{0.044} \approx 0.68$$
+
+$$Pr(M1|A) = \frac{Pr(M1 \cap A)}{Pr(A)} = \frac{0.6 \cdot 0.05}{0.03 + 0.002 + 0.012} = \frac{0.03}{0.044} \approx 0.68$$
 
 
-$Pr(A|B)$ beträgt also ca. 68%.
+$Pr(M1|A)$ beträgt also ca. 68%.
 
-Zur Erinnerung: $Pr(B)$ ist die totale Wahrscheinlichkeit.
+Zur Erinnerung: $Pr(A)$ ist die totale Wahrscheinlichkeit
+(dass ein produziertes Teil Ausschuss ist).
 
 
 
@@ -622,7 +690,7 @@ Dabei ist Bayes' Theorem nichts anderes als eine normale bedingte Wahrscheinlich
 
 $Pr(H|D) = \frac{\overbrace{ Pr(H\cap D)}^\text{umformen}}{Pr(D)}$
 
-$Pr(H| D)$ kann man  umformen, 
+$Pr(H| D)$ kann man  umformen (vgl. @eq-pr-cond),
 dann erhält man Bayes' Theorem, s. @eq-bayes1:
 
 $$Pr(H|D) =\frac{Pr(D\cap H)}{Pr(D)} = \frac{Pr(D|H) \cdot Pr(H)}{Pr(D)}$$ {#eq-bayes1}
@@ -636,7 +704,370 @@ $Pr(D\cap H) = Pr(D \cap H) = Pr(D) \cdot Pr(H|D) = Pr(H) \cdot Pr(D|H)$
 Dann lösen wir nach P$(H|D)$ auf, s. @eq-bayes2.
 
 
-$$Pr(H|D) = \frac{Pr(H) \cdot Pr(D|H)}{Pr(D)}$${#eq-bayes2}
+$$Pr(H|D) = \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}}$${#eq-bayes2}
+
+
+
+:::{#def-evidenz}
+### Evidenz
+$Pr(D)$ nennt man die *Evidenz*. 
+Die Evidenz berechnet sich als Summe der Likelihoods über alle Ausprägungen von $D$, vgl. @def-totwskt:
+
+$Pr(D) = Pr(D|H) \cdot Pr(H) + Pr(D| \neg H) \cdot Pr(\neg H)$
+
+
+Die Aufgabe der Evidenz ist nur dafür zu sorgen, dass der Bruch insgesamt nur Werte zwischen 0 und 1 annehmen kann. $\square$
+:::
+
+:::{#exm-evidenz1}
+In @exm-bayes1 betrug der Wert der Evidenz $0.03 + 0.002 + 0.012 = 0.044$,
+also ca. 4%. $\square$
+:::
+
+
+
+<!-- :::{#exm-regen-bayes} -->
+<!-- ### Bayes im kalten Regen -->
+<!-- Erinnerung wir uns (@exm-kalt-regen): Die Wahrscheinlichkeit für *Regen* und *kalt* ist gleich der Wahrscheinlichkeit von *Regen*, *gegeben kalt* mal der Wahrscheinlichkeit von *kalt*; das ist die Kettenregel (@def-kettenregel). $\square$ -->
+<!-- ::: -->
+
+
+
+
+
+
+
+### Bayes' Theorem als Formel
+
+Gesucht ist die Wahrscheinlichkeit einer Hypothese gegeben einer bestimmten Datenlage, $Pr(H|D)$, s. @eq-bayes5
+
+$$Pr(H|D) = \frac{Pr(D|H) \cdot Pr(H)}{Pr(D)} = \frac{\text{Likelihood}  \cdot \text{Priori-Wahrscheinlichkeit}}{\text{Evidenz}}$${#eq-bayes5}
+
+Schauen wir uns die Bestandteile von Bayes' Theorem (@eq-bayes5) noch etwas näher an:
+
+-   Posteriori-Wahrscheinlichkeit: $Pr_{Post} := Pr(H|D)$
+
+-   Likelihood: $L := Pr(D|H)$
+
+-   Priori-Wahrscheinlichkeit: $Pr_{Priori} := Pr(H)$
+
+-   Evidenz: $E := Pr(D)$
+
+
+Bayes' Theorem gibt die $Pr_{Post}$ an, wenn man die Gleichung
+mit der $Pr_{Priori}$ und dem $L$ füttert.
+
+Bayes' Theorem wird verwendet, um die $Pr_{Post}$ zu quantifizieren.
+
+Die $Pr_{Post}$ ist proportional zu $L \times Pr_{Priori}$.
+
+
+
+
+
+### Posteriori als Produkt von Priori und Likelihood
+
+Die *unstandardisierte* Post-Wahrscheinlichkeit $Pr_{\text{unPost}}$ ist einfach das Produkt von 
+Likelihood und Priori, s. @eq-unpost.
+
+$$Pr_{\text{unPost}} = L \times \text{Priori}$${#eq-unpost}
+
+
+
+Abb. @fig-post3 visualisiert, dass die Post-Verteilung eine Gewichtung von Priori und Likelihood ist.
+Mathematisch gesprochen beruht diese Gewichtung auf einer einfachen Multiplikationen der beiden genannten Terme.
+
+
+
+![Prior mal Likelihood = Post](img/img241.png){#fig-post3}
+
+
+Standardisiert man die unstandardisierte Post-Verteilung,
+so erhält man die standardisierte Post-Verteilung.
+Das Standardisieren dient nur dazu, einen Wert zwischen 0 und 1 zu erhalten. 
+Dies erreichen wir, indem wir durch die Summe aller Post-Wahrscheinlichkeiten dividieren.
+Die Summe der Post-Wahrscheinlichkeiten bezeichnet man (auch) als Evidenz, vgl. Gleichung @eq-post.
+
+
+$$\text{Posteriori} = \frac{\text{Likelihood} \times \text{Priori}}{\text{Evidenz}}$${#eq-post}
+
+
+
+
+
+
+### Wissen updaten: Wir füttern Daten in das Modell
+
+Golems können lernen?! @fig-lernen-golem zeigt die Post-Verteilung, nach $n=1, 2, ...,n=9$ 
+Datenpunkten, d.h. Würfen mit dem Globusball.
+Man sieht: Am Anfang, apriori, also bevor die Daten haben, 
+vor dem ersten Wurf also, ist jeder Parameterwert gleich wahrscheinlich für den Golem (das Modell).
+Je nach Ergebnis des Wurfes verändert sich die Wahrscheinlichkeit der Parameterwerte,
+kurz gesagt, die Post-Verteilung verändert sich in Abhängigkeit von den Daten.
+
+
+![Unser Golem lernt](img/img221.png){#fig-lernen-golem}
+
+
+Insofern kann man sagen: Unser Golem (das Modell) lernt. 
+Ob das Modell nützlich ist (präzise Vorhersagen liefert), 
+steht auf einem anderen Blatt.
+
+
+
+## Bayes berechnen mit mit der Bayes-Box
+
+Wir erstellen uns eine kleine Tabelle, die man "Bayes-Box" nennen könnte.
+Dazu gehen wir so vor:
+
+### Die Idee der Bayes-Box
+
+1.  Teile den Wertebereich des Parameters in ein "Gitter" auf, z.B. $0.1, 0.2, ..., 0.9, 1$.
+2.  Wähle den Priori-Wert des Parameters für jeden Gitterwert, z.B. 1/10 bei einer Gleichverteilung von 0 bis 1.
+3.  Berechne den Likelihood für jeden Parameterwert.
+4.  Berechne den unstandardisierten Posteriori-Wert für jeden Parameterwert (Produkt von Priori und Likelihood).
+5.  Standardisiere den Posteriori-Wert durch teilen anhand der Summe alle unstand. Posteriori-Werte.
+
+
+Für jeden Parameterwert berechnen wir eine (Post-)Wahrscheinlichkeit.^[Ein Parameterwert ist eine mögliche Ausprägung des Parameters.]
+Häufig entspricht eine Hypothese einem Parameterwert, 
+etwa wenn man sagt: "Ich glaube, die Münze ist fair", was auf einem Parameterwert von 50% herausläuft.
+Dazu geben wir an, für wie wahrscheinlich wie apriori^[synonym: priori] 
+-- also bevor wir irgendwelche Daten erheben -- jeden einzelnen Gitterwert halten.
+Wir machen es uns hier einfach und halten jeden Gitterwert für gleich wahrscheinlich. 
+Tatsächlich ist der konkrete Wert hier egal, entscheidend ist das Verhältnis der Apriori-Werte zueinander: 
+Geben wir einigen Gitterwerten den Wert 2, aber anderen den Wert 1, 
+so halten wir Erstere für (apriori) doppelt so plausibel wie Letztere.
+Der Likelihood wird in diesem Beispiel mit der Binomialverteilung berechnet 
+(da wir ein binäres Ereignis, $W$ oder $L$, haben).
+Der Likelihood gibt an, 
+wie wahrscheinlich ein Gitterwert ist gegeben einem bestimmten apriori gewählten Parameterwert.
+Die "End-Wahrscheinlichkeit", die unstandardisierte Post-Wahrscheinlichkeit, 
+die "hinten rauskommt" ist das Produkt von Priori-Wert und Likelihood.
+Anschaulich gesprochen: Die Priori-Werte werden mit den Likelihoodwerten gewichtet^[synonym: Die Likelihoodwerte werden mit den Apriori-Werten gewichtet.].
+Da wir letztlich eine Wahrscheinlichkeitverteilung bekommen möchten, 
+teilen wir jeden Posteriori-Wert durch die Summe aller Posteriori-Werte. 
+Dadurch ist gerantiert, dass sich die Posteriori-Werte zu eins aufaddieren. 
+Damit haben wir dann die Ansprüche an eine Wahrscheinlichkeitsverteilung erfüllt (vgl. @sec-kolmogorov).
+
+
+### Bayes-Box in R berechnen
+
+Legen wir uns ein Gitter mit Parameterwerten ($\pi$) an, um deren Posteriori-Wahrscheinlichkeit zu berechnen.
+Konkret gesprochen: Wir listen jeden möglichen Wasseranteil ($\pi$) auf,
+also $\pi=0, 0.1, 0.2, ..., 1$.
+Diese Parameterwerte sind die Hypothesen, die wir testen wollen,
+s. @lst-wasseranteile.
+
+
+```{r p-gitter}
+#| lst-label: lst-wasseranteile
+#| lst-cap: "Gitter für Wasseranteile: 0, 0.1, 0.2, ..., 1"
+wasseranteile <- seq(from = 0, to = 1, by = 0.1)  # parameterwerte
+wasseranteile
+```
+
+
+Dann berechnen wir schon mal die Wahrscheinlichkeit der Daten (6 W bei 9 Würfen) gegeben jeweils eines Wasseranteils:
+
+```{r lik-69}
+Likelihood <- dbinom(6, size = 9, prob = wasseranteile)
+Likelihood
+```
+
+Dann packen wir das alles in eine Tabelle, die "Bayes-Box", s. @tbl-globus und @lst-gitter1.
+
+```{r QM2-Thema2-kleineModelle-28, echo = TRUE}
+#| lst-cap: "Wir basteln uns eine Bayes-Box"
+#| lst-label: lst-gitter1
+d <-
+  tibble(
+    # definiere die Hypothesen (die Parameterwerte, p): 
+    p = wasseranteile,
+    # Lege den Priori-Wert fest:
+    Priori  = .1) |> 
+    mutate(
+      # berechne Likelihood für jeden Wasseranteil (Parameterwert):
+      Likelihood = Likelihood,
+      # berechne unstand. Posteriori-Werte:
+      unstd_Post = Likelihood * Priori,
+      # berechne Evidenz, d.i. die Summe aller unstand. Post-Werte:
+      Evidenz = sum(unstd_Post),
+      # berechne stand. Posteriori-Werte (summiert zu 1):
+      Post = unstd_Post / Evidenz)  
+```
+
+Die Bayes-Box (@tbl-globus) zeigt, wie sich die Post-Verteilung berechnet.
+
+```{r QM2-Thema2-kleineModelle-29}
+#| label: tbl-globus
+#| tbl-cap: "Die Bayes-Box für den Globusversuch, k=6 Treffer, n=9 Versuche, Apriori-Wahrscheinlichkeit Pr(H)=0.1, und Wasseranteile p von 0 bis 1"
+#| echo: false
+d %>% 
+  mutate(id = 1:11) %>% 
+  relocate(id, .before = 1) %>% 
+  knitr::kable(digits = 2)
+```
+
+
+Für jede Hypothese (Spalte `id`) berechnen wir die *unstandardisierte*
+Posteriori-Wahrscheinlichkeit als Produkt von Priori und Likelihood, s. @eq-postunstand.
+
+$$\text{Post}_{\text{unstand}} = \text{Priori} \cdot \text{Likelihood}$${#eq-postunstand}
+
+Um zur *standardisierten* Posteriori-Wahrscheinlichkeit zu gelangten,
+teilen wir in jeder Zeile der Bayesbox (also für jede Hypothese) 
+die unstandardisierte Post-Wahrscheinlichkeit durch die Summe 
+der unstandardisierten Post-Wahrscheinlichkeiten, $Pr(D) = 0.1$.
+
+:::callout-note
+Wenn der Priori-Wert für jeden Gitterwert gleich ist, dann ist der Likelihood gleich der unstandardisierten Post-Wahrscheinlichkeit.$\square$
+:::
+
+
+:::{#exm-globus697-post}
+### Post-Wahrscheinlichkeit im Globusversuch für p=.7
+In @exm-globus697 haben wir die Wahrscheinlichkeit für 6 Treffer bei 9 Würfen gegeben einer Trefferwahrscheinlichkeit von $\pi = .7$ berechnet.
+Damit haben wir die Likelihood $L = Pr(D|H) =.27$ berechnet.
+
+
+Auf dieser Basis können wir die Posteriori-Wahrscheinlichkeit $Pr_{Post}$ berechnen, zunächst die unstandardisierte.
+Dazu haben wir die Priori-Wahrscheinlichkeit mit der Likelihood multipliziert, s. @eq-postunstand697:
+
+$$\text{Post}_{\text{unstand}} = Pr(H) \cdot Pr(D|H) = 0.1 \cdot 0.27 = 0.027$${#eq-postunstand697}
+
+Jetzt standardisieren wir die unstandardisierte Post-Wahrscheinlichkeit, indem wir durch die Evidenz dividieren, s. @eq-poststand697.
+
+$$\text{Post} = \frac{\text{Post}_{\text{unstand}}}{\text{Evidenz}} = \frac{0.027}{0.1} =0.27$${#eq-poststand697}
+
+
+@eq-bayes-globus697 fasst die Schritte der Berechnung zusammen.
+
+$$\begin{aligned}
+Pr(H_{\pi=0.7}|D) =
+\frac{Pr(D|H) \cdot Pr(H)}{Pr(D)} &= \\
+\frac{\text{Likelihood}  \cdot \text{Priori-Wahrscheinlichkeit}}{\text{Evidenz}} &= \\
+\frac{0.27 \cdot 0.1}{0.1} &= 0.27
+\end{aligned}$${#eq-bayes-globus697} $\square$
+
+Fazit: Nach dem Versuch, d.h. nachdem wir die Daten in Betracht gezogen haben,
+hat sich unsere Meinung über den Wasseranteil geupdatet von 0.1 auf 0.27.$\square$
+:::
+
+
+
+
+
+
+:::{#exr-priori-change}
+🏋️ Was wohl mit *Post* passiert, wenn wir *Priori* ändern?$\square$
+:::
+
+@fig-post1 zeigt eine Visualisierung der Post-Verteilung mit Hilfe der Funktion `ggline(x, y)` aus dem Paket `ggpubr`.
+Wie man sieht, ist die Post-Wahrscheinlichkeit am höchsten bei $\pi=0.7$.
+Wobei der Bereich von 0.6 bis 0.8 auch recht wahrscheinlich ist.
+
+
+```{r}
+#| echo: false
+#| label: p-post1
+#| out-width: 70%
+#| fig-cap: "Die Post-Verteilung visualisiert. Die Post-Wahrscheinlichkeit ist am höchsten bei p=0.7"
+library(ggpubr)
+
+ggline(d,
+       x = "p",
+       y = "Post")
+```
+
+
+
+
+
+### Was sagt die Post?
+
+Die Posteriori-Verteilung (Kurz: "Post-Verteilung", oder "Post"), $Pr_{Post}$, zeigt, wie plausibel wir jeden Wert von $p$ halten, 
+jetzt, nachdem wir die Daten des Versuchs kennen.
+Die Post-Wahrscheinlichkeit updatet unser Apriori-Wissen mit dem Wissen, 
+das wir durch die Daten erhalten haben.
+
+
+
+@fig-gitter zeigt die Post-Wahrscheinlichkeit für 5, 10 und 20 Parameterwerte. Das mittlere Teilbild (10 Gitterwerte) entspricht unserer Tabelle oben.
+Man sieht: Je mehr Parameterwerte, desto genauer wird die Verteilung wiedergegeben.
+
+
+![Je mehr Parameterwerte, desto genauer wird die Verteilung wiedergegeben.](img/img242.png){#fig-gitter}
+
+
+:::{.callout-note}
+Unter sonst gleichen Umständen gilt:
+
+- Mehr Gitterwerte glätten die Annäherung.
+- Je größer die Stichprobe ($N$), desto zuverlässiger wird unsere Berechnung. $\square$
+:::
+
+
+
+
+
+
+:::{#callout-important}
+Die Post-Verteilung ist sowas wie das Ziel all Ihrer Träume (falls Sie es noch nicht gewusst haben):
+Aus der Post-Verteilung können Sie ablesen,
+wie wahrscheinlich Ihre Hypothese (Ihr Lieblings-Parameterwert) ist. Und noch einiges mehr, aber das ist Thema des nächsten Kapitels. $\square$
+:::
+
+
+
+
+
+## Abschluss
+
+### Zusammenfassung
+
+
+📺 [Übung zum Globusversuch](https://www.youtube.com/watch?v=YJEZiQvCBgs&list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN&index=7)
+
+-   In unserem Modell haben wir Annahmen zu $Pr_{Priori}$ und $L$ getroffen.
+
+-   Auf dieser Basis hat der Golem sein Wissen geupdated zu $Pr_{Post}$.
+
+-   Mit der Gitter-Methode haben wir viele Hypothesen (Parameterwerte) untersucht und jeweils die $Pr_{Post}$ berechnet.
+
+-   Unser Modell bildet die kleine Welt ab; ob es in der großen Welt nützlich ist, steht auf einem anderen Blatt.
+
+:::{#exr-tipp-p}
+🏋️ Wenn Sie auf einen Prozentwert für $W$ tippen müssten, welchen würden Sie nehmen, laut dem Modell (und gegeben der Daten)? $\square$
+:::
+
+
+### Der Globusversuch als Modell für zweiwertige Zufallsversuche
+
+Der Globusversuch ist kein prototypisches Beispiel für Statistik in der Praxis, zumindest nicht auf dem ersten Blick. 
+Er hat aber aber den Vorteil, dass es ein einfaches, gut greifbares Beispiel ist, und damit zum Lernen gut geeignet ist.
+Bei näherer Betrachtung ist der Globusversuch prototypisch für ganz viele Fragestellungen:
+
+- Von einem neuen Produkt von von $n$ Exemplaren $k$ verkauft. Auf welchen Wert $p$ kann die Akzeptanzrate dieses Produkts geschätzt werden?
+- Ein Chat-Bot hat von $n$ Fragen $k$ richtig beantwortet. Wie hoch kann die Verständnisrate $p$ dieses Programms geschätzt werden?
+- Eine neue Krebstherapie hat von $n$ "austherapierten" Patientis $k$ geheilt. Auf wie hoch kann die Erfolgsrate dieser Therapie geschätzt werden?
+
+
+
+Kurz: Der Globusversuch ist ein Muster für zweiwertige Zufallsversuche. Und solche sind häufig im Leben, im Business und in der Wissenschaft.
+
+
+
+
+
+## Vertiefung
+
+
+### Bayes-Video von 3b1b
+
+Das ["Bayes-Paradox-Video" von 3b1b](https://youtu.be/lG4VkPoG3ko) präsentiert eine gut verständliche Darstellung des Bayes-Theorem aus einer zwar nicht gleichen, 
+aber ähnlichen Darstellung wie in diesem Kapitel.
+
 
 
 
@@ -658,328 +1089,6 @@ $${#eq-bayes4}
 
 Hier haben wir $Pr(R \cap B)$  aufgelöst in $Pr(R) \cdot Pr(B)$,
 das ist nur zulässig, wenn $R$ und $B$ unabhängig sind.
-
-
-
-
-## Das Globus-Modell als Bayes' Theorem
-
-
-📺 [Globusversuch](https://www.youtube.com/watch?v=fGlt9Ld4xzk&list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN&index=6)
-
-### Von gemeinsamer zur bedingen Wahrscheinlichkeit
-
-Erinnerung wir uns (@exm-kalt-regen): Die Wahrscheinlichkeit für *Regen* und *kalt* ist gleich der Wahrscheinlichkeit von *Regen*, *gegeben kalt* mal der Wahrscheinlichkeit von *kalt*; das ist die Kettenregel (@def-kettenregel).
-
-Entsprechend gilt: 
-
-Die gemeinsame Wahrscheinlichkeit für die beiden Ereignisse $W$ (z.B. 6 Mal Wasser zu erhalten bei 9 Versuchen) und $A$ (z.B. dass der Wasseranteil der Erdoberfläche 70% beträgt) lässt sich ebenso mit der Kettenregel der Wahrscheinlichkeitsrechnung bestimmen:
-
-
-<!-- Die Wahrscheinlichkeit von einer bestimmten Zahl an $W$ mit einer bestimmten Wasser-Wahrscheinlichkeit $p$ ist das Produkt von $Pr(W|p)$ und der Wahrscheinlichkeit $Pr(p)$: -->
-
-$$Pr(W,A) = Pr(W|A) \cdot Pr(A)$$
-
-Laut der Kettenregel ist "Drehen" erlaubt:
-
-$$Pr(A,W) = Pr(A|W) \cdot Pr(W)$$
-
-
-
-Wir setzen die letzten beiden Gleichungen gleich:
-
-$$Pr(W|p) \cdot Pr(A) = Pr(A|W) \cdot (W)$$
-
-Und dann lösen wir auf nach der Posteriori-Wahrscheinlichkeit^[kürzen wir mit Post-Wahrscheinlichkeit or $Pr(Post)$ ab], $Pr(A|W)$,
-voilà! 
-Wir haben Bayes' Theorem genutzt, um die gesuchte Größe, $Pr(A|W)$, zu bestimmen, s. @eq-globusbayes.
-
-$$Pr(A|W) = \frac{Pr(W|A) \times Pr(A)}{Pr(W)}$${#eq-globusbayes}
-
-$Pr(W)$ nennt die *Evidenz*. 
-Die Evidenz berechnet sich als Mittelwert der Likelihoods über alle Werte von $W$, vgl. @def-totwskt:
-
-$Pr(W) = Pr(W|A) \times Pr(A) + Pr(\neg W| \neg A) \times Pr(\neg A)$
-
-
-Die Aufgabe der Evidenz ist nur dafür zu sorgen, dass der Bruch insgesamt nur Werte zwischen 0 und 1 annehmen kann.
-
-### Bayes' Theorem als Formel
-
-Gesucht ist die Wahrscheinlichkeit einer Hypothese gegeben einer bestimmten Datenlage, $Pr(H|D)$:
-
-$$Pr(H|D) = \frac{Pr(D|H) Pr(H)}{Pr(D)} = \frac{\text{Likelihood}  \cdot \text{Priori}}{\text{Evidenz}}$$
-
-Schauen wir uns die Bestandteile von Bayes' Theorem noch etwas näher an:
-
--   Posteriori-Wahrscheinlichkeit: $Pr_{Post} := Pr(H|D)$
-
--   Likelihood: $L := Pr(D|H)$
-
--   Priori-Wahrscheinlichkeit: $Pr_{Priori} := Pr(H)$
-
--   Evidenz: $E := Pr(D)$
-
-
-Bayes' Theorem gibt die $Pr_{Post}$ an, wenn man die Gleichung mit der $Pr_{Priori}$ und dem $L$ füttert.
-
-Bayes' Theorem wird verwendet, um die $Pr_{Post}$ zu quantifizieren.
-
-Die $Pr_{Post}$ ist proportional zu $L \times Pr_{Priori}$.
-
-### Posteriori als Produkt von Priori und Likelihood
-
-Die unstandardisierte Post-Wahrscheinlichkeit $Pr_{\text{unPost}}$ ist einfach das Produkt von Likelihood und Priori, s. @eq-unpost.
-
-$$Pr_{\text{unPost}} = L \times \text{Priori}$${#eq-unpost}
-
-Das Standardisieren dient wie gesagt nur dazu, einen Wert zwischen 0 und 1 zu erhalten. 
-Dies erreichen wir, indem wir durch die Summe aller Post-Wahrscheinlichkeiten dividieren.
-Die Summe der Post-Wahrscheinlichkeiten bezeichnet man (auch) als Evidenz, vgl. Gleichung @eq-post.
-
-
-$$\text{Posteriori} = \frac{\text{Likelihood} \times \text{Priori}}{\text{Evidenz}}$${#eq-post}
-
-
-
-Abb. @fig-post3 visualisiert, dass die Post-Verteilung eine Gewichtung von Priori und Likelihood ist.
-Mathematisch gesprochen beruht diese Gewichtung auf einer einfachen Multiplikationen der beiden genannten Terme.
-
-
-
-![Prior mal Likelihood = Post](img/img241.png){#fig-post3}
-
-
-
-
-
-
-
-### Wissen updaten: Wir füttern Daten in das Modell
-
-Golems können lernen?! @fig-lernen-golem zeigt die Post-Verteilung, nach $n=1, 2, ...,n=9$ Datenpunkten, d.h. Würfen mit dem Globusball.
-Man sieht: Am Anfang, apriori, also bevor die Daten haben, vor dem ersten Wurf also, ist jeder Parameterwert gleich wahrscheinlich für den Golem (das Modell).
-Je nach Ergebnis des Wurfes verändert sich die Wahrscheinlichkeit der Parameterwerte,
-kurz gesagt, die Post-Verteilung verändert sich in Abhängigkeit von den Daten.
-
-
-![Unser Golem lernt](img/img221.png){#fig-lernen-golem}
-
-
-Insofern kann man sagen: Unser Golem (das Modell) lernt. Ob das Modell nützlich ist (präzise Vorhersagen liefert), steht auf einem anderen Blatt.
-
-
-
-## Bayes berechnen mit mit dem Bayes-Gitter
-
-Wir erstellen uns eine kleine Tabelle, die man "Bayes-Gitter" nennen könnte.
-Dazu gehen wir so vor:
-
-### Idee
-
-1.  Teile den Wertebereich des Parameter in ein "Gitter" auf, z.B. $0.1, 0.2, ..., 0.9, 1$.
-2.  Wähle den Priori-Wert des Parameters für jeden Gitterwert, z.B. 1/10 bei einer Gleichverteilung von 0 bis 1.
-3.  Berechne den Likelihood für jeden Parameterwert.
-4.  Berechne den unstandardisierten Posteriori-Wert für jeden Parameterwert (Produkt von Priori und Likelihood).
-5.  Standardisiere den Posteriori-Wert durch teilen anhand der Summe alle unstand. Posteriori-Werte.
-
-
-Für jeden Parameterwert berechnen wir eine (Post-)Wahrscheinlichkeit.^[Ein Parameterwert ist eine mögliche Ausprägung des Parameters.]
-Häufig entspricht eine Hypothese einem Parameterwert, 
-etwa wenn man sagt: "Ich glaube, die Münze ist fair", was auf einem Parameterwert von 50% herausläuft.
-Dazu geben wir an, für wie wahrscheinlich wie apriori^[synonym: priori] - also bevor wir irgendwelche Daten erheben - jeden einzelnen Gitterwert halten.
-Wir machen es uns hier einfach und halten jeden Gitterwert für gleich wahrscheinlich. 
-Tatsächlich ist der konkrete Wert hier egal, entscheidend ist das Verhältnis der Apriori-Werte zueinander: 
-Geben wir einigen Gitterwerten den Wert 2, aber anderen den Wert 1, 
-so halten wir Erstere für (apriori) doppelt so plausibel wie Letztere.
-Der Likelihood wird in diesem Fall mit der Binomialverteilung berechnet. Der Likelihood gibt an, 
-wie wahrscheinlich ein Gitterwert ist gegeben einem bestimmten apriori gewählten Parameterwert.
-Die "End-Wahrscheinlichkeit", die unstandardisierte Post-Wahrscheinlichkeit, die "hinten rauskommt" ist das Produkt von Priori-Wert und Likelihood.
-Anschaulich gesprochen: Die Priori-Werte werden mit den Likelihoodwerten gewichtet^[synonym: Die Likelihoodwerte werden mit den Apriori-Werten gewichtet.].
-Da wir letztlich eine Wahrscheinlichkeitverteilung bekommen möchten, teilen wir jeden Posteriori-Wert durch die Summe aller Posteriori-Werte. 
-Dadurch ist gerantiert, dass sich die Posteriori-Werte zu eins aufaddieren. 
-Damit haben wir dann die Ansprüche an eine Wahrscheinlichkeitsverteilung erfüllt (vgl. @sec-kolmogorov).
-
-
-### Bayes-Gitter in R berechnen
-
-Legen wir uns eine Tabelle mit Gitterwerten an, um deren Posteriori-Wahrscheinlichkeit zu berechnen.
-
-Ein paar Vorarbeiten. 
-Zuerst wählen wir unsere Parameterwerte; sagen wir 0, 0.1, 0.2, ... , 1:
-
-```{r}
-p_Gitter <- seq(from = 0, to = 1, by = 0.1)
-p_Gitter
-```
-
-
-Dann berechnen wir schon mal die Wahrscheinlichkeit der Daten (6 W bei 9 Würfen) gegeben jeweils eines Gitterwerts:
-
-```{r}
-Likelihood <- dbinom(6, size = 9, prob = p_Gitter)
-Likelihood
-```
-
-Dann packen wir das alles in eine Tabelle, s. @tbl-globus.
-
-```{r QM2-Thema2-kleineModelle-28, echo = TRUE}
-d <-
-  tibble(
-    # definiere die Hypothesen (das "Gitter"): 
-    p_Gitter = p_Gitter,
-    # bestimme den Priori-Wert:       
-    Priori  = .1) %>%  
-    mutate(
-      # berechne Likelihood für jeden Gitterwert:
-      Likelihood = Likelihood,
-      # berechne unstand. Posteriori-Werte:
-      unstd_Post = Likelihood * Priori,
-      # berechne Evidenz, d.i. die Summe aller unstand. Post-Werte:
-      Evidenz = sum(unstd_Post),
-      # berechne stand. Posteriori-Werte (summiert zu 1):
-      Post = unstd_Post / Evidenz)  
-```
-
-Das "Bayes-Gitter" (@tbl-globus) zeigt, wie sich die Post-Verteilung berechnet.
-
-```{r QM2-Thema2-kleineModelle-29}
-#| label: tbl-globus
-#| tbl-cap: "Die Bayes-Box für den Globusversuch"
-#| echo: false
-d %>% 
-  mutate(id = 1:11) %>% 
-  relocate(id, .before = 1) %>% 
-  knitr::kable(digits = 2)
-```
-
-
-Für jede Hypothese (Spalte `id`) berechnen wir die unstandardisierte Posteriori-Wahrscheinlichkeit als Produkt von Priori und Likelihood:
-
-$\text{Post}_{\text{unstand}} = \text{Priori} \cdot \text{Likelihood}$
-
-Um zur standardisierten Posteriori-Wahrscheinlichkeit zu gelangten,
-teilen wir in jeder Zeile der Gitterbox (also für jede Hypothese) die unstandardisierte Post-Wahrscheinlichkeit durch die Summe der unstandardisierten Post-Wahrscheinlichkeiten.
-
-
-:::callout-note
-Wenn der Priori-Wert für jeden Gitterwert gleich ist, dann ist der Likelihood gleich der unstandardisierten Post-Wahrscheinlichkeit.$\square$
-:::
-
-
-:::{exr-priori-change}
-🏋️ Was wohl mit *Post* passiert, wenn wir *Priori* ändern?$\square$
-:::
-
-@fig-post1 zeigt eine Visualisierung der Post-Verteilung mit Hilfe der Funktion `ggline()` aus dem Paket `ggpubr`.
-
-:::: {.columns}
-
-::: {.column width="50%"}
-
-```{r}
-#| eval: false
-library(ggpubr)
-
-ggline(d,
-       x = "p_Gitter",
-       y = "Post")
-```
-:::
-
-::: {.column width="50%"}
-
-```{r}
-#| echo: false
-#| label: p-post1
-#| fig-cap: Die Post-Verteilung visualisiert
-library(ggpubr)
-
-ggline(d,
-       x = "p_Gitter",
-       y = "Post")
-```
-:::
-
-::::
-
-
-
-
-### Was sagt die Post?
-
-Die Posteriori-Verteilung (Kurz: "Post-Verteilung"), $Pr_{Post}$, zeigt, wie plausibel wir jeden Wert von $p$ halten, jetzt, nachdem wir die Daten des Versuchs kennen.
-
-
-@fig-gitter zeigt die Post-Wahrscheinlichkeit für 5, 10 und 20 Parameterwerte. Das mittlere Teilbild (10 Gitterwerte) entspricht unserer Tabelle oben.
-
-
-![Je mehr Parameterwerte, desto genauer wird die Verteilung wiedergegeben.](img/img242.png){#fig-gitter}
-
-
-:::callout-note
-Unter sonst gleichen Umständen gilt:
-
-- Mehr Gitterwerte glätten die Annäherung.
-- Je größer die Stichprobe ($N$), desto zuverlässiger wird unsere Berechnung.
-:::
-
-::: callout-important
-Die Post-Verteilung ist sowas wie das Ziel all Ihrer Träume (falls Sie es noch nicht gewusst haben):
-Aus der Post-Verteilung können Sie ablesen,
-wie wahrscheinlich Ihre Hypothese (Ihr Lieblings-Parameterwert) ist. Und noch einiges mehr, aber das ist Thema des nächsten Kapitels.
-:::
-
-
-
-
-## Abschluss
-
-### Zusammenfassung
-
-
-📺 [Übung zum Globusversucht](https://www.youtube.com/watch?v=YJEZiQvCBgs&list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN&index=7)
-
--   In unserem Modell haben wir Annahmen zu $Pr_{Priori}$ und $L$ getroffen.
-
--   Auf dieser Basis hat der Golem sein Wissen geupdated zu $Pr_{Post}$.
-
--   Mit der Gitter-Methode haben wir viele Hypothesen (Parameterwerte) untersucht und jeweils die $Pr_{Post}$ berechnet.
-
--   Unser Modell bildet die kleine Welt ab; ob es in der großen Welt nützlich ist, steht auf einem anderen Blatt.
-
-🏋️ Wenn Sie auf einen Prozentwert für $W$ tippen müssten, welchen würden Sie nehmen, laut dem Modell (und gegeben der Daten)?
-
-
-### Der Globusversuch als Modell für zweiwertige Zufallsversuche
-
-Der Globusversuch ist kein prototypisches Beispiel für Statistik in der Praxis, zumindest nicht auf dem ersten Blick. 
-Er hat aber aber den Vorteil, dass es ein einfaches, gut greifbares Beispiel ist, und damit zum Lernen gut geeignet ist.
-Bei näherer Betrachtung ist der Globusversuch prototypisch für ganz viele Fragestellungen:
-
-- Von einem neuen Produkt von von $n$ Exemplaren $k$ verkauft. Auf welchen Wert $p$ kann die Akzeptanzrate dieses Produkts geschätzt werden?
-- Ein Chat-Bot hat von $n$ Fragen $k$ richtig beantwortet. Wie hoch kann die Verständnisrate $p$ dieses Programms geschätzt werden?
-- Eine neue Krebstherapie hat von $n$ "austherapierten" Patientis $k$ geheilt. Auf wie hoch kann die Erfolgsrate dieser Therapie geschätzt werden?
-
-
-
-Kurz: Der Globusversuch ist ein Muster für zweiwertige Zufallsversuche. Und solche sind häufig im Leben, im Business und in der Wissenschaft.
-
-
-
-### Halbzeit-Quiz
-
-Testen Sie Ihr Wissen mit [diesem Halbzeit-Quiz](https://datenwerk.netlify.app/#category=quiz1-qm2-ws23). Viel Erfolg! 🍀🍀🍀
-
-
-
-## Vertiefung
-
-
-Das ["Bayes-Paradox-Video" von 3b1b](https://youtu.be/lG4VkPoG3ko) präsentiert eine gut verständliche Darstellung des Bayes-Theorem aus einer zwar nicht gleichen, 
-aber ähnlichen Darstellung wie in diesem Kapitel.
-
-
 
 
 
