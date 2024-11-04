@@ -370,12 +370,13 @@ window.Quarto = {
 <a href="#ein-erster-versuch-wir-werfen-den-globus" id="toc-ein-erster-versuch-wir-werfen-den-globus" class="nav-link" data-scroll-target="#ein-erster-versuch-wir-werfen-den-globus"><span class="header-section-number">5.3</span> Ein erster Versuch: Wir werfen den Globus</a>
   <ul>
 <li><a href="#welcher-anteil-der-erdoberfl%C3%A4che-ist-mit-wasser-bedeckt" id="toc-welcher-anteil-der-erdoberfläche-ist-mit-wasser-bedeckt" class="nav-link" data-scroll-target="#welcher-anteil-der-erdoberfl%C3%A4che-ist-mit-wasser-bedeckt"><span class="header-section-number">5.3.1</span> Welcher Anteil der Erdoberfläche ist mit Wasser bedeckt?</a></li>
-  <li><a href="#wie-entstanden-die-daten" id="toc-wie-entstanden-die-daten" class="nav-link" data-scroll-target="#wie-entstanden-die-daten"><span class="header-section-number">5.3.2</span> Wie entstanden die Daten?</a></li>
-  <li><a href="#bayes-updates" id="toc-bayes-updates" class="nav-link" data-scroll-target="#bayes-updates"><span class="header-section-number">5.3.3</span> Bayes-Updates</a></li>
-  <li><a href="#ein-paar-definitionen" id="toc-ein-paar-definitionen" class="nav-link" data-scroll-target="#ein-paar-definitionen"><span class="header-section-number">5.3.4</span> Ein paar Definitionen</a></li>
-  <li><a href="#wie-wahrscheinlich-ist-ein-wasseranteil-von-90" id="toc-wie-wahrscheinlich-ist-ein-wasseranteil-von-90" class="nav-link" data-scroll-target="#wie-wahrscheinlich-ist-ein-wasseranteil-von-90"><span class="header-section-number">5.3.5</span> Wie wahrscheinlich ist ein Wasseranteil von 90%?</a></li>
-  <li><a href="#binomialverteilung-mit-r" id="toc-binomialverteilung-mit-r" class="nav-link" data-scroll-target="#binomialverteilung-mit-r"><span class="header-section-number">5.3.6</span> Binomialverteilung mit R</a></li>
-  <li><a href="#unser-modell-ist-geboren" id="toc-unser-modell-ist-geboren" class="nav-link" data-scroll-target="#unser-modell-ist-geboren"><span class="header-section-number">5.3.7</span> Unser Modell ist geboren</a></li>
+  <li><a href="#bayes-updates" id="toc-bayes-updates" class="nav-link" data-scroll-target="#bayes-updates"><span class="header-section-number">5.3.2</span> Bayes-Updates</a></li>
+  <li><a href="#wie-wahrscheinlich-ist-ein-wasseranteil-von-90" id="toc-wie-wahrscheinlich-ist-ein-wasseranteil-von-90" class="nav-link" data-scroll-target="#wie-wahrscheinlich-ist-ein-wasseranteil-von-90"><span class="header-section-number">5.3.3</span> Wie wahrscheinlich ist ein Wasseranteil von 90%?</a></li>
+  <li><a href="#likelihood-berechnen" id="toc-likelihood-berechnen" class="nav-link" data-scroll-target="#likelihood-berechnen"><span class="header-section-number">5.3.4</span> Likelihood berechnen</a></li>
+  <li><a href="#unser-modell-ist-geboren" id="toc-unser-modell-ist-geboren" class="nav-link" data-scroll-target="#unser-modell-ist-geboren"><span class="header-section-number">5.3.5</span> Unser Modell ist geboren</a></li>
+  <li><a href="#likelihood-1" id="toc-likelihood-1" class="nav-link" data-scroll-target="#likelihood-1"><span class="header-section-number">5.3.6</span> Likelihood</a></li>
+  <li><a href="#priori-verteilung-1" id="toc-priori-verteilung-1" class="nav-link" data-scroll-target="#priori-verteilung-1"><span class="header-section-number">5.3.7</span> Priori-Verteilung</a></li>
+  <li><a href="#posteriori-verteilung-1" id="toc-posteriori-verteilung-1" class="nav-link" data-scroll-target="#posteriori-verteilung-1"><span class="header-section-number">5.3.8</span> Posteriori-Verteilung</a></li>
   </ul>
 </li>
   <li>
@@ -631,22 +632,9 @@ Abbildung&nbsp;5.3: Die Erde. Schön! Und mit viel Wasser, ca. 70% der Erdoberfl
 <div id="exr-globe1" class="theorem exercise">
 <p><span class="theorem-title"><strong>Übungsaufgabe 5.1 (Spin the Globe)</strong></span> 🏋️️ Besorgen Sie sich einen Globus (zur Not eine Münze) und stellen Sie den Versuch nach!<span class="math inline">\(\square\)</span></p>
 </div>
-</section><section id="wie-entstanden-die-daten" class="level3" data-number="5.3.2"><h3 data-number="5.3.2" class="anchored" data-anchor-id="wie-entstanden-die-daten">
-<span class="header-section-number">5.3.2</span> Wie entstanden die Daten?</h3>
-<p>Der physikalische Prozess, der zur Entstehung der Daten führt, nennt man den <em>datengenierenden Prozess</em>.</p>
-<p>In diesem Fall kann man ihn so beschreiben:</p>
-<ol type="1">
-<li>Der wahre Anteil von Wasser, <span class="math inline">\(W\)</span>, der Erdoberfläche ist <span class="math inline">\(\pi\)</span> (und <span class="math inline">\(1-\pi\)</span> ist der Anteil Land, <span class="math inline">\(L\)</span>).</li>
-<li>Ein Wurf des Globusballs hat die Wahrscheinlichkeit <span class="math inline">\(\pi\)</span>, eine <span class="math inline">\(W\)</span>-Beobachtung zu erzeugen.</li>
-<li>Die Würfe des Globusballs sind unabhängig voneinander.</li>
-<li>Wir haben kein Vorwissen über <span class="math inline">\(\pi\)</span>; jeder Wert ist uns gleich wahrscheinlich.</li>
-</ol>
-<div id="exr-annahmen1" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 5.2</strong></span> 🏋 Welche Annahmen würden Sie ändern? Welche könnte man wegnehmen? Welche hinzufügen? Was wären die Konsequenzen?<span class="math inline">\(\square\)</span></p>
-</div>
-</section><section id="bayes-updates" class="level3" data-number="5.3.3"><h3 data-number="5.3.3" class="anchored" data-anchor-id="bayes-updates">
-<span class="header-section-number">5.3.3</span> Bayes-Updates</h3>
-<p>Der Golem denkt eigentlich ganz vernünftig: Zuerst hat er ein Vorwissen zum Wasseranteil, die dazugehörige Wahrscheinlichkeitsverteilung nennt man <em>Priori-Verteilung</em>. In unserem Beispiel ist das Vorwissen recht bescheiden: Jeder Wasseranteil ist ihm gleich plausibel. Als nächstes beschaut sich der Golem die Daten und überlegt, wie wahrscheinlich die Daten sind, wenn man von einer bestimmten Hypothese ausgeht, z. B. dass der Wasseranteil 10% beträgt. Die zugehörige Wahrscheinlichkeit der Daten unter Annahme einer Hypothese nennt man die<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> <em>Likelihood<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>.</em> Als letztes bildet sich der Golem eine abschließende Meinung zur Wahrscheinlichkeit jeder Hypothese. Diese Wahrscheinlichkeitsverteilung nennt man <em>Posteriori-Verteilung</em>. Sie berechnet als Gewichtung des Vorwissen mit den neuen Daten. Anders gesagt: Das Vorwissen wird anhand der Erkenntnisse (der Daten) aktualisiert oder “geupdatet”, s. <a href="#fig-bayes-update" class="quarto-xref">Abbildung&nbsp;<span>5.4</span></a>.</p>
+</section><section id="bayes-updates" class="level3" data-number="5.3.2"><h3 data-number="5.3.2" class="anchored" data-anchor-id="bayes-updates">
+<span class="header-section-number">5.3.2</span> Bayes-Updates</h3>
+<p>Der Golem denkt eigentlich ganz vernünftig: Zuerst hat er ein Vorwissen zum Wasseranteil, die dazugehörige Wahrscheinlichkeitsverteilung nennt man <em>Priori-Verteilung</em> (s. <a href="#def-priori" class="quarto-xref">Definition&nbsp;<span>5.1</span></a>). In unserem Beispiel ist das Vorwissen recht bescheiden: Jeder Wasseranteil ist ihm gleich plausibel. Als nächstes beschaut sich der Golem die Daten und überlegt, wie wahrscheinlich die Daten sind, wenn man von einer bestimmten Hypothese ausgeht, z. B. dass der Wasseranteil 50% beträgt. Die zugehörige Wahrscheinlichkeit der Daten unter Annahme einer Hypothese nennt man die<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> <em>Likelihood</em><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>, s. <a href="#def-L" class="quarto-xref">Definition&nbsp;<span>5.2</span></a>. Als letztes bildet sich der Golem eine abschließende Meinung zur Wahrscheinlichkeit jeder Hypothese. Diese Wahrscheinlichkeitsverteilung nennt man <em>Posteriori-Verteilung</em>, s. <a href="#def-post1" class="quarto-xref">Definition&nbsp;<span>5.3</span></a>. Sie berechnet als Gewichtung des Vorwissen mit den neuen Daten. Anders gesagt: Das Vorwissen wird anhand der Erkenntnisse (der Daten) aktualisiert oder “geupdatet”, s. <a href="#fig-bayes-update" class="quarto-xref">Abbildung&nbsp;<span>5.4</span></a>.</p>
 <!-- ![Updating mit Bayes](img/bayesupdate.png){#fig-bayes-update} -->
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
@@ -664,8 +652,6 @@ Abbildung&nbsp;5.4: Updating mit Bayes
 </div>
 </div>
 </div>
-</section><section id="ein-paar-definitionen" class="level3" data-number="5.3.4"><h3 data-number="5.3.4" class="anchored" data-anchor-id="ein-paar-definitionen">
-<span class="header-section-number">5.3.4</span> Ein paar Definitionen</h3>
 <div id="def-priori" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 5.1 (Priori-Verteilung)</strong></span> Für jede Hypothese haben wir ein Vorab-Wissen, das die jeweilige Plausibilität der Hypothese angibt: <em>Priori-Verteilung</em> (synonym: Apriori-Verteilung).<span class="math inline">\(\square\)</span></p>
 </div>
@@ -676,23 +662,18 @@ Abbildung&nbsp;5.4: Updating mit Bayes
 <p><span class="theorem-title"><strong>Definition 5.3 (Posteriori-Verteilung)</strong></span> Dann gewichten wir den Likelihood mit dem Vorabwissen, so dass wir die <em>Posteriori-Verteilung</em><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> bekommen.<span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exr-l1" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 5.3 (Wie gut passen die Daten zur Hypothese, dass die Erde komplett trocken ist?)</strong></span> Wir haben in unseren Versuch <span class="math inline">\(W=6\)</span> und <span class="math inline">\(L=3\)</span> erzielt. Diese Daten passen <em>überhaupt nicht</em> zur Hypothese, dass die Erdoberfläche komplett trocken ist. Die <em>Likelihood</em>, <span class="math inline">\(L\)</span> für <span class="math inline">\(\pi=0\)</span> ist also Null. Analog ist die Likelihood für <span class="math inline">\(\pi=1\)</span> auch Null.<span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 5.2 (Wie gut passen die Daten zur Hypothese, dass die Erde komplett trocken ist?)</strong></span> Wir haben in unseren Versuch <span class="math inline">\(W=6\)</span> und <span class="math inline">\(L=3\)</span> erzielt. Diese Daten passen <em>überhaupt nicht</em> zur Hypothese, dass die Erdoberfläche komplett trocken ist. Die <em>Likelihood</em>, <span class="math inline">\(L\)</span> für <span class="math inline">\(\pi=0\)</span> ist also Null. Analog ist die Likelihood für <span class="math inline">\(\pi=1\)</span> auch Null.<span class="math inline">\(\square\)</span></p>
 </div>
-</section><section id="wie-wahrscheinlich-ist-ein-wasseranteil-von-90" class="level3" data-number="5.3.5"><h3 data-number="5.3.5" class="anchored" data-anchor-id="wie-wahrscheinlich-ist-ein-wasseranteil-von-90">
-<span class="header-section-number">5.3.5</span> Wie wahrscheinlich ist ein Wasseranteil von 90%?</h3>
+</section><section id="wie-wahrscheinlich-ist-ein-wasseranteil-von-90" class="level3" data-number="5.3.3"><h3 data-number="5.3.3" class="anchored" data-anchor-id="wie-wahrscheinlich-ist-ein-wasseranteil-von-90">
+<span class="header-section-number">5.3.3</span> Wie wahrscheinlich ist ein Wasseranteil von 90%?</h3>
 <p>Wie wahrscheinlich ist es, einen bestimmten Wasseranteil, z. B. 6 Treffer (bei 9 Würfen) zu erhalten, wenn man eine bestimmte Hypothese (einen bestimmten Wasseranteil, z. B. 90%) annimmt? Diese Wahrscheinlichkeit nennt man die <em>Likelihood</em>, <span class="math inline">\(L\)</span> oder <span class="math inline">\(L\)</span>.</p>
 <!-- Geht man von einer Binomialverteilng aus, ist die Likelihood einfach zu berechnen. -->
 <p>Wenn wir eine Binomialverteilung annehmen, dann gehen wir davon aus, dass die Daten unabhängig voneinander entstehen und sich der Parameterwert nicht zwischenzeitlich ändert <a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>. Der Wasseranteil der Erde bleibt während des Versuchs gleich (durchaus plausibel).</p>
-<p>Lassen Sie uns im Folgenden die Wahrscheinlichkeit (<span class="math inline">\(Pr\)</span>), <span class="math inline">\(W\)</span> mal Wasser und <span class="math inline">\(L\)</span> mal Land zu beobachten, wenn die Wahrscheinlichkeit für Wasser <span class="math inline">\(\pi\)</span> beträgt, so bezeichnen: <span class="math inline">\((Pr(W,L | \pi))\)</span>. Diese Wahrscheinlichkeit, <span class="math inline">\(Pr(W,L | \pi)\)</span>, kann man mit der <em>Binomialverteilung</em> berechnen.</p>
+<p>Lassen Sie uns im Folgenden die Wahrscheinlichkeit (<span class="math inline">\(Pr\)</span>), <span class="math inline">\(W\)</span> mal Wasser und <span class="math inline">\(L\)</span> mal Land zu beobachten, wenn die Wahrscheinlichkeit für Wasser <span class="math inline">\(\pi\)</span> beträgt, so bezeichnen: <span class="math inline">\(Pr(W,L | \pi))\)</span> oder auch (synonym) so: <span class="math inline">\(Pr(W|\pi, n)\)</span>. Diese Wahrscheinlichkeit, <span class="math inline">\(Pr(W,L | \pi)\)</span>, kann man im Fall des Globusversuchs mit der <em>Binomialverteilung</em> berechnen.</p>
 <p>Möchte man die Wahrscheinlichkeit ansprechen für das Ereignis “6 mal Wasser und 3 mal Land, wenn wir von einem Wasseranteil von 70% ausgehen”, so würden wir kurz schreiben: <span class="math inline">\(Pr(W=6, L=3 | \pi=.7)\)</span>. Oder man könnte (synonym) schreiben: <span class="math inline">\(Pr(W=6 | \pi=.7, n=9)\)</span>.</p>
 <p>Zur Erinnerung: Die Binomialverteilung zeigt die Verteilung der Wahrscheinlichkeit der Ereignisse (z. B. 2 Mal Kopf) beim wiederholten Münzwurf (und allen vergleichbaren Zufallsexperimenten): “Münzwurfverteilung”, s. Kap. <a href="0400-Verteilungen.html#sec-bin-distrib" class="quarto-xref"><span>Kapitel 4.5</span></a>.</p>
-</section><section id="binomialverteilung-mit-r" class="level3" data-number="5.3.6"><h3 data-number="5.3.6" class="anchored" data-anchor-id="binomialverteilung-mit-r">
-<span class="header-section-number">5.3.6</span> Binomialverteilung mit R</h3>
-<p>Praktischerweise ist die Binomialverteilung in R eingebaut,<br>
-hier ist Pseudocode für Ihre Anwendung:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbinom</span>(<span class="at">x =</span> <span class="sc">&lt;</span>Anzahl der Treffer<span class="sc">&gt;</span>, <span class="at">size =</span> <span class="sc">&lt;</span>Anzahl der Würfe<span class="sc">&gt;</span>, <span class="at">prob =</span> <span class="sc">&lt;</span>Wahrscheinlichkeit<span class="sc">&gt;</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+</section><section id="likelihood-berechnen" class="level3" data-number="5.3.4"><h3 data-number="5.3.4" class="anchored" data-anchor-id="likelihood-berechnen">
+<span class="header-section-number">5.3.4</span> Likelihood berechnen</h3>
 <p>Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (d.h. die Wahrscheinlichkeit), um 2 mal <span class="math inline">\(W\)</span> bei <span class="math inline">\(n=W+L=3\)</span> Würfen zu bekommen, wenn wir von <span class="math inline">\(\pi=1/2\)</span> ausgehen? <a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>, s. <a href="#lst-dbinom1" class="quarto-xref">Listing&nbsp;<span>5.1</span></a>, <a href="#fig-binom1a" class="quarto-xref">Abbildung&nbsp;<span>5.5</span></a> und <a href="#eq-dbinom1" class="quarto-xref">Gleichung&nbsp;<span>5.1</span></a>.</p>
 <div class="cell">
 <div id="lst-dbinom1" class="r cell-code listing quarto-float quarto-figure quarto-figure-left anchored">
@@ -788,12 +769,12 @@ Abbildung&nbsp;5.7: Wir werfen den Globus (oder eine Münze) 9 Mal, es resultier
 <div id="exm-globus697-dbinom" class="theorem example">
 <p><span class="theorem-title"><strong>Beispiel 5.2 (Globus mit 6 Treffern bei 9 Würfen, p=1/2)</strong></span> Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (Wahrscheinlichkeit), um 6 mal <span class="math inline">\(W\)</span> bei <span class="math inline">\(N=W+L=9\)</span> Würfen zu bekommen, wenn wir von <span class="math inline">\(p=1/2\)</span> ausgehen?</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">6</span>, size <span class="op">=</span> <span class="fl">9</span>, prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">6</span>, size <span class="op">=</span> <span class="fl">9</span>, prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">## [1] 0.1640625</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Oder, synonym, wenn man einen Taschenrechner (oder R als Taschenrechner) benutzt:</p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Special.html">choose</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">6</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">^</span><span class="fl">6</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Special.html">choose</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">6</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">^</span><span class="fl">6</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span></span>
 <span><span class="co">## [1] 0.1640625</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><span class="math inline">\(\square\)</span></p>
@@ -801,7 +782,7 @@ Abbildung&nbsp;5.7: Wir werfen den Globus (oder eine Münze) 9 Mal, es resultier
 <div id="exm-globus2" class="theorem example">
 <p><span class="theorem-title"><strong>Beispiel 5.3 (Globus mit 9 Treffern bei 9 Würfen, p=1/2)</strong></span> Was ist die Wahrscheinlichkeit, gegeben <span class="math inline">\(W=9\)</span> bei <span class="math inline">\(n=9\)</span> und <span class="math inline">\(\pi=1/2\)</span>?</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">9</span>, size <span class="op">=</span> <span class="fl">9</span>, prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">9</span>, size <span class="op">=</span> <span class="fl">9</span>, prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">## [1] 0.001953125</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Das ist 1 günstiger Pfad von 512 Pfaden, also <span class="math inline">\(Pr(W=9|\pi=1/2, n=9)=1/512\)</span>.</p>
@@ -809,32 +790,52 @@ Abbildung&nbsp;5.7: Wir werfen den Globus (oder eine Münze) 9 Mal, es resultier
 <div id="exm-globus697" class="theorem example">
 <p><span class="theorem-title"><strong>Beispiel 5.4 (Globus mit 6 Treffern bei 9 Würfen, p=70%)</strong></span> Was ist die Wahrscheinlichkeit für <span class="math inline">\(W=6\)</span>, gegeben <span class="math inline">\(n=9\)</span> und <span class="math inline">\(p=.7\)</span>?</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">6</span>, size <span class="op">=</span> <span class="fl">9</span>, prob <span class="op">=</span> <span class="fl">.7</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">6</span>, size <span class="op">=</span> <span class="fl">9</span>, prob <span class="op">=</span> <span class="fl">.7</span><span class="op">)</span></span>
 <span><span class="co">## [1] 0.2668279</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Mit Taschenrechner gerechnet:</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Special.html">choose</a></span><span class="op">(</span><span class="fl">9</span>,<span class="fl">6</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">.7</span><span class="op">)</span><span class="op">^</span><span class="fl">6</span> <span class="op">*</span> <span class="op">(</span><span class="fl">.3</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Special.html">choose</a></span><span class="op">(</span><span class="fl">9</span>,<span class="fl">6</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">.7</span><span class="op">)</span><span class="op">^</span><span class="fl">6</span> <span class="op">*</span> <span class="op">(</span><span class="fl">.3</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span></span>
 <span><span class="co">## [1] 0.2668279</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>(Fast) von Hand gerechnet:</p>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Special.html">factorial</a></span><span class="op">(</span><span class="fl">9</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Special.html">factorial</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Special.html">factorial</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">.7</span><span class="op">)</span><span class="op">^</span><span class="fl">6</span> <span class="op">*</span> <span class="op">(</span><span class="fl">.3</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Special.html">factorial</a></span><span class="op">(</span><span class="fl">9</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Special.html">factorial</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Special.html">factorial</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">.7</span><span class="op">)</span><span class="op">^</span><span class="fl">6</span> <span class="op">*</span> <span class="op">(</span><span class="fl">.3</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span></span>
 <span><span class="co">## [1] 0.2668279</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><span class="math inline">\(\square\)</span></p>
 </div>
 <p>Zur Erinnerung: Die Funktion <code>dbinom</code> gibt uns die Wahrscheinlichkeit von <code>x</code> Treffern, bei <code>size</code> Versuchen zurück, wobei eine Binomialverteilung angenommen wird mit Trefferwahrscheinlichkeit <code>prob</code>.</p>
-</section><section id="unser-modell-ist-geboren" class="level3" data-number="5.3.7"><h3 data-number="5.3.7" class="anchored" data-anchor-id="unser-modell-ist-geboren">
-<span class="header-section-number">5.3.7</span> Unser Modell ist geboren</h3>
-<p>Wir fassen das allgemeine Globusmodell so zusammen, s. <a href="#eq-globus1" class="quarto-xref">Gleichung&nbsp;<span>5.2</span></a>.</p>
+</section><section id="unser-modell-ist-geboren" class="level3" data-number="5.3.5"><h3 data-number="5.3.5" class="anchored" data-anchor-id="unser-modell-ist-geboren">
+<span class="header-section-number">5.3.5</span> Unser Modell ist geboren</h3>
+<p>Ein Modell (in der Bayes-Statistik) besteht aus mind. zwei Komponenten:</p>
+<ol type="1">
+<li>Die <em>Likelihood</em> (die Wahrscheinlichkeit der Daten unter Annahme der Hypothese), s. <a href="#eq-globus1" class="quarto-xref">Gleichung&nbsp;<span>5.2</span></a>
+</li>
+<li>Die <em>Priori-Verteilung(en)</em> (die Wahrscheinlichkeit der Hypothese vor den Daten), a. <a href="#eq-prior-unif-globus" class="quarto-xref">Gleichung&nbsp;<span>5.3</span></a>
+</li>
+<li>Die <em>Posteriori-Verteilung</em> (die Wahrscheinlichkeit der Hypothese nach den Daten), s. <span class="quarto-unresolved-ref">?eq-post-globus1</span>
+</li>
+</ol></section><section id="likelihood-1" class="level3" data-number="5.3.6"><h3 data-number="5.3.6" class="anchored" data-anchor-id="likelihood-1">
+<span class="header-section-number">5.3.6</span> Likelihood</h3>
+<p>Im Globusversuch verwenden wir die Binomialverteilung zur Berechnung der <em>Likelihood</em>, s. <a href="#eq-globus1" class="quarto-xref">Gleichung&nbsp;<span>5.2</span></a>.</p>
 <p><span id="eq-globus1"><span class="math display">\[W \sim \text{Bin}(n,\pi) \tag{5.2}\]</span></span></p>
 <p>Lies: “W ist <em>bin</em>omial verteilt mit den Parametern <span class="math inline">\(n\)</span> und <span class="math inline">\(\pi\)</span>”. <span class="math inline">\(n\)</span> gibt die Anzahl der Globuswürfe an: <span class="math inline">\(n=W+L\)</span>.</p>
 <p>Mit einem konkretes Beispiel: <span class="math inline">\(W \sim \text{Bin}(9, 0.7)\)</span> bedeutet, dass wir von 9 Würfen ausgehen und eine Wahrscheinlichkeit für Wasser von 70% annehmen.</p>
-<p>Unser Vorab- bzw. Apriori-Wissen zu <span class="math inline">\(p\)</span> sei, dass uns alle Werte gleich (“uniform”) plausibel erscheinen:</p>
-<p><span class="math display">\[\pi \sim \text{Unif}(0,1).\]</span></p>
+<p>Die Verwendung der Binomialvertielung ist an einige Annahmen geknüpft:</p>
+<ol type="1">
+<li>Die Züge sind unabhängig voneinander (Die Würfe des Globusballs beeinflussen sich einander nicht).</li>
+<li>Der Parameterwert <span class="math inline">\(\pi\)</span> bleibt konstant (Der Wasseranteil der Erde ändert sich nicht während des Versuchs).</li>
+</ol>
+<div id="exr-annahmen1" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 5.3</strong></span> 🏋 Welche Annahmen würden Sie ändern? Welche könnte man wegnehmen? Welche hinzufügen? Was wären die Konsequenzen?<span class="math inline">\(\square\)</span></p>
+</div>
+</section><section id="priori-verteilung-1" class="level3" data-number="5.3.7"><h3 data-number="5.3.7" class="anchored" data-anchor-id="priori-verteilung-1">
+<span class="header-section-number">5.3.7</span> Priori-Verteilung</h3>
+<p>Unser Vorab- bzw. <em>Apriori</em>-Wissen zu <span class="math inline">\(p\)</span> sei, dass uns alle Werte gleich (“uniform”) plausibel erscheinen, s. <a href="#eq-prior-unif-globus" class="quarto-xref">Gleichung&nbsp;<span>5.3</span></a>.</p>
+<p><span id="eq-prior-unif-globus"><span class="math display">\[\pi \sim \text{Unif}(0,1). \tag{5.3}\]</span></span></p>
 <p>Lies: “<span class="math inline">\(\pi\)</span> ist gleich (uniform) verteilt mit der Untergrenze 0 und der Obergrenze 1”.</p>
-<p>Man könnte auch sagen: Wir haben praktisch kein Vorwissen, wir sind erstmal (aprior) indifferent, jeder Parameterwert erscheint uns erstmal gleich wahrscheinlich, s. <a href="#fig-unif01" class="quarto-xref">Abbildung&nbsp;<span>5.8</span></a></p>
+<p>Man könnte auch sagen: Wir haben praktisch kein Vorwissen, wir sind erstmal (aprior) indifferent, jeder Parameterwert erscheint uns erstmal gleich wahrscheinlich, s. <a href="#fig-unif01" class="quarto-xref">Abbildung&nbsp;<span>5.8</span></a>.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-unif01" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -847,18 +848,22 @@ Abbildung&nbsp;5.8: Gleichverteilung mit Parametern min=0 und max=1
 </div>
 </div>
 </div>
+</section><section id="posteriori-verteilung-1" class="level3" data-number="5.3.8"><h3 data-number="5.3.8" class="anchored" data-anchor-id="posteriori-verteilung-1">
+<span class="header-section-number">5.3.8</span> Posteriori-Verteilung</h3>
+<p>die Posteriori-Verteilung quantifiziert unser Wissen nach Kenntnis der Daten, aufbauend auf unserem Vorwissen (Priori-Wissen). Die Posteriori-Verteilung ist das Ergebnis des Bayes-Updates, s. <span class="quarto-unresolved-ref">?eq-post-globus1</span>.</p>
+<p>Die Wahrscheinlichkeit bestimmter Hypothesen nennt man Posteriori-Wahrscheinlichkeit und bezeichnet sie kurz mit <span class="math inline">\(Pr(H|D)\)</span>. Lies: “Die Wahrscheinlichkeit der Hypothese H gegeben der Daten D”. Dabei nimmt man stillschweigend an, dass die Daten anhand eines gewissen Modells generiert wurden.</p>
 </section></section><section id="bayes-theorem" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="bayes-theorem">
 <span class="header-section-number">5.4</span> Bayes’ Theorem</h2>
 <section id="wozu-wird-bayes-in-der-praxis-genutzt" class="level3" data-number="5.4.1"><h3 data-number="5.4.1" class="anchored" data-anchor-id="wozu-wird-bayes-in-der-praxis-genutzt">
 <span class="header-section-number">5.4.1</span> Wozu wird Bayes in der Praxis genutzt?</h3>
-<p>In der Praxis nutzt man Bayes häufig, wenn man Daten <span class="math inline">\(D\)</span> gesammelt hat, und wissen möchte, wie wahrscheinlich eine Hypothese <span class="math inline">\(H\)</span> ist, im Lichte dieser gesammelten Daten, s. <a href="#eq-bayes3" class="quarto-xref">Gleichung&nbsp;<span>5.3</span></a>.</p>
+<p>In der Praxis nutzt man Bayes häufig, wenn man Daten <span class="math inline">\(D\)</span> gesammelt hat, und wissen möchte, wie wahrscheinlich eine Hypothese <span class="math inline">\(H\)</span> ist, im Lichte dieser gesammelten Daten, s. <a href="#eq-bayes3" class="quarto-xref">Gleichung&nbsp;<span>5.4</span></a>.</p>
 <!-- $$D \quad \underrightarrow{Bayes} \quad H$$ -->
-<p><span id="eq-bayes3"><span class="math display">\[Pr(H|D) = \frac{ Pr(H) \cdot Pr(D|H) }{Pr(D)} \tag{5.3}\]</span></span></p>
-<p><a href="#eq-bayes3" class="quarto-xref">Gleichung&nbsp;<span>5.3</span></a> fragt nach <span class="math inline">\(Pr(H|D)\)</span>:</p>
+<p><span id="eq-bayes3"><span class="math display">\[Pr(H|D) = \frac{ Pr(H) \cdot Pr(D|H) }{Pr(D)} \tag{5.4}\]</span></span></p>
+<p><a href="#eq-bayes3" class="quarto-xref">Gleichung&nbsp;<span>5.4</span></a> fragt nach <span class="math inline">\(Pr(H|D)\)</span>:</p>
 <blockquote class="blockquote">
 <p>Was ist die Wahrscheinlichkeit der Hypothese H, jetzt wo wir die Daten haben (und ein Modell?)</p>
 </blockquote>
-<p>Und antwortet so (<a href="#eq-bayes3" class="quarto-xref">Gleichung&nbsp;<span>5.3</span></a>):</p>
+<p>Und antwortet so (<a href="#eq-bayes3" class="quarto-xref">Gleichung&nbsp;<span>5.4</span></a>):</p>
 <blockquote class="blockquote">
 <p>Diese Wahrscheinlichkeit entspricht der Grundrate (Apriori-Wahrscheinlichkeit) der Hypothese mal der Plausibilität (Likelihood) der Daten unter Annahme (gegeben) der Hypothese. Aus Standardisierungsgründen dividiert man noch die totale Wahrscheinlichkeit der Daten über alle Hypothesen.</p>
 </blockquote>
@@ -870,11 +875,13 @@ Abbildung&nbsp;5.8: Gleichverteilung mit Parametern min=0 und max=1
 <span class="header-section-number">5.4.2</span> Bayes als bedingte Wahrscheinlichkeit</h3>
 <p>Bayes’ Theorem wird häufig verwendet, um die Wahrscheinlichkeit einer Hypothese, gegeben einer bestimmten Datenlage, zu berechnen, also <span class="math inline">\(Pr(H|D)\)</span>. Dabei ist Bayes’ Theorem nichts anderes als eine normale bedingte Wahrscheinlichkeit.</p>
 <p><span class="math inline">\(Pr(H|D) = \frac{\overbrace{ Pr(H\cap D)}^\text{umformen}}{Pr(D)}\)</span></p>
-<p><span class="math inline">\(Pr(H| D)\)</span> kann man umformen (vgl. <a href="0300-Wskt.html#eq-pr-cond" class="quarto-xref">Gleichung&nbsp;<span>3.5</span></a> und <a href="0300-Wskt.html#def-gem-wskt-abh" class="quarto-xref">Definition&nbsp;<span>3.20</span></a>), dann erhält man Bayes’ Theorem, s. <a href="#eq-bayes1" class="quarto-xref">Gleichung&nbsp;<span>5.4</span></a>:</p>
-<p><span id="eq-bayes1"><span class="math display">\[Pr(H|D) =\frac{Pr(D\cap H)}{Pr(D)} =  \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}} \tag{5.4}\]</span></span></p>
+<p><span class="math inline">\(Pr(H| D)\)</span> kann man umformen (vgl. <a href="0300-Wskt.html#eq-pr-cond" class="quarto-xref">Gleichung&nbsp;<span>3.5</span></a> und <a href="0300-Wskt.html#def-gem-wskt-abh" class="quarto-xref">Definition&nbsp;<span>3.20</span></a>), dann erhält man Bayes’ Theorem, s. <a href="#eq-bayes1" class="quarto-xref">Gleichung&nbsp;<span>5.5</span></a>:</p>
+<p><span id="eq-bayes1"><span class="math display">\[\begin{aligned}
+Pr(H|D) &amp;=\frac{Pr(D\cap H)}{Pr(D)}  \\  &amp;= \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}}
+\end{aligned} \tag{5.5}\]</span></span></p>
 <div id="def-evidenz" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 5.4 (Evidenz)</strong></span> <span class="math inline">\(Pr(D)\)</span> nennt man die <em>Evidenz</em>. Die Evidenz berechnet sich als Summe der Likelihoods über alle Ausprägungen von <span class="math inline">\(D\)</span>, d.h. als die totale Wahrscheinlichkeit von <span class="math inline">\(D\)</span>, vgl. <a href="0300-Wskt.html#def-totwskt" class="quarto-xref">Definition&nbsp;<span>3.22</span></a>:</p>
-<p><span class="math inline">\(Pr(D) = Pr(D|H) \cdot Pr(H) + Pr(D| \neg H) \cdot Pr(\neg H)\)</span></p>
+<p><span class="theorem-title"><strong>Definition 5.4 (Evidenz)</strong></span> <span class="math inline">\(Pr(D)\)</span> nennt man die <em>Evidenz</em>. Die Evidenz berechnet sich als Summe der Likelihoods über alle Ausprägungen von <span class="math inline">\(D\)</span>, d.h. als die totale Wahrscheinlichkeit von <span class="math inline">\(D\)</span>, s. <a href="#eq-evidenz" class="quarto-xref">Gleichung&nbsp;<span>5.6</span></a>, vgl. auch <a href="0300-Wskt.html#def-totwskt" class="quarto-xref">Definition&nbsp;<span>3.22</span></a>:</p>
+<p><span id="eq-evidenz"><span class="math display">\[Pr(D) = Pr(D|H) \cdot Pr(H) + Pr(D| \neg H) \cdot Pr(\neg H) \tag{5.6}\]</span></span></p>
 <p>Die Aufgabe der Evidenz ist nur dafür zu sorgen, dass der Bruch insgesamt nur Werte zwischen 0 und 1 annehmen kann. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-evidenz1" class="theorem example">
@@ -888,9 +895,9 @@ Abbildung&nbsp;5.8: Gleichverteilung mit Parametern min=0 und max=1
 <span class="header-section-number">5.4.3</span> Bayes’ Theorem als Formel</h3>
 <!-- Gesucht ist die Wahrscheinlichkeit einer Hypothese gegeben einer bestimmten Datenlage, $Pr(H|D)$, s. @eq-bayes5 -->
 <!-- $$Pr(H|D) = \frac{Pr(D|H) \cdot Pr(H)}{Pr(D)} = \frac{\text{Likelihood}  \cdot \text{Priori-Wahrscheinlichkeit}}{\text{Evidenz}}$${#eq-bayes5} -->
-<p>Schauen wir uns die Bestandteile von Bayes’ Theorem (<a href="#eq-bayes1" class="quarto-xref">Gleichung&nbsp;<span>5.4</span></a>) noch etwas näher an:</p>
+<p>Schauen wir uns die Bestandteile von Bayes’ Theorem (<a href="#eq-bayes1" class="quarto-xref">Gleichung&nbsp;<span>5.5</span></a>) noch etwas näher an:</p>
 <ul>
-<li><p>Posteriori-Wahrscheinlichkeit: <span class="math inline">\(Pr_{Post} := Pr(H|D)\)</span></p></li>
+<li><p>(standardisierte) Posteriori-Wahrscheinlichkeit: <span class="math inline">\(Pr_{Post} := Pr(H|D)\)</span></p></li>
 <li><p>Likelihood: <span class="math inline">\(L := Pr(D|H)\)</span></p></li>
 <li><p>Apriori-Wahrscheinlichkeit: <span class="math inline">\(Pr_{Priori} := Pr(H)\)</span></p></li>
 <li><p>Evidenz: <span class="math inline">\(E := Pr(D)\)</span></p></li>
@@ -898,8 +905,8 @@ Abbildung&nbsp;5.8: Gleichverteilung mit Parametern min=0 und max=1
 <p>Bayes’ Theorem gibt die <span class="math inline">\(Pr_{Post}\)</span> an, wenn man die Gleichung mit der <span class="math inline">\(Pr_{Priori}\)</span> und dem <span class="math inline">\(L\)</span> füttert. Bayes’ Theorem wird verwendet, um die <span class="math inline">\(Pr_{Post}\)</span> zu quantifizieren. Die <span class="math inline">\(Pr_{Post}\)</span> ist proportional zu <span class="math inline">\(L \times Pr_{Priori}\)</span>.</p>
 </section><section id="posteriori-als-produkt-von-priori-und-likelihood" class="level3" data-number="5.4.4"><h3 data-number="5.4.4" class="anchored" data-anchor-id="posteriori-als-produkt-von-priori-und-likelihood">
 <span class="header-section-number">5.4.4</span> Posteriori als Produkt von Priori und Likelihood</h3>
-<p>Die <em>unstandardisierte</em> Post-Wahrscheinlichkeit <span class="math inline">\(Pr_{\text{unPost}}\)</span> ist einfach das Produkt von Likelihood und Priori, s. <a href="#eq-unpost" class="quarto-xref">Gleichung&nbsp;<span>5.5</span></a>.</p>
-<p><span id="eq-unpost"><span class="math display">\[Pr_{\text{unPost}} = L \times \text{Priori} \tag{5.5}\]</span></span></p>
+<p>Die <em>unstandardisierte</em> Post-Wahrscheinlichkeit <span class="math inline">\(Pr_{\text{unPost}}\)</span> ist einfach das Produkt von Likelihood und Priori, s. <a href="#eq-unpost" class="quarto-xref">Gleichung&nbsp;<span>5.7</span></a>.</p>
+<p><span id="eq-unpost"><span class="math display">\[Pr_{\text{unPost}} = L \times \text{Priori} \tag{5.7}\]</span></span></p>
 <p>Abb. <a href="#fig-post3" class="quarto-xref">Abbildung&nbsp;<span>5.9</span></a> visualisiert, dass die Post-Verteilung eine Gewichtung von Priori und Likelihood ist. Mathematisch gesprochen beruht diese Gewichtung auf einer einfachen Multiplikationen der beiden genannten Terme.</p>
 <div id="fig-post3" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-post3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -909,8 +916,8 @@ Abbildung&nbsp;5.8: Gleichverteilung mit Parametern min=0 und max=1
 Abbildung&nbsp;5.9: Prior mal Likelihood = Post
 </figcaption></figure>
 </div>
-<p>Standardisiert man die unstandardisierte Post-Verteilung, so erhält man die standardisierte Post-Verteilung. Das Standardisieren dient nur dazu, einen Wert zwischen 0 und 1 zu erhalten. Dies erreichen wir, indem wir durch die Summe aller Post-Wahrscheinlichkeiten dividieren. Die Summe der Post-Wahrscheinlichkeiten bezeichnet man (auch) als Evidenz, vgl. Gleichung <a href="#eq-post" class="quarto-xref">Gleichung&nbsp;<span>5.6</span></a>.</p>
-<p><span id="eq-post"><span class="math display">\[\text{Posteriori} = \frac{\text{Likelihood} \times \text{Priori}}{\text{Evidenz}} \tag{5.6}\]</span></span></p>
+<p>Standardisiert man die unstandardisierte Post-Verteilung, so erhält man die standardisierte Post-Verteilung. Das Standardisieren dient nur dazu, einen Wert zwischen 0 und 1 zu erhalten. Dies erreichen wir, indem wir durch die Summe aller Post-Wahrscheinlichkeiten dividieren. Die Summe der Post-Wahrscheinlichkeiten bezeichnet man (auch) als Evidenz, vgl. Gleichung <a href="#eq-post" class="quarto-xref">Gleichung&nbsp;<span>5.8</span></a>.</p>
+<p><span id="eq-post"><span class="math display">\[\text{Posteriori} = \frac{\text{Likelihood} \times \text{Priori}}{\text{Evidenz}} \tag{5.8}\]</span></span></p>
 </section><section id="wissen-updaten-wir-füttern-daten-in-das-modell" class="level3" data-number="5.4.5"><h3 data-number="5.4.5" class="anchored" data-anchor-id="wissen-updaten-wir-füttern-daten-in-das-modell">
 <span class="header-section-number">5.4.5</span> Wissen updaten: Wir füttern Daten in das Modell</h3>
 <p>Golems können lernen?! <a href="#fig-lernen-golem" class="quarto-xref">Abbildung&nbsp;<span>5.10</span></a> zeigt die Post-Verteilung, nach <span class="math inline">\(n=1, 2, ...,n=9\)</span> Datenpunkten, d.h. Würfen mit dem Globusball. Man sieht: Am Anfang, apriori, also bevor die Daten haben, vor dem ersten Wurf also, ist jeder Parameterwert gleich wahrscheinlich für den Golem (das Modell). Je nach Ergebnis des Wurfes verändert sich die Wahrscheinlichkeit der Parameterwerte, kurz gesagt, die Post-Verteilung verändert sich in Abhängigkeit von den Daten.</p>
@@ -935,7 +942,7 @@ Abbildung&nbsp;5.10: Unser Golem lernt
 <li>Berechne den unstandardisierten Posteriori-Wert für jeden Parameterwert (Produkt von Priori und Likelihood).</li>
 <li>Standardisiere den Posteriori-Wert durch teilen anhand der Summe alle unstand. Posteriori-Werte.</li>
 </ol>
-<p>Für jeden Parameterwert berechnen wir eine (Post-)Wahrscheinlichkeit.<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a> Häufig entspricht eine Hypothese einem Parameterwert, etwa wenn man sagt: “Ich glaube, die Münze ist fair”, was auf einem Parameterwert von 50% herausläuft. Dazu geben wir an, für wie wahrscheinlich wie apriori<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> – also bevor wir irgendwelche Daten erheben – jeden einzelnen Parameterwert halten. Wir machen es uns hier einfach und halten jeden Parameterwert für gleich wahrscheinlich. Tatsächlich ist der konkrete Wert hier egal, entscheidend ist das Verhältnis der Apriori-Werte zueinander: Geben wir einigen Parameterwerten den Wert 2, aber anderen den Wert 1, so halten wir Erstere für (apriori) doppelt so plausibel wie Letztere. Der Likelihood wird in diesem Beispiel mit der Binomialverteilung berechnet (da wir ein binäres Ereignis, <span class="math inline">\(W\)</span> oder <span class="math inline">\(L\)</span>, haben). Der Likelihood gibt an, wie wahrscheinlich ein Parameterwert ist gegeben einem bestimmten apriori gewählten Parameterwert. Die “End-Wahrscheinlichkeit”, die unstandardisierte Post-Wahrscheinlichkeit, die “hinten rauskommt” ist das Produkt von Priori-Wert und Likelihood. Anschaulich gesprochen: Die Priori-Werte werden mit den Likelihoodwerten gewichtet<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>. Da wir letztlich eine Wahrscheinlichkeitverteilung bekommen möchten, teilen wir jeden Posteriori-Wert durch die Summe aller Posteriori-Werte. Dadurch ist gerantiert, dass sich die Posteriori-Werte zu eins aufaddieren. Damit haben wir dann die Ansprüche an eine Wahrscheinlichkeitsverteilung erfüllt (vgl. <a href="0300-Wskt.html#sec-kolmogorov" class="quarto-xref"><span>Kapitel 3.3.4</span></a>).</p>
+<p>Für jeden Parameterwert berechnen wir eine (Post-)Wahrscheinlichkeit.<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a> Häufig entspricht eine Hypothese einem Parameterwert, etwa wenn man sagt: “Ich glaube, die Münze ist fair”, was auf einen Parameterwert von 50% herausläuft. Dazu geben wir an, für wie wahrscheinlich wie apriori<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> – also bevor wir irgendwelche Daten erheben – jeden einzelnen Parameterwert halten. Wir machen es uns hier einfach und halten jeden Parameterwert für gleich wahrscheinlich. Tatsächlich ist der konkrete Wert hier egal, entscheidend ist das Verhältnis der Apriori-Werte zueinander: Geben wir einigen Parameterwerten den Wert 2, aber anderen den Wert 1, so halten wir Erstere für (apriori) doppelt so plausibel wie Letztere. Der Likelihood wird in diesem Beispiel mit der Binomialverteilung berechnet (da wir ein binäres Ereignis, <span class="math inline">\(W\)</span> oder <span class="math inline">\(L\)</span>, haben). Der Likelihood gibt an, wie wahrscheinlich ein Parameterwert ist gegeben einem bestimmten apriori gewählten Parameterwert. Die “End-Wahrscheinlichkeit”, die unstandardisierte Post-Wahrscheinlichkeit, die “hinten rauskommt” ist das Produkt von Priori-Wert und Likelihood. Anschaulich gesprochen: Die Priori-Werte werden mit den Likelihoodwerten gewichtet<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>. Da wir letztlich eine Wahrscheinlichkeitverteilung bekommen möchten, teilen wir jeden Posteriori-Wert durch die Summe aller Posteriori-Werte. Dadurch ist gerantiert, dass sich die Posteriori-Werte zu eins aufaddieren. Damit haben wir dann die Ansprüche an eine Wahrscheinlichkeitsverteilung erfüllt (vgl. <a href="0300-Wskt.html#sec-kolmogorov" class="quarto-xref"><span>Kapitel 3.3.4</span></a>).</p>
 </section><section id="bayes-box-in-r-berechnen" class="level3" data-number="5.5.2"><h3 data-number="5.5.2" class="anchored" data-anchor-id="bayes-box-in-r-berechnen">
 <span class="header-section-number">5.5.2</span> Bayes-Box in R berechnen</h3>
 <p>Legen wir uns ein Gitter mit Parameterwerten (<span class="math inline">\(\pi\)</span>) an, um deren Posteriori-Wahrscheinlichkeit zu berechnen. Konkret gesprochen: Wir listen jeden für uns interessanten Wasseranteil (<span class="math inline">\(\pi\)</span>) auf, also <span class="math inline">\(\pi=0, 0.1, 0.2, ..., 1\)</span>. Diese Parameterwerte sind die Hypothesen, die wir testen wollen, s. <a href="#lst-wasseranteile" class="quarto-xref">Listing&nbsp;<span>5.2</span></a>.</p>
@@ -953,7 +960,7 @@ Listing&nbsp;5.2: Parameterwerte (Gitter) für Wasseranteile: 0, 0.1, 0.2, …, 
 </div>
 <p>Dann berechnen wir schon mal die Wahrscheinlichkeit der Daten (6 W bei 9 Würfen) gegeben jeweils eines Wasseranteils:</p>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Likelihood</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span><span class="fl">6</span>, size <span class="op">=</span> <span class="fl">9</span>, prob <span class="op">=</span> <span class="va">wasseranteile</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Likelihood</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">dbinom</a></span><span class="op">(</span><span class="fl">6</span>, size <span class="op">=</span> <span class="fl">9</span>, prob <span class="op">=</span> <span class="va">wasseranteile</span><span class="op">)</span></span>
 <span><span class="va">Likelihood</span></span>
 <span><span class="co">##  [1] 0.000000000 0.000061236 0.002752512 0.021003948 0.074317824 0.164062500</span></span>
 <span><span class="co">##  [7] 0.250822656 0.266827932 0.176160768 0.044641044 0.000000000</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1107,10 +1114,10 @@ Tabelle&nbsp;5.2: Die Bayes-Box für den Globusversuch, k=6 Treffer, n=9 Versuch
 </figure>
 </div>
 </div>
-<p>Für jede Hypothese (Spalte <code>id</code>) berechnen wir die <em>unstandardisierte</em> Posteriori-Wahrscheinlichkeit als Produkt von Priori und Likelihood, s. <a href="#eq-postunstand" class="quarto-xref">Gleichung&nbsp;<span>5.7</span></a>.</p>
-<p><span id="eq-postunstand"><span class="math display">\[\text{Post}_{\text{unstand}} = \text{Priori} \cdot \text{Likelihood} \tag{5.7}\]</span></span></p>
-<p>Um zur <em>standardisierten</em> Posteriori-Wahrscheinlichkeit zu gelangten, teilen wir in jeder Zeile der Bayesbox (also für jede Hypothese) die unstandardisierte Post-Wahrscheinlichkeit durch die Summe der unstandardisierten Post-Wahrscheinlichkeiten, s. <a href="#eq-poststand-allgemein" class="quarto-xref">Gleichung&nbsp;<span>5.8</span></a>.</p>
-<p><span id="eq-poststand-allgemein"><span class="math display">\[\text{Post} = \frac{\text{Post}_{\text{unstand}}}{\text{Evidenz}} = \frac{Pr(H) \cdot Pr(H|D)}{Pr(D)} \tag{5.8}\]</span></span></p>
+<p>Für jede Hypothese (Spalte <code>id</code>) berechnen wir die <em>unstandardisierte</em> Posteriori-Wahrscheinlichkeit als Produkt von Priori und Likelihood, s. <a href="#eq-postunstand" class="quarto-xref">Gleichung&nbsp;<span>5.9</span></a>.</p>
+<p><span id="eq-postunstand"><span class="math display">\[\text{Post}_{\text{unstand}} = \text{Priori} \cdot \text{Likelihood} \tag{5.9}\]</span></span></p>
+<p>Um zur <em>standardisierten</em> Posteriori-Wahrscheinlichkeit zu gelangten, teilen wir in jeder Zeile der Bayesbox (also für jede Hypothese) die unstandardisierte Post-Wahrscheinlichkeit durch die Summe der unstandardisierten Post-Wahrscheinlichkeiten, s. <a href="#eq-poststand-allgemein" class="quarto-xref">Gleichung&nbsp;<span>5.10</span></a>.</p>
+<p><span id="eq-poststand-allgemein"><span class="math display">\[\text{Post} = \frac{\text{Post}_{\text{unstand}}}{\text{Evidenz}} = \frac{Pr(H) \cdot Pr(H|D)}{Pr(D)} \tag{5.10}\]</span></span></p>
 <p>Dabei haben wir die Priori-Wahrscheinlihkeit für alle Parameterwerte als gleich angenommen, da wir keinerlei Vorwissen hatten, <span class="math inline">\(Pr(H_i) = 1/11\)</span>. Die Evidenz berechnet sich als Summe der unstandardisierten Post-Wahrscheinlichkeiten, <span class="math inline">\(Pr(D) = 0.09\)</span>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1127,17 +1134,17 @@ Hinweis
 </div>
 <div id="exm-globus697-post" class="theorem example">
 <p><span class="theorem-title"><strong>Beispiel 5.6 (Post-Wahrscheinlichkeit im Globusversuch für p=.7)</strong></span> In <a href="#exm-globus697" class="quarto-xref">Beispiel&nbsp;<span>5.4</span></a> haben wir die Wahrscheinlichkeit für 6 Treffer bei 9 Würfen gegeben einer Trefferwahrscheinlichkeit von <span class="math inline">\(\pi = .7\)</span> berechnet. Damit haben wir die Likelihood <span class="math inline">\(L = Pr(D|H) =.25\)</span> berechnet.</p>
-<p>Auf dieser Basis können wir die Posteriori-Wahrscheinlichkeit <span class="math inline">\(Pr_{Post}\)</span> berechnen, zunächst die unstandardisierte. Dazu haben wir die Priori-Wahrscheinlichkeit mit der Likelihood multipliziert, s. <a href="#eq-postunstand697" class="quarto-xref">Gleichung&nbsp;<span>5.9</span></a>:</p>
-<p><span id="eq-postunstand697"><span class="math display">\[\text{Post}_{\text{unstand}} = Pr(H) \cdot Pr(D|H) = 0.09 \cdot 0.25 = 0.025 \tag{5.9}\]</span></span></p>
-<p>Jetzt standardisieren wir die unstandardisierte Post-Wahrscheinlichkeit, indem wir durch die Evidenz dividieren, s. <a href="#eq-poststand697" class="quarto-xref">Gleichung&nbsp;<span>5.10</span></a>.</p>
-<p><span id="eq-poststand697"><span class="math display">\[\text{Post} = \frac{\text{Post}_{\text{unstand}}}{\text{Evidenz}} = \frac{0.025}{0.1} =0.25 \tag{5.10}\]</span></span></p>
-<p><a href="#eq-bayes-globus697" class="quarto-xref">Gleichung&nbsp;<span>5.11</span></a> fasst die Schritte der Berechnung zusammen.</p>
+<p>Auf dieser Basis können wir die Posteriori-Wahrscheinlichkeit <span class="math inline">\(Pr_{Post}\)</span> berechnen, zunächst die unstandardisierte. Dazu haben wir die Priori-Wahrscheinlichkeit mit der Likelihood multipliziert, s. <a href="#eq-postunstand697" class="quarto-xref">Gleichung&nbsp;<span>5.11</span></a>:</p>
+<p><span id="eq-postunstand697"><span class="math display">\[\text{Post}_{\text{unstand}} = Pr(H) \cdot Pr(D|H) = 0.09 \cdot 0.25 = 0.025 \tag{5.11}\]</span></span></p>
+<p>Jetzt standardisieren wir die unstandardisierte Post-Wahrscheinlichkeit, indem wir durch die Evidenz dividieren, s. <a href="#eq-poststand697" class="quarto-xref">Gleichung&nbsp;<span>5.12</span></a>.</p>
+<p><span id="eq-poststand697"><span class="math display">\[\text{Post} = \frac{\text{Post}_{\text{unstand}}}{\text{Evidenz}} = \frac{0.025}{0.1} =0.25 \tag{5.12}\]</span></span></p>
+<p><a href="#eq-bayes-globus697" class="quarto-xref">Gleichung&nbsp;<span>5.13</span></a> fasst die Schritte der Berechnung zusammen.</p>
 <p><span id="eq-bayes-globus697"><span class="math display">\[\begin{aligned}
 Pr(H_{\pi=0.7}|D) =
 \frac{Pr(D|H) \cdot Pr(H)}{Pr(D)} &amp;= \\
 \frac{\text{Likelihood}  \cdot \text{Priori-Wahrscheinlichkeit}}{\text{Evidenz}} &amp;= \\
 \frac{0.25 \cdot 0.1}{0.1} &amp;= 0.25
-\end{aligned} \tag{5.11}\]</span></span> <span class="math inline">\(\square\)</span></p>
+\end{aligned} \tag{5.13}\]</span></span> <span class="math inline">\(\square\)</span></p>
 <p>Fazit: Nach dem Versuch, d.h. nachdem wir die Daten in Betracht gezogen haben, hat sich unsere Meinung über den Wasseranteil geupdatet von 0.1 auf 0.25.<span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exr-priori-change" class="theorem exercise">
@@ -1261,18 +1268,18 @@ Abbildung&nbsp;5.12: Günstige Pfade
 <span class="header-section-number">5.7.3</span> Weitere Herleitung der Bayes-Formel</h3>
 <p>Man kann sich Bayes’ Theorem auch wie folgt herleiten:</p>
 <p><span class="math inline">\(Pr(D\cap H) = Pr(D \cap H) = Pr(D) \cdot Pr(H|D) = Pr(H) \cdot Pr(D|H)\)</span></p>
-<p>Dann lösen wir nach P<span class="math inline">\((H|D)\)</span> auf, s. <a href="#eq-bayes2" class="quarto-xref">Gleichung&nbsp;<span>5.12</span></a>.</p>
-<p><span id="eq-bayes2"><span class="math display">\[Pr(H|D) = \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}} \tag{5.12}\]</span></span></p>
+<p>Dann lösen wir nach P<span class="math inline">\((H|D)\)</span> auf, s. <a href="#eq-bayes2" class="quarto-xref">Gleichung&nbsp;<span>5.14</span></a>.</p>
+<p><span id="eq-bayes2"><span class="math display">\[Pr(H|D) = \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}} \tag{5.14}\]</span></span></p>
 </section><section id="zusammengesetzte-hypothesen" class="level3" data-number="5.7.4"><h3 data-number="5.7.4" class="anchored" data-anchor-id="zusammengesetzte-hypothesen">
 <span class="header-section-number">5.7.4</span> Zusammengesetzte Hypothesen</h3>
 <p>Das ist vielleicht ein bisschen fancy, aber man kann Bayes’ Theorem auch nutzen, um die Wahrscheinlichkeit einer <em>zusammengesetzten Hypothese</em> zu berechnen: <span class="math inline">\(H = H_1 \cap H_2\)</span>. Ein Beispiel wäre: “Was ist die Wahrscheinlichkeit, dass es Regen (<span class="math inline">\(R\)</span>) <em>und</em> Blitzeis (<span class="math inline">\(B\)</span>) gibt, wenn es kalt (<span class="math inline">\(K\)</span>) ist?”.</p>
-<p>Das sieht dann so aus, <a href="#eq-bayes4" class="quarto-xref">Gleichung&nbsp;<span>5.13</span></a>:</p>
+<p>Das sieht dann so aus, <a href="#eq-bayes4" class="quarto-xref">Gleichung&nbsp;<span>5.15</span></a>:</p>
 <p><span id="eq-bayes4"><span class="math display">\[
 \begin{aligned}
 Pr(R \cap B |K) &amp;= \frac{ Pr(R \cap B) \cdot Pr(K|R \cap B) }{Pr(D)} \\
 &amp;= \frac{ Pr(R ) \cdot Pr(B) \cdot Pr(K|R \cap B) }{Pr(D)}
 \end{aligned}
-\tag{5.13}\]</span></span></p>
+\tag{5.15}\]</span></span></p>
 <p>Hier haben wir <span class="math inline">\(Pr(R \cap B)\)</span> aufgelöst in <span class="math inline">\(Pr(R) \cdot Pr(B)\)</span>, das ist nur zulässig, wenn <span class="math inline">\(R\)</span> und <span class="math inline">\(B\)</span> unabhängig sind.</p>
 </section></section><section id="aufgaben" class="level2" data-number="5.8"><h2 data-number="5.8" class="anchored" data-anchor-id="aufgaben">
 <span class="header-section-number">5.8</span> Aufgaben</h2>
@@ -1338,7 +1345,7 @@ McElreath, R. (2020). <em>Statistical Rethinking: A <span>Bayesian</span> Course
 <li id="fn2"><p>Warum gerade 9 Mal? Tja, dann hat das Handy geklingelt… Auch in wissenschaftlichen Versuchen ist (leider?) nicht immer alles genau geregelt.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p><em>Ihr</em> Ergebnis kann anders aussehen, schließlich ist es ja Zufall.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>oder den?<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>etwa: “Mutmaßlichkeit”<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>zu Deutsch etwa: “Mutmaßlichkeit”<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6"><p> Anstatt von <em>Priori</em> liest man auch <em>Prior</em>; anstatt <em>Posteriori</em> auch <em>Posterior</em><a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn7"><p>Die sog. “iid-Annahme”, <em>i</em>ndependently and <em>i</em>dentically distributed: Jeder Wurf der Globusballes ist eine Realisation der gleichen Zufallsvariablen. Jeder Wurf ist unabhängig von allen anderen: Das Ergebnis eines Wurfes hat keinen (stochastischen) Einfluss auf ein Ergebnis anderer Würfe. Die Wahrscheinlichkeitsverteilung ist bei jedem Wurf identisch.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn8"><p>Allgemeiner spricht man auch von 2 Treffern bei 3 Würfen (d.h. 1 “Nicht-Treffer”, den wir als “Niete” bezeichnen). Treffer werden oft mit <code>1</code> und Nieten mit <code>0</code> bezeichnet<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>

@@ -239,25 +239,6 @@ Also $W=6$ (Wasser, d.h. "Treffer") und $L=3$ (Land) ($n=9$ Versuche).
 🏋️️ Besorgen Sie sich einen Globus (zur Not eine Münze) und stellen Sie den Versuch nach!$\square$
 :::
 
-### Wie entstanden die Daten?
-
-Der physikalische Prozess, der zur Entstehung der Daten führt, nennt man den  *datengenierenden Prozess*.
-
-In diesem Fall kann man ihn so beschreiben:
-
-1.  Der wahre Anteil von Wasser, $W$, der Erdoberfläche ist $\pi$ (und $1-\pi$ ist der Anteil Land, $L$).
-2.  Ein Wurf des Globusballs hat die Wahrscheinlichkeit $\pi$, eine $W$-Beobachtung zu erzeugen.
-3.  Die Würfe des Globusballs sind unabhängig voneinander.
-4.  Wir haben kein Vorwissen über $\pi$; jeder Wert ist uns gleich wahrscheinlich.
-
-
-:::{#exr-annahmen1}
-🏋 Welche Annahmen würden Sie ändern? 
-Welche könnte man wegnehmen? Welche hinzufügen? 
-Was wären die Konsequenzen?$\square$
-:::
-
-
 
 
 
@@ -267,12 +248,12 @@ Was wären die Konsequenzen?$\square$
 
 
 Der Golem denkt eigentlich ganz vernünftig:
-Zuerst hat er ein Vorwissen zum Wasseranteil, die dazugehörige Wahrscheinlichkeitsverteilung nennt man *Priori-Verteilung*.
+Zuerst hat er ein Vorwissen zum Wasseranteil, die dazugehörige Wahrscheinlichkeitsverteilung nennt man *Priori-Verteilung* (s. @def-priori).
 In unserem Beispiel ist das Vorwissen recht bescheiden: Jeder Wasseranteil ist ihm gleich plausibel.
 Als nächstes beschaut sich der Golem die Daten und überlegt,
-wie wahrscheinlich die Daten sind, wenn man von einer bestimmten Hypothese ausgeht, z.B. dass der Wasseranteil 10% beträgt.
-Die zugehörige Wahrscheinlichkeit der Daten unter Annahme einer Hypothese nennt man die^[oder den?] *Likelihood^[etwa: "Mutmaßlichkeit"].*
-Als letztes bildet sich der Golem eine abschließende Meinung zur Wahrscheinlichkeit jeder Hypothese. Diese Wahrscheinlichkeitsverteilung nennt man *Posteriori-Verteilung*.
+wie wahrscheinlich die Daten sind, wenn man von einer bestimmten Hypothese ausgeht, z.B. dass der Wasseranteil 50% beträgt.
+Die zugehörige Wahrscheinlichkeit der Daten unter Annahme einer Hypothese nennt man die^[oder den?] *Likelihood*^[zu Deutsch etwa: "Mutmaßlichkeit"], s. @def-L.
+Als letztes bildet sich der Golem eine abschließende Meinung zur Wahrscheinlichkeit jeder Hypothese. Diese Wahrscheinlichkeitsverteilung nennt man *Posteriori-Verteilung*, s. @def-post1.
 Sie berechnet als Gewichtung des Vorwissen mit den neuen Daten.
 Anders gesagt: Das Vorwissen wird anhand der Erkenntnisse (der Daten) aktualisiert oder "geupdatet", s. @fig-bayes-update.
 
@@ -290,7 +271,6 @@ A[Priori-Vert.]-->B[Likelihood]-->C[Post-Vert.]-->A
 
 
 
-### Ein paar Definitionen
 
 
 :::{#def-priori}
@@ -342,8 +322,8 @@ Das Ergebnis eines Wurfes hat keinen (stochastischen) Einfluss auf ein Ergebnis 
 Die Wahrscheinlichkeitsverteilung ist bei jedem Wurf identisch.].
 Der Wasseranteil der Erde bleibt während des Versuchs gleich (durchaus plausibel).
 
-Lassen Sie uns im Folgenden die Wahrscheinlichkeit ($Pr$), $W$ mal Wasser und $L$ mal Land zu beobachten, wenn die Wahrscheinlichkeit für Wasser $\pi$ beträgt, so bezeichnen: $(Pr(W,L | \pi))$.
-Diese Wahrscheinlichkeit, $Pr(W,L | \pi)$, kann man mit der *Binomialverteilung* berechnen.
+Lassen Sie uns im Folgenden die Wahrscheinlichkeit ($Pr$), $W$ mal Wasser und $L$ mal Land zu beobachten, wenn die Wahrscheinlichkeit für Wasser $\pi$ beträgt, so bezeichnen: $Pr(W,L | \pi))$ oder auch (synonym) so: $Pr(W|\pi, n)$.
+Diese Wahrscheinlichkeit, $Pr(W,L | \pi)$, kann man im Fall des Globusversuchs mit der *Binomialverteilung* berechnen.
 
 Möchte man die Wahrscheinlichkeit ansprechen für das Ereignis "6 mal Wasser und 3 mal Land, 
 wenn wir von einem Wasseranteil von 70% ausgehen", so würden wir kurz schreiben: $Pr(W=6, L=3 | \pi=.7)$.
@@ -356,16 +336,9 @@ Wahrscheinlichkeit der Ereignisse (z.B. 2 Mal Kopf) beim wiederholten Münzwurf
 "Münzwurfverteilung", s. Kap. @sec-bin-distrib.
 
 
-### Binomialverteilung mit R
+### Likelihood berechnen
 
 
-Praktischerweise ist die Binomialverteilung in R eingebaut,  
-hier ist Pseudocode für Ihre Anwendung:
-
-```{r}
-#| eval: false
-dbinom(x = <Anzahl der Treffer>, size = <Anzahl der Würfe>, prob = <Wahrscheinlichkeit>)
-```
 
 
 Was ist der Anteil der gültigen Pfade in einem Baumdiagramm (d.h. die Wahrscheinlichkeit), 
@@ -556,7 +529,16 @@ wobei eine Binomialverteilung angenommen wird mit Trefferwahrscheinlichkeit `pro
 
 ### Unser Modell ist geboren
 
-Wir fassen das allgemeine Globusmodell so zusammen, s. @eq-globus1.
+Ein Modell (in der Bayes-Statistik) besteht aus mind. zwei Komponenten:
+
+1. Die *Likelihood* (die Wahrscheinlichkeit der Daten unter Annahme der Hypothese), s. @eq-globus1
+2. Die *Priori-Verteilung(en)* (die Wahrscheinlichkeit der Hypothese vor den Daten), a. @eq-prior-unif-globus
+3. Die *Posteriori-Verteilung* (die Wahrscheinlichkeit der Hypothese nach den Daten), s. @eq-post-globus1
+
+
+### Likelihood
+
+Im Globusversuch verwenden wir die Binomialverteilung zur Berechnung der *Likelihood*, s. @eq-globus1.
 
 $$W \sim \text{Bin}(n,\pi)$${#eq-globus1}
 
@@ -566,15 +548,31 @@ Lies: "W ist *bin*omial verteilt mit den Parametern $n$ und $\pi$". $n$ gibt die
 Mit einem konkretes Beispiel: $W \sim \text{Bin}(9, 0.7)$ bedeutet, 
 dass wir von 9 Würfen ausgehen und eine Wahrscheinlichkeit für Wasser von 70% annehmen.
 
-Unser Vorab-  bzw. Apriori-Wissen zu $p$ sei, dass uns alle Werte gleich ("uniform") plausibel erscheinen:
 
-$$\pi \sim \text{Unif}(0,1).$$
+Die Verwendung der Binomialvertielung ist an einige Annahmen geknüpft:
+
+1.  Die Züge sind unabhängig voneinander (Die Würfe des Globusballs beeinflussen sich einander nicht).
+2.  Der Parameterwert $\pi$ bleibt konstant (Der Wasseranteil der Erde ändert sich nicht während des Versuchs).
+
+
+:::{#exr-annahmen1}
+🏋 Welche Annahmen würden Sie ändern? 
+Welche könnte man wegnehmen? Welche hinzufügen? 
+Was wären die Konsequenzen?$\square$
+:::
+
+
+### Priori-Verteilung
+
+Unser Vorab-  bzw. *Apriori*-Wissen zu $p$ sei, dass uns alle Werte gleich ("uniform") plausibel erscheinen, s. @eq-prior-unif-globus.
+
+$$\pi \sim \text{Unif}(0,1).$${#eq-prior-unif-globus}
 
 Lies: "$\pi$ ist gleich (uniform) verteilt mit der Untergrenze 0 und der Obergrenze 1".
 
 Man könnte auch sagen: Wir haben praktisch kein Vorwissen, wir sind erstmal (aprior) indifferent,
 jeder Parameterwert erscheint uns erstmal gleich wahrscheinlich, 
-s. @fig-unif01
+s. @fig-unif01.
 
 
 
@@ -595,6 +593,27 @@ source("funs/uniform_plot.R")
 
 uniform_plot(0, 1)
 ```
+
+
+
+
+### Posteriori-Verteilung
+
+die Posteriori-Verteilung quantifiziert unser Wissen nach Kenntnis der Daten, aufbauend auf unserem Vorwissen (Priori-Wissen).
+Die Posteriori-Verteilung ist das Ergebnis des Bayes-Updates, s. @eq-post-globus1.
+
+Die Wahrscheinlichkeit bestimmter Hypothesen nennt man Posteriori-Wahrscheinlichkeit und bezeichnet sie kurz mit $Pr(H|D)$.
+Lies: "Die Wahrscheinlichkeit der Hypothese H gegeben der Daten D".
+Dabei nimmt man stillschweigend an, dass die Daten anhand eines gewissen Modells generiert wurden.
+
+
+
+
+
+
+
+
+
 
 
 
@@ -650,7 +669,9 @@ $Pr(H|D) = \frac{\overbrace{ Pr(H\cap D)}^\text{umformen}}{Pr(D)}$
 $Pr(H| D)$ kann man  umformen (vgl. @eq-pr-cond und @def-gem-wskt-abh),
 dann erhält man Bayes' Theorem, s. @eq-bayes1:
 
-$$Pr(H|D) =\frac{Pr(D\cap H)}{Pr(D)} =  \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}}$$ {#eq-bayes1}
+$$\begin{aligned}
+Pr(H|D) &=\frac{Pr(D\cap H)}{Pr(D)}  \\  &= \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}}
+\end{aligned}$$ {#eq-bayes1}
 
 
 
@@ -659,9 +680,9 @@ $$Pr(H|D) =\frac{Pr(D\cap H)}{Pr(D)} =  \frac{\overbrace{Pr(H)}^\text{Apriori-Wa
 :::{#def-evidenz}
 ### Evidenz
 $Pr(D)$ nennt man die *Evidenz*. 
-Die Evidenz berechnet sich als Summe der Likelihoods über alle Ausprägungen von $D$, d.h. als die totale Wahrscheinlichkeit von $D$, vgl. @def-totwskt:
+Die Evidenz berechnet sich als Summe der Likelihoods über alle Ausprägungen von $D$, d.h. als die totale Wahrscheinlichkeit von $D$, s. @eq-evidenz, vgl. auch @def-totwskt:
 
-$Pr(D) = Pr(D|H) \cdot Pr(H) + Pr(D| \neg H) \cdot Pr(\neg H)$
+$$Pr(D) = Pr(D|H) \cdot Pr(H) + Pr(D| \neg H) \cdot Pr(\neg H)$${#eq-evidenz}
 
 
 Die Aufgabe der Evidenz ist nur dafür zu sorgen, dass der Bruch insgesamt nur Werte zwischen 0 und 1 annehmen kann. $\square$
@@ -693,7 +714,7 @@ also ca. 4%. $\square$
 
 Schauen wir uns die Bestandteile von Bayes' Theorem (@eq-bayes1) noch etwas näher an:
 
--   Posteriori-Wahrscheinlichkeit: $Pr_{Post} := Pr(H|D)$
+-   (standardisierte) Posteriori-Wahrscheinlichkeit: $Pr_{Post} := Pr(H|D)$
 
 -   Likelihood: $L := Pr(D|H)$
 
@@ -777,7 +798,7 @@ Dazu gehen wir so vor:
 
 Für jeden Parameterwert berechnen wir eine (Post-)Wahrscheinlichkeit.^[Ein Parameterwert ist eine mögliche Ausprägung des Parameters.]
 Häufig entspricht eine Hypothese einem Parameterwert, 
-etwa wenn man sagt: "Ich glaube, die Münze ist fair", was auf einem Parameterwert von 50% herausläuft.
+etwa wenn man sagt: "Ich glaube, die Münze ist fair", was auf einen Parameterwert von 50% herausläuft.
 Dazu geben wir an, für wie wahrscheinlich wie apriori^[synonym: priori] 
 -- also bevor wir irgendwelche Daten erheben -- jeden einzelnen Parameterwert halten.
 Wir machen es uns hier einfach und halten jeden Parameterwert für gleich wahrscheinlich. 

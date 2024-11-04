@@ -33,10 +33,36 @@ ul.task-list li input[type="checkbox"] {
 <script src="test_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="test_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="test_files/libs/bootstrap/bootstrap-677b520d69fcc55ab41b4b425631e74d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script src="test_files/libs/quarto-diagram/mermaid.min.js"></script>
-<script src="test_files/libs/quarto-diagram/mermaid-init.js"></script>
-<link href="test_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -49,33 +75,18 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div id="fig-tot-wskt2" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-tot-wskt2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div>
-<pre class="mermaid mermaid-js" data-label="fig-tot-wskt2">flowchart LR
-  A[1000 Personen] -. K_Pos .-&gt; B[10]
-  A -. K_neg .-&gt; C[990]
-  B -. T_pos .-&gt; D[9]
-  B -. T_neg .-&gt; E[1]
-  C -. T_pos .-&gt; F[99]
-  C -. T_neg .-&gt; G[891]
-  D --- H[9/10 richtig positiv]
-  E --- I[1/10 falsch negativ]
-  F --- J[99/990 falsch positiv]
-  G --- K[891/990 richtig negativ]
-</pre>
-</div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tot-wskt2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Günstige Pfade
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
+<p><span class="math display">\[
+\begin{aligned}
+E &amp;= mc^2 &amp; \text{Einstein's famous equation} \\
+F &amp;= ma &amp; \text{Newton's second law}
+\end{aligned}
+\]</span> <span class="math display">\[
+\begin{equation}
+a^2 + b^2 = c^2 \tag*{Pythagorean Theorem} \\
+1+1=2
+\end{equation}
+\]</span></p>
+<p>jk</p>
 
 </main>
 <!-- /main column -->
