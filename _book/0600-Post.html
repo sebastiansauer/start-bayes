@@ -125,6 +125,7 @@ div.csl-indent {
     "search-label": "Suchen"
   }
 }</script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
 <script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
 <script src="site_libs/plotly-binding-4.10.4/plotly.js"></script>
 <script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
@@ -409,7 +410,11 @@ window.Quarto = {
   <li><a href="#intervalle-höchster-dichte-vs.-perzentilintervalle" id="toc-intervalle-höchster-dichte-vs.-perzentilintervalle" class="nav-link" data-scroll-target="#intervalle-höchster-dichte-vs.-perzentilintervalle"><span class="header-section-number">6.5.1</span> Intervalle höchster Dichte vs.&nbsp;Perzentilintervalle</a></li>
   <li><a href="#zusammenfassung" id="toc-zusammenfassung" class="nav-link" data-scroll-target="#zusammenfassung"><span class="header-section-number">6.5.2</span> Zusammenfassung</a></li>
   </ul></li>
-  <li><a href="#aufgaben" id="toc-aufgaben" class="nav-link" data-scroll-target="#aufgaben"><span class="header-section-number">6.6</span> Aufgaben</a></li>
+  <li><a href="#aufgaben" id="toc-aufgaben" class="nav-link" data-scroll-target="#aufgaben"><span class="header-section-number">6.6</span> Aufgaben</a>
+  <ul>
+  <li><a href="#papier-und-bleistift-aufgaben" id="toc-papier-und-bleistift-aufgaben" class="nav-link" data-scroll-target="#papier-und-bleistift-aufgaben"><span class="header-section-number">6.6.1</span> Papier-und-Bleistift-Aufgaben</a></li>
+  <li><a href="#aufgaben-bei-denen-man-einen-computer-benötigt" id="toc-aufgaben-bei-denen-man-einen-computer-benötigt" class="nav-link" data-scroll-target="#aufgaben-bei-denen-man-einen-computer-benötigt"><span class="header-section-number">6.6.2</span> Aufgaben, bei denen man einen Computer benötigt</a></li>
+  </ul></li>
   <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><span class="header-section-number">6.7</span> —</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/0600-Post.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></nav>
@@ -521,7 +526,7 @@ Listing&nbsp;6.1: Bayes-Box mit 6 Wasser bei 9 Versuchen
 <div class="sourceCode cell-code" id="lst-bayes1"><pre class="sourceCode code-annotation-code r code-with-copy"><code class="sourceCode r"><span id="lst-bayes1-1"><a href="#lst-bayes1-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">11</span></span>
 <span id="lst-bayes1-2"><a href="#lst-bayes1-2" aria-hidden="true" tabindex="-1"></a>n_success <span class="ot">&lt;-</span> <span class="dv">6</span>          </span>
 <span id="lst-bayes1-3"><a href="#lst-bayes1-3" aria-hidden="true" tabindex="-1"></a>n_trials  <span class="ot">&lt;-</span> <span class="dv">9</span></span>
-<span id="lst-bayes1-4"><a href="#lst-bayes1-4" aria-hidden="true" tabindex="-1"></a>p_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">1</span>, <span class="at">length.out =</span> n)</span>
+<span id="lst-bayes1-4"><a href="#lst-bayes1-4" aria-hidden="true" tabindex="-1"></a>p_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">1</span>, <span class="at">by =</span> .<span class="dv">1</span>)</span>
 <span id="lst-bayes1-5"><a href="#lst-bayes1-5" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(n_success, <span class="at">size =</span> n_trials, <span class="at">prob =</span> p_grid)</span>
 <span id="lst-bayes1-6"><a href="#lst-bayes1-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="lst-bayes1-7"><a href="#lst-bayes1-7" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span></span>
@@ -534,7 +539,7 @@ Listing&nbsp;6.1: Bayes-Box mit 6 Wasser bei 9 Versuchen
 </div>
 </div>
 <ol type="1">
-<li><em>Seq</em>uenz von 0 bis 1 mit der Länge n=11 Schritte, das gibt uns die Parameterwerte</li>
+<li><em>Seq</em>uenz von 0 bis 1 mit Schritten der Größe 0.1.</li>
 <li><em>L</em>ikelihood mit 6 Treffern bei 9 Würfen und das Ganze jeweils für alle 11 Parameterwerte</li>
 <li>Dann packen wir alles in eine Tabelle.</li>
 </ol>
@@ -549,8 +554,8 @@ Listing&nbsp;6.1: Bayes-Box mit 6 Wasser bei 9 Versuchen
 <div id="fig-post1" class="cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-post1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-0c964ac4ca299117b856" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-0c964ac4ca299117b856">{"x":{"data":[{"x":[0,0.10000000000000001,0.20000000000000001,0.30000000000000004,0.40000000000000002,0.5,0.60000000000000009,0.70000000000000007,0.80000000000000004,0.90000000000000002,1],"y":[0,6.1196196769696987e-05,0.0027507228748277547,0.020990295492006112,0.074269517620349376,0.16395585982964972,0.25065962196867919,0.26665449458363283,0.17604626398897624,0.044612027445109149,0],"text":["p_grid: 0.0<br />post: 0.0000000000","p_grid: 0.1<br />post: 0.0000611962","p_grid: 0.2<br />post: 0.0027507229","p_grid: 0.3<br />post: 0.0209902955","p_grid: 0.4<br />post: 0.0742695176","p_grid: 0.5<br />post: 0.1639558598","p_grid: 0.6<br />post: 0.2506596220","p_grid: 0.7<br />post: 0.2666544946","p_grid: 0.8<br />post: 0.1760462640","p_grid: 0.9<br />post: 0.0446120274","p_grid: 1.0<br />post: 0.0000000000"],"type":"scatter","mode":"markers+lines","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":0.5,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)","dash":"solid"},"frame":null}],"layout":{"margin":{"t":26.228310502283108,"r":7.3059360730593621,"b":40.182648401826498,"l":25.570776255707766},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.050000000000000003,1.05],"tickmode":"array","ticktext":["0.00","0.25","0.50","0.75","1.00"],"tickvals":[0,0.25,0.5,0.75,1],"categoryorder":"array","categoryarray":["0.00","0.25","0.50","0.75","1.00"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"p_grid","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.013332724729181643,0.27998721931281445],"tickmode":"array","ticktext":[],"tickvals":[],"categoryorder":"array","categoryarray":[],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Posterior-Wahrscheinlichkeit","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"16506e57ad11":{"x":{},"y":{},"type":"scatter"},"16503e236faf":{"x":{},"y":{}}},"cur_data":"16506e57ad11","visdat":{"16506e57ad11":["function (y) ","x"],"16503e236faf":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-9a815719e576cb8355da" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-9a815719e576cb8355da">{"x":{"data":[{"x":[0,0.10000000000000001,0.20000000000000001,0.30000000000000004,0.40000000000000002,0.5,0.60000000000000009,0.70000000000000007,0.80000000000000004,0.90000000000000002,1],"y":[0,6.1196196769696987e-05,0.0027507228748277547,0.020990295492006112,0.074269517620349376,0.16395585982964972,0.25065962196867919,0.26665449458363283,0.17604626398897624,0.044612027445109149,0],"text":["p_grid: 0.0<br />post: 0.0000000000","p_grid: 0.1<br />post: 0.0000611962","p_grid: 0.2<br />post: 0.0027507229","p_grid: 0.3<br />post: 0.0209902955","p_grid: 0.4<br />post: 0.0742695176","p_grid: 0.5<br />post: 0.1639558598","p_grid: 0.6<br />post: 0.2506596220","p_grid: 0.7<br />post: 0.2666544946","p_grid: 0.8<br />post: 0.1760462640","p_grid: 0.9<br />post: 0.0446120274","p_grid: 1.0<br />post: 0.0000000000"],"type":"scatter","mode":"markers+lines","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":0.5,"size":11.338582677165356,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)","dash":"solid"},"frame":null},{"x":[0.69999999999999996],"y":[0.26679999999999998],"text":"x: 0.7<br />y: 0.2668","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,0,0,1)","opacity":0.69999999999999996,"size":18.897637795275593,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(255,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283108,"r":7.3059360730593621,"b":40.182648401826498,"l":25.570776255707766},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.050000000000000003,1.05],"tickmode":"array","ticktext":["0.00","0.25","0.50","0.75","1.00"],"tickvals":[0,0.25,0.5,0.75,1],"categoryorder":"array","categoryarray":["0.00","0.25","0.50","0.75","1.00"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"p_grid","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.013339999999999999,0.28014],"tickmode":"array","ticktext":[],"tickvals":[],"categoryorder":"array","categoryarray":[],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Posterior-Wahrscheinlichkeit","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"702b658e25bb":{"x":{},"y":{},"type":"scatter"},"702b574f4c13":{"x":{},"y":{}},"702b170ba02d":{"x":{},"y":{}}},"cur_data":"702b658e25bb","visdat":{"702b658e25bb":["function (y) ","x"],"702b574f4c13":["function (y) ","x"],"702b170ba02d":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-post1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;6.1: Die Postverteilung für W=6, N=9, k=10
@@ -1194,7 +1199,7 @@ Tabelle&nbsp;6.2: Eine Bayes-Box ‘automatisiert’ erstellt, mit Hilfe der Fun
 </section>
 <section id="wir-arbeiten-jetzt-mit-häufigkeit-nicht-mit-wahrscheinlichkeit" class="level3" data-number="6.2.4">
 <h3 data-number="6.2.4" class="anchored" data-anchor-id="wir-arbeiten-jetzt-mit-häufigkeit-nicht-mit-wahrscheinlichkeit"><span class="header-section-number">6.2.4</span> Wir arbeiten jetzt mit Häufigkeit, nicht mit Wahrscheinlichkeit</h3>
-<p>Kurz gesagt: Komplexere Bayes-Modelle können nicht mehr “einfach mal eben” ausgerechnet werden; die Mathematik wird zu umfangreich bzw. zu komplex. Glücklicherweiße gibt es einen Trick, der die Sache nicht nur rechnerisch, sondern auch konzeptionell viel einfacher macht. Dieser Trick lautet: Wir arbeiten nicht mehr mit Wahrscheinlichkeiten, sondern mit <em>Häufigkeiten.</em> Praktischerweise werden wir in Kürze einen R-Golem kennenlernen, der das für uns erledigt. Dieser Golem liefert uns Stichproben aus der Post-Verteilung zurück. Lernen wir jetzt also, wie man mit solchen Stichproben umgeht.</p>
+<p>Kurz gesagt: Komplexere Bayes-Modelle können nicht mehr “einfach mal eben” ausgerechnet werden; die Mathematik wird zu rechenintensiv. Glücklicherweiße gibt es einen Trick, der die Sache nicht nur rechnerisch, sondern auch konzeptionell viel einfacher macht. Dieser Trick lautet: Wir arbeiten nicht mehr mit Wahrscheinlichkeiten, sondern mit <em>Häufigkeiten.</em> Praktischerweise werden wir in Kürze einen R-Golem kennenlernen, der das für uns erledigt. Dieser Golem liefert uns Stichproben aus der Post-Verteilung zurück. Lernen wir jetzt also, wie man mit solchen Stichproben umgeht.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1208,7 +1213,7 @@ Wichtig
 <p>Die Post-Verteilung mit Häufigkeiten (d.h. in <em>Stichprobenform</em>) ist viel einfach zu handhaben als das direkte Arbeiten mit Wahrscheinlichkeiten. Daher sind viele R-Funktionen für Bayes auf Stichproben eingestellt.</p>
 </div>
 </div>
-<p>Die Bayes-Box-Methode<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> ist bei größeren Datensätzen (oder größeren Modellen) zu unpraktisch. In der Praxis werden daher andere, schnellere Verfahren verwendet, sog. Monte-Carlo-Markov-Ketten (MCMC). Wie diese Verfahren funktionieren sind aber nicht mehr Gegenstand dieses Kurses. Wir wenden Sie einfach an, freuen uns und lassen es damit gut sein<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<p>Die Bayes-Box-Methode<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> ist bei größeren Datensätzen (oder größeren Modellen) zu unpraktisch. In der Praxis werden daher andere, schnellere Verfahren verwendet, sog. Monte-Carlo-Markov-Ketten (MCMC). Wie diese Verfahren funktionieren sind aber nicht mehr Gegenstand dieses Kurses. Wir wenden Sie einfach an, freuen uns und lassen es damit gut sein.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
 </section>
 <section id="häufigkeiten-sind-einfacher-als-wahrscheinlichkeiten" class="level3" data-number="6.2.5">
 <h3 data-number="6.2.5" class="anchored" data-anchor-id="häufigkeiten-sind-einfacher-als-wahrscheinlichkeiten"><span class="header-section-number">6.2.5</span> Häufigkeiten sind einfacher als Wahrscheinlichkeiten</h3>
@@ -1825,7 +1830,7 @@ Abbildung&nbsp;6.2: Stichprobenverteilung auf Basis von Stichproben
 <div id="fig-post100" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-post100-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="0600-Post_files/figure-html/fig-post100-1.png" class="img-fluid figure-img" width="9">
+<img src="0600-Post_files/figure-html/fig-post100-1.png" class="img-fluid figure-img" style="width:90.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-post100-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;6.3: Post-Verteilung mit 100 Gitterwerten, exakt vs.&nbsp;auf Basis von Stichproben
@@ -3080,6 +3085,24 @@ Wichtig
 </section>
 <section id="aufgaben" class="level2" data-number="6.6">
 <h2 data-number="6.6" class="anchored" data-anchor-id="aufgaben"><span class="header-section-number">6.6</span> Aufgaben</h2>
+<section id="papier-und-bleistift-aufgaben" class="level3" data-number="6.6.1">
+<h3 data-number="6.6.1" class="anchored" data-anchor-id="papier-und-bleistift-aufgaben"><span class="header-section-number">6.6.1</span> Papier-und-Bleistift-Aufgaben</h3>
+<ol type="1">
+<li><a href="https://datenwerk.netlify.app/posts/wskt-schluckspecht2/">Wskt-Schluckspecht2</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/kekse03/index.qmd">kekse03</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/bfi10/">bfi10</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/kaefer2/kaefer2">Kaefer2</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/mtcars-post2a/">mtcars-post2a</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/rethink3e1-7-paper/">rethink3e1-7-paper</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/mtcars-post3a/">mtcars-post3a</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/mtcars-post3a/">mtcars-post3a</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/https://datenwerk.netlify.app/posts/mtcars-post_paper/">mtcars-post_paper</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/fattails01/fattails01.html">fattails1</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/fattails02/fattails02.html">fattails2</a></li>
+</ol>
+</section>
+<section id="aufgaben-bei-denen-man-einen-computer-benötigt" class="level3" data-number="6.6.2">
+<h3 data-number="6.6.2" class="anchored" data-anchor-id="aufgaben-bei-denen-man-einen-computer-benötigt"><span class="header-section-number">6.6.2</span> Aufgaben, bei denen man einen Computer benötigt</h3>
 <ol type="1">
 <li><a href="https://datenwerk.netlify.app/posts/iq01/iq01.html">iq01</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/iq02/iq02.html">iq02</a></li>
@@ -3090,19 +3113,17 @@ Wichtig
 <li><a href="https://datenwerk.netlify.app/posts/iq07/iq07.html">iq07</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/iq08/iq08.html">iq08</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/iq10/iq10.html">iq10</a></li>
-<li><a href="https://datenwerk.netlify.app/posts/fattails01/fattails01.html">fattails1</a></li>
-<li><a href="https://datenwerk.netlify.app/posts/fattails02/fattails02.html">fattails2</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/rethink3e1-7/rethink3e1-7">ReThink3e1-7</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/weinhaendler/weinhaendler">Weinhaendler</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/rethink3m1/rethink3m1">Rethink3m1</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/rethink3m2/rethink3m2">Rethink3m2</a></li>
-<li><a href="https://datenwerk.netlify.app/posts/kaefer2/kaefer2">Kaefer2</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/groesse02/groesse02">groesse2</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/groesse01/groesse01">groesse1</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/anteil-apple/anteil-apple">Anteil-Apple</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/kung-height/kung-height">Kung-height</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/zwielichter-dozent-bayes/zwielichter-dozent-bayes">zwielichter-dozent-bayes</a></li>
 </ol>
+</section>
 </section>
 <section id="section" class="level2" data-number="6.7">
 <h2 data-number="6.7" class="anchored" data-anchor-id="section"><span class="header-section-number">6.7</span> —</h2>

@@ -107,7 +107,7 @@ Aufgrund der Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten
 n <- 11
 n_success <- 6          
 n_trials  <- 9
-p_grid <- seq(from = 0, to = 1, length.out = n)         # <1>
+p_grid <- seq(from = 0, to = 1, by = .1)         # <1>
 L <- dbinom(n_success, size = n_trials, prob = p_grid)  # <2>
 
 d <-                                                    # <3>
@@ -116,7 +116,7 @@ d <-                                                    # <3>
   mutate(unstand_post = (likelihood * prior),
          post = unstand_post / sum(unstand_post))
 ```
-1. *Seq*uenz von 0 bis 1 mit der Länge n=11 Schritte, das gibt uns die Parameterwerte
+1. *Seq*uenz von 0 bis 1 mit Schritten der Größe  0.1.
 2. *L*ikelihood mit 6 Treffern bei 9 Würfen und das Ganze jeweils für alle 11 Parameterwerte
 3. Dann packen wir alles in eine Tabelle.
 
@@ -132,13 +132,14 @@ ggline(d, x = "p_grid", y = "post")
 ```
 
 ::: {.content-visible when-format="html"}
-Abb. @fig-post1 zeigt die resultierende Bayes-Box; vor allem ist die Post-Verteilung wichtig.
+Abb. @fig-post1 zeigt die resultierende Bayes-Box; 
+vor allem ist die Post-Verteilung wichtig.
 
 ```{r plot-post-d}
 #| echo: false
 #| label: fig-post1
 #| fig-cap: Die Postverteilung für W=6, N=9, k=10
-#
+
 
 p_d <-
 d %>% 
@@ -148,7 +149,12 @@ d %>%
   geom_line() +
   scale_y_continuous("Posterior-Wahrscheinlichkeit", 
                      breaks = NULL) +
-  theme_minimal()  
+  theme_minimal()  +
+  annotate("point", x = .7, 
+           y = .2668, 
+           color = "red", 
+           alpha = .7,
+           size = 5) 
 
   
 ggplotly(p_d)
@@ -295,7 +301,7 @@ Bei einer multiplen Regression mit sagen wir 10 Prädiktoren mit jeweils 100 Aus
 
 ### Wir arbeiten jetzt mit Häufigkeit, nicht mit Wahrscheinlichkeit
 
-Kurz gesagt: Komplexere Bayes-Modelle können nicht mehr "einfach mal eben" ausgerechnet werden; die Mathematik wird zu umfangreich bzw. zu komplex.
+Kurz gesagt: Komplexere Bayes-Modelle können nicht mehr "einfach mal eben" ausgerechnet werden; die Mathematik wird zu rechenintensiv.
 Glücklicherweiße gibt es einen Trick, der die Sache nicht nur rechnerisch, sondern auch konzeptionell viel einfacher macht.
 Dieser Trick lautet: Wir arbeiten nicht mehr mit Wahrscheinlichkeiten, sondern mit *Häufigkeiten.*
 Praktischerweise werden wir in Kürze einen R-Golem kennenlernen,
@@ -311,7 +317,7 @@ Die Post-Verteilung mit Häufigkeiten (d.h. in *Stichprobenform*) ist viel einfa
 Die Bayes-Box-Methode^[auch Grid-Methode genannt] ist bei größeren Datensätzen (oder größeren Modellen) zu unpraktisch.
 In der Praxis werden daher andere, schnellere Verfahren verwendet, sog. Monte-Carlo-Markov-Ketten (MCMC).
 Wie diese Verfahren funktionieren sind aber nicht mehr Gegenstand dieses Kurses.
-Wir wenden Sie einfach an, freuen uns und lassen es damit gut sein^[Eine gute Einführung in die Hintergründe findet sich bei @mcelreath2020.]
+Wir wenden Sie einfach an, freuen uns und lassen es damit gut sein.^[Eine gute Einführung in die Hintergründe findet sich bei @mcelreath2020.]
 
 
 ### Häufigkeiten sind einfacher als Wahrscheinlichkeiten
@@ -504,7 +510,7 @@ Das Modell ist sich nicht sehr sicher, könnte man sagen.
 #| echo: false
 #| fig-cap: Post-Verteilung mit 100 Gitterwerten, exakt vs. auf Basis von Stichproben
 #| label: fig-post100
-#| out-width: 9
+#| out-width: 90%
 
 
 p0 <- 
@@ -894,37 +900,42 @@ Das 25%-Quantil nennt man auch 1. Quartil; das 50%-Quantil (Median) auch 2. Quar
 #| fig-cap: Größenverteilung von 1325 amerikanischen Studentis
 #| label: fig-stud-height
 #| fig-width: 10
+
+speed_gender_height <-
+  speed_gender_height |> 
+   mutate(height_cm = height*2.54)
+
 p1 <- speed_gender_height %>% 
   ggplot() +
-  aes(x = 1, y = height) +
+  aes(x = 1, y = height_cm) +
   geom_boxplot() +
   labs(x = "",
-       y = "Größe in Inch",
+       y = "Größe in cm",
        title = "Die Box zeigt das 25%-, 50%- und 75%-Quantil") +
   theme_minimal()
 
 height_summary_long <- 
   speed_gender_height %>% 
-  select(height) %>% 
+  select(height_cm) %>% 
   drop_na() %>% 
-  summarise(q25 = quantile(height, prob = .25),
-            q50 = quantile(height, prob = .5),
-            q75 = quantile(height, prob = .75)) %>% 
+  summarise(q25 = quantile(height_cm, prob = .25),
+            q50 = quantile(height_cm, prob = .5),
+            q75 = quantile(height_cm, prob = .75)) %>% 
   pivot_longer(everything(),
                names_to = "q",
-               values_to = "height") 
+               values_to = "height_cm") 
 
 p2 <- 
   speed_gender_height %>% 
   ggplot() +
-  aes(x = height) +
+  aes(x = height_cm) +
   geom_histogram() +
   geom_vline(data = height_summary_long,
-             aes(xintercept = height)) +
+             aes(xintercept = height_cm)) +
   geom_text(data = height_summary_long,
-             aes(x = height+1,
+             aes(x = height_cm+1,
                  y = 0,
-                 label = paste0(q, ": ", height)),
+                 label = paste0(q, ": ", height_cm)),
              angle = 90,
             hjust = 0,
             color = "white"
@@ -1408,6 +1419,23 @@ Halten Sie sich klar vor Augen: Der Wasseranteil ist ein Beispiel für einen *Pa
 ## Aufgaben
 
 
+### Papier-und-Bleistift-Aufgaben
+
+1. [Wskt-Schluckspecht2](https://datenwerk.netlify.app/posts/wskt-schluckspecht2/)
+14. [kekse03](https://datenwerk.netlify.app/posts/kekse03/index.qmd)
+14. [bfi10](https://datenwerk.netlify.app/posts/bfi10/)
+14. [Kaefer2](https://datenwerk.netlify.app/posts/kaefer2/kaefer2)
+3. [mtcars-post2a](https://datenwerk.netlify.app/posts/mtcars-post2a/)
+3. [rethink3e1-7-paper](https://datenwerk.netlify.app/posts/rethink3e1-7-paper/)
+14. [mtcars-post3a](https://datenwerk.netlify.app/posts/mtcars-post3a/)
+14. [mtcars-post3a](https://datenwerk.netlify.app/posts/mtcars-post3a/)
+14. [mtcars-post_paper](https://datenwerk.netlify.app/posts/https://datenwerk.netlify.app/posts/mtcars-post_paper/)
+1. [fattails1](https://datenwerk.netlify.app/posts/fattails01/fattails01.html)
+10. [fattails2](https://datenwerk.netlify.app/posts/fattails02/fattails02.html)
+
+
+### Aufgaben, bei denen man einen Computer benötigt
+
 1. [iq01](https://datenwerk.netlify.app/posts/iq01/iq01.html)
 2. [iq02](https://datenwerk.netlify.app/posts/iq02/iq02.html)
 3. [iq03](https://datenwerk.netlify.app/posts/iq03/iq03.html)
@@ -1417,13 +1445,10 @@ Halten Sie sich klar vor Augen: Der Wasseranteil ist ein Beispiel für einen *Pa
 7. [iq07](https://datenwerk.netlify.app/posts/iq07/iq07.html)
 8. [iq08](https://datenwerk.netlify.app/posts/iq08/iq08.html)
 8. [iq10](https://datenwerk.netlify.app/posts/iq10/iq10.html)
-9. [fattails1](https://datenwerk.netlify.app/posts/fattails01/fattails01.html)
-10. [fattails2](https://datenwerk.netlify.app/posts/fattails02/fattails02.html)
 11. [ReThink3e1-7](https://datenwerk.netlify.app/posts/rethink3e1-7/rethink3e1-7)
 12. [Weinhaendler](https://datenwerk.netlify.app/posts/weinhaendler/weinhaendler)
 13. [Rethink3m1](https://datenwerk.netlify.app/posts/rethink3m1/rethink3m1)
 13. [Rethink3m2](https://datenwerk.netlify.app/posts/rethink3m2/rethink3m2)
-14. [Kaefer2](https://datenwerk.netlify.app/posts/kaefer2/kaefer2)
 15. [groesse2](https://datenwerk.netlify.app/posts/groesse02/groesse02)
 16. [groesse1](https://datenwerk.netlify.app/posts/groesse01/groesse01)
 17. [Anteil-Apple](https://datenwerk.netlify.app/posts/anteil-apple/anteil-apple)
