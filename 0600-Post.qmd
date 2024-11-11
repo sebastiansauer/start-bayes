@@ -104,10 +104,9 @@ Aufgrund der Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten
 ```{r QM2-Thema2-kleineModelle-28}
 #| lst-cap: Bayes-Box mit 6 Wasser bei 9 Versuchen
 #| lst-label: lst-bayes1
-n <- 11
 n_success <- 6          
 n_trials  <- 9
-p_grid <- seq(from = 0, to = 1, by = .1)         # <1>
+p_grid <- seq(from = 0, to = 1, by = .1)                # <1>
 L <- dbinom(n_success, size = n_trials, prob = p_grid)  # <2>
 
 d <-                                                    # <3>
@@ -1173,7 +1172,7 @@ d_33 <-
 
 samples_33 <- 
   d_33 %>% 
-    slice_sample(n = 1e4, 
+    slice_sample(n = 1e6, 
                  weight_by = post_33, 
                  replace = T)
 ```
@@ -1193,7 +1192,7 @@ samples_33 %>%
 Mit dieser "schiefen" Post-Verteilung können wir gut die Auswirkungen auf das Perzentil- und das Höchste-Dichte-Intervall anschauen.
 
 
-### Perzentil-Intervall
+### Perzentilintervall
 
 Hier z.B. ein 50%-Perzentilintervall, s. Abb. @fig-schief.
 
@@ -1201,7 +1200,7 @@ Hier z.B. ein 50%-Perzentilintervall, s. Abb. @fig-schief.
 
 ```{r QM2-Thema3-Post-befragen-15}
 #| echo: false
-#| fig-cap: "Schiefe Intervalle"
+#| fig-cap: "Schiefe Intervalle: Das PI enthält den wahrscheinlichsten Parameterwert nicht, das HDI schon."
 #| label: fig-schief
 
 qi_50_low <- eti(samples_33$p_grid, ci = .5)$CI_low
@@ -1223,8 +1222,9 @@ p1 <-
 
 hdi_50_low <- bayestestR::hdi(samples_33$p_grid, 
                                   ci = .5)$CI_low
-hdi_50_up <- bayestestR::hdi(samples_33$p_grid, 
-                                  ci = .5)$CI_high
+hdi_50_up <- 1
+# hdi_50_up <- bayestestR::hdi(samples_33$p_grid, 
+#                                   ci = .5)$CI_high
 
 p2 <-
   d_33 %>% 
@@ -1240,7 +1240,8 @@ p2 <-
 plots(p1, 
       p2,
       n_rows = 1,
-      title= c("PI", "HDI"))
+      title= c("PI vs HDI"),
+      tags = c("PI", "HDI"))
 ```
 
 Ein *Perzentilintervall* (ETI, PI) kann, wenn es dumm läuft, den wahrscheinlichsten Parameterwert nicht enthalten, diesen Wert also plausiblen Wert also zurückweisen. Das ist nicht so toll.
@@ -1432,7 +1433,7 @@ Halten Sie sich klar vor Augen: Der Wasseranteil ist ein Beispiel für einen *Pa
 14. [mtcars-post_paper](https://datenwerk.netlify.app/posts/https://datenwerk.netlify.app/posts/mtcars-post_paper/)
 1. [fattails1](https://datenwerk.netlify.app/posts/fattails01/fattails01.html)
 10. [fattails2](https://datenwerk.netlify.app/posts/fattails02/fattails02.html)
-
+11. [eti-hdi](https://datenwerk.netlify.app/posts/eti-hdi/)
 
 ### Aufgaben, bei denen man einen Computer benötigt
 

@@ -402,7 +402,7 @@ window.Quarto = {
   </ul></li>
   <li><a href="#schiefe-posteriori-verteilungen-sind-möglich" id="toc-schiefe-posteriori-verteilungen-sind-möglich" class="nav-link" data-scroll-target="#schiefe-posteriori-verteilungen-sind-möglich"><span class="header-section-number">6.4</span> Schiefe Posteriori-Verteilungen sind möglich</a>
   <ul>
-  <li><a href="#perzentil-intervall" id="toc-perzentil-intervall" class="nav-link" data-scroll-target="#perzentil-intervall"><span class="header-section-number">6.4.1</span> Perzentil-Intervall</a></li>
+  <li><a href="#perzentilintervall" id="toc-perzentilintervall" class="nav-link" data-scroll-target="#perzentilintervall"><span class="header-section-number">6.4.1</span> Perzentilintervall</a></li>
   <li><a href="#intervalle-höchster-dichte" id="toc-intervalle-höchster-dichte" class="nav-link" data-scroll-target="#intervalle-höchster-dichte"><span class="header-section-number">6.4.2</span> Intervalle höchster Dichte</a></li>
   </ul></li>
   <li><a href="#fazit" id="toc-fazit" class="nav-link" data-scroll-target="#fazit"><span class="header-section-number">6.5</span> Fazit</a>
@@ -523,17 +523,16 @@ Lösung
 Listing&nbsp;6.1: Bayes-Box mit 6 Wasser bei 9 Versuchen
 </figcaption>
 <div aria-describedby="lst-bayes1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode cell-code" id="lst-bayes1"><pre class="sourceCode code-annotation-code r code-with-copy"><code class="sourceCode r"><span id="lst-bayes1-1"><a href="#lst-bayes1-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">11</span></span>
-<span id="lst-bayes1-2"><a href="#lst-bayes1-2" aria-hidden="true" tabindex="-1"></a>n_success <span class="ot">&lt;-</span> <span class="dv">6</span>          </span>
-<span id="lst-bayes1-3"><a href="#lst-bayes1-3" aria-hidden="true" tabindex="-1"></a>n_trials  <span class="ot">&lt;-</span> <span class="dv">9</span></span>
-<span id="lst-bayes1-4"><a href="#lst-bayes1-4" aria-hidden="true" tabindex="-1"></a>p_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">1</span>, <span class="at">by =</span> .<span class="dv">1</span>)</span>
-<span id="lst-bayes1-5"><a href="#lst-bayes1-5" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(n_success, <span class="at">size =</span> n_trials, <span class="at">prob =</span> p_grid)</span>
-<span id="lst-bayes1-6"><a href="#lst-bayes1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="lst-bayes1-7"><a href="#lst-bayes1-7" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span></span>
-<span id="lst-bayes1-8"><a href="#lst-bayes1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">p_grid =</span> p_grid,<span class="at">prior  =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
-<span id="lst-bayes1-9"><a href="#lst-bayes1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> L) <span class="sc">%&gt;%</span> </span>
-<span id="lst-bayes1-10"><a href="#lst-bayes1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">unstand_post =</span> (likelihood <span class="sc">*</span> prior),</span>
-<span id="lst-bayes1-11"><a href="#lst-bayes1-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">post =</span> unstand_post <span class="sc">/</span> <span class="fu">sum</span>(unstand_post))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="lst-bayes1"><pre class="sourceCode code-annotation-code r code-with-copy"><code class="sourceCode r"><span id="lst-bayes1-1"><a href="#lst-bayes1-1" aria-hidden="true" tabindex="-1"></a>n_success <span class="ot">&lt;-</span> <span class="dv">6</span>          </span>
+<span id="lst-bayes1-2"><a href="#lst-bayes1-2" aria-hidden="true" tabindex="-1"></a>n_trials  <span class="ot">&lt;-</span> <span class="dv">9</span></span>
+<span id="lst-bayes1-3"><a href="#lst-bayes1-3" aria-hidden="true" tabindex="-1"></a>p_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">1</span>, <span class="at">by =</span> .<span class="dv">1</span>)</span>
+<span id="lst-bayes1-4"><a href="#lst-bayes1-4" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(n_success, <span class="at">size =</span> n_trials, <span class="at">prob =</span> p_grid)</span>
+<span id="lst-bayes1-5"><a href="#lst-bayes1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-bayes1-6"><a href="#lst-bayes1-6" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span></span>
+<span id="lst-bayes1-7"><a href="#lst-bayes1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">p_grid =</span> p_grid,<span class="at">prior  =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="lst-bayes1-8"><a href="#lst-bayes1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">likelihood =</span> L) <span class="sc">%&gt;%</span> </span>
+<span id="lst-bayes1-9"><a href="#lst-bayes1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">unstand_post =</span> (likelihood <span class="sc">*</span> prior),</span>
+<span id="lst-bayes1-10"><a href="#lst-bayes1-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">post =</span> unstand_post <span class="sc">/</span> <span class="fu">sum</span>(unstand_post))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </figure>
 </div>
@@ -2430,7 +2429,7 @@ Listing&nbsp;6.4: Schiefe Post-Verteilung in einer Bayes-Box
 <span id="lst-d33-7"><a href="#lst-d33-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="lst-d33-8"><a href="#lst-d33-8" aria-hidden="true" tabindex="-1"></a>samples_33 <span class="ot">&lt;-</span> </span>
 <span id="lst-d33-9"><a href="#lst-d33-9" aria-hidden="true" tabindex="-1"></a>  d_33 <span class="sc">%&gt;%</span> </span>
-<span id="lst-d33-10"><a href="#lst-d33-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="fl">1e4</span>, </span>
+<span id="lst-d33-10"><a href="#lst-d33-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="fl">1e6</span>, </span>
 <span id="lst-d33-11"><a href="#lst-d33-11" aria-hidden="true" tabindex="-1"></a>                 <span class="at">weight_by =</span> post_33, </span>
 <span id="lst-d33-12"><a href="#lst-d33-12" aria-hidden="true" tabindex="-1"></a>                 <span class="at">replace =</span> T)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -2934,8 +2933,8 @@ Listing&nbsp;6.4: Schiefe Post-Verteilung in einer Bayes-Box
 </div>
 </div>
 <p>Mit dieser “schiefen” Post-Verteilung können wir gut die Auswirkungen auf das Perzentil- und das Höchste-Dichte-Intervall anschauen.</p>
-<section id="perzentil-intervall" class="level3" data-number="6.4.1">
-<h3 data-number="6.4.1" class="anchored" data-anchor-id="perzentil-intervall"><span class="header-section-number">6.4.1</span> Perzentil-Intervall</h3>
+<section id="perzentilintervall" class="level3" data-number="6.4.1">
+<h3 data-number="6.4.1" class="anchored" data-anchor-id="perzentilintervall"><span class="header-section-number">6.4.1</span> Perzentilintervall</h3>
 <p>Hier z. B. ein 50%-Perzentilintervall, s. Abb. <a href="#fig-schief" class="quarto-xref">Abbildung&nbsp;<span>6.9</span></a>.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -2945,7 +2944,7 @@ Listing&nbsp;6.4: Schiefe Post-Verteilung in einer Bayes-Box
 <img src="0600-Post_files/figure-html/fig-schief-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-schief-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Abbildung&nbsp;6.9: Schiefe Intervalle
+Abbildung&nbsp;6.9: Schiefe Intervalle: Das PI enthält den wahrscheinlichsten Parameterwert nicht, das HDI schon.
 </figcaption>
 </figure>
 </div>
@@ -3099,6 +3098,7 @@ Wichtig
 <li><a href="https://datenwerk.netlify.app/posts/https://datenwerk.netlify.app/posts/mtcars-post_paper/">mtcars-post_paper</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/fattails01/fattails01.html">fattails1</a></li>
 <li><a href="https://datenwerk.netlify.app/posts/fattails02/fattails02.html">fattails2</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/eti-hdi/">eti-hdi</a></li>
 </ol>
 </section>
 <section id="aufgaben-bei-denen-man-einen-computer-benötigt" class="level3" data-number="6.6.2">
