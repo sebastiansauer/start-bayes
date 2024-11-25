@@ -35,6 +35,9 @@ Der Stoff dieses Kapitels orientiert sich an @mcelreath2020, Kap. 4.1 bis 4.3.
 
 - [Statistik1, Kap. "Modellgüte"](https://statistik1.netlify.app/060-modellguete)
 - [Statistik1, Kap. "Punktmodelle 2"](https://statistik1.netlify.app/070-zusammenhaenge)
+- [Statistik1, Abschnitt "Normalverteilung"](https://statistik1.netlify.app/040-verbildlichen#normalverteilung)
+
+
 
 
 
@@ -286,8 +289,8 @@ Etwas Wissen über diese Verteilung haben wir:
 
 - Eine Streuung muss positiv sein (es gibt keine negative Streuung).
 - Eine Gleichverteilung der Streuung ist vielleicht möglich, aber nicht sehr plausibel.
-- Wenn wir der Meinung sind, der Mittelwert betrage "ungefähr 178cm", so halten wir 180cm für plausibel, aber 18000 cm für unmöglich und schon 200 für sehr unplausibel. 
-Also: Je größer die die Abweichung vom Mittelwert desto unplausibler.
+- Wenn wir der Meinung sind, der Mittelwert betrage "ungefähr 178 cm", so halten wir  180 cm als Körpergröße einer erwachsenen Person für plausibel, aber 18000 cm für (praktisch) unmöglich und schon 200 cm für recht unplausibel. 
+Also: Je größer die die Abweichung vom Mittelwert, desto unplausibler der Wert der Körpergröße.
 
 Diese Anforderungen^["Desiderata"] spiegeln sich in @fig-exp wider;
 es handelt sich um eine  *Exponentialverteilung*.
@@ -382,32 +385,78 @@ gg_exp <- function(r, max_x = 50) {
 }
 ```
 
+::::{#fig-exps}
 
-```{r Kung-9-bis}
+::: {.panel-tabset}
+
+
+### lambda = 1
+
+```{r}
 #| echo: false
-#| fig-asp: 0.8
-#| label: fig-exps
-#| fig-cap: Beispiele von Expnentialverteilungen mit unterschiedlichem lambda 
-#| fig-width: 9
+gg_exp(r = 1) + labs(subtitle = "lambda = 1") + theme_modern()
+```
 
-p_r1 <- gg_exp(r = 1)
- 
-p_r2 <-  gg_exp(r = 1/2)
+### lambda = 1/2
 
-p_r1_8 <- gg_exp(r = 1/4)
-
-p_r1_25 <- gg_exp(r = 1/8)
-
-
-plots(p_r1_25, p_r1_8, p_r2, p_r1)
+```{r}
+#| echo: false
+gg_exp(r = 1/2) + labs(subtitle = "lambda = 1/2") + theme_modern()
 ```
 
 
-Wie wir in @fig-exps sehen, könnte eine Exponentialverteilung mit $\lambda=1/8$ grob passen.
+### lambda = 1/4
+
+```{r}
+#| echo: false
+gg_exp(r = 1/4) + labs(subtitle = "lambda = 1/4") + theme_modern()
+```
+
+
+
+### lambda = 1/8
+
+```{r}
+#| echo: false
+gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8") + theme_modern()
+```
+
+:::
+::::
+
+
+<!-- ```{r Kung-9-bis} -->
+<!-- #| echo: false -->
+<!-- #| fig-asp: 0.8 -->
+<!-- #| label: fig-exps -->
+<!-- #| fig-cap: Beispiele von Expnentialverteilungen mit unterschiedlichem lambda  -->
+<!-- #| fig-width: 9 -->
+
+<!-- p_r1 <- gg_exp(r = 1) + labs(subtitle = "lambda = 1") -->
+
+<!-- p_r2 <-  gg_exp(r = 1/2)  + labs(subtitle = "lambda = 1/2") -->
+
+<!-- p_r1_8 <- gg_exp(r = 1/4) + labs(subtitle = "lambda = 1/4") -->
+
+<!-- p_r1_25 <- gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8") -->
+
+
+<!-- plots(p_r1_25, p_r1_8, p_r2, p_r1) -->
+<!-- ``` -->
+
+
+
+
+Wie wir in @fig-exps sehen, könnte eine Exponentialverteilung mit $\lambda=1/8$ grob passen für unser !Kung-Beispiel:
+Bei einer Exponentialverteilung mit Rate $\lambda=1/8$ ist der Median bei ca. 5.5 5.5 cm, als einer Streuung  ($\sigma$, typischen Abweichung vom Mittelwert) von 5.5 cm.
+Der Median ist der "mittlere Wert" der Verteilung, also der Wert, bei dem 50% der Werte kleiner und 50% der Werte größer sind.
+Insofern eignet sich der Median gut als Schätzer für einen "typischen" Wert der Verteilung.
+
+
 
 :::callout-note
-Die "richtigen" Priori-Verteilung zu finden, bzw. die richtigen Parameter für die Priori-Verteilung zu wählen, ist nicht möglichn, denn es gibt nicht die eine, richtige Priori-Verteilung.
-Eine "gut passende" Verteilung zu finden, ist häufig nicht leicht.
+Die "richtigen" Priori-Verteilung zu finden, bzw. die richtigen Parameter für die Priori-Verteilung zu wählen, ist nicht möglich, denn es gibt nicht *die* eine, richtige Priori-Verteilung.
+Eine "gut passende" Verteilung zu finden, ist nicht immer einfach.
 Gut beraten ist man mit der Regel, im Zweifel lieber eine liberale Verteilung zu wählen,
 die einen breiteren Raum an möglichen Werten zulässt. 
 Allerdings sollte man nicht das Baby mit dem Wasser auskippen und extreme Werte, wie mehrere Meter Körpergröße Streuung, erlauben.
