@@ -65,6 +65,7 @@ library(figpatch)
 library(ggExtra)
 library(tidyverse)
 library(easystats)
+#library(plotly)
 
 theme_set(theme_modern())
 ```
@@ -293,13 +294,11 @@ Etwas Wissen über diese Verteilung haben wir:
 Also: Je größer die die Abweichung vom Mittelwert, desto unplausibler der Wert der Körpergröße.
 
 Diese Anforderungen^["Desiderata"] spiegeln sich in @fig-exp wider;
-es handelt sich um eine  *Exponentialverteilung*.
+die eine  *Exponentialverteilung* zeigt (mit dem Parameter $\lambda=1$),
+Eine Exponentialverteilung erfüllt unsere Wünsche ziemlich gut.
 Außerdem zeigt die Abbildung verschiedene Quantile, wie das 95%-Quantil,
 das bei 3 liegt;
 95% der Werte dieser Verteilung sind also nicht größer als 3.
-
-
-
 
 
 
@@ -371,16 +370,37 @@ Unterschiede in Exponentialverteilungen sind rein auf Unterschiede in $\lambda$ 
 ```{r gg-exp-fun}
 #| echo: false
 gg_exp <- function(r, max_x = 50) {
+  
+  d <-
+  tibble(
+    x = seq(0, 5,.1),
+    y = dexp(x, rate = r)
+  )
+  
+  d_qs <-
+    tibble(
+      prob = c(0.05, .25, .50, .75, .95),
+      q = qexp(prob, rate = r) 
+    )
+  
   med_exp <- round(log(2) / r, 2)
+  
+  
   p <- 
     ggplot(NULL, aes(c(0, max_x))) +
-    geom_area(stat = "function", fun = dexp, fill = "grey", args = list(rate = r))  +
+    geom_area(stat = "function", 
+              fun = dexp, 
+              fill = "grey", 
+              args = list(rate = r))  +
     labs(title = paste0("Exp(", r, ")"),
          x = "sigma",
          caption = paste0("Median (Md): ", med_exp)) +
-    geom_vline(xintercept = med_exp) +
-    geom_label(aes(x = med_exp), y = 0, label = "Md", 
-               show.legend = FALSE, nudge_y = 0.1)
+    geom_vline(data = d_qs,
+             aes(xintercept = q)) +
+    geom_label(data = d_qs,
+             aes(x = q, 
+                 label = prob,
+                 y = prob))
  
 }
 ```
@@ -418,7 +438,7 @@ gg_exp(r = 1/4) + labs(subtitle = "lambda = 1/4") + theme_modern()
 
 ```{r}
 #| echo: false
-gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8") + theme_modern()
+gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8") + theme_modern() 
 ```
 
 :::
