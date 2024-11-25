@@ -48,7 +48,8 @@ Der Stoff dieses Kapitels orientiert sich an @mcelreath2020, Kap. 4.1 bis 4.3.
 Für `rstanarm` wird ggf. [weitere Software](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started) benötigt.
 
 :::callout-note
-Software, und das sind R-Pakete, müssen Sie nur einmalig installieren. Aber bei jedem
+Software, und das sind R-Pakete, müssen Sie nur einmalig installieren. 
+Aber bei jedem
 Start von R bzw. RStudio müssen Sie die (benötigten!) Pakete starten.
 :::
 
@@ -85,7 +86,8 @@ Ab diesem Kapitel benötigen Sie das R-Paket `rstanarm`. $\square$
 
 
 
-Wir benötigen den Datensatz *!Kung*. Quelle der Daten ist @mcelreath2020 mit Bezug auf Howell.
+Wir benötigen den Datensatz *!Kung*. 
+Quelle der Daten ist @mcelreath2020 mit Bezug auf Howell.
 
 
 
@@ -116,7 +118,7 @@ Fassen Sie daher die wesentlichen Aspekte der Normalverteilung (soweit im Unterr
 :::
 
 :::{#exm-post-gauss}
-### Was war noch mal eine Posterior-Verteilung?
+### Was war noch mal eine Posteriori-Verteilung?
 In diesem Kapitel befragen wir die Post-Verteilung für ein normalverteilte Zufallsvariable, 
 nämlich die Körpergröße der !Kung San. 
 Was war noch mal eine Post-Verteilung und wozu ist sie gut? $\square$
@@ -130,7 +132,8 @@ Dieser Abschnitt basiert slee auf @mcelreath2020, Kap. 4.3.
 
 ### !Kung San 
 
-In diesem Abschnitt untersuchen wir eine Forschungsfrage in Zusammenhang mit dem Volk der !Kung, s. @fig-kungs.
+In diesem Abschnitt untersuchen wir eine Forschungsfrage 
+in Zusammenhang mit dem Volk der !Kung, s. @fig-kungs.
 
 >   The ǃKung are one of the San peoples who live mostly on the western edge of the Kalahari desert, Ovamboland (northern Namibia and southern Angola), and Botswana.The names ǃKung (ǃXun) and Ju are variant words for 'people', preferred by different ǃKung groups. This band level society used traditional methods of hunting and gathering for subsistence up until the 1970s. Today, the great majority of ǃKung people live in the villages of Bantu pastoralists and European ranchers.
 
@@ -218,21 +221,25 @@ Wir interessieren uns also für den Mittelwert der Körpergröße (erwachsener K
 
 
 
-Wir sind uns über diesen Mittelwert nicht sicher^[Darum machen wir hier ja die ganz Show!], und unsere Ungewissheit quantifizieren wir anhand einer Normalverteilung mit Mittelwert von 178cm und Streuung von 20 cm:
+Wir sind uns über diesen Mittelwert nicht sicher^[Darum machen wir hier ja die ganz Show!], 
+und unsere Ungewissheit quantifizieren wir anhand einer Normalverteilung mit Mittelwert von 178 cm und Streuung von 20 cm:
 
 $$\mu \sim \mathcal{N}(178, 20)$$ {#eq-kung}
 
 @eq-kung definiert ein Modell: Unsere Vorstellung der mittleren ("typischen") Körpergröße der erwachsenen !Kung.
 
 Warum 178 cm? Kein besonderer Grund. Hier wollen wir den Effekt verschiedener Priori-Werte untersuchen.^[Der Autor des zugrundeliegenden Fachbuchs, Richard McElreath gibt 178cm als seine Körpergröße an.]
-In einer echten Untersuchung sollte man immer einen inhaltlichen Grund für einen Priori-Wert haben.
+In einer echten Untersuchung sollte man einen inhaltlichen Grund für einen Priori-Wert haben.
 *Oder* man wählt "schwach informative" Prioris, wie das `{rstanarm}` tut:
 Damit lässt man kaum Vorab-Information in das Modell einfließen,
-aber man verhindert extreme Prioris, die meistens unsinnig sind (so wie eine SD von 100 Metern in diesem Fall).
+aber man verhindert extreme Prioris, 
+die meistens unsinnig sind (so wie eine SD von 100 Metern bei der Körpergröße).
 
 
 :::callout-note
-Wir haben zwar vorab nicht viel Wissen, aber auch nicht gar keines: Eine Gleichverteilung der Körpergrößen kommt nicht in Frage und ein vages Wissen zum Mittelwert haben wir auch. Darüber hinaus ist eine Normalverteilung nicht unplausibel.
+Wir haben zwar vorab nicht viel Wissen, aber auch nicht gar keines: 
+Eine Gleichverteilung der Körpergrößen kommt nicht in Frage und ein vages Wissen zum Mittelwert haben wir auch. 
+Darüber hinaus ist eine Normalverteilung nicht unplausibel.
 :::
 
 
@@ -279,7 +286,8 @@ Etwas Wissen über diese Verteilung haben wir:
 
 - Eine Streuung muss positiv sein (es gibt keine negative Streuung).
 - Eine Gleichverteilung der Streuung ist vielleicht möglich, aber nicht sehr plausibel.
-- Wenn wir der Meinung sind, der Mittelwert betrage "ungefähr 178cm", so halten wir 180cm für plausibel, aber 18000 cm für unmöglich und schon 200 für sehr unplausibel. Also: Je größer die die Abweichung vom Mittelwert desto unplausibler.
+- Wenn wir der Meinung sind, der Mittelwert betrage "ungefähr 178cm", so halten wir 180cm für plausibel, aber 18000 cm für unmöglich und schon 200 für sehr unplausibel. 
+Also: Je größer die die Abweichung vom Mittelwert desto unplausibler.
 
 Diese Anforderungen^["Desiderata"] spiegeln sich in @fig-exp wider;
 es handelt sich um eine  *Exponentialverteilung*.
@@ -481,12 +489,12 @@ $$h_i \sim \mathcal{N}(\color{blue}{\mu},\color{green}{\sigma})   \qquad{\text{L
 
 Der Mittelwert der Körpergröße sei *normalverteilt* mit $\mu=178$ und $\sigma=20$:
 
-$$\color{blue}{\mu \sim \mathcal{N}(178, 20)} \hfill{\text{Prior}}$$
+$$\color{blue}{\mu \sim \mathcal{N}(178, 20)} \qquad{\text{Prior}}$$
 
 
 Die Streuung $\sigma$ der Größen sei *exponentialverteil* mit $\lambda = 1/8$.
 
-$$\color{green}{\sigma \sim \mathcal{E}(1/8)} \hfill{\text{Prior}}$$
+$$\color{green}{\sigma \sim \mathcal{E}(1/8)} \qquad{\text{Prior}}$$
 
 ### `m41`: fertig!
 
@@ -534,7 +542,7 @@ Der Golem hört auf den Namen `rstanarm`^[Hey, *ich* habe ihn diesen Namen nicht
 
 ::: {.content-visible when-format="html"}
 
-## Zufällige Motivationsseite
+## Zufällige Motivationsabschnitt
 
 
 ![Gut gemacht!](img/pretty_good.gif){width=50%}
@@ -559,7 +567,7 @@ names(m41_post) <- c("mu", "sigma")  # <3>
 2. Modellergebnis in Tabelle umwandeln
 3.  Schönere Namen für die Spalten geben
 
-Das Argument `refresh = 0` verhindert, dass die Details zum Ziehen der Stichproben am Bildschirm ausgegeben werden.
+Das Argument `refresh = 0` ist nur eine Nebensache, aber es ist praktisch, da es verhindert, dass die Details zum Ziehen der Stichproben am Bildschirm ausgegeben werden.
 Ich finde diese Ausgabe meist nicht informativ,
 so dass ich sie lieber unterdrücke.
 `stan_glm`^[aus dem R-Paket `rstanam`, das zuvor installiert und gestartet sein muss, bevor Sie den Befehl nutzen können] ist eine Funktion, mit der man Regressionsmodelle berechnen kann.
