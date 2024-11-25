@@ -348,12 +348,11 @@ Eine Verteilung dieser Form nennt man *Exponentialverteilung*.
 
 
 
-- Eine *Exp*onentialverteilung ist nur für positive Werte, $x>0$, definiert.
-- Steigt X um eine *Einheit*, so ändert sich Y um einen *konstanten Faktor*.
-- Sie hat nur einen Parameter, genannt *Rate* oder $\lambda$ ("lambda").
-- $\frac{1}{\lambda}$  gibt gleichzeitig Mittelwert und Streuung ("Gestrecktheit") der Verteilung an.
-- Je größer die Rate $\lambda$, desto *kleiner* die Streuung und der Mittelwert der Verteilung.
-- Je größer  $1/\lambda$, desto *größer* die Streuung und der Mittelwert der Verteilung.
+1. Eine *Exp*onentialverteilung ist nur für positive Werte, $x>0$, definiert.
+2. Steigt X um eine *Einheit*, so ändert sich Y um einen *konstanten Faktor*.
+3. Sie hat nur einen Parameter, genannt *Rate* oder $\lambda$ ("lambda").
+4. $\frac{1}{\lambda}$  gibt gleichzeitig Mittelwert und Streuung ("Gestrecktheit") der Verteilung an.
+5. Je größer die Rate $\lambda$, desto *kleiner* die Streuung und der Mittelwert der Verteilung (und umgekehrt: Je größer  $1/\lambda$, desto *größer* die Streuung und der Mittelwert der Verteilung.)
 
 
 
@@ -369,7 +368,7 @@ Unterschiede in Exponentialverteilungen sind rein auf Unterschiede in $\lambda$ 
 
 ```{r gg-exp-fun}
 #| echo: false
-gg_exp <- function(r, max_x = 50) {
+gg_exp <- function(r, max_x = 25) {
   
   d <-
   tibble(
@@ -408,6 +407,15 @@ gg_exp <- function(r, max_x = 50) {
 ::::{#fig-exps}
 
 ::: {.panel-tabset}
+
+
+
+### lambda = 2
+
+```{r}
+#| echo: false
+gg_exp(r = 2) + labs(subtitle = "lambda = 2") + theme_modern()
+```
 
 
 ### lambda = 1
@@ -468,8 +476,9 @@ gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8") + theme_modern()
 
 
 Wie wir in @fig-exps sehen, könnte eine Exponentialverteilung mit $\lambda=1/8$ grob passen für unser !Kung-Beispiel:
-Bei einer Exponentialverteilung mit Rate $\lambda=1/8$ ist der Median bei ca. 5.5 5.5 cm, als einer Streuung  ($\sigma$, typischen Abweichung vom Mittelwert) von 5.5 cm.
-Der Median ist der "mittlere Wert" der Verteilung, also der Wert, bei dem 50% der Werte kleiner und 50% der Werte größer sind.
+Bei einer Exponentialverteilung mit Rate $\lambda=1/8$ ist der Median bei ca. 5.5 cm, also einer Streuung  ($\sigma$, typischen Abweichung vom Mittelwert) von 5.5 cm.
+Der Median ist der "mittlere Wert" der Verteilung, also der Wert, 
+bei dem 50% der Werte kleiner und 50% der Werte größer sind.
 Insofern eignet sich der Median gut als Schätzer für einen "typischen" Wert der Verteilung.
 
 
@@ -482,12 +491,13 @@ die einen breiteren Raum an möglichen Werten zulässt.
 Allerdings sollte man nicht das Baby mit dem Wasser auskippen und extreme Werte, wie mehrere Meter Körpergröße Streuung, erlauben.
 :::
 
-Man kann sich die Quantile der Exponentialverteilung mit `qexp` ausgeben lassen,
+Man kann sich die Quantile der Exponentialverteilung mit `qexp()` ausgeben lassen,
 wobei mit man `p` den Wert der Verteilungsfunktion angibt,
-für den man das Quantil haben möchte. Mit `rate` wird $\lambda$ (lambda) bezeichnet.
+für den man das Quantil haben möchte. (;it `pexp()` kann man sich analaog die die Verteilungsfunktion ausgeben lassen.) Mit `rate` wird $\lambda$ (lambda) bezeichnet.^[Es gibt auch [Online-Apps, die diese Werte ausgeben](https://homepage.divms.uiowa.edu/~mbognar/applets/exp-like.html.]
 
 Dieser Aufruf zum Beispiel, `qexp(p = .5, rate = 1/8)`,
-gibt uns die Verteilungsfunktion einer Exponentialverteilung mit Rate ($\lambda$) von 1/8 zurück, ca. 5.5.
+gibt uns das 50%-Quantil einer Exponentialverteilung mit Rate ($\lambda$) 1/8 zurück, ca. 5.5: 
+Mit einer Wahrscheinlichkeit von 50% wird ein Wert von 5.5 nicht überschritten bei dieser Verteilung.
 
 Die Grenzen der inneren 95% dieser Verteilung kann man sich auch ausgeben.
 
@@ -791,20 +801,8 @@ Es werden aber auch viele Stichproben simuliert (sog. MCMC-Methode).
 Gibt man keine Priori-Werte an, so greift die Funktion auf Standardwerte zurück.
 
 
-Grob gesagt berechnen wir die Post-Verteilung mit `stan_glm` so:
+Grob gesagt berechnen wir die Post-Verteilung mit `stan_glm` so: `stan_glm(AV ~ UV, data = meine_daten)`.
 
-```{r Kung-23, echo = TRUE, eval = FALSE}
-#| eval: false
-library(rstanarm)  # Paket muss gestartet sein.
-
-# berechnet Post.-Vert.:
-stan_glm(
-  # modelldefinition:
-  AV ~ UV,
-  # Datensatz:
-  data = meine_daten
-)
-```
 
 
 
@@ -825,7 +823,7 @@ $\sigma \sim \mathcal{E}(0.125)$, Prior zur Streuung der Größen  (von Stan üb
 Wir können, wie wir es oben getan haben, uns die Stichproben der Post-Verteilung ausgeben lassen, und diese z.B. plotten.
 
 Wir können es aber auch komfortabler haben ... 
-Mit dem Befehl `parameters` kann man sich die geschätzten Parameterwerte einfach ausgeben lassen.
+Mit dem Befehl `parameters` kann man sich die geschätzten Parameterwerte einfach ausgeben lassen (s. @fig-m42-post-joint).
 
 ```{r Kung-24, echo = TRUE, results="hide"}
 m41 <- stan_glm(height ~ 1, data = d2, refresh = 0)  # aus Paket rstanarm
@@ -840,8 +838,8 @@ parameters(m41)  # aus Paket `easystats`
 #| echo: false
 parameters(m41) %>% display()
 
-ci_low <- parameters(m41)$CI_low
-ci_high <- parameters(m41)$CI_high
+ci_low <- parameters(m41)$CI_low |> round(2)
+ci_high <- parameters(m41)$CI_high |> round(2)
 ```
 
 
@@ -1526,9 +1524,9 @@ sim2 %>%
 ### Papier-und-Bleistift-Aufgaben
 
 
-1. [Priorwahl1](https://sebastiansauer.github.io/Datenwerk/posts/priorwahl1/priorwahl1)
-2. [ReThink4e2](https://sebastiansauer.github.io/Datenwerk/posts/rethink4e2/rethink4e2)
-3. [ReThink4e3](https://sebastiansauer.github.io/Datenwerk/posts/rethink4e3/rethink4e3)
+1. [Priorwahl1](https://sebastiansauer.github.io/Datenwerk/posts/Priorwahl1/Priorwahl1.html)
+2. [ReThink4e2](https://sebastiansauer.github.io/Datenwerk/posts/ReThink4e2/ReThink4e2.html)
+3. [ReThink4e3](https://sebastiansauer.github.io/Datenwerk/posts/ReThink4e3/ReThink4e3.html)
 4. [groesse03](https://sebastiansauer.github.io/Datenwerk/posts/groesse03/)
 
 
