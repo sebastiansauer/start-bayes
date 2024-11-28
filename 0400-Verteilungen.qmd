@@ -845,19 +845,15 @@ Achtung: Hier ist der Trick. Nämlich, dass wir Integralrechnung gegen stumpfes 
 Computer (und damit R) haben eingebaute Funktionen, die eine beliebige Zufallszahl ziehen können,
 zum Beispiel gleichverteilte.
 Auf Errisch heißt das Zauberwort `runif()`:
+Mit dieser Funktion kann man gleichverteilte Zufallszahlen ziehen.
+Einfach gesprochen: Der Computer greift in eine Säckchen mit Murmeln, die mit verschiedenen Zahlen beschriftet sind, wobei alle Zahlen gleich häufig sind, und greift eine heraus.
+
 
 ```{r}
 #| eval: false
 set.seed(42)  # Zufallszahl festlegen, nur für Reproduzierbarkeit
 # "r" wie random, "unif" wie "uniform" (gleich):
 runif(n = 1, min = 0, max = 10) 
-```
-
-
-```{r}
-#| echo: false
-set.seed(42)
-runif(n = 1, min = 0, max = 10)
 ```
 
 Auf Deutsch heißt das: 
@@ -899,7 +895,6 @@ Schauen wir uns die Verteilung an, s. @fig-simu-gleichvert.^[Alternativ kann man
 
 ```{r}
 #| eval: false
-
 library(ggpubr)
 gghistogram(x_simu_df, x = "x_simu", fill = "grey20")
 ```
@@ -1000,7 +995,8 @@ Stellen wir uns eine Kistchen^[In den Lehrbüchern häufig als Urne bezeichnet, 
 darunter 2/5 *T*reffer (Gewinn) und 3/5 *N*ieten, s. Abb. @fig-urne.
 Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut.^[Da *sehr* viele Lose im Kästchen liegen, ist es praktisch egal, ob wir das Los wieder zurücklegen. Die Wahrscheinlichkeit für einen Treffer ändert sich (so gut wie) nicht.] 
 Jetzt ziehen wir z.B. drei Lose.
-Wie groß ist die Wahrscheinlichkeit, davon 2 Treffer zu erzielen (egal in welcher Reihenfolge)?
+Wie groß ist die Wahrscheinlichkeit, 
+davon 2 Treffer zu erzielen (egal in welcher Reihenfolge)?
 
 
 
@@ -1045,13 +1041,15 @@ p_urn2
 
 
 Praktischerweise ist die Binomialverteilung in R eingebaut,  
-hier ist Pseudocode für Ihre Anwendung, s. lst-binomial:
+hier ist Pseudocode für Ihre Anwendung, s. @lst-binomial.
 
 ```{r}
 #| lst-cap: "R-Pseudocode für die Binomialverteilung"
 #| lst-label: lst-binomial
 #| eval: false
-dbinom(x = <Anzahl der Treffer>, size = <Anzahl der Würfe>, prob = <Wahrscheinlichkeit>)
+dbinom(x = <Anzahl der Treffer>, 
+       size = <Anzahl der Würfe>, 
+       prob = <Wahrscheinlichkeit>)
 ```
 
 
@@ -1066,13 +1064,14 @@ Nietenwahrscheinlichkeit $1-p=3/5$.$\square$
 :::
 
 
+:::{.to-scource}
 ```{r}
 df_binom <-
   tibble(
     k = 0:3,
     p = dbinom(0:3, size = 3, prob = 2/5))
-
 ```
+:::
 
 
 
@@ -1207,11 +1206,14 @@ Dabei steht $k$ für die Anzahl der günstigen Pfade und $Pr(A)$ für die Wahrsc
 Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen.
 Das ist komfortabler als selber rechenn.
 
-Die Wahrscheinlichkeit,  2 Treffer bei 3 Zügen zu erzielen mit $p=2/5$:
+
 
 ```{r}
 dbinom(x = 2, size = 3, prob = 2/5)
 ```
+
+Die Wahrscheinlichkeit,  2 Treffer bei 3 Zügen zu erzielen mit $p=2/5$, beträgt ca. 29%.
+
 
 Dabei gehen wir davon aus, dass die Wahrscheinlichkeit eines Treffers stets $p=2/5$ beträgt.
 
@@ -1273,6 +1275,7 @@ anzahl_pfade_2_aus_4 <-
 anzahl_pfade_2_aus_4
 ```
 
+Der R-Befehl `choose` berechnet den Binomialkoeffizienten.^[Bei Taschenrechnern ist das oft als "nCr" zu finden.]
 
 ```{r}
 choose(4, 2)
@@ -1326,7 +1329,6 @@ Aus einem Team mit 25 Personen sollen 11 Personen befördert werden. Wie viele m
 
 $\tbinom{25}{11} = \frac{25!}{11!\cdot(25-11)!} = 4\,457\,400$
 
-In Errisch:
 
 ```{r}
 choose(n = 25, k = 11)
@@ -1362,7 +1364,8 @@ Damit gilt:
 
 $Pr(X\ge 5) = Pr(X=5) + Pr(X=6) + Pr(X=7)$
 
-Berechnen wir zunächst die Wahrscheinlichkeit, dass 5,6 oder 7 Motoren laufen:
+Berechnen wir zunächst die Wahrscheinlichkeit, dass 5,6 oder 7 Motoren laufen mit Hilfe der Binomialverteilung. 
+
 
 ```{r}
 p_5 <- dbinom(x = 5, size = 7, prob = .95)
@@ -1374,7 +1377,14 @@ p_6
 p_7
 ```
 
-Die gesuchte Wahrscheinlichkeit, `p_mind_5`, ist die Summe der drei Einzelwahrscheinlichkeiten:
+Das sind `r round(p_5, 2)`, `r round(p_6, 2)`, `r round(p_7, 2)`.
+
+
+
+Die gesuchte Wahrscheinlichkeit, `p_mind_5`,
+ist die Summe der drei Einzelwahrscheinlichkeiten.
+
+
 
 ```{r}
 p_mind_5 <- p_5 + p_6 + p_7
@@ -1383,18 +1393,22 @@ p_mind_5
 ```
 
 
-Die Wahrscheinlichkeit, dass mind. 5 Motoren arbeiten beträgt also `r round(p_mind_5, 4)`.
+Die Wahrscheinlichkeit, dass mind. 5 Motoren arbeiten beträgt also 
+`r round(p_mind_5, 4)`.
 
 
-Das komplementäre Ereignis zu diesem Ereignis ist, dass *nicht* mind. 5 Motoren arbeiten, 
+Das komplementäre Ereignis zu diesem Ereignis ist, 
+dass *nicht* mind. 5 Motoren arbeiten, 
 also *höchstens 4* und es daher zu einem Ausfall kommt.
 Es gilt also $Pr(\bar{X}) = 1- Pr(X)$.
+
 
 ```{r}
 p_weniger_als_4 <- 1 - p_mind_5
 p_weniger_als_4
 ```
 
+Das sind also `r round(p_weniger_als_4, 4)` oder 0.0003, also 0.03% Wahrscheinlichkeit, dass die Pumpstation ausfällt.
 
 
 ```{r}
@@ -1520,14 +1534,14 @@ dbinom(x = 15, size = 20, prob = .5)
 Um *höchstens* 15 Treffer zu erzielen, 
 müssten wir die Wahrscheinlichkeiten von 0 bis 15 Treffern addieren.
 
-Praktischerweise gibt es einen R-Befehl, der das für uns übernimmt:
+Praktischerweise gibt es einen R-Befehl, der das für uns übernimmt: `pbinom`.
 
 ```{r}
 pbinom(q = 15, size = 20, prob = .5)
 ```
 
 
-Die Wahrscheinlichkeit 0, 1, 2, ... oder 15 Treffer zu erzielen, liegt also bei gut 99%.
+Die Wahrscheinlichkeit 0, 1, 2, ... oder 15 Treffer zu erzielen, liegt laut Binomialverteilung mit `pbinom` bei gut 99%.
 
 
 :::
@@ -1551,7 +1565,7 @@ Die Lösung lautet also $p=1/8 = .125.\qquad \square$
 
 Man kann sich auch vor Augen führen,
 dass es genau 1 günstigen Pfad gibt, nämlich TTT.
-Nach dem Multiplikationssatz gilt also:
+Nach dem Multiplikationssatz gilt also: $Pr(X=3) = 1 \cdot \left( \frac{1}{2} \right)^3 = \frac{1}{8} = .125$.
 
 ```{r}
 loesung <- (1/2)^3
@@ -2220,7 +2234,8 @@ In Summe liegen 100% der Wahrscheinlichkeitsmasse unter der Kurve.
 
 Man kann jeder Normalverteilung in eine Standardnormalverteilung überführen mit der *z-Transformation*.
 
-Die *z-Transformation* ist definiert als der Abstand in SD-Einheiten,   
+Ein *z-Wert* ist das Ergebnis einer *z-Transformation*, 
+die definiert ist als der Abstand in SD-Einheiten,   
 den ein Wert vom Mittelwernt entfernt ist, s. @eq-ztrans.
 
 
@@ -2367,7 +2382,7 @@ mit $e=2.71...$, der Eulerschen Zahl.^[Das Zeichen $y \propto x$ bedeutet "x ist
 Wie man sieht (@fig-normal1) ergibt sich eine Normalverteilung. 
 
 
-```{r norm, eval = FALSE, echo = TRUE}
+```{r norm, eval = FALSE, echo = FALSE}
 d <-
   tibble(
     x = seq(-3, 3, 
@@ -2432,6 +2447,7 @@ der den Wasserstrahl entweder eng bündelt^[Massagedusche, behauptet der Herstel
 Eine Zufallszahl (*r*andom number), die *norm*alverteilt ist, mit $\mu=0$ und $\sigma=1$ kann man in R so erzeugen:
 
 
+
 ```{r}
 rnorm(n = 1, mean = 0, sd = 1)
 ```
@@ -2443,10 +2459,11 @@ Ein Fallbeispiel: Der Inhalt einer Tüte mit Zucker, $X$, sei normalverteilt mit
 Wie groß ist die Wahrscheinlichkeit, dass 1000g unterschritten werden?
 
 
-Simulieren wir uns 1e4 Zuckertüten!
+Simulieren wir uns 1e5 (100000) Zuckertüten!
+
 
 ```{r}
-n <- 1e4
+n <- 1e5
 d <- 
   tibble(
     id = 1:n,
@@ -2456,7 +2473,6 @@ d <-
 head(d)
 ```
 
-
 Zählen wir, viele der Zuckertüten ein Gewicht von weniger als 1000g aufweisen:
 
 
@@ -2465,8 +2481,8 @@ d %>%
   count(x < 1000)
 ```
 
-
 Ein ziemlich^["Ziemlich" ist natürlich subjektiv; je nach Situation kann es zu viel oder nicht zu viel sein.] kleiner Anteil. Rechnen wir uns noch die Anteile (*prop*ortion) aus:
+
 
 ```{r}
 d %>% 
@@ -2480,10 +2496,10 @@ d %>%
 
 
 
-
 ## Vertiefung
 
-@bourier2011, Kap. 6.2 und 7.1 erläutert einige (grundlegende) theoretische Hintergründe zu diskreten Zufallsvariablen und Wahrscheinlichkeitsverteilungen. 
+@bourier2011, Kap. 6.2 und 7.1 erläutert einige (grundlegende) theoretische Hintergründe 
+zu diskreten Zufallsvariablen und Wahrscheinlichkeitsverteilungen. 
 Wichtigstes Exemplar für den Stoff dieses Kapitels ist dabei die Binomialverteilung.
 
 @mittag2020 stellen in Kap. 12 und 13 Zufallsvariablen vor; 

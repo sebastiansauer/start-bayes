@@ -1,8 +1,8 @@
 project:
   type: book
+  output-dir: docs
 
-
-    
+licence: "MIT"
   
 lang: de
 
@@ -19,12 +19,13 @@ lang: de
 #       ref-type: vid
 
 
-filters:
-  - search-replace
-search-replace:
-  z.B.  : "z.&thinsp;B."
-  #d.h.  : "d.&thinsp;h."
-  +br    : <br>\newline
+# filters:
+  # - search-replace
+  # - panelize
+# search-replace:
+#   z.B.  : "z.&thinsp;B."
+#   #d.h.  : "d.&thinsp;h."
+#   +br    : <br>\newline
   
   
 
@@ -33,7 +34,16 @@ book:
   author: 
     - name: Sebastian Sauer
       orcid: 0000-0003-1515-8348
-  date: today 
+  date: today
+  reader-mode: true
+  page-footer:
+    border: true
+    left: |
+      Powered by [Quarto](https://quarto.org)
+    center: |
+      [Impressum](/imprint.qmd)
+    right: |
+      [Datenschutzhinweise](/data-privacy.qmd)
   
   #sidebar: 
     #logo: img/Golem_hex-small.png
@@ -73,6 +83,10 @@ book:
         - 1200-abschluss.qmd
         - 1300-definitions.qmd
         - references.qmd
+    - part: Rechtliches
+      chapters:
+        - imprint.qmd
+        - data-privacy.qmd
 
 bibliography: bib-local.bib
 csl: apa7.csl
@@ -96,6 +110,7 @@ execute:
   freeze: auto 
   warning: false
   cache: true
+  # echo: true
 
 code-annotations: hover
 
@@ -107,6 +122,7 @@ knitr:
   opts_chunk: 
     collapse: true
     out.width: "75%"
+    fig.align: center
     rows.print: 5
     # comment: "#>" 
     R.options:
@@ -123,7 +139,7 @@ format:
     # css: styles.css
     number-sections: true
     df-print: paged
-    code-fold: false
+    code-fold: true
     fig-align: center
     code-link: true
     mermaid:

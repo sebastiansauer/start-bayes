@@ -35,6 +35,9 @@ Der Stoff dieses Kapitels orientiert sich an @mcelreath2020, Kap. 4.1 bis 4.3.
 
 - [Statistik1, Kap. "Modellgüte"](https://statistik1.netlify.app/060-modellguete)
 - [Statistik1, Kap. "Punktmodelle 2"](https://statistik1.netlify.app/070-zusammenhaenge)
+- [Statistik1, Abschnitt "Normalverteilung"](https://statistik1.netlify.app/040-verbildlichen#normalverteilung)
+
+
 
 
 
@@ -48,7 +51,8 @@ Der Stoff dieses Kapitels orientiert sich an @mcelreath2020, Kap. 4.1 bis 4.3.
 Für `rstanarm` wird ggf. [weitere Software](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started) benötigt.
 
 :::callout-note
-Software, und das sind R-Pakete, müssen Sie nur einmalig installieren. Aber bei jedem
+Software, und das sind R-Pakete, müssen Sie nur einmalig installieren. 
+Aber bei jedem
 Start von R bzw. RStudio müssen Sie die (benötigten!) Pakete starten.
 :::
 
@@ -61,6 +65,7 @@ library(figpatch)
 library(ggExtra)
 library(tidyverse)
 library(easystats)
+#library(plotly)
 
 theme_set(theme_modern())
 ```
@@ -85,7 +90,8 @@ Ab diesem Kapitel benötigen Sie das R-Paket `rstanarm`. $\square$
 
 
 
-Wir benötigen den Datensatz *!Kung*. Quelle der Daten ist @mcelreath2020 mit Bezug auf Howell.
+Wir benötigen den Datensatz *!Kung*. 
+Quelle der Daten ist @mcelreath2020 mit Bezug auf Howell.
 
 
 
@@ -116,7 +122,7 @@ Fassen Sie daher die wesentlichen Aspekte der Normalverteilung (soweit im Unterr
 :::
 
 :::{#exm-post-gauss}
-### Was war noch mal eine Posterior-Verteilung?
+### Was war noch mal eine Posteriori-Verteilung?
 In diesem Kapitel befragen wir die Post-Verteilung für ein normalverteilte Zufallsvariable, 
 nämlich die Körpergröße der !Kung San. 
 Was war noch mal eine Post-Verteilung und wozu ist sie gut? $\square$
@@ -130,7 +136,8 @@ Dieser Abschnitt basiert slee auf @mcelreath2020, Kap. 4.3.
 
 ### !Kung San 
 
-In diesem Abschnitt untersuchen wir eine Forschungsfrage in Zusammenhang mit dem Volk der !Kung, s. @fig-kungs.
+In diesem Abschnitt untersuchen wir eine Forschungsfrage 
+in Zusammenhang mit dem Volk der !Kung, s. @fig-kungs.
 
 >   The ǃKung are one of the San peoples who live mostly on the western edge of the Kalahari desert, Ovamboland (northern Namibia and southern Angola), and Botswana.The names ǃKung (ǃXun) and Ju are variant words for 'people', preferred by different ǃKung groups. This band level society used traditional methods of hunting and gathering for subsistence up until the 1970s. Today, the great majority of ǃKung people live in the villages of Bantu pastoralists and European ranchers.
 
@@ -218,21 +225,25 @@ Wir interessieren uns also für den Mittelwert der Körpergröße (erwachsener K
 
 
 
-Wir sind uns über diesen Mittelwert nicht sicher^[Darum machen wir hier ja die ganz Show!], und unsere Ungewissheit quantifizieren wir anhand einer Normalverteilung mit Mittelwert von 178cm und Streuung von 20 cm:
+Wir sind uns über diesen Mittelwert nicht sicher^[Darum machen wir hier ja die ganz Show!], 
+und unsere Ungewissheit quantifizieren wir anhand einer Normalverteilung mit Mittelwert von 178 cm und Streuung von 20 cm:
 
 $$\mu \sim \mathcal{N}(178, 20)$$ {#eq-kung}
 
 @eq-kung definiert ein Modell: Unsere Vorstellung der mittleren ("typischen") Körpergröße der erwachsenen !Kung.
 
 Warum 178 cm? Kein besonderer Grund. Hier wollen wir den Effekt verschiedener Priori-Werte untersuchen.^[Der Autor des zugrundeliegenden Fachbuchs, Richard McElreath gibt 178cm als seine Körpergröße an.]
-In einer echten Untersuchung sollte man immer einen inhaltlichen Grund für einen Priori-Wert haben.
+In einer echten Untersuchung sollte man einen inhaltlichen Grund für einen Priori-Wert haben.
 *Oder* man wählt "schwach informative" Prioris, wie das `{rstanarm}` tut:
 Damit lässt man kaum Vorab-Information in das Modell einfließen,
-aber man verhindert extreme Prioris, die meistens unsinnig sind (so wie eine SD von 100 Metern in diesem Fall).
+aber man verhindert extreme Prioris, 
+die meistens unsinnig sind (so wie eine SD von 100 Metern bei der Körpergröße).
 
 
 :::callout-note
-Wir haben zwar vorab nicht viel Wissen, aber auch nicht gar keines: Eine Gleichverteilung der Körpergrößen kommt nicht in Frage und ein vages Wissen zum Mittelwert haben wir auch. Darüber hinaus ist eine Normalverteilung nicht unplausibel.
+Wir haben zwar vorab nicht viel Wissen, aber auch nicht gar keines: 
+Eine Gleichverteilung der Körpergrößen kommt nicht in Frage und ein vages Wissen zum Mittelwert haben wir auch. 
+Darüber hinaus ist eine Normalverteilung nicht unplausibel.
 :::
 
 
@@ -279,16 +290,15 @@ Etwas Wissen über diese Verteilung haben wir:
 
 - Eine Streuung muss positiv sein (es gibt keine negative Streuung).
 - Eine Gleichverteilung der Streuung ist vielleicht möglich, aber nicht sehr plausibel.
-- Wenn wir der Meinung sind, der Mittelwert betrage "ungefähr 178cm", so halten wir 180cm für plausibel, aber 18000 cm für unmöglich und schon 200 für sehr unplausibel. Also: Je größer die die Abweichung vom Mittelwert desto unplausibler.
+- Wenn wir der Meinung sind, der Mittelwert betrage "ungefähr 178 cm", so halten wir  180 cm als Körpergröße einer erwachsenen Person für plausibel, aber 18000 cm für (praktisch) unmöglich und schon 200 cm für recht unplausibel. 
+Also: Je größer die die Abweichung vom Mittelwert, desto unplausibler der Wert der Körpergröße.
 
 Diese Anforderungen^["Desiderata"] spiegeln sich in @fig-exp wider;
-es handelt sich um eine  *Exponentialveteilung*.
+die eine  *Exponentialverteilung* zeigt (mit dem Parameter $\lambda=1$),
+Eine Exponentialverteilung erfüllt unsere Wünsche ziemlich gut.
 Außerdem zeigt die Abbildung verschiedene Quantile, wie das 95%-Quantil,
 das bei 3 liegt;
 95% der Werte dieser Verteilung sind also nicht größer als 3.
-
-
-
 
 
 
@@ -338,12 +348,11 @@ Eine Verteilung dieser Form nennt man *Exponentialverteilung*.
 
 
 
-- Eine *Exp*onentialverteilung ist nur für positive Werte, $x>0$, definiert.
-- Steigt X um eine *Einheit*, so ändert sich Y um einen *konstanten Faktor*.
-- Sie hat nur einen Parameter, genannt *Rate* oder $\lambda$ ("lambda").
-- $\frac{1}{\lambda}$  gibt gleichzeitig Mittelwert und Streuung ("Gestrecktheit") der Verteilung an.
-- Je größer die Rate $\lambda$, desto *kleiner* die Streuung und der Mittelwert der Verteilung.
-- Je größer  $1/\lambda$, desto *größer* die Streuung und der Mittelwert der Verteilung.
+1. Eine *Exp*onentialverteilung ist nur für positive Werte, $x>0$, definiert.
+2. Steigt X um eine *Einheit*, so ändert sich Y um einen *konstanten Faktor*.
+3. Sie hat nur einen Parameter, genannt *Rate* oder $\lambda$ ("lambda").
+4. $\frac{1}{\lambda}$  gibt gleichzeitig Mittelwert und Streuung ("Gestrecktheit") der Verteilung an.
+5. Je größer die Rate $\lambda$, desto *kleiner* die Streuung und der Mittelwert der Verteilung (und umgekehrt: Je größer  $1/\lambda$, desto *größer* die Streuung und der Mittelwert der Verteilung.)
 
 
 
@@ -359,63 +368,138 @@ Unterschiede in Exponentialverteilungen sind rein auf Unterschiede in $\lambda$ 
 
 ```{r gg-exp-fun}
 #| echo: false
-gg_exp <- function(r, max_x = 50) {
+gg_exp <- function(r, max_x = 25, probs = c(0.05, .25, .50, .75, .95)) {
+  
+  d <-
+  tibble(
+    x = seq(0, 5,.1),
+    y = dexp(x, rate = r)
+  )
+  
+  d_qs <-
+    tibble(
+      prob = probs,
+      q = qexp(prob, rate = r) 
+    )
+  
   med_exp <- round(log(2) / r, 2)
+  
+  
   p <- 
     ggplot(NULL, aes(c(0, max_x))) +
-    geom_area(stat = "function", fun = dexp, fill = "grey", args = list(rate = r))  +
+    geom_area(stat = "function", 
+              fun = dexp, 
+              fill = "grey", 
+              args = list(rate = r))  +
     labs(title = paste0("Exp(", r, ")"),
          x = "sigma",
          caption = paste0("Median (Md): ", med_exp)) +
-    geom_vline(xintercept = med_exp) +
-    geom_label(aes(x = med_exp), y = 0, label = "Md", show.legend = FALSE)
+    geom_vline(data = d_qs,
+             aes(xintercept = q)) +
+    geom_label(data = d_qs,
+             aes(x = q, 
+                 label = prob,
+                 y = prob))
  
 }
 ```
 
+::::{#fig-exps}
 
-```{r Kung-9-bis}
+::: {.panel-tabset}
+
+
+
+### lambda = 2
+
+```{r}
 #| echo: false
-#| label: fig-exps
-#| fig-cap: Beispiele von Expnentialverteilungen mit unterschiedlichem lambda 
-#| fig-width: 9
-
-p_r1 <- gg_exp(r = 1)
- 
-p_r2 <-  gg_exp(r = 1/2)
-
-p_r1_8 <- gg_exp(r = 1/4)
-
-p_r1_25 <- gg_exp(r = 1/8)
-
-
-plots(p_r1_25, p_r1_8, p_r2, p_r1)
+gg_exp(r = 2) + labs(subtitle = "lambda = 2") + theme_modern()
 ```
 
 
-Wie wir in @fig-exps sehen, könnte eine Exponentialverteilung mit $\lambda=1/8$ grob passen.
+### lambda = 1
+
+```{r}
+#| echo: false
+gg_exp(r = 1) + labs(subtitle = "lambda = 1") + theme_modern()
+```
+
+### lambda = 1/2
+
+```{r}
+#| echo: false
+gg_exp(r = 1/2) + labs(subtitle = "lambda = 1/2") + theme_modern()
+```
+
+
+### lambda = 1/4
+
+```{r}
+#| echo: false
+gg_exp(r = 1/4) + labs(subtitle = "lambda = 1/4") + theme_modern()
+```
+
+
+
+### lambda = 1/8
+
+```{r}
+#| echo: false
+gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8") + theme_modern() 
+```
+
+:::
+::::
+
+
+<!-- ```{r Kung-9-bis} -->
+<!-- #| echo: false -->
+<!-- #| fig-asp: 0.8 -->
+<!-- #| label: fig-exps -->
+<!-- #| fig-cap: Beispiele von Expnentialverteilungen mit unterschiedlichem lambda  -->
+<!-- #| fig-width: 9 -->
+
+<!-- p_r1 <- gg_exp(r = 1) + labs(subtitle = "lambda = 1") -->
+
+<!-- p_r2 <-  gg_exp(r = 1/2)  + labs(subtitle = "lambda = 1/2") -->
+
+<!-- p_r1_8 <- gg_exp(r = 1/4) + labs(subtitle = "lambda = 1/4") -->
+
+<!-- p_r1_25 <- gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8") -->
+
+
+<!-- plots(p_r1_25, p_r1_8, p_r2, p_r1) -->
+<!-- ``` -->
+
+
+
+
+Wie wir in @fig-exps sehen, könnte eine Exponentialverteilung mit $\lambda=1/8$ grob passen für unser !Kung-Beispiel:
+Bei einer Exponentialverteilung mit Rate $\lambda=1/8$ ist der Median bei ca. 5.5 cm, also einer Streuung  ($\sigma$, typischen Abweichung vom Mittelwert) von 5.5 cm.
+Der Median ist der "mittlere Wert" der Verteilung, also der Wert, 
+bei dem 50% der Werte kleiner und 50% der Werte größer sind.
+Insofern eignet sich der Median gut als Schätzer für einen "typischen" Wert der Verteilung.
+
+
 
 :::callout-note
-Die "richtigen" Priori-Verteilung zu finden, bzw. die richtigen Parameter für die Priori-Verteilung zu wählen, ist nicht möglichn, denn es gibt nicht die eine, richtige Priori-Verteilung.
-Eine "gut passende" Verteilung zu finden, ist häufig nicht leicht.
+Die "richtigen" Priori-Verteilung zu finden, bzw. die richtigen Parameter für die Priori-Verteilung zu wählen, ist nicht möglich, denn es gibt nicht *die* eine, richtige Priori-Verteilung.
+Eine "gut passende" Verteilung zu finden, ist nicht immer einfach.
 Gut beraten ist man mit der Regel, im Zweifel lieber eine liberale Verteilung zu wählen,
 die einen breiteren Raum an möglichen Werten zulässt. 
 Allerdings sollte man nicht das Baby mit dem Wasser auskippen und extreme Werte, wie mehrere Meter Körpergröße Streuung, erlauben.
 :::
 
-Man kann sich die Quantile der Exponentialverteilung mit `qexp` ausgeben lassen,
+Man kann sich die Quantile der Exponentialverteilung mit `qexp()` ausgeben lassen,
 wobei mit man `p` den Wert der Verteilungsfunktion angibt,
-für den man das Quantil haben möchte. Mit `rate` wird $\lambda$ (lambda) bezeichnet.
+für den man das Quantil haben möchte. (;it `pexp()` kann man sich analaog die die Verteilungsfunktion ausgeben lassen.) Mit `rate` wird $\lambda$ (lambda) bezeichnet.^[Es gibt auch [Online-Apps, die diese Werte ausgeben](https://homepage.divms.uiowa.edu/~mbognar/applets/exp-like.html.]
 
-Dieser Aufruf zum Beispiel:
+Dieser Aufruf zum Beispiel, `qexp(p = .5, rate = 1/8)`,
+gibt uns das 50%-Quantil einer Exponentialverteilung mit Rate ($\lambda$) 1/8 zurück, ca. 5.5: 
+Mit einer Wahrscheinlichkeit von 50% wird ein Wert von 5.5 nicht überschritten bei dieser Verteilung.
 
-```{r}
-qexp(p = .5, rate = 1/8)
-```
-
-Gibt uns die Verteilungsfunktion einer Exponentialverteilung mit Rate ($\lambda$) von 1/8 zurück, ca. 5.5.
-
-Die Grenzen der inneren 95% dieser Verteilung kann man sich so ausgeben lassen:
+Die Grenzen der inneren 95% dieser Verteilung kann man sich auch ausgeben.
 
 ```{r}
 qexp(p = c(0.025, .975), rate = 1/8)
@@ -484,12 +568,12 @@ $$h_i \sim \mathcal{N}(\color{blue}{\mu},\color{green}{\sigma})   \qquad{\text{L
 
 Der Mittelwert der Körpergröße sei *normalverteilt* mit $\mu=178$ und $\sigma=20$:
 
-$$\color{blue}{\mu \sim \mathcal{N}(178, 20)  \hfill{\text{Prior}}$$
+$$\color{blue}{\mu \sim \mathcal{N}(178, 20)} \qquad{\text{Prior}}$$
 
 
 Die Streuung $\sigma$ der Größen sei *exponentialverteil* mit $\lambda = 1/8$.
 
-$$\color{green}{\sigma \sim \mathcal{E}(1/8)} \hfill{\text{Prior}$$
+$$\color{green}{\sigma \sim \mathcal{E}(1/8)} \qquad{\text{Prior}}$$
 
 ### `m41`: fertig!
 
@@ -537,7 +621,7 @@ Der Golem hört auf den Namen `rstanarm`^[Hey, *ich* habe ihn diesen Namen nicht
 
 ::: {.content-visible when-format="html"}
 
-## Zufällige Motivationsseite
+## Zufällige Motivationsabschnitt
 
 
 ![Gut gemacht!](img/pretty_good.gif){width=50%}
@@ -562,7 +646,7 @@ names(m41_post) <- c("mu", "sigma")  # <3>
 2. Modellergebnis in Tabelle umwandeln
 3.  Schönere Namen für die Spalten geben
 
-Das Argument `refresh = 0` verhindert, dass die Details zum Ziehen der Stichproben am Bildschirm ausgegeben werden.
+Das Argument `refresh = 0` ist nur eine Nebensache, aber es ist praktisch, da es verhindert, dass die Details zum Ziehen der Stichproben am Bildschirm ausgegeben werden.
 Ich finde diese Ausgabe meist nicht informativ,
 so dass ich sie lieber unterdrücke.
 `stan_glm`^[aus dem R-Paket `rstanam`, das zuvor installiert und gestartet sein muss, bevor Sie den Befehl nutzen können] ist eine Funktion, mit der man Regressionsmodelle berechnen kann.
@@ -717,20 +801,8 @@ Es werden aber auch viele Stichproben simuliert (sog. MCMC-Methode).
 Gibt man keine Priori-Werte an, so greift die Funktion auf Standardwerte zurück.
 
 
-Grob gesagt berechnen wir die Post-Verteilung mit `stan_glm` so:
+Grob gesagt berechnen wir die Post-Verteilung mit `stan_glm` so: `stan_glm(AV ~ UV, data = meine_daten)`.
 
-```{r Kung-23, echo = TRUE, eval = FALSE}
-#| eval: false
-library(rstanarm)  # Paket muss gestartet sein.
-
-# berechnet Post.-Vert.:
-stan_glm(
-  # modelldefinition:
-  AV ~ UV,
-  # Datensatz:
-  data = meine_daten
-)
-```
 
 
 
@@ -751,7 +823,7 @@ $\sigma \sim \mathcal{E}(0.125)$, Prior zur Streuung der Größen  (von Stan üb
 Wir können, wie wir es oben getan haben, uns die Stichproben der Post-Verteilung ausgeben lassen, und diese z.B. plotten.
 
 Wir können es aber auch komfortabler haben ... 
-Mit dem Befehl `parameters` kann man sich die geschätzten Parameterwerte einfach ausgeben lassen.
+Mit dem Befehl `parameters` kann man sich die geschätzten Parameterwerte einfach ausgeben lassen (s. @fig-m42-post-joint).
 
 ```{r Kung-24, echo = TRUE, results="hide"}
 m41 <- stan_glm(height ~ 1, data = d2, refresh = 0)  # aus Paket rstanarm
@@ -766,8 +838,8 @@ parameters(m41)  # aus Paket `easystats`
 #| echo: false
 parameters(m41) %>% display()
 
-ci_low <- parameters(m41)$CI_low
-ci_high <- parameters(m41)$CI_high
+ci_low <- parameters(m41)$CI_low |> round(2)
+ci_high <- parameters(m41)$CI_high |> round(2)
 ```
 
 
@@ -1452,11 +1524,22 @@ sim2 %>%
 ### Papier-und-Bleistift-Aufgaben
 
 
-1. [Priorwahl1](https://datenwerk.netlify.app/posts/priorwahl1/priorwahl1)
-2. [ReThink4e2](https://datenwerk.netlify.app/posts/rethink4e2/rethink4e2)
-3. [ReThink4e3](https://datenwerk.netlify.app/posts/rethink4e3/rethink4e3)
-4. [groesse03](https://datenwerk.netlify.app/posts/groesse03/)
 
+
+<!-- 3. [ReThink4e3](https://datenwerk.netlify.app/posts/ReThink4e3/ReThink4e3.html) -->
+
+6. [exp-tab](https://datenwerk.netlify.app/posts/exp-tab/)
+8. [exp-tab2](https://datenwerk.netlify.app/posts/exp-tab2/)
+9. [norms-sd](https://datenwerk.netlify.app/posts/norms-sd/)
+10. [small-wide-normal](https://datenwerk.netlify.app/posts/small-wide-normal/)
+11. [exp1](https://datenwerk.netlify.app/posts/exp1/)
+12. [distros](https://datenwerk.netlify.app/posts/distros/)
+3. [mtcars-post_paper](https://datenwerk.netlify.app/posts/mtcars-post_paper/)
+1. [groesse03](https://datenwerk.netlify.app/posts/groesse03/)
+2. [pupil-size2](https://datenwerk.netlify.app/posts/pupil-size2/)
+7. [groesse04](https://datenwerk.netlify.app/posts/groesse04/)
+2. [ReThink4e2](https://datenwerk.netlify.app/posts/ReThink4e2/ReThink4e2.html)
+1. [Priorwahl1](https://datenwerk.netlify.app/posts/Priorwahl1/Priorwahl1.html)
 
 
 ### Aufgaben, für die man einen Computer benötigt
