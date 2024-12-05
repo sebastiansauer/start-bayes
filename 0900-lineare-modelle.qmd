@@ -128,11 +128,11 @@ Laden wir die !Kung-Daten und visualisieren wir uns den Zusammenhang zwischen Ge
 
 
 
-:::{#fig-kung-zshg}
+:::::{#fig-kung-zshg}
 
 
 
-::: {.figure-content}
+:::: {.figure-content}
 
 :::{.panel-tabset}
 
@@ -152,18 +152,19 @@ d2 %>%
 ```{r}
 ggscatter(d2,
           x = "weight", y = "height",
-          add = "reg.line")
+          add = "reg.line") 
 ```
 
 
+
 :::
-:::
+::::
 
 
 
 Der Zusammenhang zwischen Gewicht (X) und Größe (Y)
 
-:::
+:::::
 
 
 
@@ -325,7 +326,8 @@ d3 %>%
 ```
 
 
-Wie man sieht, ist die Verteilung "zur Seite geschoben": Der Mittelwert liegt jetzt eben bei 0, s. @fig-d3-center.
+Wie man sieht, wird die Verteilung von `weight` durch die Zentrierung "zur Seite geschoben": 
+Der Mittelwert von `weight_c` (das zentrierte Gewicht) liegt jetzt bei 0, s. @fig-d3-center.
 
 
 
@@ -333,13 +335,25 @@ Wie man sieht, ist die Verteilung "zur Seite geschoben": Der Mittelwert liegt je
 #| echo: false
 #| label: fig-d3-center
 #| fig-cap: 'Das Zentrieren ändert die Verteilungsform nicht, sondern "schiebt" die Verteilung nur zur Seite'
+
 d3 %>% 
   select(weight, weight_c) %>% 
-  pivot_longer(everything()) %>% 
-  ggplot(aes(x = value)) +
-  geom_histogram() +
-  facet_wrap(~ name, scales = "free") + 
-  theme_minimal()
+  ggplot() +
+  geom_histogram(aes(x = weight), fill = "grey40") +
+  geom_histogram(aes(x = weight_c), fill = "black") +
+  theme_minimal() +
+  geom_segment(x = mean(d3$weight), 
+               xend = 0, 
+               y = 20, yend = 20, 
+               arrow = arrow(length = unit(0.2, "cm"), type = "closed"),
+               color = okabeito_colors()[1], size = 2) +
+  geom_vline(xintercept = mean(d3$weight), color = okabeito_colors()[1], 
+             linetype = "dashed") +
+  geom_vline(xintercept = 0, color = okabeito_colors()[1],
+             linetype = "dashed") +
+  annotate("label", x = 0, y = 5, label = "Gewicht zentriert") +
+  annotate("label", x = mean(d3$weight), y = 5, label = "Gewicht")  +
+  labs(caption = "Die vertikalen gepunkteten Linien zeigen die Mittelwerte der Verteilungen.")
 ```
 
 
@@ -381,17 +395,17 @@ Der Mittelwert $\mu$ für jede Post-Verteilung ergibt sich aus dem linearen Mode
 
 $$\begin{align*}
 \color{red}{\text{height}_i} & \color{red}\sim \color{red}{\operatorname{Normal}(\mu_i, \sigma)} && \color{red}{\text{Likelihood}} \\
-\color{green}{\mu_i} & \color{green}= \color{green}{\alpha + \beta\cdot \text{weightcentered}_i}  && \color{green}{\text{Lineares Modell} } \\
-\color{blue}\alpha & \color{blue}\sim \color{blue}{\operatorname{Normal}(178, 20)} && \color{blue}{\text{Priori}} \\
-\color{blue}\beta  & \color{blue}\sim \color{blue}{\operatorname{Normal}(0, 10)}  && \color{blue}{\text{Priori}}\\
+\color{green}{\mu_i} & \color{green}= \color{green}{\beta_0 + \beta_1\cdot \text{weightcentered}_i}  && \color{green}{\text{Lineares Modell} } \\
+\color{blue}{\beta_0} & \color{blue}\sim \color{blue}{\operatorname{Normal}(178, 20)} && \color{blue}{\text{Priori}} \\
+\color{blue}{\beta_1}  & \color{blue}\sim \color{blue}{\operatorname{Normal}(0, 10)}  && \color{blue}{\text{Priori}}\\
 \color{blue}\sigma & \color{blue}\sim \color{blue}{\operatorname{Exp}(0.1)}  && \color{blue}{\text{Priori}}
 \end{align*}$${#eq-modm42}
 
 
 
 :::callout-note
-Der Achsenabschnit (engl. *intercept*) eines Regressionsmodell wird in der Literatur oft mit $\beta_0$ bezeichnet,
-aber manchmal auch mit $\beta_0$.
+Der Achsenabschnitt (engl. *intercept*) eines Regressionsmodell wird in der Literatur oft mit $\beta_0$ bezeichnet,
+aber manchmal auch mit $\alpha$.
 Und manchmal mit noch anderen Buchstaben, das Alphabet ist weit. 🤷
 :::
 
@@ -428,7 +442,7 @@ $$
 
 $$
 \begin{aligned}
-\color{green}{\mu_i} & \color{green}= \color{green}{\alpha + \beta\cdot \text{weight}_i}  && \color{green}{\text{Lineares Modell} } \\
+\color{green}{\mu_i} & \color{green}= \color{green}{\beta_0 + \beta_1\cdot \text{weightcentered}_i}  && \color{green}{\text{Lineares Modell} } \\
 \end{aligned}
 $$
 
@@ -451,8 +465,8 @@ Lies  etwa so:
 
 
 \begin{align*}
-\color{blue}\alpha & \color{blue}\sim \color{blue}{\operatorname{Normal}(178, 20)} && \color{blue}{\text{Priori Achsenabschnitt}} \\
-\color{blue}\beta  & \color{blue}\sim \color{blue}{\operatorname{Normal}(0, 10)}  && \color{blue}{\text{Priori Regressionsgewicht}}\\
+\color{blue}\beta_1 & \color{blue}\sim \color{blue}{\operatorname{Normal}(178, 20)} && \color{blue}{\text{Priori Achsenabschnitt}} \\
+\color{blue}\beta_1  & \color{blue}\sim \color{blue}{\operatorname{Normal}(0, 10)}  && \color{blue}{\text{Priori Regressionsgewicht}}\\
 \color{blue}\sigma & \color{blue}\sim \color{blue}{\operatorname{Exp}(0.1)}  && \color{blue}{\text{Priori Sigma}}
 \end{align*}
 
@@ -500,7 +514,7 @@ m43a <-
   stan_glm(
     height ~ weight_c,  # Regressionsformel
     prior = normal(5, 3),  # Regressionsgewicht (beta 1)
-    prior_intercept = normal(178, 20),  # mu
+    prior_intercept = normal(178, 20),  # beta 0
     prior_aux = exponential(0.1),  # sigma
     refresh = 0,  # zeig mir keine Details
     seed = 42,  # lege die Zufallszahlen fest für Reproduzierbarkeit
@@ -2022,26 +2036,31 @@ Schreiben Sie 5-10 Sätze zum Wesentlichen Stoff dieses Kapitels und reichen Sie
 ## Aufgaben
 
 
+### Papier-und-Bleistift-Aufgaben
+
 
 1. [Bayes-Ziel1](https://datenwerk.netlify.app/posts/bayes-ziel1/bayes-ziel1)
 2. [Bayesmod-bestimmen01](https://datenwerk.netlify.app/posts/bayesmod-bestimmen01/bayesmod-bestimmen01)
-3. [Likelihood2](https://datenwerk.netlify.app/posts/likelihood2/likelihood2)
-4. [Post-befragen1](https://datenwerk.netlify.app/posts/post-befragen1/post-befragen1)
-5. [Postvert-Regr-01](https://datenwerk.netlify.app/posts/postvert-regr-01/postvert-regr-01)
-6. [regression1a](https://datenwerk.netlify.app/posts/regression1a/regression1a.html)
-7. [Regression2](https://datenwerk.netlify.app/posts/regression2/regression2)
+14. [mtcars-post2a](https://datenwerk.netlify.app/posts/mtcars-post2a/)
 8. [Bed-Post-Wskt1](https://datenwerk.netlify.app/posts/bed-post-wskt1/bed-post-wskt1)
+9. [mtcars-post3a](https://datenwerk.netlify.app/posts/mtcars-post3a/)
+<!-- 5. [Postvert-Regr-01](https://datenwerk.netlify.app/posts/postvert-regr-01/postvert-regr-01) -->
+6. [regression1a](https://datenwerk.netlify.app/posts/regression1a/regression1a.html)
+7. [regression1b](https://datenwerk.netlify.app/posts/regression1b/regression1b)
+7. [Regression2](https://datenwerk.netlify.app/posts/regression2/regression2)
 9. [Priorwahl1](https://datenwerk.netlify.app/posts/priorwahl1/priorwahl1)
 10. [Bayesmod-bestimmen02](https://datenwerk.netlify.app/posts/bayesmod-bestimmen02/bayesmod-bestimmen02)
 11. [Aussagen-einfache-Regr](https://datenwerk.netlify.app/posts/aussagen-einfache-regr/aussagen-einfache-regr)
 12. [Likelihood-identifizieren](https://datenwerk.netlify.app/posts/likelihood-identifizieren/likelihood-identifizieren)
 13. [Priorwahl2](https://datenwerk.netlify.app/posts/priorwahl2/priorwahl2)
-14. [penguins-stan-01](https://datenwerk.netlify.app/posts/penguins-stan-01/penguins-stan-01.html)
+3. [Likelihood2](https://datenwerk.netlify.app/posts/likelihood2/likelihood2)
+14. [interpret-koeff](https://datenwerk.netlify.app/posts/interpret-koeff/interpret-koeff)
+15. [bed-post-wskt1](https://datenwerk.netlify.app/posts/bed-post-wskt1/bed-post-wskt1)
 
+### Computer-Aufgaben
 
-
-
-
+1. [Post-befragen1](https://datenwerk.netlify.app/posts/post-befragen1/post-befragen1)
+2. [penguins-stan-01](https://datenwerk.netlify.app/posts/penguins-stan-01/penguins-stan-01.html)
 
 
 
