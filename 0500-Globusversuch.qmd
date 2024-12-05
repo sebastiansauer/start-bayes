@@ -650,7 +650,7 @@ im Lichte dieser gesammelten Daten, s. @eq-bayes3.
 
 $$Pr(H|D) = \frac{ Pr(H) \cdot Pr(D|H) }{Pr(D)}$${#eq-bayes3}
 
-@eq-bayes3 fragt nach $Pr(H|D)$:
+Bayes' Theorem (@eq-bayes3) fragt nach $Pr(H|D)$:
 
 >    Was ist die Wahrscheinlichkeit der Hypothese H, jetzt wo wir die Daten haben (und ein Modell?)
 
@@ -671,36 +671,47 @@ Für unser Globusbeispiel:
 ### Bayes als bedingte Wahrscheinlichkeit
 
 Bayes' Theorem wird häufig verwendet,
-um die Wahrscheinlichkeit einer Hypothese,
-gegeben einer bestimmten Datenlage, zu berechnen,
+um die *Wahrscheinlichkeit* einer *Hypothese*,
+*gegeben einer bestimmten Datenlage*, zu berechnen,
 also $Pr(H|D)$.
-Dabei ist Bayes' Theorem nichts anderes als eine normale bedingte Wahrscheinlichkeit.
+Also zeigt Bayes' Theorem nichts anderes als eine normale bedingte Wahrscheinlichkeit.
 
 
 
-$Pr(H|D) = \frac{\overbrace{ Pr(H\cap D)}^\text{umformen}}{Pr(D)}$
 
 $Pr(H| D)$ kann man  umformen (vgl. @eq-pr-cond und @def-gem-wskt-abh),
 dann erhält man Bayes' Theorem, s. @eq-bayes1:
 
 $$\begin{aligned}
-Pr(H|D) &=\frac{Pr(D\cap H)}{Pr(D)}  \\  &= \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}}
+Pr(H|D) &=\frac{\overbrace{ Pr(H\cap D)}^\text{umformen}}{Pr(D)} \\  &= \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}}
 \end{aligned}$$ {#eq-bayes1}
 
 
+
+### Die Evidenz zur Standardisierung 
+
+Die Aufgabe der Evidenz ist nur dafür zu sorgen, dass der Wert von $Pr(H|D)$ insgesamt nur Werte zwischen 0 und 1 annehmen kann, also eine brave, normale Wahrscheinlichkeit ist. Würde man in  @eq-bayes1 nicht durch die Evidenz teilen, so wäre die Posteriori-Wahrscheinlichkeit nicht normiert, d.h. sie könnte Werte >1 annehmen.
 
 
 
 :::{#def-evidenz}
 ### Evidenz
 $Pr(D)$ nennt man die *Evidenz*. 
-Die Evidenz berechnet sich als Summe der Likelihoods über alle Ausprägungen von $D$, d.h. als die totale Wahrscheinlichkeit von $D$, s. @eq-evidenz, vgl. auch @def-totwskt:
+Die Evidenz berechnet sich als Summe der Likelihoods für alle Parameterwerte $H_i$, d.h. als die totale Wahrscheinlichkeit von $D$, s. @eq-evidenz, vgl. auch @def-totwskt:
 
-$$Pr(D) = Pr(D|H) \cdot Pr(H) + Pr(D| \neg H) \cdot Pr(\neg H)$${#eq-evidenz}
+$$\begin{aligned}
+Pr(D) = \sum_{i=1}^n Pr(D|H_i) \cdot Pr(H_i)
+\end{aligned}$${#eq-evidenz} 
 
+Die verschiedenen Parameterwerte kann man auch als die verschiedenen Hypothesen $H_i$ auffassen.
+Falls es nur zwei Hypothesen bzw. Parameterwerte gibt, vereinfacht sich @eq-evidenz zu @eq-evidenz2.
 
-Die Aufgabe der Evidenz ist nur dafür zu sorgen, dass der Bruch insgesamt nur Werte zwischen 0 und 1 annehmen kann. $\square$
+$$\begin{aligned}
+Pr(D) = Pr(D|H_1) \cdot Pr(H_1) + Pr(D|H_2) \cdot Pr(H_2)
+\end{aligned}$${#eq-evidenz2} 
 :::
+
+
 
 :::{#exm-evidenz1}
 In @exm-bayes1 betrug der Wert der Evidenz $0.03 + 0.002 + 0.012 = 0.044$,
