@@ -279,12 +279,14 @@ Darf ich vorstellen ...
 
 
 Bevor wir unser Kung-Modell spezifizieren können,
-sollten wir noch überlegen, welches Vorab-Wissen wir zur Streuung um den Mittelwert herum haben.
+sollten wir noch überlegen, welches Vorab-Wissen wir zur S*treuung um den Mittelwert* herum haben.
 Da wir uns nicht 100% sicher zur gesuchten Größe sind,
-müssen wir angeben, wie groß die Streuung um den Mittelwert sein soll.
+müssen wir diese Ungewissheit quantifizieren.
+Wir müssen also angeben, wie groß die Streuung um den Mittelwert unserer Meinung nach ist.
 Hier werden wir eingestehen, dass wir uns auch nicht 100% sicher sind,
 wie groß die Streuung exakt ist.
-Also geben wir eine Verteilung für die Streuung an.
+Also geben wir eine Verteilung für die Streuung an,
+um diese Ungewissheit zu quantifizieren.
 
 Etwas Wissen über diese Verteilung haben wir:
 
@@ -305,35 +307,30 @@ das bei 3 liegt;
 ```{r Post-Regression-18}
 #| fig-asp: 0.5
 #| label: fig-exp
-#| fig-cap: Die Exponentialverteilung mit einigen ihrer Quantilen
+#| fig-cap: "Die Exponentialverteilung: Die meisten Äpfel fallen nicht weit vom Baum ..."
 #| echo: false
 
-d <-
-  tibble(
-    x = seq(0, 5,.1),
-    y = dexp(x, rate = 1)
-  )
+
+# Set the rate parameter for the exponential distribution
+rate <- 1
+
+# Create a data frame for the exponential distribution
+x_vals <- seq(0, 5, by = 0.01) # X-axis range
+y_vals <- dexp(x_vals, rate = rate) # Density values
+data <- data.frame(x = x_vals, y = y_vals)
+
+ggplot(data, aes(x = x, y = y)) +
+  geom_line(color = okabeito_colors()[1], size = 1) +
+  theme_minimal() +
+  labs(title = "Exponential Distribution", x = "", y = "Density") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  # Add emojis as text annotations
+  annotate("text", x = 0, y = 0, label = "🌳", size = 12, vjust = 0) +
+  annotate("text", x = 1, y = 0, label = "🍎", size = 6, vjust = 0) +
+  annotate("text", x = 2, y = 0, label = "🍎", size = 6, vjust = 0) +
+  annotate("text", x = 3, y = 0, label = "🍎", size = 6, vjust = 0)
 
 
-d_qs <-
-  tibble(
-    prob = c(0.05, .25, .50, .75, .95),
-    q = qexp(prob) 
-  )
-
-d %>% 
-  ggplot(aes(x,y)) +
-  geom_line() +
-  geom_area(fill = "grey60") +
-  geom_vline(data = d_qs,
-             aes(xintercept = q)) +
-  geom_label(data = d_qs,
-             aes(x = q, 
-                 label = prob,
-                 y = prob)) +
-  labs(
-       caption = "Vertikale Striche zeigen die Quantile für 5%, 25%, 50%, 75%, 95%",
-       y = "Dichte")
 ```
 
 
@@ -344,6 +341,7 @@ $$X \sim \operatorname{Exp}(1)$$
 
 
 Eine Verteilung dieser Form nennt man *Exponentialverteilung*.
+Sie hat einige nützliche Eigenschaften:
 
 
 
@@ -352,7 +350,7 @@ Eine Verteilung dieser Form nennt man *Exponentialverteilung*.
 2. Steigt X um eine *Einheit*, so ändert sich Y um einen *konstanten Faktor*.
 3. Sie hat nur einen Parameter, genannt *Rate* oder $\lambda$ ("lambda").
 4. $\frac{1}{\lambda}$  gibt gleichzeitig Mittelwert und Streuung ("Gestrecktheit") der Verteilung an.
-5. Je größer die Rate $\lambda$, desto *kleiner* die Streuung und der Mittelwert der Verteilung (und umgekehrt: Je größer  $1/\lambda$, desto *größer* die Streuung und der Mittelwert der Verteilung.)
+5. Je größer die Rate $\lambda$, desto schneller der "Verfall" der Kurve und desto *kleiner* die Streuung und der Mittelwert der Verteilung (und umgekehrt: Je größer  $1/\lambda$, desto *größer* die Streuung und der Mittelwert der Verteilung.)
 
 
 
