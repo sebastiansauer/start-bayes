@@ -32,6 +32,9 @@ Der Stoff dieses Kapitels orientiert sich an @mcelreath2020, Kap. 4.4 sowie @gel
 
 ### Vorbereitung im Eigenstudium
 
+Frischen Sie Ihr Wissen in den Grundlagen der einfachen und multiplen Regression (inkl. Interaktionseffekte) auf. Dazu sind z.B. folgende Literaturstellen geeignet.
+
+- [Statistik1, Kap. "Geradenmodelle 1"](https://statistik1.netlify.app/080-regression1)
 - [Statistik1, Kap. "Geradenmodelle 2"](https://statistik1.netlify.app/090-regression2)
 
 
@@ -900,16 +903,20 @@ Für beide Gruppen, `mom_hs=0` und `mom_hs=1` gilt folgende Regressionsformel, s
 
 $$\text{kid score} = \beta_0 + \beta_1 \cdot \text{mom hs} + \beta_2 \cdot \text{mom iq} + \beta_3 \cdot \text{mom hs} \cdot \text{mom iq}$$ {#eq-lm4}
 
+$\beta_3$ gibt die Stärke des Interaktionseffekts an.
+
 Auf Errisch schreibt mit @eq-lm4 so (s. @lst-m104): 
 
-`kid_score ~ mom_iq + mom_hs + mom_hs:mom_iq`
+`kid_score ~ mom_iq + mom_hs + mom_hs:mom_iq`.
+
+Der Doppelpunkt zwischen `mom_hs` und `mom_iq` steht für den Interaktionseffekt der beiden Variablen.
 
 Trägt man die Werte der Koeffizienten ($\beta_0, \beta_1, \beta_2, \beta_3$) ein, 
 so erhält man @eq-lm4-with-values.
 
 $$\text{kid score} = `r round(coef(m10.4)[1], 1)` + `r round(coef(m10.4)[3], 1)` \cdot \text{mom hs} + `r round(coef(m10.4)[2], 1)`  \cdot \text{mom iq} + `r round(coef(m10.4)[4], 1)` \cdot \text{mom hs} \cdot \text{mom iq}$$ {#eq-lm4-with-values}
 
-$\beta_3$ gibt den Interaktionseffekt an.
+
 
 Teilen wir die Regressionsformel einmal auf die beiden Gruppen (`mom_hs=0` bzw. `mom_hs=1`) auf:
 
@@ -1549,7 +1556,7 @@ Hier untersuchen wir Forschungsfragen mit zwei metrischen UV (und einer metrisch
     
 - Der Korrelationskoeffizient
     - misst eine Art der Stärke des linearen Zusammenhangs
-    - zeigt, wie klein die Vorhersagefehler der zugehörigen Regrssion im Schnitt sind.
+    - zeigt, wie klein die Vorhersagefehler der zugehörigen Regression im Schnitt sind.
     - [Korrelation ist nicht (automatisch) Kausation.](https://xkcd.com/552/)
     
 
@@ -2098,8 +2105,8 @@ Stans Ausgabe kann man in Mathe-Sprech so darstellen, s. @eq-m1011.
 $$
 \begin{aligned}
 \text{kidscore}  &\sim \mathcal{N}(0,2.5)\\
-\mu_i &= \alpha + \beta_1\text{momiq}_i + \beta_2\text{momage}_i \\
-\alpha &\sim \mathcal{N}(0,2.5)\\
+\mu_i &= \beta_0 + \beta_1\text{momiq}_i + \beta_2\text{momage}_i \\
+\beta_0 &\sim \mathcal{N}(0,2.5)\\
 \beta_1 &\sim \mathcal{N}(0,2.5)\\
 \beta_2 &\sim \mathcal{N}(0,2.5)\\
 \sigma &\sim \mathcal{E}(1)
@@ -2115,9 +2122,9 @@ Schreibt man einen Bericht, so bietet es sich an, die Modelldefinition *zumindes
 
 :::{#exm-anz-mod-m1011}
 ### Anzahl der Modellparameter
-Wie viele Modellparameter hat `m10.12`?^[4: $\alpha, \beta_1, \beta_2, \sigma$]
+Wie viele Modellparameter hat `m10.12`?^[4: $\beta_0, \beta_1, \beta_2, \sigma$]
 
-### Beantwortung der Forschungsfrage
+### Antwort auf die Forschungsfrage
 
 
 
@@ -2187,7 +2194,7 @@ kidiq_z %>%
 
 Zentrale Annahme eines linearen Modells: Die AV ist eine *lineare* Funktion der einzelnen Prädiktoren, s. @eq-lm1.
 
-$$y= \alpha + \beta_1x_1 + \beta_2 x_2 + \cdots $${#eq-lm1} 
+$$y= \beta_0 + \beta_1x_1 + \beta_2 x_2 + \cdots $${#eq-lm1} 
 
 Hingegen ist es weniger wichtig, dass die AV (y) normalverteilt ist.
 Zwar nimmt die Regression häufig normalverteilte Residuen an^[was auf normal verteilte AV hinauslaufen kann aber nicht muss], aber diese Annahme ist nicht wichtig, wenn es nur darum geht, die Regressionskoeffizienten zu schätzen [@gelman2021].
