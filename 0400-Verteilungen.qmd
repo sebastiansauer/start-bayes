@@ -2192,15 +2192,12 @@ q_p69 <-
 #| echo: false
 #| label: fig-nv-quants2
 #| fig-width: 10
-#| fig-cap: Verschiedene Quantil der Normalverteilung
+#| fig-cap: Verschiedene Quantile der Normalverteilung
 
 (q_p50 + q_p25 + q_p69) / (q_p95 + q_p975 + q_p84)
 ```
 
-::: {.content-visible when-format="html"}
-![Die Quantile einer Standardnormalverteilung für 10%, 20%, ... 100% (die Dezile) visualisiert](img/normal_distribution_animation.gif){#fig-quantnormanim width=50%}
 
-:::
 
 ### Standardnormalverteilung
 
@@ -2243,8 +2240,16 @@ den ein Wert vom Mittelwernt entfernt ist, s. @eq-ztrans.
 
 $$z = \frac{x - \mu}{\sigma}$${#eq-ztrans}
 
+@tbl-F-norm und @fig-quantnormanim zeigen wichtige Werte der Verteilungsfunktion für die Standardnormalverteilung.
 
-@tbl-F-norm zeigt wichtige Werte der Verteilungsfunktion der Standardnormalverteilung für die Standardnormalverteilung.
+
+
+::::: {.columns}
+
+
+
+:::: {.column width="25%"}
+
 
 
 ```{r}
@@ -2257,6 +2262,46 @@ d_F_norm <-
 d_F_norm |> 
   gt()
 ```
+::::
+
+
+
+:::: {.column width="70%"}
+
+
+```{r}
+#| echo: false
+#| label: fig-quantnormanim 
+#| fig-cap: Die Verteilungsfunktion für die z-Werte von -3 bis +3
+
+library(mosaic)
+
+p_z_F <- xpnorm(q = -3:3, return = "plot")
+  
+p_z_F +
+  labs(y = "Wahrscheinlichkeit", x = "z") +  # Add labels
+  theme(theme_minimal()) +
+  geom_vline(data = d_F_norm, aes(xintercept = z), linetype = "dashed") + # Vertical lines
+  annotate(geom = "label", 
+           x = d_F_norm$z, 
+           label = round(d_F_norm$F, 2), 
+           #fill = "Wahrscheinlichkeit",
+           y = d_F_norm$F * 0.4 ) + # Correct labels
+  scale_fill_okabeito(name = "Wahrscheinlichkeit") +
+  theme(legend.position = "none")
+```
+
+
+
+<!-- ::: {.content-visible when-format="html"} -->
+<!-- ![Die Quantile einer Standardnormalverteilung für 10%, 20%, ... 100% (die Dezile) visualisiert](img/normal_distribution_animation.gif){#fig-quantnormanim width=50%} -->
+
+<!-- ::: -->
+
+::::
+
+
+:::::
 
 
 ### Vertiefung
