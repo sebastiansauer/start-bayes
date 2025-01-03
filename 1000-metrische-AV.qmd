@@ -183,7 +183,11 @@ Dabei wird folgende Nomenklatur verwendet, um die Skalenniveaus der beteiligten 
 
 *Hintergrund:*
 
-Eine Psychologin, die im öffentlichen Dienst als Schulpsychologin arbeitet, versucht herauszufinden, warum einige Kinder intelligenter sind als andere. Dazu wurden in einer aufwändigen Studie die Intelligenz vieler Kinder gemessen. Zusätzliche wurden verschiedene Korrelate der Intelligenz erhoben, in der Hoffnung, "Risikofaktoren" für geringere Intelligenz zu entdecken.
+Eine Psychologin, die im öffentlichen Dienst als Schulpsychologin arbeitet, 
+versucht herauszufinden, warum einige Kinder intelligenter sind als andere. 
+Dazu wurden in einer aufwändigen Studie die Intelligenz vieler Kinder gemessen. 
+Zusätzliche wurden verschiedene Korrelate der Intelligenz erhoben, 
+in der Hoffnung, "Risikofaktoren" für geringere Intelligenz zu entdecken.
 
 
 
@@ -196,7 +200,8 @@ Eine Psychologin, die im öffentlichen Dienst als Schulpsychologin arbeitet, ver
 
 Die Modellformel zur Forschungsfrage lautet: `y ~  b` bzw. `kid_iq ~ mom_hs`.
 
-Formaler ausgedrückt und als Behauptung (Hypothese) formuliert, sieht die Forschungsfrage so aus (@eq-fofra1):
+Formaler ausgedrückt und als Behauptung (Hypothese) formuliert, 
+sieht die Forschungsfrage so aus (@eq-fofra1):
 
 
 $$\mu_{x=1|M} \ne \mu_{x=0|M}$${#eq-fofra1}
@@ -262,9 +267,9 @@ Die komplette Modellspezifikation ist in @eq-m101 aufgeführt.
 $$\begin{align*}
 \text{kid score}_i &\sim \operatorname{Normal}(\mu_i, \sigma) && \text{Likelihood} \\
 \mu_i &= \beta_0 + \beta_1 \cdot \text{mom hs}_i && \text{Lineares Modell} \\
-\beta_0 &\sim \operatorname{Normal}(87, 51) && \text{Prior} \\
-\beta_1 &\sim \operatorname{Normal}(0, 124) && \text{Prior} \\
-\sigma &\sim \operatorname{Exp}(0.049) && \text{Prior}
+\beta_0 &\sim \operatorname{Normal}(87, 51) && \text{Prior Achsenabschnitt} \\
+\beta_1 &\sim \operatorname{Normal}(0, 124) && \text{Prior Regressionsgewicht} \\
+\sigma &\sim \operatorname{Exp}(0.049) && \text{Prior Vorhersagegüte}
 \end{align*}$${#eq-m101} 
 
 
@@ -802,6 +807,39 @@ Mit 95% Wahrscheinlichkeit liegt der Unterschied im mittleren IQ-Wert zwischen K
 
 ## `y ~ x + b + x:b`
 
+### Forschungsfrage und Modelldefinition
+
+
+>   Gibt es einen Interaktionseffekt zwischen mütterlichem Schulabschluss und mütterlichem IQ (auf den IQ-Wert des Kindes)?
+
+Außerdem ist man vermutlich auch an den Effekten der beiden UV auf die AV interessiert; diese Fragen haben wir im letzten Abschnitt untersucht (und greifen sie daher nicht noch mal ausführlich auf).
+
+
+
+
+Die Modellformel zur Forschungsfrage lautet: `y ~ x + b + x:b`.
+Der Einfachheit halber übernehmen wir wieder die Prioris wie vom R-Paket `rstanarm` bereitgestellt.
+
+
+Der DAG zur Modellformel sieht aus in @fig-yxbi dargestellt.
+
+
+```{r out.width = "100%", fig.asp = .5}
+#| label: fig-yxbi
+#| fig-cap: "DAG für `y ~ x + b + x:b`"
+#| echo: false
+
+mein_modell <- "dag{
+u -> kid_score
+mom_iq -> kid_score
+momiqmom_hs -> kid_score
+}"
+
+plot(graphLayout(mein_modell))
+```
+
+
+
 
 ### Interaktion zur Modellformel hinzufügen
 
@@ -863,27 +901,6 @@ kidiq %>%
 ```
 
 
-
-
-Die Modellformel zur Forschungsfrage lautet: `y ~ x + b + x:b`.
-
-
-Der DAG zur Modellformel sieht aus in @fig-yxbi dargestellt.
-
-
-```{r out.width = "100%", fig.asp = .5}
-#| label: fig-yxbi
-#| fig-cap: "DAG für `y ~ x + b + x:b`"
-#| echo: false
-
-mein_modell <- "dag{
-u -> kid_score
-mom_iq -> kid_score
-momiqmom_hs -> kid_score
-}"
-
-plot(graphLayout(mein_modell))
-```
 
 
 
@@ -2021,9 +2038,8 @@ coef(m10.12)
 
 
 
-Jetzt sind die Prädiktoren in ihrer Relevanz (Zusammenhang mit der AV) vergleichbar: 
-
-- Man sieht, dass die Intelligenz der Mutter *deutlich wichtiger* ist das Alter der Mutter (im Hinblick auf die Vorhersage bzw. den Zusammenhang mit mit der AV).
+Jetzt sind die Prädiktoren in ihrer Relevanz (Zusammenhang mit der AV) vergleichbar.
+Man sieht, dass die Intelligenz der Mutter *deutlich wichtiger* ist das Alter der Mutter (im Hinblick auf die Vorhersage bzw. den Zusammenhang mit mit der AV).
 
 
 
@@ -2100,23 +2116,23 @@ prior_summary(m10.12)  # aus rstanarm
 
 Wie gesagt, Stan nimmt dafür einfach die empirischen Mittelwerte und Streuungen her.^[Nicht unbedingt die feine bayesianische Art, denn die Prioris sollten ja eigentlich apriori, also vor Kenntnis der Daten, bestimmt werden. Auf der anderen Seite behauptet Stan, von uns zur Rede gestellt, dass die empirischen Mittelwerte ja doch gute Schätzer der echten Parameter sein müssten, wenn die Stichprobe, die wir ihm angeschleppt hätten, tatsächlich gut ist...]
 
-Stans Ausgabe kann man in Mathe-Sprech so darstellen, s. @eq-m1011.
+Stans Ausgabe kann man in Mathe-Sprech so darstellen, s. @eq-m1012.
 
 
 $$
 \begin{aligned}
-\text{kidscore}  &\sim \mathcal{N}(0,2.5)\\
-\mu_i &= \beta_0 + \beta_1\text{momiq}_i + \beta_2\text{momage}_i \\
+\text{kidscore}^z_i  &\sim \mathcal{N}(\mu_i,\sigma)\\
+\mu_i &= \beta_0 + \beta_1\text{momiq}_i^z + \beta_2\text{momage}_i^z \\
 \beta_0 &\sim \mathcal{N}(0,2.5)\\
 \beta_1 &\sim \mathcal{N}(0,2.5)\\
 \beta_2 &\sim \mathcal{N}(0,2.5)\\
 \sigma &\sim \mathcal{E}(1)
 \end{aligned}
-$${#eq-m1011}
+$${#eq-m1012}
 
 Man beachte, dass der Achsenabschnitt zur Intelligenz der Kinder auf Null festgelegt wird:
 Bei *mittlerer* Intelligenz und *mittlerem* Alter der Mutter wird *mittlere* Intelligenz des Kindes erwartet in `m10.12`. 
-Dadurch, dass nicht nur UV, sondern auch AV zentriert (und in der Streuung auf 1 standardisiert) sind, ist der Mittelwert der AV Null.
+Dadurch, dass nicht nur UV, sondern auch AV z-standardisiert (d.h. zentriert und in der Streuung auf 1 standardisiert) sind, ist der Mittelwert der AV Null.
 
 Schreibt man einen Bericht, so bietet es sich an, die Modelldefinition *zumindest* im Anhang aufzuführen.
 
@@ -2135,9 +2151,11 @@ Wie viele Modellparameter hat `m10.12`?^[4: $\beta_0, \beta_1, \beta_2, \sigma$]
 
 
 :::callout-important
-Hier wird von einem "statistischen Effekt" gesprochen, um klar zu machen, dass es sich lediglich um assoziative Zusammenhänge, und nicht um kausale Zusammenhänge, handelt.
+Hier wird von einem "statistischen Effekt" gesprochen, um klar zu machen, 
+dass es sich lediglich um assoziative Zusammenhänge, 
+und nicht um kausale Zusammenhänge, handelt.
 Kausale Zusammenhänge dürfen wir nur verkünden, 
-wenn wir sie a) explizit untersuchen, b) sich in der Literatur Belege dafür finden oder c) wir ein  Experiment fachgerecht durchgeführt haben.
+wenn wir sie a) explizit untersuchen und b) sich in der Literatur Belege dafür finden oder c) wir ein Experiment fachgerecht durchgeführt haben.
 :::
 
 
@@ -2626,9 +2644,15 @@ Für das vorliegende Kapitel sind insbesondere daraus die Kapitel 6,7, und 10 re
 ## Aufgaben
 
 
-1. [Anova-skalenniveau](https://datenwerk.netlify.app/posts/anova-skalenniveau/anova-skalenniveau.html)
+### Papier-und-Bleistift-Aufgaben
+
+
+
+1. [anz-params](https://datenwerk.netlify.app/posts/anz-params/)
+1. [fofrage-regrformel2](https://datenwerk.netlify.app/posts/fofrage-regrformel2/)
+2. [modelldef-regrformel](https://datenwerk.netlify.app/posts/modelldef-regrformel/)
+4. [datenwerk.netlify.app/posts/finde-prior/](https://datenwerk.netlify.app/posts/finde-prior/)
 2. [Nullhyp-Beispiel](https://datenwerk.netlify.app/posts/nullhyp-beispiel/nullhyp-beispiel)
-1. [ttest-skalenniveau](https://datenwerk.netlify.app/posts/ttest-skalenniveau/ttest-skalenniveau.html)
 2. [Griech-Buchstaben-Inferenz](https://datenwerk.netlify.app/posts/griech-buchstaben-inferenz/griech-buchstaben-inferenz)
 3. [Interaktionseffekt1](https://datenwerk.netlify.app/posts/interaktionseffekt1/interaktionseffekt1)
 1. [Regression2](https://datenwerk.netlify.app/posts/regression2/regression2)
@@ -2636,14 +2660,26 @@ Für das vorliegende Kapitel sind insbesondere daraus die Kapitel 6,7, und 10 re
 <!-- 3. [Regression6](https://datenwerk.netlify.app/posts/regression6/regression6) -->
 <!-- 1. [posterior_interval](https://datenwerk.netlify.app/posts/posterior_interval/posterior_interval.html) -->
 2. [diamonds-nullhyp-mws](https://datenwerk.netlify.app/posts/diamonds-nullhyp-mws/diamonds-nullhyp-mws.html)
-3. [stan_glm_parameterzahl](https://datenwerk.netlify.app/posts/stan_glm_parameterzahl/stan_glm_parameterzahl.html)
-1. [stan_glm_prioriwerte](https://datenwerk.netlify.app/posts/stan_glm_prioriwerte/stan_glm_prioriwerte.html)
 2. [zwert-berechnen](https://datenwerk.netlify.app/posts/zwert-berechnen/zwert-berechnen.html)
-3. [Regr-Bayes-interpret](https://datenwerk.netlify.app/posts/regr-bayes-interpret/regr-bayes-interpret)
-3. [Regr-Bayes-interpret03](https://datenwerk.netlify.app/posts/regr-bayes-interpret03/regr-bayes-interpret03)
+3. [stan_glm_parameterzahl](https://datenwerk.netlify.app/posts/stan_glm_parameterzahl/stan_glm_parameterzahl.html)
+
+
+
+### Aufgaben, für die man einen Computer benötigt
+
+
+1. [Regr-Bayes-interpret](https://datenwerk.netlify.app/posts/regr-bayes-interpret/regr-bayes-interpret)
+2. [Regr-Bayes-interpret03](https://datenwerk.netlify.app/posts/regr-bayes-interpret03/regr-bayes-interpret03)
 3. [Regr-Bayes-interpret02](https://datenwerk.netlify.app/posts/regr-bayes-interpret03/regr-bayes-interpret02)
 3. [rope4](https://datenwerk.netlify.app/posts/rope4/rope4.html)
 
+
+
+### Vertiefung
+
+1. [Anova-skalenniveau](https://datenwerk.netlify.app/posts/anova-skalenniveau/anova-skalenniveau.html)
+2. [ttest-skalenniveau](https://datenwerk.netlify.app/posts/ttest-skalenniveau/ttest-skalenniveau.html)
+1. [stan_glm_prioriwerte](https://datenwerk.netlify.app/posts/stan_glm_prioriwerte/stan_glm_prioriwerte.html)
 
 
 
