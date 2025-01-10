@@ -662,7 +662,254 @@ Besondere "Prüfungsnähe" könnten diese Sammlungen haben:
 
 ## FAQ 
 
-{{< include children/faq.qmd >}}
+
+
+### Probeklausur?
+
+FRAGE: Wo finde ich eine Probeklausur? 
+
+ANTWORT: [Dieser Tag](https://datenwerk.netlify.app/#category=qm2-pruefung)  stellt Fragen einer Probeprüfung zusammen.
+
+
+### Wie bereite ich mich gut auf die Prüfung vor? 
+FRAGE: Wie bereite ich mich gut auf die Prüfung vor? 
+
+ANTWORT:
+[Hier](https://hinweisbuch.netlify.app/hinweise-pruefungsvorbereitung-frame) finden Sie Tipps zur Prüfungsvorbereitung.
+
+
+### Intercept?
+
+FRAGE: Wenn man '(Intercept)' benutzt, welche Anführungszeichen sind die richtigen? Bei verschiedenen Anführungszeichen, also ' oder \` oder ´ kommen entweder keine oder sogar verschiedene Ergebnisse raus. 
+
+ANTWORT: Normalerweise ist innerhalb von R-Befehlen aus dem Tidyverse keine Anführungsstriche für Spaltennamen nötig. Wenn es allerdings ein "verbotener" Name ist, muss man aufpassen. `(Intercept)` ist so ein verbotener Variablenname. Warum verboten? Ein "braver" Variablenname (in R) muss mit einem Buchstaben beginnen und darf keine Sonderzeichen (`(, {, #,` etc.) enthalten. Hat man aber einen an sich unerlaubten Variablennamen, so kann man den trotzdem verwenden, *wenn* man ihn mit Backticks (\`) umgibt, also wie in `\(Intercept)\`). Doppelte und einfache Anführungsstriche sind in R übrigens beide okay, wenn man etwa einen String (Text) auszeichnen will, aber im Rahmen von Tidyverse nicht nötig für Variablennamen.
+
+
+
+### Prädiktoren vorher zentrieren?
+
+FRAGE: Woher weiß ich, dass ich die Prädiktoren vorher zentrieren muss? Kann man das aus der Aufgabenstellung irgendwie herauslesen? Z.B. wie bei Tutorium Aufgabe 10.1 d). 
+
+ANTWORT: Es gibt mehrere Gründe, Variablen zu zentrieren, dazu zählen 1) bessere Interpretation des Intercepts, 2) bessere Interpretation von Interaktionseffekten, 3) Verringerung von Kollinearität. Die Steigung (beta 1) verändert sich (fast immer) aber nicht durch das Zentrieren, ebenso wie R-Quadrat.
+
+
+### Dichotomisierung
+
+FRAGE: Bei der Bearbeitung der Prüfung heute ist ein Fehler aufgekommen, den ich bis jetzt nicht verstehe. Deshalb war es auch für mich nicht möglich die Aufgabe zu bearbeiten. Die AV high Aufteilung in die Werte 0 und 1 (0 = AV <= median (AV)) (1 =AV > median(AV) hat geklappt.
+Die UV high Aufteilung in die Werte 0 und 1 (0 = UV <= median (UV)) (1 =UV > median(UV) hat dabei aber nicht geklappt.
+Anstatt die Werte 0 und 1 bei der neuen UV_high Spalte zu bekommen, kommen nur Nas raus. Auch mit dem Befehl drop_na hat es nicht geklappt. Dies habe ich nicht nur mit dem RStudio auf meinem Computer versucht sondern auch über die Cloud über mein IPad. (Bei beiden Geräten kam es zuvor noch nie zu Problemen) Hier mein R-Code:
+
+
+```{r}
+#| message: false
+library(tidyverse)
+#library(easystats)
+#library(rstanarm)
+
+data("msleep", package = "ggplot2")
+
+msleep1 <-
+  msleep |> 
+    mutate(av_high = case_when(awake > median(awake) ~ 1,
+                               awake <= median(awake) ~ 0))
+
+msleep2 <-
+  msleep1 |> 
+    mutate(uv_high = case_when(sleep_rem > median(sleep_rem) ~ 1,
+                               sleep_rem <= median(sleep_rem) ~ 0))
+  
+msleep2 |> 
+count(uv_high)
+```
+
+ANTWORT: Sie haben nicht die fehlenden Werte ausgeschlossen. Wenn Sie die fehlenden Wert ausschließen, dann klappt die Dichotomisierung (die Aufteilung einer metrischen Variablen in eine binäre):
+
+
+```{r}
+msleep2 <-
+  msleep1 |> 
+  drop_na(sleep_rem) |>  # fehlende Werte aus `sleep_rem` entfernen
+    mutate(uv_high = case_when(sleep_rem > median(sleep_rem) ~ 1,
+                               sleep_rem <= median(sleep_rem) ~ 0))
+  
+msleep2 |> 
+count(uv_high)
+```
+
+
+### Bin ich im Toleranzbereich?
+
+FRAGE: Ich habe meine Lösungswege mit Ihren abgeglichen und finde keinen bedeutenden Unterschied. Dennoch erhalte ich andere Ergebnisse, welche nicht im Toleranzbereich liegen. Um das nochmals zu überprüfen, habe ich Ihre Lösungswege 1:1 in mein RStudio übertragen, aber auch dann erhalte ich nicht die angegebene Lösung. 
+
+ANTWORT: Es sollte ein Modell berechnet werden mit z-transformierten Variablen. Für die UV war der ROPE anzugeben. Leider haben Sie vergessen, die Daten zu z-transformieren.
+
+Hier ist das Modell *ohne* z-Transformation:
+
+```{r}
+library(rstanarm)
+library(easystats)
+library(dplyr)
+
+penguins <- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv")
+
+m1 <- stan_glm(bill_length_mm ~ year, data = penguins, refresh = 0)
+
+rope(m1)
+```
+
+Hier ist das Modell *mit* z-Transformation:
+
+```{r}
+p2 <- 
+  penguins |> 
+  select(bill_length_mm, year) |> 
+  standardise()
+
+m2 <- stan_glm(bill_length_mm ~ year, data = p2, refresh = 0)
+
+rope(m2)
+```
+
+
+Der Wert von `m2` findet sich in der Musterlösung. Man beachte, dass sich die Rope-Werte von `m1` und `m2` deutlich unterscheiden.
+
+
+### Andere Ergebnisse trotz gleichen Befehls und `set.seed`?
+
+FRAGE: ich habe bei fast allen Aufgaben, die ich löse, dass Problem, dass mein Ergebnis stark von der Lösung abweicht, selbst bei exakt gleichem Code wie in der Musterlösung.
+Leider ist die Abweichung so stark, dass ich nicht mal mehr im Toleranzbereich bin.
+Teilweise kommen extrem andere Ergebnisse raus. Wie ist dieses Problem zu lösen?
+Ich bearbeite die Aufgaben in der R Cloud und habe die Pakete tidyverse, easystats und rstanarm geladen.
+Zudem habe ich die Pakete geupdated, sodass ich hier nicht weiter weiß.
+
+Meine Lösung:
+
+
+```{r}
+#| results: hide
+penguins <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv")
+
+m10.1 <- stan_glm(body_mass_g ~  flipper_length_mm,  # Regressionsgleichung
+               data = penguins, #  Daten
+               seed = 42,  # Repro.
+               refresh = 0)  # nicht so viel Output
+
+parameters(m10.1)
+```
+
+
+![](img/toleranzbereich.png)
+
+
+ANTWORT: Tatsächlich ist es so, dass es trotz gleichem Wert bei `set.seed()` Abweichungen nicht ausgeschlossen werden können. 
+Hintergrund ist, dass verschiedene Betriebssysteme oder weitere, im Hintergrund involvierte Software in unterschiedlichen Versionen zu Abweichungen führen können.
+In Ihrem Fall ist der Wert aber innerhalb des Toleranzbereichs.
+Im Zweifel werden Sie mit einigem Probieren Ihren Wert nach der Prüfung wiederholen können und so ggf. dem Prüfer nachweisen können, das Ihr Ergebnis statthaft, sogar, wenn es nicht im Toleranzbereich wäre.
+
+Hier ist die von der Studentin angesprochene Musterlösung:
+
+![](img/toleranz2.png)
+
+
+Und hier ist der Toleranzbereich (vgl. @sec-toleranz) für den Intercept (Achsenabschnitt):
+
+
+```{r}
+library(prada)
+is_in_tolerance(asis = 5774.83,  # Ihr Wert
+                tobe = 5787.34917,   # Referenzwert
+                tol_rel = .05,   # relative Toleranz
+                tol_abs = .05 * sd(penguins$body_mass_g))
+```
+
+Wie man sieht, ist `is_in_tolerance` gleich `TRUE`. 
+
+Auch der Punktschätzer für die UV ist im Toleranzbereich:
+
+```{r}
+is_in_tolerance(asis = 49.66,  # Ihr Wert
+                tobe = 49.71739,   # Referenzwert
+                tol_rel = .05,   # relative Toleranz
+                tol_abs = .05 * sd(penguins$body_mass_g))
+```
+
+
+Also alles in Ordnung. Sie brauchen sich keine Sorgen zu machen, die Abweichung ist im Toleranzbereich.
+
+
+
+### RStudio Cloud stürzt ab, was tun?
+
+FRAGE: Zudem wollte ich sie gerne noch fragen, wie ich in der Klausur verhindern kann, dass mein R Cloud mir diese Fehlermeldung anzeigt. Diese tritt vermehrt auf, wenn ich einige Minuten nichts in der R Cloud bearbeite. Danach erscheint das Fenster sehr oft nacheinander und es ist teilweise nicht mehr möglich weiterzuarbeiten weil die Meldung immer wieder auftritt.
+
+![](img/rstudio-cloud-crash.png)
+
+
+ANTWORT: Probieren Sie folgende Maßnahmen:
+
+1. Ist der Speicher in RStudio Cloud aufgebraucht? Das kann zu Abstürzen führen. Löschen Sie Objekte und ent-laden Sie R-Pakete, um Speicher freizugeben.
+
+2. Wenn Sie mehr Speicher benötigen, könnten Sie (ggf. nur für einen Monat) ein kostenpflichtiges Abo abschließen, welches mehr Speicher enthält.
+
+3. Verringern Sie die Zeit, in der Sie RStudio Cloud nicht nutzen (die Idle-Time).
+
+4. Versuchen Sie, weniger speicherintensive Berechnungen durchzuführen.
+
+5. Weichen Sie auf RStudio Desktop aus.
+
+
+### Welche Themengebiete werden in der Prüfung besonders behandelt?
+
+
+FRAGE: Welche Themengebiete werden in der Prüfung besonders behandelt?
+
+
+ANTWORT: In den Prüfungen werden alle Themengebiete abgefragt, die in der Vorlesungbehandelt wurden. Es gibt keine speziellen Schwerpunkte, die besonders behandelt werden. Es ist ratsam, sich auf alle Themengebiete vorzubereiten. Tipp: Schwerpunkte im Unterricht spiegeln sich oft in den Prüfungen wider.
+
+
+### RStudio in der Prüfung?
+
+
+FRAGE: Wird R Studio noch eine Rolle spielen, z. B. indem wir Code oder Pseudocode schreiben müssen, oder liegt der Fokus komplett auf Theorie? 
+
+ANTWORT: Bei einer "Papier-und-Kugelschreiber-Klausur" spielt RStudio keine Rolle. Es wird also kein Code geschrieben. Es wird aber durchaus vorkommen, dass Sie in der Klausur R-Code lesen und interpretieren müssen.
+
+
+
+### Welche Art von Fragen?
+
+FRAGE: Welche Art von Fragen können wir erwarten? (z. B. Multiple Choice, offene Fragen oder mathematische Herleitungen)
+
+
+ANTWORT: Die Prüfung wird zu einem großen Teil aus Multiple-Choice-Fragen bestehen. Es wird aber auch offene Fragen geben. Mathematische Herleitungen sind nicht zu erwarten.
+Hingegen sind einfache Berechnungen (die mit einem kaufmännischen Taschenrechner durchgeführt werden können) durchaus möglich.
+
+
+### Vorbereitung?
+
+
+FRAGE: Gibt es bestimmte Übungsaufgaben oder Materialien, die Sie empfehlen, um sich gezielt auf die Theorie-Klausur vorzubereiten?
+
+ATNWORT: [Hier](https://datenwerk.netlify.app/#category=qm2-pruefung) finden Sie eine Sammlung von Fragen, die in einer Probeprüfung gestellt wurden. Diese Fragen können Ihnen helfen, sich gezielt auf die Prüfung vorzubereiten.
+
+Darüber hinaus sollten Sie die theoretischen Inhalte des Skripts kennen sowie alle Themen, die im Unterricht behandelt wurden.
+
+Zwar ist es formal kein Bestandteil der Prüfung, die Begleitliteratur zu lesen, aber es kann hilfreich sein, um den Stoff besser zu verstehen.
+
+
+
+
+
+
+### Lückenlose Vorbereitung?
+
+
+FRAGE: Ich befinde mich gerade mitten in der Vorbereitung für meinen Drittversuch des Moduls Quantitative Methoden II neben dem Besuchen der Vorlesungen und Übungen über das Semester arbeite ich bisher hauptsächlich mit ihrem Skript und den dort gegebenen Pen and Paper Aufgaben. Wenn ich das Skript durchgearbeitet habe möchte ich mich des weiteren den Übungsaufgaben und Inhalten von Bourier widmen. Da es sich zeitgleich zum Drittversuch um meine letzte Prüfung vor der Bachelorarbeit handelt möchte ich mich möglichst lückenlos auf die Prüfung vorbereiten, damit keine Möglichkeit besteht die Prüfung nicht zu bestehen. Natürlich können sie keine genauen Inhalte der kommenden Prüfung geben, ich wollte mich trotzdem versichern, dass ich keine Aspekte des Kurses auslasse, die ebenfalls prüfungsrelevant sind. 
+
+
+ANTWORT: Die Aufgaben im Skript sind am wichtigsten. Dazu sollten die Inhalte, auf die sich die Aufgaben beziehen, gut erarbeitet sein. Darüber hinaus empfiehlt es es sich, sich Varianten zu den eingestellten Aufgaben zu überlegen, z.B. mit anderen Zahlen oder leichten inhaltlichen Variationen. Wichtig ist, die Aufgabe selber zu lösen und sich dann erst die Musterlösung anzuschauen. Viel Erfolg!
+
+
 
 
 
