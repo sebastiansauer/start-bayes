@@ -981,12 +981,20 @@ Dabei interessiert die Anzahl der $k$ Treffer (aber nicht die Reihenfolge).
 Typisches Beispiel ist ein (wiederholter) Münzwurf.^[Bei jeder Wiederholung des Zufallexperiments 
 bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (*Ziehen mit Zurücklegen*, ZmZ). 
 Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit 
-eines bestimmten Ergebnisses im zweiten Wurf, etc., sog. "iid": *independent and identically distributed*.]$\square$ 
+eines bestimmten Ergebnisses im zweiten Wurf, etc., sog. "iid": *independent and identically distributed*.] $\square$ 
 :::
 
-Für eine binomialverteilte Zufallsvariable $X$ schreibt man kurz (s. @eq-binvert): 
 
-$$X \sim \text{Bin}(n, k)$${#eq-binvert}
+
+
+Für eine binomialverteilte Zufallsvariable $X$ schreibt man kurz wie in @thm-binvert gezeigt.
+
+::: {#thm-binvert}
+
+### Notation für eine binomialverteilte Zufallsvariable
+
+$$X \sim \text{Bin}(n, k)\squad \square$$
+:::
 
 
 :::{#exm-binom1}
@@ -1079,8 +1087,8 @@ df_binom <-
 
 Mit Blick auf @exm-bin1: 
 Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen
-(*Multiplikationssatz*, @eq-multtheorem), vgl. @fig-baum3.
-Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit (*Additionssatz*, @eq-add-disjunkt).
+(*Multiplikationssatz*, @thm-multtheorem), vgl. @fig-baum3.
+Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit (*Additionssatz*, @thm-add-disjunkt).
 Diagramme zeichnen ist einfach, dauert aber.
 
 
@@ -1158,7 +1166,7 @@ flowchart LR
 
 
 Schneller geht es, wenn man rechnet. 
-Wir könnten auch R auffordern, die Anzahl der günstigen Pfade zu berechnen, s. @eq-binkoeff:
+Wir könnten auch R auffordern, die Anzahl der günstigen Pfade zu berechnen, s. @thm-binkoeff:
 
 ```{r}
 choose(3,2)
@@ -1206,7 +1214,7 @@ Dabei steht $k$ für die Anzahl der günstigen Pfade und $Pr(A)$ für die Wahrsc
 
 
 Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen.
-Das ist komfortabler als selber rechenn.
+Das ist komfortabler als selber rechnen.
 
 
 
@@ -1269,6 +1277,8 @@ $\tbinom{4}{2} = \frac{4!}{2! \cdot (4-2)!} \overset{\text{kürzen}}= \frac{2\cd
 
 Es sind also 6 Möglichkeiten. 
 
+In R kann man sich die Fakultät mit dem Befehl `factorial` ausrechnen lassen. Der R-Befehl `choose` berechnet den Binomialkoeffizienten.^[Bei Taschenrechnern ist diese Funktion oft als "nCr" zu finden.]
+
 
 
 ```{r}
@@ -1277,7 +1287,7 @@ anzahl_pfade_2_aus_4 <-
 anzahl_pfade_2_aus_4
 ```
 
-Der R-Befehl `choose` berechnet den Binomialkoeffizienten.^[Bei Taschenrechnern ist das oft als "nCr" zu finden.]
+
 
 ```{r}
 choose(4, 2)
@@ -1479,15 +1489,19 @@ $F(X=x) = Pr(X \le x)$
 
 
 
-@eq-binomial zeigt die mathematische Definition der Binomialverteilung.
+@thm-binomial zeigt die mathematische Definition der Binomialverteilung.
 Dabei liegt immer ein Zufallsversuch mit $n$ Durchgängen und $k$ Treffern zugrunde. Jeder Durchgang hat die Trefferwahrscheinlichkeit $p$ und jeder Durchgang ist unabhängig von allen anderen.
 
 
+::: {#thm-binomial}
 
-$$Pr(X=k|p,n) = \frac{n}{k!(n-k)!}p^k(1-p)^{n-k}$${#eq-binomial}
+### Binomialverteilung
+
+$$Pr(X=k|p,n) = \frac{n}{k!(n-k)!}p^k(1-p)^{n-k}\quad \square$$
+:::
 
 
- @eq-binomial kann wie folgt auf Deutsch übersetzen:
+ @thm-binomial kann wie folgt auf Deutsch übersetzen:
 
 >   Die Wahrscheinlichkeit für das Ereignis $X$ gegeben $p$ und $n$ berechnet als Produkt von zwei Termen. Der erste Term ist der Quotient von der Fakultät von n im Zähler und im Nenner das Produkt von erstens der Fakultät von k mit zweitens der Fakultät von (n-k). Der zweite Term ist das Produkt von p hoch k mal der komplementären Wahrscheinlichkeit von p hoch (n-k).
 
@@ -1498,14 +1512,18 @@ Oder noch kürzer:
 
 
 
-Die Anzahl der (günstigen) Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt, s. @eq-binkoeff.^[wobei gelten muss $n \ge k$]
+Die Anzahl der (günstigen) Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt, s. @thm-binkoeff.^[wobei gelten muss $n \ge k$]
 
 :::{#def-binkoeff}
 #### Binomialkoeffizient
-Der Binomialkoeffizient gibt an, auf wie vielen verschiedenen Arten man aus einer Menge von $n$ verschiedenen Objekten $k$ Objekte ziehen kann (ohne Zurücklegen und ohne Beachtung der Reihenfolge).
+Der Binomialkoeffizient gibt an, auf wie vielen verschiedenen Arten man aus einer Menge von $n$ verschiedenen Objekten $k$ Objekte ziehen kann (ohne Zurücklegen und ohne Beachtung der Reihenfolge). $\square$
+:::
 
-$$k = \tbinom{n}{k}= \frac{n!}{k!(n-k)!} $${#eq-binkoeff}
+::: {#thm-binkoeff}
 
+#### Binomialkoeffizient
+
+$$k = \tbinom{n}{k}= \frac{n!}{k!(n-k)!} \quad \square$$
 
 Lies: "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige Ereignisse (günstige Pfade) oder kürzer "k aus n".\square
 :::
@@ -2201,9 +2219,16 @@ q_p69 <-
 
 ### Standardnormalverteilung
 
-Bei einer Standardnormalverteilung gilt, s. @eq-standardnormal:
+Bei einer *Standard*normalverteilung gilt, dass der Mittelwert 0 ist und die Standardabweichung 1, s. @thm-standardnormal.
 
-$$X \sim \mathcal{N}(0, 1)$${#eq-standardnormal}
+
+::: {#thm-standardnormal}
+
+### Standardnormalverteilung
+
+
+$$X \sim \mathcal{N}(0, 1)\quad \square$$
+:::
 
 :::: {.columns}
 
@@ -2231,14 +2256,23 @@ In Summe liegen 100% der Wahrscheinlichkeitsmasse unter der Kurve.
 
 ::::
 
+
+
+
 Man kann jeder Normalverteilung in eine Standardnormalverteilung überführen mit der *z-Transformation*.
 
 Ein *z-Wert* ist das Ergebnis einer *z-Transformation*, 
 die definiert ist als der Abstand in SD-Einheiten,   
-den ein Wert vom Mittelwernt entfernt ist, s. @eq-ztrans.
+den ein Wert vom Mittelwert entfernt ist, s. @thm-ztrans.
 
 
-$$z = \frac{x - \mu}{\sigma}$${#eq-ztrans}
+::: {#thm-ztrans}
+
+### z-Transformation
+
+
+$$z = \frac{x - \mu}{\sigma}\quad \square$$
+:::
 
 @tbl-F-norm und @fig-quantnormanim zeigen wichtige Werte der Verteilungsfunktion für die Standardnormalverteilung.
 
