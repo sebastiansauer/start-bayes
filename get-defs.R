@@ -5,7 +5,7 @@ library(stringr)
 quarto_dir <- "."
 
 # Define the pattern to match the definition shortcode:
-pattern_def <- ':::\\s?\\{#thm-(.+?)\\}'
+pattern_def <- ':::\\s?\\{#def-(.+?)\\}'
 pattern_word <- '(.+)'  # that's the definitions following the id of the def.
 
 # Initialize an empty list to store definitions:
@@ -13,7 +13,7 @@ definitions <- list()
 
 # Function to read all files in a directory recursively
 read_files <- function(path = ".") {
-  files <- list.files(path, recursive = FALSE, full.names = TRUE, pattern = "\\.qmd$")
+  files <- list.files(path, recursive = FALSE, full.names = TRUE, pattern = "^\\d{3,4}.+\\.qmd$")
   return(files)
 }
 
