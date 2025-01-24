@@ -5,7 +5,7 @@ library(stringr)
 quarto_dir <- "."
 
 # Define the pattern to match the definition shortcode:
-pattern_def <- ':::\\{#eq-(.+?)\\}'
+pattern_def <- ':::\\s?\\{#thm-(.+?)\\}'
 pattern_word <- '(.+)'  # that's the definitions following the id of the def.
 
 # Initialize an empty list to store definitions:
