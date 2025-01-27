@@ -1,0 +1,69 @@
+# Load necessary libraries:
+library(stringr)
+
+# Define the path to the directory containing your Quarto files:
+quarto_dir <- "."
+
+# Define the pattern to match the theorem shortcode:
+pattern_def <- ':::\\s?\\{#thm-(.+?)\\}'
+pattern_word <- '(.+)'  # that's the theorems following the id of the def.
+
+# Initialize an empty list to store theorems:
+theorems <- list()
+
+# Function to read all files in a directory recursively
+read_files <- function(path = ".") {
+  files <- list.files(path, recursive = FALSE, full.names = TRUE, pattern = "\\.qmd$")
+  return(files)
+}
+
+# Get all Quarto files:
+files <- read_files(quarto_dir)
+
+# Iterate over all files and extract theorems:
+for (file in files) {
+  content <- readLines(file, warn = FALSE)
+  
+  # Use a loop to go through lines and capture theorems and their corresponding words:
+  for (i in seq_along(content)) {
+    def_match <- str_match(content[i], pattern_def)
+    if (!is.na(def_match[1])) {
+      term <- def_match[2]
+      
+      # Look ahead to find the word pattern
+      j <- i + 1
+      while (j <= length(content) && content[j] == "") {
+        j <- j + 1
+      }
+      
+      if (j <= length(content)) {
+        word_match <- str_match(content[j], pattern_word)
+        if (!is.na(word_match[1])) {
+          word <- word_match[1]
+          # Remove "### " from the word if it exists:
+          word <- str_replace(word, "### ", "")
+          theorems <- append(theorems, list(c(term, word)))
+        }
+      }
+    }
+  }
+}
+
+# Sort theorems alphabetically by term:
+theorems <- theorems[order(sapply(theorems, `[`, 1))]
+
+
+# Write the theorems to a new Quarto file:
+output_file <- file.path(quarto_dir, "theorems.qmd")
+fileConn <- file(output_file, "w")
+writeLines("# Theoreme\n\n", fileConn)
+#writeLines("### theorems\n\n", fileConn) # Adding a heading for the theorems section
+
+for (theorem in theorems) {
+  line <- paste0("- **", theorem[2], "**: @thm-", theorem[1], "\n\n")
+  writeLines(line, fileConn)
+}
+close(fileConn)
+
+cat("Extracted", length(theorems), "theorem to theorems file\n")
+

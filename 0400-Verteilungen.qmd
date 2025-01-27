@@ -1,6 +1,8 @@
 # Verteilungen
 
-
+<!-- TODO Dieses Kapitel hat nicht nur Verteilungen,  -->
+<!-- sondern auch Stoff zum Thema Wahrscheinlichkeit, -->
+<!-- das sollte entflechtet werden. -->
 
 
 ## Lernsteuerung
@@ -609,7 +611,7 @@ p_F_emp
 
 📺 [Verteilungen metrischer Zufallsvariablen](https://www.youtube.com/watch?v=7GqIE4sKDs4&list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN&index=4)
 
-@fig-zv-stetig-groesse versinnbildlicht die stetige Zufallsvariable "Körpergröße", die (theoretisch, in Annäherung) jeden beliebigen Wert zwischen 0 und (vielleicht) 3m annehmen kann.
+@fig-zv-stetig-groesse versinnbildlicht die stetige Zufallsvariable "Körpergröße", die (theoretisch, in Annäherung) jeden beliebigen Wert zwischen 0 und (vielleicht) 2 Meter annehmen kann.
 
 ```{r echo = FALSE}
 #| fig-cap: Sinnbild für eine stetige Zufallsvariable X "Körpergröße"
@@ -756,7 +758,7 @@ ggplot(d, aes(x,y)) +
 
 :::{#def-wvert-stetig}
 ### Stetige Wahrscheinlichkeitsverteilung
-Bei *stetigen* Zufallsvariablen $X$ geht man von unendlich vielen Ausprägungen aus; die Wahrscheinlichkeit einer bestimmten Ausprägung ist (praktisch) Null: $Pr(X=x_j)=0, \quad j=1,...,+\infty \square$.
+Bei *stetigen* Zufallsvariablen $X$ geht man von unendlich vielen Ausprägungen aus; die Wahrscheinlichkeit einer bestimmten Ausprägung ist Null: $Pr(X=x_j)=0, \quad j=1,...,+\infty \square$.
 :::
 
 
@@ -972,7 +974,7 @@ Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen z
 ### Grundlagen
 
 :::{#def-binvert}
-#### Binomialverteilung
+### Binomialverteilung
 Die Binomialverteilung dient zur Darstellung der Wahrscheinlichkeit der Ergebnisse eines $n$-fach wiederholten binomialen Zufallexperiments,
 eines Zufallsexperiments mit *zwei*^[von lat. *bis* "zweimal"] Ergebnissen bzw. Elementarereignissen also. 
 Dabei interessiert die *Anzahl* der $k$ Treffer, aber nicht die Reihenfolge.
@@ -980,15 +982,27 @@ Bei jeder Wiederholung liegt die Wahrscheinlichkeit eines Treffers bei $p$.
 Typisches Beispiel ist ein (wiederholter) Münzwurf.^[Bei jeder Wiederholung des Zufallexperiments 
 bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (*Ziehen mit Zurücklegen*, ZmZ). 
 Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit 
-eines bestimmten Ergebnisses im zweiten Wurf, etc., sog. "iid": *independent and identically distributed*.]$\square$ 
+eines bestimmten Ergebnisses im zweiten Wurf, etc., sog. "iid": *independent and identically distributed*.] $\square$ 
 :::
 
-Für eine binomialverteilte Zufallsvariable $X$ schreibt man kurz (s. @eq-binvert): 
+
 
 $$X \sim \text{Bin}(n, p)$${#eq-binvert}
 
 
 <!-- TODO over, underbrace wie hier: https://chrispiech.github.io/probabilityForComputerScientists/en/part2/binomial/ -->
+
+
+
+Für eine binomialverteilte Zufallsvariable $X$ schreibt man kurz wie in @thm-binvert gezeigt.
+
+::: {#thm-binvert}
+
+### Notation für eine binomialverteilte Zufallsvariable
+
+$$X \sim \text{Bin}(n, k) \quad \square$$
+:::
+>>>>>>> 91b7d13dd67608625378a1dd87bae28bc8e6608a
 
 
 :::{#exm-binom1}
@@ -1062,10 +1076,12 @@ dbinom(x = <Anzahl der Treffer>,
 
 :::{#exm-bin1}
 ### Drei Lose gekauft, davon zwei Treffer?
-Wie groß ist die Wahrscheinlichkeit $p$ bei $n=3$ Zügen $k=2$ Treffer zu erzielen (und $n-k=1$ Niete)? (Nennen wir dieses Ereignis der Kürze halber $A^{\prime}$ ).
-De Trefferwahrscheinlichkeit ist (bei jedem Zug) $p=2/5$ und die 
+
+Wie groß ist die Wahrscheinlichkeit $p$ bei $n=3$ Zügen $k=2$ Treffer zu erzielen (und $n-k=1$ Niete)? 
+(Nennen wir dieses Ereignis der Kürze halber $A^{\prime}$).
+Die Trefferwahrscheinlichkeit ist (bei jedem Zug) $p=2/5$ und die 
 Nietenwahrscheinlichkeit $1-p=3/5$.$\square$
-:::
+
 
 
 :::{.to-scource}
@@ -1081,8 +1097,8 @@ df_binom <-
 
 Mit Blick auf @exm-bin1: 
 Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen
-(*Multiplikationssatz*, @eq-multtheorem), vgl. @fig-baum3.
-Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit (*Additionssatz*, @eq-add-disjunkt).
+(*Multiplikationssatz*, @thm-multtheorem), vgl. @fig-baum3.
+Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit (*Additionssatz*, @thm-add-disjunkt).
 Diagramme zeichnen ist einfach, dauert aber.
 
 
@@ -1160,7 +1176,7 @@ flowchart LR
 
 
 Schneller geht es, wenn man rechnet. 
-Wir könnten auch R auffordern, die Anzahl der günstigen Pfade zu berechnen, s. @eq-binkoeff:
+Wir könnten auch R auffordern, die Anzahl der günstigen Pfade zu berechnen, s. @thm-binkoeff:
 
 ```{r}
 choose(3,2)
@@ -1208,7 +1224,7 @@ Dabei steht $k$ für die Anzahl der günstigen Pfade und $Pr(A)$ für die Wahrsc
 
 
 Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen.
-Das ist komfortabler als selber rechenn.
+Das ist komfortabler als selber rechnen.
 
 
 
@@ -1271,6 +1287,8 @@ $\tbinom{4}{2} = \frac{4!}{2! \cdot (4-2)!} \overset{\text{kürzen}}= \frac{2\cd
 
 Es sind also 6 Möglichkeiten. 
 
+In R kann man sich die Fakultät mit dem Befehl `factorial` ausrechnen lassen. Der R-Befehl `choose` berechnet den Binomialkoeffizienten.^[Bei Taschenrechnern ist diese Funktion oft als "nCr" zu finden.]
+
 
 
 ```{r}
@@ -1279,7 +1297,7 @@ anzahl_pfade_2_aus_4 <-
 anzahl_pfade_2_aus_4
 ```
 
-Der R-Befehl `choose` berechnet den Binomialkoeffizienten.^[Bei Taschenrechnern ist das oft als "nCr" zu finden.]
+
 
 ```{r}
 choose(4, 2)
@@ -1481,15 +1499,19 @@ $F(X=x) = Pr(X \le x)$
 
 
 
-@eq-binomial zeigt die mathematische Definition der Binomialverteilung.
+@thm-binomial zeigt die mathematische Definition der Binomialverteilung.
 Dabei liegt immer ein Zufallsversuch mit $n$ Durchgängen und $k$ Treffern zugrunde. Jeder Durchgang hat die Trefferwahrscheinlichkeit $p$ und jeder Durchgang ist unabhängig von allen anderen.
 
 
+::: {#thm-binomial}
 
-$$Pr(X=k|p,n) = \frac{n}{k!(n-k)!}p^k(1-p)^{n-k}$${#eq-binomial}
+### Binomialverteilung
+
+$$Pr(X=k|p,n) = \frac{n}{k!(n-k)!}p^k(1-p)^{n-k}\quad \square$$
+:::
 
 
- @eq-binomial kann wie folgt auf Deutsch übersetzen:
+ @thm-binomial kann wie folgt auf Deutsch übersetzen:
 
 >   Die Wahrscheinlichkeit für das Ereignis $X$ gegeben $p$ und $n$ berechnet als Produkt von zwei Termen. Der erste Term ist der Quotient von der Fakultät von n im Zähler und im Nenner das Produkt von erstens der Fakultät von k mit zweitens der Fakultät von (n-k). Der zweite Term ist das Produkt von p hoch k mal der komplementären Wahrscheinlichkeit von p hoch (n-k).
 
@@ -1500,14 +1522,18 @@ Oder noch kürzer:
 
 
 
-Die Anzahl der (günstigen) Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt, s. @eq-binkoeff.^[wobei gelten muss $n \ge k$]
+Die Anzahl der (günstigen) Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt, s. @thm-binkoeff.^[wobei gelten muss $n \ge k$]
 
 :::{#def-binkoeff}
-#### Binomialkoeffizient
-Der Binomialkoeffizient gibt an, auf wie vielen verschiedenen Arten man aus einer Menge von $n$ verschiedenen Objekten $k$ Objekte ziehen kann (ohne Zurücklegen und ohne Beachtung der Reihenfolge).
+### Binomialkoeffizient
+Der Binomialkoeffizient gibt an, auf wie vielen verschiedenen Arten man aus einer Menge von $n$ verschiedenen Objekten $k$ Objekte ziehen kann (ohne Zurücklegen und ohne Beachtung der Reihenfolge). $\square$
+:::
 
-$$k = \tbinom{n}{k}= \frac{n!}{k!(n-k)!} $${#eq-binkoeff}
+::: {#thm-binkoeff}
 
+### Binomialkoeffizient
+
+$$k = \tbinom{n}{k}= \frac{n!}{k!(n-k)!} \quad \square$$
 
 Lies: "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige Ereignisse (günstige Pfade) oder kürzer "k aus n".\square
 :::
@@ -1620,7 +1646,13 @@ Mit welchem Exponenten muss ich eine bestimmte Zahl (die Basis) potenzieren, um 
 Formal ausgedrückt:
 
 :::{#def-logarithmus}
-Der Logarithmus von einer Zahl $a$ zur Basis $b$ ist die Zahl $x$, mit der man $b$ potenzieren muss, um $a$ zu erhalten. $\square$
+### Logarithmus
+Der Logarithmus von einer Zahl $a$ zur Basis $b$ ist die Zahl $x$, mit der man $b$ potenzieren muss, um $a$ zu erhalten, s. @thm-logarithmus. $\square$
+:::
+
+:::{#thm-logarithmus}
+### Logarithmus
+$$\log b(x) = y \quad \text{wenn und nur wenn} \quad b^y = x$$
 :::
 
 Der Logarithmus zur Basis 2^[als "Logarithmus Dualis", ld, bezeichnet] gibt die "Verdopplungen" bzw. "Halbierungen" der Wahrscheinlichkeit an, wobei $ld(1/2) = -1.\square$
@@ -1780,8 +1812,8 @@ source(paste0(here::here(),"/R-Code/img15.R"))
 ### Grundlagen
 
 
-:::{#def-nv}
-#### Normalverteilung
+::: {#def-nv}
+### Normalverteilung
 Normalverteilungen haben eine charakteristische Glockenform;
 sie sind symmetrisch^[d.h. die Schiefe (`skewness`) ist 0].
 Normalverteilungen können sich unterscheiden in ihrem  Mittelwert $\mu$ und ihrer Streuung, $\sigma$.
@@ -1794,7 +1826,7 @@ Eine normalverteilte Zufallsvariable $X$ mit einem bestimmten Mittelwert und ein
 $$X \sim \mathcal{N}(\mu, \sigma)$$
 
 ::: {#def-parameter}
-#### Parameter
+### Parameter
 
 Ein Parameter (einer Verteilung) legt die "Varianten" einer Verteilung fest. Durch die Wahl der Parameterwerte nimmt eine Verteilung eine genaue Form an.$\square$
 
@@ -1922,7 +1954,7 @@ d <-
              mean = 100, 
              sd = 15))
 
-probs <- c(0.75,.5,.25,.05,.01)
+probs <- c(0.975, 0.75,.5,.25,.05,.01)
 
 d_summary <- d %>% 
   summarise(p = probs,
@@ -2194,21 +2226,25 @@ q_p69 <-
 #| echo: false
 #| label: fig-nv-quants2
 #| fig-width: 10
-#| fig-cap: Verschiedene Quantil der Normalverteilung
+#| fig-cap: Verschiedene Quantile der Normalverteilung
 
 (q_p50 + q_p25 + q_p69) / (q_p95 + q_p975 + q_p84)
 ```
 
-::: {.content-visible when-format="html"}
-![Die Quantile einer Standardnormalverteilung für 10%, 20%, ... 100% (die Dezile) visualisiert](img/normal_distribution_animation.gif){#fig-quantnormanim width=50%}
 
-:::
 
 ### Standardnormalverteilung
 
-Bei einer Standardnormalverteilung gilt, s. @eq-standardnormal:
+Bei einer *Standard*normalverteilung gilt, dass der Mittelwert 0 ist und die Standardabweichung 1, s. @thm-standardnormal.
 
-$$X \sim \mathcal{N}(0, 1)$${#eq-standardnormal}
+
+::: {#thm-standardnormal}
+
+### Standardnormalverteilung
+
+
+$$X \sim \mathcal{N}(0, 1)\quad \square$$
+:::
 
 :::: {.columns}
 
@@ -2236,14 +2272,86 @@ In Summe liegen 100% der Wahrscheinlichkeitsmasse unter der Kurve.
 
 ::::
 
+
+
+
 Man kann jeder Normalverteilung in eine Standardnormalverteilung überführen mit der *z-Transformation*.
 
 Ein *z-Wert* ist das Ergebnis einer *z-Transformation*, 
 die definiert ist als der Abstand in SD-Einheiten,   
-den ein Wert vom Mittelwernt entfernt ist, s. @eq-ztrans.
+den ein Wert vom Mittelwert entfernt ist, s. @thm-ztrans.
 
 
-$$z = \frac{x - \mu}{\sigma}$${#eq-ztrans}
+::: {#thm-ztrans}
+
+### z-Transformation
+
+
+$$z = \frac{x - \mu}{\sigma}\quad \square$$
+:::
+
+@tbl-F-norm und @fig-quantnormanim zeigen wichtige Werte der Verteilungsfunktion für die Standardnormalverteilung.
+
+
+
+::::: {.columns}
+
+
+
+:::: {.column width="25%"}
+
+
+
+```{r}
+#| tbl-cap: "Ausgewählte Werte der Verteilungsfunktion der Standardnormalverteilung"
+#| echo: false
+#| label: tbl-F-norm
+d_F_norm <-
+  tibble(z = -3:3,
+             F = pnorm(z) |> round(3))
+d_F_norm |> 
+  gt()
+```
+::::
+
+
+
+:::: {.column width="70%"}
+
+
+```{r}
+#| echo: false
+#| label: fig-quantnormanim 
+#| fig-cap: Die Verteilungsfunktion für die z-Werte von -3 bis +3
+
+library(mosaic)
+
+p_z_F <- xpnorm(q = -3:3, return = "plot")
+  
+p_z_F +
+  labs(y = "Wahrscheinlichkeit", x = "z") +  # Add labels
+  theme(theme_minimal()) +
+  geom_vline(data = d_F_norm, aes(xintercept = z), linetype = "dashed") + # Vertical lines
+  annotate(geom = "label", 
+           x = d_F_norm$z, 
+           label = round(d_F_norm$F, 2), 
+           #fill = "Wahrscheinlichkeit",
+           y = d_F_norm$F * 0.4 ) + # Correct labels
+  scale_fill_okabeito(name = "Wahrscheinlichkeit") +
+  theme(legend.position = "none")
+```
+
+
+
+<!-- ::: {.content-visible when-format="html"} -->
+<!-- ![Die Quantile einer Standardnormalverteilung für 10%, 20%, ... 100% (die Dezile) visualisiert](img/normal_distribution_animation.gif){#fig-quantnormanim width=50%} -->
+
+<!-- ::: -->
+
+::::
+
+
+:::::
 
 
 ### Vertiefung
