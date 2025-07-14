@@ -207,10 +207,18 @@ sieht die Forschungsfrage so aus (@thm-fofra1).
 
 ### Hypothese für ungleiche Mittelwerte
 
-$$\mu_{x=1|M} \ne \mu_{x=0|M}\quad \square$$
+$$H_A: \mu_{x=0|M} \ne \mu_{x=1|M}\quad \square$$
 :::
 
-In Worten: "Der mittlere IQ-Wert für Kinder, deren Mütter über einen Schulabschluss verfügen ist höher als in der Gruppe von Kindern, deren Mütter über keinen Schulabschluss verfügen". Zu beachten ist, dass sich eine Population immer auf Parameterwerte bezieht, also auf die Population, nicht auf die Statistiken der Stichprobe.
+In Worten: "Der mittlere IQ-Wert für Kinder, 
+deren Mütter über einen Schulabschluss verfügen ist höher als in der Gruppe von Kindern, deren Mütter über keinen Schulabschluss verfügen". 
+Zu beachten ist, dass sich eine Population immer auf Parameterwerte bezieht, 
+also auf die Population, nicht auf die Statistiken der Stichprobe.
+
+Die zugehörige Nullhypothese lautet:
+
+
+$$H_0: \mu_{x=1|M} = \mu_{x=0|M}\quad \square$$
 
 
 ### Modell
@@ -554,17 +562,19 @@ Außerdem gibt es noch einen *absoluten Toleranzbereich*, der auf *5% der SD der
 Der *größere* der beiden Werte gilt. $\square$
 :::
 
-Wenn Sie diese Funktion nutzen wollen, müssen Sie zunächst das Paket installieren (von Github, nicht vom Standard-R-App-Store CRAN), das geht z.B. so:
+Wenn Sie diese Funktion nutzen wollen, müssen Sie zunächst das Paket installieren (von Github, nicht vom Standard-R-App-Store CRAN) und dann wie gewohnt starten.
 
 ```{r}
 #| eval: false
 library(remotes)  # dieses Paket können Sie mit `install.packages("remotes") installieren
 install_github("sebastiansauer/prada")
+library(prada)
 ```
 
-Dann starten Sie es wie gewohnt:
+
 
 ```{r}
+#| include: false
 library(prada)
 ```
 
@@ -598,6 +608,10 @@ Ja, unser Wert ist *innerhalb* des Toleranzbereichs. ✅
 
 Die Modellformel zur Forschungsfrage lautet: `y ~ x + b` bzw. `kid_score ~ mom_iq + mom_hs`.
 
+Die Hypothesen lauten:
+
+1. Der Schulabschluss der Mutter hat einen positiven Effekt auf den IQ des Kindes:  $\beta_{momhs} > 0$.
+2. Der IQ der Mutter hat einen positiven Effekt auf den IQ des Kindes:  $\beta_{momiq} > 0$.
 
 Der Kausalgraph^[DAG, s. @sec-kausal] zur Modellformel sieht aus in @fig-yxb dargestellt.
 Laut unserem Modell ist `y` also eine Funktion zweier (kausaler) Einflüsse, `b` und `u`, wobei `u` für "unbekannt" steht, also für alle sonstigen Einflüsse.^[Dabei nehmen wir an, dass `x` und `u` nicht voneinander abhängen, was man daran erkennt, dass es keine Pfeile zwischen den beiden Variablen gibt.]
@@ -1843,7 +1857,7 @@ Daher kann man ein Modell verstehen als eine Zusammenfassung eines (ggf. hochdim
 
 ## `y ~ x1_z + x2_z`
 
-In diesem Abschnitt untersuchen wir ein Modell mit zwei z-standardisierten, metrischen Prädiktoren (und einer metrischen, nicht-standardisierten UV).
+In diesem Abschnitt untersuchen wir ein Modell mit zwei z-standardisierten, metrischen Prädiktoren (und einer metrischen, *nicht*-standardisierten AV).
 
 
 ### Relevanz der Prädiktoren
@@ -1899,7 +1913,9 @@ Das kann man mit *z-Standardisierung* erreichen, s. @sec-standardnormalverteilun
 kidiq2 <- 
   kidiq %>% 
   mutate(mom_iq_z = ((mom_iq - mean(mom_iq)) / sd(mom_iq)))  %>%  # z-Transformation
-  select(mom_iq, mom_iq_z) %>% 
+  select(mom_iq, mom_iq_z) 
+
+kidiq2 %>% 
   head()
 ```
 
@@ -2017,7 +2033,7 @@ Standardisiert man aber die AV, so liefern die Regressionskoeffizienten (Betas) 
 um wie viele *SD-*Einheiten sich die AV verändert, wenn sich ein Prädiktor um eine *SD-*Einheit verändert.
 Das kann auch eine interessante(re) Aussage sein.
 
-### Modell
+### Modell `y_z ~ x1_z + x2_z`
 
 Berechnen wir das Modell `m10.12`: `y_z ~ x1_z + x2_z`.
 
@@ -2131,7 +2147,7 @@ Man beachte, dass der Achsenabschnitt zur Intelligenz der Kinder auf Null festge
 Bei *mittlerer* Intelligenz und *mittlerem* Alter der Mutter wird *mittlere* Intelligenz des Kindes erwartet in `m10.12`. 
 Dadurch, dass nicht nur UV, sondern auch AV z-standardisiert (d.h. zentriert und in der Streuung auf 1 standardisiert) sind, ist der Mittelwert der AV Null.
 
-Schreibt man einen Bericht, so bietet es sich an, die Modelldefinition *zumindest* im Anhang aufzuführen.
+Schreibt man einen Bericht, so bietet es sich an, die Modelldefinition zumindest im Anhang aufzuführen.
 
 
 :::{#exm-anz-mod-m1011}
@@ -2143,7 +2159,9 @@ Wie viele Modellparameter hat `m10.12`?^[4: $\beta_0, \beta_1, \beta_2, \sigma$]
 
 
 
->   Das Modell spricht sich klar für einen statistischen, linearen Effekt von Intelligenz der Mutter auf die Intelligenz des Kindes aus, wenn das Alter der Mutter statistisch kontrolliert wird (95%PI: [0.38, 0.51]). Hingegen zeigt das Modell, dass das Alter der Mutter statistisch eher keine Rolle spielt (95%PI: [-0.02, 0.12]). Alle Variablen wurden z-transformiert. Insgesamt erkärt das Modell im Median einen Anteil von ca. 0.2 an der Varianz der Kinderintelligenz. Das Modell griff auf die Standard-Priori-Werte aus dem R-Paket rstanarm [@goodrich2020] zurück (s. Anhang für Details).
+>   Das Modell spricht sich klar für einen statistischen, linearen Effekt von Intelligenz der Mutter auf die Intelligenz des Kindes aus, wenn das Alter der Mutter statistisch kontrolliert wird (95%PI: [0.38, 0.51]). 
+Pro Einheit Standardabweichung in der UV (Intelligenz der Mutter) ändert sich die AV um ca. 0.44 Standardabweichungseinheiten.
+Hingegen zeigt das Modell, dass das Alter der Mutter statistisch eher keine Rolle spielt (95%PI: [-0.02, 0.12]). Alle Variablen wurden z-transformiert. Insgesamt erkärt das Modell im Median einen Anteil von ca. 0.2 an der Varianz der Kinderintelligenz. Das Modell griff auf die Standard-Priori-Werte aus dem R-Paket rstanarm [@goodrich2020] zurück (s. Anhang für Details).
 
 
 

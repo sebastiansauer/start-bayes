@@ -556,7 +556,7 @@ Typische Spezialfälle der Regression sind
 
 - t-Test: UV: zweistufig nominal, AV: metrisch
 - ANOVA: UV: mehrstufig nominal, AV: metrisch 
-- Korrelation: Wenn UV und AV z-standradisiert sind (d.h. Mittelwert von 0 und Standardabweichung von 1 haben), dann ist die Korrelation gleich dem Regressionskoeffizienten $\beta_1$ (bei einer einfachen Regression mit einer einzigen UV). $\square$
+- Korrelation: Wenn UV und AV z-standardisiert sind (d.h. Mittelwert von 0 und Standardabweichung von 1 haben), dann ist die Korrelation gleich dem Regressionskoeffizienten $\beta_1$ (bei einer einfachen Regression mit einer einzigen UV). $\square$
 :::
 
 
@@ -694,18 +694,6 @@ Aussagen mit Unsicherheit können unterschiedlich präzise formuliert sein.
 :::
 
 
-### Wahrscheinlichkeit
-
-
-
-:::{#def-wskt}
-### Wahrscheinlichkeit
-Die Wahrscheinlichkeit ist ein Maß dafür, für wie sicher jemand es hält, dass ein Ereignis eintritt. Die Wahrscheinlichkeit eines Ereignisses wird als Zahl zwischen 0 und 1 angegeben, wobei 0 bedeutet, dass das Ereignis als unmöglich angesehen wird, und 1 bedeutet, dass das Ereignis als sicher betrachtet wird. 
-Je näher die Wahrscheinlichkeit bei 1 (0)) liegt, desto sicherer sind wir,
-dass das Ereignis (nicht) der Fall ist.$\square$
-:::
-
-Die Wahrscheinlichkeitsrechnung ist die typische Methode, um Ungewissheit zu präzisieren, d.h. zu quantifizieren.
 
 
 ### Zwei Arten von Ungewissheit
@@ -1087,7 +1075,7 @@ Man spricht auch von einem *Konfidenzintervall* oder *Unsicherheitsbereich*.^[Ta
 
 ### Konfidenzintervall
 
-Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schätzbereiche für Parameter wie Regressionskoeffizienten.  
+Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schätzbereiche für Parameter wie Regressionskoeffizienten.
 Die Grenzen eines Konfidenzintervall markieren die Grenzen eines Bereichs plausibler Werte für einen Parameter. 
 
 :::
@@ -1115,6 +1103,7 @@ Geben Sie Beispiele für Konfidenzintervalle an.
 
 ### Hypothesen testen
 
+<!-- TODO Def Hypothese  -->
 
 Um eine Hypothese zu testen, wird oft wie folgt vorgegangen:
 
@@ -1157,24 +1146,147 @@ Daher sind zwei Fehler möglich:
 
 Diese Vorgehensweise ist eine Mischung aus den Ideen der Statistiker Ronald A. Fisher und den beiden Statistikern Jerzy Neyman und Karl Pearson [@gigerenzer2004].
 
-##  Frequentismus vs. Bayes-Inferenz
+
+
+
+## Wahrscheinlichkeit
+
+
+
+
+
+
+
+
+### Wahrscheinlichkeit als Logik der Forschung
+
+Wahrscheinlichkeit macht (laut E.T. @jaynes2023) nicht primär Aussagen über Zufall.
+Stattdessen ist Wahrscheinlichkeit logisches Schlussfolgern unter Unsicherheit.
+Damit ist Wahrscheinlichkeit eine Erweiterung der ("normalen", Boole'schen) Logik.
+In der Logik sind Aussagen entweder falsch (0) oder wahr (1)
+Nach Jaynes' Idee beschreibt Wahrscheinlichkeit Abstufungen von Wahrheit: 
+Diese Abstufungen lassen sich als reelle Zahlen zwischen 0 (falsch) und 1 (wahr) darstellen.
+
+Die "klassische" Logik der Wissenschaft beruht auf Schlüssen (Syllogismen) wie diesem: "Alle Schwäne sind weiß." $\rightarrow$ "Dies ist ein Schwan." $\rightarrow$ "Dieser Schwan ist weiß."
+
+Mit dem Konzept von Wahrscheinlichkeit können wir jetzt auch folgende Logik anwenden:
+"Die meisten Schwäne sind weiß." $\rightarrow$ "Dies ist ein Schwan." $\rightarrow$ "Dieser Schwan ist wahrscheinlich weiß."
+Das ist ein großer Fortschritt, der die Denkweise der Wissenschaft gut widerspiegelt und dafür eine logisch-mathematische Grundlage bereitstellt, 
+ s. @fig-prob-logic.
+
+
+
+![Wahrscheinlichkeit als Erweiterung der Logik](img/prob-logic.png){#fig-prob-logic}
+
+
+
+### Wahrscheinlichkeit ist Ungewissheit
+
+Wahrscheinlichkeit existiert nicht in dem Sinne, wie ein Stein oder ein Mensch existiert. Wahrscheinlichkeit ist stattdessen eine Art von Wissen.
+Daher ist es (nach @jaynes2023) falsch, zu sagen: 
+"Die Wahrscheinlichkeit für Zahl bei dieser Münze ist 50%."
+Richtig wäre für einen unbedarften Spieler: "Ich habe keinen Grund, nicht an der Fairness der Münze zu glauben, also gehe ich von 50% Wahrscheinlichkeit für Zahl aus." 
+Der Betrüger, der diese Münze in der Hand hat, geht allerdings von einer Wahrscheinlichkeit von 75% für Zahl aus (er kennt die Münze besser als Sie).
+
+Das Beispiel zeigt: Wahrscheinlichkeit ist kein Ding der Welt, sondern ein Wissenszustand.
+
+Formaler ausgedrückt: Sei $Pr$ die Wahrscheinlichkeit des Ereignis $Z$ (Zahl) angibt, *gegeben* meiner Annahme, dass die Münze fair ist ($F$), also eine Wahrscheinlichkeit von 50% (1/2 = .5) hat für $Z$. Dann kann man kurz schreiben:
+
+$$Pr(Z|F) = 0.5$$
+Gegeben des Wissens des Betrügers $B$ wäre die Wahrscheinlichkeit für $Z$ anders:
+
+$$Pr(Z|B) = 0.75$$
+
+In Worten: "Die Wahrscheinlichkeit von Zahl ($Z$) gegeben das Wissen des Betrügers über die Münze ($B$) liegt bei 75%.
+
+Das Beispiel zeigt auch, dass die Wahrscheinlichkeit eines Ereignissens (wie $Z$) von Hintergrundinformationen (Annahmen, Daten, Evidenz, ...) abhängt. 
+Ohne zu sagen, auf welche Hintergrundinterformationen wir uns beziehen (die des unbedarften Spielers oder die des Betrügers), ist es sinnvoll, eine Wahrscheinlichkeit anzugeben.
+Daher ist $Pr(Z) = 0.5$ unvollständig.
+Allerdings wird die Hintergrundinformation oft weggelassen, wenn es klar ist, welche Hintergrundinformation vorliegt.
+So wird häufig vorausgesetzt, dass eine Münze fair ist.
+
+
+
+:::{#exm-bedingt}
+### Morgen regnet's
+
+Es ist daher unvollständig zu sagen: "Morgen wir es mit einer Wahrscheinlichkeit von 70% regnen."
+
+Man müsste Hintergrundinformation (*Evidenz*, $E$) ergänzen, z.B. "auf Basis des Wettermodell X".
+
+Also: Anstelle von $Pr(\text{Regen}) = .7$ besser sagen: $Pr(\text{Regen|Wettermodell X})$. $\square$
+:::
+
+
+:::{#exm-bedingt2}
+### Wahrscheinlichkeit für Krebs
+
+Jemand beobachtet bei sich Symptome, die für eine eine Hautkrebserkrankung $K$ typisch sind. Die Person sagt sich: "Ach, die Wahrscheinlichkeit für Hautkrebs liegt bei einem Promill. Kein Grund für Sorge." Formal: $Pr(K) = 0.001$.
+Aber wenn die Person relevante Symptome $S$ hat, gilt: $Pr(\text{K} \mid \text{S}) \gg 0.001$. $\square$
+:::
+
+
+:::callout-note
+Sagt jemand: "Die Wahrscheinlichkeit von A ist x%", frag immer: "gegeben welcher Annahmen, welcher Evidenz?"
+:::
+
+
+
+:::{#def-wskt}
+### Wahrscheinlichkeit
+Die Wahrscheinlichkeit ist ein Maß für die Plausibilität einer Aussage $A$, gegeben gewisser Hintergrundinformationen (Daten, $D$): $Pr(A|D)$.
+Die Wahrscheinlichkeit eines Ereignisses wird (sofern berechenbar) als Zahl zwischen 0 und 1 angegeben,
+wobei 0 bedeutet, dass das Ereignis als unmöglich angesehen wird, 
+und 1 bedeutet, dass das Ereignis als sicher betrachtet wird. 
+Je näher die Wahrscheinlichkeit bei 1 (0) liegt, desto sicherer ist jemand,
+dass das Ereignis (nicht) der Fall ist.$\square$
+:::
+
+Die Wahrscheinlichkeitsrechnung ist die typische Methode, um Ungewissheit zu präzisieren, d.h. zu quantifizieren.
+
+
+:::{#exm-prob}
+### Kann Sophia (Einhorn) fliegen?
+
+Sei $A$: "Sophia ist ein Einhorn". Und sei $B$: "Einhörner mit Flügen können fliegen und die Hälfter aller Einhörner hat Flügel". Dann ist $Pr(A|B) = 1/2$.
+$\square$
+:::
+
+
+:::{exm-prob2}
+### Ist der Locurator im Zustand alpha?
+
+$B$: "Locuratoren kommen in zwei Zuständen vor, alpha und beta. Und zwar gleich häufig". Vor Ihnen steht ein Locurator. Wie groß ist die Wahrscheinlichkeit, dass der Locurator im Zustand alpha ist, gegeben unseres Hintergrundwissens? Es gilt: $Pr(\text{Locurator ist im Zustand alpha} | A) = 1/2$. $\square$
+:::
+
+
+:::{exm-prob3}
+### Ich werfe Zahl beim nächsten Münzwurf
+
+$B$ "Ich habe keinen Grund an der Fairness der Münze zu zweifeln". $A$: "Es wird *Zahl* geworfen beim nächsten Wurf dieser Münze". Es gilt: $Pr(A|B) = 1/2$. $\square$
+:::
+
+
+##  Frequentistische Inferenz vs. Bayes-Inferenz
+
+Es gibt zwei Hauptarten von Inferenzstatistik: Frequentistische Inferenz und Bayes-Inferenz.
 
 
 ::::{.columns}
 :::{.column}
-###  Frequentismus: Klassische Inferenz
+**Frequentismus: Klassische Inferenz**
 
 1. Die Berücksichtigung von Vorwissen zum Sachgegenstand wird vom Frequentismus als subjektiv zurückgewiesen.
 2. Nur die Daten selber fliesen in die Ergebnisse ein, keine Vorannahmen.
 3. Wahrscheinlichkeit wird über relative Häufigkeiten definiert.
 4. Es ist *nicht* möglich, die Wahrscheinlichkeit einer Hypothese bzw. eines Werts in der Population (eines Parameters) anzugeben.
-5. Stattdessen wird angegeben, wie häufig eine vergleichbare Datenlage zu erwarten ist, wenn der Versuch sehr häufig wiederholt ist.
+5. Stattdessen wird angegeben, wie häufig eine vergleichbare Datenlage zu erwarten ist, wenn der Versuch sehr häufig (unendlich oft) wiederholt ist.
 6. Ein Großteil der Forschung (in den Sozialwissenschaften) verwendet (aktuell) diesen Ansatz.
 :::
 
 
 :::{.column}
-### Bayesianische Inferenz
+**Bayesianische Inferenz**
 
 -   Vorwissen (Priori-Wissen) fließt explizit in die Analyse ein (zusammen mit den Daten).
 -   *Wenn* das Vorwissen gut ist, wird die Vorhersage durch das Vorwissen genauer, ansonsten ungenauer.
@@ -1187,9 +1299,9 @@ Diese Vorgehensweise ist eine Mischung aus den Ideen der Statistiker Ronald A. F
 
 
 
-#### Bayes-Statistik
+#### Bayes-Inferenz
 
-Die zentrale Statistik der Bayes-Statistik ist die *Posteriori-Verteilung*.
+Die zentrale Statistik der Bayes-Inferenz bzw. (synonym) Bayes-Statistik ist die *Posteriori-Verteilung*.
 
 Die Posteriori-Verteilung beantwortet uns die Frage: 
 "Wie wahrscheinlich ist die Forschungshypothese (oder Varianten von ihr), jetzt, 
@@ -1208,17 +1320,17 @@ und (einseitig) Stellung pro Bayes bezogen.
 
 
 
-### Frequentismus
+### Frequentistische Inferenz
 
 #### Der p-Wert
 
-Der zentrale Kennwert des Frequentismus heißt der *p-Wert*.
+Der zentrale Kennwert der Frequentistische Inferenzdes (synonym: Frequentismus) heißt der *p-Wert*.
 
 Der *p*-Wert ist so definiert, vgl. @wasserstein2016: 
 
 >   Wie hoch ist die Wahrscheinlichkeit (Pr) der Teststatistik $T$ (oder noch extremere Werte, $T'$), vorausgesetzt die Nullhypothese $H_0$ gilt und man wiederholt den Versuch unendlich oft (mit gleichen Bedingungen, aber zufällig verschieden und auf Basis unseres Modells)?
 
-Kurz gesagt: $p := Pr(T'  \gt T| H_0)$.
+Kurz gesagt: $p := Pr(T'  \ge T| H_0)$.
 
 
 :::{#exr-p}
