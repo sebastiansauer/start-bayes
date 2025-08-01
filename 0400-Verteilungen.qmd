@@ -39,12 +39,12 @@ Der Stoff dieses Kapitels deckt sich (weitgehend) mit @bourier2011, Kap. 6.1 und
 
 Dieses Kapitel setzt einige Grundbegriffe voraus,
 wie im Buch [Statistik1]() vorgestellt, insbesondere im Kapitel ["Rahmen"](https://statistik1.netlify.app/010-rahmen#was-sind-daten).
-Benötigt wird auch der Begriff der [Normalverteilung](https://statistik1.netlify.app/040-verbildlichen#normalverteilung) sowie der Begriff der [Quantile](https://statistik1.netlify.app/050-zusammenfassen.html#quantile).
+Benötigt wird auch der Begriff der [Normalverteilung](https://statistik1.netlify.app/040-verbildlichen#spezialfall-normalverteilung) sowie der Begriff der [Quantile](https://statistik1.netlify.app/050-zusammenfassen.html#quantile).
 
 Lesen Sie selbständig, zusätzlich  zum Stoff dieses Kapitels, noch in @bourier2011 folgende Abschnitte:
 
-- Kap. 6.1 (Zum Begriff Zufallsvariable)
-- Kap. 6.3 (Stetige Zufallsvariablen)
+<!-- - Kap. 6.1 (Zum Begriff Zufallsvariable) -->
+<!-- - Kap. 6.3 (Stetige Zufallsvariablen) -->
 - Kap. 7.1.1 (Binomialverteilung)
 - Kap. 7.2.1 (Gleichverteilung)
 - Kap. 7.2.3 (Normalverteilung)
@@ -79,8 +79,6 @@ library(easystats)
 library(ggraph)
 library(knitr)
 
-source("funs/uniformplot.R")
-source("funs/binomial_plot.R")
 ```
 
 
@@ -126,650 +124,6 @@ scale_colour_discrete <- function(...)
 - [Binomialverteilung](https://youtu.be/xe7JL3fEKsg)
 
 
-## Zufallsvariable
-
-
-:::{#exm-thesis}
-Schorsch sucht eine Betreuerin für seine Abschlussarbeit.
-An die ideale Betreuerin setzt er 4 Kriterien an: 
-a) klare, schriftliche fixierte Rahmenbedingungen, 
-b) viel Erfahrung, 
-c) guten Ruf und 
-d) interessante Forschungsinteressen.
-Je mehr dieser 4 Kriterien erfüllt sind, desto besser. 
-Schorsch geht davon aus, dass die 4 Kriterien voneinander unabhängig sind (ob eines erfüllt ist oder nicht, ändert nichts an der Wahrscheinlichkeit eines anderen Kriteriums).
-Schorsch interessiert sich also für die *Anzahl* der erfüllten Kriterien, also eine Zahl von 0 bis 4.
-Er schätzt die Wahrscheinlichkeit für einen "Treffer" in jedem seiner 4 Kriterien auf 50%.
-Viel Glück, Schorsch!
-Sein Zufallsexperiment hat 16 Ausgänge (Knoten 16 bis 31), s. @fig-4muenzen und @tbl-schorsch-zufall. Ganz schön komplex.
-Eigentlich würden ihm ja eine Darstellung mit 5 Ergebnissen, also der "Gutachter-Score" von 0 bis 4 ja reichen. 
-Wie können wir es übersichtlicher für Schorsch?$\square$
-:::
-
-
- 
-
-```{r}
-#| echo: false
-#| label: fig-4muenzen
-#| fig-cap: "Ein Baumdiagramm mit 16 Ausgängen, analog zur 4 Münzwürfen. Jede Münze ist in einer anderen Farbe dargestellt. Der Knoten '1' ist der Start, da ist noch keine Münze geworfen."
-my_tree <- tidygraph::create_tree(31, 2, mode = "out")
-
-my_tree %>%
-  mutate(lab = 1:31) %>%
-  mutate(muenze = case_when(
-    lab == 1 ~ 0,
-    lab <= 3 ~ 1,
-    lab <= 7 ~ 2,
-    lab <= 15 ~ 3,
-    TRUE ~ 4
-  )) %>% 
-  mutate(muenze = factor(muenze)) %>% 
-  ggraph(circular = FALSE) +
-  geom_edge_link() +
-  geom_node_label(mapping = aes(label = lab, fill = muenze)) +
-  coord_flip() +
-  scale_y_reverse() +
-  theme_void() +
-  theme(text = element_text(size = 12)) +
-  labs(fill = "Münze ") +
-  guides(fill = guide_legend(override.aes = aes("")))  # Suppress the 'a'
-```
-
-
-
-```{r}
-#| echo: false
-#| tbl-cap: Schorschs Zufallsexperiment, Auszug der Elementarereignisse
-#| label: tbl-schorsch-zufall
-d <- tibble::tribble(
-   ~i, ~Elementarereignis, ~`Pr(EE)`, ~Trefferzahl, ~`Pr(Trefferzahl)`,
-  "1",             "NNNN",    "1/16",          "0",             "1/16",
-  "2",             "NNNT",    "1/16",          "1",              "1/4",
-  "3",             "NNTN",    "1/16",          "1",              "1/4",
-  "4",             "NTNN",    "1/16",          "1",              "1/4",
-  "5",             "TNNN",    "1/16",          "1",              "1/4",
-  "6",             "NNTT",    "1/16",          "2",                "…",
-  "…",                "…",       "…",          "…",                "…"
-  )
-
-
-kable(d, booktabs = TRUE)
-```
-
-
-Schorsch braucht also eine übersichtlichere Darstellung;
-die Zahl der Treffer und ihre Wahrscheinlichkeit würde ihm ganz reichen.
-In vielen Situationen ist man an der *Anzahl der Treffer* interessiert.
-Die Wahrscheinlichkeit für eine bestimmte Trefferanzahl bekommt man einfach durch Addieren der Wahrscheinlichkeiten der zugehörigen Elementarereignisse, s. @tbl-schorsch-zufall.
-Hier kommt die *Zufallsvariable* ins Spiel.
-Wir nutzen sie, um die Anzahl der Treffer in einem Zufallsexperiment zu zählen.
-
-
-:::{#def-zufallsvariable}
-### Zufallsvariable
-Die Zuordnung der Elementarereignisse eines Zufallsexperiments zu genau einer Zahl 
-$\in \mathbb{R}$ nennt man Zufallsvariable.$\square$
-:::
-
-Die den Elementarereignissen zugewiesenen Zahlen nennt man *Realisationen* oder Ausprägungen der Zufallsvariablen.
-
-:::{#exm-lotto}
-### Lotto
-Ein Lottospiel hat ca. 14 Millionen Elementarereignisse. Die Zufallsvariable "Anzahl der Treffer" hat nur 7 Realisationen: 0,1,...,6.$\square$
-:::
-
-Es hat sich eingebürgert, Zufallszahlen mit $X$ zu bezeichnen (oder anderen Buchstaben weit hinten aus dem Alphabet).
-
-Man schreibt für eine Zufallsvariable kurz: $X: \Omega \rightarrow \mathbb{R}$.
-"X ist eine Zufallsvariable, die jedem Elementarereignis $\omega$ eine reelle Zahl zuordnet."
-Um die Vorschrift der Zuordnung genauer zu bestimmen, kann man folgende Kurzschreibweise nutzen:
-
-
-${\displaystyle X(\omega )={\begin{cases}1,&{\text{wenn }}\omega ={\text{Kopf}},\\[6pt]0,&{\text{wenn }}\omega ={\text{Zahl}}.\end{cases}}}$
-
-
-@fig-zv stellt diese Abbildung dar.
-
-
-
-```{mermaid}
-%%| fig-cap: Eine Zufallsvariable ist eine Abbildung eines Ereignisses im Ereignisraum zu den Realisationen der Zufallsvariable. Außerdem sieht man, wie diskrete Wahrscheinlichkeitsfunktionen genutzt werden, um den numerischen Ausgängen eines Zufallsexperiments eine Wahrscheinlichkeit zuzuordnen, d.h. um Wahrscheinlichkeiten zu bestimmen.
-%%| label: fig-zv
-flowchart LR
-  subgraph A[Ereignis]
-    Kopf
-    Zahl
-  end
-  subgraph B[Realisation]
-    null[0]
-    eins[1]
-  end
-  subgraph C[Wahrscheinlichkeit]
-    half[50%]
-  end
-  
-  Kopf --> null
-  Zahl --> eins
-  null --> half
-  eins --> half
-```
-
-
-
-Zufallsverteilungen kann im zwei Artein einteilen:
-
-1. diskrete Zufallsvariablen
-2. stetige Zufallsvariablen
-
-
-
-### Diskrete Zufallsvariable
-
-#### Grundlagen
-
-Eine diskrete Zufallsvariable ist dadurch gekennzeichnet, dass nur bestimmte Realisationen möglich sind, zumeist natürliche Zahlen, wie 0, 1, 2,..., .
-@fig-zuv-disk versinnbildlicht die Zufallsvariable des "Gutachter-Scores", s. @exm-thesis.
-
-
-```{r}
-#| echo: false
-#| fig-asp: 0.2
-#| label: fig-zuv-disk
-#| fig-cap: Sinnbild einer diskreten Zufallsvariablen X für Schorschs Suche nach einer Betreuerin seiner Abschlussarbeit. X gibt den Score der Gutachterin wider.
-ggplot(data.frame(x=c(0:4), y = 0), aes(x,y)) +
-  geom_point(size = 5, alpha = .7) +
-  scale_y_continuous(limits = c(-1,1), breaks = NULL) +
-  scale_x_continuous(breaks = 0:4, labels = 0:4) +
-  theme_minimal() +
-  labs(y = "", x = "")
-
-```
-
-
-
-:::{#exm-zv-disk}
-### Diskrete Zufallsvariablen
-
-- Anzahl der Bewerbungen bis zum ersten Job-Interview
-- Anzahl Anläufe bis zum Bestehen der Statistik-Klausur
-- Anzahl der Absolventen an der HS Ansbach pro Jahr
-- Anzahl Treffer beim Kauf von Losen
-- Anzahl Betriebsunfälle
-- Anzahl der Produkte in der Produktpalette$\square$
-:::
-
-
-
-:::{#exm-zweiwuerfel}
-Der zweifache Würfelwurf ist ein typisches Lehrbuchbeispiel für eine diskrete Zufallsvariable.
-^[da einfach und deutlich]
-Hier ist $S$^[S wie Summe] die Augen*s*umme des zweifachen Würfelwurfs 
-und $S$ ist eine Zahl zwischen 2 und 12.
-Für jede Realisation $X=x$ kann man die Wahrscheinlichkeit berechnen, 
-@fig-zweiwuerfel-vert versinnbildlicht die Wahrscheinlichkeit für jede Realisation von $X$.$\square$
-:::
-
-![Augensumme des zweifachen Würfelwurfs; für jede Realisation von S ist die zugehörige Wahrscheinlichkeit dargestellt. Bildquelle: Tim Stellmach, Wikipedia, PD](img/Dice_Distribution_(bar).svg.png){#fig-zweiwuerfel-vert width=50%}
-
-
-
-*Wahrscheinlichkeitsverteilungen* dienen dazu, den Realisationen einer Zufallsvariablen eine Wahrscheinlichkeit zuzuordnen.
-
-
-
-
-
-
-
-
-:::{#def-wvert-disk}
-### Diskrete Wahrscheinlichkeitsverteilung
-Eine *diskrete* Wahrscheinlichkeitsverteilung der (diskreten) Zufallsvariablen $X$ ordnet jeder der $k$ Ausprägungen $X=x$ eine Wahrscheinlichkeit $p$ zu.$\square$
-:::
-
-:::{#exm-babies}
-### Wahrscheinlichkeit des Geschlechts bei der Geburt
-So hat die Variable *Geschlecht eines Babies* die beiden Ausprägungen *Mädchen* und *Junge* mit den Wahrscheinlichkeiten $p_M = 51.2\%$ bzw. $p_J = 48.8\%$, laut einer Studie [@gelman2021].$\square$
-:::
-
-
-Zwischen der deskriptiven Statistik und der Wahrscheinlichkeitstheorie bestehen enge Parallelen, @tbl-wkeit-desk stellt einige zentrale Konzepte gegenüber.
-
-```{r}
-#| echo: false
-#| label: tbl-wkeit-desk
-#| tbl-cap: "Gegenüberstellung von Wahrscheinlichkeitstheorie und deskriptiver Statistik"
-d <- tibble::tribble(
-         ~Wahrscheinlichkeitstheorie,                      ~Desktiptive.Statistik,
-                   "Zufallsvariable",                                   "Merkmal",
-                "Wahrscheinlichkeit",               "relative Häufigkeit, Anteil",
-       "Wahrscheinlichkeitsfunktion",   "einfache relative Häufigkeitsverteilung",
-               "Verteilungsfunktion", "kumulierte relative Häufigkeitsverteilung",
-                    "Erwartungswert",                                "Mittelwert",
-                           "Varianz",                                   "Varianz"
-       )
-gt::gt(d)
-```
-
-
-
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-dice_outcomes <- expand.grid(Die1 = 1:6, Die2 = 1:6)
-
-# Calculate the sum of the two dice for each outcome
-dice_outcomes$Sum <- dice_outcomes$Die1 + dice_outcomes$Die2
-
-# Calculate the probability of each sum using the table function
-sum_counts <- table(dice_outcomes$Sum)
-total_outcomes <- sum(sum_counts)
-probabilities <- sum_counts / total_outcomes
-
-twodice <- tibble(
-  Augensumme = 2:12,
-  p = probabilities) |> 
-  mutate(p_cum = cumsum(p))
-
-p_twodice <- 
-  ggplot(twodice, aes(x = Augensumme, y = p)) + 
-  geom_col() +
-  geom_label(aes(y = p, label = round(p, 2), nudge_y = .1)) +
-  scale_x_continuous(breaks = 1:12)
-```
-
-
-
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| 
-num_trials <- 1000  # You can change this to the desired number of trials
-
-# Simulate repeated throws of two dice
-results <- replicate(num_trials, {
-  die1 <- sample(1:6, 1, replace = TRUE)  # Simulate the first die
-  die2 <- sample(1:6, 1, replace = TRUE)  # Simulate the second die
-  c(Die1 = die1, Die2 = die2)  # Return the results as a vector
-}) |> 
-  t() |> 
-  as_tibble() |> 
-  mutate(Augensumme  = Die1 + Die2)
-
-# Display
-
-results_count <-
-  results |> 
-  count(Augensumme) |> 
-  mutate(prop = n/num_trials) |> 
-  mutate(n_cum = cumsum(n),
-         prop_cum = cumsum(prop))
-
-p_sim2dice <-
-  ggplot(results_count) +
-  aes(x = Augensumme, y = n) +
-  geom_col() +
-  geom_label(aes(y = n, label = round(prop, 2))) +
-  scale_x_continuous(breaks = 1:12)
-```
-
-
-
-
-
-Eine *Verteilung* zeigt, welche Ausprägungen eine Variable aufweist und wie häufig bzw. wahrscheinlich diese sind. 
-Einfach gesprochen veranschaulicht eine Balken- oder Histogramm eine Verteilung. Man unterscheidet Häufigkeitsverteilungen (s. Abb. @fig-2dice-sim) von Wahrscheinlichkeitsverteilungen (Abb. @fig-2dice-prob).
-
-
-
-
-:::: {.columns}
-
-::: {.column width="50%"}
-```{r}
-#| echo: false
-#| fig-cap: Wahrscheinlichkeitsverteilung der Zufallsvariable "Augenzahl im zweifachen Würfelwurf"
-#| label: fig-2dice-prob
-p_twodice
-```
-
-:::
-
-::: {.column width="50%"}
-```{r}
-#| echo: false
-#| fig-cap: (relative und absolute) Häufigkeiten des zweifachen Würfelwurfs, 1000 Mal wiederholt
-#| label: fig-2dice-sim
-p_sim2dice
-```
-:::
-
-::::
-
-
-
-:::{#exm-wert-wuerfel}
-### Wahrscheinlichkeitsfunktion eines Würfels
-@fig-w-wuerfel zeigt die Wahrscheinlichkeitsfunktion eines einfachen Würfelwurfs.$\square$
-:::
-
-![Wahrscheinlichkeitsfunktion eines einfachen Würfelwurfs, Bildrechte: Olex Alexandrov, Wikipedia, PD](img/220px-Fair_dice_probability_distribution.svg.png){#fig-w-wuerfel width=33%}
-
-
-
-
-:::{#exm-mtcars)
-<!-- ### Häufigkeitsverteilung bei `mtcars` -->
-
-Die Häufigkeitsverteilung eines *diskreten* Merkmals $X$ mit $k$ Ausprägungen zeigt (vgl. @tbl-hauef-tab),
-wie häufig die einzelnen Ausprägungen sind.
-So hat die Variable *Zylinder* (in einem Datensatz) etwa die Ausprägungen 4,6 und 8.$\square$
-:::
-
-
-:::: {.columns}
-
-::: {.column width="70%"}
-
-
-```{r}
-#| echo: false
-#| fig-cap: "Häufigkeitsverteilung von `cyl` und `hp` (diskretisiert in 10 Körbe oder Gruppen)"
-#| label: fig-mtcars-freq
-p1 <- 
-  mtcars %>% 
-  ggplot(aes(x = cyl)) +
-  geom_bar()
-
-
-p2 <- mtcars %>% 
-  ggplot(aes(x = hp)) +
-  geom_histogram(bins=10)
-
-plots(p1, p2, n_rows = 1)
-```
-  
-:::
-
-::: {.column width="30%"}
-```{r }
-#| eval: true
-#| echo: false
-#| tbl-cap: Eine diskrete Häufigkeitsverteilung, dargestellt in einer Häufigkeitstabelle
-#| label: tbl-hauef-tab
-data(mtcars)
-  mtcars %>% 
-    count(cyl)
-```
-:::
-
-::::
-
-
-
-  
-  
-Abb. @fig-mtcars-freq, links, visualisiert die Häufigkeitsverteilung von `cyl`.
-Ein *stetiges* Merkmal, wie `hp` (PS-Zahl), lässt sich durch Klassenbildung in ein diskretes umwandeln (diskretisieren), s. Abb. @fig-mtcars-freq, rechts.
-
-#### Wahrscheinlichkeitsfunktion
-
-:::{#def-w-fun}
-### Wahrscheinlichkeitsfunktion
-
-Die Funktion $f$, die den möglichen Realisationen $x_i$ der diskreten Zufallsvariablen $X$ die Eintrittswahrscheinlichkeiten zuordnet, heißt Wahrscheinlichkeitsfunktion.$\square$
-:::
-
-
-:::{#exm-w-fun}
-Die Wahrscheinlichkeitsfunktion für $X$ "Augensumme im zweifachen Würfelwurf" ist in @fig-2dice-prob visualisiert.$\square$ 
-:::
-
-
-:::{#exm-muenz}
-Die Wahrscheinlichkeitsfunktion für $X$ "Treffer im einfachen Münzwurf, mit Zahl ist Treffer" ist $Pr(X=1)=1/2.$, vgl. @fig-zv.$\square$
-:::
-
-💡 Einfach gesprochen gibt die Wahrscheinlichkeitsfunktion die Wahrscheinlichkeit einer bestimmten Realisation einer Zufallsvariable an.
-
-#### Verteilungsfunktion
-
-
-
-:::{#def-vert-fun}
-### Verteilungsfunktion
-Die Verteilungsfunktion $F$ gibt die Wahrscheinlichkeit an, dass die diskrete Zufallsvariable $X$ eine Realisation annimmt, die kleiner oder gleich $x$ ist.$\square$
-:::
-
-
-
-Die Berechnung von $F(x)$ erfolgt, indem die Wahrscheinlichkeiten aller möglichen Realisationen $x_i$, die kleiner oder gleich dem vorgegebenen Realisationswert $x$ sind, addiert werden:
-
-$F(x) = \sum_{x_ \le x} Pr(X=x_i).$
-
-
-```{r}
-#| echo: false
-p_F <- 
-  ggplot(twodice, aes(x = Augensumme, y = p_cum)) + 
-  geom_col() +
-  geom_line() +
-  geom_label(aes(label = round(p_cum, 2))) + 
-  scale_x_continuous(breaks = 1:12) +
-  labs(y = "Verteilungsfunktion F")
-
-
-y_lab <- "empirische Verteilungsfunktion F emp."
-
-p_F_emp <-
-  ggplot(results_count) +
-  aes(x = Augensumme, y = prop_cum) +
-  geom_col() +
-  geom_line() +
-  geom_label(aes(y = prop_cum, label = round(prop_cum, 2))) +
-  labs(y = y_lab) +
-  scale_x_continuous(breaks = 2:12)
-```
-
-
-Die Verteilungsfunktion ist das Pendant zur *kumulierten Häufigkeitsverteilung*, vgl. @fig-kum-h-vert und @fig-kum-h-vert-emp:
-Was die kumulierte Häufigkeitsverteilung für Häufigkeiten ist, ist die Verteilungsfunktion für Wahrscheinlichkeiten.
-
-
-:::: {.columns}
-
-::: {.column width="50%"}
-```{r}
-#| echo: false
-#| fig-cap: Verteilungsfunktion $F(X \le x_i)$ für die Zufallsvariable "Augenzahl im zweifachen Würfelwurf"
-#| label: fig-kum-h-vert
-p_F
-```
-
-:::
-
-::: {.column width="50%"}
-```{r}
-#| echo: false
-#| fig-cap: Empirische Verteilungsfunktion (kumulierte Häufigkeitsverteilung) $F(X \le x_i)$ von 1000 zweifachen Münzwürfen
-#| label: fig-kum-h-vert-emp
-p_F_emp 
-```
-
-:::
-
-::::
-
-
-### Stetige Zufallsvariablen
-
-
-📺 [Verteilungen metrischer Zufallsvariablen](https://www.youtube.com/watch?v=7GqIE4sKDs4&list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN&index=4)
-
-@fig-zv-stetig-groesse versinnbildlicht die stetige Zufallsvariable "Körpergröße", die (theoretisch, in Annäherung) jeden beliebigen Wert zwischen 0 und (vielleicht) 2 Meter annehmen kann.
-
-```{r echo = FALSE}
-#| fig-cap: Sinnbild für eine stetige Zufallsvariable X "Körpergröße"
-#| label: fig-zv-stetig-groesse
-#| fig-asp: 0.2
- 
-ggplot(data.frame(x=0, y = 0), aes(x,y)) +
-  #geom_point(size = 5, alpha = .7) +
-  scale_y_continuous(limits = c(-1,1), breaks = NULL) +
-  scale_x_continuous(breaks = c(0, 50, 100, 150, 200)) +
-  annotate("segment", x = 0, xend = 200, y = 0, yend = 0, color = "red")  +
-  theme_minimal() +
-  annotate("label", x = 200, y = 0, label = "...") +
-  labs(y = "", x = "")
-```
-
-
-:::{#def-zv-stetig}
-### Stetige Zufallsvariable
-Eine stetige Zufallsvariable gleicht einer diskreten, nur dass alle Werte im Intervall erlaubt sind.$\square$
-:::
-
-
-:::{#exm-zu-stetig}
-- Spritverbrauch
-- Körpergewicht von Professoren
-- Schnabellängen von Pinguinen
-- Geschwindigkeit beim Geblitztwerden$\square$
-:::
-
-
-:::{#exr-bus-42}
-### Warten auf den Bus, 42 Sekunden
-Sie stehen an der Bushaltestellen und warten auf den Bus.
-Langweilig.
-Da kommt Ihnen ein Gedanken in den Sinn: 
-Wie hoch ist wohl die Wahrscheinlichkeit, dass Sie *exakt* 42 Sekunden auf den Bus warten müssen, s. @fig-p42?
-Weiterhin überlegen Sie, dass davon auszugehen ist, dass jede Wartezeit zwischen 0 und 10 Minuten gleich wahrscheinlich ist.
-Spätestens nach 10 Minuten kommt der Bus, so ist die Taktung (extrem zuverlässig).
-Exakt heißt *exakt*, also nicht 42.1s, nicht 42.01s, nicht 42.001s, etc. bis zur x-ten Dezimale.$\square$
-:::
-
-
-Nicht so einfach (?). Hingegen ist die Frage, wie hoch die Wahrscheinlichkeit ist, zwischen 0 und 5 Minuten auf den Bus zu warten ($0<x<5$), einfach: Sie beträgt 50%, wie man in @fig-p05 gut sehen kann.
-
-
-
-
-:::: {.columns}
-
-::: {.column width="50%"}
-
-![Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minuten auf den Bus zu warten? 50 Prozent!](img/p_bus2.png){#fig-p05}
-
-
-:::
-
-::: {.column width="50%"}
-```{r}
-#| echo: false
-#| fig-cap: "Wie groß ist die Wahrscheinlichkeit, genau 42 Sekunden auf den Bus zu warten? Hm."
-#| label: fig-p42
-#| warning: false
-p_bus1 <- 
-  uniform_Plot(0, 10) + 
-  geom_vline(xintercept = .42, color = "#56B4E9FF", size = 1) +
-  annotate("label", x = .42, y = .05, hjust = 0, label = "Pr(X=0.42)=?", color="#56B4E9FF") +
-  annotate("point", x = .42, y = 0, size = 5, color = "#56B4E9FF", alpha = .7) +
-  annotate("label", x= 5, y = 0.1, label = "f(x) = 1/10", color = "#009E73FF", size = 10)
-
-p_bus1
-```
-:::
-
-::::
-
-Vergleicht man @fig-p42 und @fig-p05 kommt man (vielleicht) zu dem Schluss, dass die Wahrscheinlichkeit exakt 42s auf den Bus zu warten, praktisch Null ist.
-Der Grund ist, dass die Fläche des Intervalls gegen Null geht, wenn das Intervall immer schmäler wird.
-Aus diesem Grund kann man bei stetigen Zufallszahlen nicht von einer Wahrscheinlichkeit eines bestimmten Punktes $X=x$ sprechen.
-Für einen bestimmten Punkt $X=x$ kann man aber die *Dichte* der Wahrscheinlichkeit angeben.
-
-Was  gleich ist in beiden Situationen ($Pr(X=.42)$ und $Pr(0<x<0.5)$) ist die *Wahrscheinlichkeitsdichte*, $f$.
-In @fig-p42 und @fig-p05 ist die Wahrscheinlichkeitsdichte gleich, $f=1/10=0.1$.
-
-:::{#def-wdichte}
-### Wahrscheinlichkeitsdichte
-Die Wahrscheinlichkeitsdichte $f(x)$ gibt an, wie viel Wahrscheinlichkeitsmasse pro Einheit von $X$ an an der Stelle $x$ ist.$\square$
-:::
-
-
-Die Wahrscheinlichkeitsdichte zeigt an, an welchen Stellen $x$ die Wahrscheinlichkeit besonders "geballt" oder "dicht" sind, s. @fig-wdichte-sinnbild.
-
-![Die Wahrscheinlichkeit, dass eine Zufallsvariable einen Wert zwischen und annimmt, entspricht dem Inhalt der Fläche unter dem Graph der Wahrscheinlichkeitsdichtefunktion. Bildrechte: 4C, Wikipedia, CC-BY-SA .](img/260px-Integral_as_region_under_curve.svg.png){#fig-wdichte-sinnbild width=33%}
-
-
-
-
-
-::::: {.columns}
-
-:::: {.column width="50%"}
-:::{#def-vert-fun-stetig}
-### Verteilungsfunktion
-Die Verteilungsfunktion einer stetigen Zufallsvariablen gibt wie im diskreten Fall an,
-wie groß die Wahrscheinlichkeit für eine Realisation kleiner oder gleich einem vorgegebenen Realisationswert $x$ ist.$\square$
-
-Die Verteilungsfunktion $F(x)$ ist analog zur kumulierten Häufigkeitsverteilung zu verstehen, vgl. @fig-F-Bus. $\square$
-:::
-
-
-::::
-
-:::: {.column width="50%"}
-
-
-
-```{r}
-#| echo: false
-#| fig-cap: 'Verteilungsfunktion F für X="Wartezeit auf den Bus"'
-#| label: fig-F-Bus
-#| fig-asp: 0.4
-d <- 
-  tibble(x=1:10,
-         y= 1:10/10) 
-
-ggplot(d, aes(x,y)) +
-  geom_point(alpha = .5) +
-  geom_line() +
-  scale_x_continuous(breaks = 1:10) +
-  theme_minimal()
-```
-
-
-
-
-::::
-
-:::::
-
-
-
-
-
-
-:::{#def-wvert-stetig}
-### Stetige Wahrscheinlichkeitsverteilung
-Bei *stetigen* Zufallsvariablen $X$ geht man von unendlich vielen Ausprägungen aus; die Wahrscheinlichkeit einer bestimmten Ausprägung ist Null: $Pr(X=x_j)=0, \quad j=1,...,+\infty \square$.
-:::
-
-
-:::{#exm-groesse}
-### Wahrscheinlichkeitsverteilung für die Körpergröße
-So ist die Wahrscheinlichkeit, dass eine Person exakt 166,66666666... cm groß ist, (praktisch) Null.
-Man gibt stattdessen die *Dichte* der Wahrscheinlichkeit an: Das ist die Wahrscheinlichkeit(smasse) pro  Einheit von $X$.$\square$
-:::
-
-
-Für praktische Fragen berechnet man zumeist die Wahrscheinlichkeit von Intervallen, s. @fig-wdichte-sinnbild.
 
 ## Wichtige Verteilungen
 
@@ -960,7 +314,7 @@ Wie man sieht, fallen ca. 20% der Stichproben in den entsprechenden Bereich.
 
 
 Da viele Probleme, wenn sie komplexer werden, kaum noch "analytisch" (d.h. wie Ausrechnen von Integralen) lösbar sind,
-greift man in der modernen (Analyse-)Welt oft lieber auf Simulationsverfahren zurück - Dank sei den schnellen Rechnern.
+greift man in der modernen (Analyse-)Welt oft lieber auf Simulationsverfahren zurück -- Dank sei den schnellen Rechnern.
 Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen zurückgeführt.
 
 
@@ -1232,7 +586,7 @@ Das ist komfortabler als selber rechnen.
 dbinom(x = 2, size = 3, prob = 2/5)
 ```
 
-Die Wahrscheinlichkeit,  2 Treffer bei 3 Zügen zu erzielen mit $p=2/5$, beträgt ca. 29%.
+Die Wahrscheinlichkeit,  2 Treffer bei 3 Zügen zu erzielen mit $p=2/5$, beträgt demnach ca. 29%.
 
 
 Dabei gehen wir davon aus, dass die Wahrscheinlichkeit eines Treffers stets $p=2/5$ beträgt.
@@ -1297,11 +651,7 @@ In R kann man sich die Fakultät mit dem Befehl `factorial` ausrechnen lassen. D
 anzahl_pfade_2_aus_4 <- 
   factorial(4) / (factorial(2) * factorial(4-2))
 anzahl_pfade_2_aus_4
-```
 
-
-
-```{r}
 choose(4, 2)
 ```
 
@@ -1316,11 +666,7 @@ TTNNN, TNTNN, TNNTN, TNNNT, NTTNN, NTNTN, NTNNT, NNTTN, NNTNT, NNNTT
 
 ```{r}
 choose(5, 2)
-```
 
-
-
-```{r}
 anzahl_pfade_2_aus_5 <- 
   factorial(5) / (factorial(2) * factorial(5-2))
 anzahl_pfade_2_aus_5
@@ -1474,7 +820,7 @@ die $Pr(X \le 4)$ berechnet.
 
 
 
-In R kann man die Funktion `pbinom()` nutzen (p für (kumulierte) Wahrscheinlichkeit), um die Verteilungsfunktion der Binomialverteilung zu berechnen:
+In R kann man die Funktion `pbinom()` nutzen (p für (kumulierte) Wahrscheinlichkeit), um die Verteilungsfunktion der Binomialverteilung zu berechnen.
 
 ```{r}
 pbinom(q = 4, size = 7, prob = .95)
@@ -1633,6 +979,261 @@ binomial_plot(9, .7)
 :::
 
 
+
+
+## Die Exponentialverteilung
+
+### Die Apfel-fällt-nicht-weit-vom-Stamm-Verteilung
+
+<!-- :::{#exm-klasurnote} -->
+<!-- Sie haben in Statistik eine Klausur geschrieben. -->
+<!-- Sie gehen davon aus, dass Sie etw -->
+
+Bevor wir unser Kung-Modell spezifizieren können,
+sollten wir noch überlegen, welches Vorab-Wissen wir zur *Streuung um den Mittelwert* herum haben.
+Da wir uns nicht 100% sicher zur gesuchten Größe sind,
+müssen wir diese Ungewissheit quantifizieren.
+Wir müssen also angeben, wie groß die Streuung um den Mittelwert unserer Meinung nach ist.
+Hier werden wir eingestehen, dass wir uns auch nicht 100% sicher sind,
+wie groß die Streuung exakt ist.
+Also geben wir eine Verteilung für die Streuung an,
+um diese Ungewissheit zu quantifizieren.
+
+Etwas Wissen über diese Verteilung haben wir:
+
+- Eine Streuung muss positiv sein (es gibt keine negative Streuung).
+- Eine Gleichverteilung der Streuung ist vielleicht möglich, aber nicht sehr plausibel.
+- Wenn wir der Meinung sind, der Mittelwert betrage "ungefähr 178 cm", so halten wir  180 cm als Körpergröße einer erwachsenen Person für plausibel, aber 18000 cm für (praktisch) unmöglich und schon 200 cm für recht unplausibel. 
+Also: Je größer die die Abweichung vom Mittelwert, desto unplausibler der Wert der Körpergröße.
+
+Diese Anforderungen^["Desiderata"] spiegeln sich in @fig-exp wider;
+die eine  *Exponentialverteilung* zeigt (mit dem Parameter $\lambda=1$),
+Eine Exponentialverteilung erfüllt unsere Wünsche ziemlich gut.
+Außerdem zeigt die Abbildung verschiedene Quantile, wie das 95%-Quantil,
+das bei 3 liegt;
+95% der Werte dieser Verteilung sind also nicht größer als 3.
+
+
+
+```{r Post-Regression-18}
+#| fig-asp: 0.5
+#| label: fig-exp
+#| fig-cap: "Die Exponentialverteilung: Die meisten Äpfel fallen nicht weit vom Stamm ..."
+#| echo: false
+#| dev: "ragg_png"
+#| 
+
+# Set the rate parameter for the exponential distribution
+rate <- 1
+
+# Create a data frame for the exponential distribution
+x_vals <- seq(0, 5, by = 0.01) # X-axis range
+y_vals <- dexp(x_vals, rate = rate) # Density values
+data <- data.frame(x = x_vals, y = y_vals)
+
+ggplot(data, aes(x = x, y = y)) +
+  geom_line(color = okabeito_colors()[1], size = 1) +
+  theme_minimal() +
+  labs(title = "Exponential Distribution", x = "", y = "Density") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  # Add emojis as text annotations
+  annotate("text", x = 0, y = 0, label = "🌳", size = 12, vjust = 0) +
+  annotate("text", x = 1, y = 0, label = "🍎", size = 6, vjust = 0) +
+  annotate("text", x = 2, y = 0, label = "🍎", size = 6, vjust = 0) +
+  annotate("text", x = 3, y = 0, label = "🍎", size = 6, vjust = 0)
+
+
+```
+
+
+Für eine exponentialverteilte Variable $X$ schreibt man auch:
+
+
+$$X \sim \operatorname{Exp}(1)$$
+
+
+Eine Verteilung dieser Form nennt man *Exponentialverteilung*.
+Sie hat einige nützliche Eigenschaften:
+
+
+
+
+1. Eine *Exp*onentialverteilung ist nur für positive Werte, $x>0$, definiert.
+2. Steigt X um eine *Einheit*, so ändert sich Y um einen *konstanten Faktor*.
+3. Sie hat nur einen Parameter, genannt *Rate* oder $\lambda$ ("lambda").
+4. $\frac{1}{\lambda}$  gibt gleichzeitig Mittelwert und Streuung ("Gestrecktheit") der Verteilung an.
+5. Je größer die Rate $\lambda$, desto schneller der "Verfall" der Kurve und desto *kleiner* die Streuung und der Mittelwert der Verteilung (und umgekehrt: Je größer  $1/\lambda$, desto *größer* die Streuung und der Mittelwert der Verteilung.)
+
+
+
+Ohne auf die mathematischen Eigenschaften im Detail einzugehen,
+halten wir fest, dass der Graph dieser Funktion gut zu unseren Plänen passt.
+
+
+
+### Visualisierung verschiedener Exponentialverteilungen
+
+Schauen wir uns einige Beispiele von Exponentialverteilungen an.
+Unterschiede in Exponentialverteilungen sind rein auf Unterschiede in $\lambda$ (lambda) zurückzuführen, s. @fig-exps.
+
+```{r gg-exp-fun}
+#| echo: false
+gg_exp <- function(r, max_x = 25, probs = c(0.05, .25, .50, .75, .95)) {
+  
+  d <-
+  tibble(
+    x = seq(0, 5,.1),
+    y = dexp(x, rate = r)
+  )
+  
+  d_qs <-
+    tibble(
+      prob = probs,
+      q = qexp(prob, rate = r) 
+    )
+  
+  med_exp <- round(log(2) / r, 2)
+  
+  
+  p <- 
+    ggplot(NULL, aes(c(0, max_x))) +
+    geom_area(stat = "function", 
+              fun = dexp, 
+              fill = "grey", 
+              args = list(rate = r))  +
+    labs(title = paste0("Exp(", r, ")"),
+         x = "sigma",
+         caption = paste0("Median (Md): ", med_exp)) +
+    geom_vline(data = d_qs,
+             aes(xintercept = q)) +
+    geom_label(data = d_qs,
+             aes(x = q, 
+                 label = prob,
+                 y = prob))
+ 
+}
+```
+
+::::{#fig-exps}
+
+::: {.panel-tabset}
+
+
+
+### lambda = 2
+
+```{r}
+#| echo: false
+gg_exp(r = 2) + labs(subtitle = "lambda = 2") + theme_modern()
+```
+
+
+### lambda = 1
+
+```{r}
+#| echo: false
+gg_exp(r = 1) + labs(subtitle = "lambda = 1") + theme_modern()
+```
+
+### lambda = 1/2
+
+```{r}
+#| echo: false
+gg_exp(r = 1/2) + labs(subtitle = "lambda = 1/2") + theme_modern()
+```
+
+
+### lambda = 1/4
+
+```{r}
+#| echo: false
+gg_exp(r = 1/4) + labs(subtitle = "lambda = 1/4") + theme_modern()
+```
+
+
+
+### lambda = 1/8
+
+```{r}
+#| echo: false
+gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8") + theme_modern() 
+```
+
+:::
+::::
+
+
+<!-- ```{r Kung-9-bis} -->
+<!-- #| echo: false -->
+<!-- #| fig-asp: 0.8 -->
+<!-- #| label: fig-exps -->
+<!-- #| fig-cap: Beispiele von Expnentialverteilungen mit unterschiedlichem lambda  -->
+<!-- #| fig-width: 9 -->
+
+<!-- p_r1 <- gg_exp(r = 1) + labs(subtitle = "lambda = 1") -->
+
+<!-- p_r2 <-  gg_exp(r = 1/2)  + labs(subtitle = "lambda = 1/2") -->
+
+<!-- p_r1_8 <- gg_exp(r = 1/4) + labs(subtitle = "lambda = 1/4") -->
+
+<!-- p_r1_25 <- gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8") -->
+
+
+<!-- plots(p_r1_25, p_r1_8, p_r2, p_r1) -->
+<!-- ``` -->
+
+
+
+
+Wie wir in @fig-exps sehen, könnte eine Exponentialverteilung mit $\lambda=1/8$ grob passen für unser !Kung-Beispiel:
+Bei einer Exponentialverteilung mit Rate $\lambda=1/8$ ist der Median bei ca. 5.5 cm, also einer Streuung  ($\sigma$, typischen Abweichung vom Mittelwert) von 5.5 cm.
+Der Median ist der "mittlere Wert" der Verteilung, also der Wert, 
+bei dem 50% der Werte kleiner und 50% der Werte größer sind.
+Insofern eignet sich der Median gut als Schätzer für einen "typischen" Wert der Verteilung.
+
+
+
+:::callout-note
+Die "richtigen" Priori-Verteilung zu finden, bzw. die richtigen Parameter für die Priori-Verteilung zu wählen, ist nicht möglich, denn es gibt nicht *die* eine, richtige Priori-Verteilung.
+Eine "gut passende" Verteilung zu finden, ist nicht immer einfach.
+Gut beraten ist man mit der Regel, im Zweifel lieber eine liberale Verteilung zu wählen,
+die einen breiteren Raum an möglichen Werten zulässt. 
+Allerdings sollte man nicht das Baby mit dem Wasser auskippen und extreme Werte, wie mehrere Meter Körpergröße Streuung, erlauben.
+:::
+
+Man kann sich die Quantile der Exponentialverteilung mit `qexp()` ausgeben lassen,
+wobei mit man `p` den Wert der Verteilungsfunktion angibt,
+für den man das Quantil haben möchte 
+(mit `pexp()` kann man sich analaog die die Verteilungsfunktion ausgeben lassen.) 
+Mit `rate` wird $\lambda$ (lambda) bezeichnet.^[Es gibt auch [Online-Apps, die diese Werte ausgeben](https://homepage.divms.uiowa.edu/~mbognar/applets/exp-like.html.]
+
+Dieser Aufruf zum Beispiel, `qexp(p = .5, rate = 1/8)`,
+gibt uns das 50%-Quantil einer Exponentialverteilung mit Rate ($\lambda$) 1/8 zurück, ca. 5.5: 
+Mit einer Wahrscheinlichkeit von 50% wird ein Wert von 5.5 nicht überschritten bei dieser Verteilung.
+
+Die Grenzen der inneren 95% dieser Verteilung kann man sich auch ausgeben.
+
+```{r}
+qexp(p = c(0.025, .975), rate = 1/8)
+```
+
+Diese Grenzen scheinen hinreichend weit, das wir noch von den Daten überrascht werden können, aber schmal genug, um unsinnige Werte auszuschließen.
+Ein guter Start! Weiter geht's!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### Vertiefung
 
 
@@ -1663,20 +1264,20 @@ Der Logarithmus zur Basis 2^[als "Logarithmus Dualis", ld, bezeichnet] gibt die 
 
 
 :::{#exm-log2-1}
-$ld(1/2) = -1:$
+$ld(1/2) = -1$
 ```{r}
 log(.5, base = 2)
 ```
 
 1/2 ist genau "minus 1 Verdopplung" von 1 entfernt, d.h. eine Halbierung.
 
-$ld(1/4) = -2:$
+$ld(1/4) = -2$
 ```{r}
 log(1/4, base = 2)
 ```
 1/4 ist genau "minus 2 Verdopplungen" von 1 entfernt, d.h. zwei Halbierungen.
 
-$ld(1/8) = -3:$
+$ld(1/8) = -3$
 ```{r}
 log(1/8, base = 2)
 ```
@@ -1705,7 +1306,7 @@ Mit `sample()` ziehen wir eine Stichprobe aus dem Ereignisraum `x`, hier 0 und 1
 Dabei vereinbaren wir (willkürlich), dass 0 für "Kopf" steht und 1 für "Zahl".
 `size = 1` bedeutet, wir werfen die Münze ein Mal (d.h. Stichprobengröße *size* ist 1).
 
-Okay, noch an Bord? Dann werfen wir die Münze 10 Mal:
+Okay, noch an Bord? Dann werfen wir die Münze 10 Mal.
 
 
 ```{r}
@@ -1717,7 +1318,7 @@ Oder anders ausgedrückt: *Ziehen mit Zurücklegen*.
 
 
 
-R, mach dich bereit, wirf die Münze 1000 ($n=10^3$ oder `1e3`) Mal^[R meckert nicht bei langweiligen Aufgaben.]:
+R, mach dich bereit, wirf die Münze 1000 ($n=10^3$ oder `1e3`) Mal^[R meckert nicht bei langweiligen Aufgaben.].
 
 
 ```{r}
@@ -1805,809 +1406,6 @@ source(paste0(here::here(),"/R-Code/img15.R"))
 
 
 <!-- 3b1b hat ein [nettes Video zu diesem Thema](https://youtu.be/8idr1WZ1A7Q), das sich als Vertiefung eignet. -->
-
-
-
-
-## Normalverteilung
-
-
-### Grundlagen
-
-
-::: {#def-nv}
-### Normalverteilung
-Normalverteilungen haben eine charakteristische Glockenform;
-sie sind symmetrisch^[d.h. die Schiefe (`skewness`) ist 0].
-Normalverteilungen können sich unterscheiden in ihrem  Mittelwert $\mu$ und ihrer Streuung, $\sigma$.
-Diese beiden Größen ("Parameter") determinieren den Graphen einer bestimmten Normalverteilungsfunktion, s. @fig-norms.
-Sind diese beiden Parameter bekannt, so ist die Dichte jedes beliebigen Datenpunkts (aus dieser Normalverteilung) bestimmt.$\square$
-:::
-
-Eine normalverteilte Zufallsvariable $X$ mit einem bestimmten Mittelwert und einer bestimmten Streuung schreibt man kurz so:
-
-$$X \sim \mathcal{N}(\mu, \sigma)$$
-
-::: {#def-parameter}
-### Parameter
-
-Ein Parameter (einer Verteilung) legt die "Varianten" einer Verteilung fest. Durch die Wahl der Parameterwerte nimmt eine Verteilung eine genaue Form an.$\square$
-
-:::
-
-![Beispiele von Normalverteilungen mit verschiedenen Mittelwerten und Streuungen, Quelle: Wikipedia](img/normals.png){#fig-norms width=50% fig-align="center"}
-
-
-Beispiel: Wie groß sind Studentis ([Quelle des Datensatzes](https://rdrr.io/cran/openintro/man/speed_gender_height.html))? 
-
-Das Quantil von z.B. 25% zeigt die Körpergröße der 25% kleinsten Studentis an, analog für 50%, 75%, vgl. @tbl-quantiles.
-
-```{r QM2-Thema3-Teil1-5, echo = FALSE}
-#| tbl-cap: Quantile der Körpergrößen von Studentis
-#| label: tbl-quantiles
-data(speed_gender_height, package = "openintro")
-
-height_summary <- 
-  speed_gender_height %>% 
-  drop_na(height) %>% 
-  mutate(height = height * 2.54) %>% 
-  summarise(q25 = quantile(height, prob = .25),
-            q50 = quantile(height, prob = .5),
-            q75 = quantile(height, prob = .75))
-
-height_summary %>% 
-  gt()
-```
-
-@fig-quantiles zeigt eine Visualisierung der Quantile.
-
-```{r QM2-Thema3-Teil1-6}
-#| echo: false
-#| results: hold
-#| fig-width: 12
-#| fig-asp: 0.618
-#| fig-cap: "Quantile verschieden visualisiert"
-#| label: fig-quantiles
-
-speed_gender_height <-
-  speed_gender_height %>% 
-  mutate(height_cm = height * 2.54)
-
-p1 <- 
-  speed_gender_height %>% 
-  ggplot() +
-  aes(x = 1, y = height_cm) +
-  geom_boxplot() +
-  labs(x = "",
-       y = "Größe in cm",
-       title = "Die Box zeigt das 25%-, 50%- und 75%-Quantil")
-
-height_summary_long <- 
-  height_summary %>% 
-  pivot_longer(everything(),
-               names_to = "q",
-               values_to = "height_cm") 
-
-p2 <- 
-  speed_gender_height %>% 
-  ggplot() +
-  aes(x = height_cm) +
-  geom_histogram() +
-  geom_vline(data = height_summary_long,
-             aes(xintercept = height_cm)) +
-  geom_text(data = height_summary_long,
-             aes(x = height_cm+1,
-                 y = 0,
-                 label = paste0(q, ": ",height_cm)),
-             angle = 90,
-            hjust = 0,
-            color = "white"
-             ) +
-  labs(title = "Die vertikalen Striche zeigen die Quantile",
-       y = "Häufigkeit")  +
-  theme_minimal()
- 
-plots(p1, p2)
-```
-
-
-::: callout-note
-Das 25%-Quantil nennt man *1. Quartil*, das 50%-Quantil auch *2. Quartil*, das 75%-Quantil das *3. Quartil*, und das 100%-Quantil (Maximalwert) das *4. Quartil*.
-:::
-
-
-
-
-
-
-
-Verwechseln Sie die Normalverteilung nicht mit der Paranormalverteilung, s. @fig-paranormal.
-
-![Die Paranormalverteilung](img/ch33910f1.jpg){#fig-paranormal width=30%}
-
-
-### IQ-Verteilung
-
-Die Verteilung der Zufallsvariablen IQ ist normalverteilt mit einem Mittelwert von 100 und einer Streuung von 15, s. @fig-norm-100-15:
-
-$IQ \sim \mathcal{N}(100,15)$
-
-:::{#exr-iq}
-### Wie schlau muss man (nicht) sein?
-- Wie schlau muss man sein, um zu den unteren 75%, 50%, 25%, 5%, 1% zu gehören?
-- Anders gesagt: Welcher IQ-Wert wird von 75%, 50%, ... der Leute nicht überschritten?$\square$
-:::   
-
-
-![Visualisierung der theoretischen IQ-Verteilung](img/norm-100-15.png){#fig-norm-100-15 width="50%"}
-
-[Quelle:](https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models): John Kruschke.
-
-
-:::: {.columns}
-
-::: {.column width="70%"}
-
-Ziehen wir zufällig $1e4$ (10000) Stichproben aus $\mathcal{N}(100,15)$ und berechnen die Quantile mit dem R-Befehl `quantile()`, s. @tbl-quantiles2.
-
-```{r echo = TRUE}
-d <-
-  tibble(
-  iq = rnorm(n = 1e4, 
-             mean = 100, 
-             sd = 15))
-
-probs <- c(0.975, 0.75,.5,.25,.05,.01)
-
-d_summary <- d %>% 
-  summarise(p = probs,
-            q = quantile(iq, probs))
-```
-
-:::
-
-::: {.column width="25%"}
-
-
-```{r}
-#| echo: false
-#| tbl-cap: Quantile der IQ-Verteilung
-#| label: tbl-quantiles2
-d_summary %>% 
-  gt() %>% 
-  fmt_number(p, decimals = 2) %>% 
-  fmt_number(q, decimals = 0)
-```
-
-:::
-
-::::
-
-
-Das *Quantil* $q$ zur kumulierten Wahrscheinlichkeit $p=75$ ist 110, etc. 
-
-
-
-
-
-
-Umgekehrt können wir uns auch fragen: Gegeben einer Realisation der Zufallsvariablen (z.B. IQ), was ist die zugehörige Wahrscheinlichkeit (Wert der Verteilungsfunktion?)
-
-
-:::{#exr-schlau2}
-### Wie schlau muss man (nicht) sein, Teil 2
-- Welcher Anteil der Fläche unter der Kurve $p$ gehört zu den IQ-Werten 75, 100, 115, 130?
-- Anders gesagt: Welcher Anteil der Wahrscheinlichkeitsmasse der Verteilung liegt unter IQ=75, IQ=100, etc.?$\square$
-:::
-
-
-Ziehen wir Stichproben aus $\mathcal{N}(100,15)$. 
-Was ist die Wahrscheinlichkeit für eine `iq < 100`?
-
-```{r echo = TRUE, eval = FALSE}
-d <-
-  tibble(
-    iq = rnorm(1e4, 
-               mean = 100, 
-               sd = 15)) %>% 
-  mutate(iq = round(iq))
-
-qs <- c(75,100,115,130)
-
-d %>% 
-  count(p_100 = iq < 100) %>% 
-  mutate(prop = n / sum(n)) 
-```
-
-
-@tbl-iq100 zeigt uns die Antwort. 
-
-:::{.callout-note}
-Wir schätzen die wahre, "theoretische" Wahrscheinlichkeit durch einfaches Ausprobieren: 
-Wir führen das Zufallsexperiment einfach häufig durch.
-Dann zählen wir den Anteil der Treffer. 
-Nennt man auch "Simulieren"; klingt cooler als "Ausprobieren".🤓$\square$
-:::
-
-
-```{r echo = FALSE, eval = TRUE}
-#| tbl-cap: Wahrscheinlichkeit für iq < 100
-#| label: tbl-iq100
-d <-
-  tibble(
-    iq = rnorm(1e4, 
-               mean = 100, 
-               sd = 15)) %>% 
-  mutate(iq = round(iq))
-
-qs <- c(75,100,115,130)
-
-d %>% 
-  count(p_100 = iq < 100) %>% 
-  mutate(prop = n / sum(n)) %>% 
-  gt() %>% 
-  fmt_number(columns = 3)
-```
-
-Anstelle von `iq < 100` kann man `iq < 115` einsetzen, etc.
- 
-```{r eval= FALSE}
-#| echo: false
-d %>% 
-  mutate(prop = percent_rank(iq)) %>% 
-  filter(iq %in% qs) %>% 
-  distinct(iq, .keep_all = TRUE)
-```
-
-Die *Verteilungsfunktion* (der Anteil der Wahrscheinlichkeitsmasse), `p`, für IQ-Werte nicht größer als 100,  $IQ\le100$, ist 50%, etc. 
-
-
-
-### Quantile der Normalverteilung 
-
-
-
-
-💡 Zur Erinnerung: *Quantile* teilen eine Verteilung so ein, dass ein Anteil $p$ kleiner oder gleich und der andere Teil $1-p$ größer  dem Quantil $q$ ist.
-
-
-:::{#exm-quantil} 
-"50%-Quantil = 100" meint, dass 50% der Elemente der Verteilung einen Wert kleiner oder gleich als 100 haben.
-Man schreibt auch: `q(.5) = 100`.
-:::
-
-
-💡  Zur Erinnerung: Die *Verteilungsfunktion F* (für einen Wert $x$ der Zufallsvariable $X$) gibt die Wahrscheinlichkeit an, dass $X$ einen Wert höchstens so groß wie $x$ annimmt. Sie zeigt also die kumulierte Wahrscheinlichkeit $[-\infty, q)$.
-
-
-:::{#exm-f}
-"F(100) = 50%" meint: Die Wahrscheinlichkeit für eine Ausprägung von höchstens als 100 beträgt 50%.$\square$
-:::
-
-
-Schauen wir uns die Quantile der Normalverteilung einmal näher an.
-Wir gehen von einer Normalverteilung aus, wie sie zur Beschreibung von Intelligenz (IQ) verwendet wird, s. @fig-nv-quants.
-
-
-```{r }
-#| echo: false
-#| label: fig-nv-quants
-#| fig-cap: Quantile der IQ-Verteilung (normalverteilt mit MW=100 und SD=15)
-
-  
-
-p1 <- 
-  ggplot(NULL, aes(c(60,145))) +
-  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 100)) +
-  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "X", y = "Dichte",
-       title = "50%-Quantil: 100;\nVerteilungsfunktion von 100:50%") +
-  scale_y_continuous(breaks = NULL)
-
-p2 <-
-    ggplot(NULL, aes(c(60,145))) +
-  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 125)) +
-  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "X", y = "Dichte",
-       title = "95%-Quantil: 125;\nVerteilungsfunktion von 125:95%") +
-  scale_y_continuous(breaks = NULL)
-
-
-plots(p1, p2)
-```
-
-$$IQ \sim \mathcal{N}(100, 15)$$
-Mit R kann man sich die beiden Größen komfortabel berechnen lassen:
-
-```{r echo = TRUE, eval = FALSE}
-qnorm(.50, mean = 100, sd = 15)  # 50%-Quantil
-pnorm(100, mean = 100, sd = 15)  # Verteilungsfunktion für IQ=100
-```
-
-
-Betrachten wir einige häufig verwendete Quantile für die IQ-Verteilung, s. @fig-nv-quants2.
-
-```{r}
-#| echo: false
-q_p50 <-
-  ggplot(NULL, aes(c(60,145))) +
-  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 100)) +
-  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "IQ", y = "Dichte",
-       title = "50%-Quantil: 100") +
-  scale_y_continuous(breaks = NULL)
-```
-
-
-```{r}
-#| echo: false
-q_inv <- .25
-q_p <- qnorm(q_inv, mean = 100, sd= 15)
-p_q <- pnorm(q_p, mean = 100, sd= 15)
-
-q_p25 <-
-  ggplot(NULL, aes(c(60,145))) +
-  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
-  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "IQ", y = "Dichte",
-       title = paste0(q_inv,"-Quantil: ",round(q_p)),
-       caption = "MW-0.68sd") +
-  scale_y_continuous(breaks = NULL)
-```
-
-
-```{r}
-#| echo: false
-q_inv <- .95
-q_p <- qnorm(q_inv, mean = 100, sd= 15)
-
-q_p95 <-
-  ggplot(NULL, aes(c(60,145))) +
-  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
-  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "IQ", y = "Dichte",
-       title = paste0(q_inv,"-Quantil: ",round(q_p)),
-       caption = "MW+1.64sd") +
-  scale_y_continuous(breaks = NULL)
-```
-
-
-
-```{r}
-#| echo: false
-q_inv <- .975
-q_p <- qnorm(q_inv, mean = 100, sd= 15)
-#pnorm(115, mean= 100, sd = 15)
-
-q_p975 <-
-  ggplot(NULL, aes(c(60,145))) +
-  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
-  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "IQ", y = "Dichte",
-       title = paste0(q_inv,"-Quantil: ",round(q_p)),
-       caption = "MW+2SD") +
-  scale_y_continuous(breaks = NULL)
-```
-
-
-
-
-
-```{r}
-#| echo: false
-q_inv <- .84
-q_p <- qnorm(q_inv, mean = 100, sd= 15)
-#pnorm(115, mean= 100, sd = 15)
-
-q_p84 <-
-  ggplot(NULL, aes(c(60,145))) +
-  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
-  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "IQ", y = "Dichte",
-       title = paste0(q_inv,"-Quantil: ",round(q_p)),
-       caption = "MW+1sd") +
-  scale_y_continuous(breaks = NULL)
-```
-
-```{r}
-#| echo: false
-q_inv <- .69
-q_p <- qnorm(q_inv, mean = 100, sd= 15)  # halbe SD
-#pnorm(107.5, mean= 100, sd = 15)
-
-q_p69 <-
-  ggplot(NULL, aes(c(60,145))) +
-  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
-  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "IQ", y = "Dichte",
-       title = paste0(q_inv,"-Quantil: ",round(q_p)),
-       caption = "MW+0.5sd") +
-  scale_y_continuous(breaks = NULL)
-```
-
-
-
-```{r fig-nv-quants2}
-#| echo: false
-#| label: fig-nv-quants2
-#| fig-width: 10
-#| fig-cap: Verschiedene Quantile der Normalverteilung
-
-(q_p50 + q_p25 + q_p69) / (q_p95 + q_p975 + q_p84)
-```
-
-
-
-### Standardnormalverteilung {#sec-standardnormalverteilung}
-
-Bei einer *Standard*normalverteilung gilt, dass der Mittelwert 0 ist und die Standardabweichung 1, s. @thm-standardnormal.
-
-
-::: {#thm-standardnormal}
-
-### Standardnormalverteilung
-
-
-$$X \sim \mathcal{N}(0, 1)\quad \square$$
-:::
-
-:::: {.columns}
-
-::: {.column width="50%"}
-```{r Normalverteilung-3}
-#| echo: false
-#| fig-cap: "Normalverteilung mit Mittelwert 0 und SD 1, auch *Standard-Normalverteilung* genannt"
-#| label: fig-snv
-ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
-  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1)) +
-  labs(y = "Dichte", x = "Merkmal, X") +
-  theme_modern()
-```
-
-:::
-
-::: {.column width="50%"}
-Bei $X=0$ einer *Standard-Normalverteilung* (s. @fig-snv) gilt:
-
-- hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von 40% (Wahrscheinlichkeitsdichte)
-- sind 50% der Wahrscheinlichkeitsmasse (Fläche unter der Kurve) kleiner als dieser Wert (Verteilungsfunktion).
-
-In Summe liegen 100% der Wahrscheinlichkeitsmasse unter der Kurve.
-:::
-
-::::
-
-
-
-
-Man kann jeder Normalverteilung in eine Standardnormalverteilung überführen mit der *z-Transformation*.
-
-Ein *z-Wert* ist das Ergebnis einer *z-Transformation*, 
-die definiert ist als der Abstand in SD-Einheiten,   
-den ein Wert vom Mittelwert entfernt ist, s. @thm-ztrans.
-
-
-::: {#thm-ztrans}
-
-### z-Transformation
-
-
-$$z = \frac{x - \mu}{\sigma}\quad \square$$
-:::
-
-@tbl-F-norm und @fig-quantnormanim zeigen wichtige Werte der Verteilungsfunktion für die Standardnormalverteilung.
-
-
-
-::::: {.columns}
-
-
-
-:::: {.column width="25%"}
-
-
-
-```{r}
-#| tbl-cap: "Ausgewählte Werte der Verteilungsfunktion der Standardnormalverteilung"
-#| echo: false
-#| label: tbl-F-norm
-d_F_norm <-
-  tibble(z = -3:3,
-             F = pnorm(z) |> round(3))
-d_F_norm |> 
-  gt()
-```
-::::
-
-
-
-:::: {.column width="70%"}
-
-
-```{r}
-#| echo: false
-#| label: fig-quantnormanim 
-#| fig-cap: Die Verteilungsfunktion für die z-Werte von -3 bis +3
-
-library(mosaic)
-
-p_z_F <- xpnorm(q = -3:3, return = "plot")
-  
-p_z_F +
-  labs(y = "Wahrscheinlichkeit", x = "z") +  # Add labels
-  theme(theme_minimal()) +
-  geom_vline(data = d_F_norm, aes(xintercept = z), linetype = "dashed") + # Vertical lines
-  annotate(geom = "label", 
-           x = d_F_norm$z, 
-           label = round(d_F_norm$F, 2), 
-           #fill = "Wahrscheinlichkeit",
-           y = d_F_norm$F * 0.4 ) + # Correct labels
-  scale_fill_okabeito(name = "Wahrscheinlichkeit") +
-  theme(legend.position = "none")
-```
-
-
-
-<!-- ::: {.content-visible when-format="html"} -->
-<!-- ![Die Quantile einer Standardnormalverteilung für 10%, 20%, ... 100% (die Dezile) visualisiert](img/normal_distribution_animation.gif){#fig-quantnormanim width=50%} -->
-
-<!-- ::: -->
-
-::::
-
-
-:::::
-
-
-### Vertiefung
-
-
-
-#### Normal auf dem Fußballfeld
-
-Sie und 100 Ihrer besten Freunde stehen auf der Mittellinie eines Fußballfelds. Auf Kommando werfen alle jeweils eine Münze; bei Kopf geht man einen Schritt nach links, bei Zahl nach rechts. Das wird 16 Mal wiederholt. Wie wird die Verteilung der Positionen wohl aussehen?
-
-
-```{r Normalverteilung-6, fig.asp = .45, fig.width=7}
-#| echo: false
-source(paste0(here::here(),"/R-Code/img13.R"))
-```
-
-[@mcelreath2020]
-
-
-
-
-
-
-
-#### Normal durch Addieren
-
-Die Summe vieler (gleich starker) Zufallswerte (aus der gleichen Verteilung) erzeugt eine Normalverteilung; egal aus welcher Verteilung die Zufallswerte kommen (Zentraler Grenzwertsatz), vgl. @fig-fussball.
-
-
-```{r Normalverteilung-7, out.width="100%", fig.asp = 0.5, fig.align="center", fig.width=7}
-#| echo: false
-#| fig-cap: "Entstehen einer Normalverteilung durch Addition vieler unabhgängiger Ereignisse"
-#| label: fig-fussball
-source(paste0(here::here(),"/R-Code/img14.R"))
-```
-
-
-
-
-
-
-#### Normalverteilung als konservative Wahl
-
-Dem Mathematiker [Carl Friedrich Gauss](https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F) (s. @fig-gauss) wird die Ehre zuerkannt,
-die Normalverteilung eingeführt zu haben.
-
-```{r Normalverteilung-1-bis, echo = FALSE }
-#| fig-align: "center"
-#| label: fig-gauss
-#| fig-cap: "Zehn-Mark-Geldschein mit Gauss und Normalverteilung"
-knitr::include_graphics("img/10_Deutsche_Mark_-_detail.png")
-```
-
-Quelle: Uni Greifswald, Public domain, via Wikimedia Commons
-
-
-::: callout-note
-*Ontologische Begründung*
-
-- Wirken viele, gleichstarke Einflüsse additiv zusammen, entsteht eine Normalverteilung  [@mcelreath2020], Kap. 4.1.4.
-
-*Epistemologische Begründung*
-
-- Wenn wir nur wissen, dass eine Variable über einen endlichen Mittelwert und eine endliche Varianz verfügt und wir keine weiteren Annahmen treffen bzw. über kein weiteres Vorwissen verfügen, dann ist die Normalverteilung die plausibelste Verteilung (maximale Entropie) [@mcelreath2020], Kap. 7 und 10.
-:::
-
-
-
-
-
-#### Normalverteilung vs. randlastige Verteilungen
-
-
-
-Bei randlastigen Verteilungen ("fat tails") kommen Extremereignisse viel häufiger vor als bei Normalverteilungen. Deshalb ist es wichtig sein, zu wissen, ob eine Normalverteilung oder eine randlastige Verteilung vorliegt. Viele statistische Methoden sind nicht zuverlässig bei (stark) randlastigen Methoden. @fig-fat grenzt eine Normalverteilung von einer "Fat-Tail-Verteilung" ab.
-
-
-```{r Normalverteilung-9, fig.asp=0.5}
-#| echo: false
-#| fig-cap: Normalverteilung vs. randlastige Verteilungen
-#| label: fig-fat
-ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
-  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1), color = "#E69F00FF") +
-  labs(y = "Dichte", x = "Merkmal, X") +
-  stat_function(fun = dt, n = 101, args = list(df = 1, ncp =0), color = "#56B4E9FF") +
-  labs(caption = "orange: Normalverteilung\n blau: randlastige Verteilung (t-Verteilung mit df=1)")
-```
-
-
-:::::{#exm-normal-rand}
-#### Beispiele für Normal- und randlastige Verteilungen
-
-
-:::: {.columns}
-
-::: {.column width="50%"}
-Normal verteilt:
-
-- Größe 
-- Münzwürfe
-- Gewicht
-- IQ
-- Blutdruck
-- Ausschuss einer Maschine
-:::
-
-::: {.column width="50%"}
-Randlastig verteilt:
-
-- Vermögen
-- Verkaufte Bücher (Anzahl)
-- Ruhm (z.B. Anzahl Follower auf Instagram)
-- Aktienkurse (Kurswert)
-- Erdbeben (Stärke)
-- Anzahl von Todesopfern in Pandemien
-- Anzahl von Todesopfern in Kriege
-- Erfolg auf Tinder (Anzahl erfolgreicher Matches)
-- Meteroritengröße (Volumen)
-- Stadtgrößen (Einwohnerzahl)
-
-:::
-
-::::
-
-:::::
-
-
-
-
-
-#### Formel der Normalverteilung
-
-Vereinfacht ausgedrückt lässt die Normalverteilung $\mathcal{N}$ durch Exponenzieren einer Quadratfunktion beschreiben:
-
-$$\mathcal{N} \propto e^{-x^2}$$
-
-mit $e=2.71...$, der Eulerschen Zahl.^[Das Zeichen $y \propto x$ bedeutet "x ist proportional zu y", also $y = mx$.]
-
-
-Wie man sieht (@fig-normal1) ergibt sich eine Normalverteilung. 
-
-
-```{r norm, eval = FALSE, echo = FALSE}
-d <-
-  tibble(
-    x = seq(-3, 3, 
-            length.out = 100),
-    y = exp(-x^2)
-  )
-
-ggline(d, x = "x",y = "y")  # aus {ggpubr}
-```
-
-
-
-```{r Normalverteilung-10, echo = FALSE}
-#| fig-asp: 0.5
-#| label: fig-normal1
-#| fig-cap: "Wir basteln uns eine Normalverteilung"
-d <-
-  tibble(
-    x = seq(-3, 3, 
-            length.out = 100),
-    y = exp(-x^2)
-  )
-
-d %>% 
-  ggplot() +
-  aes(x = x, y = y) +
-  geom_line()
-```
-
-
-Eine Normalverteilung mit $\mu=0$ und $\sigma=1$ nennt man auch *Standardnormalverteilung* und 
-man schreibt:
-
-
-$$IQ \sim \mathcal{N}(0,1)$$
-
-Die Normalverteilung wird auch *[Gauss](https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F)-Verteilung* oder *Glockenkurve* genannt.
-
-
-
-
-
-#### Simulation einer Normalverteilung
-
-
-R hat eine Funktion eingebaut zur Erzeugung von Zufallszahlen (Zufallszahlengenerator), z.B. normalverteilte.
-Man übergibt dieser Funktion den gewünschten Mittelwert und die gewünschte Streuung und die Funktion zieht dann zufällig Werte aus dieser Verteilung.
-
-Diesen Zufallszahlengenerator kann man mit einem Duschkopf vergleichen, s. @fig-shower.
-An diesem Duschkopf kann man einen Schwenker einstellen, der den Duschkopf
-ausrichtet, also steuert, ob die Wassertropfen weit in die eine oder die andere
-Richtugn fallen.
-Zweitens hat unser Duschkopf noch einen Streuregler,
-der den Wasserstrahl entweder eng bündelt^[Massagedusche, behauptet der Hersteller] oder weit auseinanderfächert. Im ersten Fall fällt der Wasserstrahl eng und schmal aus. Im zweiten Fall fällt der Wasserstrahl breit aus.
-
-![Zufallszahlengenerator als Duschkopf](img/shower-data.png){#fig-shower width="50%"}
-
-[Quelle](https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models): John Kruschke.
-
-
-
-Eine Zufallszahl (*r*andom number), die *norm*alverteilt ist, mit $\mu=0$ und $\sigma=1$ kann man in R so erzeugen:
-
-
-
-```{r}
-rnorm(n = 1, mean = 0, sd = 1)
-```
-
-
-
-Ein Fallbeispiel: Der Inhalt einer Tüte mit Zucker, $X$, sei normalverteilt mit $\mu = 10002$ g und $\sigma=1.5$ g. Aus vertragsrechtlichen Gründen darf das Füllgewicht von 1000g nicht unterschritten werden, sonst drohen Konventionalstrafen.
-
-Wie groß ist die Wahrscheinlichkeit, dass 1000g unterschritten werden?
-
-
-Simulieren wir uns 1e5 (100000) Zuckertüten!
-
-
-```{r}
-n <- 1e5
-d <- 
-  tibble(
-    id = 1:n,
-    x = rnorm(n = n, mean = 1002, sd = 1.5)
-  )
-
-head(d)
-```
-
-Zählen wir, viele der Zuckertüten ein Gewicht von weniger als 1000g aufweisen:
-
-
-```{r}
-d %>% 
-  count(x < 1000)
-```
-
-Ein ziemlich^["Ziemlich" ist natürlich subjektiv; je nach Situation kann es zu viel oder nicht zu viel sein.] kleiner Anteil. Rechnen wir uns noch die Anteile (*prop*ortion) aus:
-
-
-```{r}
-d %>% 
-  count(x < 1000) %>% 
-  mutate(prop = n/1e4)
-```
-
-
 
 
 
