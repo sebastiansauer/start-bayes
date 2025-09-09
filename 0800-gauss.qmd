@@ -215,7 +215,7 @@ plot_density(d2)
 *Forschungsfrage:* Wie groß sind die erwachsenen !Kung im *Durchschnitt*?
 
 
-Wir interessieren uns also für den Mittelwert der Körpergröße (erwachsener Kung beider Geschlechter), $\mu$.
+Wir interessieren uns also für den Mittelwert der Körpergröße (erwachsene Person^[Der Einfachheit halber gehen wir davon aus, dass Männer und Frauen im Schnitt gleich groß sind.]), $\mu$.
 
 
 
@@ -279,7 +279,7 @@ p2 <-
 
 ### Modelldefinition
 
-Wir nehmen an, dass $\mu$ und $h_i$ normalverteilt sind und $\sigma$ exponentialverteilt (da notwendig positiv) ist:
+Wir nehmen an, dass die mittereln Größen, $\mu$, und die tatsächlichen Größen, $h_i$, normalverteilt sind und $\sigma$ halbseitig-normalverteilt ist (da notwendig positiv) ist:
 
 
 
@@ -343,9 +343,7 @@ Jetzt haben wir unser Modell (`m41`) definiert!
 Weil es so schön ist, schreiben/zeichnen wir es hier noch einmal auf, @eq-mod-kung1, @fig-mod-kung1.
 
 
-:::: {.columns}
 
-::: {.column width="60%"}
 
 
 $$
@@ -355,14 +353,8 @@ h_i &\sim \mathcal{N}(\mu, \sigma) & \text{Likelihood}  \\
 \sigma &\sim \mathcal{E}(1/8) & \text{Prior}
 \end{aligned}
 $${#eq-mod-kung1}
-:::
 
-::: {.column width="40%"}
-![Modellschema für das Modell `m41`](img/modell-kung1.png){#fig-mod-kung1}
-:::
-
-::::
-
+![Modellschema für das Modell `m41`](img/Kruschke-plot1.png){#fig-mod-kung1}
 
 
 
@@ -933,7 +925,8 @@ parameters(m41a)
 
 
 Im Modell `m41` haben wir auf die Priori-Werte der Voreinstellung von `rstanarm` vertraut.
-Jetzt lassen wir mal unsere eigenen Priori-Werte einfließen, in unserem zweiten Kung-Modell, `m42`.
+Jetzt lassen wir mal unsere eigenen Priori-Werte einfließen,
+in unserem zweiten Kung-Modell, `m42`.
 
 
 
@@ -990,7 +983,7 @@ zumindest wenn sie moderat gewählt waren.
 
 ```{r Kung-16-bis, eval = FALSE}
 #| echo: false
-write_rds(m42, "objects/m42.rds")
+#write_rds(m42, "objects/m42.rds")
 ```
 
 
@@ -1036,6 +1029,48 @@ m42_tibble |>
 :::
 
 Als Ausblick: Ein Vergleich mehrerer Priori-Werte wäre auch nützlich, um ein skeptisches Publikum von der Wahl (bzw. der Indifferenz) der gewählten Priori-Werte zu überzeugen.
+
+
+
+### Welche Körpergrößen erwartet unser Modell
+
+Bisher haben wir untersucht, wie die Verteilung der *mittleren* Körpergrößen, 
+$\mu$, laut unserem Modell aussehen könnte; wir haben uns also mit der Post-Verteilung
+von $\mu$ beschäftigt.
+Wir könnten aber auch an der Frage der Verteilung der *tatsächlichen* Körpergrößen, $h_i$,
+laut Modell, interessiert sein: 
+Wie groß sind sie denn, die !Kung, laut unserem Modell?
+
+Wie wir wissen, liefert unser Stan-Golem eine *Stichproben-Postverteilung*.
+Wenn wir das Ergebnisobjekt unserer Analyse, `m41` in eine Tabelle (Tibble) umwandeln
+und (die ersten paar Zeilen) betrachen, sehen wir diese Stichproben:
+
+
+```{r}
+m41 |> as_tibble() |> head()
+```
+
+Laut unserem Modell sind die Körpergrößen, $h_i$, normalverteilt mit $\mu$ und $\sigma$.
+$\mu$ wird von Stan, der in Begriffen der Regressionsanalyse denkt, schnöde als `(Intercept)`
+bezeichnet.
+Wir könnten jetzt also für jede Zeile eine Normalverteilung berechnen. 
+Und daraus zufällig eine Zahl ziehen.
+Damit hätten wir dann unsere Verteilung von Körpergrößen laut Modell.
+Diese Verteilung nennt man auch *Posterior-Prädiktiv-Verteilung*.
+Prädiktiv daher, weil sie die Werte der Körpergrößen "vorhersagt".
+
+Wir können uns diese Verteilung auch komfortabel von R ausgeben lassen, s. @fig-ppcheck.
+
+```{r}
+#| layout-ncol: 2
+#| label: fig-ppcheck
+#| fig-cap: "Die Posterior-Prädiktiv-Verteilung: Die Verteilung der tatsächlichen Körpergrößen auf Basis der Post-Verteilung. Unser Modell stellt die tatsächliche Verteilung ganz gut nach."
+#| fig-subcap:
+#|   - "Die dunkle, dicke Dichtekurve zeigt die tatsächliche Verteilung der Körpergrößen im Datensatz. Die hellen, leichten Dichtekurven zeigen die Verteilungen laut der Post-Verteilung unseres Modells."
+#|   - "Der wahre Wert einer Test-Statistik (T), hier der Mittelwert der Körpergrößen, wird mit der Verteilung der Körpergrößen in Bezug gesetzt."
+pp_check(m41)
+pp_check(m41, "stat")
+```
 
 
 

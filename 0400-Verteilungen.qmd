@@ -79,6 +79,8 @@ library(easystats)
 library(ggraph)
 library(knitr)
 
+source("funs/uniform_plot.R")  # oder "uniformplot.R"????
+source("funs/binomial_plot.R")
 ```
 
 
@@ -154,8 +156,8 @@ Abb. @fig-uniform zeigt ein Beispiel für eine (stetige) Gleichverteilung.
 #
 #source: https://dk81.github.io/dkmathstats_site/rmath-uniform-plots.html
 
-uniform_Plot(-1, 1)
-uniform_Plot(0, 3)
+uniform_plot(-1, 1)
+uniform_plot(0, 3)
 ```
 
 
@@ -980,434 +982,55 @@ binomial_plot(9, .7)
 
 
 
+## Die halbe Normalverteilung
 
-## Die Exponentialverteilung
+[Grundlagen über die Normalverteilung](https://statistik1.netlify.app/040-verbildlichen#spezialfall-normalverteilung) können in @sauer2025 nachgelesen werden.
 
-### Die Apfel-fällt-nicht-weit-vom-Stamm-Verteilung
+Ein Spezialfall der Normalverteilung ist die *halbe* (oder halbseitige) Normalverteilung, s. @fig-halbe-nv.
 
-<!-- :::{#exm-klasurnote} -->
-<!-- Sie haben in Statistik eine Klausur geschrieben. -->
-<!-- Sie gehen davon aus, dass Sie etw -->
+```{r}
+#| fig-cap: "Die halbe Normalverteilung"
+#| label: fig-halbe-nv
+df <- data.frame(x = seq(-4, 4, length.out = 500))
+df$y <- dnorm(df$x)
 
-Bevor wir unser Kung-Modell spezifizieren können,
-sollten wir noch überlegen, welches Vorab-Wissen wir zur *Streuung um den Mittelwert* herum haben.
-Da wir uns nicht 100% sicher zur gesuchten Größe sind,
-müssen wir diese Ungewissheit quantifizieren.
-Wir müssen also angeben, wie groß die Streuung um den Mittelwert unserer Meinung nach ist.
-Hier werden wir eingestehen, dass wir uns auch nicht 100% sicher sind,
-wie groß die Streuung exakt ist.
-Also geben wir eine Verteilung für die Streuung an,
-um diese Ungewissheit zu quantifizieren.
+# Separate shading regions
+df_left  <- subset(df, x <= 0)
+df_right <- subset(df, x >= 0)
 
-Etwas Wissen über diese Verteilung haben wir:
-
-- Eine Streuung muss positiv sein (es gibt keine negative Streuung).
-- Eine Gleichverteilung der Streuung ist vielleicht möglich, aber nicht sehr plausibel.
-- Wenn wir der Meinung sind, der Mittelwert betrage "ungefähr 178 cm", so halten wir  180 cm als Körpergröße einer erwachsenen Person für plausibel, aber 18000 cm für (praktisch) unmöglich und schon 200 cm für recht unplausibel. 
-Also: Je größer die die Abweichung vom Mittelwert, desto unplausibler der Wert der Körpergröße.
-
-Diese Anforderungen^["Desiderata"] spiegeln sich in @fig-exp wider;
-die eine  *Exponentialverteilung* zeigt (mit dem Parameter $\lambda=1$),
-Eine Exponentialverteilung erfüllt unsere Wünsche ziemlich gut.
-Außerdem zeigt die Abbildung verschiedene Quantile, wie das 95%-Quantil,
-das bei 3 liegt;
-95% der Werte dieser Verteilung sind also nicht größer als 3.
-
-
-
-```{r Post-Regression-18}
-#| fig-asp: 0.5
-#| label: fig-exp
-#| fig-cap: "Die Exponentialverteilung: Die meisten Äpfel fallen nicht weit vom Stamm ..."
-#| echo: false
-#| dev: "ragg_png"
-#| 
-
-# Set the rate parameter for the exponential distribution
-rate <- 1
-
-# Create a data frame for the exponential distribution
-x_vals <- seq(0, 5, by = 0.01) # X-axis range
-y_vals <- dexp(x_vals, rate = rate) # Density values
-data <- data.frame(x = x_vals, y = y_vals)
-
-ggplot(data, aes(x = x, y = y)) +
-  geom_line(color = okabeito_colors()[1], size = 1) +
+ggplot(df, aes(x, y)) +
+  geom_area(data = df_left, aes(x, y), fill = "grey90") +
+  geom_area(data = df_right, aes(x, y), fill = "blue") +
+  #geom_line(size = 1) +
   theme_minimal() +
-  labs(title = "Exponential Distribution", x = "", y = "Density") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  # Add emojis as text annotations
-  annotate("text", x = 0, y = 0, label = "🌳", size = 12, vjust = 0) +
-  annotate("text", x = 1, y = 0, label = "🍎", size = 6, vjust = 0) +
-  annotate("text", x = 2, y = 0, label = "🍎", size = 6, vjust = 0) +
-  annotate("text", x = 3, y = 0, label = "🍎", size = 6, vjust = 0)
-
-
-```
-
-
-Für eine exponentialverteilte Variable $X$ schreibt man auch:
-
-
-$$X \sim \operatorname{Exp}(1)$$
-
-
-Eine Verteilung dieser Form nennt man *Exponentialverteilung*.
-Sie hat einige nützliche Eigenschaften:
-
-
-
-
-1. Eine *Exp*onentialverteilung ist nur für positive Werte, $x>0$, definiert.
-2. Steigt X um eine *Einheit*, so ändert sich Y um einen *konstanten Faktor*.
-3. Sie hat nur einen Parameter, genannt *Rate* oder $\lambda$ ("lambda").
-4. $\frac{1}{\lambda}$  gibt gleichzeitig Mittelwert und Streuung ("Gestrecktheit") der Verteilung an.
-5. Je größer die Rate $\lambda$, desto schneller der "Verfall" der Kurve und desto *kleiner* die Streuung und der Mittelwert der Verteilung (und umgekehrt: Je größer  $1/\lambda$, desto *größer* die Streuung und der Mittelwert der Verteilung.)
-
-
-
-Ohne auf die mathematischen Eigenschaften im Detail einzugehen,
-halten wir fest, dass der Graph dieser Funktion gut zu unseren Plänen passt.
-
-
-
-### Visualisierung verschiedener Exponentialverteilungen
-
-Schauen wir uns einige Beispiele von Exponentialverteilungen an.
-Unterschiede in Exponentialverteilungen sind rein auf Unterschiede in $\lambda$ (lambda) zurückzuführen, s. @fig-exps.
-
-```{r gg-exp-fun}
-#| echo: false
-gg_exp <- function(r, max_x = 25, probs = c(0.05, .25, .50, .75, .95)) {
-  
-  d <-
-  tibble(
-    x = seq(0, 5,.1),
-    y = dexp(x, rate = r)
-  )
-  
-  d_qs <-
-    tibble(
-      prob = probs,
-      q = qexp(prob, rate = r) 
-    )
-  
-  med_exp <- round(log(2) / r, 2)
-  
-  
-  p <- 
-    ggplot(NULL, aes(c(0, max_x))) +
-    geom_area(stat = "function", 
-              fun = dexp, 
-              fill = "grey", 
-              args = list(rate = r))  +
-    labs(title = paste0("Exp(", r, ")"),
-         x = "sigma",
-         caption = paste0("Median (Md): ", med_exp)) +
-    geom_vline(data = d_qs,
-             aes(xintercept = q)) +
-    geom_label(data = d_qs,
-             aes(x = q, 
-                 label = prob,
-                 y = prob))
- 
-}
-```
-
-::::{#fig-exps}
-
-::: {.panel-tabset}
-
-
-
-### lambda = 2
-
-```{r}
-#| echo: false
-gg_exp(r = 2) + labs(subtitle = "lambda = 2") + theme_modern()
-```
-
-
-### lambda = 1
-
-```{r}
-#| echo: false
-gg_exp(r = 1) + labs(subtitle = "lambda = 1") + theme_modern()
-```
-
-### lambda = 1/2
-
-```{r}
-#| echo: false
-gg_exp(r = 1/2) + labs(subtitle = "lambda = 1/2") + theme_modern()
-```
-
-
-### lambda = 1/4
-
-```{r}
-#| echo: false
-gg_exp(r = 1/4) + labs(subtitle = "lambda = 1/4") + theme_modern()
-```
-
-
-
-### lambda = 1/8
-
-```{r}
-#| echo: false
-gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8") + theme_modern() 
-```
-
-:::
-::::
-
-
-<!-- ```{r Kung-9-bis} -->
-<!-- #| echo: false -->
-<!-- #| fig-asp: 0.8 -->
-<!-- #| label: fig-exps -->
-<!-- #| fig-cap: Beispiele von Expnentialverteilungen mit unterschiedlichem lambda  -->
-<!-- #| fig-width: 9 -->
-
-<!-- p_r1 <- gg_exp(r = 1) + labs(subtitle = "lambda = 1") -->
-
-<!-- p_r2 <-  gg_exp(r = 1/2)  + labs(subtitle = "lambda = 1/2") -->
-
-<!-- p_r1_8 <- gg_exp(r = 1/4) + labs(subtitle = "lambda = 1/4") -->
-
-<!-- p_r1_25 <- gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8") -->
-
-
-<!-- plots(p_r1_25, p_r1_8, p_r2, p_r1) -->
-<!-- ``` -->
-
-
-
-
-Wie wir in @fig-exps sehen, könnte eine Exponentialverteilung mit $\lambda=1/8$ grob passen für unser !Kung-Beispiel:
-Bei einer Exponentialverteilung mit Rate $\lambda=1/8$ ist der Median bei ca. 5.5 cm, also einer Streuung  ($\sigma$, typischen Abweichung vom Mittelwert) von 5.5 cm.
-Der Median ist der "mittlere Wert" der Verteilung, also der Wert, 
-bei dem 50% der Werte kleiner und 50% der Werte größer sind.
-Insofern eignet sich der Median gut als Schätzer für einen "typischen" Wert der Verteilung.
-
-
-
-:::callout-note
-Die "richtigen" Priori-Verteilung zu finden, bzw. die richtigen Parameter für die Priori-Verteilung zu wählen, ist nicht möglich, denn es gibt nicht *die* eine, richtige Priori-Verteilung.
-Eine "gut passende" Verteilung zu finden, ist nicht immer einfach.
-Gut beraten ist man mit der Regel, im Zweifel lieber eine liberale Verteilung zu wählen,
-die einen breiteren Raum an möglichen Werten zulässt. 
-Allerdings sollte man nicht das Baby mit dem Wasser auskippen und extreme Werte, wie mehrere Meter Körpergröße Streuung, erlauben.
-:::
-
-Man kann sich die Quantile der Exponentialverteilung mit `qexp()` ausgeben lassen,
-wobei mit man `p` den Wert der Verteilungsfunktion angibt,
-für den man das Quantil haben möchte 
-(mit `pexp()` kann man sich analaog die die Verteilungsfunktion ausgeben lassen.) 
-Mit `rate` wird $\lambda$ (lambda) bezeichnet.^[Es gibt auch [Online-Apps, die diese Werte ausgeben](https://homepage.divms.uiowa.edu/~mbognar/applets/exp-like.html.]
-
-Dieser Aufruf zum Beispiel, `qexp(p = .5, rate = 1/8)`,
-gibt uns das 50%-Quantil einer Exponentialverteilung mit Rate ($\lambda$) 1/8 zurück, ca. 5.5: 
-Mit einer Wahrscheinlichkeit von 50% wird ein Wert von 5.5 nicht überschritten bei dieser Verteilung.
-
-Die Grenzen der inneren 95% dieser Verteilung kann man sich auch ausgeben.
-
-```{r}
-qexp(p = c(0.025, .975), rate = 1/8)
-```
-
-Diese Grenzen scheinen hinreichend weit, das wir noch von den Daten überrascht werden können, aber schmal genug, um unsinnige Werte auszuschließen.
-Ein guter Start! Weiter geht's!
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### Vertiefung
-
-
-
-
-
-#### Logarithmus
-
-Ein Logarithmus ist die Umkehrung der Potenzierung.
-
-Der Logarithmus beantwortet folgende Frage:
-Mit welchem Exponenten muss ich eine bestimmte Zahl (die Basis) potenzieren, um eine andere Zahl zu erhalten? Die Antwort auf diese Frage ist der Logarithmus.
-
-Formal ausgedrückt:
-
-:::{#def-logarithmus}
-### Logarithmus
-Der Logarithmus von einer Zahl $a$ zur Basis $b$ ist die Zahl $x$, mit der man $b$ potenzieren muss, um $a$ zu erhalten, s. @thm-logarithmus. $\square$
-:::
-
-:::{#thm-logarithmus}
-### Logarithmus
-$$\log b(x) = y \quad \text{wenn und nur wenn} \quad b^y = x$$
-:::
-
-Der Logarithmus zur Basis 2^[als "Logarithmus Dualis", ld, bezeichnet] gibt die "Verdopplungen" bzw. "Halbierungen" der Wahrscheinlichkeit an, wobei $ld(1/2) = -1.\square$
-
-
-
-:::{#exm-log2-1}
-$ld(1/2) = -1$
-```{r}
-log(.5, base = 2)
-```
-
-1/2 ist genau "minus 1 Verdopplung" von 1 entfernt, d.h. eine Halbierung.
-
-$ld(1/4) = -2$
-```{r}
-log(1/4, base = 2)
-```
-1/4 ist genau "minus 2 Verdopplungen" von 1 entfernt, d.h. zwei Halbierungen.
-
-$ld(1/8) = -3$
-```{r}
-log(1/8, base = 2)
-```
-
-1/8 (0.125) ist 3 Halbierungen von 1 entfernt.$\square$
-:::
-
-
-
-
-
-#### Simulieren wir eine Binomialverteilung 
-
-
-Die Binomialverteilung lässt sich gut als "Münzwurf-Verteilung" auffassen.
-
-Werfen wir eine Münze und sehen wir, was passiert.
-
-
-```{r}
-sample(x = c(0, 1), size = 1)
-```
-
-
-Mit `sample()` ziehen wir eine Stichprobe aus dem Ereignisraum `x`, hier 0 und 1. 
-Dabei vereinbaren wir (willkürlich), dass 0 für "Kopf" steht und 1 für "Zahl".
-`size = 1` bedeutet, wir werfen die Münze ein Mal (d.h. Stichprobengröße *size* ist 1).
-
-Okay, noch an Bord? Dann werfen wir die Münze 10 Mal.
-
-
-```{r}
-sample(x = c(0, 1), size = 10, replace = TRUE)
-```
-
-`replace = TRUE` heißt, wir legen die Münze wieder zurück auf den Tisch, wenn wir sie geworfen haben.
-Oder anders ausgedrückt: *Ziehen mit Zurücklegen*.
-
-
-
-R, mach dich bereit, wirf die Münze 1000 ($n=10^3$ oder `1e3`) Mal^[R meckert nicht bei langweiligen Aufgaben.].
-
-
-```{r}
-n <- 1e3
-
-muenze_oft <- 
-  sample(x = c(0, 1), size = n, replace = TRUE) 
-
-
-muenze_oft %>% 
-  sum()
-```
-
-
-Mit `sum()` nach dem Pfeifensymbol `%>%` haben wir aus dem Vektor `muenze_oft`, der aus der ersten Zeile resultiert,
-die Summe ausgerechnet. 
-
-Jetzt wissen wir, wie oft die Münze "Zahl" gezeigt hat, nämlich `r sum(muenze_oft)` Mal.
-
-
-
-::: callout-note
-Wenn Sie einen Zufallsversuch wiederholen, muss nicht jedes Mal das gleiche Ergebnis resultieren. Entsprechend wird bei wiederholten Ausführung der Funktion `sample()` nicht immer das gleiche Ergebnis resultieren. Wundern Sie sich also nicht, wenn bei Ihrem Computer eine ähnliche, aber nicht gleiche, Zahl herauskommt.
-:::
-
-
-Visualisieren wir mal unsere Münzwürfe. Dazu erstellen wir zuerst eine geeignete Tabelle, @tbl-muenz.
-
-
-```{r}
-muenz_tab <-
-  tibble(
-    id = 1:n,
-    x = muenze_oft,
-    x_cumsum = cumsum(x) / id  # gibt Anteil von "Zahl" wieder
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.y  = element_blank()
   )
 ```
 
 
-```{r}
-#| echo: false
-#| label: tbl-muenz
-#| tbl-cap: "Die kumulierte Summe beim Münzwurf (nur die ersten paar Zeilen)"
-head(muenz_tab)
-```
-
-
-Und hier der Anteil von "Zahl" im Verlauf unserer Münzwürfe, s. @fig-lln.^[`library(ggpubr); ggline(muenz_tab, x = "id", y = "x_cumsum")`]
-
-
-```{r}
-#| label: fig-lln
-#| echo: false
-#| fig-cap: "Das Gesetz der großen Zahl am Beispiel der Stabilisierung des Trefferanteils beim wiederholten Münzwurf"
-#| fig-asp: 0.3
-
-muenz_tab %>% 
-  slice_head(n = 1e3) %>% 
-  ggplot() +
-  aes(x = id, y = x_cumsum) +
-  geom_line() +
-  theme_minimal()
-```
-
-
-
-Grob gesagt scheint sich ein Münzwurf nach, naja, vielleicht 500 Würfen "einigermaßen" zu stabilisieren.^[Was "einigermaßen" bedeuten soll, ist kein statistischer Begriff, sondern einer, der im echten Leben von den Menschen beantwortet werden muss, die eine Entscheidung zu treffen haben.]
-
-
-
-::: callout-important
-#### Das Gesetz der großen Zahl
-
-Zieht man (zufällig) immer mehr Werte aus einer Verteilung (mit endlichem Mittelwert), nähert sich der Mittelwert der Stichprobe immer mehr mit dem Mittelwert (oft als *Erwartungswert* bezeichnet) der Verteilung an.
+:::{#def-halbe-nv}
+### Halbe Normalverteilung
+Wenn man die (negativen) Vorzeichen bei den Werten der Normalverteilung ignoriert, erhält man die halbe Normalverteilung.
+Man "spiegelt" die negative Seite auf die positive. $\square$
 :::
 
 
-
-```{r lln, out.width = "100%", fig.align="center", fig.asp = .5}
-#| eval: false
-#| echo: false
-source(paste0(here::here(),"/R-Code/img15.R"))
-```
+Man kann sie verwenden, wenn man von normalverteilten Werten ausgeht, die größer als Null sein müssen.
 
 
+:::{#exm-halbe-NV}
+### Halbe Normalverteilungen
 
-<!-- 3b1b hat ein [nettes Video zu diesem Thema](https://youtu.be/8idr1WZ1A7Q), das sich als Vertiefung eignet. -->
-
-
+- Die Entfernung Ihres Dart-Pfeiles zur Mitte der Zielscheibe
+- Die Entfernung des vom Baum gefallenen Apfels zum Stamm
+- Die Abweichung des Gewichts eines Produktionsgegenstands (z.B. einer Schraube) vom Soll-Gewicht
+- Die Reaktionszeiten einer Versuchsperson in einer Reaktionszeitaufgabe $\square$
+:::
 
 
 

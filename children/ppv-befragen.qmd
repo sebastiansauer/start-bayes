@@ -1,0 +1,271 @@
+
+## Die PPV befragen
+
+
+🏎🏎️ VERTIEFUNG (nicht prüfungsrelevant ) 🏎🏎
+
+
+
+
+
+
+
+
+Die Posterior-Prädiktiv-Verteilung (PPV) gibt uns die Möglichkeit,
+nach der Wahrscheinlichkeit *tatsächlicher* Körpergrößen zu fragen - 
+und nicht nur nach *mittleren* Körpergrößen anhand der Post-Verteilung.
+
+
+:::callout-important
+Die Post-Verteilung macht *nur* Aussagen zur *mittleren* Körpergröße,
+denn das ist was wir modellieren wollten.
+Möchten wir Aussagen zur Wahrscheinlichkeit *tatsächlicher* Größen treffen,
+brauchen wir die PPV.
+Allgemeiner gesagt: Die PPV macht Vorhersagen auf Basis eines Modells. 
+Für jede Vorhersage gibt es eine Verteilung, 
+die wir zu einem Punktschätzer (z.B. Median) und einem Schätzbereich (z.B. 89%-HDI) zusammenfassen können.
+:::
+
+An dieser Stelle sollten wir uns vor Augen führen, dass die PPV *mehr* Ungewissheit beinhaltet,
+denn sie berücksichtigt derer zweier Arten:
+
+1. Ungewissheit bzgl. der Modellparameter (Steigung und Achsenabschnitt der Regressionsgeraden)
+2. Ungewissheit der Vorhersagen (das Modell macht keine perfekten Vorhersagen)
+
+
+Die *Post-Verteilung* berücksichtigt nur die Ungewissheit in den Modellparametern,
+macht also nur Aussagen zur Regressionsgeraden.
+
+Die PPV macht Aussagen für konkrete Beobachtungen.
+Der Unterschied ist in @fig-ppv-vs-post dargestellt; die Funktionen stammen übrigens aus `{easystats}`.
+
+
+```{r}
+#| label: fig-ppv-vs-post
+#| layout-ncol: 2
+#| fig-cap: "PPV vs. Post-Verteilung"
+#| fig-subcap:
+#|   - "PPV mit viel Ungewissheit"
+#|   - "Post-Verteilung mit wenig(er) Ungewissheit"
+estimate_prediction(m43a) %>% plot()
+estimate_relation(m43a) %>% plot()
+```
+
+
+### Perzentil-Intervalle für bestimmte Prädiktor-Werte
+
+
+
+>    Wie groß ist ein !Kung-Mann mit mittlerem Gewicht?
+
+
+```{r}
+set.seed(42)
+estimate_prediction(m43a, data = tibble(weight_c = 0), seed = 42)
+```
+
+Unser Modell, `ma43a` schätzt ca. 145cm bis 165cm.
+
+
+Wir können uns auch eine Sequenz an Prädiktorwerten, die uns interessieren, erstellen, s. `weight_df`:
+
+```{r echo = TRUE}
+weight_df <- tibble(weight_c = seq(-20,20, by = 5))
+```
+
+
+Für diese Werte lassen wir uns dann die Perzentil-Intervalle (PI) ausgeben:
+
+```{r Post-Regression-befragen-21, echo = TRUE}
+mus <- 
+  estimate_prediction(m43a, data = weight_df) 
+
+head(mus)
+```
+
+Um die Perzentilintervalle zu erstellen, wird von `estimate_prediction()` für jeden Prädiktorwert eine PPV erstellt und (in der Voreinstellung) das 5%- sowie 95%-Quantil dafür berechnet. 
+Sie können die Voreinstellung ändern mittels des Arguments `ci`;
+um ein 89%-PI zu berechnen, würde man z.B. schreiben `ci = .89`.
+
+Um Reproduzierbarkeit sicherzustellen,
+haben wir mit `set.seed(42)` die Zufallszahlen fixiert.
+
+
+Hoppla! Das ist ja viel ungenauer, als die Angaben der Post-Verteilung oben.
+Ja, denn die Post-Verteilung hat die Ungewissheit zum *Mittelwert* ausgedrückt;
+die PPV gibt die Ungewissheit *tatsächlicher* beobachtbarer Körpergrößen aus,
+nicht nur die Ungewissheit zum Mittelwert.
+
+
+Berechnen wir die PPV für die bestehenden Beobachtungen aus `m43a`:
+
+```{r ppv-m43a}
+ppv_m43a <- estimate_prediction(
+  m43a,
+  data = weight_df)
+
+mus 
+```
+
+
+
+
+
+
+### Perzentilintervalle für verschiedenen Prädiktorwerte visualisiert
+
+@fig-m43a-nochmal visualisiert die Ungewissheit von Vorhersagen laut der PPV.
+Die Ungewissheit in @fig-m43a-nochmal ist die Antwort auf die Frage: "Wie sicher sind wir uns,
+zur Größe einer !Kung-Person, gegeben dass die z.B. 10 kg mehr als der Durchschnitt wiegt?"
+Eine Vorhersage bezeichnet man auch als "bedingte Verteilung", da man den Wert einer Verteilung voraussagt,
+*gegeben* einer Bedingung, z.B. `weight_c = 10`.  
+
+
+```{r mus-d3}
+#| echo: false
+#| label: fig-m43a-nochmal 
+#| fig-cap: "Visualisierung der Ungewissheit der Vorhersagen laut PPV: Die Vorhersage von Beobachtungen beinhaltet mehr Ungewissheit als die Vorhersage von zu erwartenden Werten, daher sind die Ungewissheitsintervalle der PPV größer als die der Post-Verteilung."
+mus <- 
+  mus %>% 
+  mutate(height = 154.6 + 0.9*weight_c)
+
+d3 %>% 
+  ggplot(aes(x = weight_c, y = height)) +
+  geom_point(color = "grey60") +
+  geom_abline(slope = coef(m43a)[2], intercept = coef(m43a)[1], color = "blue") +
+  geom_errorbar(data = mus,
+                aes(ymin = CI_low,
+                    ymax = CI_high),
+                size = .5,
+                width = .5,
+                color = "firebrick")
+```
+
+
+Die vertikalen Balken geben die 95%-KI wieder, die wir jeweils zu erwarten haben.
+
+Noch eine andere Visualisierung, s. @fig-katzenaugen; 
+je dicker die "Katzenaugen", desto mehr Stichproben (samples) liegen vor an der Stelle,
+und umso genauer ist die Schätzung.
+
+
+```{r ppv-m43-weight}
+#| echo: false
+#| label: fig-katzenaugen
+#| fig-cap: Die PPV für bestimmte Gewichtswerte w, visualisiert mit Katzenaugen-Diagrammen
+#| layout-ncol: 2
+
+ppv_m43_weight_df <-
+  posterior_predict(m43a,
+                    newdata = weight_df) %>% 
+  as_tibble() %>% 
+  pivot_longer(everything(),
+               names_to = "weight_condition",
+               values_to = "height")
+
+weight_df <-
+  weight_df %>% 
+  mutate(weight_condition = as.character(c(1:9)))
+
+ppv_m43_weight_df <- 
+  ppv_m43_weight_df %>% 
+  full_join(weight_df, by = "weight_condition")
+
+d3 %>% 
+  ggplot() +
+  geom_violin(data = ppv_m43_weight_df,
+              aes(x = weight_c, y = height, group = weight_c),
+                fill = "grey80",
+              width = 1) +
+    geom_point(aes(x = weight_c, y = height)) +
+  geom_abline(slope = coef(m43a)[2], intercept = coef(m43a)[1], color = "blue")
+```
+
+
+Also: Je dicker die Violine, desto wahrscheinlicher $\mu | w_i$.
+
+
+
+### Die PPV über alle Beobachtungen visualisiert
+
+Gerade eben haben wir *bedingte* PPVen angeschaut: Also eine PPV für einen *bestimmten* Prädiktorwert, z.B. bei einer Person mittleren Gewichts.
+Wir können auch den Mittelwert über alle bedingten PPV anschauen, sozusagen die "*Master-PPV*" oder "unbedingte PPV" oder schlicht PPV.
+Vergleichen wir die echten Werte für `height`, $y$, mit den von der PPV simulierten Werten für `height`, $y_{rep}$, s. @fig-ppv-check.
+
+```{r ppv-plot1}
+#| label: fig-ppv-check
+#| fig-cap: Vergleich der Vorhersagen für y (leichte, blaue Linien) mit der beobachteten Verteilung von y
+check_predictions(m43a)  # aus easystatss
+```
+
+`?check_predictions` zeigt Hilfe für diese Funktion. 
+Die Funktion zeigt die Vorhersagen für die AV laut der Posteriori-Verteilung.
+
+
+
+Die zwei Gipfel hat unser Modell nicht mitgekriegt, 
+ansonsten decken sich die Vorhersagen der PPV gut mit den echten Daten.
+
+
+
+
+
+
+
+
+### Fragen an die Master-PPV
+
+- Wie groß sind die !Kung im Schnitt?
+- Welche Größe wird von 90% der Personen nicht überschritten?
+- Wie groß sind die 10% kleinsten?
+
+
+```{r}
+ppv_m43a <- posterior_predict(
+  m43a,
+  newdata = weight_df,
+  draws = 100) %>% 
+  as_tibble() %>% 
+  pivot_longer(
+    cols = everything(),
+    names_to = "weight_condition",
+    values_to = "height")
+head(ppv_m43a)
+```
+
+
+
+```{r}
+ppv_m43a <-
+  ppv_m43a <- posterior_predict(
+  m43a,
+  newdata = weight_df,
+  draws = 100) %>% 
+  as_tibble() %>% 
+  pivot_longer(
+    cols = everything(),
+    names_to = "weight_condition",
+    values_to = "height")
+
+head(ppv_m43a)
+```
+
+
+
+```{r Post-Regression-befragen-29, echo = TRUE }
+ppv_m43a %>% 
+  summarise(
+    q_10 = quantile(height, prob = .1),
+    height_mean = mean(height),
+    q_50 = quantile(height, prob = .5),
+    q_90 = quantile(height, prob = .9)
+  )
+```
+
+
+Was ist der 50% Bereich der Körpergröße?
+
+```{r Post-Regression-befragen-30, echo = TRUE}
+ppv_m43a %>% 
+  eti(ci = .5)
+```

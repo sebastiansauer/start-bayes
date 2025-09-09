@@ -396,6 +396,9 @@ Der Mittelwert $\mu$ für jede Post-Verteilung ergibt sich aus dem linearen Mode
 @thm-modm42 stellt die Modelldefinition dar.
 
 
+
+
+
 ::: {#thm-modm42}
 
 ### Modelldefinition
@@ -489,8 +492,10 @@ Die Anzahl der Prioris entspricht der Anzahl der Parameter des Modells.
 
 
 
+### Prioris plus Daten gleich Post
 
 
+![Parameter ]
 
 
 ## Die Post-Verteilung befragen
@@ -515,24 +520,22 @@ $$\beta_1 \sim N(5,3); \\
 Wir nennen das Modell `m43a`^[Wer ist hier für die Namensgebung zuständig? Besoffen oder was?], s. @lst-m43a.
 
 
+::: {#lst-m43a} 
 
-
-```{#lst-m43a .r lst-cap="Modelldefinition von m43a in R"}
+```{r m43a}
 m43a <-
   stan_glm(
     height ~ weight_c,  # Regressionsformel
     prior = normal(5, 3),  # Regressionsgewicht (beta 1)
     prior_intercept = normal(178, 20),  # beta 0
-    prior_aux = exponential(0.1),  # sigma
     refresh = 0,  # zeig mir keine Details
-    seed = 42,  # lege die Zufallszahlen fest für Reproduzierbarkeit
     data = d3)
 ```
 
+Modelldefinition von `m43a` in R
+:::
 
-
-
-```{r m43a, echo = FALSE}
+```{r m43b-ACHTUNG-MUSS-NOCH-ANGEPASST-WERDEN, echo = FALSE}
 # Posteriori-Vert. berechnen:
 m43a <-
   stan_glm(
@@ -670,8 +673,8 @@ Mit "expectation" sind hier die erwarteten Werte, also die Regressionsgerade, ge
 ```{r}
 #| fig-cap: Erwartete Werte des Modell m43a, sprich, die Regressionsgerade
 #| label: fig-expect-m43a-expect
-m43_expect <- estimate_expectation(m43a)   # aus {easystats}
-plot(m43_expect)
+estimate_expectation(m43a, by = "weight_c") |> plot()  # aus {easystats}
+
 ```
 
 :::
@@ -880,7 +883,7 @@ Einfacher ist die Visualisierung mit `estimate_expectation`, s. @fig-m43a-estima
 ```{r}
 #| fig-cap: Schätzbereich für die bedingten mittleren Körpergröße, also die Regressionsgerade mit Unsicherheitsintervall
 #| label: fig-m43a-estimate-expectation
-estimate_expectation(m43a, seed = 42) %>% plot()
+estimate_expectation(m43a, by = "weight_c") %>% plot()
 ```
 
 
@@ -1368,7 +1371,8 @@ mu_at_50 %>%
 
 ### Lagemaße und Streuungen
 
-Befragen wir die bedingte Post-Verteilung. Eine erste Frage zielt nach den typischen deskriptiven Statistiken, also nach Lage und Streuung der Verteilung der Körpergröße.
+Befragen wir die bedingte Post-Verteilung. 
+Eine erste Frage zielt nach den typischen deskriptiven Statistiken, also nach Lage und Streuung der Verteilung der Körpergröße.
 
 
 
@@ -1377,7 +1381,7 @@ Was ist das 90% PI für $\mu|w=50$ ?
 
 ```{r Post-Regression-befragen-19, echo = TRUE}
 mu_at_50 %>% 
-  eti(mu_at_50, ci = .9)
+  eti(ci = .9)
 ```
 
 Die mittlere Größe - gegeben $w=50$ - liegt mit 90% Wahrscheinlichkeit zwischen den beiden Werten (ca.) 159cm und 160cm.
@@ -1392,636 +1396,11 @@ mu_at_45 %>%
 ```
 
 
+<!-- include prior-predictive-distro.qmd -->
 
 
+<!-- include ppv-befragen.qmd -->
 
-
-
-## Prior-Prädiktiv-Verteilung
-
-🏎🏎️ VERTIEFUNG (nicht prüfungsrelevant ) 🏎🏎
-
-
-
-
-### Moment
-
- 🤔 Moment. Dieser Prior, $\beta_1$ in `m43` erachtet positive und negative Zusammenhang als gleich wahrscheinlich?!
-
-Sind wir wirklich indifferent, ob der Zusammenhang von Gewicht und Größe positiv oder negativ ist? [Nein, sind wir nicht.](https://media.giphy.com/media/daPCSjwus6UR2JxRX1/giphy.gif) 
-    
-
-
-### Priori-Prädiktiv-Verteilung für `m43`
-
-
-
-Was denkt [wir](https://media.giphy.com/media/Aausss8uUBIe3bZ3d2/giphy.gif) bzw. unser Golem *apriori* über den Zusammenhang von Größe und Gewicht?
-Um diese Frage zu beantworten ziehen wir Stichproben aus den Priori-Verteilungen des Modells, also für $\beta_0$, $\beta_1$ und $\sigma$.
-
-
-
-```{r m43-prior-pred}
-m43_prior_pred <-
-    stan_glm(height ~ weight_c, 
-             prior = normal(0, 10),
-             prior_intercept = normal(178, 20),  # mu
-             prior_aux = exponential(0.1),  # sigma
-             refresh = FALSE, 
-             prior_PD = TRUE,  # Schalter für Prior-Pred-Verteilung
-             data = d3)
-
-
-m43_prior_pred_draws <- 
-  m43_prior_pred %>% 
-  as_tibble() %>% 
-  rename(a = `(Intercept)`,
-         b = weight_c) %>% 
-  slice_sample(n = 50)
-```
-
-
-
-```{r}
-#| echo: false
-m43_prior_pred_draws %>% 
-  slice_head(n=5) %>% 
-  gt() %>% 
-  fmt_number(everything(), decimals = 1)
-```
-
-
-
-Jede Zeile definiert eine Regressionsgerade.
-
-
-
-### Prior-Prädiktiv-Simulation für `m43` mit `stan_glm()` 
-
-
-
-
-```{r echo = TRUE, eval = FALSE}
-m43_prior_pred <-
-    stan_glm(height ~ weight_c, 
-             prior = normal(0, 10),  # beta
-             prior_intercept = normal(178, 20),  # alpha
-             prior_aux = exponential(0.1),  # sigma
-             refresh = FALSE, 
-             prior_PD = TRUE,  # DIESER Schalter macht's
-             data = d3)
-
-m43_prior_pred_draws <- 
-  m43_prior_pred %>% 
-  as_tibble() %>% 
-  rename(a = `(Intercept)`,
-         b = weight_c) %>% 
-  slice_sample(n = 50)
-```
-
-
-
-```{r echo = FALSE, eval = FALSE}
-m43a_prior_pred <-
-    stan_glm(height ~ weight_c, 
-             prior = normal(0, 10),  # beta
-             prior_intercept = normal(0, 20),  # alpha
-             prior_aux = exponential(0.1),  # sigma
-             refresh = FALSE, 
-             prior_PD = TRUE,  # DIESER Schalter machts
-             data = d3)
-
-m43a_prior_pred_draws <- 
-  m43a_prior_pred %>% 
-  as_tibble() %>% 
-  rename(a = `(Intercept)`,
-         b = weight_c) %>% 
-  slice_sample(n = 50)
-```
-
-
-
-
-
-
-
-
-
-### Visualisieren der Prior-Prädiktiv-Verteilung
-
-
-
-```{r prior-pv1, echo = TRUE, eval = FALSE, fig.asp = .5}
-d3 %>% ggplot() +
-  geom_point(aes(x = weight_c, y = height)) + 
-  geom_abline(data = m43_prior_pred_draws,
-aes(intercept = a, slope = b), color = "skyblue", size = 0.2) +
-  scale_y_continuous(limits = c(0, 500)) +
-  geom_hline(yintercept = 272, size = .5) +
-  geom_hline(yintercept = 0, linetype = "dashed")
-```
-
-
-
-🤯 Einige dieser Regressionsgeraden sind unsinnig!
-
-
-```{r ref.label = "prior-pv1", eval = TRUE, fig.asp = .3}
-
-```
-
-
-Die durchgezogene horizontale Linie gibt die Größe des [größten Menschens, Robert Pershing Wadlow](https://en.wikipedia.org/wiki/Robert_Wadlow), an.
-
-
-
-
-
-### Ein positiver Wert für $\beta_1$ ist plausibler
-
-
-#### Oh no
-
-Eine Normalverteilung mit viel Streuung:
-
-```{r Post-Regression-16, fig.asp = .5}
-#| echo: false
-d <-
-  tibble(
-    x = seq(-30,30,.1),
-    y = dnorm(x, mean = 0, sd = 10)
-  )
-
-d %>% 
-  ggplot(aes(x,y)) +
-  geom_line() +
-  scale_y_continuous(breaks = NULL) +
-  labs(title = "mu=0, s=10")
-```
-
-👎 $\beta=-20$ wäre mit diesem Prior gut möglich: Pro kg Gewicht sind Menschen im Schnitt 20cm kleiner, laut dem Modell. Quatsch.
-
-
-
-
-#### Oh yes
-
-Wir bräuchten eher so eine Verteilung, mit mehr Masse auf der positiven Seite (x>0):
-
-```{r Post-Regression-17, fig.asp=.5}
-#| echo: false
-d <-
-  tibble(
-    x = seq(-30,30,.1),
-    y = dnorm(x, mean = 3, sd = 2)
-  )
-
-d %>% 
-  ggplot(aes(x,y)) +
-  geom_line() +
-  scale_y_continuous(breaks = NULL) +
-  labs(title = "mu=5, sd = 3")
-```
-
-👍 Vermutlich besser: Ein Großteil der Wahrscheinlichkeitsmasse ist $X>0$. Allerdings gibt's keine Gewähr, dass unser Prior "richtig" ist.
-
-
-
-
-### Priori-Prädiktiv-Simulation, 2. Versuch
-
-
-
-
-
-```{r echo = TRUE}
-m43a_prior_pred <-
-    stan_glm(
-      height ~ weight_c, 
-      prior = normal(2, 2),  # Regressionsgewicht
-      prior_intercept = normal(178, 20),  # mu
-      prior_aux = exponential(0.1),  # sigma
-      refresh = FALSE, 
-      # Schalter für Prior-Pred-Verteilung:
-      prior_PD = TRUE, 
-      data = d3)
-
-
-m43a_prior_pred_draws <- 
-  m43a_prior_pred %>% 
-  as_tibble() %>% 
-  # Spaltennamen kürzen: 
-  rename(a = `(Intercept)`) %>%  
-  rename(b = weight_c,
-         s = sigma)
-```
-
-
-
-
-
-```{r}
-#| echo: false
-m43a_prior_pred_draws %>% 
-  slice_head(n=5) %>% 
-  gt() %>% 
-  fmt_number(everything(), decimals = 1)
-```
-
-
-
-Das Argument `prior_PD = TRUE` sorgt dafür, dass keine Posteriori-Verteilung, sondern eine Prior-Prädiktiv-Verteilung berechnet wird.
-
-
-
-
-### Visualisieren der Prior-Prädiktiv-Verteilung, `m43a`
-
-
-Unsere Priori-Werte scheinen einigermaßen vernünftige Vorhersagen zu tätigen. Allerdings erwartet unser Golem einige Riesen.
-
-
-```{r, eval = TRUE, fig.asp=.5}
-d3 %>% 
-  ggplot(aes(x = weight_c, y = height)) +
-  geom_point() +
-  geom_abline(data = {m43a_prior_pred_draws %>% slice_head(n=50)},
-              aes(slope = b,
-                  intercept = a),
-              color = "skyblue",
-              size = .2,
-              alpha = .7) +
-  geom_hline(yintercept = 272, size = .5) +
-  geom_hline(yintercept = 0, linetype = "dashed")+
-  scale_y_continuous(limits = c(0, 500)) 
-```
-
-
-Die durchgezogene horizontale Linie gibt die Größe des [größten Menschens, Robert Pershing Wadlow](https://en.wikipedia.org/wiki/Robert_Wadlow), an.
-
-
-
-
-
-
-
-
-### Moment, kann hier jeder machen, was er will?
-
-
-
-Es doch den einen, richtigen, objektiven Priori-Wert geben?!
-
-Kann denn jeder hier machen, was er will?! Wo kommen wir da hin?!
-
-
->    This is a mistake. There is no more a uniquely correct prior than there is a uniquely correct likelihood. Statistical models are machines for inference. Many machines will work, but some work better than others. Priors can be wrong, but only in the same sense that a kind of hammer can be wrong for building a table.  
-
-@mcelreath2020, p. 96.
-
-
-
-
-
-### Hier ist unser Modell, `m43a`
-
-
-
-
-\begin{align}
-\text{height}_i &\sim \operatorname{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta \cdot  \text{weight}_i\\
-\alpha &\sim \operatorname{Normal}(178, 20)\\
-\beta &\sim \operatorname{Normal}(5,3)\\
-\sigma &\sim \operatorname{Exp}(0.1)
-\end{align}
-
-
-
-```{r Post-Regression-25, echo = TRUE}
-# Posteriori-Vert. berechnen:
-m43a <-
-  stan_glm(
-    height ~ weight_c,  # Regressionsformel
-    prior = normal(5, 3),  # Regressionsgewicht (beta 1)
-    prior_intercept = normal(178, 20),  # mu
-    prior_aux = exponential(0.1),  # sigma
-    refresh = 0,  # zeig mir keine Details
-    seed = 42,  # Zufallszahlen festlegen
-    data = d3)
-```
-
-
-
-
-
-### Eine Zusammenfassung der Posteriori-Verteilung für `m43a`
-
-
-```{r}
-#| eval: false
-m43a %>% 
-  parameters()
-```
-
-
-
-```{r}
-#| echo: false
-m43a %>% 
-  parameters() %>% 
-  display()
-```
-
-
-
-Unser Modell `m43a` schätzt die typische Körpergröße einer !Kung-Person *mittleren Gewichts* (`weight_c = 0`) auf knapp 155 cm, und ist sich dieses Werts ziemlich sicher.
-Pro Kilogramm kommt (laut unserem Modell) ein knapper Zentimeter hinzu, typischerweise;
-auch hier ist sich das Modell ziemlich sicher, da dass zugehörige 95%-CI keine 20 Zentimenter umfasst.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Die PPV befragen
-
-
-🏎🏎️ VERTIEFUNG (nicht prüfungsrelevant ) 🏎🏎
-
-
-
-
-
-
-
-
-Die Posterior-Prädiktiv-Verteilung (PPV) gibt uns die Möglichkeit,
-nach der Wahrscheinlichkeit *tatsächlicher* Körpergrößen zu fragen - 
-und nicht nur nach *mittleren* Körpergrößen anhand der Post-Verteilung.
-
-
-:::callout-important
-Die Post-Verteilung macht *nur* Aussagen zur *mittleren* Körpergröße,
-denn das ist was wir modellieren wollten.
-Möchten wir Aussagen zur Wahrscheinlichkeit *tatsächlicher* Größen treffen,
-brauchen wir die PPV.
-Allgemeiner gesagt: Die PPV macht Vorhersagen auf Basis eines Modells. 
-Für jede Vorhersage gibt es eine Verteilung, 
-die wir zu einem Punktschätzer (z.B. Median) und einem Schätzbereich (z.B. 89%-HDI) zusammenfassen können.
-:::
-
-An dieser Stelle sollten wir uns vor Augen führen, dass die PPV *mehr* Ungewissheit beinhaltet,
-denn sie berücksichtigt derer zweier Arten:
-
-1. Ungewissheit bzgl. der Modellparameter (Steigung und Achsenabschnitt der Regressionsgeraden)
-2. Ungewissheit der Vorhersagen (das Modell macht keine perfekten Vorhersagen)
-
-
-Die *Post-Verteilung* berücksichtigt nur die Ungewissheit in den Modellparametern,
-macht also nur Aussagen zur Regressionsgeraden.
-
-Die PPV macht Aussagen für konkrete Beobachtungen.
-Der Unterschied ist in @fig-ppv-vs-post dargestellt; die Funktionen stammen übrigens aus `{easystats}`.
-
-
-```{r}
-#| label: fig-ppv-vs-post
-#| layout-ncol: 2
-#| fig-cap: "PPV vs. Post-Verteilung"
-#| fig-subcap:
-#|   - "PPV mit viel Ungewissheit"
-#|   - "Post-Verteilung mit wenig(er) Ungewissheit"
-estimate_prediction(m43a) %>% plot()
-estimate_relation(m43a) %>% plot()
-```
-
-
-### Perzentil-Intervalle für bestimmte Prädiktor-Werte
-
-
-
->    Wie groß ist ein !Kung-Mann mit mittlerem Gewicht?
-
-
-```{r}
-set.seed(42)
-estimate_prediction(m43a, data = tibble(weight_c = 0), seed = 42)
-```
-
-Unser Modell, `ma43a` schätzt ca. 145cm bis 165cm.
-
-
-Wir können uns auch eine Sequenz an Prädiktorwerten, die uns interessieren, erstellen, s. `weight_df`:
-
-```{r echo = TRUE}
-weight_df <- tibble(weight_c = seq(-20,20, by = 5))
-```
-
-
-Für diese Werte lassen wir uns dann die Perzentil-Intervalle (PI) ausgeben:
-
-```{r Post-Regression-befragen-21, echo = TRUE}
-mus <- 
-  estimate_prediction(m43a, data = weight_df) 
-
-head(mus)
-```
-
-Um die Perzentilintervalle zu erstellen, wird von `estimate_prediction()` für jeden Prädiktorwert eine PPV erstellt und (in der Voreinstellung) das 5%- sowie 95%-Quantil dafür berechnet. 
-Sie können die Voreinstellung ändern mittels des Arguments `ci`;
-um ein 89%-PI zu berechnen, würde man z.B. schreiben `ci = .89`.
-
-Um Reproduzierbarkeit sicherzustellen,
-haben wir mit `set.seed(42)` die Zufallszahlen fixiert.
-
-
-Hoppla! Das ist ja viel ungenauer, als die Angaben der Post-Verteilung oben.
-Ja, denn die Post-Verteilung hat die Ungewissheit zum *Mittelwert* ausgedrückt;
-die PPV gibt die Ungewissheit *tatsächlicher* beobachtbarer Körpergrößen aus,
-nicht nur die Ungewissheit zum Mittelwert.
-
-
-Berechnen wir die PPV für die bestehenden Beobachtungen aus `m43a`:
-
-```{r ppv-m43a}
-ppv_m43a <- estimate_prediction(
-  m43a,
-  data = weight_df)
-
-mus 
-```
-
-
-
-
-
-
-### Perzentilintervalle für verschiedenen Prädiktorwerte visualisiert
-
-@fig-m43a-nochmal visualisiert die Ungewissheit von Vorhersagen laut der PPV.
-Die Ungewissheit in @fig-m43a-nochmal ist die Antwort auf die Frage: "Wie sicher sind wir uns,
-zur Größe einer !Kung-Person, gegeben dass die z.B. 10 kg mehr als der Durchschnitt wiegt?"
-Eine Vorhersage bezeichnet man auch als "bedingte Verteilung", da man den Wert einer Verteilung voraussagt,
-*gegeben* einer Bedingung, z.B. `weight_c = 10`.  
-
-
-```{r mus-d3}
-#| echo: false
-#| label: fig-m43a-nochmal 
-#| fig-cap: "Visualisierung der Ungewissheit der Vorhersagen laut PPV: Die Vorhersage von Beobachtungen beinhaltet mehr Ungewissheit als die Vorhersage von zu erwartenden Werten, daher sind die Ungewissheitsintervalle der PPV größer als die der Post-Verteilung."
-mus <- 
-  mus %>% 
-  mutate(height = 154.6 + 0.9*weight_c)
-
-d3 %>% 
-  ggplot(aes(x = weight_c, y = height)) +
-  geom_point(color = "grey60") +
-  geom_abline(slope = coef(m43a)[2], intercept = coef(m43a)[1], color = "blue") +
-  geom_errorbar(data = mus,
-                aes(ymin = CI_low,
-                    ymax = CI_high),
-                size = .5,
-                width = .5,
-                color = "firebrick")
-```
-
-
-Die vertikalen Balken geben die 95%-KI wieder, die wir jeweils zu erwarten haben.
-
-Noch eine andere Visualisierung, s. @fig-katzenaugen; 
-je dicker die "Katzenaugen", desto mehr Stichproben (samples) liegen vor an der Stelle,
-und umso genauer ist die Schätzung.
-
-
-```{r ppv-m43-weight}
-#| echo: false
-#| label: fig-katzenaugen
-#| fig-cap: Die PPV für bestimmte Gewichtswerte w, visualisiert mit Katzenaugen-Diagrammen
-#| layout-ncol: 2
-
-ppv_m43_weight_df <-
-  posterior_predict(m43a,
-                    newdata = weight_df) %>% 
-  as_tibble() %>% 
-  pivot_longer(everything(),
-               names_to = "weight_condition",
-               values_to = "height")
-
-weight_df <-
-  weight_df %>% 
-  mutate(weight_condition = as.character(c(1:9)))
-
-ppv_m43_weight_df <- 
-  ppv_m43_weight_df %>% 
-  full_join(weight_df, by = "weight_condition")
-
-d3 %>% 
-  ggplot() +
-  geom_violin(data = ppv_m43_weight_df,
-              aes(x = weight_c, y = height, group = weight_c),
-                fill = "grey80",
-              width = 1) +
-    geom_point(aes(x = weight_c, y = height)) +
-  geom_abline(slope = coef(m43a)[2], intercept = coef(m43a)[1], color = "blue")
-```
-
-
-Also: Je dicker die Violine, desto wahrscheinlicher $\mu | w_i$.
-
-
-
-### Die PPV über alle Beobachtungen visualisiert
-
-Gerade eben haben wir *bedingte* PPVen angeschaut: Also eine PPV für einen *bestimmten* Prädiktorwert, z.B. bei einer Person mittleren Gewichts.
-Wir können auch den Mittelwert über alle bedingten PPV anschauen, sozusagen die "*Master-PPV*" oder "unbedingte PPV" oder schlicht PPV.
-Vergleichen wir die echten Werte für `height`, $y$, mit den von der PPV simulierten Werten für `height`, $y_{rep}$, s. @fig-ppv-check.
-
-```{r ppv-plot1}
-#| label: fig-ppv-check
-#| fig-cap: Vergleich der Vorhersagen für y (leichte, blaue Linien) mit der beobachteten Verteilung von y
-check_predictions(m43a)  # aus easystatss
-```
-
-`?check_predictions` zeigt Hilfe für diese Funktion. 
-Die Funktion zeigt die Vorhersagen für die AV laut der Posteriori-Verteilung.
-
-
-
-Die zwei Gipfel hat unser Modell nicht mitgekriegt, 
-ansonsten decken sich die Vorhersagen der PPV gut mit den echten Daten.
-
-
-
-
-
-
-
-
-### Fragen an die Master-PPV
-
-- Wie groß sind die !Kung im Schnitt?
-- Welche Größe wird von 90% der Personen nicht überschritten?
-- Wie groß sind die 10% kleinsten?
-
-
-```{r}
-ppv_m43a <- posterior_predict(
-  m43a,
-  newdata = weight_df,
-  draws = 100) %>% 
-  as_tibble() %>% 
-  pivot_longer(
-    cols = everything(),
-    names_to = "weight_condition",
-    values_to = "height")
-head(ppv_m43a)
-```
-
-
-
-```{r}
-ppv_m43a <-
-  ppv_m43a <- posterior_predict(
-  m43a,
-  newdata = weight_df,
-  draws = 100) %>% 
-  as_tibble() %>% 
-  pivot_longer(
-    cols = everything(),
-    names_to = "weight_condition",
-    values_to = "height")
-
-head(ppv_m43a)
-```
-
-
-
-```{r Post-Regression-befragen-29, echo = TRUE }
-ppv_m43a %>% 
-  summarise(
-    q_10 = quantile(height, prob = .1),
-    height_mean = mean(height),
-    q_50 = quantile(height, prob = .5),
-    q_90 = quantile(height, prob = .9)
-  )
-```
-
-
-Was ist der 50% Bereich der Körpergröße?
-
-```{r Post-Regression-befragen-30, echo = TRUE}
-ppv_m43a %>% 
-  eti(ci = .5)
-```
 
 
 ## Fazit
