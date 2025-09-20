@@ -18,8 +18,52 @@ m1 <-
         ")
 m1
 
+
+# zweifacher münzwurf
+m1a <-
+  mermaid("
+        graph LR
+        A(0)-->|1/2| B(T)
+        A-->|1/2| C(N)
+        B-->|1/2| D(T)
+        B-->|1/2| E(N)
+        C-->|1/2| F(T)
+        C-->|1/2| G(T)
+        D --- H(KK = 2K)
+        E --- I(KZ = 1K)
+        F --- J(ZK = 1K)
+        G --- K(KK = 1K)
+        ")
+m1a
+
 plotly::export(m1, file = "muenz1.pdf")
 
+
+
+muenz3 <- 
+  mermaid("
+          graph TD
+    A[Start] --> B1[T]
+    A --> B2[N]
+
+    %% Zweiter Wurf
+    B1 --> C1[TT]
+    B1 --> C2[TN]
+    B2 --> C3[NT]
+    B2 --> C4[NN]
+
+    %% Dritter Wurf
+    C1 --> D1[TTT]
+    C1 --> D2[TTN]
+    C2 --> D3[TNT]
+    C2 --> D4[TNN]
+    C3 --> D5[NTT]
+    C3 --> D6[NTN]
+    C4 --> D7[NNT]
+    C4 --> D8[NNN]
+          ")
+
+plotly::save_image(m1, file = "img/muenz3.png")
 
 
 
@@ -88,3 +132,7 @@ nomnoml("
         [Daten] -> [Geupdatetes Wissen]
         ",
         png = "img/bayesupdate2.png")
+
+
+
+

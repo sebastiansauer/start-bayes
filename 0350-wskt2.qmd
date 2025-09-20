@@ -1,6 +1,7 @@
 # Rechnen mit Wahrscheinlichkeiten
 
 
+![Bayes:Start!](img/Golem_hex.png){width=10%}
 
 
 ```{r}
@@ -12,6 +13,7 @@ library(titanic)
 library(knitr)
 library(DT)
 library(kableExtra)
+library(gt)
 ```
 
 
@@ -26,108 +28,12 @@ scale_colour_discrete <- function(...)
 ```
 
 
-```{r define-plots-16}
+```{r}
 #| echo: false
-#| fig-width: 7
 
-plot16a <-
-  ggplot(data.frame(A = c(0, 1),
-                    B = c(0, 1))) +
-  aes(x = A, y = B) +
-  annotate("rect", xmin = 0, xmax = 1, ymin = 0, ymax = .5,
-           color = "#009E73FF", alpha = .7, fill = NA) +
-  annotate("rect", xmin = 0, xmax = 1, ymin = 0.5, ymax = 1,
-           color = NA, alpha = .5, fill = "#009E73FF") +
-  annotate("rect", xmin = 0, xmax =0.5, ymin = 0, ymax = 1,
-           color = "#56B4E9FF", alpha = .7, fill = NA) +
-  annotate("rect", xmin = 0.5, xmax = 1, ymin = 0, ymax = 1,
-           color = "#56B4E9FF", alpha = .5, fill = "#56B4E9FF") +
-  scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
-  scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
-  theme_minimal()  +
-  theme(axis.text = element_text(size = 18)) +
-  labs(x = "", y = "")
-
-
-plot_pr_b <-
-  ggplot(data.frame(A = c(0, 1),
-                    B = c(0, 1))) +
-  aes(x = A, y = B) +
-  annotate("rect", xmin = 0, xmax = 1, ymin = 0, ymax = .5,
-           color = "grey", alpha = .7, fill = NA) +
-  annotate("rect", xmin = 0, xmax = 1, ymin = 0.5, ymax = 1,
-           color = NA, alpha = .5, fill = "#009E73FF") +
-  scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
-  scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
-  annotate("label", x = .5, y = .75, label = "Pr(B) = 50%") +
-  theme_minimal() +
-  theme(axis.text = element_text(size = 18)) +
-  labs(x = "", y = "")
-
-plot_pr_a <-
-  ggplot(data.frame(A = c(0, 1),
-                    B = c(0, 1))) +
-  aes(x = A, y = B) +
-  annotate("rect", xmin = 0, xmax =0.5, ymin = 0, ymax = 1,
-           color = "grey", alpha = .7, fill = NA) +
-  annotate("rect", xmin = 0.5, xmax = 1, ymin = 0, ymax = 1,
-           color = "#56B4E9FF", alpha = .5, fill = "#56B4E9FF") +
-  scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
-  scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
-  annotate("label", x = .75, y = .5, label = "Pr(A) = 50%") +
-  theme_minimal()  +
-  theme(axis.text = element_text(size = 18)) +
-  labs(x = "", y = "")
-
-
-plot_pr_ab <-
-ggplot(data.frame(A = c(0, 1),
-                  B = c(0, 1))) +
-  aes(x = A, y = B) +
-  annotate("rect", xmin = 0, xmax = 1, ymin = 0, ymax = .5,
-           color = "#009E73FF", alpha = .7, fill = NA) +
-  annotate("rect", xmin = 0, xmax = 1, ymin = 0.5, ymax = 1,
-           color = NA, alpha = .5, fill = "#009E73FF") +
-  annotate("rect", xmin = 0, xmax =0.5, ymin = 0, ymax = 1,
-           color = "#56B4E9FF", alpha = .7, fill = NA) +
-  annotate("rect", xmin = 0.5, xmax = 1, ymin = 0, ymax = 1,
-           color = "#56B4E9FF", alpha = .5, fill = "#56B4E9FF") +
-  annotate("rect", xmin = 0.5, xmax = 1, ymin = 0.5, ymax = 1,
-           color = "#E69F00FF", alpha = .7, fill = NA, linewidth = 2) +
-  scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
-  scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
-  annotate(geom = "label", x = .75, y = 0.75, label = "A,B", color = "#E69F00FF") +
-  theme_minimal()  +
-  theme(axis.text = element_text(size = 18)) +
-  labs(x = "", y = "")
-
-
-
-
-
-
-plot_pr_b_geg_a <-
-  ggplot(data.frame(A = c(0, 1),
-                    B = c(0, 1))) +
-  aes(x = A, y = B) +
-  annotate("rect", xmin = 0, xmax = 1, ymin = 0.5, ymax = 1,
-           color = "#009E73FF", alpha = .3, fill = NA, linewidth = 2) +
-  annotate("rect", xmin = 0, xmax = 1, ymin = 0.5, ymax = 1,
-           color = NA, alpha = .5, fill = "NA") +
-  # annotate("rect", xmin = 0, xmax =0.5, ymin = 0, ymax = 1,
-  #          color = "#56B4E9FF", alpha = .7, fill = NA) +
-  annotate("rect", xmin = 0.5, xmax = 1, ymin = 0, ymax = 1,
-           color = "#56B4E9FF", alpha = .7, fill = "#56B4E9FF", linewidth = 2) +
-  annotate("rect", xmin = 0.5, xmax = 1, ymin = 0.5, ymax = 1,
-           color = "#E69F00FF", alpha = .3, fill = "#E69F00FF", linewidth = 2) +
-  scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
-  scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
-  annotate(geom = "label", x = .75, y = 0.75, label = "B|A", color = "#E69F00FF")  +
-  theme(axis.text = element_text(size = 18)) +
-  labs(x = "", y = "")
-
-
+source("children/plots_wskt.R")
 ```
+
 
 ## Lernsteuerung
 
@@ -169,14 +75,6 @@ Sie können ...
 Lesen Sie zur Begleitung dieses Kapitels @bourier2011, Kap. 2-4. 
 
 
-### Eigenstudium
-
-
-:::{.callout-important}
-Dieses Kapitel ist selbständig im Eigenstudium vorzubereiten vor dem Unterricht.
-Lesen Sie dazu die angegebene Literatur.$\square$
-:::
-
 
 ### Prüfungsrelevanter Stoff
 
@@ -190,11 +88,10 @@ Prüfen Sie, ob Ihr Dozent Ihnen weitere Hilfen im [geschützten Bereich (Moodle
 
 
 
-## Indirekte Ermittlung von Wahrscheinlichkeiten
+## Überblick
 
-Die indirekte Ermittlung von Wahrscheinlichkeiten meint das Ableiten von Wahrscheinlichkeitsaussagen, 
-wenn man schon etwas über die Wahrscheinlichkeiten des Grundraums weiß. 
-Dazu greift man auf Rechenregeln der Stochastik zurück: Man rechnet mit Wahrscheinlichkeiten.
+Die Rechenregeln der Wahrscheinlichkeit erlauben es,
+für bestimmte Situationen eine Wahrscheinlichkeit hzu berechnen.
 Das hört sich vielleicht wild an, ist aber oft ganz einfach.
 
 
@@ -207,7 +104,7 @@ Ein (normaler) Würfel wird geworfen. Was ist die Wahrscheinlichkeit für eine g
 ### Gezinkter Würfel
 Ein gezinkter Würfel hat eine erhöhte Wahrscheinlichkeit für das Ereignis $A=$"6 liegt oben", 
 und zwar gelte $Pr(A)=1/3$.
-Was ist die Wahrscheinlichkeit, *keine*  `6` zu würfeln?$\square$^[Die Wahrscheinlichkeit, 
+Was ist die Wahrscheinlichkeit, *keine*  `6` zu würfeln? $\square$^[Die Wahrscheinlichkeit, 
 keine `6` zu würfeln, liegt bei $2/3$.]
 :::
 
@@ -219,20 +116,21 @@ Der Additionssatz wird verwendet, wenn wir an der Wahrscheinlichkeit interessier
 dass *mindestens eines der Ereignisse* A und B eintritt.
 "Mindestens eines der Ereignisse A und " schreibt man $A \cup B$ und sagt "A vereinigt B".
 
-### Disjunkte Ereignisse
+### Addition disjunkter Ereignisse
 
 Gegeben sei $\Omega = {1,2,3,4,5,6}$ beim normalen Würfelwurf. 
 Als Sinnbild: $\boxed{1\; 2\; 3\; 4\; 5\; 6}$.
-Gesucht sei die Wahrscheinlichkeit des Ereignis $A=\{1,2\}$, das also eine 1 oder  
-eine 2 geworfen wird.
-Man beachte, dass die beiden Ergebnisse disjunkt sind, s. @fig-disjunkt.
+Gesucht sei die Wahrscheinlichkeit des Ereignis $A=\{1,2\}$, das also eine *1* oder  
+eine *2* geworfen wird.
+Man beachte, dass die beiden Ergebnisse disjunkt sind, s. @fig-disjunkt:
+Wenn man eine *1* wirft, hat man keine *2* geworfen.
 
 
 $\boxed{\boxed{1\; 2}\; \color{gray}{ 3\; 4\; 5\; 6}}$
 
 Die Wahrscheinlichkeit für $A$ ist die Summe der Wahrscheinlichkeiten der einzelnen Ereignisse (*1* und *2*):
 
-$P(1 \cup 2) = \frac{1}{6} + \frac{1}{6} = \frac{2}{6}$
+$Pr(1 \cup 2) = \frac{1}{6} + \frac{1}{6} = \frac{2}{6}$
 
 
 :::{#def-add-disjunkt}
@@ -246,7 +144,7 @@ Die Wahrscheinlichkeit, dass mindestens eines der beiden Ereignisse eintritt, is
 ### Additionssatz für disjunkte Ereignisse
 
 
-$$P(A \cup B) = P(A) + P(B) \square$$
+$$Pr(A \cup B) = P(A) + P(B) \square$$
 
 :::
 
@@ -262,12 +160,12 @@ werden^[vermutlich gibt es noch mehr Annahmen, die wir uns explizit machen sollt
 
 
 
-### Allgemein (disjunkt oder nicht disjunkt)
+### Addition allgemeiner Ereignisse 
 
-
-Bei der Addition der Wahrscheinlichkeiten für $A$ und $B$ wird der Schnitt $A\cap B$ (der Überlappungsbereich) *doppelt* erfasst.^[sofern sie nicht disjunkt sind, 
+Unter *allgemeinen* Ereignissen verstehen wir hier sowohl disjunkte als auch nicht disjunkte.
+Bei der Addition der Wahrscheinlichkeiten für $A$ und $B$ wird der Schnitt $A\cap B$ (der Überlappungsbereich) *doppelt* erfasst -- sofern sie nicht disjunkt sind, 
 aber wenn sie disjunkt sind, so ist der Schnitt gleich Null und wir machen auch 
-dann nichts falsch.] Der Überlappungsbereich muss daher noch abgezogen werden, s. @fig-add.
+dann nichts falsch. Der Überlappungsbereich muss daher noch abgezogen werden, s. @fig-add.
 
 
 :::{#def-additionssatz}
@@ -279,7 +177,7 @@ ist gleich der Summe ihrer Wahrscheinlichkeiten minus ihrer gemeinsamen Wahrsche
 :::{#thm-add}
 
 ### Allgemeiner Additionssatz
-$$P(A \cup B) = P(A) + P(B) - P(A\cap B) \square$$
+$$Pr(A \cup B) = P(A) + P(B) - P(A\cap B) \square$$
 :::
 
 
@@ -307,13 +205,14 @@ $$P(A \cup B) = P(A) + P(B) - P(A\cap B) \square$$
 :::{#exm-klausur-bed-wskt}
 ### Lernen und Klausur bestehen
 
-In einem angewandten Psychologie-Studiengang sind die Studis verdonnert, zwei Statistik-Module ($S1, S2$) zu belegen.
+In einem  Psychologie-Studiengang sind die Studis verdonnert, 
+zwei Statistik-Module ($S1, S2$) zu belegen.
 Die meisten bestehen ($B$), einige leider nicht ($N$), s. @tbl-klausur2.
 
 Ereignis $S_1B$ sei "Klausur Statistik 1 bestanden"
 Ereignis $S_2B$ ist analog für "Klausur Statistik 2".
 
-Wir suchen die Wahrscheinlichkeit des Ereignisses A, mindestens eine der beiden Klausuren zu bestehen: 
+Wir suchen die Wahrscheinlichkeit des Ereignisses *A*, d.h. mindestens eine der beiden Klausuren zu bestehen: 
 $Pr(A) = Pr(S_1B \cup S_2B)$.
 
 
@@ -330,7 +229,7 @@ d <- tribble(
   "Summe", 90, 10, 100
 )
 
-kable(d)
+gt(d)
 ```
 
 
@@ -341,9 +240,20 @@ Pr(A) &= Pr(S_1B \cup S_2B) \\
 \end{aligned}
 
 Die Wahrscheinlichkeit, mindestens eine der beiden Klausuren zu bestehen liegt bei 99%.
-Umgekehrt liegt die Wahrscheinlichkeit, keine der beiden Klausuren zu bestehen, 
-liegt bei $Pr(\neg A) = 1- Pr(A) = 0.01 = 1\%$; ein Sachverhalt, 
-der sich auch mit einem kurzen Blick in die Datentabelle erkennen lässt.$\square$
+
+
+:::{#exr-keine-klausur-bestanden}
+### Peer Instruction: Keine Klausur bestanden
+Wie hoch ist die Wahrscheinlichkeit,  keine der beiden Klausuren zu bestehen?
+
+A) 1%
+B) 5%
+B) 6%
+C) 9%
+C) 10%
+D) 16% $\square$
+:::
+
 :::
 
 
@@ -372,15 +282,15 @@ Man schreibt: $Pr(A|B).$ Lies: "A gegeben B" oder "A wenn B".
 
 
 :::{#exr-victorpowell}
-Schauen Sie sich mal diese [Wahnsinnsanimation von Victor Powell an](https://setosa.io/conditional/) zu bedingten Wahrscheinlichkeiten. 
-Hammer!
+Schauen Sie sich mal diese [Animation von Victor Powell an](https://setosa.io/conditional/) zu bedingten Wahrscheinlichkeiten an. 
+Sehenswert.
 :::
 
 
 
 ::::: {.content-visible when-format="html"}
 
-@fig-schema-p illustriert *unbedingte Wahrscheinlichkeit*, $Pr(A), Pr(B)$, *gemeinsame Wahrscheinlichkeit* $P(A \cap B)$, und *bedingte Wahrscheinlichkeit*, $P(A|B)$.
+@fig-schema-p illustriert *unbedingte Wahrscheinlichkeit*, $Pr(A), Pr(B)$, *gemeinsame Wahrscheinlichkeit* $Pr(A \cap B)$, und *bedingte Wahrscheinlichkeit*, $Pr(A|B)$.
 
 
 ::::{#fig-schema-p}
@@ -458,7 +368,7 @@ Illustration von unbedingter, gemeinsamer und bedingter Wahrscheinlichkeit
 ::: {.content-visible unless-format="html"}
 
 
-@fig-schema-p-pdf illustriert *gemeinsame Wahrscheinlichkeit*, $P(A \cap B)$, und *bedingte Wahrscheinlichkeit*, $P(A|B)$.
+@fig-schema-p-pdf illustriert *gemeinsame Wahrscheinlichkeit*, $Pr(A \cap B)$, und *bedingte Wahrscheinlichkeit*, $Pr(A|B)$.
 
 
 ```{r bed-w-schema-pdf}
@@ -495,7 +405,8 @@ $Pr(P|M) \ne Pr(M|P)$. Das hört sich erst verwirrend an, aber wenn man darüber
 
 
 :::{#exm-hirn-grütze}
-Gustav Groß-Gütz verkauft eine Tinktur^[genauer besehen sieht sie eher aus wie eine Grütze oder ein Brei], die schlau machen soll, "Gützis Gehirn Grütze".^[Sie schmeckt scheußlich.]
+Gustav Groß-Gütz verkauft eine Tinktur^[genauer besehen sieht sie eher aus wie eine Grütze oder ein Brei], die schlau machen soll, 
+"Gützis Gehirn Grütze".^[Sie schmeckt scheußlich.]
 Gustav trinkt die Grütze und sagt schlaue Dinge.
 Was schließen wir daraus?
 Sei $H$ (wie *H*ypothese) "Gützis Grütze macht schlau"; sei $D$ (wie *D*aten) die Beobachtung, 
@@ -657,6 +568,7 @@ Zwei Ereignisse sind (stochastisch) unabhängig voneinander,
 wenn die Wahrscheinlichkeit von $A$ nicht davon abhängt, ob $B$ der Fall ist, s. @thm-indep.
 Anders gesagt:^[Exakte Gleichheit ist in dieser Welt empirisch schwer zu finden. 
 Daher kann man vereinbaren, dass Unabhängigkeit erfüllt ist, wenn die Gleichheit "einigermaßen" oder "ziemlich" gilt, die Gleichheit gewissermaßen "praktisch bedeutsam" ist.]
+:::
 
  \newcommand{\indep}{\perp \!\!\! \perp}
 
@@ -664,14 +576,16 @@ Daher kann man vereinbaren, dass Unabhängigkeit erfüllt ist, wenn die Gleichhe
 
 ### Stochastische Unabhängigkeit
 
-$$Pr(A|B) = Pr(A) = Pr(A|\neg B). \square$$
+$$ Pr(A) = Pr(A|B) =Pr(A|\neg B) \square$$
+
+In Worten: Wenn die Wahrscheinlichkeit von *A* sich nicht ändert,
+wenn *B* eingetreten ist, so ist *A* von *B* (stochastisch) unabhängig.
 
 Die Unabhängigkeit von $A$ und $B$ wird manchmal so in Kurzschreibweise ausgedrückt: $\indep(A, B) \square$.
 :::
 
 
 ::: {#thm-indep2}
-
 ### Stochastische Unabhängigkeit 2
 
 Setzt man @thm-pr-cond in @thm-indep (linke Seite) ein, so folgt^[Vgl. @thm-multtheorem]
@@ -679,6 +593,8 @@ Setzt man @thm-pr-cond in @thm-indep (linke Seite) ein, so folgt^[Vgl. @thm-mult
 $$Pr(A \cap B) = Pr(A) \cdot Pr(B).\quad \square$$
 :::
 
+In Worten: Die Wahrscheinlichkeit, dass *A* und *B* beide der Fall sind,
+ist gleich dem Produkt ihrer jeweiligen Wahrscheinlichkeiten.
 
 :::{#exm-indep1}
 ### Augenfarbe und Statistikliebe
@@ -784,8 +700,8 @@ plottitanic3
 
 ### Stochastische Abhängigkeit
 
-Liegt keine Unabhängigkeit vor, so spricht man von (stochatistischer) *Abhängigkeit*, s. @thm-abh. 
-In diesem Fall verändert sich unser Wissen über die Wahrscheinlihkeit von $A$, 
+Liegt keine Unabhängigkeit vor, so spricht man von (stochastistischer) *Abhängigkeit*, s. @thm-abh. 
+In diesem Fall verändert sich unser Wissen über die Wahrscheinlichkeit von $A$, 
 wenn wir wissen, 
 dass $B$ eingetroffen ist, s. @thm-abh.
 
@@ -794,6 +710,10 @@ dass $B$ eingetroffen ist, s. @thm-abh.
 ### Stochastische Abhängigkeit
 
 $$Pr(A|B) \ne Pr(A) \ne Pr(A|\neg B) \quad \square$$
+
+In Worten: 
+Ändert sich die Wahrscheinlichkeit von *A*, wenn *B* der Fall ist,
+so sind *A* und *B* voneinander (stochastich) abhängig.
 
 @thm-abh gilt natürlich in dieser Form für alle anderen Variablen ebenso, s. z.B. @thm-abh2. $\square$
 :::
@@ -808,8 +728,9 @@ $$Pr(B|A) \ne Pr(B) \ne Pr(B|\neg A) \quad \square$$
 
 :::{#exm-abh-lernen}
 Die Ereignisse "*L*ernen" und "*K*lausur bestehen" seien voneinander abhängig. 
-Unsere Ansicht zur Wahrscheinlichkeit von *K* ändert sich, wenn wir wissen, dass *L* vorliegt. 
-Genauso wird sich unsere Einschätzung zur Wahrschienlichkeit von *K* ändern, 
+Unsere Einschätzung zur Wahrscheinlichkeit von *K* ändert sich, 
+wenn wir wissen, dass *L* vorliegt. 
+Genauso wird sich unsere Einschätzung zur Wahrscheinlichkeit von *K* ändern, 
 wenn wir wissen, dass *L* nicht vorliegt. $\square$
 :::
 
@@ -889,7 +810,7 @@ plot_covid1
 plot_covid2
 ```
 
-Ja, die beiden Ereignisse sind abhängig, da in beiden Diagrammen gilt: $P(A|B) \ne Pr(A) \ne Pr(A|\neg B)$.$\square$^[
+Ja, die beiden Ereignisse sind abhängig, da in beiden Diagrammen gilt: $Pr(A|B) \ne Pr(A) \ne Pr(A|\neg B)$.$\square$^[
 Daten von Our World in Data, <https://ourworldindata.org/covid-deaths>.]
 
 
@@ -923,6 +844,16 @@ Stochastische Unabhängigkeit impliziert nicht kausale Unabhängigkeit. $\square
 
 
 
+::: {#exr-indep}
+### Peer Instruction: Welche Aussagen über stochastische Unabhängigkeit ist korrekt?
+
+1. Wenn X und Y unabhängig sind, dann hat X keinen Einfluss auf Y im Alltag.  
+2. Zwei Ereignisse A und B sind unabhängig, wenn sie sich nicht überschneiden.  
+3. Wenn X und Y unkorreliert sind, dann sind sie unabhängig.
+4. Wenn X und Y abhängig sind, dann können sie nicht gleichzeitig positive Korrelation haben.  
+6. Wenn X und Y unabhängig sind, sind sie auch unkorreliert.
+:::
+
 
 
 
@@ -931,8 +862,8 @@ Stochastische Unabhängigkeit impliziert nicht kausale Unabhängigkeit. $\square
 Gegeben seien die Ereignisse $A$ und $B$. 
 Der Multiplikationssatz wird verwendet, 
 wenn wir an der Wahrscheinlichkeit interessiert sind, 
-dass *beide Ereignisse* $A$ und $B$ eintreten; 
-s. @fig-ab verdeutlicht dies für zwei unabhängige Ereignisse.
+dass *beide Ereignisse* $A$ und $B$ der Fall sind; 
+@fig-ab verdeutlicht dies für zwei unabhängige Ereignisse.
 Man schreibt "A und B" als $A \cap B$ (lies "A geschnitten B" oder "A und B") oder kurz $AB$, um anzuzeigen, dass sowohl $A$ als auch $B$ eingetreten sind.
 
 ```{r, ref.label = "fig-ab"}
@@ -950,7 +881,7 @@ Anders gesagt: "Wie groß ist die Wahrscheinlichkeit für Kälte, gegeben dass e
 Eine andere Sache ist es,
 nach der Wahrscheinlichkeit zu fragen, 
 dass es gleichzeitig kalt ist und regnet, 
-dass also beide Ereignisse (kalt und Regen) eintreten: $Pr(K \cap R), PR(KR)$. $\square$
+dass also beide Ereignisse (kalt und Regen) eintreten: $Pr(K \cap R), Pr(KR)$. $\square$
 :::
 
 
@@ -964,7 +895,24 @@ Dabei vereinbaren wir, dass "Kopf" als "Treffer" zählt (und "Zahl" als "Niete")
 :::
 
 
-![Wir werfen zwei faire Münzen: Zweifach wiederholtes Zufallexperiment](img/muenz1.png){#fig-zweimuenzen width="50%"}
+```{mermaid}
+%%| label: fig-zweimuenzen
+%%| out-width: 50%
+%%| fig-cap: "Wir werfen zwei faire Münzen: Zweifach wiederholtes Zufallsexperiment"
+flowchart TD
+    A[Start] --> B1[T]
+    A --> B2[N]
+
+    %% Zweiter Wurf
+    B1 --> C1[TT]
+    B1 --> C2[TN]
+    B2 --> C3[NT]
+    B2 --> C4[NN]
+
+```
+
+
+
 
  @fig-zweimuenzen zeigt ein *Baumdiagramm*. 
 Jeder *Kasten* (Knoten) zeigt ein *Ergebnis* des Zufallexperiments. 
@@ -992,12 +940,12 @@ tibble::tribble(
        "0K", "1/2 * 1/2 = 1/4",
        "1K", "1/4 + 1/4 = 1/2",
        "2K", "1/2 * 1/2 = 1/4"
-  ) %>% kable()
+  ) %>% gt()
 ```
 
 
 Sei $K_1$ das Ereignis, mit der 1. Münze Kopf zu werfen; sei $K_2$ das Ereignis, 
-mit der 2. Münze Kopf zu werfen-
+mit der 2. Münze Kopf zu werfen.
 
 Wir suchen $Pr(K_1 \cap K_2)$. Aufgrund der stochastischen Unabhängigkeit der beiden Ereignisse gilt: $Pr(K_1 \cap K_2) = Pr(K_1) \cdot Pr(K_2)$.
 
@@ -1019,7 +967,7 @@ ist gleich dem Produkt ihrer jeweiligen Wahrscheinlichkeiten, s. @thm-multtheore
 
 $$Pr(A \cap B) = Pr(A) \cdot Pr(B)$$ 
 
-Man beachte, dass es egal ist, ob $A$ gemeinsam mit $B$ oder $B$ gemeinsam mit $A$ eintreten: $Pr(A \cap B) = Pr(B \cap A)$.^[Man spricht auch von *Symmetrie* der Multiplikation.] $\square$
+Man beachte, dass es egal ist, ob $A$ gemeinsam mit $B$ oder $B$ gemeinsam mit $A$ eintreten: $Pr(A \cap B) = Pr(B \cap A)$. Man spricht in diesem Zusammenhang von der *Symmetrie* der Multiplikation. $\square$
 :::
 
 
@@ -1032,17 +980,46 @@ Mit [dieser App](https://www.geogebra.org/m/gzxz57ak) können Sie das Baumdiagra
 Wir führen das Zufallsexperiment "Wurf einer fairen Münze" drei Mal aus (@fig-dreimuenzen).
 Dabei vereinbaren wir wieder, dass "Kopf" (K) als "Treffer" gilt und "Zahl" (Z) als "Niete".
 
-![Wir werfen drei faire Münzen: Dreifach wiederholtes Zufallexperiment](img/muenz2.png){#fig-dreimuenzen}
+
+```{mermaid}
+%%| label: fig-dreimuenzen
+%%| fig-cap: "Wir werfen drei faire Münzen: Dreifach wiederholtes Zufallexperiment"
+graph TD
+    A[Start] --> B1[T]
+    A --> B2[N]
+
+    %% Zweiter Wurf
+    B1 --> C1[TT]
+    B1 --> C2[TN]
+    B2 --> C3[NT]
+    B2 --> C4[NN]
+
+    %% Dritter Wurf
+    C1 --> D1[TTT]
+    C1 --> D2[TTN]
+    C2 --> D3[TNT]
+    C2 --> D4[TNN]
+    C3 --> D5[NTT]
+    C3 --> D6[NTN]
+    C4 --> D7[NNT]
+    C4 --> D8[NNN]
+```
 
 
-Beim Wurf von "fairen" Münzen gehen wir davon aus, dass Kenntnis des Ergebnis des 1. Wurfes unsere Einschätzung des Ergebnis des 2. Wurfes nicht verändert etc.
+
+
+
+Beim Wurf von "fairen" Münzen gehen wir davon aus, 
+dass Kenntnis des Ergebnis des 1. Wurfes unsere Einschätzung des Ergebnis 
+des 2. Wurfes nicht verändert etc.
 Anders gesagt: Wir gehen von (stochastischer) Unabhängigkeit aus.
 
 
 Für z.B. das Ereignis $A=\{ZZZ\}$ gilt: $Pr(A) = 1/2 \cdot 1/2 \cdot 1/2 = (1/2)^3$.
-Da jeder Endknoten (jedes Blatt) gleichwahrscheinlich ist, ist die Wahrscheinlichkeit jeweils gleich.
+Da jeder Endknoten (jedes Blatt) gleichwahrscheinlich ist, 
+ist die Wahrscheinlichkeit jedes Endknotens gleich.
 
-Allgemeiner gilt: Für ein Zufallsexpriment, das aus $k$ Wiederholungen besteht 
+Allgemeiner gilt: Für ein Zufallsexperiment, das aus $k$ Wiederholungen besteht 
 und in jeder Wiederholung die Wahrscheinlichkeit $Pr(X)=p$ ist,
 so ist die Wahrscheinlichkeit für einen Endkonten $Pr(X^k)=p^k$.
 
@@ -1060,7 +1037,8 @@ tibble::tribble(
        "1K", "1/8 + 1/8 + 1/8 = 3/8",
        "2K",          "3 * 1/8 = 3/8",
        "3K", "1/2 * 1/2 * 1/2 = 1/8"
-  ) 
+  ) |> 
+  gt()
 ```
 
 
@@ -1077,18 +1055,16 @@ der Fläche (der Gesamtfläche, d.h von $Pr(\Omega)=1$) ausmacht.
 Die Schnittmenge der Fläche von $A$ und $B$ entspricht einem Viertel der Fläche: 
 $Pr(AB) = Pr(A) \cdot Pr(B) = 50\% \cdot 50\% = 25\%.$
 In diesem Fall sind $A$ und $B$ unabhängig.
-@fig-schema-p zeigt weiterhin, dass gilt: $P(A\cap B) = P(A) \cdot P(B) = P(B) \cdot P(A)$.
-Man beachte dass diese Formel nur bei *Unabhängigkeit* (von A und B) gilt.
+@fig-schema-p zeigt weiterhin, dass gilt: $Pr(A\cap B) = P(A) \cdot P(B) = P(B) \cdot P(A)$.
+Man beachte, dass diese Formel nur bei *Unabhängigkeit* (von A und B) gilt.
 
 
 
-### Gemeinsame Wahrscheinlichkeit abhängiger Ereignisse
+### Gemeinsame Wahrscheinlichkeit allgemeiner Ereignisse
 
 
 
-Ein Baumdiagramm bietet sich zur Visualisierung abhängiger Ereignisse an, s.  @fig-baum-abh. 
-Für unabhängige Ereignisse übrigens auch.
-
+Ein Baumdiagramm bietet sich zur Visualisierung allgemeiner abhängiger Ereignisse an, s.  @fig-baum-abh. 
 
 :::{#exm-urne1}
 In einer Urne befinden sich fünf Kugeln, von denen vier rot sind und eine blau ist.
@@ -1108,25 +1084,26 @@ Und jetzt ziehen wir. Hier ist das Baumdiagramm, s.  @fig-baum-abh.
 
 
 ```{mermaid}
-%%| fig-cap: "Baumdiagramm für ein ein zweistufiges Zufallsereignis, wobei der 2. Zug (Stufe) abhängig ist vom 1. Zug."
+%%| fig-cap: "Baumdiagramm für ein zweistufiges Zufallsereignis, wobei der 2. Zug (Stufe) abhängig ist vom 1. Zug."
 %%| label: fig-baum-abh
 flowchart LR
-  A[Start] -->|4/5|B[Zug 1 - R]
-  A -->|1/5|C[Zug 1 - B]
-  B -->|3/4|D[Zug 2 - R]
-  B -->|1/4|E[Zug 2 -  B]
-  D --- H[Fazit: RR - 4/5*3/4 = 12/20]
-  E --- I[Fazit: RB - 4/5*1/4 = 4/20]
-  C -->|4/4|F[Zug 2 - R]
-  C -->|0/4|G[Zug 2 - B]
-  F --- J[Fazit: BR - 1/5*4/4 = 4/20]
-  G --- K[Fazit: BB - 1/5*0/4 = 0/20]
+  A[Start] -->|4/5|B[Zug 1 - A]
+  A -->|1/5|C[Zug 1 - nA]
+  B -->|3/4|D[Zug 2 - B]
+  B -->|1/4|E[Zug 2 -  nB]
+  D --- H[Fazit: AB - 4/5*3/4 = 12/20]
+  E --- I[Fazit: AnB - 4/5*1/4 = 4/20]
+  C -->|4/4|F[Zug 2 - B]
+  C -->|0/4|G[Zug 2 - nB]
+  F --- J[Fazit: nAB - 1/5*4/4 = 4/20]
+  G --- K[Fazit: nAnB - 1/5*0/4 = 0/20]
+  
   
 ```
 
 
 
-Wie man in @fig-baum-abh nachrechnen kann gilt also: $P(A\cap B) = P(A) \cdot P(B|A) \square$.
+Wie man in @fig-baum-abh nachrechnen kann gilt also: $Pr(A\cap B) = P(A) \cdot P(B|A) = 4/5 \cdot 3/4 = 12/20 = 3/5 \quad \square$
 :::
 
 
@@ -1161,12 +1138,12 @@ wenn's *regnet* ⛈️ mal die Wahrscheinlichkeit von *Regen* ⛈️.
 
 Das Gesagte als Emoji-Gleichung ist in @eq-kalt-regen-emoji dargestellt.
 
-$$P(❄️ \text{ und } ⛈️) = P(⛈️ |❄️ ) \cdot P(❄️) =  P(❄️ |⛈️ ) \cdot P(⛈️)$${#eq-kalt-regen-emoji}
+$$Pr(❄️ \text{ und } ⛈️) = P(⛈️ |❄️ ) \cdot P(❄️) =  P(❄️ |⛈️ ) \cdot P(⛈️)$${#eq-kalt-regen-emoji}
 
 
 Man kann  die "Gleichung drehen"^[Der Multiplikationssatz ist symmetrisch], s. @eq-kalt-regen-emoji2. 
 
-$$P(❄️ \text{ und } ⛈️) = P(⛈️ \text{ und } ❄️)$${#eq-kalt-regen-emoji2} $\square$
+$$Pr(❄️ \text{ und } ⛈️) = P(⛈️ \text{ und } ❄️)$${#eq-kalt-regen-emoji2} $\square$
 :::
 
 
@@ -1188,7 +1165,34 @@ Also, jetzt heißt es tapfer sein. Ziehen und runter damit!
 
 Wie groß ist die Wahrscheinlichkeit, *genau eine* scheußliche Bohne zu erwischen?
 
-Es gibt 2 Pfade für 1 Treffer bei 2 Wiederholungen (Züge aus dem Beutel): 
+Es gibt 2 Pfade für 1 Treffer bei 2 Wiederholungen (Züge aus dem Beutel), 
+s. @fig-bertie1:
+Man kann im ersten Zug eine scheußliche Bohne erwischen, aber nicht im zweiten Zug.
+Oder man man im zweiten Zug Pech haben (aber nicht im ersten).
+Die Summe der Wahrscheinlichkeiten beider Pfade ist die Wahrscheinlichkeit für
+genau *eine* scheußliche Bohne,
+das sind 19%.
+
+```{mermaid}
+%%| fig-cap: "Baumdiagramm für ein ein zweistufiges Zufallsereignis: Bertie Botts Bohnen."
+%%| label: fig-bertie1
+graph LR
+    A[Start: 20 Bohnen] --> B1[Bohne 1 gut = 18/20]
+    A --> B2[Bohne 1 schlecht = 2/20]
+    
+    B1 --> C1[Bohne 2 gut = 17/19]
+    B1 --> C2[Bohne 2 schlecht = 2/19]
+    
+    B2 --> C3[Bohne 2 gut = 18/19]
+    B2 --> C4[Bohne 2 schlecht = 1/19]
+    
+    C1 --> D1[Ergebnis: gut, gut]
+    C2 --> D2[Ergebnis: gut, schlecht]
+    C3 --> D3[Ergebnis: schlecht, gut]
+    C4 --> D4[Ergebnis: schlecht, schlecht]
+
+```
+
 
 ```{r}
 Pfad1 <- 2/20 * 18/19  # scheußliche Bohne im 1. Zug
@@ -1210,7 +1214,7 @@ und die Zahl der scheußlichen Bohnen ($x$) einstellen.$\square$
 
 
 
-
+### Kettenregel
 
 
 :::{#def-kettenregel}
@@ -1224,7 +1228,7 @@ wenn man die gemeinsame Wahrscheinlichkeit auf die bedingte zurückführt, s. @t
 
 ### Kettenregel
 
-$$P(A\cap B) = P(A) \cdot P(B|A) = P(B) \cdot P(A|B) \square$$
+$$Pr(A\cap B) = P(A) \cdot P(B|A) = P(B) \cdot P(A|B) \square$$
 
 In Worten: Die Wahrscheinlichkeit von $A$ gegeben $B$ ist gleich der Wahrscheinlichkeit von $A$ mal der Wahrscheinlichkeit von $B$ gegeben $A$.
 :::
@@ -1248,7 +1252,18 @@ https://www.geogebra.org/m/WVKur4yM) gelöst werden kann.$\square$
 :::
 
 
+:::{#exr-multsatz}
+### Peer Instruction: Dreifacher Münzwurf
 
+Fünf Studierende unterhalten sich, wie man einen dreifachen Münzwurf verstehen kann mit dem Ergebnis von drei Treffern. Welcher Studierende liegt *falsch*?
+Gehen Sie von einer faire Münze aus und Unabhängigkeit der Würfe.
+
+A) Wirft man die Münze drei Mal, so gibt es 6 Ergebnisse, die alle gleich wahrscheinlich sind. Aber nur ein Ergebnis ist gesucht, nämlich 3 von 3 Treffern. Also ist die Wahrscheinlichkeit 1/6, ca. 17%.
+B) Man kann einfach einen Computer fragen, z.B. R mit ` dbinom(x = 3, size = 3, prob = 1/2)`, da kommt ungefähr 12% raus.
+C) Wirft man die Münze drei Mal, so gibt es 8 Ergebnisse, die alle gleich wahrscheinlich sind. Aber nur ein Ergebnis ist gesucht, nämlich 3 von 3 Treffern. Also ist die Wahrscheinlichkeit 1/8, ca. 12,5%.
+D) Wer rechnen kann, ist klar im Vorteil $\left( \frac{1}{2} \right)^3 = \left( \frac{1}{2^3} \right) = \left( \frac{1}{8} \right)$
+E) Holt mich hier raus! $\square$
+:::
 
 
 ## Totale Wahrscheinlichkeit
@@ -1261,8 +1276,9 @@ Drei Maschinen ($M_1, M_2, M_3$)
 produzieren einen Artikel. 
 Die Maschinen haben einen Anteil an der Produktion von 60, 10 bzw. 30% und eine Ausschussquote von 5,2 bzw. 4%. 
 Sei $M$ das Ereignis, dass ein Artikel von Maschine $M$ stammt, und $S$ (Schrott) das Ereignis, dass ein Artikel Ausschuss (Schrott) ist.
-Wie groß ist der Ausschussanteil insgesamt (über alle drei Maschinen?) 
-Anders gesagt: Wie hoch ist die Wahrscheinlichkeit, dass ein zufällig gezogener Artikel Ausschuss ist. @fig-tot-wskt zeigt das Baumdiagramm für die Aufgabe. $\square$
+Gesucht ist ist der Ausschussanteil insgesamt (über alle drei Maschinen). 
+Anders gesagt: Wie hoch ist die Wahrscheinlichkeit $Pr(S')$, dass ein zufällig gezogener Artikel Ausschuss ist? 
+@fig-tot-wskt zeigt das Baumdiagramm für die Aufgabe. $\square$
 :::
 
 ```{mermaid}
@@ -1281,7 +1297,6 @@ flowchart LR
 ```
 
 
-Gesucht ist also die Wahrscheinlichkeit $P(B)$; $A$ ist ein vollständiges Ereignissystem.
 Die Anteile an der Produktion und vom Ausschluss sind in @fig-ausschuss verdeutlicht.
 
 ```{r}
@@ -1294,7 +1309,7 @@ plot_maschine_schrott
 
 
 Dazu addieren wir die Wahrscheinlichkeiten der relevanten Äste.
-Jeder Ast stellt wiederum das gemeinsame Auftreten der Ereignisse $A_i$ und $B$ dar.
+Jeder Ast stellt wiederum das gemeinsame Auftreten der Ereignisse $M_i$ und $S$ dar.
 
 ```{r}
 W_Ast1 <- 0.6 * 0.05  # Wahrscheinlichkeit für Ast 1
@@ -1304,23 +1319,22 @@ W_total <- W_Ast1 + W_Ast2 + W_Ast3  # totale W.
 W_total
 ```
 
-Die *totale Wahrscheinlichkeit* (für Ausschuss) beträgt in diesem Beispiel also $P(B) = 4.4\%$.^[Einfacher als das Rechnen mit Wahrscheinlichkeiten ist es in solchen Fällen, wenn man anstelle von Wahrscheinlichkeiten absolute Häufigkeiten zum Rechnen verwendet.]
+Die *totale Wahrscheinlichkeit* (für Ausschuss) beträgt in diesem Beispiel also $Pr(B') = 0.044 = 4.4\%$.^[Einfacher als das Rechnen mit Wahrscheinlichkeiten ist es in solchen Fällen, wenn man anstelle von Wahrscheinlichkeiten absolute Häufigkeiten zum Rechnen verwendet.]
 
 :::{#def-totwskt}
 ### Totale Wahrscheinlichkeit
-Bilden die Ereignisse $A_1, A_2, ..., A_n$ ein vollständiges Ereignissystem und ist $B$ ein beliebiges Ereignis dann gilt @thm-totale-wskt. $\square$
+Bilden die Ereignisse $M_1, M_2, ..., M_n$ ein vollständiges Ereignissystem und ist $S$ ein beliebiges Ereignis dann gilt @thm-totale-wskt. $\square$
 :::
 
 ::: {#thm-totale-wskt}
 ### Totale Wahrscheinlichkeit
-$$Pr(B) = \sum_{i=1}^n Pr(A_i) \cdot Pr(B|A_i).\square$$
+$$Pr(S') = \sum_{i=1}^n Pr(M_i) \cdot Pr(S|M_i).\square$$
 :::
 
-
-Man kann die totale Wahrscheinlichkeit auffassen als die *Summe der gewichteten Teil-Wahrscheinlichkeiten*.
+In Worten: Die totale Wahrscheinlichkeit ist die Summe der gewichteten Teil-Wahrscheinlichkeiten.
 
 ::: {exm-totwskt1}
-In @fig-tot-wskt (@exm-bourier-s56) gilt $Pr(B) = 0.6 \cdot 0.05 + 0.1 \cdot 0.02 + 0.3 \cdot  0.04 = 0.03 + 0.002 + 0.012 = 0.04.\square$
+In @fig-tot-wskt (@exm-bourier-s56) gilt $Pr(S') = 0.6 \cdot 0.05 + 0.1 \cdot 0.02 + 0.3 \cdot  0.04 = 0.03 + 0.002 + 0.012 = 0.04.\square$
 :::
 
 

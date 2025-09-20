@@ -3,8 +3,9 @@
 # Hallo, Wahrscheinlichkeit
 
 
+![Bayes:Start!](img/Golem_hex.png){width=10%}
 
-<!-- TODO Dieses Kapitel ist zu lang, zu voll. -->
+
 
 ```{r}
 #| include: false
@@ -16,6 +17,8 @@ library(knitr)
 library(DT)
 library(kableExtra)
 library(ggraph)
+library(DiagrammeR)
+library(gt)
 
 
 source("funs/uniformplot.R")
@@ -163,9 +166,7 @@ Im wirklichen Leben sind Aussagen (Behauptungen) so gut wie nie sicher.
 - "Das klappt sicher, meine Meinung."
 - "Der nächste Präsident wird XYZ."
 
-Aussagen sind nur *mehr oder weniger* (graduell) sicher.
-Wir können die Regeln der Wahrscheinlichkeitslogik verwenden, um den Grad der Sicherheit (von ganz unsicher bis ganz sicher) zu präzisieren.
-Daher sagt man auch, Wahrscheinlichkeit sei die Logik der Wissenschaft [@jaynes2003].
+
 
 
 
@@ -177,7 +178,7 @@ Sie können ...
 
 
 - die Grundbegriffe der Wahrscheinlichkeitstheorie erläuternd definieren
-- die drei Arten der direkten Ermittlung von Wahrscheinlichkeit erläutern
+- die Definitionen von Wahrscheinlichkeit beschreiben
 - typische Relationen (Operationen) von Ereignissen anhand von Beispielen veranschaulichen
 - erläutern, was eine Zufallsvariable ist
 
@@ -211,47 +212,35 @@ Prüfen Sie, ob Ihr Dozent Ihnen weitere Hilfen im [geschützten Bereich (Moodle
 
 
 
-### Zentrale Begriffe
+<!-- ### Zentrale Begriffe -->
 
 
-#### Grundbegriffe
+<!-- #### Grundbegriffe -->
 
-- Zufallsvorgang (Zufallsexperiment)
-- Elementarereignis
-- Ereignisraum
-- Zufallsereignis (zufälliges Ereignis)
-- Sicheres Ereignis
-- Unmögliches Ereignis
-
-
-#### Wahrscheinlichkeitsbegriffe
-
-- Klassische Wahrscheinlichkeit (LaPlace'sche Wahrscheinlichkeit)
-- Statistische (empirische) Wahrscheinlichkeitsermittlung
-- Subjektive (Bayes) Wahrscheinlichkeitsermittlung
+<!-- - Zufallsvorgang (Zufallsexperiment) -->
+<!-- - Elementarereignis -->
+<!-- - Ereignisraum -->
+<!-- - Zufallsereignis (zufälliges Ereignis) -->
+<!-- - Sicheres Ereignis -->
+<!-- - Unmögliches Ereignis -->
 
 
-#### Wahrscheinlichkeitsrelationen
+<!-- #### Wahrscheinlichkeitsbegriffe -->
 
-- Vereinigung von Ereignissen
-- Schnitt(menge) von Ereignissen
-- Komplementärereignis
-- Vollständiges Ereignissystem
-- Anforderungen an eine Definition von Wahrscheinlichkeit
+<!-- - Klassische Wahrscheinlichkeit (LaPlace'sche Wahrscheinlichkeit) -->
+<!-- - Statistische (empirische) Wahrscheinlichkeitsermittlung -->
+<!-- - Subjektive (Bayes) Wahrscheinlichkeitsermittlung -->
 
 
-#### Wahrscheinlichkeitsrechnung
+<!-- #### Wahrscheinlichkeitsrelationen -->
 
-- Allgemeiner Additionsssatz
-- Disjunkte Ereignisse
-- Additionssatz für disjunkte Ereignisse
-- Bedingte Wahrscheinlichkeit
-- (Stochastische) Unabhängigkeit
-- Baumdiagramm für gemeinsame Wahrscheinlichkeit
-- Allgemeiner Multiplikationssatz
-- Multiplikationssatz für unabhängige Ereignisse
-- Totale Wahrscheinlichkeit
-- Satz von Bayes
+<!-- - Vereinigung von Ereignissen -->
+<!-- - Schnitt(menge) von Ereignissen -->
+<!-- - Komplementärereignis -->
+<!-- - Vollständiges Ereignissystem -->
+<!-- - Anforderungen an eine Definition von Wahrscheinlichkeit -->
+
+
 
 
 
@@ -279,7 +268,7 @@ Prüfen Sie, ob Ihr Dozent Ihnen weitere Hilfen im [geschützten Bereich (Moodle
 ## Grundbegriffe
 
 
-
+### Zufallsvorgang
 
 
 :::{#exm-muenz}
@@ -333,7 +322,7 @@ Der "Zufall" würde aus dem Münzwurf verschwinden. Man sollte "Zufall" also bes
 [Mit dieser App](https://www.geogebra.org/m/cbqee8h7) können Sie Würfelwürfe simulieren und die Ausgänge dieses Zufallsexperiments beobachten.$\square$
 :::
 
-
+### Ereignisraum
 
 :::{#def-ereignisraum}
 ### Ereignisraum
@@ -358,8 +347,7 @@ Die Wahrscheinlichkeitsrechnung baut auf der Mengenlehre auf, daher wird die Not
 
 
 ::: {.content-visible when-format="html"}
-![Ein (sechsseitiger) Würfel, Bildquelle: Peter Steinberg, Wikipedia, CC-BY-](img/120px-Hexahedron-slowturn.gif){#fig-wuerfel width=10%}
-
+![Ein (sechsseitiger) Würfel, Bildquelle: Peter Steinberg, Wikipedia, CC-BY-SA 3.0](img/120px-Hexahedron-slowturn.gif){#fig-wuerfel width=10%}
 :::
 
 ::: {.content-visible unless-format="html"}
@@ -372,7 +360,7 @@ Die Wahrscheinlichkeitsrechnung baut auf der Mengenlehre auf, daher wird die Not
 
 
 
-
+### Ereignis
 
 
 
@@ -409,7 +397,7 @@ Das Ereignis *Zahl* ist eingetreten! Treffer! Glück gehabt!^[?]$\square$
 :::
 
 
-
+### Unmögliches und sicheres Ereignis
 
 
 
@@ -433,6 +421,8 @@ Nach dem der Würfel geworfen wurde, liegt eine Augenzahl zwischen 1 und 6 oben.
 :::
 
 
+### Elementarereignis
+
 :::{#def-elementarereignis}
 ### Elementarereignis
 
@@ -453,7 +443,7 @@ Das erste der beiden Elementarereignisse tritt ein. Yeah!
 Die Daten sprechen für das Ereignis $A = \{\text{bringt nichts}\}$.
 :::
 
-
+### Vollständiges Ereignissystem
 
 
 :::{#def-vollereignis}
@@ -516,6 +506,7 @@ Noch ein Beispiel für ein vollständiges Ereignissystem
 ::::
 :::::
 
+### Mächtigkeit
 
 :::{#def-macht}
 ### Mächtigkeit
@@ -530,7 +521,100 @@ Beim Wurf eines Würfels mit $\Omega=\{1,2,3,4,5,6\}$ gibt es 6 Elementarereigni
 Die Mächtigkeit ist also 6: $|\Omega|=6$.$\square$
 :::
 
+
+### Disjunkte Ereignisse
+
+
+
+
+Seien $A= \{1,2,3\}; B= \{4,5,6\}$.
+
+$A$ und $B$ sind disjunkt^[engl. disjoint]: ihre Schnittmenge ist leer: $A \cap B = \emptyset$,
+s. @fig-disjunkt.
+
+
+
+
+![Zwei disjunkte Ereignisse, dargestellt noch überlappungsfreie Kreise](img/2880px-Disjunkte_Mengen.svg.png){#fig-disjunkt width="25%" fig-align="center"}
+
+
+
+
+
+[Quelle: rither.de](http://www.rither.de/a/mathematik/stochastik/mengentheorie-und-venn-diagramme/)
+
+
+::::: {#exm-disjunkt1}
+Das Ereignis $A$ "Gerade Augenzahl beim Würfelwurf", $A={2,4,6}$ und das Ereignis $B$ "Ungerade Augenzahl beim Würfelwurf", $B={1,3,5}$ sind disjunkt, s. @fig-disjunkt1.
+
+
+::::{#fig-disjunkt1}
+
+::: {.figure-content}
+
+
+\begin{align}
+A = \{2,4, 6\} \qquad \hfill \boxed{2\; 4\; 6} \\
+B = \{1,3,5\} \qquad  \hfill \boxed{1\; 3\; 5} \\
+\hline \\
+A \cap B = \qquad  \hfill  \emptyset
+\end{align}
+:::
+
+Beispiel für disjunkte Ereignisse
+
+::::
+
+
+:::::
+
+
+:::{exm-disjunkt2}
+Die Ereignisse "normaler Wochentag" und "Sonntag" sind disjunkt. $\square$
+:::
+
+
+
+
+
+
+:::{#exr-elementarereignis}
+### Peer Instruction: Elementarereignis
+Welche der folgenden Ereignisse zeigt ein Elementarereignis des Würfelwurfs (wobei die Augenzahl 1,2,...,6 die Ergebnisse sind).
+
+A) Gerade Zahl gewürfelt
+B) Ungereade Zahl gewürfelt
+C) Keine *6* gewürfelt
+D) *1* gewürfelt
+E) Keine der genannten $\square$
+:::
+
+
+
 ## Was ist Wahrscheinlichkeit?
+
+
+Die "klassische" Logik der Wissenschaft beruht auf Schlüssen (Syllogismen) wie diesem: "Alle Schwäne sind weiß." $\rightarrow$ "Dies ist ein Schwan." $\rightarrow$ "Dieser Schwan ist weiß."
+
+Mit dem Konzept von Wahrscheinlichkeit können wir jetzt auch folgende Logik anwenden:
+"Die meisten Schwäne sind weiß." $\rightarrow$ "Dies ist ein Schwan." $\rightarrow$ "Dieser Schwan ist wahrscheinlich weiß."
+Das ist ein großer Fortschritt, der die Denkweise der Wissenschaft gut widerspiegelt und dafür eine logisch-mathematische Grundlage bereitstellt,
+ s. @fig-prob-logic.
+ 
+ 
+
+:::{#def-wskt}
+### Einfache Definition von Wahrscheinlichkeit
+Die Wahrscheinlichkeit ist ein Maß für die Plausibilität einer Aussage $A$, gegeben gewisser Hintergrundinformationen (Daten, $D$): $Pr(A|D)$.
+Die Wahrscheinlichkeit eines Ereignisses wird (sofern berechenbar) als Zahl zwischen 0 und 1 angegeben,
+wobei 0 bedeutet, dass das Ereignis als unmöglich angesehen wird,
+und 1 bedeutet, dass das Ereignis als sicher betrachtet wird.
+Je näher die Wahrscheinlichkeit bei 1 (0) liegt, desto sicherer ist jemand,
+dass das Ereignis (nicht) der Fall ist.$\square$
+:::
+
+Die Wahrscheinlichkeitsrechnung ist die typische Methode, um Ungewissheit zu präzisieren, d.h. zu quantifizieren.
+
 
 Wir haben schon mit @def-wskt eine erste Definition von Wahrscheinlichkeit versucht. 
 Jetzt gehen wir die Sache noch etwas näher an und vergleichen verschiedene Ideen (Definitionen) von Wahrscheinlichkeit.
@@ -546,6 +630,11 @@ In der formallogischen Konzeption wird der Platz zwischen "falsch" (0) und "rich
 als die Wahrscheinlichkeit $0<p<1$, gesehen [@briggs2016], s. @fig-prob-logic.
 
 
+
+
+
+
+
 ![Wahrscheinlichkeit als Erweiterung der Logik](img/prob-logic.png){#fig-prob-logic}
 
 Nach dieser "Wahrscheinlichkeitslogik" kann man ein Ereignis, 
@@ -554,6 +643,68 @@ Hingegen einem Ereignis, von man "recht sicher" ist, mit 0.8 quantifizieren, s. 
 
 
 ![Ein Ereignis von dessen Eintreten man gering bzw. stark überzeugt ist](img/prob-logic2.png){#fig-prob-logic2}
+
+
+### Wahrscheinlichkeit als Ungewissheit
+
+
+
+Wahrscheinlichkeit existiert nicht in dem Sinne, wie ein Stein oder ein Mensch existiert. Wahrscheinlichkeit ist stattdessen eine Art von Wissen.
+Daher ist es (nach @jaynes2003) falsch, zu sagen:
+"Die Wahrscheinlichkeit für Zahl bei dieser Münze ist 50%."
+Richtig wäre für einen unbedarften Spieler: "Ich habe keinen Grund, nicht an der Fairness der Münze zu glauben, also gehe ich von 50% Wahrscheinlichkeit für Zahl aus."
+Der Betrüger, der diese Münze in der Hand hat, geht allerdings von einer Wahrscheinlichkeit von 75% für Zahl aus (er kennt die Münze besser als Sie).
+
+Das Beispiel zeigt: Wahrscheinlichkeit ist kein Ding der Welt, sondern ein Wissenszustand.
+
+Formaler ausgedrückt: Sei $Pr$ die Wahrscheinlichkeit des Ereignis $Z$ (Zahl) angibt, *gegeben* meiner Annahme, dass die Münze fair ist ($F$), also eine Wahrscheinlichkeit von 50% (1/2 = .5) hat für $Z$. Dann kann man kurz schreiben:
+
+$$Pr(Z|F) = 0.5$$
+Gegeben des Wissens des Betrügers $B$ wäre die Wahrscheinlichkeit für $Z$ anders:
+
+$$Pr(Z|B) = 0.75$$
+
+In Worten: "Die Wahrscheinlichkeit von Zahl ($Z$) gegeben das Wissen des Betrügers über die Münze ($B$) liegt bei 75%.
+
+Das Beispiel zeigt auch, dass die Wahrscheinlichkeit eines Ereignissens (wie $Z$) von Hintergrundinformationen (Annahmen, Daten, Evidenz, ...) abhängt.
+Ohne zu sagen, auf welche Hintergrundinterformationen wir uns beziehen (die des unbedarften Spielers oder die des Betrügers), ist es sinnvoll, eine Wahrscheinlichkeit anzugeben.
+Daher ist $Pr(Z) = 0.5$ unvollständig.
+Allerdings wird die Hintergrundinformation oft weggelassen, wenn es klar ist, welche Hintergrundinformation vorliegt.
+So wird häufig vorausgesetzt, dass eine Münze fair ist.
+
+:::{#exm-bedingt}
+### Morgen regnet's
+
+Es ist daher unvollständig zu sagen: "Morgen wir es mit einer Wahrscheinlichkeit von 70% regnen."
+
+Man müsste Hintergrundinformation (*Evidenz*, $E$) ergänzen, z.B. "auf Basis des Wettermodell X".
+
+Also: Anstelle von $Pr(\text{Regen}) = .7$ besser sagen: $Pr(\text{Regen|Wettermodell X})$. $\square$
+:::
+
+
+:::{#exm-bedingt2}
+### Wahrscheinlichkeit für Krebs
+
+Jemand beobachtet bei sich Symptome, die für eine eine Hautkrebserkrankung $K$ typisch sind. Die Person sagt sich: "Ach, die Wahrscheinlichkeit für Hautkrebs liegt bei einem Promill. Kein Grund für Sorge." Formal: $Pr(K) = 0.001$.
+Aber wenn die Person relevante Symptome $S$ hat, gilt: $Pr(\text{K} \mid \text{S}) \gg 0.001$. $\square$
+:::
+
+
+:::callout-note
+Sagt jemand: "Die Wahrscheinlichkeit von A ist x%", frag immer: "gegeben welcher Annahmen, welcher Evidenz?"
+:::
+
+
+:::{#def-wskt}
+### Wahrscheinlichkeit unter formallogischer Sichtweise
+Die Wahrscheinlichkeit ist ein Maß für unsere Gewissheitt einer Aussage $A$, gegeben gewisser Hintergrundinformationen (Daten, $D$): $Pr(A|D)$.
+Die Wahrscheinlichkeit eines Ereignisses wird (sofern berechenbar) als Zahl zwischen 0 und 1 angegeben,
+wobei 0 bedeutet, dass das Ereignis als unmöglich angesehen wird,
+und 1 bedeutet, dass das Ereignis als sicher betrachtet wird.
+Je näher die Wahrscheinlichkeit bei 1 (0) liegt, desto sicherer ist jemand,
+dass das Ereignis (nicht) der Fall ist.$\square$
+:::
 
 
 :::{#def-indifferenzprinzip}
@@ -604,9 +755,35 @@ $$Pr(A)=\frac{\text{Anzahl Treffer}}{\text{Anzahl möglicher Ergebnisse}} \quad 
 :::
 
 
+
+
+
+:::{#exm-prob}
+### Kann Sophia (Einhorn) fliegen?
+
+Sei $A$: "Sophia ist ein Einhorn". Und sei $B$: "Einhörner mit Flügen können fliegen und die Hälfter aller Einhörner hat Flügel". Dann ist $Pr(A|B) = 1/2$.
+$\square$
+:::
+
+
+
+
+:::{exm-prob3}
+### Ich werfe Zahl beim nächsten Münzwurf
+
+$B$ "Ich habe keinen Grund an der Fairness der Münze zu zweifeln". 
+$A$: "Es wird *Zahl* geworfen beim nächsten Wurf dieser Münze". 
+Es gilt: $Pr(A|B) = 1/2$. $\square$
+:::
+
+
+
+
+
+
 ### Frequentistische Definition
 
-In Ermangelung einer Theorie zum Verhalten eines (uns) unbekannten Zufallsvorgangs und unter der Vermutung, dass die Elementarereignisse nicht gleichwahrscheinlich sind, bleibt uns ein einfacher (aber aufwändiger) Ausweg: Ausprobieren.
+In Ermangelung einer Theorie zum Verhalten eines (uns) unbekannten Zufallsvorgangs und unter der Vermutung, dass die Elementarereignisse nicht gleichwahrscheinlich sind, bleibt uns ein einfacher (aber aufwändiger und manchmal unmöglicher) Weg, um die Wahrscheinlichkeit eines Ereignisses zu bestimmen: Ausprobieren.
 
 Angenommen, ein Statistik-Dozent, bekannt für seine Vorliebe zum Glücksspiel und 
 mit scheinbar endlosen Glückssträhnen (er wirft andauernd eine 6), 
@@ -679,12 +856,40 @@ Dann muss man auf Schätzungen, Vorwissen, Erfahrung, theoretischen Überlegunge
 
 ### Kolmogorovs Definition {#sec-kolmogorov}
 
-Wir richten eine Reihe von Forderungen an eine Definition von bzw. an das Rechnen mit Wahrscheinlichkeiten, die direkt plausibel erscheinen:^[Ein Herr Kolmogorov hat das mal aufgeschrieben.]
+Kolmogorov richtet eine Reihe von Forderungen an eine Definition von bzw. an das Rechnen mit Wahrscheinlichkeiten, 
+die direkt plausibel erscheinen:
 
 1. *Nichtnegativität*: Die Wahrscheinlichkeit eines Ereignisses kann nicht negativ sein.
 2. *Normierung*: Das sichere Ereignis hat die Wahrscheinlichkeit 1 bzw. 100%: $Pr(\Omega)=1$; das unmögliche Ereignis hat die Wahrscheinlichkeit 0: $Pr(\emptyset)=0$.
 3. *Additivität*. Sind $A$ und $B$ disjunkt, dann ist die Wahrscheinlichkeit, 
 dass mindestens eines der beiden Ereignisse eintritt ($A\cup B$) gleich der Summe der beiden Einzelwahrscheinlichkeiten von $A$ und $B$.
+
+
+
+
+:::{exr-prob2}
+### Peer Instruction: Ist der Schmockulator im Zustand alpha?
+
+$B$: "Locuratoren und Schmockulatoren kommen in zwei Zuständen vor, alpha und beta. 
+Und zwar gleich häufig". 
+Leider wissen wir nichts Weiteres über Locuratoren und Schmockulatoren.
+Vor Ihnen steht ein Schmockulator. 
+Welche möglichst präzise Aussage können wir über den Zustand des Schmockulator treffen?
+
+A) Der Schmockulator ist sicher im Zustand alpha.
+B) Der Schmockulator ist in einem der beiden Zustände.
+C) Der Schmockulator ist vermutlich im Zustand alpha.
+D) Der Schmockulator ist möglicherweise im Zustand alpha.
+E) Der Schmockulator ist mit einer Wahrscheinlichkeit von 50% im Zustand alpha.
+F) Keine der genannten. $\square$
+:::
+
+
+
+:::
+
+
+
 
 
 
@@ -939,56 +1144,6 @@ $A \setminus B \ne B \setminus A$.
 setdiff(B, A)
 ```
 
-### Disjunkte Ereignisse
-
-
-
-
-Seien $A= \{1,2,3\}; B= \{4,5,6\}$.
-
-$A$ und $B$ sind disjunkt^[engl. disjoint]: ihre Schnittmenge ist leer: $A \cap B = \emptyset$,
-s. @fig-disjunkt.
-
-
-
-
-![Zwei disjunkte Ereignisse, dargestellt noch überlappungsfreie Kreise](img/2880px-Disjunkte_Mengen.svg.png){#fig-disjunkt width="25%" fig-align="center"}
-
-
-
-
-
-[Quelle: rither.de](http://www.rither.de/a/mathematik/stochastik/mengentheorie-und-venn-diagramme/)
-
-
-::::: {#exm-disjunkt1}
-Das Ereignis $A$ "Gerade Augenzahl beim Würfelwurf", $A={2,4,6}$ und das Ereignis $B$ "Ungerade Augenzahl beim Würfelwurf", $B={1,3,5}$ sind disjunkt, s. @fig-disjunkt1.
-
-
-::::{#fig-disjunkt1}
-
-::: {.figure-content}
-
-
-\begin{align}
-A = \{2,4, 6\} \qquad \hfill \boxed{2\; 4\; 6} \\
-B = \{1,3,5\} \qquad  \hfill \boxed{1\; 3\; 5} \\
-\hline \\
-A \cap B = \qquad  \hfill  \emptyset
-\end{align}
-:::
-
-Beispiel für disjunkte Ereignisse
-
-::::
-
-
-:::::
-
-
-:::{exm-disjunkt2}
-Die Ereignisse "normaler Wochentag" und "Sonntag" sind disjunkt. $\square$
-:::
 
 ### Vertiefung
 
@@ -996,6 +1151,21 @@ Die Ereignisse "normaler Wochentag" und "Sonntag" sind disjunkt. $\square$
 [Animation zu Mengenoperationen](https://seeing-theory.brown.edu/compound-probability/index.html)
 
 
+
+:::{#exr-komplement}
+### Peer Instruction: Das Komplementärereignis von der Bestnote
+
+Sie haben eine Statistikklausur bestanden. Mit Bestnote.
+Genauer gesagt, haben Sie 100 von 100 Punkten erzielt.
+Was ist das Komplementärereignis dazu?
+
+A) 99 Punkte
+B) 0 Punkte
+C) 0-99 Punkte
+D) 0-100 Punkte
+E) durchgefallen
+F) keines der genannten $\square$
+:::
 
 
 
@@ -1010,64 +1180,36 @@ b) viel Erfahrung,
 c) guten Ruf und 
 d) interessante Forschungsinteressen.
 Je mehr dieser 4 Kriterien erfüllt sind, desto besser. 
-Schorsch geht davon aus, dass die 4 Kriterien voneinander unabhängig sind (ob eines erfüllt ist oder nicht, ändert nichts an der Wahrscheinlichkeit eines anderen Kriteriums).
+Schorsch geht davon aus, dass die 4 Kriterien voneinander unabhängig sind (ob eines erfüllt ist oder nicht, ändert nichts an der Wahrscheinlichkeit, dass ein anderes Kriterium erfüllt ist).
 Schorsch interessiert sich also für die *Anzahl* der erfüllten Kriterien, also eine Zahl von 0 bis 4.
 Er schätzt die Wahrscheinlichkeit für einen "Treffer" in jedem seiner 4 Kriterien auf 50%.
 Viel Glück, Schorsch!
 Sein Zufallsexperiment hat 16 Ausgänge (Knoten 16 bis 31), s. @fig-4muenzen und @tbl-schorsch-zufall. Ganz schön komplex.
 Eigentlich würden ihm ja eine Darstellung mit 5 Ergebnissen, also der "Gutachter-Score" von 0 bis 4 ja reichen. 
-Wie können wir es übersichtlicher für Schorsch?$\square$
+Wie können wir die Sache übersichtlicher für Schorsch machen? @fig-4muenzen ist ein Versuch. $\square$
 :::
 
 
- 
-
-```{r}
-#| echo: false
-#| label: fig-4muenzen
-#| fig-cap: "Ein Baumdiagramm mit 16 Ausgängen, analog zur 4 Münzwürfen. Jede Münze ist in einer anderen Farbe dargestellt. Der Knoten '1' ist der Start, da ist noch keine Münze geworfen."
-my_tree <- tidygraph::create_tree(31, 2, mode = "out")
-
-my_tree %>%
-  mutate(lab = 1:31) %>%
-  mutate(muenze = case_when(
-    lab == 1 ~ 0,
-    lab <= 3 ~ 1,
-    lab <= 7 ~ 2,
-    lab <= 15 ~ 3,
-    TRUE ~ 4
-  )) %>% 
-  mutate(muenze = factor(muenze)) %>% 
-  ggraph(circular = FALSE) +
-  geom_edge_link() +
-  geom_node_label(mapping = aes(label = lab, fill = muenze)) +
-  coord_flip() +
-  scale_y_reverse() +
-  theme_void() +
-  theme(text = element_text(size = 12)) +
-  labs(fill = "Münze ") +
-  guides(fill = guide_legend(override.aes = aes("")))  # Suppress the 'a'
-```
-
+![Ein Baumdiagramm mit 16 Ausgängen, analog zur 4 Münzwürfen. T: Treffer (Kriterium erfüllt). N: Niete (Kriterium nicht erfüllt). NNNT wäre zum Beispiel eine Gutachterin ohne klar fixierte Rahmenbedingungen, ohne viel Erfahrung, mit schlechem Ruf aber mit interessanten Forschungsinteressen.](img/fig_4muenzen.png){#fig-4muenzen width=100%}
 
 
 ```{r}
 #| echo: false
-#| tbl-cap: Schorschs Zufallsexperiment, Auszug der Elementarereignisse
+#| tbl-cap: Schorschs Zufallsexperiment, Auszug der Elementarereignisse (EE)
 #| label: tbl-schorsch-zufall
 d <- tibble::tribble(
-   ~i, ~Elementarereignis, ~`Pr(EE)`, ~Trefferzahl, ~`Pr(Trefferzahl)`,
-  "1",             "NNNN",    "1/16",          "0",             "1/16",
-  "2",             "NNNT",    "1/16",          "1",              "1/4",
-  "3",             "NNTN",    "1/16",          "1",              "1/4",
-  "4",             "NTNN",    "1/16",          "1",              "1/4",
-  "5",             "TNNN",    "1/16",          "1",              "1/4",
-  "6",             "NNTT",    "1/16",          "2",                "…",
-  "…",                "…",       "…",          "…",                "…"
+   ~i, ~Elementarereignis, ~`Pr(EE)`, ~Trefferzahl,
+  "1",             "NNNN",    "1/16",          "0",        
+  "2",             "NNNT",    "1/16",          "1",             
+  "3",             "NNTN",    "1/16",          "1",            
+  "4",             "NTNN",    "1/16",          "1",        
+  "5",             "TNNN",    "1/16",          "1",            
+  "6",             "NNTT",    "1/16",          "2",            
+  "…",                "…",       "…",          "…"         
   )
 
 
-kable(d, booktabs = TRUE)
+gt(d)
 ```
 
 
@@ -1085,7 +1227,7 @@ Die Zuordnung der Elementarereignisse eines Zufallsexperiments zu genau einer Za
 $\in \mathbb{R}$ nennt man Zufallsvariable.$\square$
 :::
 
-Die den Elementarereignissen zugewiesenen Zahlen nennt man *Realisationen* oder Ausprägungen der Zufallsvariablen.
+Die den Elementarereignissen zugewiesenen Zahlen nennt man *Realisationen* oder *Ausprägungen* der Zufallsvariablen.
 
 :::{#exm-lotto}
 ### Lotto
@@ -1106,31 +1248,11 @@ ${\displaystyle X(\omega )={\begin{cases}1,&{\text{wenn }}\omega ={\text{Kopf}},
 
 
 
-```{mermaid}
-%%| fig-cap: Eine Zufallsvariable ist eine Abbildung eines Ereignisses im Ereignisraum zu den Realisationen der Zufallsvariable. Außerdem sieht man, wie diskrete Wahrscheinlichkeitsfunktionen genutzt werden, um den numerischen Ausgängen eines Zufallsexperiments eine Wahrscheinlichkeit zuzuordnen, d.h. um Wahrscheinlichkeiten zu bestimmen.
-%%| label: fig-zv
-flowchart LR
-  subgraph A[Ereignis]
-    Kopf
-    Zahl
-  end
-  subgraph B[Realisation]
-    null[0]
-    eins[1]
-  end
-  subgraph C[Wahrscheinlichkeit]
-    half[50%]
-  end
-  
-  Kopf --> null
-  Zahl --> eins
-  null --> half
-  eins --> half
-```
+![Eine Zufallsvariable ist eine Zuordnung der Ereignisse zu einer reellen Zahl (nach einer bestimmten Regel](img/zv_plot.png){#fig-zv width=33%}
 
 
 
-Zufallsverteilungen kann im zwei Artein einteilen:
+Zufallsverteilungen kann im zwei Arten einteilen:
 
 1. diskrete Zufallsvariablen
 2. stetige Zufallsvariablen
@@ -1528,7 +1650,7 @@ Exakt heißt *exakt*, also nicht 42.1s, nicht 42.01s, nicht 42.001s, etc. bis zu
 :::
 
 
-Nicht so einfach (?). Hingegen ist die Frage, wie hoch die Wahrscheinlichkeit ist, zwischen 0 und 5 Minuten auf den Bus zu warten ($0<x<5$), einfach: Sie beträgt 50%, wie man in @fig-p05 gut sehen kann.
+Nicht so einfach (?). Hingegen ist die Frage, wie hoch die Wahrscheinlichkeit ist, zwischen 0 und 5 Minuten auf den Bus zu warten ($0<x<5$), einfach: Sie beträgt 50%, wie man in @fig-bus gut sehen kann.
 
 
 
@@ -1537,7 +1659,7 @@ Nicht so einfach (?). Hingegen ist die Frage, wie hoch die Wahrscheinlichkeit is
 
 ::: {.column width="50%"}
 
-![Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minuten auf den Bus zu warten? 50 Prozent!](img/p_bus2.png){#fig-p05}
+![Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minuten auf den Bus zu warten? 50 Prozent!](img/p_bus2.png){#fig-bus}
 
 
 :::
@@ -1548,6 +1670,8 @@ Nicht so einfach (?). Hingegen ist die Frage, wie hoch die Wahrscheinlichkeit is
 #| fig-cap: "Wie groß ist die Wahrscheinlichkeit, genau 42 Sekunden auf den Bus zu warten? Hm."
 #| label: fig-p42
 #| warning: false
+#| out-width: 100%
+
 p_bus1 <- 
   uniform_Plot(0, 10) + 
   geom_vline(xintercept = .42, color = "#56B4E9FF", size = 1) +
@@ -1561,13 +1685,13 @@ p_bus1
 
 ::::
 
-Vergleicht man @fig-p42 und @fig-p05 kommt man (vielleicht) zu dem Schluss, dass die Wahrscheinlichkeit exakt 42s auf den Bus zu warten, praktisch Null ist.
+Vergleicht man @fig-p42 und @fig-bus kommt man (vielleicht) zu dem Schluss, dass die Wahrscheinlichkeit exakt 42s auf den Bus zu warten, praktisch Null ist.
 Der Grund ist, dass die Fläche des Intervalls gegen Null geht, wenn das Intervall immer schmäler wird.
 Aus diesem Grund kann man bei stetigen Zufallszahlen nicht von einer Wahrscheinlichkeit eines bestimmten Punktes $X=x$ sprechen.
 Für einen bestimmten Punkt $X=x$ kann man aber die *Dichte* der Wahrscheinlichkeit angeben.
 
 Was  gleich ist in beiden Situationen ($Pr(X=.42)$ und $Pr(0<x<0.5)$) ist die *Wahrscheinlichkeitsdichte*, $f$.
-In @fig-p42 und @fig-p05 ist die Wahrscheinlichkeitsdichte gleich, $f=1/10=0.1$.
+In @fig-p42 und @fig-bus ist die Wahrscheinlichkeitsdichte gleich, $f=1/10=0.1$.
 
 :::{#def-wdichte}
 ### Wahrscheinlichkeitsdichte
@@ -1645,6 +1769,18 @@ Man gibt stattdessen die *Dichte* der Wahrscheinlichkeit an: Das ist die Wahrsch
 Für praktische Fragen berechnet man zumeist die Wahrscheinlichkeit von Intervallen, s. @fig-wdichte-sinnbild.
 
 
+:::{#exr-warten-bus}
+### Peer Instruction: Wieder auf den Bus warten
+
+Sie warten wieder auf den Bus, s. @fig-bus.
+Welche Aussage dazu ist *falsch*?
+
+A) Die Wahrscheinlichkeit, genau 5 Minuten zu warten, ist am höchsten.
+B) Die Wahrscheinlichkeit, genau 10 Minuten zu warten, ist Null.
+C) Mit 100% Wahrscheinlichkeit beträgt die Wartezeit zwischen 0 und 10 Minuten.
+D) Die Wahrscheinlichkeit 1 Minute zu warten, beträgt 10%.
+E) Keine der genannten. $\square$
+:::
 
 
 ## Aufgaben
@@ -1656,4 +1792,8 @@ um die Aufgaben mit den folgenden Namen zu suchen:
 
 
 ### Paper-Pencil-Aufgaben
+
+
+
+## Literatur
 

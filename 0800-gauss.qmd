@@ -132,7 +132,7 @@ Was war noch mal eine Post-Verteilung und wozu ist sie gut? $\square$
 
 ## Wie groß sind die !Kung San?
 
-Dieser Abschnitt basiert slee auf @mcelreath2020, Kap. 4.3.
+Dieser Abschnitt basiert auf @mcelreath2020, Kap. 4.3.
 
 ### !Kung San 
 
@@ -142,25 +142,6 @@ in Zusammenhang mit dem Volk der !Kung, s. @fig-kungs.
 >   The ǃKung are one of the San peoples who live mostly on the western edge of the Kalahari desert, Ovamboland (northern Namibia and southern Angola), and Botswana.The names ǃKung (ǃXun) and Ju are variant words for 'people', preferred by different ǃKung groups. This band level society used traditional methods of hunting and gathering for subsistence up until the 1970s. Today, the great majority of ǃKung people live in the villages of Bantu pastoralists and European ranchers.
 
 [Quelle](https://en.wikipedia.org/wiki/%C7%83Kung_people)
-
-
-
-:::{#fig-kungs layout-ncol=2}
-
-![Kung People](img/kung.jpg){#fig-kung1}
-
-![Verbreitung der Kung-Sprachen](img/kung-lang.png){#fig-kung2}
-
-Die !Kung im südlichen Afrika
-:::
-
-
-
-[Quelle](https://upload.wikimedia.org/wikipedia/commons/b/b5/Wandering_hunters_%28Masarwa_bushmen%29%2C_North_Kalahari_Desert.jpg) 
-
-
- [Quelle: By Andrewwik.0 - Own work, CC BY-SA 4.0,](https://commons.wikimedia.org/w/index.php?curid=79801340)
-
 
 
 
@@ -298,7 +279,7 @@ In @fig-kung-model1 sind unsere Priori-Verteilungen visualisiert.
 ```{r Kung-10}
 #| echo: false
 #| label: fig-kung-model1
-#| fig-cap: Unser (erstes) Kung-Modell (m41)
+#| fig-cap: Unser (erstes) Kung-Modell (m_kung)
 #| fig-asp: 0.4
 plots(p1, p2)
 ```
@@ -335,9 +316,9 @@ Die Streuung $\sigma$ der Größen sei *exponentialverteil* mit $\lambda = 1/8$.
 
 $$\color{green}{\sigma \sim \mathcal{E}(1/8)} \qquad{\text{Prior}}$$
 
-### `m41`: fertig!
+### `m_kung`: fertig!
 
-Jetzt haben wir unser Modell (`m41`) definiert!
+Jetzt haben wir unser Modell (`m_kung`) definiert!
 
 
 Weil es so schön ist, schreiben/zeichnen wir es hier noch einmal auf, @eq-mod-kung1, @fig-mod-kung1.
@@ -354,14 +335,14 @@ h_i &\sim \mathcal{N}(\mu, \sigma) & \text{Likelihood}  \\
 \end{aligned}
 $${#eq-mod-kung1}
 
-![Modellschema für das Modell `m41`](img/Kruschke-plot1.png){#fig-mod-kung1}
+![Modellschema für das Modell `m_kung`](img/Kruschke-plot1.png){#fig-mod-kung1}
 
 
 
 
 
 
-Zur Berechnung von `m41` nutzen wir jetzt dieses Mal aber *nicht* die Gittermethode (Bayes-Box),
+Zur Berechnung von `m_kung` nutzen wir jetzt dieses Mal aber *nicht* die Gittermethode (Bayes-Box),
 sondern lassen R die Arbeit verrichten.
 
 Da gibt es einen neuen Golem, ziemlich kräftig der Bursche,
@@ -382,16 +363,16 @@ Der Golem hört auf den Namen `rstanarm`^[Hey, *ich* habe ihn diesen Namen nicht
 :::
 
 
-## Posteriori-Verteilung des Größen-Modells, `m41`
+## Posteriori-Verteilung des Größen-Modells, `m_kung`
 
 
 Okay, Golem, an die Arbeit!
 Berechne uns das Kung-Modell!
-Nennen wir das Modell `m41`^[*m* wie Modell und 4, weil das Modell in Kapitel 4 von @mcelreath2020 in ähnlicher Form berichtet wird, und 1 weil es unsere erste Variante dieses Modells ist.].
+Nennen wir das Modell `m_kung`^[*m* wie Modell und 4, weil das Modell in Kapitel 4 von @mcelreath2020 in ähnlicher Form berichtet wird, und 1 weil es unsere erste Variante dieses Modells ist.].
 
 ```{r Kung-4, message=FALSE, results="hide"}
-m41 <- stan_glm(height ~ 1, data = d2, refresh = 0)  # <1>
-m41_post <- as_tibble(m41)    # <2>
+m_kung <- stan_glm(height ~ 1, data = d2, refresh = 0)  # <1>
+m41_post <- as_tibble(m_kung)    # <2>
 names(m41_post) <- c("mu", "sigma")  # <3>  
 ```
 1. Bayes-Regressionsmodell berechnen
@@ -408,13 +389,13 @@ Glücklicherweise können wir auch solche "armen" Regressionsmodelle formulieren
 `av ~ 1` bzw. in unserem Beispiel `height ~ 1` bedeutet,
 dass man nur die Verteilung der AV berechnen möchte, 
 aber keine Prädiktoren hat (das soll die  `1` symbolisieren).
-Für das Modell `m41` haben wir *keine* Prioris spezifiziert.
+Für das Modell `m_kung` haben wir *keine* Prioris spezifiziert.
 Wir greifen damit auf die *Voreinstellung* (defaults) der Prioris von `rstanarm` zurück.
 Das ist ok, aber wenn Sie Vorab-Wissen haben,
 sollten Sie das an `rstanarm` weitergeben, weil es ja schade wäre,
 wenn Sie Wissen haben, das von Ihrem Modell nicht genutzt wird.
 
-Plotten wir mal die gemeinsame Posteriori-Verteilung von `m41`, s. @fig-m42-post-joint
+Plotten wir mal die gemeinsame Posteriori-Verteilung von `m_kung`, s. @fig-m42-post-joint
 
 ::: {.panel-tabset}
 
@@ -422,7 +403,7 @@ Plotten wir mal die gemeinsame Posteriori-Verteilung von `m41`, s. @fig-m42-post
 
 Gemeinsame Post-Verteilung von Mittelwert und Streuung
 
-```{r post-m41-plot}
+```{r post-m_kung-plot}
 #| echo: true
 #| label: fig-m42-post-joint
 #| fig-cap: "Die gemeinsame Post-Verteilung von Mittelwert und Streuung von m42"
@@ -578,9 +559,9 @@ Wir können es aber auch komfortabler haben ...
 Mit dem Befehl `parameters` kann man sich die geschätzten Parameterwerte einfach ausgeben lassen (s. @fig-m42-post-joint).
 
 ```{r Kung-24, echo = TRUE, results="hide"}
-m41 <- stan_glm(height ~ 1, data = d2, refresh = 0)  # aus Paket rstanarm
+m_kung <- stan_glm(height ~ 1, data = d2, refresh = 0)  # aus Paket rstanarm
 
-parameters(m41)  # aus Paket `easystats`
+parameters(m_kung)  # aus Paket `easystats`
 ```
 
 
@@ -588,10 +569,10 @@ parameters(m41)  # aus Paket `easystats`
 
 ```{r Kung-6}
 #| echo: false
-parameters(m41) %>% display()
+parameters(m_kung) %>% display()
 
-ci_low <- parameters(m41)$CI_low |> round(2)
-ci_high <- parameters(m41)$CI_high |> round(2)
+ci_low <- parameters(m_kung)$CI_low |> round(2)
+ci_high <- parameters(m_kung)$CI_high |> round(2)
 ```
 
 
@@ -667,7 +648,7 @@ Hier die ersten paar Zeilen von `post_m41`:
 
 
 ```{r Kung-26}
-post_m41 <- as_tibble(m41)
+post_m41 <- as_tibble(m_kung)
 head(post_m41)
 ```
 
@@ -732,7 +713,7 @@ Letztlich liegt es an uns, den Golem auf Spur zu kriegen.
 
 :::{#exm-kung3}
 
-## Welche mittlere Körpergröße wird mit 95% Wahrscheinlichkeit nicht überschritten, laut dem Modell `m41`?
+## Welche mittlere Körpergröße wird mit 95% Wahrscheinlichkeit nicht überschritten, laut dem Modell `m_kung`?
 
 ::: {.callout-tip appearance="minimal" collapse="true"}
 ### Lösung
@@ -773,7 +754,7 @@ Ein ETI ist synonym zu PI.
 ::: {.callout-tip appearance="minimal" collapse="true"}
 ### Lösung
 ```{r eval = FALSE}
-m41 %>% 
+m_kung %>% 
   parameters()
 ```
 
@@ -781,19 +762,19 @@ m41 %>%
 
 ```{r}
 #| echo: false
-m41 %>% 
+m_kung %>% 
   parameters() |> 
   display()
 ```
 
 
 
-Seeing is believing, s. @fig-m41-params-intercept.
+Seeing is believing, s. @fig-m_kung-params-intercept.
 
 ```{r}
-#| fig-cap: "Parameter von m41, nur einer: der Intercept"
-#| label: fig-m41-params-intercept
-m41 %>% 
+#| fig-cap: "Parameter von m_kung, nur einer: der Intercept"
+#| label: fig-m_kung-params-intercept
+m_kung %>% 
   parameters() %>% 
   plot(show_intercept = TRUE)
 ```
@@ -813,7 +794,7 @@ Das Modell ist sich recht sicher: die Ungewissheit der mittleren Körpergröße 
 ::: {.callout-tip appearance="minimal" collapse="true"}
 ### Lösung
 
-`parameters(m41)` hat uns die Antwort schon gegeben: Ca. 155 cm.
+`parameters(m_kung)` hat uns die Antwort schon gegeben: Ca. 155 cm.
 
 :::
 :::
@@ -830,7 +811,7 @@ Das Modell ist sich recht sicher: die Ungewissheit der mittleren Körpergröße 
 Welche das sind, kann man sich so anzeigen lassen:
 
 ```{r Kung-8-bis, echo = TRUE}
-prior_summary(m41)
+prior_summary(m_kung)
 ```
 
 
@@ -924,7 +905,7 @@ parameters(m41a)
 📺 [Teil 2](https://youtu.be/qIuu-4qRT_0)
 
 
-Im Modell `m41` haben wir auf die Priori-Werte der Voreinstellung von `rstanarm` vertraut.
+Im Modell `m_kung` haben wir auf die Priori-Werte der Voreinstellung von `rstanarm` vertraut.
 Jetzt lassen wir mal unsere eigenen Priori-Werte einfließen,
 in unserem zweiten Kung-Modell, `m42`.
 
@@ -972,7 +953,7 @@ Im Zweifel: Einfach ignorieren. Wichtige Fähigkeit im Studium. 🤓
 
 
 :::callout-important
-Vergleichen Sie die Parameterwerte von `m41` und `m42`! Was fällt Ihnen auf? Nichts?
+Vergleichen Sie die Parameterwerte von `m_kung` und `m42`! Was fällt Ihnen auf? Nichts?
 Gut! Tatsächlich liefern beide Modelle sehr ähnliche Parameterwerte.
 Die Prioriwerte waren nicht so wichtig, weil wir genug Daten haben.
 Hat man einigermaßen viele Daten, so fallen Prioriwerte nicht mehr ins Gewicht,
@@ -1042,12 +1023,12 @@ laut Modell, interessiert sein:
 Wie groß sind sie denn, die !Kung, laut unserem Modell?
 
 Wie wir wissen, liefert unser Stan-Golem eine *Stichproben-Postverteilung*.
-Wenn wir das Ergebnisobjekt unserer Analyse, `m41` in eine Tabelle (Tibble) umwandeln
+Wenn wir das Ergebnisobjekt unserer Analyse, `m_kung` in eine Tabelle (Tibble) umwandeln
 und (die ersten paar Zeilen) betrachen, sehen wir diese Stichproben:
 
 
 ```{r}
-m41 |> as_tibble() |> head()
+m_kung |> as_tibble() |> head()
 ```
 
 Laut unserem Modell sind die Körpergrößen, $h_i$, normalverteilt mit $\mu$ und $\sigma$.
@@ -1068,8 +1049,8 @@ Wir können uns diese Verteilung auch komfortabel von R ausgeben lassen, s. @fig
 #| fig-subcap:
 #|   - "Die dunkle, dicke Dichtekurve zeigt die tatsächliche Verteilung der Körpergrößen im Datensatz. Die hellen, leichten Dichtekurven zeigen die Verteilungen laut der Post-Verteilung unseres Modells."
 #|   - "Der wahre Wert einer Test-Statistik (T), hier der Mittelwert der Körpergrößen, wird mit der Verteilung der Körpergrößen in Bezug gesetzt."
-pp_check(m41)
-pp_check(m41, "stat")
+pp_check(m_kung)
+pp_check(m_kung, "stat")
 ```
 
 
@@ -1142,7 +1123,7 @@ height_sim_mean <-
 ```
 
 
-💭 Was denkt der Golem (`m41`) *apriori* von der Größe der !Kung?
+💭 Was denkt der Golem (`m_kung`) *apriori* von der Größe der !Kung?
 
 🦾 Ziehen wir mal ein paar Stichproben auf Basis des Modells. Voilà:
 

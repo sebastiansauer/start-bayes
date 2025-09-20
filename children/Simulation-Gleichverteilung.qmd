@@ -1,0 +1,152 @@
+
+### Simulation
+
+
+Möchte man die Verteilungsfunktion einer stetigen Zufallsvariablen berechnen,
+kann die Mathe ganz schön kompliziert werden, schließlich muss man Integrale lösen.
+Aber es gibt einen Trick, wie man die Sache stark vereinfachen kann: 
+man simuliert die Verteilung. Was bedeutet das?
+
+
+
+Angenommen, die Wartezeit auf einen Bus ist gleichverteilt (engl. *uniform distribution*); 
+der Bus kommt regelmäßig und pünktlich alle 10 Minuten. 
+Die minimale Wartezeit beträgt also 0 Minuten und die maximale 10 Minuten.
+Nennen wir die zugehörige Zufallsvariable $X$, das ist schön kurz zu schreiben.
+
+Eine gleichverteilte Zufallsvariable $X$ mit Min $m_0$ und Maximum $m_1$ schreibt man auch wie folgt in Kurzschreibweise:
+
+$$X \sim Unif(m_0,m_1).$$
+
+
+
+Ja, das sieht fancy aus, ist aber dafür schön kurz, aber wo ist der versprochene Trick zum Vereinfachen?
+Kommt gleich, Moment.
+
+Eine Frage könnte nun lauten, wie groß ist die Wahrscheinlichkeit, dass man zwischen 3 und 5 Minuten auf den Bus warten muss?
+Achtung: Hier ist der Trick. Nämlich, dass wir Integralrechnung gegen stumpfes Zählen eintauschen.
+
+Computer (und damit R) haben eingebaute Funktionen, die eine beliebige Zufallszahl ziehen können,
+zum Beispiel gleichverteilte.
+Auf Errisch heißt das Zauberwort `runif()`:
+Mit dieser Funktion kann man gleichverteilte Zufallszahlen ziehen.
+Einfach gesprochen: Der Computer greift in eine Säckchen mit Murmeln, die mit verschiedenen Zahlen beschriftet sind, wobei alle Zahlen gleich häufig sind, und greift eine heraus.
+
+
+```{r}
+#| eval: false
+set.seed(42)  # Zufallszahl festlegen, nur für Reproduzierbarkeit
+# "r" wie random, "unif" wie "uniform" (gleich):
+runif(n = 1, min = 0, max = 10) 
+```
+
+Auf Deutsch heißt das: 
+
+> 👨‍🏫   "Hey R, ich hätte gerne eine (daher `n = 1`) Zufallszahl (*r* wie *random*),
+die gleichverteilt ist (*uniform*) mit `min = 0` und `max = 10`.
+
+>   🤖 Jawohl, oh herrliches Leberwesen
+
+
+
+(Zu) anschaulich gesprochen: R hat den Bus kommen lassen und es hat gut 9.1 Minuten gedauert,
+bis er da war.
+Achtung, jetzt kommt's: Jetzt lassen wir R mal $10^5$ (`1e5` auf Computersprech) Busse vorfahren. 
+R soll jedes Mal notieren, wie lange man auf den Bus warten musste.^[Machen Sie das mal ohne Computer, wenn Sie ein Wochenende lang Langeweile haben.]
+
+
+
+
+```{r}
+#| eval: false
+x_simu <- runif(n = 1e5, min = 0, max = 10)
+```
+
+```{r}
+#| echo: false
+n <- 1e5
+set.seed(42)
+x_simu <- runif(n = n, min = 0, max = 10)  # gibt Vektor zurück
+
+x_simu_df <-
+  tibble(id = 1:n,
+         x = x_simu)
+```
+
+
+
+Schauen wir uns die Verteilung an, s. @fig-simu-gleichvert.^[Alternativ kann man z.B. auch `ggplot` verwenden: `ggplot(x_simu_df, aes(x = x_simu)) +  geom_histogram(bins = 50)`.]
+
+```{r}
+#| eval: false
+library(ggpubr)
+gghistogram(x_simu_df, x = "x_simu", fill = "grey20")
+```
+
+
+
+
+```{r}
+#| label: fig-simu-gleichvert
+#| fig-cap: "Simulation einer gleichverteiluten Zufallsvariablen"
+#| eval: true
+#| echo: false
+
+library(ggpubr)
+gghistogram(x_simu_df, x = "x_simu", fill = "grey20")
+```
+
+
+
+
+
+
+Okay, unsere Verteilung sieht nicht *exakt* gleichverteilt, aber einigermaßen. 
+Gut genug für unsere Zwecke!
+
+So, und jetzt kommt das Ernten.
+Wir können jetzt nämlich einfach zählen (`count()`), um die Antwort auf unsere Frage (der Wartezeit 3-5 Min.) zu erhalten, s. @tbl-count-simu-bus.
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+#| eval: false
+x_simu_df %>% 
+  count(Schnittmenge = x > 3 & x < 5)
+```
+
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: false
+#| tbl-cap: Häufigkiten auslesen anstelle von Integralen berechnen
+#| label: tbl-count-simu-bus
+x_simu_df %>% 
+  count(Schnittmenge = x > 3 & x < 5)
+```
+
+:::
+
+::::
+
+
+
+
+Das Zeichen `&` ist das logische UND, also die Schnittmenge der zwei Mengen $A$ ($X$ ist größer als 3) und $B$ ($X$ ist kleiner als 5), d.h. $A := \{x|x>3\}$ und $B := \{x|x<5\}$, 
+also $A \cap B$.
+
+Wie man sieht, fallen ca. 20% der Stichproben in den entsprechenden Bereich. 
+
+
+Da viele Probleme, wenn sie komplexer werden, kaum noch "analytisch" (d.h. wie Ausrechnen von Integralen) lösbar sind,
+greift man in der modernen (Analyse-)Welt oft lieber auf Simulationsverfahren zurück -- Dank sei den schnellen Rechnern.
+Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen zurückgeführt.
+
+
+
+
+
+

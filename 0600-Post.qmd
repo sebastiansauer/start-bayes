@@ -3,7 +3,7 @@
 
 
 
-![Bayes:Start!](img/Golem_hex.png){width=5%}
+![Bayes:Start!](img/Golem_hex.png){width=10%}
 
 
 
@@ -40,6 +40,7 @@ Der Stoff dieses Kapitels orientiert sich an @mcelreath2020, Kap. 3.1 und 3.2.
 
 - [Statistik1, Kap. "Daten umformen"](https://statistik1.netlify.app/030-aufbereiten)
 - [Statistik1, Kap. "Daten zusammenfassen"](https://statistik1.netlify.app/050-zusammenfassen)
+- [Statistik1, Kap, 6.4 "Quantile](https://statistik1.netlify.app/050-zusammenfassen.html#quantile)
 
 
 
@@ -80,17 +81,18 @@ library(ggpubr)  # optional
 
 
 
-## Zur Erinnerung: Gitterwerte in R berechnen
+## Zur Erinnerung: Bayesbox in R berechnen
 
-Berechnen wir mit der Gittermethode ("Bayes-Box") die Postverteilung für den Globusversuch.
+Berechnen wir mit der Bayesbox ("Gittermethode")  die Postverteilung für den Globusversuch.
+Die Bayesbox ist ein Weg, die Posteriori-Verteilung zu berechnen. Die Posteriori-Verteilung birgt viele nützliche Informationen.
+Sie ist das zentrale Ergebnis einer Bayes-Analyse.
 
-Die Gittermethode ist ein Weg, die Posteriori-Verteilung zu berechnen. Die Posteriori-Verteilung birgt viele nützliche Informationen.
-
-Modell: $W=6$ Wasser, $N=9$ Würfen, bei Apriori-Indifferenz gegenüber den Parameterwerten. Und sagen wir $k=11$ Gitterwerten^[Die Anzahl der Gitterwerte ist nicht Teil des Modells, streng genommen; die Anzahl der Gitterwerte entscheiden nur über die Genauigkeit der Post-Verteilung.],
+Betrachten wir wieder das Globusmodell mit folgendem Ergebnis: 
+$W=6$ Wasser, $N=9$ Würfen, bei Apriori-Indifferenz gegenüber den Parameterwerten. Und sagen wir $k=11$ Gitterwerten^[Die Anzahl der Gitterwerte ist nicht Teil des Modells, streng genommen; die Anzahl der Gitterwerte entscheiden nur über die Genauigkeit der Post-Verteilung.],
 also mit 10 Wasseranteilswerten zwischen 0 und 1. 
 
 
-:::{#exr-globe69}
+::::{#exr-globe69}
 ### Welcher Paramterwert hat die höchste Posteriori-Wahrscheinlichkeit?
 
 ::: {.callout-tip appearance="minimal" collapse="true"}
@@ -99,19 +101,19 @@ also mit 10 Wasseranteilswerten zwischen 0 und 1.
 
 Aufgrund der Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten den Likelihoods. Die höchste Wahrscheinlichkeit (d.h. Likelihood) hat derjenige Parameterwert, zu dem die Daten am besten passen, und das ist 6/9 = 2/3, d. @lst-bayes1. $\square$
 :::
-:::
+::::
 
 
 
 ```{r QM2-Thema2-kleineModelle-28}
-#| lst-cap: Bayes-Box mit 6 Wasser bei 9 Versuchen
+#| lst-cap: Bayesbox mit 6 Wasser bei 9 Versuchen
 #| lst-label: lst-bayes1
 n_success <- 6          
 n_trials  <- 9
 p_grid <- seq(from = 0, to = 1, by = .1)                # <1>
 L <- dbinom(n_success, size = n_trials, prob = p_grid)  # <2>
 
-d <-                                                    # <3>
+bayesbox_6w_9v <-                                                    # <3>
   tibble(p_grid = p_grid,prior  = 1) %>% 
   mutate(likelihood = L) %>% 
   mutate(unstand_post = (likelihood * prior),
@@ -129,21 +131,22 @@ d <-                                                    # <3>
 ```{r}
 #| eval: false
 library(ggpubr)
-ggline(d, x = "p_grid", y = "post") 
+ggline(bayesbox_6w_9v , x = "p_grid", y = "post") 
 ```
 
 ::: {.content-visible when-format="html"}
-Abb. @fig-post1 zeigt die resultierende Bayes-Box; 
+Abb. @fig-post1 zeigt die resultierende Bayesbox; 
 vor allem ist die Post-Verteilung wichtig.
 
 ```{r plot-post-d}
 #| echo: false
+#| fig-asp: 0.618
 #| label: fig-post1
 #| fig-cap: Die Postverteilung für W=6, N=9, k=10
 
 
 p_d <-
-d %>% 
+bayesbox_6w_9v  %>% 
   ggplot() +
   aes(x = p_grid, y = post) +
   geom_point(alpha = .5, size = 3) +
@@ -164,15 +167,15 @@ ggplotly(p_d)
 :::
 
 ::: {.content-visible unless-format="html"}
-Abb. @fig-post1a zeigt die resultierende Bayes-Box; vor allem ist die Post-Verteilung wichtig.
-```{r plot-post-d}
+Abb. @fig-post1a zeigt die resultierende Bayesbox; vor allem ist die Post-Verteilung wichtig.
+```{r plot-post-bayesbox_6w_9v }
 #| echo: false
 #| label: fig-post1a
-#| fig-cap: Die Postverteilung für W=6, N=9, k=10
+#| fig-cap: Die Postverteilung für W=6, N=9, k=10; der wahrscheinlichste Parameterwert ist farblich hervorgehoben
 #
 
 p_d <-
-d %>% 
+bayesbox_6w_9v  %>% 
   ggplot() +
   aes(x = p_grid, y = post) +
   geom_point(alpha = .5, size = 3) +
@@ -189,14 +192,14 @@ d %>%
 
 
 
-Voilà, die Post-Verteilung als Tabelle, auch "Bayes-Box" (oder Bayes-Gitter) genannt: s. @tbl-post1.
+Voilà, die Post-Verteilung als Tabelle, auch "Bayesbox" (oder Bayes-Gitter) genannt: s. @tbl-post1.
 
 
 ```{r QM2-Thema3-Teil1-1}
 #| echo: false
 #| tbl-cap: Postverteilung mit der Gittermethode berechnet
 #| label: tbl-post1
-d %>% 
+bayesbox_6w_9v  %>% 
   mutate_all(round, 2) %>% 
   gt::gt()
 ```
@@ -207,9 +210,9 @@ d %>%
 :::::
 
 
-### Bayes-Box automatisiert
+### Bayesbox automatisiert
 
-Übrigens kann man die Berechnung der Bayes-Box auch automatisieren, s. @tbl-bayes-fun und @lst-bayesfun, z.B. so:^[Alternativ kann man auf die Funktion über das [R-Paket {prada}](https://github.com/sebastiansauer/prada) zugreifen.]
+Übrigens kann man die Berechnung der Bayesbox auch automatisieren, s. @tbl-bayes-fun und @lst-bayesfun, z.B. so:^[Alternativ kann man auf die Funktion über das [R-Paket {prada}](https://github.com/sebastiansauer/prada) zugreifen.]
 
 
 Entweder so:
@@ -226,7 +229,7 @@ Oder Sie starten das R-Paket, wo die Funktion wohnt:
 
 ```{r}
 #| label: tbl-bayes-fun
-#| tbl-cap: "Eine Bayes-Box 'automatisiert' erstellt, mit Hilfe der Funktion `bayesbox`"
+#| tbl-cap: "Eine Bayesbox 'automatisiert' erstellt, mit Hilfe der Funktion `bayesbox`"
 #| lst-label: lst-bayesfun
 #| lst-cap: Funktion `bayesbox`, auch im Paket `prada` erhältlich
 
@@ -234,24 +237,12 @@ library(prada)  # <1>
 bayesbox(hyps = p_grid, priors = 1, liks = L)  # <3>
 ```
 1. Das Paket `prada` steht nicht im Standard-R-App-Store ("CRAN"), sondern auf Github. Sie könnnen es so installieren: `devtools::install_github("sebastiansauer/prada")`.
-2. Die Funktion verhält sich wie eine gewöhnliche Bayes-Box: Bei `hyps` schreibt man die Hypothesen (bzw. Parameterwerte) auf. Bei `priors` die Priori-Werte und bei `liks` die Likelihoods der jeweiligen Hypothesn.
+2. Die Funktion verhält sich wie eine gewöhnliche Bayesbox: Bei `hyps` schreibt man die Hypothesen (bzw. Parameterwerte) auf. Bei `priors` die Priori-Werte und bei `liks` die Likelihoods der jeweiligen Hypothesn.
 
 
 
 
 
-<!-- ```{r QM2-Thema3-Post-befragen-2} -->
-<!-- #| echo: false -->
-<!-- #| eval: false -->
-<!-- d %>%  -->
-<!--   head() %>%  -->
-<!--   gt::gt() %>%  -->
-<!--   #fmt_number(columns = 3, decimals = 3) %>%  -->
-<!--   gt::fmt_scientific(columns = c(1,3, 4,5), -->
-<!--              decimals = 0) %>%  -->
-<!--   gt::tab_header(gt::md("Tabelle *d* mit Daten zur Posteriori-Verteilung")) -->
-
-<!-- ``` -->
 
 
 Viele nützliche Fragen (und Antworten) leiten sich ab aus Abb. @fig-post1.
@@ -275,9 +266,9 @@ Solche Fragen kann man in zwei Gruppen aufteilen:
 3. Fragen zu Wahrscheinlichkeiten
 
 
-### Bayes-Box für komplexe Modelle
+### Bayesbox geht nicht für komplexe Modelle
 
-Bisher, für einfache Fragestellungen hat unsere Bayes-Box, das heißt die Gittermethode bestens funktioniert: einfach, robust, formschön^[naja, nicht unbedingt formschön, aber mir fiel kein dritter Vorzug ein.].
+Bisher, für einfache Fragestellungen, hat unsere Bayesbox gut funktioniert.
 Allerdings: Funktioniert sie auch bei komplexeren Modellen?
 Schließlich wollen wir ja auch irgendwann Regressionsmodelle berechnen.
 Angenommen, wir haben ein Regressionsmodell mit 1 Prädiktor,
@@ -286,14 +277,14 @@ Hört sich gar nicht so viel an.
 Aber Moment, wir müssten dann z.B. die Frage beantworten, 
 wie wahrscheinlich die Daten aposteriori sind,
 wenn z.B. $\beta_0 = -3.14$ und $\beta_1 = 2.71$ und $\sigma = 0.70$.
-Demnach müssen wir alle Ausprägungen ("Gitterwerte") der Variablen multiplizieren.
+Demnach müssen wir alle Ausprägungen ("Gitterwerte") der Variablen multiplizieren,
+um die Wahrscheinlichkeiten aller Kombinationen zu bestimmen.
 Puh, das wird eine große Zahl. 
 Wenn wir für die drei Größen jeweils 10 Ausprägungen annehmen, was wenig ist,
 kämen wir $10\cdot10\cdot10= 1000=10^3$ Kombinationen.
-Bei 100 Ausprägungen wären es schon $100^3=10^6$ Kombinationen.
+Bei 100 Ausprägungen und 3 Parametern wären es schon $100^3=10^6$ Kombinationen.
 Das wäre doch eine recht lange Tabelle.^[Vorsicht beim Ausdrucken.]
-
-Bei einer multiplen Regression mit sagen wir 10 Prädiktoren mit jeweils 100 Ausprägungen rechnet das arme R bis zum jüngsten Tag: $10^{100}$.
+Bei einer multiplen Regression mit sagen wir 10 Parametern mit jeweils 100 Ausprägungen rechnet das arme R bis zum jüngsten Tag: $10^{100}$.
 
 >    🤖 Bitte tue mir das nicht an!
 
@@ -319,7 +310,7 @@ Lernen wir jetzt also, wie man mit solchen Stichproben umgeht.
 Die Post-Verteilung mit Häufigkeiten (d.h. in *Stichprobenform*) ist viel einfach zu handhaben als das direkte Arbeiten mit Wahrscheinlichkeiten. Daher sind viele R-Funktionen für Bayes auf Stichproben eingestellt.
 :::
 
-Die Bayes-Box-Methode^[auch Grid-Methode genannt] ist bei größeren Datensätzen (oder größeren Modellen) zu unpraktisch.
+Die Bayesbox-Methode^[auch Grid-Methode genannt] ist bei größeren Datensätzen (oder größeren Modellen) zu unpraktisch.
 In der Praxis werden daher andere, schnellere Verfahren verwendet, sog. Monte-Carlo-Markov-Ketten (MCMC).
 Wie diese Verfahren funktionieren sind aber nicht mehr Gegenstand dieses Kurses.
 Wir wenden Sie einfach an, freuen uns und lassen es damit gut sein.^[Eine gute Einführung in die Hintergründe findet sich bei @mcelreath2020.]
@@ -331,13 +322,14 @@ Wir wenden Sie einfach an, freuen uns und lassen es damit gut sein.^[Eine gute E
 Wie gesagt, typische R-Werkzeuge ("R-Golems") liefern uns die Post-Verteilung in Stichprobenform zurück.
 Bevor wir uns aber mit diesen R-Werkzeugen beschäftigen,
 sollten wir uns vertraut machen mit einer Post-Verteilung in Stichprobenform.
-Erstellen wir uns also einen Tabelle mit Stichprobendaten aus der Posteriori-Verteilung (Tabelle `d`), s. @lst-post-sample.
+Erstellen wir uns also einen Tabelle mit Stichprobendaten aus der Posteriori-Verteilung (Tabelle `bayesbox_6w_9v `), s. @lst-post-sample.
 
 
 
 ```{#lst-post-sample .r lst-cap="Wir stellen eine Tabelle mit Stichproben aus der Post-Verteilung"}
-samples <-
-  d %>%  # nimmt die Tabelle mit Posteriori-Daten,
+
+samples_6w_9v <-
+  bayesbox_6w_9v %>%  # nimm die Tabelle mit Posteriori-Daten,
   slice_sample(  # Ziehe daraus eine Stichprobe,
     n = 1e4,  # mit insgesamt n=10000 Zeilen,
     weight_by = post,  # Gewichte nach Post-Wskt.,
@@ -351,8 +343,9 @@ samples <-
 #| lst-cap: "Wir erstellen die 'Stichproben-Bayesbox': eine Tabelle mit Stichproben aus der Post-Verteilung"
 #| lst-label: lst-post-sample
 #| echo: false
-samples <-
-  d %>%  # nimmt die Tabelle mit Posteriori-Daten,
+
+samples_6w_9v <-
+  bayesbox_6w_9v  %>%  # nimm die Tabelle mit Posteriori-Daten,
   slice_sample(  # Ziehe daraus eine Stichprobe,
     n = 1e4,  # mit insgesamt n=10000 Zeilen,
     weight_by = post,  # Gewichte nach Post-Wskt.,
@@ -362,13 +355,13 @@ samples <-
 
 
 
-Die Wahrscheinlichkeit, einen bestimmten Parameterwert (d.h. aus der Spalte `p_grid`) aus Tabelle `d` zu ziehen, 
+Die Wahrscheinlichkeit, einen bestimmten Parameterwert (d.h. aus der Spalte `p_grid`) aus Tabelle `bayesbox_6w_9v ` zu ziehen, 
 ist proportional zur Posteriori-Wahrscheinlichkeit (`post`) dieses Werts. 
 Ziehen mit Zurücklegen hält die Wahrscheinlichkeiten während des Ziehens konstant.
 Das Argument `weight_by` legt die Wahrscheinlichkeit fest, mit der eine Zeile gezogen wird.
 Wir begnügen uns mit der Spalte mit den Wasseranteilswerten (Parameterwerten), `p_grid`, 
 die anderen Spalten brauchen wir nicht.
-Das Ergebnis, Tabelle `samples`, die aus Stichproben aus der Post-Verteilung besteht, ist (in Auszügen) in @tbl-postsample1 dargestellt.
+Das Ergebnis, Tabelle `samples_6w_9v`, die aus Stichproben aus der Post-Verteilung besteht, ist (in Auszügen) in @tbl-postsample1 dargestellt.
 
 
 Wenn Sie jetzt denken: "Warum machen wir das jetzt? Brauchen wir doch gar nicht!" - Dann haben Sie Recht.
@@ -384,7 +377,7 @@ Künftig werden wir aber, wenn wir mit komplexeren Modellen zu tun haben, nur no
 #| echo: false
 #| label: tbl-postsample1
 #| tbl-cap: Stichproben-Post-Verteilung
-samples %>% 
+samples_6w_9v %>% 
   slice_head(n = 5) %>% 
   gt() %>% 
   fmt_number(columns = c(1),
@@ -399,7 +392,7 @@ Hier erstmal die ersten 100 gesampelten Gitterwerte (`p_grid`):
 
 ```{r QM2-Thema3-Teil1-2}
 #| echo: false
-samples$p_grid[1:100] %>% round(2)
+samples_6w_9v$p_grid[1:100] %>% round(2)
 ```
 :::
 
@@ -420,7 +413,7 @@ So sieht unsere "Stichproben-Bayesbox" als Balkendiagramm aus, s.  @fig-samples1
 #| eval: false
 #| message: false
 #| fig-asp: 0.4
-samples |> 
+samples_6w_9v |> 
   count(p_grid) |> 
   ggbarplot(x = "p_grid", y = "n") 
 ```
@@ -434,7 +427,7 @@ samples |>
 #| fig-cap: Stichprobenverteilung auf Basis von Stichproben
 #| label: fig-samples1
 
-samples |> 
+samples_6w_9v |> 
   count(p_grid) |> 
   ggbarplot(x = "p_grid", y = "n") 
 ```
@@ -454,7 +447,7 @@ Es ist hilfreich, sich die Stichproben-Posterior-Verteilung einmal anzuschauen,
 um ein Gefühl dafür zu bekommen, wie die Post-Verteilung aussieht.
 
 
-{{< downloadthis data/samples.xlsx dname="samples" label = "Download samples.xlsx" >}}
+{{< downloadthis data/samples_6w_9v.xlsx dname="samples_6w_9v" label = "Download samples_6w_9v.xlsx" >}}
 
 
 ### Visualisierung der Stichprobendaten mit $k=100$ Gitterwerten
@@ -471,7 +464,7 @@ k <- 100   # <1>
 n_success <- 6  # <2>
 n_trials  <- 9  # <3>
 
-d_k100 <-
+bayesbox_k100 <-
   tibble(p_grid = seq(from = 0, 
                       to = 1, 
                       length.out = k),  # <4>
@@ -485,7 +478,7 @@ d_k100 <-
 1. $k=100$ Gitterwerte
 2. 6 Treffer (Wasser)
 3. 9 Versuche
-4. Bayes-Box anlegen mit 100 Zeilen, d.h. 100 Parameterwerten
+4. Bayesbox anlegen mit 100 Zeilen, d.h. 100 Parameterwerten
 5. Apriori indifferent: Alle Hypothesen haben die gleiche Apriori-Plausibilität
 6. Die Likelihood ist binomialverteilt.
 7. Post-Verteilung berechnen wie gewohnt.
@@ -493,14 +486,14 @@ d_k100 <-
 
 
 
-$d_k100$ ist eine Bayes-Box mit $W=6, N=9, k=100$.
+`bayesbox_k100` ist eine Bayesbox mit $W=6, N=9, k=100$.
 
 Und daraus ziehen wir uns $n=1000$ Stichproben:
 
 
 ```{r QM2-Thema3-Teil1-4}
 samples_k100 <-
-  d_k100 %>%  # nimmt die Tabelle mit Posteriori-Daten,
+  bayesbox_k100 %>%  # nimmt die Tabelle mit Posteriori-Daten,
   slice_sample(  # Ziehe daraus eine Stichprobe,
     n = 1000,  # mit insgesamt n=1000 Elementen,
     weight_by = post,  # Gewichte nach Spalte mit Post-Wskt.,
@@ -524,7 +517,7 @@ Das Modell ist sich nicht sehr sicher, könnte man sagen.
 
 
 p0 <- 
-  d_k100 %>% 
+  bayesbox_k100 %>% 
   ggplot(aes(x = p_grid, y= post)) +
   geom_line() +
   geom_point() +
@@ -558,6 +551,9 @@ plots(p0, p1, p2)
 
 Die Stichprobendaten nähern sich der "echten" Posteriori-Verteilung an:
 Die Stichproben-Post-Verteilung hat jetzt "glattere" Ränder.
+Die Stichproben-Post-Verteilung ist sehr ähnlich zur echten, exakten Post-Verteilung.
+Das Stichproben-Verfahren zur Berechnung der Post-Verteilung funktioniert also!
+Das ist gut, denn wir werden in Zukunft nur noch mit dem Stichproben-Verfahren (zur Erstellung der Post-Verteilung) arbeiten.
 
 
 ::: callout-note
@@ -572,18 +568,18 @@ Jetzt die Post-Verteilung noch mal mit mehr Stichproben: $n=10^6$ Stichproben be
 #| fig-cap: "Post-Verteilung mit vielen Stichproben und vielen Parameterwerten (Gitterwerten): schön 'glatt'. Mittelwert (MW), Modus und Median (Md) liegen eng nebeneinander, da die Verteilung recht symmetrisch ist."
 
 
-d_k100_samples <- 
-  d_k100 %>% 
+bayesbox_k100_samples <- 
+  bayesbox_k100 %>% 
   slice_sample(n = 1e6, weight_by = post, replace = T) 
 
 
-mode_df <- bayestestR::map_estimate(d_k100_samples$p_grid) 
+mode_df <- bayestestR::map_estimate(bayesbox_k100_samples$p_grid) 
 mode_rounded <- mode_df$MAP_Estimate %>% round(2)
-mavg <- mean(d_k100_samples$p_grid) %>% round(2)
-md <- median(d_k100_samples$p_grid) %>% round(2)
+mavg <- mean(bayesbox_k100_samples$p_grid) %>% round(2)
+md <- median(bayesbox_k100_samples$p_grid) %>% round(2)
 
 p_100_samples <-
-  d_k100_samples %>%   
+  bayesbox_k100_samples %>%   
 ggplot(aes(x = p_grid)) +
   geom_density(fill = "grey40") +
   scale_x_continuous("Anteil Wasser (p)", limits = c(0, 1)) +
@@ -642,7 +638,7 @@ Wir zählen (`count`) also die Stichproben, die sich für einen Wasseranteil (`p
 
 ```{r QM2-Thema3-Post-befragen-7}
 #| eval: false
-samples %>%
+samples_6w_9v %>%
   count(p_grid < .5) 
 ```
 
@@ -651,20 +647,23 @@ Dieser Anteil ist die Antwort auf die Forschungsfrage:
 Wie Wahrscheinlichkeit (laut Modell) für einen Wasseranteil kleiner als 50%.
 
 
-:::{#exm-count}
+:::{#exr-count}
 ### Was macht die Funktion `count `? 
 
-Der Befehl `count` macht Folgendes: Er gruppiert die Stichprobe nach dem Prüfkriterium, Wasseranteil höchstens 50%. Dann zählt er in jeder der beiden Teiltabelle die Zeilen und liefert diese zwei Zahlen dann zurück. $\square$
+Zur Erinnerung: Der Befehl `count` macht Folgendes: 
+Er gruppiert die Stichprobe nach dem Prüfkriterium, 
+Wasseranteil höchstens 50%. Dann zählt er in jeder der beiden Teiltabelle 
+die Zeilen und liefert diese zwei Zahlen dann zurück. $\square$
 :::
 
 :::: {.columns}
 
 ::: {.column width="50%"}
-Wir zählen wie oft der Wasseranteil weniger als 50% beträgt.
+Wir zählen, wie oft der Wasseranteil weniger als 50% beträgt.
 
 
 ```{r}
-samples %>%
+samples_6w_9v %>%
   count(p_grid < .5) 
 ```
 :::
@@ -674,7 +673,7 @@ samples %>%
 Natürlich gibt es verschiedene Wege, die gleiche Frage zu beantworten.
 
 ```{r QM2-Thema3-Post-befragen-6}
-d %>%
+bayesbox_6w_9v %>%
   filter(p_grid < .5) %>%
   summarise(sum = sum(post))
 ```
@@ -698,7 +697,7 @@ Noch eine Forschungsfrage: *Mit welcher Wahrscheinlichkeit liegt der Parameter (
 Wir zählen die Stichproben, die diesen Kriterien entsprechen.
 
 ```{r QM2-Thema3-Post-befragen-8}
-samples %>% 
+samples_6w_9v %>% 
   count(p_grid > .5 & p_grid < .75)
 ```
 
@@ -707,7 +706,7 @@ samples %>%
 >    👨‍🏫 Das wollte ich auch gerade sagen...
 
 ```{r QM2-Thema3-Post-befragen-8a}
-samples %>% 
+samples_6w_9v %>% 
   count(p_grid > .5 & p_grid < .75) %>% 
   summarise(Anteil = n / 1e4,
             Prozent = 100 * n / 1e4)  # In Prozent
@@ -717,7 +716,7 @@ Anteile von `count()` könnte man, wenn man möchte, auch `filter()` verwenden.
 
 
 ```{r}
-samples %>% 
+samples_6w_9v %>% 
   filter(p_grid > .5 & p_grid < .75) %>% 
   summarise(sum     =       n() / 1e4,
             anteil = 100 * n() / 1e4)  # In Prozent
@@ -739,14 +738,14 @@ Noch ein Beispiel für eine Forschungsfrage: *Mit welcher Wahrscheinlichkeit lie
 
 ```{r QM2-Thema3-Post-befragen-9}
 #| eval: false
-samples %>% 
+samples_6w_9v %>% 
   count(p_grid >= .9 & p_grid <= 1) %>% 
   summarise(prop = 100 * n() / 1e4)  # prop wie "proportion", Anteil
 ```
 ### Output
 ```{r QM2-Thema3-Post-befragen-9a}
 #| echo: false
-samples %>% 
+samples_6w_9v %>% 
   count(p_grid >= .9 & p_grid <= 1) %>% 
   summarise(prop = 100 * n() / 1e4)  # prop wie "proportion", Anteil
 ```
@@ -770,7 +769,7 @@ Laut unserem Modell ist es also sehr unwahrscheinlich, dass der Wasseranteil der
 ::: {.callout-tip appearance="minimal" collapse="true"}
 ### Lösung
 ```{r}
-samples %>% count(p_grid <= .5)
+samples_6w_9v %>% count(p_grid <= .5)
 ```
 :::
 :::
@@ -780,11 +779,11 @@ Wir können auch fragen, welcher Parameterwert am wahrscheinlichsten ist;
 dieser Wert entspricht dem "Gipfel" des Berges, s.  @fig-post-dk100.
 
 
-Für unsere Stichproben-Postverteilung, `samples`, s. @fig-samples1, lässt sich der Modus so berechnen:
+Für unsere Stichproben-Postverteilung, `samples_6w_9v`, s. @fig-samples1, lässt sich der Modus so berechnen:
 
 
 ```{r}
-map_estimate(samples$p_grid)  
+map_estimate(samples_6w_9v$p_grid)  
 ```
 
 
@@ -802,7 +801,7 @@ Bei der Gelegenheit könnten wir folgende, ähnliche Fragen stellen:
 ::: {.callout-tip appearance="minimal" collapse="true"}
 ### Lösung
 ```{r}
-samples %>% 
+samples_6w_9v %>% 
   summarise(mean(p_grid),
             median(p_grid))
 ```
@@ -814,17 +813,18 @@ samples %>%
 ### Fragen nach Parameterwerten
 
 ::: callout-important
-Schätzbereiche von Parameterwerten nennt man auch *Konfidenz- oder Vertrauensintervall*^[Tatsächlich gibt es eine Vielzahl an Begriffen, die in der Literatur nicht immer konsistent verwendet werden, etwa Kompatibilitätsintervall, Ungewissheitsintervall, Passungsbereich.].
+Schätzbereiche von Parameterwerten nennt man auch *Konfidenz- oder Vertrauensintervalle*^[Tatsächlich gibt es eine Vielzahl an Begriffen, die in der Literatur nicht immer konsistent verwendet werden, etwa Kompatibilitätsintervall, Ungewissheitsintervall, Passungsbereich.].
 :::
 
 
 
-Welcher Parameterwert wird mit 90% Wahrscheinlichkeit nicht überschritten, laut unserem Modell? (Gesucht sind also die unteren 90% der Posteriori-Wahrscheinlichkeit)
-Wir möchten also ziemlich sicher, was die Obergrenze an Wasser auf diesem Planeten ist^[Vielleicht damit es genug Berge zum Schifahren gibt.].
+Welcher Parameterwert wird mit 90% Wahrscheinlichkeit nicht überschritten, laut unserem Modell? (Gesucht sind also die unteren 90% der Posteriori-Wahrscheinlichkeit.)
+Wir möchten also ziemlich sicher, was die Obergrenze an Wasser auf diesem Planeten ist.
+Diese Frage können wir mit dem Befehl `quantile` beantworten.
 
 
 ```{r QM2-Thema3-Post-befragen-11}
-samples %>% 
+samples_6w_9v %>% 
   summarise(quantil90 = quantile(p_grid, p = .9))
 ```
 
@@ -839,7 +839,7 @@ Es hilft vielleicht, sich die Post-Verteilung noch einmal vor Augen zu führen, 
 <!-- #| fig-cap: Die Post-Verteilung im Globusversuch -->
 <!-- #| fig-asp: .5 -->
 <!-- #| out-width: "50%" -->
-<!-- samples %>%  -->
+<!-- samples_6w_9v %>%  -->
 <!--   ggplot(aes(x = p_grid)) + -->
 <!--   geom_bar() -->
 <!-- ``` -->
@@ -852,7 +852,7 @@ Was ist das *mittlere* Intervall, das mit 90% Wahrscheinlichkeit den Parameterwe
 Dafür "schneiden" wir links und rechts die 5% der Stichproben mit den extremsten Werten ab und schauen, bei welchen Parameterwerten wir als Grenzwerte landen:
 
 ```{r QM2-Thema3-Post-befragen-12, echo = TRUE}
-samples %>% 
+samples_6w_9v %>% 
   summarise(
     quant_05 = quantile(p_grid, 0.05),
     quant_95 = quantile(p_grid, 0.95))
@@ -862,100 +862,6 @@ samples %>%
 
 Solche Fragen lassen sich also mit Hilfe von *Quantilen* beantworten.
 
-
-
-
-### Zur Erinnerung: Quantile
-
-Beispiel: Wie groß sind die Studentis ([Quelle des Datensatzes](https://rdrr.io/cran/openintro/man/speed_gender_height.html))? 
-
-Das Quantil von z.B. 25% zeigt die Körpergröße der 25% kleinsten Studentis an, analog für 50%, 75%, in Inches bzw. in Zentimetern^[1 Inch entspricht 2.54cm].
-
-```{r QM2-Thema3-Teil1-5}
-#| message: false
-#| echo: true
-# speed_gender_height <- read.csv("https://raw.githubusercontent.com/rpruim/OpenIntro/master/data/speed_gender_height.csv")
-data("speed_gender_height", package = "openintro")  # <1>
-
-height_summary <- 
-  speed_gender_height %>% 
-  mutate(height_cm = height*2.54) %>%  # <2>
-  select(height_inch = height, height_cm) %>% 
-  drop_na() %>%   # <3>
-  pivot_longer(everything(), names_to = "Einheit", values_to = "Messwert") %>%   # <4>
-  group_by(Einheit) %>%   # <5>
-  summarise(q25 = quantile(Messwert, prob = .25),  # <6>
-            q50 = quantile(Messwert, prob = .5),
-            q75 = quantile(Messwert, prob = .75))
-
-height_summary
-```
-1. Daten importieren
-2. Inch in Zentimeter umrechnen
-3. Zeilen mit fehlenden Werten löschen
-4. In die Langform pivotieren
-5. Gruppieren nach Einheit (Inch, Zentimeter)
-6. Quantile berechnen  (Q1, Q2, Q3)
-
-
-Das 25%-Quantil nennt man auch 1. Quartil; das 50%-Quantil (Median) auch 2. Quartil und das 75%-Quantil auch 3. Quartil.
-
-
-@fig-stud-height visualisiert die Quantile und die Häufigkeitsverteilung.
-
-```{r QM2-Thema3-Teil1-6}
-#| echo: false
-#| warning: false
-#| message: false
-#| fig-cap: Größenverteilung von 1325 amerikanischen Studentis
-#| label: fig-stud-height
-#| fig-width: 10
-
-speed_gender_height <-
-  speed_gender_height |> 
-   mutate(height_cm = height*2.54)
-
-p1 <- speed_gender_height %>% 
-  ggplot() +
-  aes(x = 1, y = height_cm) +
-  geom_boxplot() +
-  labs(x = "",
-       y = "Größe in cm",
-       title = "Die Box zeigt das 25%-, 50%- und 75%-Quantil") +
-  theme_minimal()
-
-height_summary_long <- 
-  speed_gender_height %>% 
-  select(height_cm) %>% 
-  drop_na() %>% 
-  summarise(q25 = quantile(height_cm, prob = .25),
-            q50 = quantile(height_cm, prob = .5),
-            q75 = quantile(height_cm, prob = .75)) %>% 
-  pivot_longer(everything(),
-               names_to = "q",
-               values_to = "height_cm") 
-
-p2 <- 
-  speed_gender_height %>% 
-  ggplot() +
-  aes(x = height_cm) +
-  geom_histogram() +
-  geom_vline(data = height_summary_long,
-             aes(xintercept = height_cm)) +
-  geom_text(data = height_summary_long,
-             aes(x = height_cm+1,
-                 y = 0,
-                 label = paste0(q, ": ", height_cm)),
-             angle = 90,
-            hjust = 0,
-            color = "white"
-             ) +
-  labs(title = "Die vertikalen Striche zeigen die Quantile",
-       y = "Häufigkeit")  +
-  theme_minimal()
-
-plots(p1, p2)
-```
 
 
 
@@ -971,7 +877,7 @@ plots(p1, p2)
 ### Lösung
 
 ```{r}
-samples |> 
+samples_6w_9v |> 
   summarise(quant99 = quantile(p_grid, p = .99))
 ```
 Mit einer Wahrscheinlichkeit von 99% ist der höchste zu erwartende Wasseranteil 0.9.
@@ -988,7 +894,7 @@ Mit einer Wahrscheinlichkeit von 99% ist der höchste zu erwartende Wasseranteil
 ### Lösung
 
 ```{r}
-samples |> 
+samples_6w_9v |> 
   summarise(wahrscheinlich_kleinste = 
               quantile(p_grid, p = .01))
 ```
@@ -1011,7 +917,7 @@ Sagen wir, die Chefin der Weltraumbehörde hat in einem Presse-Statement von der
 ### Lösung
 
 ```{r}
-samples |> 
+samples_6w_9v |> 
   summarise(wahrscheinlich_kleinste = 
               quantile(p_grid, p = .1))
 ```
@@ -1020,43 +926,16 @@ Mit einer Wahrscheinlichkeit von 90% ist der kleinste zu erwartende Wasseranteil
 :::
 
 
+## Visualisierung der Verteilungen
 
-
-###  Den Quantilen unter die Motorhaube geschaut
-
-Den R-Befehl `quantile()` kann man sich, wenn man will, einfach nachbauen und entmystifizieren.
-
-Angenommen, wir wollen wissen, welcher Wasseranteil mit 90% Wahrscheinlichkeit nicht überschritten wird.
-Das können wir mit im Datensatz `samples` so erreichen.
-
-1. Sortiere die Stichproben aufsteigend.
-2. Schneide die oberen 10% (von 10000) ab (entferne sie).
-3. Schaue, was der größte verbleibende Wert ist.
-
-```{r}
-samples %>% 
-  arrange(p_grid) %>%   # sortiere
-  slice_head(n = 9000) %>%  # nur die ersten 90%
-  summarise(p90 = max(p_grid))
-```
-
-
-Das (annähernd) gleiche Ergebnis liefert `quantile()`:
-
-```{r}
-samples %>% 
-  summarise(q90 = quantile(p_grid, .9))
-```
-
-
-### Visualisierung der Intervalle
+### Perzentilintervalle
 
 
 ::: {#def-eti}
 
 ### Perzentilintervall (PI)
 
-Intervalle (Bereiche), die die "abzuschneidende" Wahrscheinlichkeitsmasse hälftig auf die beiden Ränder aufteilen, nennen wir *Perzentilintervalle* (PI) oder (synonym) *Equal-Tails-Intervalle* (ETI), s. Abb. @fig-eti, rechtes Teildiagramm.^[Hier auf Basis  der Post-Verteilung `samples`.] $\square$
+Intervalle (Bereiche), die die "abzuschneidende" Wahrscheinlichkeitsmasse hälftig auf die beiden Ränder aufteilen, nennen wir *Perzentilintervalle* (PI) oder (synonym) *Equal-Tails-Intervalle* (ETI), s. Abb. @fig-eti-hdi, rechtes Teildiagramm.^[Hier auf Basis  der Post-Verteilung `samples_6w_9v`.] $\square$
 :::
 
 
@@ -1066,31 +945,32 @@ Intervalle (Bereiche), die die "abzuschneidende" Wahrscheinlichkeitsmasse hälft
 ```{r piplot}
 #| echo: false
 #| fig-cap: Perzintilintervalle
-#| label: fig-eti
+#| label: fig-eti-hdi
 #| layout-ncol: 2
 #| fig-subcap:
 #|   - Intervall der Post-Verteilung mit den unteren 80% der Wahrscheinlichkeit 
 #|   - Intervall der Post-Verteilung mit den mitteleren 80% der Wahrscheinlichkeit
-q_80 <- quantile(samples$p_grid, prob = .8)
-q_10_and_90 <- quantile(samples$p_grid, prob = c(.1, .9))
+
+q_80 <- quantile(samples_6w_9v$p_grid, prob = .8)
+q_10_and_90 <- quantile(samples_6w_9v$p_grid, prob = c(.1, .9))
 
 p1 <-
-  d_k100 %>% 
+  bayesbox_k100 %>% 
   ggplot(aes(x = p_grid, y = post)) +
   geom_line() +
   labs(title="Untere 80%",
        caption = paste0("q80: ", round(q_80, 2))) +
-  geom_area(data = d_k100 %>% 
+  geom_area(data = bayesbox_k100 %>% 
               filter(p_grid < q_80))   +
   theme_minimal() +
   annotate("label", x = q_80, y = 0, label = q_80)
 
 # lower right panel
 p2 <-
-  d_k100 %>% 
+  bayesbox_k100 %>% 
   ggplot(aes(x = p_grid, y = post)) +
   geom_line() +
-  geom_area(data = d_k100 %>% 
+  geom_area(data = bayesbox_k100 %>% 
               filter(p_grid > q_10_and_90[1] & p_grid < q_10_and_90[2])) +
   labs(title = "Mittlere 80%",
        caption = paste0("q10: ", round(q_10_and_90[1], 2), 
@@ -1162,17 +1042,17 @@ Das 10%, 20%, ... 100%-Quantil^[d.h. die *Dezile*] (auf Basis von `samples_k100`
 ![Quantile in 10%-Schritenn durch die Verteilung von `samples_k100`](img/p_deciles.gif){#fig-quantiles-anim width=50%}
 :::
 
-## Schiefe Posteriori-Verteilungen sind möglich
+### Schiefe Posteriori-Verteilungen sind möglich
 
 
 Noch einmal zum Globusversuch: Gehen wir von 3 Würfen mit 3 Mal Wasser (Treffer) aus; auf welche Wasseranteile (Parameterwerte) werden wir jetzt schließen?
 
 Vermutlich ziemlich hohe.
 
-Erstellen wir uns dazu mal eine Post-Verteilung (3 Treffer, 3 Würfe), s. @lst-d33.
+Erstellen wir uns dazu mal eine Post-Verteilung (3 Treffer, 3 Würfe), s. @lst-d33 mit dem Objekt `d_33`.
 
 ```{r QM2-Thema3-Post-befragen-13}
-#| lst-cap: Schiefe Post-Verteilung in einer Bayes-Box
+#| lst-cap: Schiefe Post-Verteilung in einer Bayesbox
 #| lst-label: lst-d33
 d_33 <- 
   tibble(p_grid = seq(0,1, by =.01),
@@ -1203,9 +1083,8 @@ samples_33 %>%
 Mit dieser "schiefen" Post-Verteilung können wir gut die Auswirkungen auf das Perzentil- und das Höchste-Dichte-Intervall anschauen.
 
 
-### Perzentilintervall
 
-Hier z.B. ein 50%-Perzentilintervall, s. Abb. @fig-schief.
+Hier z.B. ein 50%-Perzentilintervall, s. Abb. @fig-schief, a).
 
 
 
@@ -1213,6 +1092,10 @@ Hier z.B. ein 50%-Perzentilintervall, s. Abb. @fig-schief.
 #| echo: false
 #| fig-cap: "Schiefe Intervalle: Das PI enthält den wahrscheinlichsten Parameterwert nicht, das HDI schon."
 #| label: fig-schief
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - Perentilintervall (PI)
+#|   - Höchste-Dichte-Intervall (HDI)
 
 qi_50_low <- eti(samples_33$p_grid, ci = .5)$CI_low
 qi_50_up <- eti(samples_33$p_grid, ci = .5)$CI_high
@@ -1226,7 +1109,8 @@ p1 <-
             fill = "grey75") +
   geom_line() +
   scale_x_continuous(breaks = seq(from = 0, to = 1, by = .1)) +
-  theme_minimal()
+  theme_minimal() +
+  labs(y = "Wahrscheinlichkeit")
 
 
 
@@ -1234,6 +1118,7 @@ p1 <-
 hdi_50_low <- bayestestR::hdi(samples_33$p_grid, 
                                   ci = .5)$CI_low
 hdi_50_up <- 1
+
 # hdi_50_up <- bayestestR::hdi(samples_33$p_grid, 
 #                                   ci = .5)$CI_high
 
@@ -1245,14 +1130,12 @@ p2 <-
                      p_grid < hdi_50_up),
             fill = "grey75") +
   geom_line()  +
-  theme_minimal()
+  theme_minimal() +
+  labs(y = "Wahrscheinlichkeit")
 
 
-plots(p1, 
-      p2,
-      n_rows = 1,
-      title= c("PI vs HDI"),
-      tags = c("PI", "HDI"))
+p1
+p2
 ```
 
 Ein *Perzentilintervall* kann, wenn es dumm läuft, den wahrscheinlichsten Parameterwert nicht enthalten, diesen Wert also plausiblen Wert also zurückweisen. Das ist nicht so toll.
@@ -1311,8 +1194,10 @@ Intervalle höchster Dichte (Highest density Intervals, HDI oder HDPI) sind defi
 
 
 
-Der wahrscheinlichste Parameterwert ($1$) *ist* im Intervall enthalten, was Sinn macht.
-Bei einem HDI sind die abgeschnitten Ränder nicht mehr gleich groß, im Sinne von enthalten nicht (zwangsläufig) die gleiche Wahrscheinlichkeitsmasse. Bei PI ist die Wahrscheinlichkeitsmasse in diesen Rändern hingegen gleich groß.
+Der wahrscheinlichste Parameterwert ($1$) *ist* im Intervall enthalten, was Sinn macht, s. @fig-schief.
+Bei einem HDI sind die abgeschnitten Ränder nicht mehr gleich groß,
+im Sinne von enthalten nicht (zwangsläufig) die gleiche Wahrscheinlichkeitsmasse. 
+Beim PI ist die Wahrscheinlichkeitsmasse in diesen Rändern hingegen gleich groß.
 
 
 Je symmetrischer die Verteilung, desto näher liegen die Punktschätzer aneinander (und umgekehrt), s. Abb. @fig-post-pointestimates.
@@ -1351,28 +1236,30 @@ d_33 %>%
 
 
 
-Mit dem Befehl `hdi` kann man sich die Grenzwerte eines HDI, z.B. eines 50%-HDI, ausgeben lassen, s. @tbl-samples-hdi.
+Mit dem Befehl `hdi` kann man sich die Grenzwerte eines HDI, z.B. eines 50%-HDI, ausgeben lassen, s. @tbl-samples_6w_9v-hdi.
 
 
-```{r hdi-samples-50}
+```{r hdi-samples_6w_9v-50}
 #| eval: false
-samples %>% 
+samples_6w_9v %>% 
   select(p_grid) %>% 
   hdi(ci = .5)  # aus dem Paket `{easystats}`
 ```
 
-```{r hdi-samples-51}
+```{r hdi-samples_6w_9v-51}
 #| echo: false
-#| label: tbl-samples-hdi
-#| tbl-cap: "50%-HDI für unser Globusmodell"
-samples %>% 
+#| label: tbl-samples_6w_9v-hdi
+#| tbl-cap: "50%-HDI für unser Globusmodell (`samples_6w_9v`)"
+samples_6w_9v %>% 
   select(p_grid) %>% 
   bayestestR::hdi(ci = .5)  # aus dem Paket `{easystats}`
 ```
 
 
 
-Das Modell ist sich also zu 50% sicher, dass der gesuchte Parameter (der Wasseranteil der Erdoberfläche) sich im  von ca. .67 bis .78 befindet (auf Basis eines HDI).
+Das Modell ist sich also zu 50% sicher, 
+dass der gesuchte Parameter (der Wasseranteil der Erdoberfläche) 
+sich im  von ca. .67 bis .78 befindet (auf Basis eines HDI).
 
 
 ## Fazit
@@ -1380,7 +1267,7 @@ Das Modell ist sich also zu 50% sicher, dass der gesuchte Parameter (der Wassera
 
 ### Intervalle höchster Dichte vs. Perzentilintervalle
 
-- Bei symmetrischer Posteriori-Verteilung sind beide Intervalle ähnlich
+- Bei symmetrischer Posteriori-Verteilung sind beide Intervalle ähnlich oder identisch
 - Perzentilintervalle sind verbreiteter
 - *Intervalle höchster Dichte* (Highest Density Interval, HDI) sind bei schiefen Post-Verteilungen zu bevorzugen
 - Intervalle höchster Dichte sind die *schmalsten* Intervalle für eine gegebene Wahrscheinlichkeitsmasse
@@ -1392,7 +1279,7 @@ Das Modell ist sich also zu 50% sicher, dass der gesuchte Parameter (der Wassera
 
 Fassen wir zentrale Punkte an einem Beispiel zusammen.
 
-Im Globusversuch, Datensatz `samples`, s. @lst-post-sample. Sagen wir, wir haben 6 Treffer bei 9 Würfen erzielt.
+Im Globusversuch, Datensatz `samples_6w_9v`, s. @lst-post-sample. Sagen wir, wir haben 6 Treffer bei 9 Würfen erzielt.
 
 
 
@@ -1400,7 +1287,7 @@ Im Globusversuch, Datensatz `samples`, s. @lst-post-sample. Sagen wir, wir haben
 *Lageparameter*: Welchen mittleren Wasseranteil kann man erwarten?
 
 ```{r QM2-Thema3-Post-befragen-19}
-samples %>% 
+samples_6w_9v %>% 
   summarise(
     mean   = mean(p_grid),
     median = median(p_grid))  
@@ -1409,7 +1296,7 @@ samples %>%
 *Streuungsparameter*: Wie unsicher sind wir in der Schätzung des Wasseranteils?
 
 ```{r QM2-Thema3-Post-befragen-20}
-samples %>% 
+samples_6w_9v %>% 
   summarise(
     p_sd   = sd(p_grid),
     p_iqr = IQR(p_grid),
@@ -1436,9 +1323,9 @@ Halten Sie sich klar vor Augen: Der Wasseranteil ist ein Beispiel für einen *Pa
 ### Papier-und-Bleistift-Aufgaben
 
 <!-- 1. [Wskt-Schluckspecht2](https://datenwerk.netlify.app/posts/wskt-schluckspecht2/) -->
-14. [kekse03](https://datenwerk.netlify.app/posts/kekse03/index.html)
-14. [bfi10](https://datenwerk.netlify.app/posts/bfi10/)
-14. [Kaefer2](https://datenwerk.netlify.app/posts/kaefer2/kaefer2)
+1. [kekse03](https://datenwerk.netlify.app/posts/kekse03/index.html)
+2. [bfi10](https://datenwerk.netlify.app/posts/bfi10/)
+3. [Kaefer2](https://datenwerk.netlify.app/posts/kaefer2/kaefer2)
 3. [mtcars-post2a](https://datenwerk.netlify.app/posts/mtcars-post2a/)
 3. [rethink3e1-7-paper](https://datenwerk.netlify.app/posts/rethink3e1-7-paper/)
 14. [mtcars-post3a](https://datenwerk.netlify.app/posts/mtcars-post3a/)
@@ -1478,8 +1365,7 @@ Halten Sie sich klar vor Augen: Der Wasseranteil ist ein Beispiel für einen *Pa
 
 
 
-
-## ---
+## -
 
 
 

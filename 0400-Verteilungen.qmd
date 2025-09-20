@@ -4,6 +4,7 @@
 <!-- sondern auch Stoff zum Thema Wahrscheinlichkeit, -->
 <!-- das sollte entflechtet werden. -->
 
+![Bayes:Start!](img/Golem_hex.png){width=10%}
 
 ## Lernsteuerung
 
@@ -24,7 +25,7 @@ Sie können ...
 - die Begriffe von Wahrscheinlichkeitsdichte und Verteilungsfunktion erläutern 
 - den Begriff einer Gleichverteilung erläutern 
 - den Begriff einer Binomialverteilung erläutern
-- die Parameter einer Normalverteilung nennen und erläutern
+- den Begriff einer halben Normalverteilung erläutern
 - zentrale Konzepte in R umsetzen
 
 
@@ -137,8 +138,8 @@ Im Folgenden sind einige wichtige Verteilungen aufgeführt, die in diesem Skript
 
 ### Indifferenz als Grundlage
 
-Eine Gleichverteilung nimmt an, dass jeder Wert im Ergebnisraum der zugehörigen Zufallsvariable *gleichwahrscheinlich* ist.
-Wenn man keinen hinreichenden Grund hat, eine Realisation einer Zufallsvariablen für plausibler als einen anderen zu halten,
+Eine Gleichverteilung nimmt an, dass jede Ausprägung  der zugehörigen Zufallsvariablen *gleichwahrscheinlich* ist.
+Wenn man keinen hinreichenden Grund hat, eine bestimmte Ausprägung einer Zufallsvariablen für plausibler als einen anderen zu halten,
 ist eine Gleichverteilung eine passende Verteilung.
 Gleichverteilungen gibt es im diskreten und im stetigen Fall.
 
@@ -163,165 +164,13 @@ uniform_plot(0, 3)
 
 
 
-@fig-uniform, links: Bei $X=0$ hat *eine Einheit* von $X$ (d.h. von -0.5 bis +0.5) die Wahrscheinlichkeitsmasse von 50%, 
-da der Bereich $[-0.5, +0.5]$ die Hälfte (50%) der Wahrscheinlichkeitsmasse der Verteilung beinhaltet. 
-Bei jedem anderen Punkt $x$ ist die Dichte gleich.
-@fig-uniform, rechts: Bei $X=0$ hat *eine Einheit* von $X$ die Wahrscheinlichkeitsmasse von ca. 33%, 
-da der Bereich $[-0.5, +0.5]$ ein Drittel der Wahrscheinlichkeitsmasse der Verteilung beinhaltet. 
-Bei jedem anderen Punkt $x$ ist die Dichte gleich.
+@fig-uniform, (a): Bei $X=0$ hat *eine Einheit* von $X$ (z.B. von -1 bis 0) die Wahrscheinlichkeitsmasse von 50%, 
+da der Bereich $[-1, 0]$ die Hälfte (50%) der Wahrscheinlichkeitsmasse der Verteilung beinhaltet. 
+Bei jedem anderen Punkt $x$ ist die Dichte identisch.
+@fig-uniform, (b): Bei $X=0$ hat *eine Einheit* von $X$ die Wahrscheinlichkeitsmasse von ca. 33%, 
+da der Bereich $[0, 1]$ ein Drittel der Wahrscheinlichkeitsmasse der Verteilung beinhaltet. 
+Bei jedem anderen Punkt $x$ ist die Dichte identisch
 Definierendes Kennzeichen einer Gleichverteilung ist die *konstante Dichte*.
-
-
-
-### Simulation
-
-
-Möchte man die Verteilungsfunktion einer stetigen Zufallsvariablen berechnen,
-kann die Mathe ganz schön kompliziert werden, schließlich muss man Integrale lösen.
-Aber es gibt einen Trick, wie man die Sache stark vereinfachen kann: 
-man simuliert die Verteilung. Was bedeutet das?
-
-
-
-Angenommen, die Wartezeit auf einen Bus ist gleichverteilt (engl. *uniform distribution*); 
-der Bus kommt regelmäßig und pünktlich alle 10 Minuten. 
-Die minimale Wartezeit beträgt also 0 Minuten und die maximale 10 Minuten.
-Nennen wir die zugehörige Zufallsvariable $X$, das ist schön kurz zu schreiben.
-
-Eine gleichverteilte Zufallsvariable $X$ mit Min $m_0$ und Maximum $m_1$ schreibt man auch wie folgt in Kurzschreibweise:
-
-$$X \sim Unif(m_0,m_1).$$
-
-
-
-Ja, das sieht fancy aus, ist aber dafür schön kurz, aber wo ist der versprochene Trick zum Vereinfachen?
-Kommt gleich, Moment.
-
-Eine Frage könnte nun lauten, wie groß ist die Wahrscheinlichkeit, dass man zwischen 3 und 5 Minuten auf den Bus warten muss?
-Achtung: Hier ist der Trick. Nämlich, dass wir Integralrechnung gegen stumpfes Zählen eintauschen.
-
-Computer (und damit R) haben eingebaute Funktionen, die eine beliebige Zufallszahl ziehen können,
-zum Beispiel gleichverteilte.
-Auf Errisch heißt das Zauberwort `runif()`:
-Mit dieser Funktion kann man gleichverteilte Zufallszahlen ziehen.
-Einfach gesprochen: Der Computer greift in eine Säckchen mit Murmeln, die mit verschiedenen Zahlen beschriftet sind, wobei alle Zahlen gleich häufig sind, und greift eine heraus.
-
-
-```{r}
-#| eval: false
-set.seed(42)  # Zufallszahl festlegen, nur für Reproduzierbarkeit
-# "r" wie random, "unif" wie "uniform" (gleich):
-runif(n = 1, min = 0, max = 10) 
-```
-
-Auf Deutsch heißt das: 
-
-> 👨‍🏫   "Hey R, ich hätte gerne eine (daher `n = 1`) Zufallszahl (*r* wie *random*),
-die gleichverteilt ist (*uniform*) mit `min = 0` und `max = 10`.
-
->   🤖 Jawohl, oh herrliches Leberwesen
-
-
-
-(Zu) anschaulich gesprochen: R hat den Bus kommen lassen und es hat gut 9.1 Minuten gedauert,
-bis er da war.
-Achtung, jetzt kommt's: Jetzt lassen wir R mal $10^5$ (`1e5` auf Computersprech) Busse vorfahren. 
-R soll jedes Mal notieren, wie lange man auf den Bus warten musste.^[Machen Sie das mal ohne Computer, wenn Sie ein Wochenende lang Langeweile haben.]
-
-
-
-
-```{r}
-#| eval: false
-x_simu <- runif(n = 1e5, min = 0, max = 10)
-```
-
-```{r}
-#| echo: false
-n <- 1e5
-set.seed(42)
-x_simu <- runif(n = n, min = 0, max = 10)  # gibt Vektor zurück
-
-x_simu_df <-
-  tibble(id = 1:n,
-         x = x_simu)
-```
-
-
-
-Schauen wir uns die Verteilung an, s. @fig-simu-gleichvert.^[Alternativ kann man z.B. auch `ggplot` verwenden: `ggplot(x_simu_df, aes(x = x_simu)) +  geom_histogram(bins = 50)`.]
-
-```{r}
-#| eval: false
-library(ggpubr)
-gghistogram(x_simu_df, x = "x_simu", fill = "grey20")
-```
-
-
-
-
-```{r}
-#| label: fig-simu-gleichvert
-#| fig-cap: "Simulation einer gleichverteiluten Zufallsvariablen"
-#| eval: true
-#| echo: false
-
-library(ggpubr)
-gghistogram(x_simu_df, x = "x_simu", fill = "grey20")
-```
-
-
-
-
-
-
-Okay, unsere Verteilung sieht nicht *exakt* gleichverteilt, aber einigermaßen. 
-Gut genug für unsere Zwecke!
-
-So, und jetzt kommt das Ernten.
-Wir können jetzt nämlich einfach zählen (`count()`), um die Antwort auf unsere Frage (der Wartezeit 3-5 Min.) zu erhalten, s. @tbl-count-simu-bus.
-
-
-:::: {.columns}
-
-::: {.column width="50%"}
-```{r}
-#| eval: false
-x_simu_df %>% 
-  count(Schnittmenge = x > 3 & x < 5)
-```
-
-:::
-
-::: {.column width="50%"}
-```{r}
-#| echo: false
-#| tbl-cap: Häufigkiten auslesen anstelle von Integralen berechnen
-#| label: tbl-count-simu-bus
-x_simu_df %>% 
-  count(Schnittmenge = x > 3 & x < 5)
-```
-
-:::
-
-::::
-
-
-
-
-Das Zeichen `&` ist das logische UND, also die Schnittmenge der zwei Mengen $A$ ($X$ ist größer als 3) und $B$ ($X$ ist kleiner als 5), d.h. $A := \{x|x>3\}$ und $B := \{x|x<5\}$, 
-also $A \cap B$.
-
-Wie man sieht, fallen ca. 20% der Stichproben in den entsprechenden Bereich. 
-
-
-Da viele Probleme, wenn sie komplexer werden, kaum noch "analytisch" (d.h. wie Ausrechnen von Integralen) lösbar sind,
-greift man in der modernen (Analyse-)Welt oft lieber auf Simulationsverfahren zurück -- Dank sei den schnellen Rechnern.
-Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen zurückgeführt.
-
-
-
-
 
 
 
@@ -333,9 +182,8 @@ Für uns Menschen ist damit die Aufgabe des Integrierens auf schnödes Zählen z
 ### Binomialverteilung
 Die Binomialverteilung dient zur Darstellung der Wahrscheinlichkeit der Ergebnisse eines $n$-fach wiederholten binomialen Zufallexperiments,
 eines Zufallsexperiments mit *zwei*^[von lat. *bis* "zweimal"] Ergebnissen bzw. Elementarereignissen also. 
-Dabei interessiert die *Anzahl* der $k$ Treffer, aber nicht die Reihenfolge.
+Dabei interessiert uns nur die *Anzahl* der $k$ Treffer, aber nicht die Reihenfolge.
 Bei jeder Wiederholung liegt die Wahrscheinlichkeit eines Treffers bei $p$.
-Typisches Beispiel ist ein (wiederholter) Münzwurf.^[Bei jeder Wiederholung des Zufallexperiments 
 bleibt die Wahrscheinlichkeit der Ergebnisse gleich: Die Münze verändert sich nicht durch die Würfe (*Ziehen mit Zurücklegen*, ZmZ). 
 Außerdem hat ein bestimmtes Ergebnis im ersten Wurf keinen Einfluss auf die Wahrscheinlichkeit 
 eines bestimmten Ergebnisses im zweiten Wurf, etc., sog. "iid": *independent and identically distributed*.] $\square$ 
@@ -362,12 +210,12 @@ $$X \sim \text{Bin}(n, k) \quad \square$$
 
 
 :::{#exm-binom1}
-Anwendungsbeispiele: Wie viele defekte Teile sind in einer Stichprobe von produzierten Schrauben zu erwarten? Wie wahrscheinlich ist es, dass das neue Blutdruck-Medikament einer bestimmten Anzahl von Menschen hilft? Wie viele Personen stimmen in einer Umfrage der Frage "Ich halte die öffentlich-rechtlichen Sender für wichtig." zu? $\square$
+Anwendungsbeispiele: Wie viele defekte Teile sind in einer Stichprobe von produzierten Schrauben zu erwarten? Wie wahrscheinlich ist es, dass das neue Blutdruck-Medikament einer bestimmten Anzahl von Menschen hilft? Wie viele Personen stimmen in einer Umfrage der Frage "Ich halte die öffentlich-rechtlichen Sender für wichtig." zu? Was ist die Wahrscheinlichkeit, 6 mal hintereinander eine *6* zu würfeln bei einem fairen Würfel? Eine Münze, die in 7 von 10 Würfen "Kopf" zeigt -- sollte sie als "unfair" eingeschätzt werden?  $\square$
 :::
 
 Stellen wir uns eine Kistchen^[In den Lehrbüchern häufig als Urne bezeichnet, was den bösen Spott von "Friedhofstatistik" nach sich zog.] mit sehr vielen^[praktisch unendlich vielen] Losen vor, 
 darunter 2/5 *T*reffer (Gewinn) und 3/5 *N*ieten, s. Abb. @fig-urne.
-Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut.^[Da *sehr* viele Lose im Kästchen liegen, ist es praktisch egal, ob wir das Los wieder zurücklegen. Die Wahrscheinlichkeit für einen Treffer ändert sich (so gut wie) nicht.] 
+Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut. Da *sehr* viele Lose im Kästchen liegen, ist es praktisch egal, ob wir das Los wieder zurücklegen. Die Wahrscheinlichkeit für einen Treffer ändert sich (so gut wie) nicht.
 Jetzt ziehen wir z.B. drei Lose.
 Wie groß ist die Wahrscheinlichkeit, 
 davon 2 Treffer zu erzielen (egal in welcher Reihenfolge)?
@@ -434,36 +282,13 @@ dbinom(x = <Anzahl der Treffer>,
 ### Drei Lose gekauft, davon zwei Treffer?
 
 Wie groß ist die Wahrscheinlichkeit $p$ bei $n=3$ Zügen $k=2$ Treffer zu erzielen (und $n-k=1$ Niete)? 
-(Nennen wir dieses Ereignis der Kürze halber $A^{\prime}$).
+(Nennen wir dieses gesuchte Ereignis der Kürze halber $A^{\prime}$).
 Die Trefferwahrscheinlichkeit ist (bei jedem Zug) $p=2/5$ und die 
-Nietenwahrscheinlichkeit $1-p=3/5 \quad \square$.
+Nietenwahrscheinlichkeit $1-p=3/5 \quad \square$, s. @fig-sort3.
+@fig-dreimuenzen zeigt den entsprechenden Baum;
+@tbl-3lose2treffer zeigt die Ergebnisse dieses Zufallsexperiments.
 :::
 
-
-:::{.to-scource}
-```{r}
-df_binom <-
-  tibble(
-    k = 0:3,
-    p = dbinom(0:3, size = 3, prob = 2/5))
-```
-:::
-
-
-
-Mit Blick auf @exm-bin1: 
-Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen
-(*Multiplikationssatz*, @thm-multtheorem), vgl. @fig-baum3.
-Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit (*Additionssatz*, @thm-add-disjunkt).
-Diagramme zeichnen ist einfach, dauert aber.
-
-
-Beachtet man die *verschiedenen Reihenfolgen nicht*  (in @fig-baum3), 
-so zählt man 3 günstige Pfade (vgl. @fig-sort3):
-
-1. TTN
-2. TNT
-3. NTT.
 
 
 
@@ -488,6 +313,42 @@ p_urn2 <- ggplot(d) +
 
 p_urn2
 ```
+
+
+
+
+
+
+| Pfad (Ereignis) | Anzahl Treffer | Wahrscheinlichkeit                                                       |
+| --------------- | -------------- | ------------------------------------------------------------------------ |
+| TTT             | 3              | $p^3 = \left(\tfrac{2}{5}\right)^3 = \tfrac{8}{125} \approx 0.064$       |
+| TTN             | 2              | $p^2 q = \tfrac{4}{25}\cdot\tfrac{3}{5} = \tfrac{12}{125} \approx 0.096$ |
+| TNT             | 2              | $p^2 q = \tfrac{12}{125} \approx 0.096$                                  |
+| NTT             | 2              | $p^2 q = \tfrac{12}{125} \approx 0.096$                                  |
+| TNN             | 1              | $p q^2 = \tfrac{2}{5}\cdot\tfrac{9}{25} = \tfrac{18}{125} \approx 0.144$ |
+| NTN             | 1              | $p q^2 = \tfrac{18}{125} \approx 0.144$                                  |
+| NNT             | 1              | $p q^2 = \tfrac{18}{125} \approx 0.144$                                  |
+| NNN             | 0              | $q^3 = \left(\tfrac{3}{5}\right)^3 = \tfrac{27}{125} \approx 0.216$      |
+
+: Alle acht Ergebnisse des Zufallsexperiment mit ihren Wahrscheinlichkeiten im Überblick {#tbl-3lose2treffer}
+
+
+
+
+
+Mit Blick auf @exm-bin1: 
+Wir könnten jetzt ein Baumdiagramm zeichnen und pro Pfad die Wahrscheinlichkeit ausrechnen
+(*Multiplikationssatz*, @thm-multtheorem), vgl. @fig-baum3.
+Die Summe der Wahrscheinlichkeiten der Pfade ist dann die gesuchte Wahrscheinlichkeit (*Additionssatz*, @thm-add-disjunkt).
+Diagramme zeichnen ist einfach, dauert aber.
+
+
+Beachtet man die *verschiedenen Reihenfolgen nicht*, 
+so zählt man 3 günstige Pfade (T: Treffer; N: Niete), s. @fig-dreimuenzen:
+
+1. TTN
+2. TNT
+3. NTT.
 
 
 
@@ -532,11 +393,7 @@ flowchart LR
 
 
 Schneller geht es, wenn man rechnet. 
-Wir könnten auch R auffordern, die Anzahl der günstigen Pfade zu berechnen, s. @thm-binkoeff:
-
-```{r}
-choose(3,2)
-```
+Wir könnten auch R auffordern, die Anzahl der günstigen Pfade zu berechnen, s. @thm-binkoeff mit `choose(3,2)`, was die Antwort `3` liefert.
 
 
 
@@ -547,30 +404,199 @@ choose(3,2)
 
 In diesem Fall ist die Wahrscheinlichkeit *eines* (günstigen) Pfades, $A$:
 
-$Pr(A) = Pr(T)^2 \cdot Pr(N)^1 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right)^1$.
+$Pr(A) = Pr(T)^2 \cdot Pr(N)^1 = \left( \frac{2}{5} \right)^2 \cdot \left( \frac{3}{5} \right)^1 \approx 0.096$.
 
 ```{r}
 p_a = (2/5)^2 * (3/5)^1
 p_a
 ```
 
-Damit ist die Wahrscheinlichkeit des gesuchten Ereignisses $A^{\prime}$ (2 Treffer bei 3 Zügen) gleich der Anzahl der günstigen Pfade mal der Wahrscheinlichkeit eines Pfades, , s. @eq-binkoeff-hand:
+Damit ist die Wahrscheinlichkeit des gesuchten Ereignisses $A^{\prime}$ (2 Treffer bei 3 Zügen) 
+gleich der Anzahl der günstigen $k$ Pfade (3) mal der Wahrscheinlichkeit eines Pfades (0.1):
 
-$Pr(A^{\prime}) = 3 \cdot Pr(A)$.
+$Pr(A^{\prime}) = k \cdot Pr(A) = 3 \cdot 0.096 = 0.29$.
 
 ```{r}
 p_a_strich = 3 * p_a
 p_a_strich
 ```
 
-Die Wahrscheinlichkeit, bei 3 Zügen 2 Treffer zu erzielen, beträgt also ca. 29%, vgl. @eq-binkoeff-hand.
-
-
-
-$$Pr(A^{\prime}) = k \cdot Pr(A)$${#eq-binkoeff-hand}
+Die Wahrscheinlichkeit, bei 3 Zügen 2 Treffer zu erzielen, 
+beträgt also ca. 29%.
 
 Dabei steht $k$ für die Anzahl der günstigen Pfade und $Pr(A)$ für die Wahrscheinlichkeit eines günstigen Pfades 
 (d.h. 2 Treffer und 1 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.
+
+
+
+
+
+### Formel der Binomialverteilung
+
+
+
+
+@thm-binomial zeigt die mathematische Definition der Binomialverteilung.
+Dabei liegt immer ein Zufallsversuch mit $n$ Durchgängen und $k$ Treffern zugrunde. Jeder Durchgang hat die Trefferwahrscheinlichkeit $p$ und jeder Durchgang ist unabhängig von allen anderen.
+
+
+::: {#thm-binomial}
+#### Binomialverteilung
+
+$$Pr(X=k|p,n) = \frac{n}{k!(n-k)!}p^k(1-p)^{n-k}\quad \square$$
+:::
+
+
+ @thm-binomial kann wie folgt auf Deutsch übersetzen:
+
+>   Die Wahrscheinlichkeit für das Ereignis $X$ gegeben $p$ und $n$ berechnet als Produkt von zwei Termen. Der erste Term ist der Quotient von der Fakultät von n im Zähler und im Nenner das Produkt von erstens der Fakultät von k mit zweitens der Fakultät von (n-k). Der zweite Term ist das Produkt von p hoch k mal der komplementären Wahrscheinlichkeit von p hoch (n-k).
+
+Oder noch kürzer:
+
+>    Die Wahrscheinlichkeit für das Ereignis "X" gegeben p und k berechnet als Produkt von zwei Termen. Erstens der Anzahl der günstigen Pfade, k und zweitens der Wahrscheinlichkeit für einen günstigen Pfad, P(A).
+
+
+
+
+Die Anzahl der (günstigen) Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt, s. @thm-binkoeff.^[wobei gelten muss $n \ge k$]
+
+:::{#def-binkoeff}
+#### Binomialkoeffizient
+Der Binomialkoeffizient gibt an, auf wie vielen verschiedenen Arten man aus einer Menge von $n$ verschiedenen Objekten $k$ Objekte ziehen kann (ohne Zurücklegen und ohne Beachtung der Reihenfolge). $\square$
+:::
+
+::: {#thm-binkoeff}
+
+#### Binomialkoeffizient
+
+$$\tbinom{n}{k}= \frac{n!}{k!(n-k)!} \quad \square$$
+
+Lies: "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige Ereignisse (günstige Pfade) oder kürzer "k aus n".\square
+:::
+
+Um den Binomialkoeffizient zu berechnen, 
+muss man die Fakultät berechnen.
+Die Fakultät ist eine Rechenvorschrift für natürliche Zahlen.
+Man schreibt sie mit einem Ausrufezeichen hinter der Zahl, also zum Beispiel $3!$.
+Dabei multipliziert man alle natürlichen Zahlen von der gegebenen Zahl bis hinunter zur 1.
+
+:::{#exm-fakultaet}
+- $3! = 3 \cdot 2 \cdot 1$
+- $4! = 4 \cdot 3 \cdot 2 \cdot 1$
+- $0! = 1$ (per Definition) $\square$
+:::
+
+
+
+
+Puh, Formeln sind vielleicht doch ganz praktisch, 
+wenn man sich diese lange Übersetzung der Formel in Prosa duchliest.
+Noch praktischer ist es aber, dass es Rechenmaschinen gibt, 
+die die Formel kennen und für uns ausrechnen. 
+
+
+
+
+::: {#exm-klausur20}
+
+#### Klausur mit 20-Richtig-Falsch-Fragen
+
+Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen.
+Wie groß ist die Wahrscheinlichkeit, 
+durch bloßes Münze werfen *genau* 15 Fragen richtig zu raten?^[Hey, endlich mal was für echte Leben!]
+
+
+
+```{r QM2-Thema2-kleineModelle-23, echo = TRUE}
+# Wskt für genau 15 Treffer bei 20 Versuchen mit einer fairen Münze:
+dbinom(x = 15, size = 20, prob = .5)
+```
+Die Wahrscheinlichkeit liegt bei ca 1%.
+
+Um *höchstens* 15 Treffer zu erzielen, 
+müssten wir die Wahrscheinlichkeiten von 0 bis 15 Treffern aufsummieren.
+
+Praktischerweise gibt es einen R-Befehl, der das Aufsummieren für uns übernimmt: `pbinom`.
+
+```{r}
+pbinom(q = 15, size = 20, prob = .5)
+```
+
+
+Die Wahrscheinlichkeit höchstens 15 Treffer (d.h. 0, 1, 2, ... 15 Treffer) zu erzielen, liegt für `prob = .5` laut Binomialverteilung mit `pbinom` bei gut 99%.
+
+
+:::
+
+
+
+::: {#exm-globus4}
+
+#### 3 Münzwürfe mit 3 Treffern
+
+Was ist die Wahrscheinlichkeit bei 3 Münzwürfen (genau) 3 Treffer (Kopf) zu erzielen, s. @fig-p-bin-exms, links?
+
+Das ist eine Frage an die Binomialverteilung;
+in R kann man das mit der Funktion `dbinom` beantworten.
+
+```{r QM2-Thema2-kleineModelle-24, echo = TRUE}
+dbinom(x = 3, size = 3, prob = 1/2)
+```
+
+Die Lösung lautet also $p=1/8 = .125.\qquad \square$
+
+Man kann sich auch vor Augen führen,
+dass es genau 1 günstigen Pfad gibt, nämlich TTT.
+Nach dem Multiplikationssatz gilt also: $Pr(X=3) = 1 \cdot \left( \frac{1}{2} \right)^3 = \frac{1}{8} = .125$.
+
+```{r}
+#| include: false
+options(digits = 3)
+```
+
+
+```{r}
+loesung <- (1/2)^3
+loesung
+```
+
+```{r}
+#| include: false
+options(digits = 2)
+```
+
+:::
+
+
+<!-- Todo: XXX -->
+
+```{r QM2-Thema2-kleineModelle-25}
+#| echo: false
+#| label: fig-p-bin-exms
+#| fig-cap: "Verschiedene Binomialverteilungen"
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - "n=3, p=1/2"
+#|   - "n=9, p=.7"
+
+binomial_plot(3, 1/2)
+
+binomial_plot(9, .7)
+```
+
+
+
+
+:::{#exr-binom}
+️ Was fällt Ihnen bei der Binomialverteilung auf? Ist sie symmetrisch? Verändert sich die Wahrscheinlichkeit linear?
+:::
+
+
+:::{#exr-binom2}
+Was ist die Wahrscheinlichkeit für 0, 1, 2, ..., 9 Treffern bei 9 Würfen, wenn die Trefferwahrscheinlichkeit 70% beträgt? @fig-p-bin-exms, rechts, zeigt die Antwort.
+:::
+
+
 
 
 ### Rechnen mit der Binomialverteilung
@@ -579,28 +605,24 @@ Dabei steht $k$ für die Anzahl der günstigen Pfade und $Pr(A)$ für die Wahrsc
 
 
 
-Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen.
+Die Binomialverteilung ist in R eingebaut; man kann sich leicht entsprechende Wahrscheinlichkeiten ausrechnen lassen: z.B. `dbinom(x = 2, size = 3, prob = 2/5)`. 
 Das ist komfortabler als selber rechnen.
+Mit diesem Befehl rechnet R aus, wie hoch die Wahrscheinlichkeit ist, bei `size = 3` "Münzwürfen", `x = 2` Treffer zu erzielen, wobei die Trefferwahrscheinlichkeit jeweils `prob = 2/5` beträgt.
 
-
-
-```{r}
-dbinom(x = 2, size = 3, prob = 2/5)
-```
-
-Die Wahrscheinlichkeit,  2 Treffer bei 3 Zügen zu erzielen mit $p=2/5$, beträgt demnach ca. 29%.
-
-
-Dabei gehen wir davon aus, dass die Wahrscheinlichkeit eines Treffers stets $p=2/5$ beträgt.
 
 
 :::{#exm-binkoeff}
-### Lotto
+#### Lotto
 
 Wie viele Zahlenkombinationen gibt es im Lotto für 6 Richtige?
 Der Binomialkoeffizient verrät es uns:
 $\tbinom{49}{6}= 13\,983\,816\square$
+Ander gesagt: Der Binomialkoeffizient sagt uns,
+wie viele Möglichkeiten es gibt, aus z.B. 46 Bällen 6 zu ziehen
+(ohne Beachtung der Reihenfolge und ohne Zurücklegen). $\square$
 :::
+
+
 
 <!-- Auf Errisch geht das so: -->
 
@@ -637,7 +659,8 @@ $\tbinom{49}{6}= 13\,983\,816\square$
 :::{#exm-2aus4}
 Wie viele Möglichkeiten gibt es,  2 Treffer bei 4 Zügen zu erzielen?
 
-1. TTNN, 2. TNTN, 3. TNNT, 4. NTTN ,5. NTNT, 6. NNTT. 
+Das sind folgende Ergebnisse: 
+1. TTNN, 2. TNTN, 3. TNNT, 4. NTTN, 5. NTNT, 6. NNTT. 
 
 $\tbinom{4}{2} = \frac{4!}{2! \cdot (4-2)!} \overset{\text{kürzen}}= \frac{2\cdot 3}{1}=6$ 
 
@@ -711,7 +734,7 @@ Es gibt 4457400 Kombinationen von Teams; dabei ist die Reihenfolge der Ziehung n
 
 
 
-::: {#exm-binom}
+
 ### Pumpstation-Beispiel zur Binomialverteilung
 
 In einer Pumpstation arbeiten 7 Motoren, die wir als identisch annehmen. Mit einer Wahrscheinlichkeit von 5% fällt ein Motor aus und ist für den Rest des Tages nicht einsatzbereit. Der Betrieb kann aufrecht erhalten werden, solange mindestens 5 Motoren arbeiten. Wie groß ist die Wahrscheinlichkeit, dass die Pumpstation aus dem Betrieb fällt?
@@ -726,7 +749,8 @@ dbinom(x = 5, size = 7, prob = .95)
 ```
 
 
-Es gilt also $Pr(X=5) \approx .04$. Die Wahrscheinlichkeit, dass (nur) 5 Motoren laufen an einem beliebigen Tag ist relativ gering^[wobei "gering" subjektiv ist, die Betreiberfirma findet diese Wahrscheinlichkeit, dass 2 Pumpen ausfallen, wohl viel zu hoch.].
+Es gilt also $Pr(X=5) \approx .04$. Die Wahrscheinlichkeit, dass (nur) 5 Motoren laufen an einem beliebigen Tag ist demnach relativ gering -- wobei "gering" subjektiv ist, die Betreiberfirma findet diese Wahrscheinlichkeit, 
+dass 2 Pumpen ausfallen, wohl viel zu hoch.
 Die Wahrscheinlichkeit, dass $k=0 \ldots 7$ Motoren laufen, ist in @fig-motoren dargestellt.
 
 
@@ -750,9 +774,6 @@ p_7
 ```
 
 Das sind `r round(p_5, 2)`, `r round(p_6, 2)`, `r round(p_7, 2)`.
-
-
-
 Die gesuchte Wahrscheinlichkeit, `p_mind_5`,
 ist die Summe der drei Einzelwahrscheinlichkeiten.
 
@@ -780,18 +801,13 @@ p_weniger_als_4 <- 1 - p_mind_5
 p_weniger_als_4
 ```
 
-Das sind also `r round(p_weniger_als_4, 4)` oder 0.0003, also 0.03% Wahrscheinlichkeit, dass die Pumpstation ausfällt.
+Das sind also `r round(p_weniger_als_4, 4)` also`r round(p_weniger_als_4, 4)*100` % Wahrscheinlichkeit, dass die Pumpstation ausfällt.
 
 
 ```{r}
 #| echo: false
 #| fig-cap: "Wahrscheinlichkeit, dass genau k = 0..7 Motoren laufen"
-#| fig-subcap: 
-#|   - "In 'normaler' Wahrscheinlichkeit, 0<p<1"
-#|   - "In Log-Einheiten (Basis 2), 'Halbierungen'"
 #| label: fig-motoren
-#| layout-ncol: 2
-#| 
 
 font_size <- 6
 
@@ -808,11 +824,6 @@ ps_df |>
   scale_x_continuous(breaks = 0:7) +
   geom_label(aes(label = round(Pr, 3)), size = font_size)
 
-ps_df |> 
-  ggplot(aes(x = Motorenzahl, y = Pr_log)) +
-  geom_col() +
-  scale_x_continuous(breaks = 0:7) +
-  geom_label(aes(label = round(Pr_log, 0)), size = font_size)
 ```
 
 
@@ -822,7 +833,7 @@ die $Pr(X \le 4)$ berechnet.
 
 
 
-In R kann man die Funktion `pbinom()` nutzen (p für (kumulierte) Wahrscheinlichkeit), um die Verteilungsfunktion der Binomialverteilung zu berechnen.
+In R kann man die Funktion `pbinom()` nutzen (*p* für (kumulierte) Wahrscheinlichkeit), um die Verteilungsfunktion der Binomialverteilung zu berechnen.
 
 ```{r}
 pbinom(q = 4, size = 7, prob = .95)
@@ -830,154 +841,25 @@ pbinom(q = 4, size = 7, prob = .95)
 
 `q = 4` steht für $X \le 4$, also für höchstens 4 Treffer (arbeitende Motoren); `size = 7` meint die Stichprobengröße, hier 7 Motoren; `prob` gibt die Trefferwahrscheinlichkeit an. $\square$
 
-:::
 
 
-:::callout-important
 
-Die Funktion, die die Wahrscheinlichkeit dafür angibt, dass die diskrete Zufallsvariable $X$ eine Realisation annimmt, die *kleiner oder gleich* (höchstens) einem Wert $X=x$ ist, heißt *Verteilungsfunktion*.
 
-$F(X=x) = Pr(X \le x)$
+:::{#exr-binom-peer}
+### Peer-Instruction: Qualitätskontrolle in einer Fabrik
 
-:::
+Eine Fabrik produziert USB-Sticks.
+Die Wahrscheinlichkeit, dass ein USB-Stick defekt ist, beträgt 2%. 
+Aus der laufenden Produktion werden regelmäßig 10 USB-Sticks zufällig ausgewählt und getestet.
+Sei $X$ die Anzahl defekter USB-Sticks in dieser Stichprobe.
 
+Welche Aussage ist richtig bzw. passt am besten?
 
-
-
-
-#### Formel der Binomialverteilung
-
-
-
-
-@thm-binomial zeigt die mathematische Definition der Binomialverteilung.
-Dabei liegt immer ein Zufallsversuch mit $n$ Durchgängen und $k$ Treffern zugrunde. Jeder Durchgang hat die Trefferwahrscheinlichkeit $p$ und jeder Durchgang ist unabhängig von allen anderen.
-
-
-::: {#thm-binomial}
-
-### Binomialverteilung
-
-$$Pr(X=k|p,n) = \frac{n}{k!(n-k)!}p^k(1-p)^{n-k}\quad \square$$
-:::
-
-
- @thm-binomial kann wie folgt auf Deutsch übersetzen:
-
->   Die Wahrscheinlichkeit für das Ereignis $X$ gegeben $p$ und $n$ berechnet als Produkt von zwei Termen. Der erste Term ist der Quotient von der Fakultät von n im Zähler und im Nenner das Produkt von erstens der Fakultät von k mit zweitens der Fakultät von (n-k). Der zweite Term ist das Produkt von p hoch k mal der komplementären Wahrscheinlichkeit von p hoch (n-k).
-
-Oder noch kürzer:
-
->    Die Wahrscheinlichkeit für das Ereignis "X" gegeben p und k berechnet als Produkt von zwei Termen. Erstens der Anzahl der günstigen Pfade, k und zweitens der Wahrscheinlichkeit für einen günstigen Pfad, P(A).
-
-
-
-
-Die Anzahl der (günstigen) Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt, s. @thm-binkoeff.^[wobei gelten muss $n \ge k$]
-
-:::{#def-binkoeff}
-### Binomialkoeffizient
-Der Binomialkoeffizient gibt an, auf wie vielen verschiedenen Arten man aus einer Menge von $n$ verschiedenen Objekten $k$ Objekte ziehen kann (ohne Zurücklegen und ohne Beachtung der Reihenfolge). $\square$
-:::
-
-::: {#thm-binkoeff}
-
-### Binomialkoeffizient
-
-$$k = \tbinom{n}{k}= \frac{n!}{k!(n-k)!} \quad \square$$
-
-Lies: "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige Ereignisse (günstige Pfade) oder kürzer "k aus n".\square
-:::
-
-
-
-Puh, Formeln sind vielleicht doch ganz praktisch, 
-wenn man sich diese lange Übersetzung der Formel in Prosa duchliest.
-Noch praktischer ist es aber, dass es Rechenmaschinen gibt, 
-die die Formel kennen und für uns ausrechnen. 
-
-
-
-
-::: {#exm-klausur20}
-
-#### Klausur mit 20-Richtig-Falsch-Fragen
-
-Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen.
-Wie groß ist die Wahrscheinlichkeit, 
-durch bloßes Münze werfen genau 15 Fragen richtig zu raten?^[Hey, endlich mal was für echte Leben!]
-
-```{r QM2-Thema2-kleineModelle-23, echo = TRUE}
-# Wskt für genau 15 Treffer bei 20 Versuchen mit einer fairen Münze:
-dbinom(x = 15, size = 20, prob = .5)
-```
-
-Um *höchstens* 15 Treffer zu erzielen, 
-müssten wir die Wahrscheinlichkeiten von 0 bis 15 Treffern addieren.
-
-Praktischerweise gibt es einen R-Befehl, der das für uns übernimmt: `pbinom`.
-
-```{r}
-pbinom(q = 15, size = 20, prob = .5)
-```
-
-
-Die Wahrscheinlichkeit 0, 1, 2, ... oder 15 Treffer zu erzielen, liegt laut Binomialverteilung mit `pbinom` bei gut 99%.
-
-
-:::
-
-
-
-::: {#exm-globus4}
-
-#### 3 Münzwürfe mit 3 Treffern
-
-Was ist die Wahrscheinlichkeit bei 3 Münzwürfen (genau) 3 Treffer (Kopf) zu erzielen, s. @fig-p-bin-exms?
-
-Das ist eine Frage an die Binomialverteilung;
-in R kann man das mit der Funktion `dbinom` beantworten.
-
-```{r QM2-Thema2-kleineModelle-24, echo = TRUE}
-dbinom(x = 3, size = 3, prob = 1/2)
-```
-
-Die Lösung lautet also $p=1/8 = .125.\qquad \square$
-
-Man kann sich auch vor Augen führen,
-dass es genau 1 günstigen Pfad gibt, nämlich TTT.
-Nach dem Multiplikationssatz gilt also: $Pr(X=3) = 1 \cdot \left( \frac{1}{2} \right)^3 = \frac{1}{8} = .125$.
-
-```{r}
-loesung <- (1/2)^3
-loesung
-```
-
-
-:::
-
-
-<!-- Todo: XXX -->
-
-```{r QM2-Thema2-kleineModelle-25}
-#| echo: false
-#| label: fig-p-bin-exms
-#| fig-cap: "Verschiedene Binomialverteilungen"
-#| layout-ncol: 2
-#| fig-subcap: 
-#|   - "n=3, p=1/2"
-#|   - "n=9, p=.7"
-
-binomial_plot(3, 1/2)
-
-binomial_plot(9, .7)
-```
-
-
-
-
-:::{#exr-binom}
-🏋️️ Was fällt Ihnen bei der Binomialverteilung auf? Ist sie symmetrisch? Verändert sich die Wahrscheinlichkeit linear?
+A) Mit 98% sind alle 10 USB-Sticks in Ordnung.
+B) Mit 82% sind alle 10 USB-Sticks in Ordnung.
+C) Mit 2% sind alle 10 USB-Sticks defekt.
+D) Es ist unmöglich, dass alle 10 USB-Sticks defekt sind.
+E) Es ist unmöglihc, dass alle 10 USB-Sticks in Ordnung sind. $\square$
 :::
 
 
@@ -1000,7 +882,7 @@ df_right <- subset(df, x >= 0)
 
 ggplot(df, aes(x, y)) +
   geom_area(data = df_left, aes(x, y), fill = "grey90") +
-  geom_area(data = df_right, aes(x, y), fill = "blue") +
+  geom_area(data = df_right, aes(x, y), fill = "grey80") +
   #geom_line(size = 1) +
   theme_minimal() +
   scale_y_continuous(NULL, breaks = NULL) +
@@ -1009,7 +891,8 @@ ggplot(df, aes(x, y)) +
     axis.text.y  = element_blank(),
     axis.ticks.y = element_blank(),
     axis.line.y  = element_blank()
-  )
+  ) +
+  scale_x_continuous(limits = c(0, 4))
 ```
 
 
