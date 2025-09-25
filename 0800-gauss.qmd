@@ -185,6 +185,7 @@ Die Verteilungen lassen sich mit `plot_density` (aus `{DataExplorer}`), s. @fig-
 ```{r}
 #| label: fig-kung-dens
 #| fig-cap: Verteilungen der Variablen im Kung-Datensatz. Größe und Gewicht sind recht symmetrisch; Alter ist rechtsschief.
+
 plot_density(d2)
 ```
 
@@ -206,7 +207,7 @@ Wir interessieren uns also für den Mittelwert der Körpergröße (erwachsene Pe
 
 
 
-Wir sind uns über diesen Mittelwert nicht sicher^[Darum machen wir hier ja die ganz Show!], 
+Wir sind uns über diesen Mittelwert in der Population nicht sicher^[Darum machen wir hier ja die ganz Show!], 
 und unsere Ungewissheit quantifizieren wir anhand einer Normalverteilung mit Mittelwert von 178 cm und Streuung von 20 cm, s. @eq-kung.
 
 $$\mu \sim \mathcal{N}(178, 20)$$ {#eq-kung}
@@ -230,10 +231,8 @@ Darüber hinaus ist eine Normalverteilung nicht unplausibel.
 
 ```{r p1-p2}
 #| echo: false
-#| out-width: 70%
-p1 <-
+p_nv_kung_prior <-
   tibble(x = seq(from = 100, to = 250, by = .1)) %>% 
-  
   ggplot(aes(x = x, y = dnorm(x, mean = 178, sd = 20))) +
   geom_line() +
   scale_x_continuous(breaks = seq(from = 100, to = 250, by = 75)) +
@@ -241,7 +240,7 @@ p1 <-
        y = "") +
   scale_y_continuous(breaks = NULL)
 
-p2 <-
+p_exp_kung_prior <-
   tibble(x = seq(0, 50, by = .01)) %>%
   ggplot(aes(x = x, y = dexp(x, rate = .1))) +
   geom_line() +
@@ -261,7 +260,7 @@ p2 <-
 ### Modelldefinition
 
 Wir nehmen an, dass die mittleren Größen, $\mu$, 
-und die tatsächlichen Größen, $h_i$, normalverteilt sind und $\sigma$ halbseitig-normalverteilt ist (da notwendig positiv) ist:
+und die tatsächlichen Größen, $h_i$, normalverteilt sind und $\sigma$ exponentialverteilt ist (da notwendig positiv) ist:
 
 
 
@@ -280,13 +279,14 @@ In @fig-kung-model sind unsere Priori-Verteilungen visualisiert.
 ```{r Kung-10}
 #| echo: false
 #| label: fig-kung-model
-#| fig-cap: Unser (erstes) Kung-Modell (m_kung)
+#| fig-cap: Prioris unseres (ersten) Kung-Modells (`m_kung`)
 #| fig-asp: 0.4
 #| fig-subcap: 
 #|   - Priori der mittleren Körpergröße
 #|   - Priori der Schätzungenauigkeit
-p1
-p2
+
+p_nv_kung_prior
+p_exp_kung_prior
 ```
 
 

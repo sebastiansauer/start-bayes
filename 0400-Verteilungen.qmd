@@ -1,8 +1,6 @@
 # Verteilungen
 
-<!-- TODO Dieses Kapitel hat nicht nur Verteilungen,  -->
-<!-- sondern auch Stoff zum Thema Wahrscheinlichkeit, -->
-<!-- das sollte entflechtet werden. -->
+
 
 ![Bayes:Start!](img/Golem_hex.png){width=10%}
 
@@ -25,7 +23,8 @@ Sie können ...
 - die Begriffe von Wahrscheinlichkeitsdichte und Verteilungsfunktion erläutern 
 - den Begriff einer Gleichverteilung erläutern 
 - den Begriff einer Binomialverteilung erläutern
-- den Begriff einer halben Normalverteilung erläutern
+- Ben Begriff einer halben Normalverteilung erläutern
+- den Begriff einer Exponentialverteilung erläutern
 - zentrale Konzepte in R umsetzen
 
 
@@ -363,33 +362,7 @@ gezählt.
 
 
 
-```{mermaid}
-%%| fig-cap: "Baumdiagramm für das Ziehen von 2 Treffern und 1 Niete"
-%%| label: fig-baum3
-flowchart LR
-  A[Start] -->B[Zug 1 - T]
-  A -->C[Zug 1 - T]
-  A -->D[Zug 1 - N]
-  B -->E[Zug 2 - T]
-  B -->F[Zug 2 -  N]
-  C -->G[Zug 2 - T]
-  C -->H[Zug 2 - N]
-  D -->I[Zug 2 - T]
-  D -->J[Zug 2 - T]
-  E -->K[Zug 3 - N]
-  F -->L[Zug 3 - T]
-  G -->M[Zug 3 - N]
-  H -->N[Zug 3 - T]
-  I -->O[Zug 3 - T]
-  J -->P[Zug 3 - T]
-  K -->Q[TTN]
-  L -->R[TNT]
-  M -->S[TTN]
-  N -->T[TNT]
-  O -->U[NTT]
-  P -->V[NTT]
-  
-```
+
 
 
 Schneller geht es, wenn man rechnet. 
@@ -877,7 +850,7 @@ df <- data.frame(x = seq(-4, 4, length.out = 500))
 df$y <- dnorm(df$x)
 
 # Separate shading regions
-df_left  <- subset(df, x <= 0)
+df_left  <- subset(df, x <= 0) 
 df_right <- subset(df, x >= 0)
 
 ggplot(df, aes(x, y)) +
@@ -904,6 +877,7 @@ Man "spiegelt" die negative Seite auf die positive. $\square$
 
 
 Man kann sie verwenden, wenn man von normalverteilten Werten ausgeht, die größer als Null sein müssen.
+Sie hat zwei Parameter, Mittelwert und SD, analog zur Normalverteilung.
 
 
 :::{#exm-halbe-NV}
@@ -915,6 +889,11 @@ Man kann sie verwenden, wenn man von normalverteilten Werten ausgeht, die größ
 - Die Reaktionszeiten einer Versuchsperson in einer Reaktionszeitaufgabe $\square$
 :::
 
+
+
+## Die Exponentialverteilung
+
+{{< include children/Exponentialverteilung.qmd >}}
 
 
 ## Vertiefung

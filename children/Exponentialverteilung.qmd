@@ -1,4 +1,3 @@
-## Die Exponentialverteilung
 
 ### Die Apfel-fällt-nicht-weit-vom-Stamm-Verteilung
 
@@ -6,29 +5,53 @@
 <!-- Sie haben in Statistik eine Klausur geschrieben. -->
 <!-- Sie gehen davon aus, dass Sie etw -->
 
-Bevor wir unser Kung-Modell spezifizieren können,
-sollten wir noch überlegen, welches Vorab-Wissen wir zur *Streuung um den Mittelwert* herum haben.
-Da wir uns nicht 100% sicher zur gesuchten Größe sind,
-müssen wir diese Ungewissheit quantifizieren.
-Wir müssen also angeben, wie groß die Streuung um den Mittelwert unserer Meinung nach ist.
-Hier werden wir eingestehen, dass wir uns auch nicht 100% sicher sind,
-wie groß die Streuung exakt ist.
-Also geben wir eine Verteilung für die Streuung an,
-um diese Ungewissheit zu quantifizieren.
+Anstelle der halben Normalverteilung man auch die Exponentialverteilung verwenden.
+Die beiden Verteilungen haben einen ähnlichen Verlauf,
+nur dass bei Exponentialverteilung Extremwerte wahrscheinlicher sind.
+Das kann vorteilhaft sein, wenn man ein Phänomen darstellen will,
+dessen Skalierung man nicht genau kennt.
+Die Normalverteilung setzt dem Streuung der Werte deutlich engere Grenzen
+als die Exponentialverteilung.
+@fig-exp-hnv stellt die beiden Verteilungen nebeneinander.
 
-Etwas Wissen über diese Verteilung haben wir:
 
-- Eine Streuung muss positiv sein (es gibt keine negative Streuung).
-- Eine Gleichverteilung der Streuung ist vielleicht möglich, aber nicht sehr plausibel.
-- Wenn wir der Meinung sind, der Mittelwert betrage "ungefähr 178 cm", so halten wir  180 cm als Körpergröße einer erwachsenen Person für plausibel, aber 18000 cm für (praktisch) unmöglich und schon 200 cm für recht unplausibel. 
-Also: Je größer die die Abweichung vom Mittelwert, desto unplausibler der Wert der Körpergröße.
+```{r}
+#| fig-asp: 0.5
+#| label: fig-exp-hnv
+#| fig-cap: "Exponentialverteilung (blau, Rate = 1) vs. halbe Normalverteilung (sd = 1)"
+#| echo: false
 
-Diese Anforderungen^["Desiderata"] spiegeln sich in @fig-exp wider;
-die eine  *Exponentialverteilung* zeigt (mit dem Parameter $\lambda=1$),
-Eine Exponentialverteilung erfüllt unsere Wünsche ziemlich gut.
-Außerdem zeigt die Abbildung verschiedene Quantile, wie das 95%-Quantil,
-das bei 3 liegt;
-95% der Werte dieser Verteilung sind also nicht größer als 3.
+
+df <- data.frame(x = seq(0, 4, length.out = 500))
+df$y_halfnorm <- dnorm(df$x) * 2       # Half-normal density
+df$y_exp <- dexp(df$x, rate = 1)       # Exponential density (λ = 1)
+
+ggplot(df, aes(x)) +
+  # Filled areas
+  geom_area(aes(y = y_halfnorm), fill = "grey70", alpha = 0.6) +
+  geom_area(aes(y = y_exp), fill = "#56B4E9", alpha = 0.4) +
+  # Curves
+  geom_line(aes(y = y_halfnorm), color = "black", size = 1) +
+  geom_line(aes(y = y_exp), color = "#56B4E9", size = 1) +
+  # Labels
+  annotate("label", x = 3.2, y = dnorm(3.2) * 2 + 0.02, 
+           label = "Half-Normal", color = "black", hjust = 0) +
+  annotate("label", x = 2.5, y = dexp(2.5, rate = 1) + 0.02, 
+           label = "Exponential", color = "#56B4E9", hjust = 0) +
+  # Theme adjustments
+  theme_minimal() +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.y  = element_blank()
+  ) +
+  scale_x_continuous(limits = c(0, 4))
+
+```
+
+
 
 
 
@@ -38,7 +61,7 @@ das bei 3 liegt;
 #| fig-cap: "Die Exponentialverteilung: Die meisten Äpfel fallen nicht weit vom Stamm ..."
 #| echo: false
 #| dev: "ragg_png"
-#| 
+#| eval: false
 
 # Set the rate parameter for the exponential distribution
 rate <- 1
@@ -51,7 +74,7 @@ data <- data.frame(x = x_vals, y = y_vals)
 ggplot(data, aes(x = x, y = y)) +
   geom_line(color = okabeito_colors()[1], size = 1) +
   theme_minimal() +
-  labs(title = "Exponential Distribution", x = "", y = "Density") +
+ # labs(title = "Exponential Distribution", x = "", y = "Density") +
   theme(plot.title = element_text(hjust = 0.5)) +
   # Add emojis as text annotations
   annotate("text", x = 0, y = 0, label = "🌳", size = 12, vjust = 0) +
@@ -234,8 +257,28 @@ Die Grenzen der inneren 95% dieser Verteilung kann man sich auch ausgeben.
 qexp(p = c(0.025, .975), rate = 1/8)
 ```
 
-Diese Grenzen scheinen hinreichend weit, das wir noch von den Daten überrascht werden können, aber schmal genug, um unsinnige Werte auszuschließen.
-Ein guter Start! Weiter geht's!
+Tabelle @tbl-exp zeigt die Mediane einiger Exponentialverteilungen,
+d.h. Exponentialverteilungen mit verschiedenen Werten für $\lambda$.
+
+
+| λ       | Median  |
+|---------|---------|
+| 100     | 0.01    |
+| 50      | 0.01    |
+| 8       | 0.09    |
+| 4       | 0.17    |
+| 2       | 0.35    |
+| 1       | 0.69    |
+| 1/2     | 1.39    |
+| 1/4     | 2.77    |
+| 1/8     | 5.55    |
+| 1/50    | 34.66   |
+| 1/100   | 69.31   |
+
+: Die Median-Werte von Exponentialverteilungen mit verschiedenen Werten für $\lambda$.
+
+
+::: 
 
 
 
@@ -255,174 +298,6 @@ Ein guter Start! Weiter geht's!
 
 
 
-
-
-#### Logarithmus
-
-Ein Logarithmus ist die Umkehrung der Potenzierung.
-
-Der Logarithmus beantwortet folgende Frage:
-Mit welchem Exponenten muss ich eine bestimmte Zahl (die Basis) potenzieren, um eine andere Zahl zu erhalten? Die Antwort auf diese Frage ist der Logarithmus.
-
-Formal ausgedrückt:
-
-:::{#def-logarithmus}
-### Logarithmus
-Der Logarithmus von einer Zahl $a$ zur Basis $b$ ist die Zahl $x$, mit der man $b$ potenzieren muss, um $a$ zu erhalten, s. @thm-logarithmus. $\square$
-:::
-
-:::{#thm-logarithmus}
-### Logarithmus
-$$\log b(x) = y \quad \text{wenn und nur wenn} \quad b^y = x$$
-:::
-
-Der Logarithmus zur Basis 2^[als "Logarithmus Dualis", ld, bezeichnet] gibt die "Verdopplungen" bzw. "Halbierungen" der Wahrscheinlichkeit an, wobei $ld(1/2) = -1.\square$
-
-
-
-:::{#exm-log2-1}
-$ld(1/2) = -1$
-```{r}
-log(.5, base = 2)
-```
-
-1/2 ist genau "minus 1 Verdopplung" von 1 entfernt, d.h. eine Halbierung.
-
-$ld(1/4) = -2$
-```{r}
-log(1/4, base = 2)
-```
-1/4 ist genau "minus 2 Verdopplungen" von 1 entfernt, d.h. zwei Halbierungen.
-
-$ld(1/8) = -3$
-```{r}
-log(1/8, base = 2)
-```
-
-1/8 (0.125) ist 3 Halbierungen von 1 entfernt.$\square$
-:::
-
-
-
-
-
-#### Simulieren wir eine Binomialverteilung 
-
-
-Die Binomialverteilung lässt sich gut als "Münzwurf-Verteilung" auffassen.
-
-Werfen wir eine Münze und sehen wir, was passiert.
-
-
-```{r}
-sample(x = c(0, 1), size = 1)
-```
-
-
-Mit `sample()` ziehen wir eine Stichprobe aus dem Ereignisraum `x`, hier 0 und 1. 
-Dabei vereinbaren wir (willkürlich), dass 0 für "Kopf" steht und 1 für "Zahl".
-`size = 1` bedeutet, wir werfen die Münze ein Mal (d.h. Stichprobengröße *size* ist 1).
-
-Okay, noch an Bord? Dann werfen wir die Münze 10 Mal.
-
-
-```{r}
-sample(x = c(0, 1), size = 10, replace = TRUE)
-```
-
-`replace = TRUE` heißt, wir legen die Münze wieder zurück auf den Tisch, wenn wir sie geworfen haben.
-Oder anders ausgedrückt: *Ziehen mit Zurücklegen*.
-
-
-
-R, mach dich bereit, wirf die Münze 1000 ($n=10^3$ oder `1e3`) Mal^[R meckert nicht bei langweiligen Aufgaben.].
-
-
-```{r}
-n <- 1e3
-
-muenze_oft <- 
-  sample(x = c(0, 1), size = n, replace = TRUE) 
-
-
-muenze_oft %>% 
-  sum()
-```
-
-
-Mit `sum()` nach dem Pfeifensymbol `%>%` haben wir aus dem Vektor `muenze_oft`, der aus der ersten Zeile resultiert,
-die Summe ausgerechnet. 
-
-Jetzt wissen wir, wie oft die Münze "Zahl" gezeigt hat, nämlich `r sum(muenze_oft)` Mal.
-
-
-
-::: callout-note
-Wenn Sie einen Zufallsversuch wiederholen, muss nicht jedes Mal das gleiche Ergebnis resultieren. Entsprechend wird bei wiederholten Ausführung der Funktion `sample()` nicht immer das gleiche Ergebnis resultieren. Wundern Sie sich also nicht, wenn bei Ihrem Computer eine ähnliche, aber nicht gleiche, Zahl herauskommt.
-:::
-
-
-Visualisieren wir mal unsere Münzwürfe. Dazu erstellen wir zuerst eine geeignete Tabelle, @tbl-muenz.
-
-
-```{r}
-muenz_tab <-
-  tibble(
-    id = 1:n,
-    x = muenze_oft,
-    x_cumsum = cumsum(x) / id  # gibt Anteil von "Zahl" wieder
-  )
-```
-
-
-```{r}
-#| echo: false
-#| label: tbl-muenz
-#| tbl-cap: "Die kumulierte Summe beim Münzwurf (nur die ersten paar Zeilen)"
-head(muenz_tab)
-```
-
-
-Und hier der Anteil von "Zahl" im Verlauf unserer Münzwürfe, s. @fig-lln.^[`library(ggpubr); ggline(muenz_tab, x = "id", y = "x_cumsum")`]
-
-
-```{r}
-#| label: fig-lln
-#| echo: false
-#| fig-cap: "Das Gesetz der großen Zahl am Beispiel der Stabilisierung des Trefferanteils beim wiederholten Münzwurf"
-#| fig-asp: 0.3
-
-muenz_tab %>% 
-  slice_head(n = 1e3) %>% 
-  ggplot() +
-  aes(x = id, y = x_cumsum) +
-  geom_line() +
-  theme_minimal()
-```
-
-
-
-Grob gesagt scheint sich ein Münzwurf nach, naja, vielleicht 500 Würfen "einigermaßen" zu stabilisieren.^[Was "einigermaßen" bedeuten soll, ist kein statistischer Begriff, sondern einer, der im echten Leben von den Menschen beantwortet werden muss, die eine Entscheidung zu treffen haben.]
-
-
-
-::: callout-important
-#### Das Gesetz der großen Zahl
-
-Zieht man (zufällig) immer mehr Werte aus einer Verteilung (mit endlichem Mittelwert), nähert sich der Mittelwert der Stichprobe immer mehr mit dem Mittelwert (oft als *Erwartungswert* bezeichnet) der Verteilung an.
-:::
-
-
-
-```{r lln, out.width = "100%", fig.align="center", fig.asp = .5}
-#| eval: false
-#| echo: false
-source(paste0(here::here(),"/R-Code/img15.R"))
-```
-
-
-
-<!-- 3b1b hat ein [nettes Video zu diesem Thema](https://youtu.be/8idr1WZ1A7Q), das sich als Vertiefung eignet. -->
 
 
 
