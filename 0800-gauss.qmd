@@ -70,9 +70,9 @@ Wir benötigen den Datensatz *!Kung*. Quelle der Daten ist @mcelreath2020 mit Be
 Kung_path <-  
   "https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv"  
 
-d <- read.csv(Kung_path) 
+kung <- read.csv(Kung_path) 
 
-head(d)
+head(kung)
 ```
 
 [Datenquelle](https://raw.githubusercontent.com/sebastiansauer/2021-wise/main/Data/Howell1a.csv)
@@ -105,29 +105,31 @@ In diesem Abschnitt untersuchen wir eine Forschungsfrage in Zusammenhang mit dem
 
 [Quelle](https://en.wikipedia.org/wiki/%C7%83Kung_people)
 
-Wir interessieren uns für die Größe der erwachsenen !Kung, also filtern wir die Daten entsprechend und speichern die neue Tabelle als `d2`.
+Wir interessieren uns für die Größe der erwachsenen !Kung, 
+also filtern wir die Daten entsprechend und speichern die neue Tabelle als `kung_erwachsen`.
 
 ```{r Kung-5}
-d2 <- d %>% 
+kung_erwachsen <- kung %>% 
   filter(age >= 18)
 
-nrow(d2)
+nrow(kung_erwachsen)
 ```
 
-$N=`r nrow(d2)`$.
+$N=`r nrow(kung_erwachsen)`$.
 
 Lassen wir uns einige typische deskriptive Statistiken zum Datensatz ausgeben. `{easystats`} macht das tatsächlich recht easy, s. @tbl-kung.
 
 ```{r Kung-7, echo = TRUE, eval = FALSE}
 #| eval: false
-describe_distribution(d2)
+describe_distribution(kung_erwachsen)
 ```
 
 ```{r Kung-7a, eval = TRUE}
 #| echo: false
 #| label: tbl-kung
 #| tbl-cap: Statistiken der metrischen Variablen im Kung-Datensatz
-describe_distribution(d2) %>% 
+
+describe_distribution(kung_erwachsen) %>% 
   gt() %>% 
   fmt_number(columns = c(3:last_col()-1)) %>% 
   fmt_integer(columns = last_col())
@@ -139,7 +141,7 @@ Die Verteilungen lassen sich mit `plot_density` (aus `{DataExplorer}`), s. @fig-
 #| label: fig-kung-dens
 #| fig-cap: Verteilungen der Variablen im Kung-Datensatz. Größe und Gewicht sind recht symmetrisch; Alter ist rechtsschief.
 
-plot_density(d2)
+plot_density(kung_erwachsen)
 ```
 
 ### Wir gehen apriori von normalverteilter Größe Der !Kung aus
@@ -166,12 +168,18 @@ $$\mu \sim \mathcal{N}(178, 20)$$ {#eq-kung}
 
 @eq-kung definiert ein Modell: Unsere Vorstellung der mittleren ("typischen") Körpergröße der erwachsenen !Kung.
 
-Warum 178 cm? Kein besonderer Grund. Hier wollen wir den Effekt verschiedener Priori-Werte untersuchen.[^0800-gauss-5] In einer echten Untersuchung sollte man einen inhaltlichen Grund für einen Priori-Wert haben. *Oder* man wählt "schwach informative" Prioris, wie das `{rstanarm}` tut: Damit lässt man kaum Vorab-Information in das Modell einfließen, aber man verhindert extreme Prioris, die meistens unsinnig sind (so wie eine SD von 100 Metern bei der Körpergröße).
+Warum 178 cm? Kein besonderer Grund. Hier wollen wir den Effekt verschiedener Priori-Werte untersuchen.[^0800-gauss-5] 
+In einer echten Untersuchung sollte man einen inhaltlichen Grund für einen Priori-Wert haben. 
+*Oder* man wählt "schwach informative" Prioris, wie das `{rstanarm}` tut: 
+Damit lässt man kaum Vorab-Information in das Modell einfließen, 
+aber man verhindert extreme Prioris, die meistens unsinnig sind (so wie eine SD von 100 Metern bei der Körpergröße).
 
-[^0800-gauss-5]: Der Autor des zugrundeliegenden Fachbuchs, Richard McElreath gibt 178cm als seine Körpergröße an.
+[^0800-gauss-5]: Der Autor des zugrundeliegenden Lehrbuchs, Richard McElreath, gibt 178cm als seine Körpergröße an.
 
 ::: callout-note
-Wir haben zwar vorab nicht viel Wissen, aber auch nicht gar keines: Eine Gleichverteilung der Körpergrößen kommt nicht in Frage und ein vages Wissen zum Mittelwert haben wir auch. Darüber hinaus ist eine Normalverteilung nicht unplausibel.
+Wir haben zwar vorab nicht viel Wissen, aber auch nicht gar keines: 
+Eine Gleichverteilung der Körpergrößen kommt nicht in Frage und ein vages Wissen zum Mittelwert haben wir auch. 
+Darüber hinaus ist eine Normalverteilung nicht unplausibel.
 :::
 
 ```{r p1-p2}
@@ -261,7 +269,7 @@ h_i &\sim \mathcal{N}(\mu, \sigma) & \text{Likelihood}  \\
 \end{aligned}
 $$ {#eq-mod-kung1}
 
-![Modellschema für das Modell `m_kung`](img/Kruschke-plot1.png){#fig-mod-kung1}
+![Modellschema für das Modell `m_kung`](img/kruschke_regr_zero_predictor.png){#fig-mod-kung1}
 
 Zur Berechnung von `m_kung` nutzen wir jetzt dieses Mal aber *nicht* die Gittermethode (Bayes-Box), sondern lassen R die Arbeit verrichten.
 
@@ -282,7 +290,7 @@ Okay, Golem, an die Arbeit! Berechne uns das Kung-Modell! Nennen wir das Modell 
 [^0800-gauss-7]: *m* wie Modell und 4, weil das Modell in Kapitel 4 von @mcelreath2020 in ähnlicher Form berichtet wird, und 1 weil es unsere erste Variante dieses Modells ist.
 
 ```{r Kung-4, message=FALSE, results="hide"}
-m_kung <- stan_glm(height ~ 1, data = d2, refresh = 0)  # <1>
+m_kung <- stan_glm(height ~ 1, data = kung_erwachsen, refresh = 0)  # <1>
 m41_post <- as_tibble(m_kung)    # <2>
 names(m41_post) <- c("mu", "sigma")  # <3>  
 ```
@@ -295,7 +303,7 @@ Das Argument `refresh = 0` ist nur eine Nebensache, aber es ist praktisch, da es
 
 [^0800-gauss-8]: aus dem R-Paket `rstanam`, das zuvor installiert und gestartet sein muss, bevor Sie den Befehl nutzen können
 
-Plotten wir mal die gemeinsame Posteriori-Verteilung von `m_kung`, s. @fig-m42-post-joint
+Plotten wir mal die gemeinsame Posteriori-Verteilung von `m_kung`, s. @fig-m_kung_neue_prioris-post-joint
 
 ::: panel-tabset
 ### Fliesendiagramm
@@ -304,8 +312,8 @@ Gemeinsame Post-Verteilung von Mittelwert und Streuung
 
 ```{r post-m_kung-plot}
 #| echo: true
-#| label: fig-m42-post-joint
-#| fig-cap: "Die gemeinsame Post-Verteilung von Mittelwert und Streuung von m42"
+#| label: fig-m_kung_neue_prioris-post-joint
+#| fig-cap: "Die gemeinsame Post-Verteilung von Mittelwert und Streuung von m_kung_neue_prioris"
 
 m41_post %>% 
   ggplot() +
@@ -316,16 +324,16 @@ m41_post %>%
 
 Da das Modell *zwei* Parameter hat, können wir auch beide gleichzeitig plotten. Wie man sieht, sind die beiden Parameter unkorreliert. In anderen Modellen können die Parameter korreliert sein.
 
-@fig-m42-post-joint erlaubt uns, für *jede Kombination von Mittelwert und Streuung* zu fragen, wie wahrscheinlich diese bestimmte Kombination ist.
+@fig-m_kung_neue_prioris-post-joint erlaubt uns, für *jede Kombination von Mittelwert und Streuung* zu fragen, wie wahrscheinlich diese bestimmte Kombination ist.
 
 ### Streudiagramm
 
-Hier sind noch zwei andere Visualisierungen der Post-Verteilung von `m42`, s. @fig-m42-post-anders1.
+Hier sind noch zwei andere Visualisierungen der Post-Verteilung von `m_kung_neue_prioris`, s. @fig-m_kung_neue_prioris-post-anders1.
 
 ```{r Kung-5-bis}
 #| echo: false
 #| fig-cap: "Die Postverteilung in unterschiedlicher Darstellung"
-#| label: fig-m42-post-anders1
+#| label: fig-m_kung_neue_prioris-post-anders1
 
 
 p_m41_post <- 
@@ -348,12 +356,12 @@ p10
 
 Und hier kommt die Post-Verteilung nur des Mittelwerts.
 
-Natürlich können wir auch nur von einem einzelnen Parameter (z.B. Mittelwert) die Verteilung untersuchen, s. @fig-m42-post-anders2.
+Natürlich können wir auch nur von einem einzelnen Parameter (z.B. Mittelwert) die Verteilung untersuchen, s. @fig-m_kung_neue_prioris-post-anders2.
 
 ```{r}
 #| echo: false
-#| fig-cap: Die Post-Verteilung von mu in m42; ein Balkendiagramm bietet sich an.
-#| label: fig-m42-post-anders2
+#| fig-cap: Die Post-Verteilung von mu in m_kung_neue_prioris; ein Balkendiagramm bietet sich an.
+#| label: fig-m_kung_neue_prioris-post-anders2
 p20
 ```
 :::
@@ -419,10 +427,10 @@ $\sigma \sim \mathcal{E}(0.125)$, Prior zur Streuung der Größen (von Stan übe
 
 Wir können, wie wir es oben getan haben, uns die Stichproben der Post-Verteilung ausgeben lassen, und diese z.B. plotten.
 
-Wir können es aber auch komfortabler haben ... Mit dem Befehl `parameters` kann man sich die geschätzten Parameterwerte einfach ausgeben lassen (s. @fig-m42-post-joint).
+Wir können es aber auch komfortabler haben ... Mit dem Befehl `parameters` kann man sich die geschätzten Parameterwerte einfach ausgeben lassen (s. @fig-m_kung_neue_prioris-post-joint).
 
 ```{r Kung-24, echo = TRUE, results="hide"}
-m_kung <- stan_glm(height ~ 1, data = d2, refresh = 0)  # aus Paket rstanarm
+m_kung <- stan_glm(height ~ 1, data = kung_erwachsen, refresh = 0)  # aus Paket rstanarm
 
 parameters(m_kung)  # aus Paket `easystats`
 ```
@@ -470,11 +478,11 @@ Die Parameter eines Modells sind die Größen, für die wir eine Priori-Verteilu
 
 Wie wir es vom Globusversuch gewohnt sind, können wir aber auch Stichproben aus der Post-Verteilung ziehen.
 
-Hier die ersten paar Zeilen von `post_m41`:
+Hier die ersten paar Zeilen von `post_kung`:
 
 ```{r Kung-26}
-post_m41 <- as_tibble(m_kung)
-head(post_m41)
+post_kung <- as_tibble(m_kung)
+head(post_kung)
 ```
 
 In einer Regression ohne Prädiktoren entspricht der Achsenabschnitt dem Mittelwert der AV, daher gibt uns die Spalte `(Intercept)` Aufschluss über unsere Schätzwerte zu $\mu$ (der Körpergröße).
@@ -487,10 +495,10 @@ In einer Regression ohne Prädiktoren entspricht der Achsenabschnitt dem Mittelw
 
 ```{r Kung-28a, echo = TRUE}
 
-names(post_m41) <- 
+names(post_kung) <- 
   c("mu", "sigma")  # den Namen "(Intercept)" durch "mu" ersetzen, ist prägnanter
 
-post_m41 %>% 
+post_kung %>% 
   count(mu > 155) %>% 
   mutate(prop = n/sum(n))
 ```
@@ -506,10 +514,10 @@ Die Wahrscheinlichkeit ist nicht hoch, aber nicht auszuschließen, dass die Kung
 ### Lösung
 
 ```{r Kung-28, echo = TRUE}
-names(post_m41) <- 
+names(post_kung) <- 
   c("mu", "sigma")  # den Namen "(Intercept)" durch "mu" ersetzen, ist prägnanter
 
-post_m41 %>% 
+post_kung %>% 
   count(mu > 165) %>% 
   mutate(prop = n/sum(n))
 ```
@@ -525,7 +533,7 @@ Oh, diese Hypothese können wir mit an Sicherheit grenzender Wahrscheinlichkeit 
 ### Lösung
 
 ```{r Kung-29, echo = TRUE}
-post_m41 %>% 
+post_kung %>% 
   summarise(q95 = quantile(mu, .95))
 ```
 :::
@@ -538,7 +546,7 @@ post_m41 %>%
 ### Lösung
 
 ```{r Kung-30, echo = TRUE}
-post_m41 %>% 
+post_kung %>% 
   eti()
 ```
 
@@ -621,64 +629,64 @@ Bei der Wahl der Prioris gibt es nicht die eine, richtige Wahl. Die beste Entsch
 
 ### Wenn es schnell gehen muss
 
-`stan_glm()` ist deutlich langsamer als z.B. der befreundete Golem `lm()`. Der Grund für Stans Langsamkeit ist, dass er viele Stichproben zieht, also viel zu zählen hat. Außerdem wiederholt er das Stichprobenziehen (im Standard) 4 Mal, damit sein Meister prüfen kann, ob er (Stan) die Arbeit auch immer richtig gemacht hat. Die Idee dabei ist, wenn alle vier Durchführungen (auch "Ketten" engl., chains) genannt, zum etwa gleichen Ergebnis kommen, dann wird schon alles mit rechten Dingen zugegangen sein. Weichen die Ergebnisse der 4 Ketten voneinander ab, so ist Stan ein Fehler unterlaufen, oder, irgendetwas ist "dumm gelaufen". An dieser Stelle schauen wir uns die Ketten nicht näher an, aber es sei notiert, dass man die Anzahl der Ketten mit dem Argument `chains` steuern kann. Möchte man, dass Stan sich beeilt, so kann man `chains = 1` setzen, das spart Zeit.
+`stan_glm()` ist deutlich langsamer als z.B. der befreundete Golem `lm()`. Der Grund für Stans Langsamkeit ist, dass er viele Stichproben zieht, also viel zu zählen hat. Außerdem wiederholt er das Stichprobenziehen (im Standard) 4 Mal, damit sein Meister prüfen kann, ob er (Stan) die Arbeit auch immer richtig gemacht hat. Die Idee dabei ist, wenn alle vier Durchführungen (auch "Ketten" engl., chains) genannt, zum etwa gleichen Ergebnis kommen, dann wird schon alles mit rechten Dingen zugegangen sein. Weichen die Ergebnisse der 4 Ketten voneinander ab, so ist Stan ein Fehler unterlaufen, oder, irgendetwas ist "dumm gelaufen". An dieser Stelle schauen wir uns die Ketten nicht näher an, aber es sei notiert, dass man die Anzahl der Ketten mit dem Argument `chains` steuern kann. Möchte man, dass Stan sich beeilt, so kann man `chains = 1` setzen, das spart Zeit, s. `m_kung_1kette`. 
 
 ```{r m41a, echo = TRUE, results="hide"}
-m41a <- stan_glm(height ~ 1, 
-                 data = d2, 
+m_kung_1kette <- stan_glm(height ~ 1, 
+                 data = kung_erwachsen, 
                  chains = 1,  # nur 1 Kette, anstelle von 4 im Default, spart Zeit
                  refresh = 0) 
 
-parameters(m41a)  
+parameters(m_kung_1kette)  
 ```
 
-## Modell `m42`: unsere Priori-Werte
+## Modell `m_kung_neue_prioris`: unsere Priori-Werte
 
 📺 [Teil 2](https://youtu.be/qIuu-4qRT_0)
 
-Im Modell `m_kung` haben wir auf die Priori-Werte der Voreinstellung von `rstanarm` vertraut. Jetzt lassen wir mal unsere eigenen Priori-Werte einfließen, in unserem zweiten Kung-Modell, `m42`.
+Im Modell `m_kung` haben wir auf die Priori-Werte der Voreinstellung von `rstanarm` vertraut. Jetzt lassen wir mal unsere eigenen Priori-Werte einfließen, in unserem zweiten Kung-Modell, `m_kung_neue_prioris`.
 
-### m42
+### m_kung_neue_prioris
 
-Dann lassen wir `stan_glm()` (Stan) unser zweites Modell berechnen.[^0800-gauss-9] Dieses Mal geben wir die Priori-Werte explizit an, @tbl-m42-params.
+Dann lassen wir `stan_glm()` (Stan) unser zweites Modell berechnen.[^0800-gauss-9] Dieses Mal geben wir die Priori-Werte explizit an, @tbl-m_kung_neue_prioris-params.
 
 [^0800-gauss-9]: Hey Stan, los, an die Arbeit!
 
 ```{r Kung-15-bis, echo = TRUE}
 #| eval: false
-m42 <- 
+m_kung_neue_prioris <- 
   stan_glm(height ~ 1, 
            prior_intercept = normal(178, 20),  # mu
            prior_aux = exponential(0.125),  # sigma
            refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
-           data = d2)
-parameters(m42)
+           data = kung_erwachsen)
+parameters(m_kung_neue_prioris)
 ```
 
 ```{r Kung-15-bis-print}
 #| echo: false
 #| eval: true
-#| label: tbl-m42-params
-#| tbl-cap: "Parameter von m42 mit eigenen Prioriwerten"
-m42 <- 
+#| label: tbl-m_kung_neue_prioris-params
+#| tbl-cap: "Parameter von m_kung_neue_prioris mit eigenen Prioriwerten"
+m_kung_neue_prioris <- 
   stan_glm(height ~ 1, 
            prior_intercept = normal(178, 20),  # mu
            prior_aux = exponential(0.125),  # sigma
            refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
            seed = 42,  # Zufallszahlen fixieren
-           data = d2)
-parameters(m42) |> display()
+           data = kung_erwachsen)
+parameters(m_kung_neue_prioris) |> display()
 ```
 
-Wir haben noch nicht alle Informationen kennengelernt, die in @tbl-m42-params ausgegeben werden. Im Zweifel: Einfach ignorieren. Wichtige Fähigkeit im Studium. 🤓
+Wir haben noch nicht alle Informationen kennengelernt, die in @tbl-m_kung_neue_prioris-params ausgegeben werden. Im Zweifel: Einfach ignorieren. Wichtige Fähigkeit im Studium. 🤓
 
 ::: callout-important
-Vergleichen Sie die Parameterwerte von `m_kung` und `m42`! Was fällt Ihnen auf? Nichts? Gut! Tatsächlich liefern beide Modelle sehr ähnliche Parameterwerte. Die Prioriwerte waren nicht so wichtig, weil wir genug Daten haben. Hat man einigermaßen viele Daten, so fallen Prioriwerte nicht mehr ins Gewicht, zumindest wenn sie moderat gewählt waren.
+Vergleichen Sie die Parameterwerte von `m_kung` und `m_kung_neue_prioris`! Was fällt Ihnen auf? Nichts? Gut! Tatsächlich liefern beide Modelle sehr ähnliche Parameterwerte. Die Prioriwerte waren nicht so wichtig, weil wir genug Daten haben. Hat man einigermaßen viele Daten, so fallen Prioriwerte nicht mehr ins Gewicht, zumindest wenn sie moderat gewählt waren.
 :::
 
 ```{r Kung-16-bis, eval = FALSE}
 #| echo: false
-#write_rds(m42, "objects/m42.rds")
+#write_rds(m_kung_neue_prioris, "objects/m_kung_neue_prioris.rds")
 ```
 
 ### Posteriori-Verteilung und Parameter plotten
@@ -692,10 +700,10 @@ Leider liefert der Stan-Golem leider keinen braven Tibble (Tabelle) zurück.
 Daher müssen wir die Ausgabe des Stan-Golemns erst in eine schöne Tabelle umwandeln:
 
 ```{r}
-m42_tibble <-
-  as_tibble(m42)
+m_kung_neue_prioris_tibble <-
+  as_tibble(m_kung_neue_prioris)
 
-head(m42_tibble)
+head(m_kung_neue_prioris_tibble)
 ```
 
 Außerdem ist der Name der ersten Spalte eigentlich unzulässig, da Spaltennamen in R nicht mit Sonderzeichen anfangen dürfen (sondern mit Buchstaben). Daher müssen wir den Namen mit "Samthandschuhen" anpacken. Auf Errisch sind das die Backticks, die wir um den Namen rumwickeln müssen, s. die folgende Syntax.
@@ -704,14 +712,14 @@ Außerdem ist der Name der ersten Spalte eigentlich unzulässig, da Spaltennamen
 ### Mit `{ggpubr}`
 
 ```{r}
-m42_tibble |> 
+m_kung_neue_prioris_tibble |> 
   gghistogram(x = "`(Intercept)`")  # Aus dem Paket "ggpubr"
 ```
 
 ### Mit `{ggplot}`
 
 ```{r}
-m42_tibble |> 
+m_kung_neue_prioris_tibble |> 
   ggplot(aes(x = `(Intercept)`)) +  # Aus dem Paket `ggplot2`
   geom_histogram()
 ```

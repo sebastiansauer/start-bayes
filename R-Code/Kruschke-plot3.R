@@ -37,7 +37,7 @@ p2 <- tibble(x = seq(from = 0, to = 3, by = 0.01),
   geom_area(fill = col3) +
   annotate(geom = "text",
            x = 1.5, y = 0.2,
-           label = "Exponential",
+           label = "Halbnormal",
            color = col1, size = 7) +
   annotate(geom = "text",
            x = 1.5, y = 0.6,
@@ -46,6 +46,25 @@ p2 <- tibble(x = seq(from = 0, to = 3, by = 0.01),
   scale_x_continuous(expand = c(0, 0)) +
   theme_void() +
   theme(axis.line.x = element_line(color = col2, linewidth = 0.5))
+
+
+# Exponential density
+p2a <- tibble(x = seq(from = 0, to = 1, by = 0.01)) |> 
+  ggplot(aes(x = x, y = (dexp(x, 2) / max(dexp(x, 2))))) +
+  geom_area(fill = col3) +
+  annotate(geom = "text",
+           x = 0.5, y = 0.2,
+           label = "exp",
+           color = col1, size = 7) +
+  annotate(geom = "text",
+           x = 0.5, y = 0.6,
+           label = "italic(lambda)",
+           color = col1, family = "Times", parse = TRUE, size = 7) +
+  scale_x_continuous(expand = c(0, 0)) +
+  theme_void() +
+  theme(axis.line.x = element_line(color = col2, linewidth = 0.5))
+
+
 
 ## Two annotated arrows
 # Save our custom arrow settings
@@ -112,7 +131,7 @@ layout <- c(
   area(t = 7, b = 7, l = 1, r = 2))
 
 # Combine and plot!
-(p1 + p2 + p4 + p3 + p5 + p6) + 
+(p1 + p2a + p4 + p3 + p5 + p6) + 
   plot_layout(design = layout) &
   ylim(0, 1) &
   theme(plot.margin = margin(0, 5.5, 0, 5.5)) 

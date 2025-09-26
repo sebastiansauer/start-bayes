@@ -117,13 +117,15 @@ Mit Bayes haben wir eine ganz Verteilung pro Parameter.
 
 
 
-Die (einfache) Regression prüft, inwieweit zwei Variablen, $Y$ und $X$ linear zusammenhängen.
+Die (einfache) Regression prüft, 
+inwieweit zwei Variablen, $Y$ und $X$ linear zusammenhängen.
 Je mehr sie zusammenhängen, desto besser kann man $X$ nutzen, um $Y$ vorherzusagen (und umgekehrt).
-Hängen $X$ und $Y$ zusammen, heißt das nicht (unbedingt), dass es einen *kausalen* Zusammenhang zwischen $X$ und $Y$ gibt.
+Hängen $X$ und $Y$ zusammen, heißt das nicht (unbedingt), 
+dass es einen *kausalen* Zusammenhang zwischen $X$ und $Y$ gibt.
 *Linear* ist ein Zusammenhang, wenn der Zuwachs in $Y$ relativ zu $X$ konstant ist: wenn $X$ um eine Einheit steigt, steigt $Y$ immer um $b$ Einheiten (nicht kausal, sondern deskriptiv gemeint).^[
 [Datenquelle](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv), @mcelreath2020.]
 
-Laden wir die !Kung-Daten und visualisieren wir uns den Zusammenhang zwischen Gewicht (X) und Größe (Y), @fig-kung-zshg.
+Laden wir die !Kung-Daten und visualisieren wir uns den Zusammenhang zwischen Gewicht (X, UV) und Größe (Y, AV), @fig-kung-zshg.
 
 
 
@@ -300,7 +302,7 @@ Man zentriert eine Variable $X$, indem man von $x_i$ den Mittelwert $\bar{x}$ ab
 
 ```{r Post-Regression-7, echo = TRUE}
 #| eval: false
-d3 <-
+kung_zentriert <-
   kung_erwachsen %>% 
   mutate(weight_c = weight - mean(weight))
 ```
@@ -310,7 +312,7 @@ Mit Hilfe von `center()` aus `{easystats}` kann man sich das Zentrieren auch erl
 
 
 ```{r}
-d3 <- 
+kung_zentriert <- 
   kung_erwachsen %>% 
   mutate(weight_c = as.numeric(center(weight)))
 ```
@@ -322,7 +324,7 @@ d3 <-
 
 ```{r Post-Regression-8}
 #| echo: false
-d3 %>% 
+kung_zentriert %>% 
   slice_head(n=3) %>% 
   gt() %>% 
   fmt_number(columns = everything(), decimals = 0)
@@ -330,41 +332,41 @@ d3 %>%
 
 
 Wie man sieht, wird die Verteilung von `weight` durch die Zentrierung "zur Seite geschoben": 
-Der Mittelwert von `weight_c` (das zentrierte Gewicht) liegt jetzt bei 0, s. @fig-d3-center.
+Der Mittelwert von `weight_c` (das zentrierte Gewicht) liegt jetzt bei 0, s. @fig-kung_zentriert-center.
 
 
 
 ```{r Post-Regression-9, fig.asp=0.4}
 #| echo: false
-#| label: fig-d3-center
+#| label: fig-kung_zentriert-center
 #| fig-cap: 'Das Zentrieren ändert die Verteilungsform nicht, sondern "schiebt" die Verteilung nur zur Seite'
 
-d3 %>% 
+kung_zentriert %>% 
   select(weight, weight_c) %>% 
   ggplot() +
   geom_histogram(aes(x = weight), fill = "grey40") +
   geom_histogram(aes(x = weight_c), fill = "black") +
   theme_minimal() +
-  geom_segment(x = mean(d3$weight), 
+  geom_segment(x = mean(kung_zentriert$weight), 
                xend = 0, 
                y = 20, yend = 20, 
                arrow = arrow(length = unit(0.2, "cm"), type = "closed"),
                color = okabeito_colors()[1], size = 2) +
-  geom_vline(xintercept = mean(d3$weight), color = okabeito_colors()[1], 
+  geom_vline(xintercept = mean(kung_zentriert$weight), color = okabeito_colors()[1], 
              linetype = "dashed") +
   geom_vline(xintercept = 0, color = okabeito_colors()[1],
              linetype = "dashed") +
   annotate("label", x = 0, y = 5, label = "Gewicht zentriert") +
-  annotate("label", x = mean(d3$weight), y = 5, label = "Gewicht")  +
+  annotate("label", x = mean(kung_zentriert$weight), y = 5, label = "Gewicht")  +
   labs(caption = "Die vertikalen gepunkteten Linien zeigen die Mittelwerte der Verteilungen.")
 ```
 
 
 
-Das schwierigste ist dabei, nicht zu vergessen, dass `d3` die Tabelle mit zentriertem Prädiktor ist, nicht `kung_erwachsen`.
+Das schwierigste ist dabei, nicht zu vergessen, dass `kung_zentriert` die Tabelle mit zentriertem Prädiktor ist, nicht `kung_erwachsen`.
 
 
-## Modell m43: zentrierter Prädiktor
+## Modell m_kung_gewicht_c: zentrierter Prädiktor
 
 📺 [Prädiktoren zentrieren](https://youtu.be/3Z1dXPO_MSE)
 
@@ -372,7 +374,6 @@ Das schwierigste ist dabei, nicht zu vergessen, dass `d3` die Tabelle mit zentri
 Einige Regressionskoeffizienten, wie der Achsenabschnitt (Intercept) sind schwer zu interpretieren:
 Bei einem (erwachsenen) Menschen mit *Gewicht 0*, was wäre wohl die Körpergröße?
 Hm, Philosophie steht heute nicht auf der Tagesordnung.
-
 Da wäre es schön, wenn wir die Daten so umformen könnten, dass der Achsenabschnitt eine sinnvolle Aussage macht.
 Zum Glück geht das leicht: Wir zentrieren den Prädiktor (Gewicht)!
 
@@ -385,15 +386,22 @@ Durch Zentrieren kann man die Ergebnisse einer Regression einfacher interpretier
 
 
 
-### Modelldefinition von `m43`
+### Modelldefinition von `m_kung_gewicht_c`
 
 Für jede Ausprägung des Prädiktors (`weight_centered`), $wc_i$, wird eine Post-Verteilung für die abhängige Variable (`height`, $h_i$) berechnet.
-Der Mittelwert $\mu$ für jede Post-Verteilung ergibt sich aus dem linearen Modell (unserer Regressionsformel).
+Der Mittelwert $\mu$ für jede Post-Verteilung ergibt 
+sich aus dem linearen Modell (unserer Regressionsformel).
  Die Post-Verteilung berechnet sich auf Basis der Priori-Werte und des Likelihood (Bayes-Formel).
- Wir brauchen Priori-Werte für die Steigung $\beta_1$ und den Achsenabschnitt $\beta_0$ der Regressionsgeraden.
- Außerdem brauchen wir einen Priori-Wert, der die Streuung $\sigma$ der Größe (`height`) angibt; dieser Wert wird als exonentialverteilt angenommen.
- Der Likelihood gibt an, wie wahrscheinlich ein Wert `height` ist, gegeben $\mu$ und $\sigma$. 
+ Wir brauchen Priori-Werte für die Steigung $\beta_1$ 
+ und den Achsenabschnitt $\beta_0$ der Regressionsgeraden.
+ Außerdem brauchen wir einen Priori-Wert, 
+ der die Streuung $\sigma$ der Größe (`height`) angibt; dieser Wert wird als exponentialverteilt angenommen.
+ Der Likelihood gibt an, wie wahrscheinlich ein Wert `height` ist, 
+ gegeben $\mu$ und $\sigma$. 
 @thm-modm42 stellt die Modelldefinition dar.
+@fig-kruschke_regr_one_predctor zeigt, wie die drei Parameter zusammen die Likelihood definieren.
+
+![](img/kruschke_regr_1UV.png){#ig-kruschke_regr_one_predctor width=75%}
 
 
 
@@ -401,7 +409,7 @@ Der Mittelwert $\mu$ für jede Post-Verteilung ergibt sich aus dem linearen Mode
 
 ::: {#thm-modm42}
 
-### Modelldefinition
+### Modelldefinition m_kung_gewicht_c
 
 $$\begin{align*}
 \color{red}{\text{height}_i} & \color{red}\sim \color{red}{\operatorname{Normal}(\mu_i, \sigma)} && \color{red}{\text{Likelihood}} \\
@@ -425,7 +433,7 @@ Und manchmal mit noch anderen Buchstaben, das Alphabet ist weit. 🤷
 
 
 
-### Likelihood, `m43`
+### Likelihood, `m_kung_gewicht_c`
 
 
 
@@ -438,9 +446,10 @@ $$
 
 
 
- Der Likelihood von `m43` ist ähnlich zu den vorherigen Modellen (`m41, m42`).
+ Der Likelihood von `m_kung_gewicht_c` ist ähnlich zu den vorherigen Modellen (`m41, m42`).
  Nur gibt es jetzt ein kleines "Index-i" am $\mu$ und am $h$ (h wie `heights`).
- Es gibt jetzt nicht mehr nur einen Mittelwert $\mu$, sondern für jede Beobachtung (Zeile) einen Mittelwert $\mu_i$.
+ Es gibt jetzt nicht mehr nur einen Mittelwert $\mu$,
+ sondern für jede Beobachtung (Zeile) einen Mittelwert $\mu_i$.
  Lies  etwa so:
 
 >    "Die Wahrscheinlichkeit, eine bestimmte Größe bei Person $i$ zu beobachten, gegeben $\mu$ und $\sigma$ ist normalverteilt (mit Mittelwert $\mu$ und Streuung $\sigma$)".
@@ -448,7 +457,7 @@ $$
 
 
 
-### Regressionsformel, `m43`
+### Regressionsformel, `m_kung_gewicht_c`
 
 
 $$
@@ -471,7 +480,7 @@ Lies  etwa so:
 
 
 
-### Priori-Werte des Modells `m43`
+### Priori-Werte des Modells `m_kung_gewicht_c`
 
 
 
@@ -505,39 +514,39 @@ Die Anzahl der Prioris entspricht der Anzahl der Parameter des Modells.
 
 📺 [Post-Verteilung auslesen 2](https://youtu.be/8NrUQ1_d7vI)
 
-### m43a
+### `m_kung_starkes_beta1`
 
 
-Sagen wir, auf Basis gut geprüfter Evidenz haben wir folgendes Modell festgelegt: `height ~ weight_c`, s. @eq-m43a.
+Sagen wir, auf Basis gut geprüfter Evidenz haben wir folgendes Modell festgelegt: `height ~ weight_c`, s. @eq-m_kung_starkes_beta1. Dabei haben wir folgende Prioris gewählt:
 
-Prioris:
 
 $$\beta_1 \sim N(5,3); \\
 \beta_0 \sim N(178, 20); \\
-\sigma \sim E(0.1)$${#eq-m43a}
+\sigma \sim E(0.1)$${#eq-m_kung_starkes_beta1}
 
 
-Wir nennen das Modell `m43a`^[Wer ist hier für die Namensgebung zuständig? Besoffen oder was?], s. @lst-m43a.
+Wir nennen das Modell `m_kung_starkes_beta1`^[Wer ist hier für die Namensgebung zuständig? Besoffen oder was?], s. @lst-m_kung_starkes_beta1.
 
 
-::: {#lst-m43a} 
+::: {#lst-m_kung_starkes_beta1} 
 
-```{r m43a}
-m43a <-
+```{r m_kung_starkes_beta1}
+m_kung_starkes_beta1 <-
   stan_glm(
     height ~ weight_c,  # Regressionsformel
     prior = normal(5, 3),  # Regressionsgewicht (beta 1)
     prior_intercept = normal(178, 20),  # beta 0
+    prior_aux = exponential(0.1),  # sigma
     refresh = 0,  # zeig mir keine Details
-    data = d3)
+    data = kung_zentriert)
 ```
 
-Modelldefinition von `m43a` in R
+Modelldefinition von `m_kung_starkes_beta1` in R
 :::
 
 ```{r m43b-ACHTUNG-MUSS-NOCH-ANGEPASST-WERDEN, echo = FALSE}
 # Posteriori-Vert. berechnen:
-m43a <-
+m_kung_starkes_beta1 <-
   stan_glm(
     height ~ weight_c,  # Regressionsformel
     prior = normal(5, 3),  # Regressionsgewicht (beta 1)
@@ -545,7 +554,7 @@ m43a <-
     prior_aux = exponential(0.1),  # sigma
     refresh = 0,  # zeig mir keine Details
     seed = 42,  # lege die Zufallszahlen fest für Reproduzierbarkeit
-    data = d3)
+    data = kung_zentriert)
 ```
 
 
@@ -571,7 +580,7 @@ Die ersten paar Zeilen:
 
 ```{r Post-Regression-befragen-3}
 #| echo: false
-m43a %>%  
+m_kung_starkes_beta1 %>%  
   as_tibble() %>% 
   mutate(id = 1:nrow(.), .before = 1) %>% 
   head(n=3) %>% 
@@ -579,21 +588,21 @@ m43a %>%
   fmt_number(columns = 2:4, decimals = 1)
 ```
 
-Hier sind die Zusammenfassungen der Stichproben aus der Post-Verteilung, komfortabel zu erhalten mit dem Befehle `parameters`, s. @tbl-m43a-params.
+Hier sind die Zusammenfassungen der Stichproben aus der Post-Verteilung, komfortabel zu erhalten mit dem Befehle `parameters`, s. @tbl-m_kung_starkes_beta1-params.
 
 ```{r Post-Regression-befragen-4, echo = TRUE}
 #| echo: true
 #| results: hide
 #| message: false
-#| tbl-cap: Parameter von m43a
-#| label: tbl-m43a-params
-parameters(m43a)
+#| tbl-cap: Parameter von m_kung_starkes_beta1
+#| label: tbl-m_kung_starkes_beta1-params
+parameters(m_kung_starkes_beta1)
 ```
 
 
 ```{r Post-Regression-befragen-5}
 #| echo: false
-parameters(m43a) %>% 
+parameters(m_kung_starkes_beta1) %>% 
   display()
 ```
 
@@ -615,9 +624,9 @@ Am besten das Diagramm dazu anschauen, s @fig-pd1.
 
 
 ```{r}
-#| fig-cap: Diagramm zur Probability of Direction, Modell m43a
+#| fig-cap: Diagramm zur Probability of Direction, Modell m_kung_starkes_beta1
 #| label: fig-pd1
-plot(p_direction(m43a))
+plot(p_direction(m_kung_starkes_beta1))
 ```
 
 
@@ -634,18 +643,19 @@ Wir werden uns aber mit diesen beiden Kennwerten nicht weiter beschäftigen in d
 
 Zur Erinnerung: Die Bayes-Analyse liefert uns viele Stichproben zu den gesuchten Parametern,
 hier $\beta_0$, $\beta_1$ und $\sigma$.
-Überzeugen wir uns mit einem Blick in die Post-Verteilung von `m43a`:
+Überzeugen wir uns mit einem Blick in die Post-Verteilung von `m_kung_starkes_beta1`:
 
 
 
 ```{r}
-m43a %>% 
+m_kung_starkes_beta1 %>% 
   as_tibble() %>% 
   head()
 ```
 
-Wir können z.B. ein Lagemaß wie den Median hernehmen, um die "mittlere" Regressionsgerade zu betrachten.
+Wir können z.B. ein Lagemaß wie den Median hernehmen, um die "mittlere" Regressionsgerade zu betrachten, s. @fig-kung-zentiert-regr-line.
 
+::::{#fig-kung-zentiert-regr-line}
 
 :::{.panel-tabset}
 
@@ -654,7 +664,7 @@ Wir können z.B. ein Lagemaß wie den Median hernehmen, um die "mittlere" Regres
 ```{r Post-Regression-befragen-6, echo = TRUE, eval = FALSE}
 #| echo: true
 #| eval: true
-d3 %>% 
+kung_zentriert %>% 
   ggplot() +
   aes(x = weight_c, y = height) +
   geom_point() +
@@ -667,17 +677,18 @@ d3 %>%
 
 ### Mit `easystats`
 
-Einfacher ist die Syntax vielleicht, wenn man die Funktion `estimate_expectation` benutzt, s. @fig-expect-m43a-expect.
+Einfacher ist die Syntax vielleicht, wenn man die Funktion `estimate_expectation` benutzt, s. @fig-expect-m_kung_starkes_beta1-expect.
 Mit "expectation" sind hier die erwarteten Werte, also die Regressionsgerade, gemeint.
 
 ```{r}
-#| fig-cap: Erwartete Werte des Modell m43a, sprich, die Regressionsgerade
-#| label: fig-expect-m43a-expect
-estimate_expectation(m43a, by = "weight_c") |> plot()  # aus {easystats}
+#| fig-cap: Erwartete Werte des Modell m_kung_starkes_beta1, sprich, die Regressionsgerade
+#| label: fig-expect-m_kung_starkes_beta1-expect
+estimate_expectation(m_kung_starkes_beta1, by = "weight_c") |> plot()  # aus {easystats}
 
 ```
 
 :::
+::::
 
 
 ### Zentrale Statistiken zu den Parametern
@@ -694,40 +705,36 @@ Hier folgen einige Beispiele an Fragen, die wir an unser Modell bzw. die Post-Ve
 - Was ist der wahrscheinlichste Wert für z.B: $\beta_1$?
 
 
-Eine nützliche Zusammenfassung der Post-Verteilung bekommt man mit `parameters(modell)`, s. @tbl-m43a-params.
+Eine nützliche Zusammenfassung der Post-Verteilung bekommt man mit `parameters(modell)`, s. @tbl-m_kung_starkes_beta1-params.
 
-<!-- ```{r Post-Regression-befragen-7, echo = TRUE} -->
-<!-- #| eval: false -->
-<!-- m43a %>%  -->
-<!--   parameters() -->
-<!-- ``` -->
+
 
 
 ```{r Post-Regression-befragen-7a}
 #| echo: false
 #| eval: false
-m43a %>% 
+m_kung_starkes_beta1 %>% 
   parameters() %>% 
   display()
 ```
 
 
-Wandelt man das Ausgabe-Objekt der Bayes-Regression, d.h. `m43a`, mit `as_tibble()` in eine Tabelle um,
+Wandelt man das Ausgabe-Objekt der Bayes-Regression, d.h. `m_kung_starkes_beta1`, mit `as_tibble()` in eine Tabelle um,
 so bekommt man eine Tabelle mit den Stichproben der Post-Verteilung:
 
 
 ```{r}
-m43a_post <- 
-  m43a %>% 
+m_kung_starkes_beta1_post <- 
+  m_kung_starkes_beta1 %>% 
   as_tibble()
 
-m43a_post %>% 
+m_kung_starkes_beta1_post %>% 
   head()
 ```
 
 
 Wie wir gesehen haben, nutzen wir diese Tabelle der Post-Verteilung immer wieder.
-Speichern wir uns sie also als ein Objekt ab, `m43_post`.
+Speichern wir uns sie also als ein Objekt ab, `m_kung_starkes_beta1_post`.
 Jetzt haben wir wieder eine schöne Tabelle mit Stichproben aus der Post-Verteilung,
 die wir wie gewohnt befragen können.
 Eine Visualisierung zeigt gut sowohl Lage- als auch Streuungsmaße der Parameter, zumindest grob.,
@@ -736,28 +743,28 @@ Eine Visualisierung zeigt gut sowohl Lage- als auch Streuungsmaße der Parameter
 
 
 
-Oder man erstellt selber ein Diagramm mit `ggplot` oder `ggpubr`, s. @fig-m43a-post.
+Oder man erstellt selber ein Diagramm mit `ggplot` oder `ggpubr`, s. @fig-m_kung_starkes_beta1-post.
 
 
 
 
 ```{r}
-#| label: fig-m43a-post
-#| fig-cap: "Postverteilung für den Parameter Gewicht (zentriert)"
-m43a_post %>% 
+#| label: fig-m_kung_starkes_beta1-post
+#| fig-cap: "Die Postverteilung für den Parameter Gewicht (zentriert); die plausiblen Werte liegen zwischen 0.8 und 1.0 cm pro Kilogramm Gewicht"
+m_kung_starkes_beta1_post %>% 
   ggplot(aes(x = weight_c)) +
   geom_density(fill = "orange")
 ```
 
 
-@fig-m43a-post zeigt, dass Mittelwert, Median und Modus eng zusammenliegen.
+@fig-m_kung_starkes_beta1-post zeigt, dass Mittelwert, Median und Modus eng zusammenliegen.
 Zur Erinnerung: Der Modus gibt den häufigsten, d.h. hier also den wahrscheinlichsten, Wert an.
 Der Modus wird hier auch *Maximum a Posteriori* (MAP) genannt, daher:
 
 
-```{r map-estimate-m43a}
+```{r map-estimate-m_kung_starkes_beta1}
 #| eval: false
-m43a_post %>% 
+m_kung_starkes_beta1_post %>% 
   summarise(map_b1 = map_estimate(weight_c))
 ```
 
@@ -765,31 +772,37 @@ m43a_post %>%
 
 
 
-Hier ist die Verteilung von $\sigma$ visualisiert, s. @fig-m43a-post2.
+Hier ist die Verteilung von $\sigma$ visualisiert, s. @fig-m_kung_starkes_beta1-post2.
 
 
 ```{r}
-#| label: fig-m43a-post2
-#| fig-cap: "Die Post-Verteilung für den Parameter sigma, m43a"
+#| label: fig-m_kung_starkes_beta1-post2
+#| fig-cap: "Die Post-Verteilung für den Parameter sigma, m_kung_starkes_beta1; die plausiblen Werte liegen zwischen 4.7 cm und 5.5 cm."
 
-m43a_post %>% 
+m_kung_starkes_beta1_post %>% 
   ggplot(aes(x = sigma)) +
   geom_density(fill = "orange")
 ```
 
 
 Alternativ kann man sich die Verteilung eines Parameters auch so ausgeben lassen,
-gleich mit Intervallgrenzen, z.B. 95%, s. @fig-m43a-plot.
+gleich mit Intervallgrenzen, z.B. 95%, s. @fig-m_kung_starkes_beta1-plot.
 
 ```{r}
-#| label: fig-m43a-plot
-#| fig-cap: "Die Parameter Gewicht (zentriert) und sigma des Modells m43a"
-m43a_hdi <- hdi(m43a_post)  # analog mit eti(m43a)
+#| label: fig-m_kung_starkes_beta1-plot
+#| fig-cap: "Die Parameter Gewicht (zentriert) und sigma des Modells m_kung_starkes_beta1"
+m_kung_starkes_beta1_hdi <- hdi(m_kung_starkes_beta1_post)  # analog mit eti(m_kung_starkes_beta1)
 
-plot(m43a_hdi)
+plot(m_kung_starkes_beta1_hdi)
 ```
 
 Ergänzt man bei `plot()` noch `show_intercept = TRUE` wird auch der Achsenabschnitt angezeigt.
+Den Parameter der Vorhersage-Genauigkeit, $\sigma$ bekommt man mit `get_sigma`:
+
+```{r}
+get_sigma(m_kung_starkes_beta1)
+```
+
 
 
 
@@ -813,7 +826,9 @@ auf ein 90%- oder 89%-Intervall auszuweichen, aufgrund der besseren numerischen 
 
 ### Ungewissheit von $\beta_0$ und $\beta_1$ aus der Post-Verteilung visualisiert
 
+@fig-ungewissheit-kung stellt die Ungewissheit der Post-Verteilung dar, in dem einige Stichproben aus der Post-Verteilung visualisiert werden.
 
+::::{#fig-ungewissheit-kung}
 
 :::{.panel-tabset}
 
@@ -822,29 +837,29 @@ auf ein 90%- oder 89%-Intervall auszuweichen, aufgrund der besseren numerischen 
 Die ersten 10 Stichproben:
 
 ```{r Post-Regression-befragen-10, echo = TRUE}
-d3 %>% 
+kung_zentriert %>% 
   ggplot(aes(x = weight_c, 
              y = height)) +
   geom_point() +
   geom_abline(
-    data = m43a_post %>% 
+    data = m_kung_starkes_beta1_post %>% 
       slice_head(n = 10),
     aes(slope = weight_c,
         intercept = `(Intercept)`),
     alpha = .3)
 ```
 
-## 100
+### 100
 
 Die ersten 100 Stichproben:
 
 ```{r Post-Regression-befragen-11-ersten-1000, echo = TRUE}
-d3 %>% 
+kung_zentriert %>% 
   ggplot(aes(x = weight_c, 
              y = height)) +
   geom_point() +
   geom_abline(
-    data = m43a_post %>% 
+    data = m_kung_starkes_beta1_post %>% 
       slice_head(n = 100),
      aes(slope = weight_c,
         intercept = `(Intercept)`),
@@ -857,12 +872,12 @@ d3 %>%
 Die ersten `1e3` Stichproben:
 
 ```{r Post-Regression-befragen-11-die-ersten-1000, echo = TRUE}
-d3 %>% 
+kung_zentriert %>% 
   ggplot(aes(x = weight_c, 
              y = height)) +
   geom_point() +
   geom_abline(
-    data = m43a_post %>% 
+    data = m_kung_starkes_beta1_post %>% 
       slice_head(n = 1e3),
      aes(slope = weight_c,
         intercept = `(Intercept)`),
@@ -877,13 +892,15 @@ Die ersten 1000000^[1e6] ... okay, lassen wir es gut sein^[Im Standard beschert 
 
 :::
 
+::::
 
-Einfacher ist die Visualisierung mit `estimate_expectation`, s. @fig-m43a-estimate-expectation.
+
+Einfacher ist die Visualisierung mit `estimate_expectation`, s. @fig-m_kung_starkes_beta1-estimate-expectation.
 
 ```{r}
 #| fig-cap: Schätzbereich für die bedingten mittleren Körpergröße, also die Regressionsgerade mit Unsicherheitsintervall
-#| label: fig-m43a-estimate-expectation
-estimate_expectation(m43a, by = "weight_c") %>% plot()
+#| label: fig-m_kung_starkes_beta1-estimate-expectation
+estimate_expectation(m_kung_starkes_beta1, by = "weight_c") %>% plot()
 ```
 
 
@@ -903,7 +920,7 @@ Quantile:
 
 
 ```{r quantile-post}
-m43a_post %>% 
+m_kung_starkes_beta1_post %>% 
   summarise(
     q_50 = quantile(`(Intercept)`, prob = .5),
     q_90 = quantile(`(Intercept)`, prob = .9),
@@ -913,7 +930,7 @@ m43a_post %>%
 50%-PI:
 
 ```{r}
-m43a %>% 
+m_kung_starkes_beta1 %>% 
   eti(ci = .5)
 ```
 
@@ -927,7 +944,7 @@ Wie wahrscheinlich ist es, dass die mittlere Größe bei mind. 155 cm liegt?
 
 
 ```{r echo = TRUE}
-m43a_post %>% 
+m_kung_starkes_beta1_post %>% 
   count(gross = `(Intercept)` >= 155) %>% 
   mutate(prop = n / sum(n))
 ```
@@ -935,7 +952,7 @@ m43a_post %>%
 ```{r}
 #| echo: false
 wskt_gross <- 
-  m43a_post %>% 
+  m_kung_starkes_beta1_post %>% 
   count(gross = `(Intercept)` >= 155) %>% 
   mutate(prop = n / sum(n)) %>% 
   pull(prop) %>% 
@@ -950,7 +967,7 @@ Wie wahrscheinlich ist es, dass die mittlere Größe höchstens 154.5 cm beträg
 
 
 ```{r echo = TRUE}
-m43a_post %>% 
+m_kung_starkes_beta1_post %>% 
   count(klein = (`(Intercept)` <= 154.5)) %>% 
   mutate(prop = n / sum(n))
 ```
@@ -958,7 +975,7 @@ m43a_post %>%
 ```{r wsktklein}
 #| echo: false
 wskt_klein <- 
-  m43a_post %>% 
+  m_kung_starkes_beta1_post %>% 
   count(klein = `(Intercept)` <= 154.5) %>% 
   mutate(prop = n / sum(n)) %>% 
   pull(prop) %>% 
@@ -973,34 +990,6 @@ Die Wahrscheinlichkeit beträgt `r wskt_klein`.
 
 
 
-
-<!-- ### Ungewissheit von Achsenabschnitt und Steigung  -->
-
-<!-- ... als Histogramme visualisiert -->
-
-<!--  -->
-
-<!-- ### Achsenabschnitt -->
-
-<!-- ```{r Post-Regression-befragen-13, echo = TRUE, eval = TRUE} -->
-<!-- post_m43a %>%  -->
-<!--   ggplot(aes(x = a)) + -->
-<!--   geom_density() -->
-<!-- ``` -->
-
-<!-- ] -->
-
-<!-- .pull-right[ -->
-
-<!-- ### Regressionsgewicht (Steigung) -->
-
-<!-- ```{r Post-Regression-befragen-14, echo = TRUE} -->
-<!-- post_m43a %>%  -->
-<!--   ggplot(aes(x = b)) + -->
-<!--   geom_density() -->
-<!-- ``` -->
-
-<!-- ] -->
 
 
 
@@ -1022,15 +1011,15 @@ Die Wahrscheinlichkeit beträgt `r wskt_klein`.
 
 Komfort pur: Unser Modell erlaubt uns für jeden beliebigen Wert des Prädiktors eine Post-Verteilung (von $\mu$) zu berechnen.
 
-Hier am Beispiel von `m42`, s. @fig-post42.
+Hier am Beispiel von `m_kung_post`, s. @fig-post42.
 
 ```{r m42-read-from-disk, echo = FALSE}
 #| echo: false
 #| output: "hide"
-m42 <- read_rds(paste0(here::here(),"/objects/m42.rds"))
+m_kung <- read_rds(paste0(here::here(),"/objects/m42.rds"))
 
-m42_post <- as_tibble(m42)
-names(m42_post) <- c("mu", "sigma")
+m_kung_post <- as_tibble(m_kung)
+names(m_kung_post) <- c("mu", "sigma")
 ```
 
 
@@ -1039,8 +1028,8 @@ names(m42_post) <- c("mu", "sigma")
 ```{r Post-Regression-10}
 #| echo: false
 
-plot_post_42 <- 
-  m42_post %>% 
+plot_m_kung_post <- 
+  m_kung_post %>% 
   ggplot() +
   aes(x = mu) +
   geom_density(fill = "grey60") +
@@ -1141,7 +1130,7 @@ kung_erwachsen <-
   kung_erwachsen %>% 
   mutate(weight_c = weight - mean(weight))
 
-m43 <- 
+m_kung_gewicht_c <- 
   stan_glm(height ~ weight_c, 
            prior = normal(0, 10),
            prior_intercept = normal(178, 20),  # mu
@@ -1149,7 +1138,7 @@ m43 <-
            refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
            data = kung_erwachsen)
 
-m43_prior_pred <-
+m_kung_gewicht_c_prior_pred <-
     stan_glm(height ~ weight_c, 
            prior_intercept = normal(178, 20),  # mu
            prior_aux = exponential(0.1),  # sigma
@@ -1164,7 +1153,7 @@ stan_glm(height ~ weight_c,
            refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
            data = kung_erwachsen)
 
-m43a_prior_pred <-
+m_kung_gewicht_ca_prior_pred <-
     stan_glm(height ~ weight_c, 
            prior_intercept = normal(0, 20),  # mu
            prior_aux = exponential(0.1),  # sigma
@@ -1178,45 +1167,45 @@ m43a_prior_pred <-
 
 
 
-```{r objects-m43-m43a-to-disk, eval = FALSE}
+```{r objects-m_kung_gewicht_c-to-disk, eval = FALSE}
 #| eval: false
 #| echo: false
-# print(m43)
-# summary(m43_prior_pred)
-# write_rds(m43, "objects/m43.rds")
-# write_rds(m43a, "objects/m43a.rds")
+# print(m_kung_gewicht_c)
+# summary(m_kung_gewicht_c_prior_pred)
+# write_rds(m_kung_gewicht_c, "objects/m_kung_gewicht_c.rds")
+# write_rds(m_kung_gewicht_ca, "objects/m_kung_gewicht_ca.rds")
 ```
 
 
 
 
-```{r m43-plot}
+```{r m_kung_gewicht_c-plot}
 #| echo: false
 nd <- tibble(
   weight_c = c(-5, 0, +5, 10)
 )
 
-m43_post <- 
-  m43 %>% 
+m_kung_gewicht_c_post <- 
+  m_kung_gewicht_c %>% 
   as_tibble()
 
-m43_post <- 
-m43_post |> 
+m_kung_gewicht_c_post <- 
+m_kung_gewicht_c_post |> 
   mutate(mu_at_45 = `(Intercept)`,
          mu_at_40 = mu_at_45 - 5 * weight_c,
          mu_at_50 = mu_at_45 + 5 * weight_c,
          mu_at_55 = mu_at_45 + 10 * weight_c)
 
 
-m43_post_long <-
-  m43_post |> 
+m_kung_gewicht_c_post_long <-
+  m_kung_gewicht_c_post |> 
   select(starts_with("mu_at_")) |> 
   pivot_longer(everything(),
                names_to = "Gewicht",
                values_to = "h")
 
-m43_post_long_summary <-
-  m43_post_long |> 
+m_kung_gewicht_c_post_long_summary <-
+  m_kung_gewicht_c_post_long |> 
   group_by(Gewicht) |> 
   summarise(
     m = mean(h),
@@ -1230,7 +1219,7 @@ m43_post_long_summary <-
 ```{r}
 #| echo: false
 p_post_at <-
-  m43_post_long %>% 
+  m_kung_gewicht_c_post_long %>% 
   ggplot() +
   aes(x = h) +
   geom_density(aes(fill = Gewicht)) +
@@ -1240,11 +1229,11 @@ p_post_at <-
        caption = "Horizontale Balken zeigen MW±2sd",
        x = "Größe",
        y = "Post-Wskt") +
-  geom_point(data = m43_post_long_summary,
+  geom_point(data = m_kung_gewicht_c_post_long_summary,
              aes(x = m,
                  y = 0),
              size = 2, color = "blue", alpha = .5) +
-  geom_segment(data = m43_post_long_summary,
+  geom_segment(data = m_kung_gewicht_c_post_long_summary,
                aes(x = m-2*s,
                    xend = m+2*s),
                y = 0,
@@ -1293,7 +1282,7 @@ Erstellen wir uns dazu eine Tabelle:
 
 ```{r mu-at-45-def, echo = TRUE}
 mu_at_45 <-
-  m43a_post %>% 
+  m_kung_gewicht_c_post %>% 
   mutate(mu_at_45 = `(Intercept)`)
 ```
 
@@ -1417,8 +1406,12 @@ Schreiben Sie 5-10 Sätze zum Wesentlichen Stoff dieses Kapitels und reichen Sie
 
 ### Vertiefung
 
-@mcelreath2020 bietet eine tiefere Darstellung von linearen Modellen auf Basis der Bayes-Statistik, insbesondere Kapitel 4 daraus vertieft die Themen dieses Kapitels. @kurz2021 greift die R-Inhalte von @mcelreath2020 auf und setzt sie mit anderen R-Methoden um; ein interessanter Blickwinkel, wenn man tiefer in die R-Umsetzung einsteigen möchte.
-@gelman2021 bieten ebenfalls viele erhellende Einblicke in das Thema Regressionsanalyse, sowohl aus einem frequentistischen als auch aus einer Bayes-Perspektive.
+@mcelreath2020 bietet eine tiefere Darstellung von linearen Modellen auf Basis der Bayes-Statistik, 
+insbesondere Kapitel 4 daraus vertieft die Themen dieses Kapitels. 
+@kurz2021 greift die R-Inhalte von @mcelreath2020 auf und setzt sie mit Tidyverse-Methoden um; 
+ein interessanter Blickwinkel, wenn man tiefer in die R-Umsetzung einsteigen möchte.
+@gelman2021 bieten ebenfalls viele erhellende Einblicke in das Thema Regressionsanalyse, 
+sowohl aus einer frequentistischen als auch aus einer Bayes-Perspektive.
 
 ## Aufgaben
 
