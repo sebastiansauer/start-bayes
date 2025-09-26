@@ -127,6 +127,8 @@ bayesbox_6w_9v <-                                                    # <3>
 
 :::: {.column width="50%"}
 
+Abb. @fig-post1 zeigt die resultierende Bayesbox; 
+vor allem ist die Post-Verteilung wichtig.
 
 ```{r}
 #| eval: false
@@ -135,15 +137,13 @@ ggline(bayesbox_6w_9v , x = "p_grid", y = "post")
 ```
 
 ::: {.content-visible when-format="html"}
-Abb. @fig-post1 zeigt die resultierende Bayesbox; 
-vor allem ist die Post-Verteilung wichtig.
+
 
 ```{r plot-post-d}
 #| echo: false
-#| fig-asp: 0.618
+
 #| label: fig-post1
 #| fig-cap: Die Postverteilung für W=6, N=9, k=10
-
 
 p_d <-
 bayesbox_6w_9v  %>% 
@@ -159,9 +159,8 @@ bayesbox_6w_9v  %>%
            color = "red", 
            alpha = .7,
            size = 5) 
-
   
-ggplotly(p_d)
+p_d
 ```
 
 :::
@@ -182,7 +181,9 @@ bayesbox_6w_9v  %>%
   geom_line() +
   scale_y_continuous("Posterior-Wahrscheinlichkeit", 
                      breaks = NULL) +
-  theme_minimal()  
+  theme_minimal() 
+
+p_d
 ```
 
 :::
@@ -236,8 +237,9 @@ Oder Sie starten das R-Paket, wo die Funktion wohnt:
 library(prada)  # <1>
 bayesbox(hyps = p_grid, priors = 1, liks = L)  # <3>
 ```
+
 1. Das Paket `prada` steht nicht im Standard-R-App-Store ("CRAN"), sondern auf Github. Sie könnnen es so installieren: `devtools::install_github("sebastiansauer/prada")`.
-2. Die Funktion verhält sich wie eine gewöhnliche Bayesbox: Bei `hyps` schreibt man die Hypothesen (bzw. Parameterwerte) auf. Bei `priors` die Priori-Werte und bei `liks` die Likelihoods der jeweiligen Hypothesn.
+2. Die Funktion verhält sich wie eine gewöhnliche Bayesbox: Bei `hyps` schreibt man die Hypothesen (bzw. Parameterwerte) auf. Bei `priors` die Priori-Werte und bei `liks` die Likelihoods der jeweiligen Hypothesen.
 
 
 
