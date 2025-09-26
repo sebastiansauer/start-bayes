@@ -76,9 +76,9 @@ Sie können ihn [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/ma
 #| message: false
 Kung_path <- "https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv"  # <1>
 
-d <- read.csv(Kung_path)   # <2>
+kung <- read.csv(Kung_path)   # <2>
 
-d2 <- d %>% filter(age > 18)  # <3>
+kung_erwachsen <- kung %>% filter(age > 18)  # <3>
 ```
 1. Pfad zum Datensatz; Sie müssen online sein, um die Daten herunterzuladen.
 2. Daten einlesen
@@ -139,7 +139,7 @@ Laden wir die !Kung-Daten und visualisieren wir uns den Zusammenhang zwischen Ge
 ### Mit `ggplot2`
 
 ```{r}
-d2 %>% 
+kung_erwachsen %>% 
   ggplot(
        aes(x = weight, y = height)) +
   geom_point(alpha = .7) +
@@ -150,7 +150,7 @@ d2 %>%
 ### Mit `ggpubr`
 
 ```{r}
-ggscatter(d2,
+ggscatter(kung_erwachsen,
           x = "weight", y = "height",
           add = "reg.line") 
 ```
@@ -172,8 +172,8 @@ Der Zusammenhang zwischen Gewicht (X) und Größe (Y)
 
 ```{r}
 #| echo: false
-rm(d)
-rm(d2)
+rm(kung)
+rm(kung_erwachsen)
 ```
 
 
@@ -187,11 +187,11 @@ Die Daten können Sie [hier](https://raw.githubusercontent.com/sebastiansauer/Le
 #| eval: true
 #| results: hide
 Kung_path <- "data/Howell1a.csv"  
-d <- read_csv(Kung_path)  
+kung <- read_csv(Kung_path)  
 
-d2 <- d %>% filter(age > 18)
+kung_erwachsen <- kung %>% filter(age > 18)
 
-describe_distribution(d2)
+describe_distribution(kung_erwachsen)
 ```
 
 
@@ -200,7 +200,7 @@ describe_distribution(d2)
 #| echo: false
 #| label: tbl-kung1
 #| tbl-cap: "Verteiung der (metrischen) Variablen im !Kung-Datensatz"
-describe_distribution(d2) |> display()
+describe_distribution(kung_erwachsen) |> display()
 ```
 
 
@@ -227,20 +227,20 @@ Nein, s. Abb. @fig-na.
 ```{r}
 #| fig-cap: Fehlende Werte - fehlen.
 #| label: fig-na
-d2 %>% plot_missing()
+kung_erwachsen %>% plot_missing()
 ```
 
 
 
 #### Verteilung der numerischen Variablen
 
-Betrachten wir die Verteilung der *numerischen* Variablen des Datensatzes, s. @fig-d2-hists.
+Betrachten wir die Verteilung der *numerischen* Variablen des Datensatzes, s. @fig-kung_erwachsen-hists.
 
 
 ```{r}
-#| label: fig-d2-hists
+#| label: fig-kung_erwachsen-hists
 #| fig-cap: "Verteilung (als Histogramme dargestellt) der numerischen Variablen des Datensatzes"
-d2 %>% plot_histogram()
+kung_erwachsen %>% plot_histogram()
 ```
 
 
@@ -248,13 +248,13 @@ d2 %>% plot_histogram()
 #### Verteilung der kategorialen Variablen
 
 
-Betrachten wir die Verteilung der *kategorialen* Variablen des Datensatzes, s. @fig-d2-bars.
+Betrachten wir die Verteilung der *kategorialen* Variablen des Datensatzes, s. @fig-kung_erwachsen-bars.
 
 
 ```{r}
-#| label: fig-d2-bars
+#| label: fig-kung_erwachsen-bars
 #| fig-cap: "Verteilung (als Balkendiagramme dargestellt) der kategorialen Variablen des Datensatzes"
-d2 %>% plot_bar()
+kung_erwachsen %>% plot_bar()
 ```
 
 
@@ -266,14 +266,14 @@ Die Korrelationen der (numerischen) Variablen sind in @fig-num-korrs dargestellt
 ```{r}
 #| label: fig-num-korrs
 #| fig-cap: "Korrelationsmatrix"
-d2 %>% plot_correlation()
+kung_erwachsen %>% plot_correlation()
 ```
 
 
 :::{#exr-Bonus}
 ### EDA-Bericht
 
-Probieren Sie mal die folgende Funktion aus, die Ihnen einen Bericht zur EDA erstellt: `create_report(d2)`. $\square$
+Probieren Sie mal die folgende Funktion aus, die Ihnen einen Bericht zur EDA erstellt: `create_report(kung_erwachsen)`. $\square$
 :::
 
 
@@ -301,7 +301,7 @@ Man zentriert eine Variable $X$, indem man von $x_i$ den Mittelwert $\bar{x}$ ab
 ```{r Post-Regression-7, echo = TRUE}
 #| eval: false
 d3 <-
-  d2 %>% 
+  kung_erwachsen %>% 
   mutate(weight_c = weight - mean(weight))
 ```
 
@@ -311,7 +311,7 @@ Mit Hilfe von `center()` aus `{easystats}` kann man sich das Zentrieren auch erl
 
 ```{r}
 d3 <- 
-  d2 %>% 
+  kung_erwachsen %>% 
   mutate(weight_c = as.numeric(center(weight)))
 ```
 
@@ -361,7 +361,7 @@ d3 %>%
 
 
 
-Das schwierigste ist dabei, nicht zu vergessen, dass `d3` die Tabelle mit zentriertem Prädiktor ist, nicht `d2`.
+Das schwierigste ist dabei, nicht zu vergessen, dass `d3` die Tabelle mit zentriertem Prädiktor ist, nicht `kung_erwachsen`.
 
 
 ## Modell m43: zentrierter Prädiktor
@@ -1052,7 +1052,7 @@ plot_post_42 <-
 
 ```{r Plot-condition}
 #| echo: false
-lm1 <- lm(height ~ weight, data = d2)
+lm1 <- lm(height ~ weight, data = kung_erwachsen)
 
 d_pred <-
   tibble(weight = c(40, 45, 50, 55),
@@ -1061,7 +1061,7 @@ d_pred <-
 
 
 plot_condition <- 
-  d2 %>% 
+  kung_erwachsen %>% 
   #select(weight, height) %>% 
   #drop_na() %>% 
   ggplot(
@@ -1137,8 +1137,8 @@ plot_condition +
 #| results: "hide"
 #| cache: true
 
-d2 <-
-  d2 %>% 
+kung_erwachsen <-
+  kung_erwachsen %>% 
   mutate(weight_c = weight - mean(weight))
 
 m43 <- 
@@ -1147,7 +1147,7 @@ m43 <-
            prior_intercept = normal(178, 20),  # mu
            prior_aux = exponential(0.1),  # sigma
            refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
-           data = d2)
+           data = kung_erwachsen)
 
 m43_prior_pred <-
     stan_glm(height ~ weight_c, 
@@ -1155,14 +1155,14 @@ m43_prior_pred <-
            prior_aux = exponential(0.1),  # sigma
            refresh = FALSE, 
            prior_PD = TRUE,   # THIS LINE MAKES A PRIOR PRED
-           data = d2)
+           data = kung_erwachsen)
 
 stan_glm(height ~ weight_c, 
            prior = normal(0, 10),
            prior_intercept = normal(0, 20),  # mu
            prior_aux = exponential(0.1),  # sigma
            refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
-           data = d2)
+           data = kung_erwachsen)
 
 m43a_prior_pred <-
     stan_glm(height ~ weight_c, 
@@ -1170,7 +1170,7 @@ m43a_prior_pred <-
            prior_aux = exponential(0.1),  # sigma
            refresh = FALSE, 
            prior_PD = TRUE,   # THIS LINE MAKES A PRIOR PRED
-           data = d2)
+           data = kung_erwachsen)
 ```
 
 

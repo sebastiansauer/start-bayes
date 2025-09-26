@@ -1,18 +1,12 @@
-
 # Gauss-Modelle
 
-
-![Bayes:Start!](img/Golem_hex.png){width=10%}
-
+![Bayes:Start!](img/Golem_hex.png){width="10%"}
 
 ## Lernsteuerung
-
 
 ### Position im Modulverlauf
 
 @fig-modulverlauf gibt einen Überblick zum aktuellen Standort im Modulverlauf.
-
-
 
 ### Lernziele
 
@@ -20,42 +14,26 @@ Nach Absolvieren des jeweiligen Kapitels sollen folgende Lernziele erreicht sein
 
 Sie können …
 
-- ein Gaußmodell spezifizieren und in R berechnen
-- an Beispielen verdeutlichen, wie sich eine vage bzw. eine informationsreiche Priori-Verteilung auf die Posteriori-Verteilung auswirkt
-
-
+-   ein Gaußmodell spezifizieren und in R berechnen
+-   an Beispielen verdeutlichen, wie sich eine vage bzw. eine informationsreiche Priori-Verteilung auf die Posteriori-Verteilung auswirkt
 
 ### Begleitliteratur
 
-Der Stoff dieses Kapitels orientiert sich an @mcelreath2020, Kap. 4.1 bis 4.3. 
-
-
+Der Stoff dieses Kapitels orientiert sich an @mcelreath2020, Kap. 4.1 bis 4.3.
 
 ### Vorbereitung im Eigenstudium
 
-- [Statistik1, Kap. "Modellgüte"](https://statistik1.netlify.app/060-modellguete)
-- [Statistik1, Kap. "Punktmodelle 2"](https://statistik1.netlify.app/070-zusammenhaenge)
-- [Statistik1, Abschnitt "Normalverteilung"](https://statistik1.netlify.app/040-verbildlichen#normalverteilung)
-
-
-
-
+-   [Statistik1, Kap. "Modellgüte"](https://statistik1.netlify.app/060-modellguete)
+-   [Statistik1, Kap. "Punktmodelle 2"](https://statistik1.netlify.app/070-zusammenhaenge)
+-   [Statistik1, Abschnitt "Normalverteilung"](https://statistik1.netlify.app/040-verbildlichen#normalverteilung)
 
 ### Benötigte R-Pakete
 
-
-
-
-
-
 Für `rstanarm` wird ggf. [weitere Software](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started) benötigt.
 
-:::callout-note
-Software, und das sind R-Pakete, müssen Sie nur einmalig installieren. 
-Aber bei jedem
-Start von R bzw. RStudio müssen Sie die (benötigten!) Pakete starten.
+::: callout-note
+Software, und das sind R-Pakete, müssen Sie nur einmalig installieren. Aber bei jedem Start von R bzw. RStudio müssen Sie die (benötigten!) Pakete starten.
 :::
-
 
 ```{r load-libs-hidden}
 #| include: false
@@ -80,20 +58,13 @@ library(ggpubr)  # Daten verbildlichen
 library(hexbin)  # stat_bin_hex ggplot2
 ```
 
-
 ::: callout-important
 Ab diesem Kapitel benötigen Sie das R-Paket `rstanarm`. $\square$
 :::
 
-
 ### Benötigte Daten
 
-
-
-Wir benötigen den Datensatz *!Kung*. 
-Quelle der Daten ist @mcelreath2020 mit Bezug auf Howell.
-
-
+Wir benötigen den Datensatz *!Kung*. Quelle der Daten ist @mcelreath2020 mit Bezug auf Howell.
 
 ```{r Post-Regression-3}
 Kung_path <-  
@@ -104,49 +75,37 @@ d <- read.csv(Kung_path)
 head(d)
 ```
 
-
 [Datenquelle](https://raw.githubusercontent.com/sebastiansauer/2021-wise/main/Data/Howell1a.csv)
 
-
-{{< downloadthis data/Howell1a.csv  dname="Howell1a" >}}
-
-
+{{< downloadthis data/Howell1a.csv dname="Howell1a" >}}
 
 ### Einstieg
 
-
-:::{#exm-gauss}
+::: {#exm-gauss}
 ### Was war noch mal eine Normalverteilung?
-In diesem Kapitel benötigen Sie ein gutes Verständnis der Normalverteilung (die auch als Gauss-Verteilung bezeichnet wird). 
-Fassen Sie daher die wesentlichen Aspekte der Normalverteilung (soweit im Unterricht behandelt) zusammen! $\square$
+
+In diesem Kapitel benötigen Sie ein gutes Verständnis der Normalverteilung (die auch als Gauss-Verteilung bezeichnet wird). Fassen Sie daher die wesentlichen Aspekte der Normalverteilung (soweit im Unterricht behandelt) zusammen! $\square$
 :::
 
-:::{#exm-post-gauss}
+::: {#exm-post-gauss}
 ### Was war noch mal eine Posteriori-Verteilung?
-In diesem Kapitel befragen wir die Post-Verteilung für ein normalverteilte Zufallsvariable, 
-nämlich die Körpergröße der !Kung San. 
-Was war noch mal eine Post-Verteilung und wozu ist sie gut? $\square$
+
+In diesem Kapitel befragen wir die Post-Verteilung für ein normalverteilte Zufallsvariable, nämlich die Körpergröße der !Kung San. Was war noch mal eine Post-Verteilung und wozu ist sie gut? $\square$
 :::
-
-
 
 ## Wie groß sind die !Kung San?
 
 Dieser Abschnitt basiert auf @mcelreath2020, Kap. 4.3.
 
-### !Kung San 
+### !Kung San
 
-In diesem Abschnitt untersuchen wir eine Forschungsfrage 
-in Zusammenhang mit dem Volk der !Kung, s. @fig-kungs.
+In diesem Abschnitt untersuchen wir eine Forschungsfrage in Zusammenhang mit dem Volk der !Kung, s. @fig-kungs.
 
->   The ǃKung are one of the San peoples who live mostly on the western edge of the Kalahari desert, Ovamboland (northern Namibia and southern Angola), and Botswana.The names ǃKung (ǃXun) and Ju are variant words for 'people', preferred by different ǃKung groups. This band level society used traditional methods of hunting and gathering for subsistence up until the 1970s. Today, the great majority of ǃKung people live in the villages of Bantu pastoralists and European ranchers.
+> The ǃKung are one of the San peoples who live mostly on the western edge of the Kalahari desert, Ovamboland (northern Namibia and southern Angola), and Botswana.The names ǃKung (ǃXun) and Ju are variant words for 'people', preferred by different ǃKung groups. This band level society used traditional methods of hunting and gathering for subsistence up until the 1970s. Today, the great majority of ǃKung people live in the villages of Bantu pastoralists and European ranchers.
 
 [Quelle](https://en.wikipedia.org/wiki/%C7%83Kung_people)
 
-
-
-Wir interessieren uns für die Größe der erwachsenen !Kung,
-also filtern wir die Daten entsprechend und speichern die neue Tabelle als `d2`.
+Wir interessieren uns für die Größe der erwachsenen !Kung, also filtern wir die Daten entsprechend und speichern die neue Tabelle als `d2`.
 
 ```{r Kung-5}
 d2 <- d %>% 
@@ -155,18 +114,14 @@ d2 <- d %>%
 nrow(d2)
 ```
 
-
 $N=`r nrow(d2)`$.
 
-Lassen wir uns einige typische deskriptive Statistiken zum Datensatz ausgeben.
-`{easystats`} macht das tatsächlich recht easy, s. @tbl-kung.
+Lassen wir uns einige typische deskriptive Statistiken zum Datensatz ausgeben. `{easystats`} macht das tatsächlich recht easy, s. @tbl-kung.
 
 ```{r Kung-7, echo = TRUE, eval = FALSE}
 #| eval: false
 describe_distribution(d2)
 ```
-
-
 
 ```{r Kung-7a, eval = TRUE}
 #| echo: false
@@ -178,9 +133,7 @@ describe_distribution(d2) %>%
   fmt_integer(columns = last_col())
 ```
 
-
 Die Verteilungen lassen sich mit `plot_density` (aus `{DataExplorer}`), s. @fig-kung-dens.
-
 
 ```{r}
 #| label: fig-kung-dens
@@ -189,45 +142,37 @@ Die Verteilungen lassen sich mit `plot_density` (aus `{DataExplorer}`), s. @fig-
 plot_density(d2)
 ```
 
-
-
-
 ### Wir gehen apriori von normalverteilter Größe Der !Kung aus
 
 *Forschungsfrage:* Wie groß sind die erwachsenen !Kung im *Durchschnitt*?
 
+Wir interessieren uns also für den Mittelwert der Körpergröße (erwachsene Person[^0800-gauss-1]), $\mu$.
 
-Wir interessieren uns also für den Mittelwert der Körpergröße (erwachsene Person^[Der Einfachheit halber gehen wir davon aus, dass Männer und Frauen im Schnitt gleich groß sind.]), $\mu$.
+[^0800-gauss-1]: Der Einfachheit halber gehen wir davon aus, dass Männer und Frauen im Schnitt gleich groß sind.
 
+![Mensch, [Wikimedia Commons](https://creativecommons.org/licenses/by-sa/3.0)[^0800-gauss-2]](img/human.png){width="5%"}
 
+[^0800-gauss-2]: Bildquelle: Own alterations andFile:SVG_Human_With_All_Organs.svg by Madhero88, CC BY-SA, 3.0
 
-![Mensch, [Wikimedia Commons](https://creativecommons.org/licenses/by-sa/3.0)^[Bildquelle: Own alterations andFile:SVG_Human_With_All_Organs.svg by Madhero88, CC BY-SA, 3.0]](img/human.png){width=5%}
+[^0800-gauss-3]: Bildquelle: Own alterations andFile:SVG_Human_With_All_Organs.svg by Madhero88, CC BY-SA, 3.0
 
+Wir sind uns über diesen Mittelwert in der Population nicht sicher[^0800-gauss-4], und unsere Ungewissheit quantifizieren wir anhand einer Normalverteilung mit Mittelwert von 178 cm und Streuung von 20 cm, s. @eq-kung.
 
+[^0800-gauss-4]: Darum machen wir hier ja die ganz Show!
 
-
-
-Wir sind uns über diesen Mittelwert in der Population nicht sicher^[Darum machen wir hier ja die ganz Show!], 
-und unsere Ungewissheit quantifizieren wir anhand einer Normalverteilung mit Mittelwert von 178 cm und Streuung von 20 cm, s. @eq-kung.
 
 $$\mu \sim \mathcal{N}(178, 20)$$ {#eq-kung}
 
+
 @eq-kung definiert ein Modell: Unsere Vorstellung der mittleren ("typischen") Körpergröße der erwachsenen !Kung.
 
-Warum 178 cm? Kein besonderer Grund. Hier wollen wir den Effekt verschiedener Priori-Werte untersuchen.^[Der Autor des zugrundeliegenden Fachbuchs, Richard McElreath gibt 178cm als seine Körpergröße an.]
-In einer echten Untersuchung sollte man einen inhaltlichen Grund für einen Priori-Wert haben.
-*Oder* man wählt "schwach informative" Prioris, wie das `{rstanarm}` tut:
-Damit lässt man kaum Vorab-Information in das Modell einfließen,
-aber man verhindert extreme Prioris, 
-die meistens unsinnig sind (so wie eine SD von 100 Metern bei der Körpergröße).
+Warum 178 cm? Kein besonderer Grund. Hier wollen wir den Effekt verschiedener Priori-Werte untersuchen.[^0800-gauss-5] In einer echten Untersuchung sollte man einen inhaltlichen Grund für einen Priori-Wert haben. *Oder* man wählt "schwach informative" Prioris, wie das `{rstanarm}` tut: Damit lässt man kaum Vorab-Information in das Modell einfließen, aber man verhindert extreme Prioris, die meistens unsinnig sind (so wie eine SD von 100 Metern bei der Körpergröße).
 
+[^0800-gauss-5]: Der Autor des zugrundeliegenden Fachbuchs, Richard McElreath gibt 178cm als seine Körpergröße an.
 
-:::callout-note
-Wir haben zwar vorab nicht viel Wissen, aber auch nicht gar keines: 
-Eine Gleichverteilung der Körpergrößen kommt nicht in Frage und ein vages Wissen zum Mittelwert haben wir auch. 
-Darüber hinaus ist eine Normalverteilung nicht unplausibel.
+::: callout-note
+Wir haben zwar vorab nicht viel Wissen, aber auch nicht gar keines: Eine Gleichverteilung der Körpergrößen kommt nicht in Frage und ein vages Wissen zum Mittelwert haben wir auch. Darüber hinaus ist eine Normalverteilung nicht unplausibel.
 :::
-
 
 ```{r p1-p2}
 #| echo: false
@@ -249,20 +194,13 @@ p_exp_kung_prior <-
   ggtitle("sigma ~ dexp(0.1)")
 ```
 
-
-
-
 ## Unser Gauss-Modell der !Kung
 
 📺 [Teil 1](https://youtu.be/cYHArln1DkM)
 
-
 ### Modelldefinition
 
-Wir nehmen an, dass die mittleren Größen, $\mu$, 
-und die tatsächlichen Größen, $h_i$, normalverteilt sind und $\sigma$ exponentialverteilt ist (da notwendig positiv) ist:
-
-
+Wir nehmen an, dass die mittleren Größen, $\mu$, und die tatsächlichen Größen, $h_i$, normalverteilt sind und $\sigma$ exponentialverteilt ist (da notwendig positiv) ist:
 
 Likelihood: $h_i \sim \mathcal{N}(\mu, \sigma)$
 
@@ -272,9 +210,7 @@ Prior für den Parameter $\sigma$: $\sigma \sim \mathcal{E}(0, 0.1)$
 
 Daher: $95\%KI( \mu): 178 \pm 40$
 
-
 In @fig-kung-model sind unsere Priori-Verteilungen visualisiert.
-
 
 ```{r Kung-10}
 #| echo: false
@@ -289,33 +225,23 @@ p_nv_kung_prior
 p_exp_kung_prior
 ```
 
-
-:::callout-note
+::: callout-note
 Dieses Modell hat zwei Parameter, $\mu$ und $\sigma$. $\square$
 :::
 
-
-
-
 ### Priori gewichtet mit Likelihood ergibt Posteriori
 
-
 Zu Erinnerung: Die Posteriori-Wahrscheinlichkeit ist das Ergebnis von Priori-Wahrscheinlichkeit und Likelihood.
-
-
-
 
 Die *Körpergrößen der einzelnen Personen* $h_i$ nehmen wir als normalverteilt an mit Mittelwert $\mu$ und Streuung $\sigma$:
 
 $$h_i \sim \mathcal{N}(\color{blue}{\mu},\color{green}{\sigma})   \qquad{\text{Likelihood}}$$
-
 
 ### Prioris der Parameter
 
 Der Mittelwert der Körpergröße sei *normalverteilt* mit $\mu=178$ und $\sigma=20$:
 
 $$\color{blue}{\mu \sim \mathcal{N}(178, 20)} \qquad{\text{Prior}}$$
-
 
 Die Streuung $\sigma$ der Größen sei *exponentialverteil* mit $\lambda = 1/8$.
 
@@ -325,12 +251,7 @@ $$\color{green}{\sigma \sim \mathcal{E}(1/8)} \qquad{\text{Prior}}$$
 
 Jetzt haben wir unser Modell (`m_kung`) definiert!
 
-
 Weil es so schön ist, schreiben/zeichnen wir es hier noch einmal auf, @eq-mod-kung1, @fig-mod-kung1.
-
-
-
-
 
 $$
 \begin{aligned}
@@ -338,72 +259,45 @@ h_i &\sim \mathcal{N}(\mu, \sigma) & \text{Likelihood}  \\
 \mu &\sim \mathcal{N}(178, 20) & \text{Prior} \\
 \sigma &\sim \mathcal{E}(1/8) & \text{Prior}
 \end{aligned}
-$${#eq-mod-kung1}
+$$ {#eq-mod-kung1}
 
 ![Modellschema für das Modell `m_kung`](img/Kruschke-plot1.png){#fig-mod-kung1}
 
+Zur Berechnung von `m_kung` nutzen wir jetzt dieses Mal aber *nicht* die Gittermethode (Bayes-Box), sondern lassen R die Arbeit verrichten.
 
+Da gibt es einen neuen Golem, ziemlich kräftig der Bursche, der soll die Arbeit für uns tun. Der Golem hört auf den Namen `rstanarm`[^0800-gauss-6].
 
-
-
-
-Zur Berechnung von `m_kung` nutzen wir jetzt dieses Mal aber *nicht* die Gittermethode (Bayes-Box),
-sondern lassen R die Arbeit verrichten.
-
-Da gibt es einen neuen Golem, ziemlich kräftig der Bursche,
-der soll die Arbeit für uns tun.
-Der Golem hört auf den Namen `rstanarm`^[Hey, *ich* habe ihn diesen Namen nicht gegeben.].
-
-
-
+[^0800-gauss-6]: Hey, *ich* habe ihn diesen Namen nicht gegeben.
 
 ::: {.content-visible when-format="html"}
-
 ## Zufällige Motivationsabschnitt
 
-
-![Gut gemacht!](img/pretty_good.gif){width=50%}
-
-
+![Gut gemacht!](img/pretty_good.gif){width="50%"}
 :::
-
 
 ## Posteriori-Verteilung des Größen-Modells, `m_kung`
 
+Okay, Golem, an die Arbeit! Berechne uns das Kung-Modell! Nennen wir das Modell `m_kung`[^0800-gauss-7].
 
-Okay, Golem, an die Arbeit!
-Berechne uns das Kung-Modell!
-Nennen wir das Modell `m_kung`^[*m* wie Modell und 4, weil das Modell in Kapitel 4 von @mcelreath2020 in ähnlicher Form berichtet wird, und 1 weil es unsere erste Variante dieses Modells ist.].
+[^0800-gauss-7]: *m* wie Modell und 4, weil das Modell in Kapitel 4 von @mcelreath2020 in ähnlicher Form berichtet wird, und 1 weil es unsere erste Variante dieses Modells ist.
 
 ```{r Kung-4, message=FALSE, results="hide"}
 m_kung <- stan_glm(height ~ 1, data = d2, refresh = 0)  # <1>
 m41_post <- as_tibble(m_kung)    # <2>
 names(m41_post) <- c("mu", "sigma")  # <3>  
 ```
-1. Bayes-Regressionsmodell berechnen
-2. Modellergebnis in Tabelle umwandeln
+
+1.  Bayes-Regressionsmodell berechnen
+2.  Modellergebnis in Tabelle umwandeln
 3.  Schönere Namen für die Spalten geben
 
-Das Argument `refresh = 0` ist nur eine Nebensache, aber es ist praktisch, da es verhindert, dass die Details zum Ziehen der Stichproben am Bildschirm ausgegeben werden.
-Ich finde diese Ausgabe meist nicht informativ,
-so dass ich sie lieber unterdrücke.
-`stan_glm`^[aus dem R-Paket `rstanam`, das zuvor installiert und gestartet sein muss, bevor Sie den Befehl nutzen können] ist eine Funktion, mit der man Regressionsmodelle berechnen kann.
-Nun haben wir in diesem Fall kein "richtiges" Regressionsmodell.
-Man könnte sagen, wir haben eine AV (Körpergröße), aber keine UV (keine Prädiktoren).
-Glücklicherweise können wir auch solche "armen" Regressionsmodelle formulieren:
-`av ~ 1` bzw. in unserem Beispiel `height ~ 1` bedeutet,
-dass man nur die Verteilung der AV berechnen möchte, 
-aber keine Prädiktoren hat (das soll die  `1` symbolisieren).
-Für das Modell `m_kung` haben wir *keine* Prioris spezifiziert.
-Wir greifen damit auf die *Voreinstellung* (defaults) der Prioris von `rstanarm` zurück.
-Das ist ok, aber wenn Sie Vorab-Wissen haben,
-sollten Sie das an `rstanarm` weitergeben, weil es ja schade wäre,
-wenn Sie Wissen haben, das von Ihrem Modell nicht genutzt wird.
+Das Argument `refresh = 0` ist nur eine Nebensache, aber es ist praktisch, da es verhindert, dass die Details zum Ziehen der Stichproben am Bildschirm ausgegeben werden. Ich finde diese Ausgabe meist nicht informativ, so dass ich sie lieber unterdrücke. `stan_glm`[^0800-gauss-8] ist eine Funktion, mit der man Regressionsmodelle berechnen kann. Nun haben wir in diesem Fall kein "richtiges" Regressionsmodell. Man könnte sagen, wir haben eine AV (Körpergröße), aber keine UV (keine Prädiktoren). Glücklicherweise können wir auch solche "armen" Regressionsmodelle formulieren: `av ~ 1` bzw. in unserem Beispiel `height ~ 1` bedeutet, dass man nur die Verteilung der AV berechnen möchte, aber keine Prädiktoren hat (das soll die `1` symbolisieren). Für das Modell `m_kung` haben wir *keine* Prioris spezifiziert. Wir greifen damit auf die *Voreinstellung* (defaults) der Prioris von `rstanarm` zurück. Das ist ok, aber wenn Sie Vorab-Wissen haben, sollten Sie das an `rstanarm` weitergeben, weil es ja schade wäre, wenn Sie Wissen haben, das von Ihrem Modell nicht genutzt wird.
+
+[^0800-gauss-8]: aus dem R-Paket `rstanam`, das zuvor installiert und gestartet sein muss, bevor Sie den Befehl nutzen können
 
 Plotten wir mal die gemeinsame Posteriori-Verteilung von `m_kung`, s. @fig-m42-post-joint
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Fliesendiagramm
 
 Gemeinsame Post-Verteilung von Mittelwert und Streuung
@@ -420,22 +314,13 @@ m41_post %>%
   scale_fill_viridis_c() 
 ```
 
-Da das Modell *zwei* Parameter hat, können wir auch beide gleichzeitig plotten.
-Wie man sieht, sind die beiden Parameter unkorreliert.
-In anderen Modellen können die Parameter korreliert sein.
+Da das Modell *zwei* Parameter hat, können wir auch beide gleichzeitig plotten. Wie man sieht, sind die beiden Parameter unkorreliert. In anderen Modellen können die Parameter korreliert sein.
 
-@fig-m42-post-joint erlaubt uns, für *jede Kombination von Mittelwert und Streuung* zu fragen,
-wie wahrscheinlich diese bestimmte Kombination ist.
-
-
-
-
+@fig-m42-post-joint erlaubt uns, für *jede Kombination von Mittelwert und Streuung* zu fragen, wie wahrscheinlich diese bestimmte Kombination ist.
 
 ### Streudiagramm
 
 Hier sind noch zwei andere Visualisierungen der Post-Verteilung von `m42`, s. @fig-m42-post-anders1.
-
-
 
 ```{r Kung-5-bis}
 #| echo: false
@@ -459,12 +344,11 @@ p20 <-
 p10
 ```
 
-
 ### Histogramm
 
 Und hier kommt die Post-Verteilung nur des Mittelwerts.
 
-Natürlich können wir auch nur von einem einzelnen Parameter (z.B.  Mittelwert) die Verteilung untersuchen, s. @fig-m42-post-anders2.
+Natürlich können wir auch nur von einem einzelnen Parameter (z.B. Mittelwert) die Verteilung untersuchen, s. @fig-m42-post-anders2.
 
 ```{r}
 #| echo: false
@@ -472,41 +356,27 @@ Natürlich können wir auch nur von einem einzelnen Parameter (z.B.  Mittelwert)
 #| label: fig-m42-post-anders2
 p20
 ```
-
-
 :::
-
-
 
 Fassen wir die Ergebnisse dieses Modells zusammen:
 
+-   Wir bekommen eine Wahrscheinlichkeitsverteilung für $\mu$ und eine für $\sigma$ (bzw. eine zweidimensionale Verteilung, für die $\mu,\sigma$-Paare).
 
-- Wir bekommen eine Wahrscheinlichkeitsverteilung für $\mu$ und eine für $\sigma$ (bzw. eine zweidimensionale Verteilung, für die $\mu,\sigma$-Paare).
+-   Trotz des eher vagen Priors ist die Streuung Posteriori-Werte für $\mu$ und $\sigma$ klein: Die große Stichprobe hat die Priori-Werte überstimmt.
 
-- Trotz des eher vagen Priors ist die Streuung Posteriori-Werte für $\mu$ und $\sigma$ klein: Die große Stichprobe hat die Priori-Werte überstimmt.
-
-- Ziehen wir Stichproben aus der Posteriori-Verteilung, so können wir interessante Fragen stellen. 
-
-
-
+-   Ziehen wir Stichproben aus der Posteriori-Verteilung, so können wir interessante Fragen stellen.
 
 ### Hallo, Posteriori-Verteilung
 
 ... wir hätten da mal ein paar Fragen an Sie. 🕵
 
-
-1. Mit welcher Wahrscheinlichkeit ist die *mittlere* !Kung-Person größer als 1,55m?
-2. Welche mittlere Körpergröße wird mit 95% Wahrscheinlichkeit nicht überschritten, laut dem Modell?
-3. In welchem 90%-PI liegt $\mu$ vermutlich?
-4. Mit welcher Unsicherheit ist die Schätzung der mittleren Körpergröße behaftet?
-5. Was ist der mediane Schätzwert der mittleren Körpergröße, sozusagen der "Best Guess"?
-
+1.  Mit welcher Wahrscheinlichkeit ist die *mittlere* !Kung-Person größer als 1,55m?
+2.  Welche mittlere Körpergröße wird mit 95% Wahrscheinlichkeit nicht überschritten, laut dem Modell?
+3.  In welchem 90%-PI liegt $\mu$ vermutlich?
+4.  Mit welcher Unsicherheit ist die Schätzung der mittleren Körpergröße behaftet?
+5.  Was ist der mediane Schätzwert der mittleren Körpergröße, sozusagen der "Best Guess"?
 
 Antworten folgen etwas weiter unten.
-
-
-
-
 
 Abschließend, eigentlich nur Spielerei, noch eine andere Visualisierung der Post-Verteilung von $\mu$ und von $\sigma$, @fig-kung3.
 
@@ -515,34 +385,27 @@ Abschließend, eigentlich nur Spielerei, noch eine andere Visualisierung der Pos
 #| label: fig-kung3
 #| fig-cap: Die beiden Randverteilungen der Post-Verteilungen, d.h. die Verteilungen für mu und für sigma
 #| fig-asp: 0.5
-#
+
 m41_post %>% 
   pivot_longer(mu:sigma) %>% 
   ggplot(aes(x = value)) + 
   geom_density(fill = "grey33") +
   scale_y_continuous(NULL, breaks = NULL) +
   xlab(NULL) +
-  theme(panel.grid = element_blank()) +
+  theme(
+    panel.grid = element_blank(),
+    strip.text = element_text(size = 16)  # increase facet header font size
+  ) +
   facet_wrap(~ name, scales = "free", 
              labeller = label_parsed,
              ncol = 2)
 ```
 
+### Posteriori-Stichproben mit `stan_glm()` berechnen
 
-
-
-### Posteriori-Stichproben mit `stan_glm()` berechnen 
-
-Mit `stan_glm()` können wir komfortabel die Posteriori-Verteilung berechnen. 
-Die Gittermethode wird nicht verwendet, aber die Ergebnisse sind - in bestimmten Situationen - ähnlich.
-Es werden aber auch viele Stichproben simuliert (sog. MCMC-Methode).
-Gibt man keine Priori-Werte an, so greift die Funktion auf Standardwerte zurück.
-
+Mit `stan_glm()` können wir komfortabel die Posteriori-Verteilung berechnen. Die Gittermethode wird nicht verwendet, aber die Ergebnisse sind - in bestimmten Situationen - ähnlich. Es werden aber auch viele Stichproben simuliert (sog. MCMC-Methode). Gibt man keine Priori-Werte an, so greift die Funktion auf Standardwerte zurück.
 
 Grob gesagt berechnen wir die Post-Verteilung mit `stan_glm` so: `stan_glm(AV ~ UV, data = meine_daten)`.
-
-
-
 
 Modelldefinition:
 
@@ -550,27 +413,19 @@ $h_i \sim \mathcal{N}(\mu, \sigma)$, Likelihood
 
 $\mu \sim \mathcal{N}(155, 19)$, Prior zum Größenmittelwert (von Stan übernommen)
 
-$\sigma \sim \mathcal{E}(0.125)$, Prior zur Streuung der Größen  (von Stan übernommen)
-
-
-
-
+$\sigma \sim \mathcal{E}(0.125)$, Prior zur Streuung der Größen (von Stan übernommen)
 
 ### Ausgabe von `stan_glm()`
 
 Wir können, wie wir es oben getan haben, uns die Stichproben der Post-Verteilung ausgeben lassen, und diese z.B. plotten.
 
-Wir können es aber auch komfortabler haben ... 
-Mit dem Befehl `parameters` kann man sich die geschätzten Parameterwerte einfach ausgeben lassen (s. @fig-m42-post-joint).
+Wir können es aber auch komfortabler haben ... Mit dem Befehl `parameters` kann man sich die geschätzten Parameterwerte einfach ausgeben lassen (s. @fig-m42-post-joint).
 
 ```{r Kung-24, echo = TRUE, results="hide"}
 m_kung <- stan_glm(height ~ 1, data = d2, refresh = 0)  # aus Paket rstanarm
 
 parameters(m_kung)  # aus Paket `easystats`
 ```
-
-
-
 
 ```{r Kung-6}
 #| echo: false
@@ -580,94 +435,54 @@ ci_low <- parameters(m_kung)$CI_low |> round(2)
 ci_high <- parameters(m_kung)$CI_high |> round(2)
 ```
 
+Das Wesentliche: Unser Golem schätzt den Größenmittelwert der Kung auf ca. 155cm bzw. auf einen Bereich von etwa `r ci_low` bis `r ci_high` schätzt. Informativ ist vielleicht noch, dass wir den `Prior` erfahren, der im Modell verwendet wurde. Dazu später mehr.
 
-Das Wesentliche: Unser Golem schätzt den Größenmittelwert der Kung auf ca. 155cm bzw. auf einen Bereich von etwa `r ci_low` bis `r ci_high` schätzt.
-Informativ ist vielleicht noch, dass wir den `Prior` erfahren, der im Modell verwendet wurde. 
-Dazu später mehr.
-
-:::callout-note
-In dieser Ausgabe sind ein paar Angaben, die wir nicht verstehen, wie `pd`, `Rhat` und `ESS`. Kein Problem: Einfach ignorieren 🤓 
-Wer Näheres wissen will, findet [hier](https://easystats.github.io/easystats/) einen Anfang. Außerdem sei an @mcelreath2020 und @gelman2021 verwiesen. $\square$
+::: callout-note
+In dieser Ausgabe sind ein paar Angaben, die wir nicht verstehen, wie `pd`, `Rhat` und `ESS`. Kein Problem: Einfach ignorieren 🤓 Wer Näheres wissen will, findet [hier](https://easystats.github.io/easystats/) einen Anfang. Außerdem sei an @mcelreath2020 und @gelman2021 verwiesen. $\square$
 :::
 
 ## Wie tickt `stan_glm()`?
 
-<!-- <hr> -->
 
-<!-- <div style = "float:right; width:25%;"> -->
-<!-- <img src="img/stanlogo.png" alt="HERE">   -->
-<!-- </div>   -->
-
-
-:::: {.columns}
-
+::::: columns
 ::: {.column width="20%"}
-![](img/stanlogo.png){width=50%}
-[Quelle](https://mc-stan.org/)
+![](img/stanlogo.png){width="50%"} [Quelle](https://mc-stan.org/)
 :::
 
 ::: {.column width="80%"}
+Hier ein paar Kerninfos zu `stan_glm`:
 
-
-Hier ein paar Kerninfos zu `stan_glm`: 
-
-- *Stan* ist eine Software zur Berechnung von Bayesmodellen; das Paket `rstanarm` stellt Stan für uns bereit.
-- `stan_glm()` ist für die Berechnung von Regressionsmodellen ausgelegt.
-- Will man nur die Verteilung einer Variablen (wie `heights`) schätzen, so hat man man ... eine Regression ohne Prädiktor.
-- Eine Regression ohne Prädiktor schreibt man auf Errisch so: `y ~ 1`. Die `1` steht also für die nicht vorhandene UV; `y` meint die AV (`height`).
-- `(Intercept)` (Achsenabschnitt) gibt den Mittelwert an.
-
+-   *Stan* ist eine Software zur Berechnung von Bayesmodellen; das Paket `rstanarm` stellt Stan für uns bereit.
+-   `stan_glm()` ist für die Berechnung von Regressionsmodellen ausgelegt.
+-   Will man nur die Verteilung einer Variablen (wie `heights`) schätzen, so hat man man ... eine Regression ohne Prädiktor.
+-   Eine Regression ohne Prädiktor schreibt man auf Errisch so: `y ~ 1`. Die `1` steht also für die nicht vorhandene UV; `y` meint die AV (`height`).
+-   `(Intercept)` (Achsenabschnitt) gibt den Mittelwert an.
 :::
-
-::::
-
-
-
-
+:::::
 
 Mehr findet sich in der [Dokumentation von RstanArm](https://mc-stan.org/rstanarm/).
 
-
 ### Schätzwerte zu den Modellparameter
 
-Die Parameter eines Modells sind die Größen, für die wir eine Priori-Verteilung annehmen.
-Außerdem wählen wir einen einen Likelihood-Funktion, so dass wir die Likelihood berechnen können.
-Auf dieser Basis schätzen wir dann die Post-Verteilung.
-Ich sage *schätzen*, um hervorzuheben, dass wir die wahren Werte nicht kennen,
-sondern nur eine Vermutung haben, 
-unsere Ungewissheit vorab also (wie immer) in der Priori-Verteilung festnageln
-und unsere Ungewissheit nach Kenntnis der Daten in der Posteriori-Verteilung quantifizieren.
-Wie gerade gesehen,
-lassen sich die Modellparameter (bzw. genauer gesagt deren Schätzungen) einfach mit `parameters(modellname)` auslesen.
-
-
-
+Die Parameter eines Modells sind die Größen, für die wir eine Priori-Verteilung annehmen. Außerdem wählen wir einen einen Likelihood-Funktion, so dass wir die Likelihood berechnen können. Auf dieser Basis schätzen wir dann die Post-Verteilung. Ich sage *schätzen*, um hervorzuheben, dass wir die wahren Werte nicht kennen, sondern nur eine Vermutung haben, unsere Ungewissheit vorab also (wie immer) in der Priori-Verteilung festnageln und unsere Ungewissheit nach Kenntnis der Daten in der Posteriori-Verteilung quantifizieren. Wie gerade gesehen, lassen sich die Modellparameter (bzw. genauer gesagt deren Schätzungen) einfach mit `parameters(modellname)` auslesen.
 
 ### Stichproben aus der Posteriori-Verteilung ziehen
 
-Wie wir es vom Globusversuch gewohnt sind,
-können wir aber auch Stichproben aus der Post-Verteilung ziehen.
+Wie wir es vom Globusversuch gewohnt sind, können wir aber auch Stichproben aus der Post-Verteilung ziehen.
 
 Hier die ersten paar Zeilen von `post_m41`:
-
-
 
 ```{r Kung-26}
 post_m41 <- as_tibble(m_kung)
 head(post_m41)
 ```
 
-In einer Regression ohne Prädiktoren entspricht der Achsenabschnitt dem Mittelwert der AV,
-daher gibt uns die Spalte `(Intercept)` Aufschluss über unsere Schätzwerte zu $\mu$ (der Körpergröße).
+In einer Regression ohne Prädiktoren entspricht der Achsenabschnitt dem Mittelwert der AV, daher gibt uns die Spalte `(Intercept)` Aufschluss über unsere Schätzwerte zu $\mu$ (der Körpergröße).
 
-
-:::{#exr-kung1}
-
-## Mit welcher Wahrscheinlichkeit ist $\mu>155$? 
-
+:::: {#exr-kung1}
+## Mit welcher Wahrscheinlichkeit ist $\mu>155$?
 
 ::: {.callout-tip appearance="minimal" collapse="true"}
-
 ### Lösung
 
 ```{r Kung-28a, echo = TRUE}
@@ -680,19 +495,14 @@ post_m41 %>%
   mutate(prop = n/sum(n))
 ```
 
-Die Wahrscheinlichkeit ist nicht hoch, aber nicht auszuschließen,
-dass die Kung im Schnitt größer als 155 cm sind.
-Wahrscheinlicher ist jedoch, dass sie kleiner als 155 cm sind. $\square$
+Die Wahrscheinlichkeit ist nicht hoch, aber nicht auszuschließen, dass die Kung im Schnitt größer als 155 cm sind. Wahrscheinlicher ist jedoch, dass sie kleiner als 155 cm sind. $\square$
 :::
+::::
 
-:::
-
-:::{#exr-kung2}
-
-## Mit welcher Wahrscheinlichkeit ist $\mu>165$? 
+:::: {#exr-kung2}
+## Mit welcher Wahrscheinlichkeit ist $\mu>165$?
 
 ::: {.callout-tip appearance="minimal" collapse="true"}
-
 ### Lösung
 
 ```{r Kung-28, echo = TRUE}
@@ -704,66 +514,48 @@ post_m41 %>%
   mutate(prop = n/sum(n))
 ```
 
-Oh, diese Hypothese können wir mit an Sicherheit grenzender Wahrscheinlichkeit ausschließen.
-Aber Achtung: Das war eine Kleine-Welt-Aussage! 
-Die Wahrscheinlichkeit, die Hypothese $\mu > 165$ auszuschließen ist *nur* dann hoch,
-wenn das Modell gilt!
-Wenn also der Golem keinen Mist gebaut hat. 
-Und sind wir mal ehrlich, der Golem tut, was sein:e Herr:in und Meister:in ihm befiehlt.
-Letztlich liegt es an uns, den Golem auf Spur zu kriegen.
-
+Oh, diese Hypothese können wir mit an Sicherheit grenzender Wahrscheinlichkeit ausschließen. Aber Achtung: Das war eine Kleine-Welt-Aussage! Die Wahrscheinlichkeit, die Hypothese $\mu > 165$ auszuschließen ist *nur* dann hoch, wenn das Modell gilt! Wenn also der Golem keinen Mist gebaut hat. Und sind wir mal ehrlich, der Golem tut, was sein:e Herr:in und Meister:in ihm befiehlt. Letztlich liegt es an uns, den Golem auf Spur zu kriegen.
 :::
-:::
+::::
 
-
-:::{#exm-kung3}
-
+:::: {#exm-kung3}
 ## Welche mittlere Körpergröße wird mit 95% Wahrscheinlichkeit nicht überschritten, laut dem Modell `m_kung`?
 
 ::: {.callout-tip appearance="minimal" collapse="true"}
 ### Lösung
+
 ```{r Kung-29, echo = TRUE}
 post_m41 %>% 
   summarise(q95 = quantile(mu, .95))
 ```
-
 :::
-:::
+::::
 
-
-::::{#exr-kung4}
-
+:::: {#exr-kung4}
 ## In welchem 90%-PI liegt $\mu$ vermutlich?
 
 ::: {.callout-tip appearance="minimal" collapse="true"}
 ### Lösung
+
 ```{r Kung-30, echo = TRUE}
 post_m41 %>% 
   eti()
 ```
 
-
 Ein ETI ist synonym zu PI.
-
 :::
 ::::
 
-
-
-::::{#exr-kung5}
-
+:::: {#exr-kung5}
 ## Mit welcher Unsicherheit ist die Schätzung der mittleren Körpergröße behaftet?
-
-
 
 ::: {.callout-tip appearance="minimal" collapse="true"}
 ### Lösung
+
 ```{r eval = FALSE}
 m_kung %>% 
   parameters()
 ```
-
-
 
 ```{r}
 #| echo: false
@@ -771,8 +563,6 @@ m_kung %>%
   parameters() |> 
   display()
 ```
-
-
 
 Seeing is believing, s. @fig-m_kung-params-intercept.
 
@@ -784,113 +574,54 @@ m_kung %>%
   plot(show_intercept = TRUE)
 ```
 
-
 Das Modell ist sich recht sicher: die Ungewissheit der mittleren Körpergröße liegt bei nicht viel mehr als einem Zentimeter (95%-CI).
-
 :::
 ::::
 
-
-::::{#exr-kung6}
-
-
+:::: {#exr-kung6}
 ## Was ist der mediane Schätzwert der mittleren Körpergröße, sozusagen der "Best Guess"?
 
 ::: {.callout-tip appearance="minimal" collapse="true"}
 ### Lösung
 
 `parameters(m_kung)` hat uns die Antwort schon gegeben: Ca. 155 cm.
-
 :::
 ::::
 
-
-
 🏋️ Ähnliche Fragen bleiben als Übung für die Lesis. 🤓
-
-
 
 ### Standard-Prioriwerte bei `stan_glm()`
 
-`stan_glm()` nimmt für uns Priori-Wert an.
-Welche das sind, kann man sich so anzeigen lassen:
+`stan_glm()` nimmt für uns Priori-Wert an. Welche das sind, kann man sich so anzeigen lassen:
 
 ```{r Kung-8-bis, echo = TRUE}
 prior_summary(m_kung)
 ```
 
+`stan_glm()` verwendet (in der Voreinstellung) *schwach informative* Priori-Werte, die nur wenig Vorabwissen in das Modell geben. Es werden dafür die Stichproben-Daten als Priori-Daten verwendet: Mittelwerte und Streuungen der AV werden als Grundlage für die Priori-Verteilungen herangezogen. Strenggenommen ist das nicht "pures Bayes", weil die Priori-Werte ja *vorab*, also vor Kenntnis der Daten bestimmt werden sollen. Bitte reichen Sie Ihre Beschwerden bei Andrew Gelman ein.
 
-
-
-
-`stan_glm()` verwendet (in der Voreinstellung) *schwach informative* Priori-Werte, die nur wenig Vorabwissen in das Modell geben.
-Es werden dafür die Stichproben-Daten als Priori-Daten verwendet: 
-Mittelwerte und Streuungen der AV werden als Grundlage für die Priori-Verteilungen herangezogen.
-Strenggenommen ist das nicht "pures Bayes",
-weil die Priori-Werte ja *vorab*, 
-also vor Kenntnis der Daten bestimmt werden sollen.
-Bitte reichen Sie Ihre Beschwerden bei Andrew Gelman ein.
-
-Man sollte diese Standardwerte als Minimalvorschlag sehen. 
-Kennt man sich im Sachgebiet aus, kann man meist bessere Prioris finden.
-Die Voreinstellung ist nicht zwingend; andere Werte wären auch denkbar.
-
+Man sollte diese Standardwerte als Minimalvorschlag sehen. Kennt man sich im Sachgebiet aus, kann man meist bessere Prioris finden. Die Voreinstellung ist nicht zwingend; andere Werte wären auch denkbar.
 
 ::: callout-note
-
 ### Standardwerte von `stan_glm`
 
-- `Intercept`: $\mu$, der Mittelwert der Verteilung $Y$
-    - $\mu \sim \mathcal{N}(\bar{Y}, sd(Y)\cdot 2.5)$
-    - als Streuung von $\mu$ wird die 2.5-fache Streuung der Stichprobe (für $Y$) angenommen.
-
-- `Auxiliary (sigma)`: $\sigma$, die Streuung der Verteilung $Y$
-    - $\sigma \sim \mathcal{E}(\lambda=1/sd(Y))$
-    - als "Streuung", d.h. $\lambda$ von $h_i$ wird $\frac{1}{sd(Y)}$ angenommen. $\square$
-
-:::
-    
-    
-
-
-
-Eine sinnvolle Strategie ist, einen Prior so zu wählen, dass man nicht übergewiss ist,
-also nicht zu sicher Dinge behauptet, 
-die dann vielleicht doch passieren (also die Ungewissheit zu gering spezifiziert),
-andererseits sollte man extreme, unplausible Werte ausschließen.
-
-
-
-
-:::callout-important
-Bei der Wahl der Prioris gibt es nicht die eine, richtige Wahl.
-Die beste Entscheidung ist auf transparente Art den Stand der Forschung einfließen zu lassen und eigene Entscheidungen zu begründen. 
-Häufig sind mehrere Entscheidungen möglich.
-Möchte man lieber vorsichtig sein, weil man wenig über den Gegenstand weiß,
-dann könnte man z.B. auf die Voreinstellung von `rstanarm` vertrauen,
-die "schwachinformativ" ist, 
-also nur wenig Priori-Information  in das Modell einfließen lässt.
+-   `Intercept`: $\mu$, der Mittelwert der Verteilung $Y$
+    -   $\mu \sim \mathcal{N}(\bar{Y}, sd(Y)\cdot 2.5)$
+    -   als Streuung von $\mu$ wird die 2.5-fache Streuung der Stichprobe (für $Y$) angenommen.
+-   `Auxiliary (sigma)`: $\sigma$, die Streuung der Verteilung $Y$
+    -   $\sigma \sim \mathcal{E}(\lambda=1/sd(Y))$
+    -   als "Streuung", d.h. $\lambda$ von $h_i$ wird $\frac{1}{sd(Y)}$ angenommen. $\square$
 :::
 
+Eine sinnvolle Strategie ist, einen Prior so zu wählen, dass man nicht übergewiss ist, also nicht zu sicher Dinge behauptet, die dann vielleicht doch passieren (also die Ungewissheit zu gering spezifiziert), andererseits sollte man extreme, unplausible Werte ausschließen.
 
+::: callout-important
+Bei der Wahl der Prioris gibt es nicht die eine, richtige Wahl. Die beste Entscheidung ist auf transparente Art den Stand der Forschung einfließen zu lassen und eigene Entscheidungen zu begründen. Häufig sind mehrere Entscheidungen möglich. Möchte man lieber vorsichtig sein, weil man wenig über den Gegenstand weiß, dann könnte man z.B. auf die Voreinstellung von `rstanarm` vertrauen, die "schwachinformativ" ist, also nur wenig Priori-Information in das Modell einfließen lässt.
+:::
 
 ### Wenn es schnell gehen muss
 
-
-`stan_glm()` ist deutlich langsamer als z.B. der befreundete Golem `lm()`.
-Der Grund für Stans Langsamkeit ist, dass er viele Stichproben zieht,
-also viel zu zählen hat.
-Außerdem wiederholt er das Stichprobenziehen (im Standard) 4 Mal,
-damit sein Meister prüfen kann, ob er (Stan) die Arbeit auch immer richtig gemacht hat.
-Die Idee dabei ist, wenn alle vier Durchführungen (auch "Ketten" engl., chains) genannt,
-zum etwa gleichen Ergebnis kommen, dann wird schon alles mit rechten Dingen
-zugegangen sein. Weichen die Ergebnisse der 4 Ketten voneinander ab,
-so ist Stan ein Fehler unterlaufen, oder, irgendetwas ist "dumm gelaufen".
-An dieser Stelle schauen wir uns die Ketten nicht näher an,
-aber es sei notiert, dass man die Anzahl der Ketten mit dem Argument `chains` steuern kann.
-Möchte man, dass Stan sich beeilt, so kann man `chains = 1` setzen,
-das spart Zeit.
-
+`stan_glm()` ist deutlich langsamer als z.B. der befreundete Golem `lm()`. Der Grund für Stans Langsamkeit ist, dass er viele Stichproben zieht, also viel zu zählen hat. Außerdem wiederholt er das Stichprobenziehen (im Standard) 4 Mal, damit sein Meister prüfen kann, ob er (Stan) die Arbeit auch immer richtig gemacht hat. Die Idee dabei ist, wenn alle vier Durchführungen (auch "Ketten" engl., chains) genannt, zum etwa gleichen Ergebnis kommen, dann wird schon alles mit rechten Dingen zugegangen sein. Weichen die Ergebnisse der 4 Ketten voneinander ab, so ist Stan ein Fehler unterlaufen, oder, irgendetwas ist "dumm gelaufen". An dieser Stelle schauen wir uns die Ketten nicht näher an, aber es sei notiert, dass man die Anzahl der Ketten mit dem Argument `chains` steuern kann. Möchte man, dass Stan sich beeilt, so kann man `chains = 1` setzen, das spart Zeit.
 
 ```{r m41a, echo = TRUE, results="hide"}
 m41a <- stan_glm(height ~ 1, 
@@ -901,27 +632,17 @@ m41a <- stan_glm(height ~ 1,
 parameters(m41a)  
 ```
 
-
-
-## Modell `m42`: unsere Priori-Werte 
-
-
+## Modell `m42`: unsere Priori-Werte
 
 📺 [Teil 2](https://youtu.be/qIuu-4qRT_0)
 
-
-Im Modell `m_kung` haben wir auf die Priori-Werte der Voreinstellung von `rstanarm` vertraut.
-Jetzt lassen wir mal unsere eigenen Priori-Werte einfließen,
-in unserem zweiten Kung-Modell, `m42`.
-
-
-
-
+Im Modell `m_kung` haben wir auf die Priori-Werte der Voreinstellung von `rstanarm` vertraut. Jetzt lassen wir mal unsere eigenen Priori-Werte einfließen, in unserem zweiten Kung-Modell, `m42`.
 
 ### m42
 
-Dann lassen wir `stan_glm()` (Stan) unser zweites Modell berechnen.^[Hey Stan, los, an die Arbeit!]
-Dieses Mal geben wir die Priori-Werte explizit an, @tbl-m42-params.
+Dann lassen wir `stan_glm()` (Stan) unser zweites Modell berechnen.[^0800-gauss-9] Dieses Mal geben wir die Priori-Werte explizit an, @tbl-m42-params.
+
+[^0800-gauss-9]: Hey Stan, los, an die Arbeit!
 
 ```{r Kung-15-bis, echo = TRUE}
 #| eval: false
@@ -933,7 +654,6 @@ m42 <-
            data = d2)
 parameters(m42)
 ```
-
 
 ```{r Kung-15-bis-print}
 #| echo: false
@@ -950,37 +670,24 @@ m42 <-
 parameters(m42) |> display()
 ```
 
+Wir haben noch nicht alle Informationen kennengelernt, die in @tbl-m42-params ausgegeben werden. Im Zweifel: Einfach ignorieren. Wichtige Fähigkeit im Studium. 🤓
 
-
-
-Wir haben noch nicht alle Informationen kennengelernt, die in @tbl-m42-params ausgegeben werden.
-Im Zweifel: Einfach ignorieren. Wichtige Fähigkeit im Studium. 🤓
-
-
-:::callout-important
-Vergleichen Sie die Parameterwerte von `m_kung` und `m42`! Was fällt Ihnen auf? Nichts?
-Gut! Tatsächlich liefern beide Modelle sehr ähnliche Parameterwerte.
-Die Prioriwerte waren nicht so wichtig, weil wir genug Daten haben.
-Hat man einigermaßen viele Daten, so fallen Prioriwerte nicht mehr ins Gewicht,
-zumindest wenn sie moderat gewählt waren.
+::: callout-important
+Vergleichen Sie die Parameterwerte von `m_kung` und `m42`! Was fällt Ihnen auf? Nichts? Gut! Tatsächlich liefern beide Modelle sehr ähnliche Parameterwerte. Die Prioriwerte waren nicht so wichtig, weil wir genug Daten haben. Hat man einigermaßen viele Daten, so fallen Prioriwerte nicht mehr ins Gewicht, zumindest wenn sie moderat gewählt waren.
 :::
-
-
 
 ```{r Kung-16-bis, eval = FALSE}
 #| echo: false
 #write_rds(m42, "objects/m42.rds")
 ```
 
-
-
 ### Posteriori-Verteilung und Parameter plotten
 
 Leider liefert der Stan-Golem leider keinen braven Tibble (Tabelle) zurück.
 
->    👨‍🏫 Böser Golem!
+> 👨‍🏫 Böser Golem!
 
->    🤖 Beim nächsten Mal strenge ich mich mehr an!
+> 🤖 Beim nächsten Mal strenge ich mich mehr an!
 
 Daher müssen wir die Ausgabe des Stan-Golemns erst in eine schöne Tabelle umwandeln:
 
@@ -991,12 +698,9 @@ m42_tibble <-
 head(m42_tibble)
 ```
 
+Außerdem ist der Name der ersten Spalte eigentlich unzulässig, da Spaltennamen in R nicht mit Sonderzeichen anfangen dürfen (sondern mit Buchstaben). Daher müssen wir den Namen mit "Samthandschuhen" anpacken. Auf Errisch sind das die Backticks, die wir um den Namen rumwickeln müssen, s. die folgende Syntax.
 
-Außerdem ist der Name der ersten Spalte eigentlich unzulässig, da Spaltennamen in R nicht mit Sonderzeichen anfangen dürfen (sondern mit Buchstaben). Daher müssen wir den Namen mit "Samthandschuhen" anpacken.
-Auf Errisch sind das die Backticks, die wir um den Namen rumwickeln müssen, s. die folgende Syntax.
-
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Mit `{ggpubr}`
 
 ```{r}
@@ -1011,39 +715,21 @@ m42_tibble |>
   ggplot(aes(x = `(Intercept)`)) +  # Aus dem Paket `ggplot2`
   geom_histogram()
 ```
-
 :::
 
 Als Ausblick: Ein Vergleich mehrerer Priori-Werte wäre auch nützlich, um ein skeptisches Publikum von der Wahl (bzw. der Indifferenz) der gewählten Priori-Werte zu überzeugen.
 
-
-
 ### Welche Körpergrößen erwartet unser Modell
 
-Bisher haben wir untersucht, wie die Verteilung der *mittleren* Körpergrößen, 
-$\mu$, laut unserem Modell aussehen könnte; wir haben uns also mit der Post-Verteilung
-von $\mu$ beschäftigt.
-Wir könnten aber auch an der Frage der Verteilung der *tatsächlichen* Körpergrößen, $h_i$,
-laut Modell, interessiert sein: 
-Wie groß sind sie denn, die !Kung, laut unserem Modell?
+Bisher haben wir untersucht, wie die Verteilung der *mittleren* Körpergrößen, $\mu$, laut unserem Modell aussehen könnte; wir haben uns also mit der Post-Verteilung von $\mu$ beschäftigt. Wir könnten aber auch an der Frage der Verteilung der *tatsächlichen* Körpergrößen, $h_i$, laut Modell, interessiert sein: Wie groß sind sie denn, die !Kung, laut unserem Modell?
 
-Wie wir wissen, liefert unser Stan-Golem eine *Stichproben-Postverteilung*.
-Wenn wir das Ergebnisobjekt unserer Analyse, `m_kung` in eine Tabelle (Tibble) umwandeln
-und (die ersten paar Zeilen) betrachen, sehen wir diese Stichproben:
-
+Wie wir wissen, liefert unser Stan-Golem eine *Stichproben-Postverteilung*. Wenn wir das Ergebnisobjekt unserer Analyse, `m_kung` in eine Tabelle (Tibble) umwandeln und (die ersten paar Zeilen) betrachen, sehen wir diese Stichproben:
 
 ```{r}
 m_kung |> as_tibble() |> head()
 ```
 
-Laut unserem Modell sind die Körpergrößen, $h_i$, normalverteilt mit $\mu$ und $\sigma$.
-$\mu$ wird von Stan, der in Begriffen der Regressionsanalyse denkt, schnöde als `(Intercept)`
-bezeichnet.
-Wir könnten jetzt also für jede Zeile eine Normalverteilung berechnen. 
-Und daraus zufällig eine Zahl ziehen.
-Damit hätten wir dann unsere Verteilung von Körpergrößen laut Modell.
-Diese Verteilung nennt man auch *Posterior-Prädiktiv-Verteilung*.
-Prädiktiv daher, weil sie die Werte der Körpergrößen "vorhersagt".
+Laut unserem Modell sind die Körpergrößen, $h_i$, normalverteilt mit $\mu$ und $\sigma$. $\mu$ wird von Stan, der in Begriffen der Regressionsanalyse denkt, schnöde als `(Intercept)` bezeichnet. Wir könnten jetzt also für jede Zeile eine Normalverteilung berechnen. Und daraus zufällig eine Zahl ziehen. Damit hätten wir dann unsere Verteilung von Körpergrößen laut Modell. Diese Verteilung nennt man auch *Posterior-Prädiktiv-Verteilung*. Prädiktiv daher, weil sie die Werte der Körpergrößen "vorhersagt".
 
 Wir können uns diese Verteilung auch komfortabel von R ausgeben lassen, s. @fig-ppcheck.
 
@@ -1058,52 +744,27 @@ pp_check(m_kung)
 pp_check(m_kung, "stat")
 ```
 
-
-
 ## Fazit
-
 
 <!-- TODO: Die neuen Infosder Gauss-Modelle auf die formel von Bayes Theorem zurückühren. -->
 
 ### Zusammenfassung
 
-Wir haben die Posteriori-Verteilung für ein Gauss-Modell  berechnet.
-Dabei hatten wir ein einfaches Modell mit metrischer Zielvariablen, ohne Prädiktoren, betrachtet.
-Die Zielvariable, Körpergröße (`height`), haben wir als normalverteilt mit den Parametern $\mu$ und $\sigma$ angenommen.
-Für $\mu$ und $\sigma$ haben wir jeweils keinen einzelnen (fixen) Wert angenommen, sondern eine Wahrscheinlichkeitsverteilung, der mit der Priori-Verteilung für $\mu$ bzw. $\sigma$ festgelegt ist.
-
-
+Wir haben die Posteriori-Verteilung für ein Gauss-Modell berechnet. Dabei hatten wir ein einfaches Modell mit metrischer Zielvariablen, ohne Prädiktoren, betrachtet. Die Zielvariable, Körpergröße (`height`), haben wir als normalverteilt mit den Parametern $\mu$ und $\sigma$ angenommen. Für $\mu$ und $\sigma$ haben wir jeweils keinen einzelnen (fixen) Wert angenommen, sondern eine Wahrscheinlichkeitsverteilung, der mit der Priori-Verteilung für $\mu$ bzw. $\sigma$ festgelegt ist.
 
 ### Botschaft von einem Statistiker
 
-
-
 ![🧡 Bleiben Sie dran!](img/chicken_standard_deviation.jpg)
 
-
-
-
-
-:::callout-important
+::: callout-important
 Kontinuierliches Lernen ist der Schlüssel zum Erfolg.
 :::
 
-
-
-
-
 ## Vertiefung: Wahl der Priori-Werte
-
 
 🏎️ Dieser Abschnitt ist eine VERTIEFUNG und nicht prüfungsrelevant. 🏎
 
-
-
-
 ### Welche Beobachtungen sind auf Basis unseres Modells zu erwarten?
-
-
-
 
 ```{r prior-pred, echo = TRUE}
 n <- 1e4
@@ -1127,11 +788,9 @@ height_sim_mean <-
 
 ```
 
-
 💭 Was denkt der Golem (`m_kung`) *apriori* von der Größe der !Kung?
 
 🦾 Ziehen wir mal ein paar Stichproben auf Basis des Modells. Voilà:
-
 
 ```{r Kung-12}
 p3 <- 
@@ -1148,29 +807,18 @@ p3 <-
 p3
 ```
 
-
-
-
-
 [Quellcode](https://bookdown.org/content/4857/geocentric-models.html#a-gaussian-model-of-height)
-
 
 ### Priori-Werte prüfen mit der Priori-Prädiktiv-Verteilung
 
-- Die Priori-Prädiktiv-Verteilung (`sim`) simuliert Beobachtungen (nur) auf Basis der Priori-Annahmen: 
-$h_i \sim \mathcal{N}(\mu, \sigma),$
-$\mu \sim \mathcal{N}(178, 20),$
-$\sigma \sim \mathcal{E}(0.1)$
-- So können wir prüfen, ob die Priori-Werte vernünftig sind.
-
+-   Die Priori-Prädiktiv-Verteilung (`sim`) simuliert Beobachtungen (nur) auf Basis der Priori-Annahmen: $h_i \sim \mathcal{N}(\mu, \sigma),$ $\mu \sim \mathcal{N}(178, 20),$ $\sigma \sim \mathcal{E}(0.1)$
+-   So können wir prüfen, ob die Priori-Werte vernünftig sind.
 
 Die Priori-Prädiktiv-Verteilung zeigt, dass unsere Priori-Werte ziemlich vage sind, also einen zu breiten Bereich an Größenwerten zulassen:
 
 ```{r Kung-13}
 p3
 ```
-
-
 
 Anteil $h_i > 200$:
 
@@ -1182,16 +830,9 @@ sim %>%
 anteil_großer_kung
 ```
 
-
 🤔 Sehr große Buschleute? `r round(anteil_großer_kung$prop[2], 2)*100` Prozent sind größer als 2 Meter. Das ist diskutabel, muss aber nicht zwangsläufig ein schlechter Prior sein.
 
-
-
-
-
-
-###  Vorhersagen der Priori-Werte
-
+### Vorhersagen der Priori-Werte
 
 ```{r Kung-15}
 #| echo: false
@@ -1208,19 +849,9 @@ se <- fig(se_path)
 
 ```
 
-
-
-
 ### Extrem vage Priori-Verteilung für die Streuung?
 
-
 $$\sigma \sim \mathcal{E}(\lambda=0.01)$$
-
-
-
-
-
-
 
 ```{r Kung-16}
 #| echo: false
@@ -1266,10 +897,6 @@ p4 <-
 p4
 ```
 
-
-
-
-
 Die Streuung der Größen ist weit:
 
 ```{r Kung-3}
@@ -1282,70 +909,45 @@ d %>%
   geom_line()
 ```
 
-
 ```{r Kung-17, echo = FALSE, eval = FALSE}
 sim2 %>% 
   count(height < 0) %>% 
   mutate(prop = n()/n)
 ```
 
+🤔 Das Modell geht apriori von ein paar Prozent Menschen mit *negativer* Größe aus. Ein Haufen Riesen 👹 werden auch erwartet.
 
-
-
-🤔 Das Modell geht apriori von ein paar Prozent Menschen mit *negativer* Größe aus. Ein Haufen Riesen 👹 werden auch erwartet. 
-
-🤯   Vage (flache, informationslose, "neutrale", "objektive") Priori-Werte machen oft keinen Sinn, weil sie extreme, unplausible Werte zulassen.
-
-
-
-
-
-
-
+🤯 Vage (flache, informationslose, "neutrale", "objektive") Priori-Werte machen oft keinen Sinn, weil sie extreme, unplausible Werte zulassen.
 
 ## Aufgaben
 
 ### Papier-und-Bleistift-Aufgaben
 
-
-
-
 <!-- 3. [ReThink4e3](https://datenwerk.netlify.app/posts/ReThink4e3/ReThink4e3.html) -->
 
-1. [exp-tab](https://datenwerk.netlify.app/posts/exp-tab/)
-2. [exp-tab2](https://datenwerk.netlify.app/posts/exp-tab2/)
-9. [norms-sd](https://datenwerk.netlify.app/posts/norms-sd/)
-10. [small-wide-normal](https://datenwerk.netlify.app/posts/small-wide-normal/)
-11. [exp1](https://datenwerk.netlify.app/posts/exp1/)
-12. [distros](https://datenwerk.netlify.app/posts/distros/)
-3. [mtcars-post_paper](https://datenwerk.netlify.app/posts/mtcars-post_paper/)
-1. [groesse03](https://datenwerk.netlify.app/posts/groesse03/)
-2. [pupil-size2](https://datenwerk.netlify.app/posts/pupil-size2/)
-7. [groesse04](https://datenwerk.netlify.app/posts/groesse04/)
-2. [ReThink4e2](https://datenwerk.netlify.app/posts/ReThink4e2/ReThink4e2.html)
-1. [Priorwahl1](https://datenwerk.netlify.app/posts/Priorwahl1/Priorwahl1.html)
-
+1.  [exp-tab](https://datenwerk.netlify.app/posts/exp-tab/)
+2.  [exp-tab2](https://datenwerk.netlify.app/posts/exp-tab2/)
+3.  [norms-sd](https://datenwerk.netlify.app/posts/norms-sd/)
+4.  [small-wide-normal](https://datenwerk.netlify.app/posts/small-wide-normal/)
+5.  [exp1](https://datenwerk.netlify.app/posts/exp1/)
+6.  [distros](https://datenwerk.netlify.app/posts/distros/)
+7.  [mtcars-post_paper](https://datenwerk.netlify.app/posts/mtcars-post_paper/)
+8.  [groesse03](https://datenwerk.netlify.app/posts/groesse03/)
+9.  [pupil-size2](https://datenwerk.netlify.app/posts/pupil-size2/)
+10. [groesse04](https://datenwerk.netlify.app/posts/groesse04/)
+11. [ReThink4e2](https://datenwerk.netlify.app/posts/ReThink4e2/ReThink4e2.html)
+12. [Priorwahl1](https://datenwerk.netlify.app/posts/Priorwahl1/Priorwahl1.html)
 
 ### Aufgaben, für die man einen Computer benötigt
 
-
-
-1. [stan_glm01](https://datenwerk.netlify.app/posts/stan_glm01/stan_glm01.html)
-2. [ReThink4e1](https://datenwerk.netlify.app/posts/rethink4e1/rethink4e1)
-2. [ReThink4e3](https://datenwerk.netlify.app/posts/rethink4e3/rethink4e3)
-2. [Kung-height](https://datenwerk.netlify.app/posts/kung-height/kung-height)
-2. [Pupil-size](https://datenwerk.netlify.app/posts/pupil-size/pupil-size)
-2. [IQ-Studentis](https://datenwerk.netlify.app/posts/iq-studentis/iq-studentis)
-2. [Priori-Streuung](https://datenwerk.netlify.app/posts/priori-streuung/priori-streuung)
-
-
-
+1.  [stan_glm01](https://datenwerk.netlify.app/posts/stan_glm01/stan_glm01.html)
+2.  [ReThink4e1](https://datenwerk.netlify.app/posts/rethink4e1/rethink4e1)
+3.  [ReThink4e3](https://datenwerk.netlify.app/posts/rethink4e3/rethink4e3)
+4.  [Kung-height](https://datenwerk.netlify.app/posts/kung-height/kung-height)
+5.  [Pupil-size](https://datenwerk.netlify.app/posts/pupil-size/pupil-size)
+6.  [IQ-Studentis](https://datenwerk.netlify.app/posts/iq-studentis/iq-studentis)
+7.  [Priori-Streuung](https://datenwerk.netlify.app/posts/priori-streuung/priori-streuung)
 
 ## ---
 
-
-
-![](img/outro-08.jpg){width=100%}
-
-
-
+![](img/outro-08.jpg){width="100%"}
