@@ -1,7 +1,7 @@
 modulverlauf <-
   tibble::tribble(
   ~Nr, ~KW, ~Jahr, ~Wochenstart,  ~`VL-frei`,                           ~Thema,     ~Kommentar,
-   1L, 40L, 2025L, "2025-09-29", "teilweise",                       "Einstieg",             NA,
+   1L, 40L, 2025L, "2025-09-29", "teilweise",                       "Einstieg und Wiederholung von QM1",             NA,
    2L, 41L, 2025L, "2025-10-06",      "nein",                       "Inferenz",             NA,
    3L, 42L, 2025L, "2025-10-13",      "nein",      "Hallo, Wahrscheinlichkeit",             NA,
    4L, 43L, 2025L, "2025-10-20",      "nein", "Rechnen mit Wahrscheinlichkeit",             NA,
