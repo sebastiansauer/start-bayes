@@ -9,7 +9,10 @@ library(nycflights13)
 library(ggrepel)
 library(gt)
 library(dagitty)
+library(knitr)
+
 ```
+
 
 
 ```{r r-setup}
@@ -68,7 +71,7 @@ Grundlage einer ausführlicheren Erläuterung des Stoffes.
 
 - [Statistik 1, Kap. "Rahmen"](https://statistik1.netlify.app/010-rahmen)
 - [Statistik 1](https://statistik1.netlify.app/), dort alle Inhalte aller Kapitel zum Thema "Modellieren" bzw. "Regression"
-- [Statistik 1, Kap. zur Normalverteilung]()
+- [Statistik 1, Abschnitt zur Normalverteilung]()
 
 
 
@@ -102,15 +105,15 @@ Nach dieser Einteilung lassen sich drei Arten von Zielen unterscheiden: *Beschre
 
 - Wie stark ist der (lineare) Zusammenhang $r$ von Größe und Gewicht (bei Erwachsenen) in meiner Stichprobe?
 - Wie stark ist der (lineare) Zusammenhang $b$ von Lernzeit und Note (im Fach Statistik) in meinem Datensatz?
-- Haben unsere Kunden bisher Webshop A oder B laut unseren Daten?
+- Haben unsere Kunden bisher Webshop A oder B bevorzugt, laut unseren Daten?
 
 
 
 #### 🔮 *Vorhersagen* (prädiktiv, prognostisch)
 
-- Wie schwer ist ein deutscher Mann der Größe 1,80m im Schnitt?
+- Wie schwer ist wohl Herr X? Er ist ein deutscher erwachsener Mann der Größe 1,80m; mehr wissen wir nicht.
 - Welche Note kann man erwarten, wenn man nichts für die Klausur lernt?
-- Wie viel wird ein Kunde ausgeben, wenn er sich in dieser Variante des Webshops aufhält?
+- Wie viel wird ein Kunde ausgeben, wenn er sich in der Variante *A* des Webshops aufhält?
 
 
 
@@ -165,7 +168,7 @@ flowchart TD
 ```
 
 
-## Zielart *Beschreiben*
+### Zielart *Beschreiben*
 
 Statistische Analysen mit dem Ziel zu beschreiben fassen die Daten zusammen (zu möglichst aussagekräftigen Kennzahlen).
 Beschreibende Statistik nennt man auch *deskriptive Statistik*; Mittelwert, Korrelation und Regressionskoeffizienten sind typische Kennzahlen ("Statistiken");  s. @fig-beschreiben.
@@ -193,28 +196,28 @@ In einem Hörsaal sitzen 100 Studis. Alle schreiben Ihre Körpergröße auf eine
 
 :::{#def-desk}
 ### Deskriptivstatistik
-*Deskriptivstastistik* fasst Stichprobenmerkmale zu Kennzahlen (Statistiken) zusammen.
+*Deskriptivstastistik* fasst Merkmale aus einer Stichprobe zu Kennzahlen (Statistiken) zusammen.
 :::
 
 
 
 
-## Zielart *Vorhersagen*
+### Zielart *Vorhersagen*
 
 Beim Vorhersagen versucht man, auf Basis von Daten, 
 gegeben bestimmter Werte der UV den Wert einer AV vorherzusagen, s. @fig-vorhersagen.
 
 :::{#exm-toni-lernt}
-### Toni lernt für die Klausur
+### Ali lernt für die Klausur
 Oh nein, die Klausur im Fach Statistik steht an. 
-Toni lernt ziemlich viel. 
+Ali lernt ziemlich viel. 
 Wie viel Punkte (von 100 möglichen) wird er wohl erzielen?
 Ziehen wir ein einfaches statistisches Modell zur Rate,
-um eine Vorhersage für den "Klausurerfolg" von Toni zu erhalten.
-Wir können vom Modell eine einzelne Zahl (83) als Punkt-Schätzwert bzw. Vorhersagewert erhalten oder einen Schätzbereich (80-80 Punkte). $\square$
+um eine Vorhersage für den "Klausurerfolg" von Ali zu erhalten.
+Wir können vom Modell eine einzelne Zahl (83) als Punkt-Schätzwert bzw. Vorhersagewert erhalten oder einen Schätzbereich (80-86 Punkte). $\square$
 :::
 
-Hier ist das Regressionsmodell für Toni (`lm_toni`), s. @lst-toni.
+Hier ist das Regressionsmodell für Ali (`lm_toni`), s. @lst-toni.
 
 ```{r}
 #| lst-label: lst-toni
@@ -240,11 +243,11 @@ toni_vorhersageintervall <- predict(lm_toni, newdata =  data.frame(x=42),
 ```{r fig-noten}
 #| label: fig-vorhersagen
 #| echo: false
-#| fig-cap: "Noten und Lernzeit: Rohdaten (a) und mit Modell (b). Mittelwerte sind mit gestrichelten Linien eingezeichnet. Die Vorhersage für Toni ist farbig markiert. Toni hat 42 Stunden gelernt für die Klausur; das Modell sagt ihm 83 Punkte (von 100) bzw. einen Bereich von 80 bis 86 Punkten voraus."
+#| fig-cap: "Noten und Lernzeit: Rohdaten (a) und mit Modell (b). Mittelwerte sind mit gestrichelten Linien eingezeichnet. Die Vorhersage für Ali ist farbig markiert. Ali hat 42 Stunden gelernt für die Klausur; das Modell sagt ihm 83 Punkte (von 100) bzw. einen Bereich von 80 bis 86 Punkten voraus."
 #| layout-ncol: 2
 #| fig-subcap: 
-#|   - "Regressionsgerade mit Punkt-Vorhersage für Toni"
-#|   - "Regressionsgerade mit Vorhersagebereich (und herangezoomt) für Toni"
+#|   - "Regressionsgerade mit Punkt-Vorhersage für Ali"
+#|   - "Regressionsgerade mit Vorhersagebereich (und herangezoomt) für Ali"
 
 #noten2 <- read.csv(noten2, "data/noten2.csv")
 
@@ -276,7 +279,7 @@ p_toni_punktschaetzung <-
   labs(x = "Lernzeit",
        y = "Klausurpunkte") +
   theme_large_text() +
-  geom_label_repel(data = data.frame(x = 42, y = toni_punkte), label = "Toni",
+  geom_label_repel(data = data.frame(x = 42, y = toni_punkte), label = "Ali",
        force = 20,
                       box.padding = unit(1, "lines"),
                       point.padding = unit(1, "lines"),
@@ -310,242 +313,8 @@ p_toni_punktschaetzung +
 
 
 
-## Zielart *Erklären* -- Kausalinferenz
+### Zielart *Erklären* -- Populationsinferenz
 
-
-Mittels Kausalinferenz können wir schließen, welche Variablen *Ursachen* und welche *Wirkung* sind --
-und welche Variablen **Scheinkorrelation** erzeugen.
-Das ist wichtig, denn nur wenn man die Ursache kennt, weiß man, was man tun muss, 
-um eine Wirkung zu erzielen.
-
-
-### Studie A: Östrogen
-
-#### Medikament einnehmen?
-
-Mit Blick auf @tbl-studie-a: Was raten Sie dem Arzt? Medikament einnehmen, ja oder nein?
-
-
-```{r tbl-studie-a}
-#| echo: false
-#| label: tbl-studie-a
-#| tbl-cap: "Daten zur Studie A"
-
-studie_a <-
-  tibble::tribble(
-     ~ Gruppe,      ~`Mit Medikament`,         ~`Ohne Medikament`,
-"Männer",    "81/87 überlebt (93%)", "234/270 überlebt (87%)",
-"Frauen",  "192/263 überlebt (73%)",   "55/80 überlebt (69%)",
-"Gesamt",  "273/350 überlebt (78%)", "289/350 überlebt (83%)"
-  ) 
-
-studie_a %>% 
-  gt()
-```
-
-
-
-
-Die Daten stammen aus einer (fiktiven) klinischen Studie, $n=700$, hoher Qualität (Beobachtungsstudie).
-Bei Männern scheint das Medikament zu helfen; 
-bei Frauen auch.
-Aber *insgesamt* (Summe von Frauen und Männern) *nicht*?!
-Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? 
-Vielleicht nur dann, wenn er das Geschlecht kennt [@pearl2016]?
-
-
-
-
-
-#### Kausalmodell zur Studie A
-
-
-
-In Wahrheit sehe die kausale Struktur so aus:
-Das Geschlecht (Östrogen) hat einen Einfluss (+) auf Einnahme des Medikaments und auf Heilung (-).
-Das Medikament hat einen Einfluss (+) auf Heilung.
-Betrachtet man die Gesamt-Daten zur Heilung, so ist der Effekt von Geschlecht (Östrogen) und Medikament *vermengt* (konfundiert, confounded).
-Die kausale Struktur, also welche Variable beeinflusst bzw. nicht,
-ist in @fig-dag-studie-a dargestellt.
-
-
-
-```{r dag-studie-a}
-#| echo: false
-#| label: fig-dag-studie-a
-#| fig-cap: "Zwei direkte Effekte (gender, drug) und ein indirekter Effekt (gender über drug) auf recovery"
-#| out-width: "50%"
-
-
-
-dag_studie_a <-
-  dagitty("dag{
-          gender -> drug
-          drug -> recovery
-          gender -> recovery
-          }
-      ")
-
-coordinates(dag_studie_a) <-
-  list(x = c(gender = 0, drug = 0, recovery  = 1),
-       y = c(gender = 0, drug = 1, recovery = 0.5))
-
-
-plot(dag_studie_a)
-```
-
-
-Betrachtung der Gesamtdaten zeigt in diesem Fall einen *konfundierten* Effekt: Geschlecht konfundiert den Zusammenhang von Medikament und Heilung.
-
-
-:::callout-important
-Betrachtung der Teildaten (d.h. stratifiziert pro Gruppe) zeigt in diesem Fall den wahren, kausalen Effekt. 
-Stratifizieren ist also in diesem Fall der korrekte, richtige Weg.
-Achtung: Das Stratifizieren ist nicht immer und nicht automatisch die richtige Lösung.
-Stratifizieren bedeutet,
-den Gesamtdatensatz in Gruppen oder "Schichten" ("Strata").
-:::
-
-
-
-
-### Studie B: Blutdruck
-
-
-#### Medikament einnehmen?
-
-Mit Blick auf @tbl-studie-b: Was raten Sie dem Arzt? Medikament einnehmen, ja oder nein?
-
-
-```{r dag-studie-b-table}
-#| echo: false
-#| message: false
-#| label: tbl-studie-b
-#| tbl-cap: "Daten zur Wirksamkeit eines Medikaments (Studie B)"
-studie_b <- 
-  tibble::tribble(
-~ Gruppe,          ~`Ohne Medikament`,          ~`Mit Medikament`,
-"geringer Blutdruck",    "81/87 überlebt (93%)", "234/270 überlebt (87%)",
-"hoher Blutdruck",  "192/263 überlebt (73%)",   "55/80 überlebt (69%)",
-"Gesamt",  "273/350 überlebt (78%)", "289/350 überlebt (83%)"
-  )
-
-studie_b %>% 
-  gt()
-```
-
-
-
-
-
-
-Die Daten stammen aus einer (fiktiven) klinischen Studie, $n=700$, hoher Qualität (Beobachtungsstudie).
-Bei geringem Blutdruck scheint das Medikament zu schaden.
-Bei hohem Blutdrck scheint das Medikamenet auch zu schaden.
-Aber *insgesamt* (Summe über beide Gruppe) *nicht*, da scheint es zu nutzen?!
-Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, 
-wenn er den Blutdruck nicht kennt [@pearl2016]?
-
-
-#### Kausalmodell zur Studie B
-
-
-
-
-
-Das Medikament hat einen (absenkenden) Einfluss auf den Blutdruck.
-Gleichzeitig hat das Medikament einen (toxischen) Effekt auf die Heilung.
-Verringerter Blutdruck hat einen positiven Einfluss auf die Heilung.
-Sucht man innerhalb der Leute mit gesenktem Blutdruck nach Effekten, findet man nur den toxischen Effekt: Gegeben diesen Blutdruck ist das Medikament schädlich aufgrund des toxischen Effekts. Der positive Effekt der Blutdruck-Senkung ist auf diese Art nicht zu sehen.
-
-Das Kausalmodell von Studie B ist in @fig-dag-studie-b dargestellt.
-
-
-
-```{r dag-studie-b}
-#| echo: false
-#| label: fig-dag-studie-b
-#| fig-cap: "Drug hat keinen direkten, aber zwei indirekte Effekt auf recovery, einer davon ist heilsam, einer schädlich"
-#| out-width: "50%"
-dag_studie_b <-
-  dagitty("dag{
-          drug -> pressure
-          drug -> toxic
-          pressure -> recovery
-          toxic -> recovery
-          }
-      ")
-
-
-coordinates(dag_studie_b) <-
-  list(x = c(drug = 0, pressure = 1, toxic = 1, recovery  = 2),
-       y = c(drug = 1, pressure = 0, toxic = 2, recovery = 1))
-
-
-plot(dag_studie_b)
-```
-
-Betrachtung der Teildaten zeigt nur den toxischen Effekt des Medikaments, nicht den nützlichen (Reduktion des Blutdrucks).
-
-
-
-
-:::callout-important
-Betrachtung der Gesamtdaten zeigt in diesem Fall den wahren, kausalen Effekt. 
-Stratifizieren wäre falsch, da dann nur der toxische Effekt, aber nicht der heilsame Effekt sichtbar wäre.
-:::
-
-
-
-
-
-
-### Studie A und B: Gleiche Daten, unterschiedliches Kausalmodell
-
-
-Vergleichen Sie die DAGs @fig-dag-studie-a und @fig-dag-studie-b,
-die die *Kausalmodelle* der Studien A und B darstellen:
-Sie sind *unterschiedlich*.
-Aber: Die *Daten* sind *identisch*.
-
-
-
-Kausale Interpretation - und damit Entscheidungen für Handlungen - war nur möglich, da das Kausalmodell bekannt ist. 
-Die Daten alleine reichen nicht.
-Gut merken.
-
-
-
-
-
-### Sorry, Statistik: Du allein schaffst es nicht
-
-
-
-
-Datenanalyse alleine reicht nicht für Kausalschlüsse. 🧟
-
-Datenanalyse plus Kausalinferenz erlaubt Kausalschlüsse. 📚➕📊  🟰  🤩
-
-
-
-:::callout-important
-Für Entscheidungen ("Was soll ich tun?") braucht man kausales Wissen.
-Kausales Wissen basiert auf einer Theorie (Kausalmodell) plus Daten.
-:::
-
-
-
-
-
-## Zielart *Erklären* -- Populationsinferenz
-
-```{r}
-#| include: false
-library(tidyverse)
-library(knitr)
-library(easystats)
-```
 
 
 <!-- TODO: -->
@@ -560,7 +329,7 @@ library(easystats)
 📺 [Was ist Inferenz?](https://www.youtube.com/watch?v=QNMVi6IqQ90&list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN)
 
 
-### Populationsinferenz ist das Schließen von der Stichprobe auf die Grundgesamtheit
+Populationsinferenz ist das Schließen von der Stichprobe auf die Grundgesamtheit
 
 Statistische Populationsinferenz -- meist kurz als *Inferenz* bezeichnet -- hat zum Ziel, 
 vom Teil aufs Ganze zu schließen, bzw. vom Konkreten auf das Abstrakte.
@@ -575,7 +344,7 @@ Ihr Freundeskreis ist ein *Teil* der Menschen (z.B. aus Deutschland), also eine 
 Schauen wir uns den Unterschied zwischen Stichprobe und Population näher an. $\square$
 :::
 
-### Stichprobe vs. Population
+Stichprobe vs. Population
 
 
 Nehmen wir an, wir möchten herausfinden, 
@@ -644,7 +413,6 @@ Wir unterscheiden zwei Hauptarten der Inferenzstatistik:
 :::
 
 
-### Deskriptiv- und Inferenzstatistik gehen Hand in Hand
 
 Für jede beliebige Statistik (Kennzahl von Stichprobendaten) kann man die Methoden der Populationsinferenz verwenden, 
 um den zugehörigen Kennwert (Parameter) der Population zu bestimmen, s. Tabelle @tbl-kennwerte. 
@@ -685,7 +453,6 @@ für Parameter (Population) verwendet man *griechische* Buchstaben.
 :::
 
 
-### Schätzen von Parametern einer Grundgesamtheit
 
 Meist begnügt man sich  beim Analysieren von Daten nicht mit Aussagen für eine Stichprobe, sondern will auf eine Grundgesamtheit verallgemeinern.
 
@@ -693,7 +460,7 @@ Leider sind die Parameter einer Grundgesamtheit zumeist unbekannt, daher muss ma
 Schätzwerte werden mit einem "Dach" über dem Kennwert gekennzeichnet, s. letzte Spalte in @tbl-kennwerte.
 
 
-In der angewandten Forschung interessieren häufig Fragen wie: "Welche Entscheidung ist (wahrscheinlich) besser?".
+In der angewandten Forschung und im praktischen Leben interessieren häufig Fragen wie: "Welche Entscheidung ist (wahrscheinlich) besser?".
 Da bekanntlich (fast) keine Aussagen sicher sind, spielt *Wahrscheinlichkeit* eine wichtige Rolle in den Forschungsfragen bzw. in deren Antworten.
 
 :::callout-note
@@ -725,7 +492,8 @@ A) Beschreiben
 B) Vorhersagen
 C) Erklären - Kausal
 D) Erklären - Population
-E) Keine der oben  $\square$
+E) Alle der oben genannten sind möglich
+F) Keine der oben genannten $\square$
 :::
 
 
@@ -745,7 +513,7 @@ Jedes Detail zu berücksichtigen ist nicht möglich.
 Wir müssen die Sache vereinfachen: 
 Alle Informationen ausblenden, die nicht zwingend nötig sind.
 Aber gleichzeitig die Strukturelemente der wirklichen Welt, 
-die für unsere Fragestellung zentral ist, beibehalten.
+die für unsere Fragestellung zentral sind, beibehalten.
 
 
 
@@ -760,7 +528,6 @@ Der Nutzen eines Modells ist, einen (übermäßig) komplexen Sachverhalt zu vere
 Man versucht zu vereinfachen, 
 ohne Wesentliches wegzulassen. 
 Der Speck muss weg, sozusagen. Das Wesentliche bleibt.
-
 Auf die Statistik bezogen heißt das,
 dass man einen Datensatz dabei so zusammenfasst,
 damit man das Wesentliche erkennt.
@@ -769,13 +536,6 @@ Was ist das "Wesentliche"?
 Oft interessiert man sich für die Ursachen eines Phänomens. 
 Etwa: "Wie kommt es bloß, dass ich ohne zu lernen die Klausur so gut bestanden habe?"^[Das ist natürlich nur ein fiktives, 
 komplett unrealistisches Beispiel, das auch unklaren Ursachen den Weg auf diese Seite gefunden hat.]
-Noch allgemeiner ist man dabei häufig am Zusammenhang von `X ` und `Y` interessiert, 
-s. @fig-xy, die ein Sinnbild von statistischen Modellen widergibt.
-
-Was ist das "Wesentliche"? Oft interessiert man sich für die Ursachen eines Phänomens. 
-Etwa: "Wie kommt es bloß, dass ich ohne zu lernen die Klausur so gut bestanden 
-habe?"^[Das ist natürlich nur ein fiktives, komplett unrealistisches Beispiel, 
-das auch unklaren Ursachen den Weg auf diese Seite gefunden hat.]
 Noch allgemeiner ist man dabei häufig am Zusammenhang von `X ` und `Y` interessiert, 
 s. @fig-xy, die ein Sinnbild von statistischen Modellen widergibt.
 
@@ -833,10 +593,6 @@ Alle statistischen Ergebnisse beruhen auf Modelle und sind nur insoweit gültig,
 
 
 
-
-:::callout-note
-Nutzen Sie die Übersetzungsfunktion Ihres Browsers, wenn Sie einen englischen Text lieber auf Deutsch lesen wollen. Oder einen deutschen lieber auf Englisch.
-:::
 
 
 ## Regression
@@ -899,7 +655,7 @@ der Ihnen mit Hilfe von Bildern und Animationen (okay, und etwas) Text die Grund
 
 Die Regression ist eine Art Schweizer Taschenmesser der Statistik: Für vieles gut einsetzbar.
 Anstelle von vielen verschiedenen Verfahren des statistischen Modellierens kann man (fast) immer die Regression verwenden.
-Das ist nicht nur einfacher, sondern auch schöner. 
+Das ist nicht nur einfacher, sondern auch mathematisch schöner. 
 Wir werden im Folgenden stets die Regression zum Modellieren verwenden.
 Dann wenden wir die Methoden der Inferenz auf die Kennzahlen der Regression an.
 
@@ -956,13 +712,8 @@ Links sieht man eine einfache Regression mit `hp` als UV (`X`, auch: Prädiktor)
 Das rechte Teildiagramm zeigt eine multiple Regression mit den UVs `hp` und `am`.^[Der Datensatz `mtcars` wird gerne als Studienobjekt verwendet, da er einfach ist und für viele Beispiele geeignet. 
 Wenn Sie sich einen Sachverhalt an einem einfachen Datensatz vergegenwärtigen wollen, bietet sich auch der Datensatz `mtcars` an. 
 Zudem ist er "fest in R eingebaut"; mit `data(mtcars)` können Sie ihn verfügbar machen.]
-
 Im einfachsten Fall sind die vom Modell vorhergesagten (geschätzten) Werte, $\hat{y}$, durch eine einfache Gerade beschrieben, s. @fig-regr-rules, links.
-
-
-:::{def-lm}
-In allgemeiner Form schreibt man die Regressionsgleichung als lineare Gleichung, d.h. in Form einer Gerade, s. @thm-lm. $\square$
-:::
+In allgemeiner Form schreibt man die Regressionsgleichung als lineare Gleichung, d.h. in Form einer Gerade, s. @thm-lm.
 
 
 :::{#thm-lm}
@@ -971,7 +722,7 @@ In allgemeiner Form schreibt man die Regressionsgleichung als lineare Gleichung,
 
 $$y = \beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k + \epsilon$$
 
-Man nennt alle $\beta_0, \beta_1, \beta_2, ...$ die *Koeffizienten*, *Regressionsgewichte* oder *Parameter* des Modells [@gelman2021].
+Man nennt alle $\beta_0, \beta_1, \beta_2, ...$ die  *Regressionsgewichte* (*Koeffizienten* oder *Parameter*) des Modells [@gelman2021].
 Dabei ist $\beta_0$ der *Achsenabschnitt* (eng. intercept) und $\beta_1$ die *Steigung* der Regressiongeraden.
 $\square$
 :::
@@ -1043,8 +794,7 @@ Man spricht von *Ungewissheit*, da man sich auf die *Unsicherheit das Wissen* ü
 Schließt man etwa, dass in einer Grundgesamtheit der Anteil der R-Fans bei 42% liegt, 
 so geschieht das unter Unsicherheit; es ist ungewiss.
 Man ist sich nicht sicher, 
-dass es wirklich 42% in der Population sind - und nicht etwa etwas mehr oder etwas weniger.
-
+dass es wirklich 42% in der Population sind -- und nicht etwa etwas mehr oder etwas weniger.
 Schließlich hat man *nicht* die ganze Population gesehen bzw. vermessen. 
 *Sicher* ist man sich hingegen für die Stichprobe (Messfehler einmal ausgeblendet).
 Zur Bemessung der Unsicherheit (Ungewissheit) bedient man sich der Wahrscheinlichkeitsrechnung (wo immer möglich).
@@ -1115,8 +865,8 @@ der Regressiongeraden) exakt richtig sind, s. @fig-betas-ungewiss.
 #| layout-ncol: 2
 #| echo: false
 #| fig-subcap:
-#|   - "Ungewissheit für den Achsenabschnitt"
-#|   - "Ungewissheit für die Steigung der Regressionsgeraden"
+#|   - "Ungewissheit für den Achsenabschnitt: Die Gerade könnte 'höher' oder 'niedriger' aufgehängt sein."
+#|   - "Ungewissheit für die Steigung der Regressionsgeraden: Die Gerade könnte mehr oder weniger steigen."
 
 p_toni_regr_b0 <- 
   noten2 %>% 
@@ -1229,7 +979,8 @@ Stichproben-Kennwerte schwanken um den tatsächlichen Wert in der Population her
 Um diese Ungewissheit, die sich in den Schwankungen der Stichproben-Regressionskoeffizienten ausdrückt, anzuzeigen, 
 ist ein "grauer Schleier" um die Regressionsgeraden in @fig-regr-div gekennzeichnet.
 Dieser grauer Schleier gibt also eine Spannbreite anderer, 
-plausibler Ergebnisse an, die sich in einer anderen Stichprobe auch manifestieren könnten.
+plausibler Lagen der Regressionsgeraden an, 
+die sich in einer anderen Stichprobe auch manifestieren könnten.
 
 
 
@@ -1243,13 +994,9 @@ wie groß also die Abstände zwischen vorhergesagten und tatsächlichen Werten.
 Wenn nicht die richtigen UVs im Modell sind (relevante fehlen oder auch irrelevante sind enthalten), 
 dann liegen Vorhersagen und wirkliche Werte weiter auseinander:
 diese Streuung kann man als "Rauschen" bezeichnen, s. @fig-resid-var.
-
-
-
 Diese Art der Ungewissheit ist dann interessant, 
 wenn man Vorhersagen macht und sich fragt, 
 wie *präzise* diese Vorhersage ist.
-
 Die Präzision eines Modells kann man mit einem von zwei Kennwerten ausdrücken, die die gleiche Aussage machen.
 Diese zwei Kennwerte sind $R^2$ (R-Quadrat) und $\sigma$ (sigma).
 
@@ -1266,8 +1013,8 @@ Einfach gesprochen sagt $\sigma$ wie weit eine Vorhersage im Durchschnitt vom wa
 #| label: fig-resid-var
 #| fig-cap: "Regressionsanalyse mit *gleicher* Regressionsgerade, aber *unterschiedlicher* Vorhersagegüte. Die Vorhersagefehler sind mit mit farbigen vertikalen Balken markiert. Je kürzer die Balken, desto besser (genauer) die Vorhersage."
 #| fig-subcap: 
-#|   - geringer Vorhersagefehler (hohe Vorhersagegüte)
-#|   - hoher Vorhersagefehler
+#|   - "Geringer Vorhersagefehler (hohe Vorhersagegüte): Die vertikalen Balken sind kurz."
+#|   - "Hoher Vorhersagefehler: Die vertikalen Balken sind lang."
 #|   - auch hoher Vorhersagefehler
 #| echo: false
 #| layout-ncol: 3
@@ -1357,6 +1104,8 @@ Um dieser Ungewissheit Rechnung zu tragen, gibt man nicht nur einen einzelnen We
 einen *Punktschätzer*, 
 sondern man gibt ein *Schätzbereich* an auf Basis der Daten, s. @tbl-toni-params.
 
+Man spricht anstatt von Schätzbereich auch von einem *Konfidenzintervall*.^[Tatsächlich gibt es mehrere Synonyme oder ähnliche Begriffe für Konfidenzintervall. Wir kommen später darauf detaillierter zu sprechen.]
+
 ```{r}
 #| label: tbl-toni-params
 #| tbl-cap: Punktschätzer und Schätzbereiche für die Modellkoeffizienten von `lm_toni`
@@ -1366,14 +1115,12 @@ model_parameters(lm_toni) |>
 Unser Modell gibt den 95%-Schätzbereich für den Achsenabschnitt an ca. von 36 bis 56 Klausurpunkte
 Die Steigung wird geschätzt auf ca. 0.7 bis 1.1 Klausurpunkte pro Stunde Lernzeit.
 
-Man spricht anstatt von Schätzbereich auch von einem *Konfidenzintervall*.^[Tatsächlich gibt es mehrere Synonyme oder ähnliche Begriffe für Konfidenzintervall. Wir kommen später darauf detaillierter zu sprechen.]
-
 ::: {#def-konfintervall}
 
 ### Konfidenzintervall
 
 Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schätzbereiche für Parameter wie Regressionskoeffizienten.
-Die Grenzen eines Konfidenzintervall markieren die Grenzen eines Bereichs plausibler Werte für einen Parameter.
+Die Grenzen eines Konfidenzintervall markieren die Grenzen eines Bereichs plausibler Werte für einen Parameter. $\square$
 
 :::
 
@@ -1390,7 +1137,6 @@ Dieser Befund lässt sich so interpretieren:
 > “Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95% im Bereich von 40 bis 44 Prozentpunkten.”
 
 
-Diese (einfache) Interpretation ist im Frequentismus *nicht* möglich.
 
 
 
@@ -1416,8 +1162,8 @@ Es gibt zwei Hauptarten von Inferenzstatistik: Frequentistische Inferenz und Bay
 :::{.column}
 **Frequentismus: Klassische Inferenz**
 
-1. Die Berücksichtigung von Vorwissen zum Sachgegenstand wird vom Frequentismus als subjektiv zurückgewiesen.
-2. Nur die Daten selber fliesen in die Ergebnisse ein, keine Vorannahmen.
+1. Ziel ist es, den Anteil von Fehlentscheidungen zu kontrollieren.
+2. Keine Berücksichtigung von Vorwissen zum Sachgegenstand
 3. Wahrscheinlichkeit wird über relative Häufigkeiten definiert.
 4. Es ist *nicht* möglich, die Wahrscheinlichkeit einer Hypothese bzw. eines Werts in der Population (eines Parameters) anzugeben.
 5. Stattdessen wird angegeben, wie häufig eine vergleichbare Datenlage zu erwarten ist, wenn der Versuch sehr häufig (unendlich oft) wiederholt ist.
@@ -1428,11 +1174,12 @@ Es gibt zwei Hauptarten von Inferenzstatistik: Frequentistische Inferenz und Bay
 :::{.column}
 **Bayesianische Inferenz**
 
--   Vorwissen (Priori-Wissen) fließt explizit in die Analyse ein (zusammen mit den Daten).
--   *Wenn* das Vorwissen gut ist, wird die Vorhersage durch das Vorwissen genauer, ansonsten ungenauer.
--   Die Wahl des Vorwissens muss explizit (kritisierbar) sein.
--   In der Bayes-Inferenz sind Wahrscheinlichkeitsaussagen für Hypothesen möglich.
--   Die Bayes-Inferenz erfordert mitunter viel Rechenzeit und ist daher erst in den letzten Jahren (für gängige Computer) komfortabel geworden.
+1. Ziel ist es, die Wahrscheinlichkeit einer Hypothese korrekt zu bemessen.
+2.   Vorwissen (Priori-Wissen) fließt explizit in die Analyse ein (zusammen mit den Daten).
+3.   *Wenn* das Vorwissen gut ist, wird die Vorhersage durch das Vorwissen genauer, ansonsten ungenauer.
+4.   Die Wahl des Vorwissens muss explizit (kritisierbar) sein.
+4.   In der Bayes-Inferenz sind Wahrscheinlichkeitsaussagen für Hypothesen möglich.
+4.   Die Bayes-Inferenz erfordert mitunter viel Rechenzeit und ist daher erst in den letzten Jahren (für gängige Computer) komfortabel geworden.
 :::
 ::::
 
@@ -1626,6 +1373,49 @@ Die Studie von @kabadayi2024 untersucht den Zusammenhang von Smartphone-Abhängi
 
 
 
+### Frequentist und Bayesianer
+
+
+Im Cartoon 1132 [von xkcd](https://xkcd.com/) wird sich über das Nicht-Berücksichtigen von Vorab-Informationen (Prior-Verteilung) lustig gemacht, s. @fig-xkcd-bayes.
+
+![Frequentist wettet mit Bayesianer](img/frequentists_vs_bayesians_2x.png){#fig-xkcd-bayes width=50%}
+
+[Quelle](https://xkcd.com/1132/)
+
+
+
+
+
+
+<div>
+
+<a href="https://imgflip.com/memegenerator">from Imgflip Meme Generator</a>
+
+</div>
+
+
+
+
+
+
+
+
+
+:::{#exr-pwert}
+### Peer Instruction: p-Wert
+Der p-Wert ist der zentrale Kennwert der frequentistischen Statistik. Aber er wird immer wieder missverstanden. Welche Aussage zum p-Wert ist korrekt?
+
+A) Ein p-Wert von 0,04 bedeutet, dass die Nullhypothese mit 96 % Wahrscheinlichkeit falsch ist.
+B) Ein p-Wert größer als 0,05 beweist, dass die Nullhypothese wahr ist.
+C) Ein kleiner p-Wert bedeutet, dass ein großer Effekt vorliegt.
+D) Ein p-Wert von 0,01 bedeutet, dass sich bei Wiederholung der Studis mit 99% wieder ein signifikantes Ergebnis finden wird.
+E) Keine der oben genannten. $\square$
+:::
+
+
+## Vertiefung
+
+
 
 ### Vertiefung -- Frequentistische Konfidenzintervalle werden oft falsch verstanden (Vertiefung^[nicht prüfungsrelevant])
 
@@ -1678,44 +1468,247 @@ also mit "stimmt" angekreuzt wurden, s. @fig-ci-wrong.
 
 
 
-### Frequentist und Bayesianer
+
+### Zielart *Erklären* -- Kausalinferenz
 
 
-Im Cartoon 1132 [von xkcd](https://xkcd.com/) wird sich über das Nicht-Berücksichtigen von Vorab-Informationen (Prior-Verteilung) lustig gemacht, s. @fig-xkcd-bayes.
-
-![Frequentist wettet mit Bayesianer](img/frequentists_vs_bayesians_2x.png){#fig-xkcd-bayes width=50%}
-
-[Quelle](https://xkcd.com/1132/)
-
+Mittels Kausalinferenz können wir schließen, welche Variablen *Ursachen* und welche *Wirkung* sind --
+und welche Variablen **Scheinkorrelation** erzeugen.
+Das ist wichtig, denn nur wenn man die Ursache kennt, weiß man, was man tun muss, 
+um eine Wirkung zu erzielen.
 
 
+#### Studie A: Östrogen
+
+Medikament einnehmen?
+Oder lieber nicht?
+Mit Blick auf @tbl-studie-a: Was raten Sie dem Arzt? Medikament einnehmen, ja oder nein?
+
+
+```{r tbl-studie-a}
+#| echo: false
+#| label: tbl-studie-a
+#| tbl-cap: "Daten zur Studie A"
+
+studie_a <-
+  tibble::tribble(
+     ~ Gruppe,      ~`Mit Medikament`,         ~`Ohne Medikament`,
+"Männer",    "81/87 überlebt (93%)", "234/270 überlebt (87%)",
+"Frauen",  "192/263 überlebt (73%)",   "55/80 überlebt (69%)",
+"Gesamt",  "273/350 überlebt (78%)", "289/350 überlebt (83%)"
+  ) 
+
+
+studie_a %>% 
+  gt()
+```
+
+
+@fig-studie-a zeigt die Daten aus @tbl-studie-a in einem Balkendiagram.
+
+```{r}
+#| label: fig-studie-a
+#| fig-cap: "Daten zur Studie A in einem Balkendiagram"
+#| echo: false
+
+source("R-Code/kausalstudie1.R")
+plot_kausalstudie_a
+```
 
 
 
-<div>
-
-<a href="https://imgflip.com/memegenerator">from Imgflip Meme Generator</a>
-
-</div>
-
-
-
-
-
+Die Daten stammen aus einer (fiktiven) klinischen Studie, $n=700$, 
+hoher Qualität (Beobachtungsstudie).
+Bei Männern scheint das Medikament zu helfen; 
+bei Frauen auch.
+Aber *insgesamt* (Summe von Frauen und Männern) *nicht*?!
+Kann das sein?
+Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? 
+Vielleicht nur dann, wenn er das Geschlecht kennt [@pearl2016]?!
 
 
 
 
-:::{#exr-pwert}
-### Peer Instruction: p-Wert
-Der p-Wert ist der zentrale Kennwert der frequentistischen Statistik. Aber er wird immer wieder missverstanden. Welche Aussage zum p-Wert ist korrekt?
 
-A) Ein p-Wert von 0,04 bedeutet, dass die Nullhypothese mit 96 % Wahrscheinlichkeit falsch ist.
-B) Ein p-Wert größer als 0,05 beweist, dass die Nullhypothese wahr ist.
-C) Ein kleiner p-Wert bedeutet, dass ein großer Effekt vorliegt.
-D) Ein p-Wert von 0,01 bedeutet, dass sich bei Wiederholung der Studis mit 99% wieder ein signifikantes Ergebnis finden wird.
-E) Keine der oben genannten. $\square$
+
+In Wahrheit sehe die kausale Struktur so aus:
+Das Geschlecht (Östrogen) hat einen positiven (+) Einfluss auf Einnahme des Medikaments und negativen Einfluss (-) auf Heilung.
+Das Medikament hat einen positiven (+) Einfluss auf Heilung.
+Betrachtet man die Gesamt-Daten zur Heilung, so ist der Effekt von Geschlecht (Östrogen) und Medikament *vermengt* (konfundiert, confounded).
+Die kausale Struktur, also welche Variable beeinflusst bzw. nicht,
+ist in @fig-dag-studie-a dargestellt.
+
+
+
+```{r dag-studie-a}
+#| echo: false
+#| label: fig-dag-studie-a
+#| fig-cap: "Zwei direkte Effekte (gender, drug) und ein indirekter Effekt (gender über drug) auf recovery"
+#| out-width: "50%"
+
+
+
+dag_studie_a <-
+  dagitty("dag{
+          gender -> drug
+          drug -> recovery
+          gender -> recovery
+          }
+      ")
+
+coordinates(dag_studie_a) <-
+  list(x = c(gender = 0, drug = 0, recovery  = 1),
+       y = c(gender = 0, drug = 1, recovery = 0.5))
+
+
+plot(dag_studie_a)
+```
+
+
+Betrachtung der Gesamtdaten zeigt in diesem Fall einen *konfundierten* Effekt: Geschlecht konfundiert den Zusammenhang von Medikament und Heilung.
+
+
+:::callout-important
+Aufteilen in Teilgruppen (Männer bzw. Frauen) ist also in diesem Fall der korrekte, richtige Weg.
+Achtung: Das Stratifizieren ist nicht immer und nicht automatisch die richtige Lösung.
+Stratifizieren bedeutet,
+den Gesamtdatensatz in Gruppen oder "Schichten" ("Strata").
+Würde man die Gesamzahl an Patienten mit vs. ohne Medikatment vergleichen, käme man zu einem falschen Schluss.
 :::
+
+
+
+
+### Studie B: Blutdruck
+
+
+Medikament einnehmen?
+Oder lieber nicht?
+
+Mit Blick auf @tbl-studie-b: Was raten Sie dem Arzt? Medikament einnehmen, ja oder nein?
+
+
+```{r dag-studie-b-table}
+#| echo: false
+#| message: false
+#| label: tbl-studie-b
+#| tbl-cap: "Daten zur Wirksamkeit eines Medikaments (Studie B)"
+studie_b <- 
+  tibble::tribble(
+~ Gruppe,          ~`Ohne Medikament`,          ~`Mit Medikament`,
+"geringer Blutdruck",    "81/87 überlebt (93%)", "234/270 überlebt (87%)",
+"hoher Blutdruck",  "192/263 überlebt (73%)",   "55/80 überlebt (69%)",
+"Gesamt",  "273/350 überlebt (78%)", "289/350 überlebt (83%)"
+  )
+
+studie_b %>% 
+  gt()
+```
+
+
+
+
+
+
+Die Daten stammen aus einer (fiktiven) klinischen Studie, $n=700$, hoher Qualität (Beobachtungsstudie).
+Bei geringem Blutdruck scheint das Medikament zu schaden.
+Bei hohem Blutdrck scheint das Medikamenet auch zu schaden.
+Aber *insgesamt* (Summe über beide Gruppe) *nicht*, da scheint es zu nutzen?!
+Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, 
+wenn er den Blutdruck nicht kennt [@pearl2016]?
+
+
+ Kausalmodell zur Studie B
+
+
+
+
+
+Das Medikament hat einen (absenkenden) Einfluss auf den Blutdruck.
+Gleichzeitig hat das Medikament einen (toxischen) Effekt auf die Heilung.
+Verringerter Blutdruck hat einen positiven Einfluss auf die Heilung.
+Sucht man innerhalb der Leute mit gesenktem Blutdruck nach Effekten, findet man nur den toxischen Effekt: Gegeben diesen Blutdruck ist das Medikament schädlich aufgrund des toxischen Effekts. Der positive Effekt der Blutdruck-Senkung ist auf diese Art nicht zu sehen.
+
+Das Kausalmodell von Studie B ist in @fig-dag-studie-b dargestellt.
+
+
+
+```{r dag-studie-b}
+#| echo: false
+#| label: fig-dag-studie-b
+#| fig-cap: "Drug hat keinen direkten, aber zwei indirekte Effekt auf recovery, einer davon ist heilsam, einer schädlich"
+#| out-width: "50%"
+dag_studie_b <-
+  dagitty("dag{
+          drug -> pressure
+          drug -> toxic
+          pressure -> recovery
+          toxic -> recovery
+          }
+      ")
+
+
+coordinates(dag_studie_b) <-
+  list(x = c(drug = 0, pressure = 1, toxic = 1, recovery  = 2),
+       y = c(drug = 1, pressure = 0, toxic = 2, recovery = 1))
+
+
+plot(dag_studie_b)
+```
+
+Betrachtung der Teildaten zeigt nur den toxischen Effekt des Medikaments, nicht den nützlichen (Reduktion des Blutdrucks).
+
+
+
+
+:::callout-important
+Betrachtung der Gesamtdaten zeigt in diesem Fall den wahren, kausalen Effekt. 
+Stratifizieren wäre falsch, da dann nur der toxische Effekt, aber nicht der heilsame Effekt sichtbar wäre.
+:::
+
+
+
+
+
+
+### Studie A und B: Gleiche Daten, unterschiedliches Kausalmodell
+
+
+Vergleichen Sie die DAGs @fig-dag-studie-a und @fig-dag-studie-b,
+die die *Kausalmodelle* der Studien A und B darstellen:
+Sie sind *unterschiedlich*.
+Aber: Die *Daten* sind *identisch*.
+
+
+
+Kausale Interpretation - und damit Entscheidungen für Handlungen - 
+war nur möglich, da das Kausalmodell bekannt ist. 
+Die Daten alleine reichen nicht (bei Beobachtungsstudien).
+
+
+
+
+
+
+### Sorry, Statistik: Du allein schaffst es nicht
+
+
+
+
+Datenanalyse alleine reicht nicht für Kausalschlüsse. 🧟
+
+Kausalinferenz 📚 plus Datenanalyse 📊 erlaubt Kausalschlüsse. 📚➕📊  🟰  🤩
+
+
+
+:::callout-important
+Für Entscheidungen ("Was soll ich tun?") braucht man kausales Wissen.
+Kausales Wissen basiert auf einer Theorie (Kausalmodell) plus Daten.
+:::
+
+
+
+
 
 
 
