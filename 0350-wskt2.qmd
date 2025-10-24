@@ -1,4 +1,4 @@
-# Rechnen mit Wahrscheinlichkeiten
+# Rechnen mit Wahrscheinlichkeit
 
 
 ![Bayes:Start!](img/Golem_hex.png){width=10%}
@@ -110,27 +110,41 @@ keine `6` zu würfeln, liegt bei $2/3$.]
 
 
 
-## Additionssatz 
+## Vereinigung von Ereignissen: Additionssatz 
 
 Der Additionssatz wird verwendet, wenn wir an der Wahrscheinlichkeit interessiert sind, 
 dass *mindestens eines der Ereignisse* A und B eintritt.
-"Mindestens eines der Ereignisse A und " schreibt man $A \cup B$ und sagt "A vereinigt B".
+"Mindestens eines der Ereignisse A und " schreibt man $A \cup B$ und sagt "A vereinigt B" oder "A oder B".
+
+
+
+
 
 ### Addition disjunkter Ereignisse
 
-Gegeben sei $\Omega = {1,2,3,4,5,6}$ beim normalen Würfelwurf. 
+Gegeben sei $\Omega = \{1,2,3,4,5,6\}$ beim normalen Würfelwurf. 
 Als Sinnbild: $\boxed{1\; 2\; 3\; 4\; 5\; 6}$.
 Gesucht sei die Wahrscheinlichkeit des Ereignis $A=\{1,2\}$, das also eine *1* oder  
-eine *2* geworfen wird.
+eine *2* geworfen wird, s. @fig-addition-boxed. 
 Man beachte, dass die beiden Ergebnisse disjunkt sind, s. @fig-disjunkt:
 Wenn man eine *1* wirft, hat man keine *2* geworfen.
 
 
-$\boxed{\boxed{1\; 2}\; \color{gray}{ 3\; 4\; 5\; 6}}$
+:::{#fig-addition-boxed}
+
+$$\boxed{12} \qquad \boxed{3456}$$
+
+2 Ereignisse sind günstig; 4 sind nicht günstig.
+:::
+
 
 Die Wahrscheinlichkeit für $A$ ist die Summe der Wahrscheinlichkeiten der einzelnen Ereignisse (*1* und *2*):
 
 $Pr(1 \cup 2) = \frac{1}{6} + \frac{1}{6} = \frac{2}{6}$
+
+Visuell ausgedrückt:
+
+$$\frac{\boxed{12}}{\boxed{123456}}$$
 
 
 :::{#def-add-disjunkt}
@@ -144,7 +158,7 @@ Die Wahrscheinlichkeit, dass mindestens eines der beiden Ereignisse eintritt, is
 ### Additionssatz für disjunkte Ereignisse
 
 
-$$Pr(A \cup B) = P(A) + P(B) \square$$
+$$Pr(A \cup B) = Pr(A) + Pr(B) \square$$
 
 :::
 
@@ -479,7 +493,11 @@ Es ergeben sich folgende Wahrscheinlichkeiten:
 $Pr(A) = 2/4; Pr(B) = 2/4; Pr(A \cap B) = 1/4; Pr(A|B) = 1/2$
 
 
+@eq-bed-wskt-box versinnbildlicht die Berechnung von $Pr(A|B)$ als Bruch.
 
+
+
+$$\frac{\boxed{\begin{array}{c}\phantom{mm}\\\phantom{mm}\end{array}}}{\boxed{\begin{array}{c}\phantom{mmmm}\\\phantom{mmmm}\end{array}}}$${#eq-bed-wskt-box}
 
 Die Wahrscheinlichkeit für $A$, wenn $B$ schon eingetreten ist, 
 berechnet sich so, s. @thm-pr-cond und @fig-b-geg-a.
@@ -544,8 +562,8 @@ also ca. 7%.^[$Pr(L).85; Pr(\neg L) = .15; Pr(B) =.81; Pr(\neg B) = .19$] $\squa
 
 
 :::{#exm-kalt-regen}
-### Kalt und Regen
-Die Wahrscheinlichkeit, dass es kalt ist, wenn es regnet, 
+### Kalt wenn Regen
+Die Wahrscheinlichkeit, dass es kalt ist, wenn es regnet (gegeben, dass es regnet), 
 ist gleich der Wahrscheinlichkeit, dass es gleichzeitig kalt ist und regnet,
 geteilt durch die Wahrscheinlichkeit, dass es regnet.$\square$
 :::
@@ -554,8 +572,22 @@ geteilt durch die Wahrscheinlichkeit, dass es regnet.$\square$
 
 ## Stochastische (Un-)Abhängigkeit
 
+In der Forschung und im Alltag sind wir oft daran interessiert,
+ob zwei Ereignisse voneinander abhängig sind oder nicht:
+Lernen und Klausur bestehen, Rauchen und Lungenkrebs, Impfung und Infektion, Werbung und Verkaufserfolg, usw.
+
 
 ### Unabhängigkeit
+
+:::{#exm-indep-intro}
+### Unabhängigkeit
+
+- Regentanz und Regen sind unabhängig.
+- "Es regnet in Berlin" und "In Tokio fällt eine Münze auf Kopf"
+- "Ich habe 10 Mal hintereinander Kopf geworfen" und "Beim nächsten Mal werfe ich Kopf" (bei einer fairen Münze)
+- Augenfarbe und Blutgruppe
+- Es regnet und ich gewinne im Lotto $\square$
+:::
 
 Stochastische Unabhängigkeit ist ein Spezialfall von Abhängigkeit: 
 Es gibt sehr viele Ausprägungen für Abhängigkeit, aber nur eine für Unabhängigkeit.
@@ -572,7 +604,7 @@ Daher kann man vereinbaren, dass Unabhängigkeit erfüllt ist, wenn die Gleichhe
 
  \newcommand{\indep}{\perp \!\!\! \perp}
 
-::: {#thm-indep}
+:::{#thm-indep}
 
 ### Stochastische Unabhängigkeit
 
@@ -585,7 +617,7 @@ Die Unabhängigkeit von $A$ und $B$ wird manchmal so in Kurzschreibweise ausgedr
 :::
 
 
-::: {#thm-indep2}
+:::{#thm-indep2}
 ### Stochastische Unabhängigkeit 2
 
 Setzt man @thm-pr-cond in @thm-indep (linke Seite) ein, so folgt^[Vgl. @thm-multtheorem]
@@ -609,47 +641,7 @@ der melde sich bitte bei mir.]
 
 ```{r}
 #| echo: false
-data("titanic_train")
-
-titanic2 <- 
-titanic_train %>%
-  select(Pclass, Survived, Embarked, Age) %>%
-  mutate(Survived = factor(Survived)) |> 
-  filter(Embarked %in% c("C", "Q", "S")) %>%
-  mutate(Survived = factor(Survived)) |> 
-  mutate(Age_prime_num = isprime(Age),
-         Age_prime = case_when(
-           Age_prime_num == 0 ~ "prime",
-           TRUE ~ "non-prime"
-         ),
-         Age_prime = factor(Age_prime)) %>%
-  mutate(Survived = factor(Survived))
-
-plottitanic1 <-
-  titanic2 |> 
-  ggplot(aes(x = Pclass)) +
-  geom_bar(aes(fill = Survived), position = "fill") +
-  theme(legend.position = "bottom")  +
-  scale_fill_okabeito()
-
-
-plottitanic2 <-
-  titanic2 |> 
-  ggplot(aes(x = Embarked)) +
-  geom_bar(aes(fill = Survived), position = "fill") +
-  theme(legend.position = "bottom") +
-  scale_fill_okabeito()
-
-plottitanic3 <-
-  titanic2 |> 
-  ggplot(aes(x = Age_prime)) +
-  geom_bar(aes(fill = Survived), position = "fill") +
-  theme(legend.position = "bottom") +
-  scale_x_discrete(breaks = c(0, 2),
-                   labels = c("Nicht Prim", "Prim")) +
-  scale_fill_okabeito()
-
-# plottitanic3
+source("R-Code/titanic_plots.R")
 
 ```
 
@@ -675,7 +667,6 @@ titanic2 |>
   gt::gt() |> 
   gt::fmt_number(columns = prop, decimals = 2)
 ```
-
 
 :::
 
