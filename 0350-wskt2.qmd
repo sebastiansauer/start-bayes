@@ -1,5 +1,6 @@
-# Rechnen mit Wahrscheinlichkeiten
+# Rechnen mit Wahrscheinlichkeit
 
+## Lernsteuerung
 
 ![Bayes:Start!](img/Golem_hex.png){width=10%}
 
@@ -35,7 +36,6 @@ source("children/plots_wskt.R")
 ```
 
 
-## Lernsteuerung
 
 
 ### Position im Modulverlauf
@@ -65,7 +65,7 @@ Sie können ...
 
 
 - die Grundbegriffe der Wahrscheinlichkeitsrechnung erläuternd definieren
-- typische Relationen (Operationen) von Ereignissen anhand von Beispielen veranschaulichen
+- typische Reoationen (Operationen) von Ereignissen anhand von Beispielen veranschaulichen
 - mit Wahrscheinlichkeiten rechnen
 
 
@@ -106,12 +106,29 @@ Das hört sich vielleicht wild an, ist aber oft ganz einfach.
 Ein (normaler) Würfel wird geworfen. Was ist die Wahrscheinlichkeit für eine gerade Zahl, also für das Ereignis $A=\{2, 4, 6\}$? Diese Wahrscheinlichkeit beträgt $Pr(\text{gerade Zahl}) = 1/6 + 1/6 + 1/6 = 3/6 = 1/2$. $\square$
 ::: 
 
+:::{#exm-ind}
+### Gezinkter Würfel
+Ein gezinkter Würfel hat eine erhöhte Wahrscheinlichkeit für das Ereignis $A=$"6 liegt oben", 
+und zwar gelte $Pr(A)=1/3$.
+Was ist die Wahrscheinlichkeit, *keine*  `6` zu würfeln? $\square$^[Die Wahrscheinlichkeit, 
+keine `6` zu würfeln, liegt bei $2/3$.]
+:::
+
+
+
+## Vereinigung von Ereignissen: Additionssatz 
+
+Der Additionssatz wird verwendet, wenn wir an der Wahrscheinlichkeit interessiert sind, 
 
 Der Additionssatz wird verwendet, wenn wir an der 
 Wahrscheinlichkeit bei der Vereinigung zweier Ereignisse interessiert sind.
 Also an der Wahrscheinlichkeit,
 dass *mindestens eines der Ereignisse* A und B eintritt.
-"Mindestens eines der Ereignisse A und " schreibt man $A \cup B$ und sagt "A vereinigt B" oder auch "A *oder* B".
+"Mindestens eines der Ereignisse A und " schreibt man $A \cup B$ und sagt "A vereinigt B" oder auch "A *oder* B" oder "A oder B".
+
+
+
+
 
 
 
@@ -120,16 +137,26 @@ dass *mindestens eines der Ereignisse* A und B eintritt.
 Gegeben sei $\Omega = \{1,2,3,4,5,6\}$ beim normalen Würfelwurf. 
 Als Sinnbild: $\boxed{1\; 2\; 3\; 4\; 5\; 6}$.
 Gesucht sei die Wahrscheinlichkeit des Ereignis $A=\{1,2\}$, das also eine *1* oder  
-eine *2* geworfen wird.
+eine *2* geworfen wird, s. @fig-addition-boxed. 
 Man beachte, dass die beiden Ergebnisse disjunkt sind, s. @fig-disjunkt:
 Wenn man eine *1* wirft, hat man keine *2* geworfen.
 
 
-$\boxed{\boxed{1\; 2}\; \color{gray}{ 3\; 4\; 5\; 6}}$
+:::{#fig-addition-boxed}
+
+$$\boxed{12} \qquad \boxed{3456}$$
+
+2 Ereignisse sind günstig; 4 sind nicht günstig.
+:::
+
 
 Die Wahrscheinlichkeit für $A$ ist die Summe der Wahrscheinlichkeiten der einzelnen Ereignisse (*1* und *2*):
 
 $Pr(1 \cup 2) = \frac{1}{6} + \frac{1}{6} = \frac{2}{6}$
+
+Visuell ausgedrückt:
+
+$$\frac{\boxed{12}}{\boxed{123456}}$$
 
 
 :::{#def-add-disjunkt}
@@ -143,7 +170,7 @@ Die Wahrscheinlichkeit, dass mindestens eines der beiden Ereignisse eintritt, is
 ### Additionssatz für disjunkte Ereignisse
 
 
-$$Pr(A \cup B) = P(A) + P(B) \square$$
+$$Pr(A \cup B) = Pr(A) + Pr(B) \square$$
 
 :::
 
@@ -234,7 +261,7 @@ gt(d)
 
 \begin{aligned}
 Pr(A) &= Pr(S_1B \cup S_2B) \\
-&= Pr(S1_B) + Pr(S_2B) - Pr(S_1B \cap S_2B)  \\
+&= Pr(S_1B) + Pr(S_2B) - Pr(S_1B \cap S_2B)  \\
 &= (90 + 94 - 85) / 100 = 99 / 100\\
 \end{aligned}
 
@@ -478,7 +505,11 @@ Es ergeben sich folgende Wahrscheinlichkeiten:
 $Pr(A) = 2/4; Pr(B) = 2/4; Pr(A \cap B) = 1/4; Pr(A|B) = 1/2$
 
 
+@eq-bed-wskt-box versinnbildlicht die Berechnung von $Pr(A|B)$ als Bruch.
 
+
+
+$$\frac{\boxed{\begin{array}{c}\phantom{mm}\\\phantom{mm}\end{array}}}{\boxed{\begin{array}{c}\phantom{mmmm}\\\phantom{mmmm}\end{array}}}$${#eq-bed-wskt-box}
 
 Die Wahrscheinlichkeit für $A$, wenn $B$ schon eingetreten ist, 
 berechnet sich so, s. @thm-pr-cond und @fig-b-geg-a.
@@ -543,8 +574,8 @@ also ca. 7%.^[$Pr(L).85; Pr(\neg L) = .15; Pr(B) =.81; Pr(\neg B) = .19$] $\squa
 
 
 :::{#exm-kalt-regen}
-### Kalt und Regen
-Die Wahrscheinlichkeit, dass es kalt ist, wenn es regnet, 
+### Kalt wenn Regen
+Die Wahrscheinlichkeit, dass es kalt ist, wenn es regnet (gegeben, dass es regnet), 
 ist gleich der Wahrscheinlichkeit, dass es gleichzeitig kalt ist und regnet,
 geteilt durch die Wahrscheinlichkeit, dass es regnet.$\square$
 :::
@@ -554,7 +585,24 @@ geteilt durch die Wahrscheinlichkeit, dass es regnet.$\square$
 ## Stochastische (Un-)Abhängigkeit
 
 
+### Warum ist das wichtig?
+
+In der Forschung und im Alltag sind wir oft daran interessiert,
+ob zwei Ereignisse voneinander abhängig sind oder nicht:
+Lernen und Klausur bestehen, Rauchen und Lungenkrebs, Impfung und Infektion, Werbung und Verkaufserfolg, usw.
+
+
 ### Unabhängigkeit
+
+:::{#exm-indep-intro}
+### Unabhängigkeit
+
+- Regentanz und Regen sind unabhängig.
+- "Es regnet in Berlin" und "In Tokio fällt eine Münze auf Kopf"
+- "Ich habe 10 Mal hintereinander Kopf geworfen" und "Beim nächsten Mal werfe ich Kopf" (bei einer fairen Münze)
+- Augenfarbe und Blutgruppe
+- Es regnet und ich gewinne im Lotto $\square$
+:::
 
 Stochastische Unabhängigkeit ist ein Spezialfall von Abhängigkeit: 
 Es gibt sehr viele Ausprägungen für Abhängigkeit, aber nur eine für Unabhängigkeit.
@@ -571,11 +619,11 @@ Daher kann man vereinbaren, dass Unabhängigkeit erfüllt ist, wenn die Gleichhe
 
  \newcommand{\indep}{\perp \!\!\! \perp}
 
-::: {#thm-indep}
+:::{#thm-indep}
 
 ### Stochastische Unabhängigkeit
 
-$$ Pr(A) = Pr(A|B) =Pr(A|\neg B) \square$$
+$Pr(A) = Pr(A|B) =Pr(A|\neg B) \quad \square$$
 
 In Worten: Wenn die Wahrscheinlichkeit von *A* sich nicht ändert,
 wenn *B* eingetreten ist, so ist *A* von *B* (stochastisch) unabhängig.
@@ -584,7 +632,7 @@ Die Unabhängigkeit von $A$ und $B$ wird manchmal so in Kurzschreibweise ausgedr
 :::
 
 
-::: {#thm-indep2}
+:::{#thm-indep2}
 ### Stochastische Unabhängigkeit 2
 
 Setzt man @thm-pr-cond in @thm-indep (linke Seite) ein, so folgt^[Vgl. @thm-multtheorem]
@@ -608,48 +656,7 @@ der melde sich bitte bei mir.]
 
 ```{r}
 #| echo: false
-data("titanic_train")
-
-titanic2 <- 
-titanic_train %>%
-  select(Pclass, Survived, Embarked, Age) %>%
-  mutate(Survived = factor(Survived)) |> 
-  filter(Embarked %in% c("C", "Q", "S")) %>%
-  mutate(Survived = factor(Survived)) |> 
-  mutate(Age_prime_num = isprime(Age),
-         Age_prime = case_when(
-           Age_prime_num == 0 ~ "prime",
-           TRUE ~ "non-prime"
-         ),
-         Age_prime = factor(Age_prime)) %>%
-  mutate(Survived = factor(Survived))
-
-plottitanic1 <-
-  titanic2 |> 
-  ggplot(aes(x = Pclass)) +
-  geom_bar(aes(fill = Survived), position = "fill") +
-  theme(legend.position = "bottom")  +
-  scale_fill_okabeito()
-
-
-plottitanic2 <-
-  titanic2 |> 
-  ggplot(aes(x = Embarked)) +
-  geom_bar(aes(fill = Survived), position = "fill") +
-  theme(legend.position = "bottom") +
-  scale_fill_okabeito()
-
-plottitanic3 <-
-  titanic2 |> 
-  ggplot(aes(x = Age_prime)) +
-  geom_bar(aes(fill = Survived), position = "fill") +
-  theme(legend.position = "bottom") +
-  scale_x_discrete(breaks = c(0, 2),
-                   labels = c("Nicht Prim", "Prim")) +
-  scale_fill_okabeito()
-
-# plottitanic3
-
+source("R-Code/titanic_plots.R")
 ```
 
 
@@ -674,7 +681,6 @@ titanic2 |>
   gt::gt() |> 
   gt::fmt_number(columns = prop, decimals = 2)
 ```
-
 
 :::
 
@@ -740,7 +746,7 @@ wenn wir wissen, dass *L* nicht vorliegt. $\square$
 ### Zusammenhang von Covidsterblichkeit und Impfquote
 
 
-Sind die Ereignisse *Tod durch Covid*  bzw. *Impfquote* ($A$) 
+Sind die Ereignisse *Tod durch Covid (T)*  bzw. *Impfquote* ($I$) 
 und *Land*^[hier mit den zwei Ausprägungen *DEU* und *USA*] ($B$) voneinander abhängig (s. @fig-covid1)?
 
 ```{r covid1}
@@ -755,58 +761,7 @@ und *Land*^[hier mit den zwei Ausprägungen *DEU* und *USA*] ($B$) voneinander a
 #|   - Anteil Corona-Tote und Land sind voneinander abhängig
 
 
-# source: https://ourworldindata.org/covid-vaccinations
-# access date: 2021-09-24
-# licence: https://ourworldindata.org/covid-vaccinations#licence
 
-
-
-dfile <- "data/owid-covid-data.csv"
-
-
-
-d <- read_csv(dfile)
-
-d2<-
-  d %>%
-  filter(iso_code %in% c("DEU", "USA")) %>%
-  mutate(date = as_date(date)) %>%
-  rename(Land = iso_code) %>%
-  select(date,
-         Land,
-         #total_deaths,
-         #new_deaths,
-         people_fully_vaccinated_per_hundred,
-         total_deaths_per_million,
-         #new_vaccinations,
-         total_vaccinations) %>%
-  filter(date == "2021-09-23") %>%
-  group_by(Land)
-
-
-
-plot_covid1 <-
-  d2 %>%
-  ggplot(aes(x = Land,
-             y = people_fully_vaccinated_per_hundred)) +
-  geom_col() +
-  labs(title = "Anteil komplett geimpfter Personen",
-       subtitle = "2021-09-23")
-
-
-
-
-plot_covid2 <-
-  d2 %>%
-  ggplot(aes(x = Land,
-             y = total_deaths_per_million)) +
-  geom_col()+
-  labs(title = "Corona-Tote pro Million",
-       subtitle = "2021-09-23")
-
-
-plot_covid1
-plot_covid2
 ```
 
 Ja, die beiden Ereignisse sind abhängig, da in beiden Diagrammen gilt: $Pr(A|B) \ne Pr(A) \ne Pr(A|\neg B)$.$\square$^[
@@ -856,14 +811,15 @@ Stochastische Unabhängigkeit impliziert nicht kausale Unabhängigkeit. $\square
 
 
 
-## Multiplikationssatz
+## Wahrscheinlichkeit gemeinsamer Ereignisse: Multiplikationssatz
 
 Gegeben seien die Ereignisse $A$ und $B$. 
 Der Multiplikationssatz wird verwendet, 
 wenn wir an der Wahrscheinlichkeit interessiert sind, 
 dass *beide Ereignisse* $A$ und $B$ der Fall sind; 
+man spricht auch von der *gemeinsamen Wahrscheinlichkeit*.
 @fig-ab verdeutlicht dies für zwei unabhängige Ereignisse.
-Man schreibt "A und B" als $A \cap B$ (lies "A geschnitten B" oder "A und B") oder kurz $AB$, um anzuzeigen, dass sowohl $A$ als auch $B$ eingetreten sind.
+Man schreibt "A und B" als $A \cap B$ (lies "A geschnitten B" oder "A *und* B") oder kurz $AB$, um anzuzeigen, dass sowohl $A$ als auch $B$ eingetreten sind.
 
 ```{r, ref.label = "fig-ab"}
 #| out-width: 50%
@@ -881,6 +837,7 @@ Eine andere Sache ist es,
 nach der Wahrscheinlichkeit zu fragen, 
 dass es gleichzeitig kalt ist und regnet, 
 dass also beide Ereignisse (kalt und Regen) eintreten: $Pr(K \cap R), Pr(KR)$. $\square$
+
 :::
 
 
@@ -899,14 +856,14 @@ Dabei vereinbaren wir, dass "Kopf" als "Treffer" zählt (und "Zahl" als "Niete")
 %%| out-width: 50%
 %%| fig-cap: "Wir werfen zwei faire Münzen: Zweifach wiederholtes Zufallsexperiment"
 flowchart TD
-    A[Start] --> B1[T]
-    A --> B2[N]
+    A[Start] --1/2--> B1[T]
+    A --1/2-->  B2[N]
 
     %% Zweiter Wurf
-    B1 --> C1[TT]
-    B1 --> C2[TN]
-    B2 --> C3[NT]
-    B2 --> C4[NN]
+    B1 --1/2-->  C1[TT - 1/4]
+    B1 --1/2-->  C2[TN - 1/4]
+    B2 --1/2-->  C3[NT - 1/4]
+    B2 --1/2-->  C4[NN - 1/4]
 
 ```
 
@@ -935,10 +892,10 @@ Die Wahrscheinlichkeiten der resultierenden Ereignisse finden sich in @tbl-muenz
 #| label: tbl-muenz2
 #| tbl-cap: Wahrscheinlichkeiten der Ereignisse im zweimaligen Münzwurf
 tibble::tribble(
-  ~Ereignis,               ~Pr,
-       "0K", "1/2 * 1/2 = 1/4",
-       "1K", "1/4 + 1/4 = 1/2",
-       "2K", "1/2 * 1/2 = 1/4"
+  ~Ereignis,               ~Pr, ~`Anzahl günstiger Pfade`, 
+       "0T", "1/2 * 1/2 = 1/4","1",
+       "1T", "1/4 + 1/4 = 1/2","2",
+       "2T", "1/2 * 1/2 = 1/4","1"
   ) %>% gt()
 ```
 
@@ -955,7 +912,7 @@ Pr_K1K2
 
 
 :::{#def-multsatz}
-### Multiplikationssatz für unabhängige Ereignisse
+### Multiplikationssatz der Wahrscheinlichkeit für unabhängige Ereignisse
 Die Wahrscheinlichkeit, dass zwei (oder mehr) unabhängige Ereignisse $A$ und $B$ *gemeinsam* eintreten, 
 ist gleich dem Produkt ihrer jeweiligen Wahrscheinlichkeiten, s. @thm-multtheorem. $\square$
 :::
@@ -984,24 +941,24 @@ Dabei vereinbaren wir wieder, dass "Kopf" (K) als "Treffer" gilt und "Zahl" (Z) 
 %%| label: fig-dreimuenzen
 %%| fig-cap: "Wir werfen drei faire Münzen: Das dreifach wiederholte binäre Zufallexperiment"
 graph TD
-    A[Start] --> B1[T]
-    A --> B2[N]
+    A[Start] --1/2-->  B1[T]
+    A --1/2-->  B2[N]
 
     %% Zweiter Wurf
-    B1 --> C1[TT]
-    B1 --> C2[TN]
-    B2 --> C3[NT]
-    B2 --> C4[NN]
+    B1 --1/2-->  C1[TT]
+    B1 --1/2-->  C2[TN]
+    B2 --1/2-->  C3[NT]
+    B2 --1/2-->  C4[NN]
 
     %% Dritter Wurf
-    C1 --> D1[TTT]
-    C1 --> D2[TTN]
-    C2 --> D3[TNT]
-    C2 --> D4[TNN]
-    C3 --> D5[NTT]
-    C3 --> D6[NTN]
-    C4 --> D7[NNT]
-    C4 --> D8[NNN]
+    C1 --1/2-->  D1[TTT]
+    C1 --1/2-->  D2[TTN]
+    C2 --1/2-->  D3[TNT]
+    C2 --1/2-->  D4[TNN]
+    C3 --1/2-->  D5[NTT]
+    C3 --1/2-->  D6[NTN]
+    C4 --1/2-->  D7[NNT]
+    C4 --1/2-->  D8[NNN]
 ```
 
 
@@ -1031,11 +988,11 @@ so ist die Wahrscheinlichkeit für einen Endkonten $Pr(X^k)=p^k$.
 #| tbl-cap: "Ausgewählte Wahrscheinlichkeiten von Ereignissen im dreifachen Münzwurf"
 #| label: tbl-baum3
 tibble::tribble(
-  ~Ereignis,                     ~Pr,
-       "0K", "1/2 * 1/2 * 1/2 = 1/8",
-       "1K", "1/8 + 1/8 + 1/8 = 3/8",
-       "2K",          "3 * 1/8 = 3/8",
-       "3K", "1/2 * 1/2 * 1/2 = 1/8"
+  ~Ereignis,                     ~Pr, ~`Anzahl günstiger Pfade`, 
+       "0T", "1/2 * 1/2 * 1/2 = 1/8", 1,
+       "1T", "1/8 + 1/8 + 1/8 = 3/8",3,
+       "2T",          "3 * 1/8 = 3/8",3,
+       "3T", "1/2 * 1/2 * 1/2 = 1/8",1 
   ) |> 
   gt()
 ```
@@ -1073,7 +1030,7 @@ In einer Urne befinden sich fünf Kugeln, von denen vier rot sind und eine blau 
 
 Hier ist unsere Urne:
 
-$$\boxed{\color{red}{R, R, R, R}, \color{blue}B}$$
+$$\boxed{\color{red}{R, R, R, R}, \color{blue}\mathcal{B}}$$
 
 Wie groß ist die Wahrscheinlichkeit, dass bei zwei Ziehungen ohne Zurücklegen (*ZOZ*) *zwei rote Kugeln* gezogen werden [@bourier2011], S. 47. 
 Ereignis A: "Kugel im 1. Zug hat die Farbe Rot". 
@@ -1121,10 +1078,13 @@ s. @thm-gem-wskt-abh. $\square$
 $$Pr(A \cap B) = Pr(A) \cdot Pr(B|A) \quad \square$$
 :::
 
+Allgemein ist die Wahrscheinlichkeit, dass zwei Ereignisse $A$ und $B$ gemeinsam eintreten,
+gleich dem Produkt der Wahrscheinlichkeit von $B$ und der bedingten Wahrscheinlichkeit von $A$ gegeben $B$, s. @thm-gem-wskt-abh.
+Im Fall von Unabhängigkeit vereinfacht sich die Formel zu der in @thm-multtheorem.
 
 
 :::{#exm-kaltregen}
-### Kalt und Regen
+### Nochmal kalt und Regen
 
 Von @mcelreath2020 stammt diese Verdeutlichung der gemeinsamen Wahrscheinlichkeit.
 Was ist die Wahrscheinlichkeit für das gemeinsame Auftreten von *kalt ❄ und Regen ⛈️*? 
@@ -1137,7 +1097,7 @@ wenn's *regnet* ⛈️ mal die Wahrscheinlichkeit von *Regen* ⛈️.
 
 Das Gesagte als Emoji-Gleichung ist in @eq-kalt-regen-emoji dargestellt.
 
-$$Pr(❄️ \text{ und } ⛈️) = P(⛈️ |❄️ ) \cdot P(❄️) =  P(❄️ |⛈️ ) \cdot P(⛈️)$${#eq-kalt-regen-emoji}
+$$Pr(❄️ \text{ und } ⛈️) = P(❄️) \cdot P(⛈️ |❄️ )  =  P(❄️) \cdot P(❄️ |⛈️ )$${#eq-kalt-regen-emoji}
 
 
 Man kann  die "Gleichung drehen"^[Der Multiplikationssatz ist symmetrisch], s. @eq-kalt-regen-emoji2. 
@@ -1176,14 +1136,14 @@ das sind 19%.
 %%| fig-cap: "Baumdiagramm für ein ein zweistufiges Zufallsereignis: Bertie Botts Bohnen."
 %%| label: fig-bertie1
 graph LR
-    A[Start: 20 Bohnen] --> B1[Bohne 1 gut = 18/20]
-    A --> B2[Bohne 1 schlecht = 2/20]
+    A[Start: 20 Bohnen] -- 18/20 --> B1[Bohne 1 gut]
+    A -- 2/20 --> B2[Bohne 1 schlecht]
     
-    B1 --> C1[Bohne 2 gut = 17/19]
-    B1 --> C2[Bohne 2 schlecht = 2/19]
+    B1 -- 17/19 --> C1[Bohne 2 gut]
+    B1 -- 2/19 --> C2[Bohne 2 schlecht]
     
-    B2 --> C3[Bohne 2 gut = 18/19]
-    B2 --> C4[Bohne 2 schlecht = 1/19]
+    B2 -- 18/19 --> C3[Bohne 2 gut]
+    B2 -- 1/19 --> C4[Bohne 2 schlecht]
     
     C1 --> D1[Ergebnis: gut, gut]
     C2 --> D2[Ergebnis: gut, schlecht]
@@ -1254,14 +1214,14 @@ https://www.geogebra.org/m/WVKur4yM) gelöst werden kann.$\square$
 :::{#exr-multsatz}
 ### Peer Instruction: Dreifacher Münzwurf
 
-Fünf Studierende unterhalten sich, wie man einen dreifachen Münzwurf verstehen kann mit dem Ergebnis von drei Treffern. Welcher Studierende liegt *falsch*?
+Fünf Studierende unterhalten sich, wie man einen dreifachen Münzwurf mit dem Ergebnis von drei Treffern verstehen kann. 
+Welcher Studierende liegt *falsch*?
 Gehen Sie von einer faire Münze aus und Unabhängigkeit der Würfe.
 
-A) Wirft man die Münze drei Mal, so gibt es 6 Ergebnisse, die alle gleich wahrscheinlich sind. Aber nur ein Ergebnis ist gesucht, nämlich 3 von 3 Treffern. Also ist die Wahrscheinlichkeit 1/6, ca. 17%.
+A) Wirft man die Münze drei Mal, so gibt es 4 verschiedene Ergebnisse (0 bis 3 Treffer), die alle gleich wahrscheinlich sind. Aber nur ein Ergebnis ist gesucht, nämlich 3 von 3 Treffern. Also ist die Wahrscheinlichkeit 1/6, ca. 17%.
 B) Man kann einfach einen Computer fragen, z.B. R mit ` dbinom(x = 3, size = 3, prob = 1/2)`, da kommt ungefähr 12% raus.
 C) Wirft man die Münze drei Mal, so gibt es 8 Ergebnisse, die alle gleich wahrscheinlich sind. Aber nur ein Ergebnis ist gesucht, nämlich 3 von 3 Treffern. Also ist die Wahrscheinlichkeit 1/8, ca. 12,5%.
 D) Wer rechnen kann, ist klar im Vorteil $\left( \frac{1}{2} \right)^3 = \left( \frac{1}{2^3} \right) = \left( \frac{1}{8} \right)$
-E) Holt mich hier raus! $\square$
 :::
 
 
