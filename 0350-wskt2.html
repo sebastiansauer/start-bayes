@@ -1,0 +1,3930 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.31">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>4&nbsp; Rechnen mit Wahrscheinlichkeit – Start:Bayes!</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./0400-Verteilungen.html" rel="next">
+<link href="./0300-Wskt.html" rel="prev">
+<link href="./img/Golem_hex.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ef56b68f8fa1e9d2ba328e99e439f80.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-0c3ef1a7a266e32c8f1c7e546cf8cabb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-2f7cced78de7748216b8364af62012d1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-0c3ef1a7a266e32c8f1c7e546cf8cabb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Keine Treffer",
+    "search-matching-documents-text": "Treffer",
+    "search-copy-link-title": "Link in die Suche kopieren",
+    "search-hide-matches-text": "Zusätzliche Treffer verbergen",
+    "search-more-match-text": "weitere Treffer in diesem Dokument",
+    "search-more-matches-text": "weitere Treffer in diesem Dokument",
+    "search-clear-button-title": "Zurücksetzen",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Abbrechen",
+    "search-submit-button-title": "Abschicken",
+    "search-label": "Suchen"
+  }
+}</script><meta name="mermaid-theme" content="neutral">
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script><script src="site_libs/quarto-diagram/mermaid-init.js"></script><link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script><script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script><link href="site_libs/nouislider-7.0.10/jquery.nouislider.min.css" rel="stylesheet">
+<script src="site_libs/nouislider-7.0.10/jquery.nouislider.min.js"></script><link href="site_libs/selectize-0.12.0/selectize.bootstrap3.css" rel="stylesheet">
+<script src="site_libs/selectize-0.12.0/selectize.min.js"></script><link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script><script src="site_libs/kePrint-0.0.1/kePrint.js"></script><link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="specifics/styles.css">
+</head>
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./0200-Inferenz.html">Grundlagen</a></li><li class="breadcrumb-item"><a href="./0350-wskt2.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Rechnen mit Wahrscheinlichkeit</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Suchen" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Start:Bayes!</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/sebastiansauer/start-bayes" title="Quellcode" class="quarto-navigation-tool px-1" aria-label="Quellcode"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Dunkelmodus umschalten"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Lesemodus umschalten">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Suchen"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Organisatorisches</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Einführung</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Grundlagen</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0200-Inferenz.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inferenz</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0300-Wskt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Hallo, Wahrscheinlichkeit</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0350-wskt2.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Rechnen mit Wahrscheinlichkeit</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0400-Verteilungen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Verteilungen</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bayes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0500-Globusversuch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Bayes-Versuch</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0600-Post.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Die Post befragen</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lineare Modelle</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0800-gauss.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Gauss-Modelle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0900-lineare-modelle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Einfache lineare Modelle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1050-Schaetzen-Testen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Schätzen vs.&nbsp;Testen</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1000-metrische-AV.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fallbeispiele</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Anhang</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1200-abschluss.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Abschluss</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./definitions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Definitionen</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./theorems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Theoreme</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Literaturverzeichnis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./imprint.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Impressum</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-privacy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Datenschutzhinweise</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Inhaltsverzeichnis</h2>
+   
+  <ul>
+<li>
+<a href="#lernsteuerung" id="toc-lernsteuerung" class="nav-link active" data-scroll-target="#lernsteuerung"><span class="header-section-number">4.1</span> Lernsteuerung</a>
+  <ul>
+<li><a href="#position-im-modulverlauf" id="toc-position-im-modulverlauf" class="nav-link" data-scroll-target="#position-im-modulverlauf"><span class="header-section-number">4.1.1</span> Position im Modulverlauf</a></li>
+  <li><a href="#%C3%BCberblick" id="toc-überblick" class="nav-link" data-scroll-target="#%C3%BCberblick"><span class="header-section-number">4.1.2</span> Überblick</a></li>
+  <li><a href="#lernziele" id="toc-lernziele" class="nav-link" data-scroll-target="#lernziele"><span class="header-section-number">4.1.3</span> Lernziele</a></li>
+  <li><a href="#begleitliteratur" id="toc-begleitliteratur" class="nav-link" data-scroll-target="#begleitliteratur"><span class="header-section-number">4.1.4</span> Begleitliteratur</a></li>
+  <li><a href="#pr%C3%BCfungsrelevanter-stoff" id="toc-prüfungsrelevanter-stoff" class="nav-link" data-scroll-target="#pr%C3%BCfungsrelevanter-stoff"><span class="header-section-number">4.1.5</span> Prüfungsrelevanter Stoff</a></li>
+  </ul>
+</li>
+  <li><a href="#%C3%BCberblick-1" id="toc-überblick-1" class="nav-link" data-scroll-target="#%C3%BCberblick-1"><span class="header-section-number">4.2</span> Überblick</a></li>
+  <li><a href="#additionssatz" id="toc-additionssatz" class="nav-link" data-scroll-target="#additionssatz"><span class="header-section-number">4.3</span> Additionssatz</a></li>
+  <li>
+<a href="#vereinigung-von-ereignissen-additionssatz" id="toc-vereinigung-von-ereignissen-additionssatz" class="nav-link" data-scroll-target="#vereinigung-von-ereignissen-additionssatz"><span class="header-section-number">4.4</span> Vereinigung von Ereignissen: Additionssatz</a>
+  <ul>
+<li><a href="#addition-disjunkter-ereignisse" id="toc-addition-disjunkter-ereignisse" class="nav-link" data-scroll-target="#addition-disjunkter-ereignisse"><span class="header-section-number">4.4.1</span> Addition disjunkter Ereignisse</a></li>
+  <li><a href="#addition-allgemeiner-ereignisse" id="toc-addition-allgemeiner-ereignisse" class="nav-link" data-scroll-target="#addition-allgemeiner-ereignisse"><span class="header-section-number">4.4.2</span> Addition allgemeiner Ereignisse</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#bedingte-wahrscheinlichkeit" id="toc-bedingte-wahrscheinlichkeit" class="nav-link" data-scroll-target="#bedingte-wahrscheinlichkeit"><span class="header-section-number">4.5</span> Bedingte Wahrscheinlichkeit</a>
+  <ul>
+<li><a href="#illustration-zur-bedingten-wahrscheinlichkeit" id="toc-illustration-zur-bedingten-wahrscheinlichkeit" class="nav-link" data-scroll-target="#illustration-zur-bedingten-wahrscheinlichkeit"><span class="header-section-number">4.5.1</span> Illustration zur bedingten Wahrscheinlichkeit</a></li>
+  <li><a href="#bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle" id="toc-bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle" class="nav-link" data-scroll-target="#bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle"><span class="header-section-number">4.5.2</span> Bedingte Wahrscheinlichkeit als Filtern einer Tabelle</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#stochastische-un-abh%C3%A4ngigkeit" id="toc-stochastische-un-abhängigkeit" class="nav-link" data-scroll-target="#stochastische-un-abh%C3%A4ngigkeit"><span class="header-section-number">4.6</span> Stochastische (Un-)Abhängigkeit</a>
+  <ul>
+<li><a href="#warum-ist-das-wichtig" id="toc-warum-ist-das-wichtig" class="nav-link" data-scroll-target="#warum-ist-das-wichtig"><span class="header-section-number">4.6.1</span> Warum ist das wichtig?</a></li>
+  <li><a href="#unabh%C3%A4ngigkeit" id="toc-unabhängigkeit" class="nav-link" data-scroll-target="#unabh%C3%A4ngigkeit"><span class="header-section-number">4.6.2</span> Unabhängigkeit</a></li>
+  <li><a href="#stochastische-abh%C3%A4ngigkeit" id="toc-stochastische-abhängigkeit" class="nav-link" data-scroll-target="#stochastische-abh%C3%A4ngigkeit"><span class="header-section-number">4.6.3</span> Stochastische Abhängigkeit</a></li>
+  <li><a href="#unabh%C3%A4ngigkeit-ist-symmetrisch" id="toc-unabhängigkeit-ist-symmetrisch" class="nav-link" data-scroll-target="#unabh%C3%A4ngigkeit-ist-symmetrisch"><span class="header-section-number">4.6.4</span> Unabhängigkeit ist symmetrisch</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz" id="toc-wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz" class="nav-link" data-scroll-target="#wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz"><span class="header-section-number">4.7</span> Wahrscheinlichkeit gemeinsamer Ereignisse: Multiplikationssatz</a>
+  <ul>
+<li><a href="#gemeinsame-wahrscheinlichkeit-unabh%C3%A4ngiger-ereignisse" id="toc-gemeinsame-wahrscheinlichkeit-unabhängiger-ereignisse" class="nav-link" data-scroll-target="#gemeinsame-wahrscheinlichkeit-unabh%C3%A4ngiger-ereignisse"><span class="header-section-number">4.7.1</span> Gemeinsame Wahrscheinlichkeit unabhängiger Ereignisse</a></li>
+  <li><a href="#gemeinsame-wahrscheinlichkeit-allgemeiner-ereignisse" id="toc-gemeinsame-wahrscheinlichkeit-allgemeiner-ereignisse" class="nav-link" data-scroll-target="#gemeinsame-wahrscheinlichkeit-allgemeiner-ereignisse"><span class="header-section-number">4.7.2</span> Gemeinsame Wahrscheinlichkeit allgemeiner Ereignisse</a></li>
+  <li><a href="#kettenregel" id="toc-kettenregel" class="nav-link" data-scroll-target="#kettenregel"><span class="header-section-number">4.7.3</span> Kettenregel</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#totale-wahrscheinlichkeit" id="toc-totale-wahrscheinlichkeit" class="nav-link" data-scroll-target="#totale-wahrscheinlichkeit"><span class="header-section-number">4.8</span> Totale Wahrscheinlichkeit</a>
+  <ul>
+<li><a href="#baumsammlung" id="toc-baumsammlung" class="nav-link" data-scroll-target="#baumsammlung"><span class="header-section-number">4.8.1</span> Baumsammlung</a></li>
+  </ul>
+</li>
+  <li><a href="#vertiefung" id="toc-vertiefung" class="nav-link" data-scroll-target="#vertiefung"><span class="header-section-number">4.9</span> Vertiefung</a></li>
+  <li>
+<a href="#aufgaben" id="toc-aufgaben" class="nav-link" data-scroll-target="#aufgaben"><span class="header-section-number">4.10</span> Aufgaben</a>
+  <ul>
+<li><a href="#paper-pencil-aufgaben" id="toc-paper-pencil-aufgaben" class="nav-link" data-scroll-target="#paper-pencil-aufgaben"><span class="header-section-number">4.10.1</span> Paper-Pencil-Aufgaben</a></li>
+  <li><a href="#aufgaben-f%C3%BCr-die-man-einen-computer-braucht" id="toc-aufgaben-für-die-man-einen-computer-braucht" class="nav-link" data-scroll-target="#aufgaben-f%C3%BCr-die-man-einen-computer-braucht"><span class="header-section-number">4.10.2</span> Aufgaben, für die man einen Computer braucht</a></li>
+  </ul>
+</li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><span class="header-section-number">4.11</span> —</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/0350-wskt2.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./0200-Inferenz.html">Grundlagen</a></li><li class="breadcrumb-item"><a href="./0350-wskt2.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Rechnen mit Wahrscheinlichkeit</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Rechnen mit Wahrscheinlichkeit</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><section id="lernsteuerung" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="lernsteuerung">
+<span class="header-section-number">4.1</span> Lernsteuerung</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="img/Golem_hex.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Bayes:Start!"><img src="img/Golem_hex.png" class="img-fluid figure-img" style="width:10.0%" alt="Bayes:Start!"></a></p>
+<figcaption>Bayes:Start!</figcaption></figure>
+</div>
+<section id="position-im-modulverlauf" class="level3" data-number="4.1.1"><h3 data-number="4.1.1" class="anchored" data-anchor-id="position-im-modulverlauf">
+<span class="header-section-number">4.1.1</span> Position im Modulverlauf</h3>
+<p><a href="index.html#fig-modulverlauf" class="quarto-xref">Abbildung&nbsp;<span>1.1</span></a> gibt einen Überblick zum aktuellen Standort im Modulverlauf.</p>
+</section><section id="überblick" class="level3" data-number="4.1.2"><h3 data-number="4.1.2" class="anchored" data-anchor-id="überblick">
+<span class="header-section-number">4.1.2</span> Überblick</h3>
+<p>Dieses Kapitel stellt uns einige grundlegenden Rechengesetze für Wahrscheinlichkeiten vor: Wann man die Wahrscheinlichkeiten zweier Ereignisse addiert oder multipliziert. Außerdem lernen wir den Begriff der Unabhängkeit kennen.</p>
+</section><section id="lernziele" class="level3" data-number="4.1.3"><h3 data-number="4.1.3" class="anchored" data-anchor-id="lernziele">
+<span class="header-section-number">4.1.3</span> Lernziele</h3>
+<p>Nach Absolvieren des jeweiligen Kapitels sollen folgende Lernziele erreicht sein.</p>
+<p>Sie können …</p>
+<ul>
+<li>die Grundbegriffe der Wahrscheinlichkeitsrechnung erläuternd definieren</li>
+<li>typische Reoationen (Operationen) von Ereignissen anhand von Beispielen veranschaulichen</li>
+<li>mit Wahrscheinlichkeiten rechnen</li>
+</ul></section><section id="begleitliteratur" class="level3" data-number="4.1.4"><h3 data-number="4.1.4" class="anchored" data-anchor-id="begleitliteratur">
+<span class="header-section-number">4.1.4</span> Begleitliteratur</h3>
+<p>Lesen Sie zur Begleitung dieses Kapitels <span class="citation" data-cites="bourier2011">Bourier (<a href="references.html#ref-bourier2011" role="doc-biblioref">2011</a>)</span>, Kap. 2-4.</p>
+</section><section id="prüfungsrelevanter-stoff" class="level3" data-number="4.1.5"><h3 data-number="4.1.5" class="anchored" data-anchor-id="prüfungsrelevanter-stoff">
+<span class="header-section-number">4.1.5</span> Prüfungsrelevanter Stoff</h3>
+<p>Der Stoff dieses Kapitels deckt sich (weitgehend) mit <span class="citation" data-cites="bourier2011">Bourier (<a href="references.html#ref-bourier2011" role="doc-biblioref">2011</a>)</span>, Kap. 2-4. Weitere Übungsaufgaben finden Sie im dazugehörigen Übungsbuch, <span class="citation" data-cites="bourier2022">Bourier (<a href="references.html#ref-bourier2022" role="doc-biblioref">2022</a>)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In Ihrer <a href="https://fantp20.bib-bvb.de/TouchPoint/singleHit.do?methodToCall=showHit&amp;curPos=3&amp;identifier=2_SOLR_SERVER_1157422278">Hochschul-Bibliothek kann das Buch als Ebook verfügbar</a> sein. Prüfen Sie, ob Ihr Dozent Ihnen weitere Hilfen im <a href="https://moodle.hs-ansbach.de/mod/resource/view.php?id=136047">geschützten Bereich (Moodle)</a> eingestellt hat.<span class="math inline">\(\square\)</span></p>
+</div>
+</div>
+</section></section><section id="überblick-1" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="überblick-1">
+<span class="header-section-number">4.2</span> Überblick</h2>
+<p>Die Rechenregeln der Wahrscheinlichkeit erlauben es, für bestimmte Situationen eine Wahrscheinlichkeit hzu berechnen. Das hört sich vielleicht wild an, ist aber oft ganz einfach.</p>
+</section><section id="additionssatz" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="additionssatz">
+<span class="header-section-number">4.3</span> Additionssatz</h2>
+<div id="exm-add-ereignisse" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.1 (Wahrscheinlichkeit für eine gerade Zahl beim Würfelwurf)</strong></span> Ein (normaler) Würfel wird geworfen. Was ist die Wahrscheinlichkeit für eine gerade Zahl, also für das Ereignis <span class="math inline">\(A=\{2, 4, 6\}\)</span>? Diese Wahrscheinlichkeit beträgt <span class="math inline">\(Pr(\text{gerade Zahl}) = 1/6 + 1/6 + 1/6 = 3/6 = 1/2\)</span>. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="exm-ind" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.2 (Gezinkter Würfel)</strong></span> Ein gezinkter Würfel hat eine erhöhte Wahrscheinlichkeit für das Ereignis <span class="math inline">\(A=\)</span>“6 liegt oben”, und zwar gelte <span class="math inline">\(Pr(A)=1/3\)</span>. Was ist die Wahrscheinlichkeit, <em>keine</em> <code>6</code> zu würfeln? <span class="math inline">\(\square\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+</div>
+</section><section id="vereinigung-von-ereignissen-additionssatz" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="vereinigung-von-ereignissen-additionssatz">
+<span class="header-section-number">4.4</span> Vereinigung von Ereignissen: Additionssatz</h2>
+<p>Der Additionssatz wird verwendet, wenn wir an der Wahrscheinlichkeit interessiert sind,</p>
+<p>Der Additionssatz wird verwendet, wenn wir an der Wahrscheinlichkeit bei der Vereinigung zweier Ereignisse interessiert sind. Also an der Wahrscheinlichkeit, dass <em>mindestens eines der Ereignisse</em> A und B eintritt. “Mindestens eines der Ereignisse A und” schreibt man <span class="math inline">\(A \cup B\)</span> und sagt “A vereinigt B” oder auch “A <em>oder</em> B” oder “A oder B”.</p>
+<section id="addition-disjunkter-ereignisse" class="level3" data-number="4.4.1"><h3 data-number="4.4.1" class="anchored" data-anchor-id="addition-disjunkter-ereignisse">
+<span class="header-section-number">4.4.1</span> Addition disjunkter Ereignisse</h3>
+<p>Gegeben sei <span class="math inline">\(\Omega = \{1,2,3,4,5,6\}\)</span> beim normalen Würfelwurf. Als Sinnbild: <span class="math inline">\(\boxed{1\; 2\; 3\; 4\; 5\; 6}\)</span>. Gesucht sei die Wahrscheinlichkeit des Ereignis <span class="math inline">\(A=\{1,2\}\)</span>, das also eine <em>1</em> oder<br>
+eine <em>2</em> geworfen wird, s. <a href="#fig-addition-boxed" class="quarto-xref">Abbildung&nbsp;<span>4.1</span></a>. Man beachte, dass die beiden Ergebnisse disjunkt sind, s. <a href="0300-Wskt.html#fig-disjunkt" class="quarto-xref">Abbildung&nbsp;<span>3.6</span></a>: Wenn man eine <em>1</em> wirft, hat man keine <em>2</em> geworfen.</p>
+<div id="fig-addition-boxed" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-addition-boxed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><span class="math display">\[\boxed{12} \qquad \boxed{3456}\]</span></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-addition-boxed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;4.1: 2 Ereignisse sind günstig; 4 sind nicht günstig.
+</figcaption></figure>
+</div>
+<p>Die Wahrscheinlichkeit für <span class="math inline">\(A\)</span> ist die Summe der Wahrscheinlichkeiten der einzelnen Ereignisse (<em>1</em> und <em>2</em>):</p>
+<p><span class="math inline">\(Pr(1 \cup 2) = \frac{1}{6} + \frac{1}{6} = \frac{2}{6}\)</span></p>
+<p>Visuell ausgedrückt:</p>
+<p><span class="math display">\[\frac{\boxed{12}}{\boxed{123456}}\]</span></p>
+<div id="def-add-disjunkt" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.1 (Additionssatz für disjunkte Ereignisse)</strong></span> Die Wahrscheinlichkeit, dass mindestens eines der beiden Ereignisse eintritt, ist die Summe der Einzelwahrscheinlichkeiten, s. <a href="#thm-add-disjunkt" class="quarto-xref">Theorem&nbsp;<span>4.1</span></a>.</p>
+</div>
+<div id="thm-add-disjunkt" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.1 (Additionssatz für disjunkte Ereignisse)</strong></span> <span class="math display">\[Pr(A \cup B) = Pr(A) + Pr(B) \square\]</span></p>
+</div>
+<div id="exm-sonntag" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.3</strong></span> Was ist die Wahrscheinlichkeit, an einem Samstag oder Sonntag geboren zu sein? Unter der (vereinfachten) Annahme, dass alle Jahre zu gleichen Teilen aus allen Wochentagen bestehen und dass an allen Tagen gleich viele Babies geworden werden<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, ist die Antwort <span class="math inline">\(Pr(A)=1/7 + 1/7 = 2/7\)</span>.<span class="math inline">\(\square\)</span></p>
+</div>
+</section><section id="addition-allgemeiner-ereignisse" class="level3" data-number="4.4.2"><h3 data-number="4.4.2" class="anchored" data-anchor-id="addition-allgemeiner-ereignisse">
+<span class="header-section-number">4.4.2</span> Addition allgemeiner Ereignisse</h3>
+<p>Unter <em>allgemeinen</em> Ereignissen verstehen wir hier sowohl disjunkte als auch nicht disjunkte. Bei der Addition der Wahrscheinlichkeiten für <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> wird der Schnitt <span class="math inline">\(A\cap B\)</span> (der Überlappungsbereich) <em>doppelt</em> erfasst – sofern sie nicht disjunkt sind, aber wenn sie disjunkt sind, so ist der Schnitt gleich Null und wir machen auch dann nichts falsch. Der Überlappungsbereich muss daher noch abgezogen werden, s. <a href="#fig-add" class="quarto-xref">Abbildung&nbsp;<span>4.2</span></a>.</p>
+<div id="def-additionssatz" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.2 (Allgemeiner Additionssatz)</strong></span> Die Wahrscheinlichkeit, dass mindestens eines der beiden Ereignisse <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> eintritt, ist gleich der Summe ihrer Wahrscheinlichkeiten minus ihrer gemeinsamen Wahrscheinlichkeit, s. <a href="#thm-add" class="quarto-xref">Theorem&nbsp;<span>4.2</span></a> und <a href="#fig-add" class="quarto-xref">Abbildung&nbsp;<span>4.2</span></a>. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="thm-add" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.2 (Allgemeiner Additionssatz)</strong></span> <span class="math display">\[Pr(A \cup B) = P(A) + P(B) - P(A\cap B) \square\]</span></p>
+</div>
+<div id="fig-add" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-add-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="img/addition-rule.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Abbildung&nbsp;4.2: Der allgemeine Additionssatz gibt die Wahrscheinlichkeit, dass mindestens eines der beiden Ereignisse eintritt."><img src="img/addition-rule.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-add-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;4.2: Der allgemeine Additionssatz gibt die Wahrscheinlichkeit, dass mindestens eines der beiden Ereignisse eintritt.
+</figcaption></figure>
+</div>
+<!-- ::: {#fig-sets2 layout-ncol=2} -->
+<!-- ![$A \cup B$](img/Venn0111.svg.png){width=20%}{#fig-sets2-a} -->
+<!-- ![$A \cap B$](img/Venn0001.svg.png){width=20%}{#fig-sets2-b} -->
+<!-- Die Schnittmenge muss beim Vereinigen abgezogen werden, -->
+<!-- damit sie nicht doppelt gezählt wird. -->
+<!-- ::: -->
+<div id="exm-klausur-bed-wskt" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.4 (Lernen und Klausur bestehen)</strong></span> In einem Psychologie-Studiengang sind die Studis verdonnert, zwei Statistik-Module (<span class="math inline">\(S1, S2\)</span>) zu belegen. Die meisten bestehen (<span class="math inline">\(B\)</span>), einige leider nicht (<span class="math inline">\(N\)</span>), s. <a href="#tbl-klausur2" class="quarto-xref">Tabelle&nbsp;<span>4.1</span></a>.</p>
+<p>Ereignis <span class="math inline">\(S_1B\)</span> sei “Klausur Statistik 1 bestanden” Ereignis <span class="math inline">\(S_2B\)</span> ist analog für “Klausur Statistik 2”.</p>
+<p>Wir suchen die Wahrscheinlichkeit des Ereignisses <em>A</em>, d.h. mindestens eine der beiden Klausuren zu bestehen: <span class="math inline">\(Pr(A) = Pr(S_1B \cup S_2B)\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-klausur2" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-klausur2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;4.1: Daten von 100 Studis; L: Lerner, B: Bestanden, N: Negation/Nicht
+</figcaption><div aria-describedby="tbl-klausur2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div id="qeayjdrzqo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qeayjdrzqo table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#qeayjdrzqo thead, #qeayjdrzqo tbody, #qeayjdrzqo tfoot, #qeayjdrzqo tr, #qeayjdrzqo td, #qeayjdrzqo th {
+  border-style: none;
+}
+
+#qeayjdrzqo p {
+  margin: 0;
+  padding: 0;
+}
+
+#qeayjdrzqo .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#qeayjdrzqo .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#qeayjdrzqo .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#qeayjdrzqo .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#qeayjdrzqo .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#qeayjdrzqo .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qeayjdrzqo .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#qeayjdrzqo .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#qeayjdrzqo .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#qeayjdrzqo .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#qeayjdrzqo .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#qeayjdrzqo .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#qeayjdrzqo .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#qeayjdrzqo .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#qeayjdrzqo .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#qeayjdrzqo .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#qeayjdrzqo .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#qeayjdrzqo .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#qeayjdrzqo .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qeayjdrzqo .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#qeayjdrzqo .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#qeayjdrzqo .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#qeayjdrzqo .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qeayjdrzqo .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#qeayjdrzqo .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#qeayjdrzqo .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qeayjdrzqo .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qeayjdrzqo .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#qeayjdrzqo .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qeayjdrzqo .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#qeayjdrzqo .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qeayjdrzqo .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#qeayjdrzqo .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qeayjdrzqo .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#qeayjdrzqo .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qeayjdrzqo .gt_left {
+  text-align: left;
+}
+
+#qeayjdrzqo .gt_center {
+  text-align: center;
+}
+
+#qeayjdrzqo .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#qeayjdrzqo .gt_font_normal {
+  font-weight: normal;
+}
+
+#qeayjdrzqo .gt_font_bold {
+  font-weight: bold;
+}
+
+#qeayjdrzqo .gt_font_italic {
+  font-style: italic;
+}
+
+#qeayjdrzqo .gt_super {
+  font-size: 65%;
+}
+
+#qeayjdrzqo .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#qeayjdrzqo .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#qeayjdrzqo .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#qeayjdrzqo .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#qeayjdrzqo .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#qeayjdrzqo .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#qeayjdrzqo .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#qeayjdrzqo .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#qeayjdrzqo div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="gt_col_headings header">
+<th id="a." class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.</th>
+<th id="S1_B" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">S1_B</th>
+<th id="S1_NB" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">S1_NB</th>
+<th id="Summe" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Summe</th>
+</tr></thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=".">S2_B</td>
+<td class="gt_row gt_right" headers="S1_B">85</td>
+<td class="gt_row gt_right" headers="S1_NB">9</td>
+<td class="gt_row gt_right" headers="Summe">94</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=".">S2_NB</td>
+<td class="gt_row gt_right" headers="S1_B">5</td>
+<td class="gt_row gt_right" headers="S1_NB">1</td>
+<td class="gt_row gt_right" headers="Summe">6</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=".">Summe</td>
+<td class="gt_row gt_right" headers="S1_B">90</td>
+<td class="gt_row gt_right" headers="S1_NB">10</td>
+<td class="gt_row gt_right" headers="Summe">100</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<span class="math display">\[\begin{aligned}
+Pr(A) &amp;= Pr(S_1B \cup S_2B) \\
+&amp;= Pr(S_1B) + Pr(S_2B) - Pr(S_1B \cap S_2B)  \\
+&amp;= (90 + 94 - 85) / 100 = 99 / 100\\
+\end{aligned}\]</span>
+<p>Die Wahrscheinlichkeit, mindestens eine der beiden Klausuren zu bestehen liegt bei 99%.</p>
+<div id="exr-keine-klausur-bestanden" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 4.1 (Peer Instruction: Keine Klausur bestanden)</strong></span> Wie hoch ist die Wahrscheinlichkeit, keine der beiden Klausuren zu bestehen?</p>
+<ol type="A">
+<li>1%</li>
+<li>5%</li>
+<li>6%</li>
+<li>9%</li>
+<li>10%</li>
+<li>16% <span class="math inline">\(\square\)</span>
+</li>
+</ol>
+</div>
+</div>
+</section></section><section id="bedingte-wahrscheinlichkeit" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="bedingte-wahrscheinlichkeit">
+<span class="header-section-number">4.5</span> Bedingte Wahrscheinlichkeit</h2>
+<section id="illustration-zur-bedingten-wahrscheinlichkeit" class="level3" data-number="4.5.1"><h3 data-number="4.5.1" class="anchored" data-anchor-id="illustration-zur-bedingten-wahrscheinlichkeit">
+<span class="header-section-number">4.5.1</span> Illustration zur bedingten Wahrscheinlichkeit</h3>
+<div id="def-pr-cond" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.3 (Bedingte Wahrscheinlichkeit)</strong></span> Die bedingte Wahrscheinlichkeit ist die Wahrscheinlichkeit, dass <span class="math inline">\(A\)</span> eintritt, <em>gegeben dass</em> <span class="math inline">\(B\)</span> schon eingetreten ist. <span class="math inline">\(\square\)</span></p>
+</div>
+<p>Man schreibt: <span class="math inline">\(Pr(A|B).\)</span> Lies: “A gegeben B” oder “A wenn B”.</p>
+<div id="exr-victorpowell" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 4.2</strong></span> Schauen Sie sich mal diese <a href="https://setosa.io/conditional/">Animation von Victor Powell an</a> zu bedingten Wahrscheinlichkeiten an. Sehenswert.</p>
+</div>
+<p><a href="#fig-schema-p" class="quarto-xref">Abbildung&nbsp;<span>4.3</span></a> illustriert <em>unbedingte Wahrscheinlichkeit</em>, <span class="math inline">\(Pr(A), Pr(B)\)</span>, <em>gemeinsame Wahrscheinlichkeit</em> <span class="math inline">\(Pr(A \cap B)\)</span>, und <em>bedingte Wahrscheinlichkeit</em>, <span class="math inline">\(Pr(A|B)\)</span>.</p>
+<div id="fig-schema-p" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-schema-p-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page"><span class="math inline">\(Pr(A)\)</span></a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false"><span class="math inline">\(Pr(B)\)</span></a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false"><span class="math inline">\(Pr(B|A)\)</span></a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false"><span class="math inline">\(Pr(A \cap B)\)</span></a></li>
+</ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-pr-a" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-pr-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0350-wskt2_files/figure-html/fig-pr-a-1.png" class="lightbox" data-gallery="fig-schema-p" title="Abbildung&nbsp;4.3&nbsp;(a): Unbedingte Wahrscheinlichkeit für Ereignis A: 50%=1/2"><img src="0350-wskt2_files/figure-html/fig-pr-a-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" data-ref-parent="fig-schema-p"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pr-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Unbedingte Wahrscheinlichkeit für Ereignis A: 50%=1/2
+</figcaption></figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-pr-b" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-pr-b-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0350-wskt2_files/figure-html/fig-pr-b-1.png" class="lightbox" data-gallery="fig-schema-p" title="Abbildung&nbsp;4.3&nbsp;(b): Unbedingte Wahrscheinlichkeit für Ereignis B: 50%=1/2"><img src="0350-wskt2_files/figure-html/fig-pr-b-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" data-ref-parent="fig-schema-p"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pr-b-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Unbedingte Wahrscheinlichkeit für Ereignis B: 50%=1/2
+</figcaption></figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-b-geg-a" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-b-geg-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0350-wskt2_files/figure-html/fig-b-geg-a-1.png" class="lightbox" data-gallery="fig-schema-p" title="Abbildung&nbsp;4.3&nbsp;(c): Wahrscheinlichkeit für Ereignis B gegeben A, Pr(B|A)=1/2"><img src="0350-wskt2_files/figure-html/fig-b-geg-a-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" data-ref-parent="fig-schema-p"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-b-geg-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Wahrscheinlichkeit für Ereignis B gegeben A, <span class="math inline">\(Pr(B|A)=1/2\)</span>
+</figcaption></figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<p><span class="math inline">\(Pr(A \cap B)\)</span> wird auch häufig (synonym) geschrieben als <span class="math inline">\(Pr(AB)\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ab" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-ab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0350-wskt2_files/figure-html/fig-ab-1.png" class="lightbox" data-gallery="fig-schema-p" title="Abbildung&nbsp;4.3&nbsp;(d): Wahrscheinlichkeit für das gemeinsame Eintreten von A und B: Pr(AB)=1/4"><img src="0350-wskt2_files/figure-html/fig-ab-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" data-ref-parent="fig-schema-p"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-ab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Wahrscheinlichkeit für das gemeinsame Eintreten von A und B: <span class="math inline">\(Pr(AB)=1/4\)</span>
+</figcaption></figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-schema-p-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;4.3: Illustration von unbedingter, gemeinsamer und bedingter Wahrscheinlichkeit
+</figcaption></figure>
+</div>
+<div id="exm-bed-p" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.5 (Bedingte Wahrscheinlichkeit)</strong></span> Sei <span class="math inline">\(A\)</span> “Schönes Wetter” und <span class="math inline">\(B\)</span> “Klausur steht an”. Dann meint <span class="math inline">\(Pr(A|B)\)</span> die Wahrscheinlichkeit, dass das Wetter schön ist, wenn gerade eine Klausur ansteht.<span class="math inline">\(\square\)</span></p>
+</div>
+<div id="exm-papst" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.6 (Von Päpsten und Männern)</strong></span> Man(n) beachte, dass die Wahrscheinlichkeit, Papst <span class="math inline">\(P\)</span> zu sein, wenn man Mann <span class="math inline">\(M\)</span> ist <em>etwas anderes</em> ist, als die Wahrscheinlichkeit, Mann zu sein, wenn man Papst ist: <span class="math inline">\(Pr(P|M) \ne Pr(M|P)\)</span>. Das hört sich erst verwirrend an, aber wenn man darüber nachdenkt, wird es plausibel.<span class="math inline">\(\square\)</span></p>
+</div>
+<div id="exm-hirn-grütze" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.7</strong></span> Gustav Groß-Gütz verkauft eine Tinktur<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, die schlau machen soll, “Gützis Gehirn Grütze”.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> Gustav trinkt die Grütze und sagt schlaue Dinge. Was schließen wir daraus? Sei <span class="math inline">\(H\)</span> (wie <em>H</em>ypothese) “Gützis Grütze macht schlau”; sei <span class="math inline">\(D\)</span> (wie <em>D</em>aten) die Beobachtung, dass Gustav schlaue Dinge gesagt hat. Ohne exakte Zahlen zu suchen, wie hoch ist wohl <span class="math inline">\(Pr(D|H)\)</span>? In Worten: “Wie wahrscheinlich ist es, schlaue Dinge gesagt zu haben, wenn die Grütze wirklich schlau macht?”. Vermutlich ist diese Wahrscheinlichkeit sehr hoch. Aber wie hoch ist wohl <span class="math inline">\(Pr(H|D)\)</span>? In Worten: “Wie wahrscheinlich ist es, dass die Grütze wirklich schlau macht, gegeben, dass wir gesehen hat, dass jemand etwas schlaues gesagt hat, nachdem er besagte Grütze getrunken hat?” Skeptische Geister werden der Meinung sein, <span class="math inline">\(Pr(H|D)\)</span> ist gering. Das Beispiel zeigt u.a. <span class="math inline">\(Pr(H|D) \ne Pr(D|H).\square\)</span></p>
+</div>
+</section><section id="bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle" class="level3" data-number="4.5.2"><h3 data-number="4.5.2" class="anchored" data-anchor-id="bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle">
+<span class="header-section-number">4.5.2</span> Bedingte Wahrscheinlichkeit als Filtern einer Tabelle</h3>
+<div class="{exm-kalt-regen-filter}">
+<p>Betrachten wir <a href="#tbl-kalt-regen-filter" class="quarto-xref">Tabelle&nbsp;<span>4.2</span></a>. Dort sind sind vier Tage aufgelistet, mit jeweils Regen (oder kein Regen) bzw. an denen es kalt ist (oder nicht). Filtern wir z.B. die Tabelle so, dass nur kalte Tage übrig bleiben, dann gibt der Anteil der Zeilen, die “Regen” anzeigen, die bedingte Wahrscheinlichkeit <span class="math inline">\(Pr(\text{Regen}|\text{kalt})\)</span> an.</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-kalt-regen-filter" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-kalt-regen-filter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;4.2: Die Tabelle zeigt vier Tage, an denen es jeweils kalt ist (oder nicht) bzw. regnet (oder nicht). Die bedingte Wahrscheinlichkeit <span class="math inline">\(Pr(\text{Regen}|\text{kalt})\)</span> entspricht dem Anteil der Zeilen mit Regen, wenn für ‘kalt’ ein Filter in der Tabelle gesetzt ist.
+</figcaption><div aria-describedby="tbl-kalt-regen-filter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-17466358a46d1399716e" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-17466358a46d1399716e">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td><\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["1","2","3","4"],["1","2","3","4"],["nein","nein","ja","ja"],["nein","ja","nein","ja"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>id<\/th>\n      <th>kalt<\/th>\n      <th>Regen<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":4,"columnDefs":[{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"id","targets":1},{"name":"kalt","targets":2},{"name":"Regen","targets":3}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"lengthMenu":[4,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p>Also: Das Berechnen einer bedingten Wahrscheinlichkeit, <span class="math inline">\(Pr(A|B)\)</span>, ist vergleichbar zum Filtern einer Tabelle, s. <a href="#tbl-bed-wskt" class="quarto-xref">Tabelle&nbsp;<span>4.3</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-bed-wskt" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-bed-wskt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;4.3: Eine bedingte Wahrscheinlichkeit kann man als gefilterte Tabelle verstehen
+</figcaption><div aria-describedby="tbl-bed-wskt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: left;">id</th>
+<th style="text-align: right;">kalt</th>
+<th style="text-align: right;">Regen</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SUMME</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Es ergeben sich folgende Wahrscheinlichkeiten:</p>
+<p><span class="math inline">\(Pr(A) = 2/4; Pr(B) = 2/4; Pr(A \cap B) = 1/4; Pr(A|B) = 1/2\)</span></p>
+<p><a href="#eq-bed-wskt-box" class="quarto-xref">Gleichung&nbsp;<span>4.1</span></a> versinnbildlicht die Berechnung von <span class="math inline">\(Pr(A|B)\)</span> als Bruch.</p>
+<p><span id="eq-bed-wskt-box"><span class="math display">\[\frac{\boxed{\begin{array}{c}\phantom{mm}\\\phantom{mm}\end{array}}}{\boxed{\begin{array}{c}\phantom{mmmm}\\\phantom{mmmm}\end{array}}} \tag{4.1}\]</span></span></p>
+<p>Die Wahrscheinlichkeit für <span class="math inline">\(A\)</span>, wenn <span class="math inline">\(B\)</span> schon eingetreten ist, berechnet sich so, s. <a href="#thm-pr-cond" class="quarto-xref">Theorem&nbsp;<span>4.3</span></a> und <a href="#fig-b-geg-a" class="quarto-xref">Abbildung&nbsp;<span>4.3 (c)</span></a>.</p>
+<div id="thm-pr-cond" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.3 (Bedingte Wahrscheinlichkeit)</strong></span> <span class="math display">\[Pr(A|B) = \frac{Pr(A \cap B)}{Pr(B)}\]</span></p>
+<p>Außerdem gilt analog</p>
+<p><span class="math display">\[Pr(B|A) = \frac{Pr(B \cap A)}{Pr(A)} \quad \square\]</span></p>
+</div>
+<div id="exm-klausur-bed-wskt" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.8 (Lernen und Klausur bestehen)</strong></span> Sie bereiten sich gerade auf die Klausur bei Prof.&nbsp;Süß vor. Das heißt: Sie überlegen, ob Sie sich auf die Klausur vorbereiten sollten. Vielleicht lohnt es sich ja gar nicht? Vielleicht ist die Wahrscheinlichkeit zu bestehen, wenn man nicht gelernt hat, sehr groß? Aber da Sie nun mal auf Fakten stehen, haben Sie sich nach einiger Recherche folgende Zahlen besorgen können, s. <a href="#tbl-klausur-lernen" class="quarto-xref">Tabelle&nbsp;<span>4.4</span></a>. In der Tabelle sind die Daten von 100 Studis ausgewiesen. Ein Teil hat sich vorbereitet, ordentlich gelernt, nenen wir sie die “<em>L</em>erner”. Ein anderer Teil hat nicht gelernt, <span class="math inline">\(NL\)</span> bzw. <span class="math inline">\(\neg L\)</span>. Ein Teil hat bestanden, <span class="math inline">\(B\)</span>, ein Teil nicht <span class="math inline">\(NB\)</span> oder <span class="math inline">\(\neg B\)</span>.</p>
+<p>Wir suchen die Wahrscheinlichkeit, zu bestehen, wenn man nicht gelernt hat: <span class="math inline">\(Pr(B |\neg L)\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-klausur-lernen" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-klausur-lernen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;4.4: Daten von 100 Studis; L: Lerner, B: Bestanden, N: Negation/Nicht
+</figcaption><div aria-describedby="tbl-klausur-lernen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead><tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">.</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">L</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">NL</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Summe</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">B</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">81</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">NB</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">Summe</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">100</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<span class="math display">\[\begin{aligned}
+Pr(B |\neg L) &amp;= \frac{Pr(B \cap \neg L)}{Pr(\neg L)} \\
+&amp;=\frac{1/100}{15/100} = 1/15 \\
+\end{aligned}\]</span>
+<p>Die Wahrscheinlichkeit, zu bestehen, wenn man nicht gelernt hat, liegt bei 1 von 15, also ca. 7%.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="exm-kalt-regen" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.9 (Kalt wenn Regen)</strong></span> Die Wahrscheinlichkeit, dass es kalt ist, wenn es regnet (gegeben, dass es regnet), ist gleich der Wahrscheinlichkeit, dass es gleichzeitig kalt ist und regnet, geteilt durch die Wahrscheinlichkeit, dass es regnet.<span class="math inline">\(\square\)</span></p>
+</div>
+</section></section><section id="stochastische-un-abhängigkeit" class="level2" data-number="4.6"><h2 data-number="4.6" class="anchored" data-anchor-id="stochastische-un-abhängigkeit">
+<span class="header-section-number">4.6</span> Stochastische (Un-)Abhängigkeit</h2>
+<section id="warum-ist-das-wichtig" class="level3" data-number="4.6.1"><h3 data-number="4.6.1" class="anchored" data-anchor-id="warum-ist-das-wichtig">
+<span class="header-section-number">4.6.1</span> Warum ist das wichtig?</h3>
+<p>In der Forschung und im Alltag sind wir oft daran interessiert, ob zwei Ereignisse voneinander abhängig sind oder nicht: Lernen und Klausur bestehen, Rauchen und Lungenkrebs, Impfung und Infektion, Werbung und Verkaufserfolg, usw.</p>
+</section><section id="unabhängigkeit" class="level3" data-number="4.6.2"><h3 data-number="4.6.2" class="anchored" data-anchor-id="unabhängigkeit">
+<span class="header-section-number">4.6.2</span> Unabhängigkeit</h3>
+<div id="exm-indep-intro" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.10 (Unabhängigkeit)</strong></span> &nbsp;</p>
+<ul>
+<li>Regentanz und Regen sind unabhängig.</li>
+<li>“Es regnet in Berlin” und “In Tokio fällt eine Münze auf Kopf”</li>
+<li>“Ich habe 10 Mal hintereinander Kopf geworfen” und “Beim nächsten Mal werfe ich Kopf” (bei einer fairen Münze)</li>
+<li>Augenfarbe und Blutgruppe</li>
+<li>Es regnet und ich gewinne im Lotto <span class="math inline">\(\square\)</span>
+</li>
+</ul>
+</div>
+<p>Stochastische Unabhängigkeit ist ein Spezialfall von Abhängigkeit: Es gibt sehr viele Ausprägungen für Abhängigkeit, aber nur eine für Unabhängigkeit. Können wir Unabhängigkeit nachweisen, haben wir also eine <em>starke</em> Aussage getätigt.</p>
+<div id="def-indep" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.4 (Stochastische Unabhängigkeit)</strong></span> Zwei Ereignisse sind (stochastisch) unabhängig voneinander, wenn die Wahrscheinlichkeit von <span class="math inline">\(A\)</span> nicht davon abhängt, ob <span class="math inline">\(B\)</span> der Fall ist, s. <a href="#thm-indep" class="quarto-xref">Theorem&nbsp;<span>4.4</span></a>. Anders gesagt:<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+</div>
+<p></p>
+<div id="thm-indep" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.4 (Stochastische Unabhängigkeit)</strong></span> <span class="math inline">\(Pr(A) = Pr(A|B) =Pr(A|\neg B) \quad \square\)</span>$</p>
+<p>In Worten: Wenn die Wahrscheinlichkeit von <em>A</em> sich nicht ändert, wenn <em>B</em> eingetreten ist, so ist <em>A</em> von <em>B</em> (stochastisch) unabhängig.</p>
+<p>Die Unabhängigkeit von <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> wird manchmal so in Kurzschreibweise ausgedrückt: <span class="math inline">\(\perp \!\!\! \perp(A, B) \square\)</span>.</p>
+</div>
+<div id="thm-indep2" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.5 (Stochastische Unabhängigkeit 2)</strong></span> Setzt man <a href="#thm-pr-cond" class="quarto-xref">Theorem&nbsp;<span>4.3</span></a> in <a href="#thm-indep" class="quarto-xref">Theorem&nbsp;<span>4.4</span></a> (linke Seite) ein, so folgt<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<p><span class="math display">\[Pr(A \cap B) = Pr(A) \cdot Pr(B).\quad \square\]</span></p>
+</div>
+<p>In Worten: Die Wahrscheinlichkeit, dass <em>A</em> und <em>B</em> beide der Fall sind, ist gleich dem Produkt ihrer jeweiligen Wahrscheinlichkeiten.</p>
+<div id="exm-indep1" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.11 (Augenfarbe und Statistikliebe)</strong></span> Ich vermute, dass die Ereignisse <span class="math inline">\(A\)</span>, “Augenfarbe ist blau”, und <span class="math inline">\(B\)</span>, “Ich liebe Statistik”, voneinander unabhängig sind.<span class="math inline">\(\square\)</span><a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a></p>
+</div>
+<div id="exm-titanic" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.12 (Überleben auf der Titanic)</strong></span> S. <a href="#fig-abh" class="quarto-xref">Abbildung&nbsp;<span>4.4</span></a>, links: Überleben (Ü) auf der Titanic ist offenbar <em>abhängig</em> von der Passagierklasse (<span class="math inline">\(K_1, K_2, K_3\)</span>). In <a href="#fig-abh" class="quarto-xref">Abbildung&nbsp;<span>4.4</span></a>, links gilt also <span class="math inline">\(Pr(Ü|K_1) \ne Pr(Ü|K_2) \ne Pr(Ü|K_3) \ne Pr(Ü)\)</span>.</p>
+<p>Auf der anderen Seite: Das Ereignis <em>Überleben</em> (Ü) auf der Titanic ist <em>un</em>abhängig vom Ereignis <em>Alter ist eine Primzahl</em> (P), s. <a href="#fig-abh" class="quarto-xref">Abbildung&nbsp;<span>4.4</span></a>, rechts. Also: <span class="math inline">\(Pr(Ü|P) = Pr(Ü|\neg P) = Pr(Ü)\)</span>, vgl. <a href="#tbl-titanic-prime" class="quarto-xref">Tabelle&nbsp;<span>4.5</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-titanic-prime" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-titanic-prime-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;4.5: Kontingenztablle (Häufigkeiten) für ‘Überleben auf der Titanic’ und ‘Alter ist Primzahl’. Wie man sieht, gibt es keine stochastische Abhängigkeit.
+</figcaption><div aria-describedby="tbl-titanic-prime-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div id="xgdyentzro" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xgdyentzro table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#xgdyentzro thead, #xgdyentzro tbody, #xgdyentzro tfoot, #xgdyentzro tr, #xgdyentzro td, #xgdyentzro th {
+  border-style: none;
+}
+
+#xgdyentzro p {
+  margin: 0;
+  padding: 0;
+}
+
+#xgdyentzro .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#xgdyentzro .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#xgdyentzro .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#xgdyentzro .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#xgdyentzro .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#xgdyentzro .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#xgdyentzro .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#xgdyentzro .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#xgdyentzro .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#xgdyentzro .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#xgdyentzro .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#xgdyentzro .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#xgdyentzro .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#xgdyentzro .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#xgdyentzro .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#xgdyentzro .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#xgdyentzro .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#xgdyentzro .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#xgdyentzro .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xgdyentzro .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#xgdyentzro .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#xgdyentzro .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#xgdyentzro .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xgdyentzro .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#xgdyentzro .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#xgdyentzro .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#xgdyentzro .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xgdyentzro .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#xgdyentzro .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#xgdyentzro .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#xgdyentzro .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#xgdyentzro .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#xgdyentzro .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xgdyentzro .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#xgdyentzro .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xgdyentzro .gt_left {
+  text-align: left;
+}
+
+#xgdyentzro .gt_center {
+  text-align: center;
+}
+
+#xgdyentzro .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#xgdyentzro .gt_font_normal {
+  font-weight: normal;
+}
+
+#xgdyentzro .gt_font_bold {
+  font-weight: bold;
+}
+
+#xgdyentzro .gt_font_italic {
+  font-style: italic;
+}
+
+#xgdyentzro .gt_super {
+  font-size: 65%;
+}
+
+#xgdyentzro .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#xgdyentzro .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#xgdyentzro .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#xgdyentzro .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#xgdyentzro .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#xgdyentzro .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#xgdyentzro .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#xgdyentzro .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#xgdyentzro div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="gt_col_headings header">
+<th id="Age_prime" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Age_prime</th>
+<th id="n" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">n</th>
+<th id="prop" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">prop</th>
+</tr></thead>
+<tbody class="gt_table_body">
+<tr class="gt_group_heading_row odd">
+<td colspan="3" id="0" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">0</td>
+</tr>
+<tr class="gt_row_group_first even">
+<td class="gt_row gt_center" headers="0  Age_prime">non-prime</td>
+<td class="gt_row gt_right" headers="0  n">96</td>
+<td class="gt_row gt_right" headers="0  prop">0.17</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="0  Age_prime">prime</td>
+<td class="gt_row gt_right" headers="0  n">453</td>
+<td class="gt_row gt_right" headers="0  prop">0.83</td>
+</tr>
+<tr class="gt_group_heading_row even">
+<td colspan="3" id="1" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">1</td>
+</tr>
+<tr class="gt_row_group_first odd">
+<td class="gt_row gt_center" headers="1  Age_prime">non-prime</td>
+<td class="gt_row gt_right" headers="1  n">58</td>
+<td class="gt_row gt_right" headers="1  prop">0.17</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="1  Age_prime">prime</td>
+<td class="gt_row gt_right" headers="1  n">282</td>
+<td class="gt_row gt_right" headers="1  prop">0.83</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div id="fig-abh" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-abh-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-abh" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-abh-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-abh-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0350-wskt2_files/figure-html/fig-abh-1.png" class="lightbox" data-gallery="fig-abh" title="Abbildung&nbsp;4.4&nbsp;(a): Überleben und Passagierklasse sind abhängig"><img src="0350-wskt2_files/figure-html/fig-abh-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-ref-parent="fig-abh"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-abh-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Überleben und Passagierklasse sind abhängig
+</figcaption></figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-abh" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-abh-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-abh-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0350-wskt2_files/figure-html/fig-abh-2.png" class="lightbox" data-gallery="fig-abh" title="Abbildung&nbsp;4.4&nbsp;(b): Überleben und ‘Geburstag ist eine Primzahl’ sind nicht abhängig"><img src="0350-wskt2_files/figure-html/fig-abh-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-ref-parent="fig-abh"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-abh-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Überleben und ‘Geburstag ist eine Primzahl’ sind nicht abhängig
+</figcaption></figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-abh-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;4.4: Abhängigkeit und Unabhängigkeit zweier Ereignisse
+</figcaption></figure>
+</div>
+</section><section id="stochastische-abhängigkeit" class="level3" data-number="4.6.3"><h3 data-number="4.6.3" class="anchored" data-anchor-id="stochastische-abhängigkeit">
+<span class="header-section-number">4.6.3</span> Stochastische Abhängigkeit</h3>
+<p>Liegt keine Unabhängigkeit vor, so spricht man von (stochastistischer) <em>Abhängigkeit</em>, s. <a href="#thm-abh" class="quarto-xref">Theorem&nbsp;<span>4.6</span></a>. In diesem Fall verändert sich unser Wissen über die Wahrscheinlichkeit von <span class="math inline">\(A\)</span>, wenn wir wissen, dass <span class="math inline">\(B\)</span> eingetroffen ist, s. <a href="#thm-abh" class="quarto-xref">Theorem&nbsp;<span>4.6</span></a>.</p>
+<div id="thm-abh" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.6 (Stochastische Abhängigkeit)</strong></span> <span class="math display">\[Pr(A|B) \ne Pr(A) \ne Pr(A|\neg B) \quad \square\]</span></p>
+<p>In Worten: Ändert sich die Wahrscheinlichkeit von <em>A</em>, wenn <em>B</em> der Fall ist, so sind <em>A</em> und <em>B</em> voneinander (stochastich) abhängig.</p>
+<p><a href="#thm-abh" class="quarto-xref">Theorem&nbsp;<span>4.6</span></a> gilt natürlich in dieser Form für alle anderen Variablen ebenso, s. z.B. <a href="#thm-abh2" class="quarto-xref">Theorem&nbsp;<span>4.7</span></a>. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="thm-abh2" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.7 (Stochastische Abhängigkeit 2)</strong></span> <span class="math display">\[Pr(B|A) \ne Pr(B) \ne Pr(B|\neg A) \quad \square\]</span></p>
+</div>
+<div id="exm-abh-lernen" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.13</strong></span> Die Ereignisse “<em>L</em>ernen” und “<em>K</em>lausur bestehen” seien voneinander abhängig. Unsere Einschätzung zur Wahrscheinlichkeit von <em>K</em> ändert sich, wenn wir wissen, dass <em>L</em> vorliegt. Genauso wird sich unsere Einschätzung zur Wahrscheinlichkeit von <em>K</em> ändern, wenn wir wissen, dass <em>L</em> nicht vorliegt. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="exm-covid" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.14 (Zusammenhang von Covidsterblichkeit und Impfquote)</strong></span> Sind die Ereignisse <em>Tod durch Covid (T)</em> bzw. <em>Impfquote</em> (<span class="math inline">\(I\)</span>) und <em>Land</em><a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> (<span class="math inline">\(B\)</span>) voneinander abhängig (s. <a href="#fig-covid1" class="quarto-xref">Abbildung&nbsp;<span>4.5</span></a>)?</p>
+<div id="fig-covid1" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-covid1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p>Impfquote und Sterblichkeit sind voneinander abhängig (bezogen auf Covid, auf Basis vorliegender Daten)</p>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-covid1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;4.5
+</figcaption></figure>
+</div>
+<p>Ja, die beiden Ereignisse sind abhängig, da in beiden Diagrammen gilt: <span class="math inline">\(Pr(A|B) \ne Pr(A) \ne Pr(A|\neg B)\)</span>.<span class="math inline">\(\square\)</span><a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></p>
+</div>
+</section><section id="unabhängigkeit-ist-symmetrisch" class="level3" data-number="4.6.4"><h3 data-number="4.6.4" class="anchored" data-anchor-id="unabhängigkeit-ist-symmetrisch">
+<span class="header-section-number">4.6.4</span> Unabhängigkeit ist symmetrisch</h3>
+<p>Stochastische Unabhängigkeit ist symmetrisch: Wenn <span class="math inline">\(A\)</span> unabhängig zu <span class="math inline">\(B\)</span> ist auch <span class="math inline">\(B\)</span> unabhängig zu <span class="math inline">\(A\)</span>, s. <a href="#thm-indep-symm" class="quarto-xref">Theorem&nbsp;<span>4.8</span></a>.</p>
+<div id="thm-indep-symm" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.8 (Symmetrie der Unabhängigkeit)</strong></span> <span class="math display">\[Pr(A|B) = Pr(A) \leftrightarrow Pr(B|A) = Pr(B)\]</span></p>
+<p>Man beachte, dass stochastische Unabhängigkeit und kausale Unabhängigkeit unterschiedliche Dinge sind <span class="citation" data-cites="henze2019">(<a href="references.html#ref-henze2019" role="doc-biblioref">Henze, 2019</a>)</span>: Stochastische Unabhängigkeit impliziert nicht kausale Unabhängigkeit. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="exr-indep" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 4.3 (Peer Instruction: Welche Aussagen über stochastische Unabhängigkeit ist korrekt?)</strong></span> &nbsp;</p>
+<ol type="1">
+<li>Wenn X und Y unabhängig sind, dann hat X keinen Einfluss auf Y im Alltag.<br>
+</li>
+<li>Zwei Ereignisse A und B sind unabhängig, wenn sie sich nicht überschneiden.<br>
+</li>
+<li>Wenn X und Y unkorreliert sind, dann sind sie unabhängig.</li>
+<li>Wenn X und Y abhängig sind, dann können sie nicht gleichzeitig positive Korrelation haben.<br>
+</li>
+<li>Wenn X und Y unabhängig sind, sind sie auch unkorreliert.</li>
+</ol>
+</div>
+</section></section><section id="wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz" class="level2" data-number="4.7"><h2 data-number="4.7" class="anchored" data-anchor-id="wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz">
+<span class="header-section-number">4.7</span> Wahrscheinlichkeit gemeinsamer Ereignisse: Multiplikationssatz</h2>
+<p>Gegeben seien die Ereignisse <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span>. Der Multiplikationssatz wird verwendet, wenn wir an der Wahrscheinlichkeit interessiert sind, dass <em>beide Ereignisse</em> <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> der Fall sind; man spricht auch von der <em>gemeinsamen Wahrscheinlichkeit</em>. <a href="#fig-ab" class="quarto-xref">Abbildung&nbsp;<span>4.3 (d)</span></a> verdeutlicht dies für zwei unabhängige Ereignisse. Man schreibt “A und B” als <span class="math inline">\(A \cap B\)</span> (lies “A geschnitten B” oder “A <em>und</em> B”) oder kurz <span class="math inline">\(AB\)</span>, um anzuzeigen, dass sowohl <span class="math inline">\(A\)</span> als auch <span class="math inline">\(B\)</span> eingetreten sind.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="0350-wskt2_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Beide Ereignisse A und B sind eingetreten"><img src="0350-wskt2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" alt="Beide Ereignisse A und B sind eingetreten"></a></p>
+</figure>
+</div>
+<figcaption>Beide Ereignisse A und B sind eingetreten</figcaption></figure>
+</div>
+</div>
+</div>
+<div id="exm-kalt-regen-mult" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.15 (Wieder kalt und Regen)</strong></span> Es ist eine Sache, zu fragen, wie wahrscheinlich ist ist, dass es <em>k</em>alt ist (bei <em>K</em>älte), wenn es <em>r</em>egnet (bei <em>R</em>egen): <span class="math inline">\(Pr(K|R)\)</span>. Anders gesagt: “Wie groß ist die Wahrscheinlichkeit für Kälte, gegeben dass es regnet?” Eine andere Sache ist es, nach der Wahrscheinlichkeit zu fragen, dass es gleichzeitig kalt ist und regnet, dass also beide Ereignisse (kalt und Regen) eintreten: <span class="math inline">\(Pr(K \cap R), Pr(KR)\)</span>. <span class="math inline">\(\square\)</span></p>
+</div>
+<section id="gemeinsame-wahrscheinlichkeit-unabhängiger-ereignisse" class="level3" data-number="4.7.1"><h3 data-number="4.7.1" class="anchored" data-anchor-id="gemeinsame-wahrscheinlichkeit-unabhängiger-ereignisse">
+<span class="header-section-number">4.7.1</span> Gemeinsame Wahrscheinlichkeit unabhängiger Ereignisse</h3>
+<div id="exm-indep2" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.16</strong></span> Wir führen das Zufallsexperiment “Wurf einer fairen Münze” zwei Mal aus (<a href="#fig-zweimuenzen" class="quarto-xref">Abbildung&nbsp;<span>4.6</span></a>). Wie groß ist die Wahrscheinlichkeit, 2 Mal <em>K</em>opf zu werfen? Dabei vereinbaren wir, dass “Kopf” als “Treffer” zählt (und “Zahl” als “Niete”).<span class="math inline">\(\square\)</span></p>
+</div>
+<div class="cell" data-out-width="50%" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-zweimuenzen" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-zweimuenzen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-zweimuenzen">flowchart TD
+    A[Start] --1/2--&gt; B1[T]
+    A --1/2--&gt;  B2[N]
+
+    %% Zweiter Wurf
+    B1 --1/2--&gt;  C1[TT - 1/4]
+    B1 --1/2--&gt;  C2[TN - 1/4]
+    B2 --1/2--&gt;  C3[NT - 1/4]
+    B2 --1/2--&gt;  C4[NN - 1/4]
+
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zweimuenzen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;4.6: Wir werfen zwei faire Münzen: Zweifach wiederholtes Zufallsexperiment
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-zweimuenzen" class="quarto-xref">Abbildung&nbsp;<span>4.6</span></a> zeigt ein <em>Baumdiagramm</em>. Jeder <em>Kasten</em> (Knoten) zeigt ein <em>Ergebnis</em> des Zufallexperiments. Die Pfeile (Kanten) symbolisieren die Abfolge des Experiments: Vom “Start” (schwarzer Kreis) führen zwei mögliche Ergebniss ab, jeweils mit Wahrscheinlichkeit 1/2. Die untersten Knoten nennt man auch <em>Blätter</em> (Endknoten), sie zeigen das Endresultat des (in diesem Fall) zweifachen Münzwurfs. Der Weg vom Start zu einem bestimmten Blatt nennt man <em>Pfad</em>. Die Anzahl der Pfade entspricht der Anzahl der Blätter. In diesen Diagramm gibt es vier Pfade (und Blätter).</p>
+<p>Den Wurf der ersten Münze nennen wir in gewohnter Manier <span class="math inline">\(A\)</span>; den Wurf der zweiten Münze <span class="math inline">\(B\)</span>.</p>
+<p>Die Wahrscheinlichkeiten der resultierenden Ereignisse finden sich in <a href="#tbl-muenz2" class="quarto-xref">Tabelle&nbsp;<span>4.6</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-muenz2" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-muenz2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;4.6: Wahrscheinlichkeiten der Ereignisse im zweimaligen Münzwurf
+</figcaption><div aria-describedby="tbl-muenz2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div id="ciydemetbh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ciydemetbh table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#ciydemetbh thead, #ciydemetbh tbody, #ciydemetbh tfoot, #ciydemetbh tr, #ciydemetbh td, #ciydemetbh th {
+  border-style: none;
+}
+
+#ciydemetbh p {
+  margin: 0;
+  padding: 0;
+}
+
+#ciydemetbh .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ciydemetbh .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#ciydemetbh .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ciydemetbh .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ciydemetbh .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ciydemetbh .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ciydemetbh .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ciydemetbh .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ciydemetbh .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ciydemetbh .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ciydemetbh .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ciydemetbh .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ciydemetbh .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#ciydemetbh .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#ciydemetbh .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ciydemetbh .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ciydemetbh .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ciydemetbh .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ciydemetbh .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ciydemetbh .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ciydemetbh .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#ciydemetbh .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#ciydemetbh .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ciydemetbh .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#ciydemetbh .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ciydemetbh .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ciydemetbh .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ciydemetbh .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ciydemetbh .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ciydemetbh .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ciydemetbh .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ciydemetbh .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ciydemetbh .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ciydemetbh .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ciydemetbh .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ciydemetbh .gt_left {
+  text-align: left;
+}
+
+#ciydemetbh .gt_center {
+  text-align: center;
+}
+
+#ciydemetbh .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ciydemetbh .gt_font_normal {
+  font-weight: normal;
+}
+
+#ciydemetbh .gt_font_bold {
+  font-weight: bold;
+}
+
+#ciydemetbh .gt_font_italic {
+  font-style: italic;
+}
+
+#ciydemetbh .gt_super {
+  font-size: 65%;
+}
+
+#ciydemetbh .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#ciydemetbh .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ciydemetbh .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#ciydemetbh .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#ciydemetbh .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#ciydemetbh .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#ciydemetbh .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#ciydemetbh .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#ciydemetbh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="gt_col_headings header">
+<th id="Ereignis" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Ereignis</th>
+<th id="Pr" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Pr</th>
+<th id="Anzahl-günstiger-Pfade" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Anzahl günstiger Pfade</th>
+</tr></thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Ereignis">0T</td>
+<td class="gt_row gt_left" headers="Pr">1/2 * 1/2 = 1/4</td>
+<td class="gt_row gt_right" headers="Anzahl günstiger Pfade">1</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Ereignis">1T</td>
+<td class="gt_row gt_left" headers="Pr">1/4 + 1/4 = 1/2</td>
+<td class="gt_row gt_right" headers="Anzahl günstiger Pfade">2</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Ereignis">2T</td>
+<td class="gt_row gt_left" headers="Pr">1/2 * 1/2 = 1/4</td>
+<td class="gt_row gt_right" headers="Anzahl günstiger Pfade">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Sei <span class="math inline">\(K_1\)</span> das Ereignis, mit der 1. Münze Kopf zu werfen; sei <span class="math inline">\(K_2\)</span> das Ereignis, mit der 2. Münze Kopf zu werfen.</p>
+<p>Wir suchen <span class="math inline">\(Pr(K_1 \cap K_2)\)</span>. Aufgrund der stochastischen Unabhängigkeit der beiden Ereignisse gilt: <span class="math inline">\(Pr(K_1 \cap K_2) = Pr(K_1) \cdot Pr(K_2)\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Pr_K1K2</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span></span>
+<span><span class="va">Pr_K1K2</span></span>
+<span><span class="co">## [1] 0.25</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="def-multsatz" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.5 (Multiplikationssatz der Wahrscheinlichkeit für unabhängige Ereignisse)</strong></span> Die Wahrscheinlichkeit, dass zwei (oder mehr) unabhängige Ereignisse <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> <em>gemeinsam</em> eintreten, ist gleich dem Produkt ihrer jeweiligen Wahrscheinlichkeiten, s. <a href="#thm-multtheorem" class="quarto-xref">Theorem&nbsp;<span>4.9</span></a>. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="thm-multtheorem" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.9 (Multiplikationssatz für unabhängige Ereignisse)</strong></span> <span class="math display">\[Pr(A \cap B) = Pr(A) \cdot Pr(B)\]</span></p>
+<p>Man beachte, dass es egal ist, ob <span class="math inline">\(A\)</span> gemeinsam mit <span class="math inline">\(B\)</span> oder <span class="math inline">\(B\)</span> gemeinsam mit <span class="math inline">\(A\)</span> eintreten: <span class="math inline">\(Pr(A \cap B) = Pr(B \cap A)\)</span>. Man spricht in diesem Zusammenhang von der <em>Symmetrie</em> der Multiplikation. <span class="math inline">\(\square\)</span></p>
+</div>
+<p>Mit <a href="https://www.geogebra.org/m/gzxz57ak">dieser App</a> können Sie das Baumdiagramm für den zweifachen Münzwurf näher erkunden.</p>
+<p>Wir führen das Zufallsexperiment “Wurf einer fairen Münze” drei Mal aus (<a href="#fig-dreimuenzen" class="quarto-xref">Abbildung&nbsp;<span>4.7</span></a>). Dabei vereinbaren wir wieder, dass “Kopf” (K) als “Treffer” gilt und “Zahl” (Z) als “Niete”.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-dreimuenzen" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-dreimuenzen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-dreimuenzen">graph TD
+    A[Start] --1/2--&gt;  B1[T]
+    A --1/2--&gt;  B2[N]
+
+    %% Zweiter Wurf
+    B1 --1/2--&gt;  C1[TT]
+    B1 --1/2--&gt;  C2[TN]
+    B2 --1/2--&gt;  C3[NT]
+    B2 --1/2--&gt;  C4[NN]
+
+    %% Dritter Wurf
+    C1 --1/2--&gt;  D1[TTT]
+    C1 --1/2--&gt;  D2[TTN]
+    C2 --1/2--&gt;  D3[TNT]
+    C2 --1/2--&gt;  D4[TNN]
+    C3 --1/2--&gt;  D5[NTT]
+    C3 --1/2--&gt;  D6[NTN]
+    C4 --1/2--&gt;  D7[NNT]
+    C4 --1/2--&gt;  D8[NNN]
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dreimuenzen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;4.7: Wir werfen drei faire Münzen: Das dreifach wiederholte binäre Zufallexperiment
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Beim Wurf von “fairen” Münzen gehen wir davon aus, dass Kenntnis des Ergebnis des 1. Wurfes unsere Einschätzung des Ergebnis des 2. Wurfes nicht verändert etc. Anders gesagt: Wir gehen von (stochastischer) Unabhängigkeit aus.</p>
+<p>Für z.B. das Ereignis <span class="math inline">\(A=\{ZZZ\}\)</span> gilt: <span class="math inline">\(Pr(A) = 1/2 \cdot 1/2 \cdot 1/2 = (1/2)^3\)</span>. Da jeder Endknoten (jedes Blatt) gleichwahrscheinlich ist, ist die Wahrscheinlichkeit jedes Endknotens gleich.</p>
+<p>Allgemeiner gilt: Für ein Zufallsexperiment, das aus <span class="math inline">\(k\)</span> Wiederholungen besteht und in jeder Wiederholung die Wahrscheinlichkeit <span class="math inline">\(Pr(X)=p\)</span> ist, so ist die Wahrscheinlichkeit für einen Endkonten <span class="math inline">\(Pr(X^k)=p^k\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-baum3" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-baum3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;4.7: Ausgewählte Wahrscheinlichkeiten von Ereignissen im dreifachen Münzwurf
+</figcaption><div aria-describedby="tbl-baum3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div id="czajxkovzh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#czajxkovzh table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#czajxkovzh thead, #czajxkovzh tbody, #czajxkovzh tfoot, #czajxkovzh tr, #czajxkovzh td, #czajxkovzh th {
+  border-style: none;
+}
+
+#czajxkovzh p {
+  margin: 0;
+  padding: 0;
+}
+
+#czajxkovzh .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#czajxkovzh .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#czajxkovzh .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#czajxkovzh .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#czajxkovzh .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#czajxkovzh .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#czajxkovzh .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#czajxkovzh .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#czajxkovzh .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#czajxkovzh .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#czajxkovzh .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#czajxkovzh .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#czajxkovzh .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#czajxkovzh .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#czajxkovzh .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#czajxkovzh .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#czajxkovzh .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#czajxkovzh .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#czajxkovzh .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#czajxkovzh .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#czajxkovzh .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#czajxkovzh .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#czajxkovzh .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#czajxkovzh .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#czajxkovzh .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#czajxkovzh .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#czajxkovzh .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#czajxkovzh .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#czajxkovzh .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#czajxkovzh .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#czajxkovzh .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#czajxkovzh .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#czajxkovzh .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#czajxkovzh .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#czajxkovzh .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#czajxkovzh .gt_left {
+  text-align: left;
+}
+
+#czajxkovzh .gt_center {
+  text-align: center;
+}
+
+#czajxkovzh .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#czajxkovzh .gt_font_normal {
+  font-weight: normal;
+}
+
+#czajxkovzh .gt_font_bold {
+  font-weight: bold;
+}
+
+#czajxkovzh .gt_font_italic {
+  font-style: italic;
+}
+
+#czajxkovzh .gt_super {
+  font-size: 65%;
+}
+
+#czajxkovzh .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#czajxkovzh .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#czajxkovzh .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#czajxkovzh .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#czajxkovzh .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#czajxkovzh .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#czajxkovzh .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#czajxkovzh .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#czajxkovzh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="gt_col_headings header">
+<th id="Ereignis" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Ereignis</th>
+<th id="Pr" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Pr</th>
+<th id="Anzahl-günstiger-Pfade" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Anzahl günstiger Pfade</th>
+</tr></thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Ereignis">0T</td>
+<td class="gt_row gt_left" headers="Pr">1/2 * 1/2 * 1/2 = 1/8</td>
+<td class="gt_row gt_right" headers="Anzahl günstiger Pfade">1</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Ereignis">1T</td>
+<td class="gt_row gt_left" headers="Pr">1/8 + 1/8 + 1/8 = 3/8</td>
+<td class="gt_row gt_right" headers="Anzahl günstiger Pfade">3</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Ereignis">2T</td>
+<td class="gt_row gt_left" headers="Pr">3 * 1/8 = 3/8</td>
+<td class="gt_row gt_right" headers="Anzahl günstiger Pfade">3</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Ereignis">3T</td>
+<td class="gt_row gt_left" headers="Pr">1/2 * 1/2 * 1/2 = 1/8</td>
+<td class="gt_row gt_right" headers="Anzahl günstiger Pfade">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Da die Endknoten disjunkte Elementarereignisse sind, kann man ihre Wahrscheinlichkeit addieren, um zu anderen (zusammengesetzten) Ereignissen zu kommen, vgl. <a href="#tbl-baum3" class="quarto-xref">Tabelle&nbsp;<span>4.7</span></a>.</p>
+<p><a href="#fig-schema-p" class="quarto-xref">Abbildung&nbsp;<span>4.3</span></a> versinnbildlicht nicht nur die Bedingtheit zweier Ereignisse, sondern auch die (Un-)Abhängigkeit zweier Ereignisse, <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span>. In diesem Fall ist die Wahrscheinlichkeit von <span class="math inline">\(A\)</span> gleich <span class="math inline">\(B\)</span>: <span class="math inline">\(Pr(A)=Pr(B)=.5\)</span>. Man sieht, dass die Wahrscheinlichkeit von <span class="math inline">\(A\)</span> bzw. von <span class="math inline">\(B\)</span> jeweils die Hälfte der Fläche (der Gesamtfläche, d.h von <span class="math inline">\(Pr(\Omega)=1\)</span>) ausmacht. Die Schnittmenge der Fläche von <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> entspricht einem Viertel der Fläche: <span class="math inline">\(Pr(AB) = Pr(A) \cdot Pr(B) = 50\% \cdot 50\% = 25\%.\)</span> In diesem Fall sind <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> unabhängig. <a href="#fig-schema-p" class="quarto-xref">Abbildung&nbsp;<span>4.3</span></a> zeigt weiterhin, dass gilt: <span class="math inline">\(Pr(A\cap B) = P(A) \cdot P(B) = P(B) \cdot P(A)\)</span>. Man beachte, dass diese Formel nur bei <em>Unabhängigkeit</em> (von A und B) gilt.</p>
+</section><section id="gemeinsame-wahrscheinlichkeit-allgemeiner-ereignisse" class="level3" data-number="4.7.2"><h3 data-number="4.7.2" class="anchored" data-anchor-id="gemeinsame-wahrscheinlichkeit-allgemeiner-ereignisse">
+<span class="header-section-number">4.7.2</span> Gemeinsame Wahrscheinlichkeit allgemeiner Ereignisse</h3>
+<p>Ein Baumdiagramm bietet sich zur Visualisierung allgemeiner abhängiger Ereignisse an, s. <a href="#fig-baum-abh" class="quarto-xref">Abbildung&nbsp;<span>4.8</span></a>.</p>
+<div id="exm-urne1" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.17</strong></span> In einer Urne befinden sich fünf Kugeln, von denen vier rot sind und eine blau ist.</p>
+<p>Hier ist unsere Urne:</p>
+<p><span class="math display">\[\boxed{\color{red}{R, R, R, R}, \color{blue}\mathcal{B}}\]</span></p>
+<p>Wie groß ist die Wahrscheinlichkeit, dass bei zwei Ziehungen ohne Zurücklegen (<em>ZOZ</em>) <em>zwei rote Kugeln</em> gezogen werden <span class="citation" data-cites="bourier2011">(<a href="references.html#ref-bourier2011" role="doc-biblioref">Bourier, 2011</a>)</span>, S. 47. Ereignis A: “Kugel im 1. Zug hat die Farbe Rot”. Ereignis B: “Kugel im 2. Zug hat die Farbe Rot”.</p>
+<p>Und jetzt ziehen wir. Hier ist das Baumdiagramm, s. <a href="#fig-baum-abh" class="quarto-xref">Abbildung&nbsp;<span>4.8</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-baum-abh" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-baum-abh-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-baum-abh">flowchart LR
+  A[Start] --&gt;|4/5|B[Zug 1 - A]
+  A --&gt;|1/5|C[Zug 1 - nA]
+  B --&gt;|3/4|D[Zug 2 - B]
+  B --&gt;|1/4|E[Zug 2 -  nB]
+  D --- H[Fazit: AB - 4/5*3/4 = 12/20]
+  E --- I[Fazit: AnB - 4/5*1/4 = 4/20]
+  C --&gt;|4/4|F[Zug 2 - B]
+  C --&gt;|0/4|G[Zug 2 - nB]
+  F --- J[Fazit: nAB - 1/5*4/4 = 4/20]
+  G --- K[Fazit: nAnB - 1/5*0/4 = 0/20]
+  
+  
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-baum-abh-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;4.8: Baumdiagramm für ein zweistufiges Zufallsereignis, wobei der 2. Zug (Stufe) abhängig ist vom 1. Zug.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Wie man in <a href="#fig-baum-abh" class="quarto-xref">Abbildung&nbsp;<span>4.8</span></a> nachrechnen kann gilt also: <span class="math inline">\(Pr(A\cap B) = P(A) \cdot P(B|A) = 4/5 \cdot 3/4 = 12/20 = 3/5 \quad \square\)</span></p>
+</div>
+<div id="def-gem-wskt-abh" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.6 (Gemeinsame Wahrscheinlichkeit)</strong></span> Die Wahrscheinlichkeit, dass zwei abhängige Ereignisse <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> <em>gemeinsam</em> eintreten, ist gleich dem Produkt der Wahrscheinlichkeit von <span class="math inline">\(A\)</span> und der bedingten Wahrscheinlichkeit von <span class="math inline">\(B\)</span> gegeben <span class="math inline">\(A\)</span>, s. <a href="#thm-gem-wskt-abh" class="quarto-xref">Theorem&nbsp;<span>4.10</span></a>. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="thm-gem-wskt-abh" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.10 (Gemeinsame Wahrscheinlichkeit)</strong></span> <span class="math display">\[Pr(A \cap B) = Pr(A) \cdot Pr(B|A) \quad \square\]</span></p>
+</div>
+<p>Allgemein ist die Wahrscheinlichkeit, dass zwei Ereignisse <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> gemeinsam eintreten, gleich dem Produkt der Wahrscheinlichkeit von <span class="math inline">\(B\)</span> und der bedingten Wahrscheinlichkeit von <span class="math inline">\(A\)</span> gegeben <span class="math inline">\(B\)</span>, s. <a href="#thm-gem-wskt-abh" class="quarto-xref">Theorem&nbsp;<span>4.10</span></a>. Im Fall von Unabhängigkeit vereinfacht sich die Formel zu der in <a href="#thm-multtheorem" class="quarto-xref">Theorem&nbsp;<span>4.9</span></a>.</p>
+<div id="exm-kaltregen" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.18 (Nochmal kalt und Regen)</strong></span> Von <span class="citation" data-cites="mcelreath2020">McElreath (<a href="references.html#ref-mcelreath2020" role="doc-biblioref">2020</a>)</span> stammt diese Verdeutlichung der gemeinsamen Wahrscheinlichkeit. Was ist die Wahrscheinlichkeit für das gemeinsame Auftreten von <em>kalt ❄ und Regen ⛈️</em>? Die Wahrscheinlichkeit für kalt und Regen ist die Wahrscheinlichkeit von <em>Regen</em> ⛈, wenn’s <em>kalt</em> ❄ ist mal die Wahrscheinlichkeit von <em>Kälte</em> ❄.</p>
+<p>Ebenfalls gilt: Die Wahrscheinlichkeit für kalt und Regen ist die Wahrscheinlichkeit von <em>Kälte</em> ❄, wenn’s <em>regnet</em> ⛈️ mal die Wahrscheinlichkeit von <em>Regen</em> ⛈️.</p>
+<p>Das Gesagte als Emoji-Gleichung ist in <a href="#eq-kalt-regen-emoji" class="quarto-xref">Gleichung&nbsp;<span>4.2</span></a> dargestellt.</p>
+<p><span id="eq-kalt-regen-emoji"><span class="math display">\[Pr(❄️ \text{ und } ⛈️) = P(❄️) \cdot P(⛈️ |❄️ )  =  P(❄️) \cdot P(❄️ |⛈️ ) \tag{4.2}\]</span></span></p>
+<p>Man kann die “Gleichung drehen”<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>, s. <a href="#eq-kalt-regen-emoji2" class="quarto-xref">Gleichung&nbsp;<span>4.3</span></a>.</p>
+<p><span id="eq-kalt-regen-emoji2"><span class="math display">\[Pr(❄️ \text{ und } ⛈️) = P(⛈️ \text{ und } ❄️) \tag{4.3}\]</span></span> <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="exm-bertie-botts" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.19 (Bertie Botts Bohnen jeder Geschmacksrichtung)</strong></span> &nbsp;</p>
+<blockquote class="blockquote">
+<p>Sei bloß vorsichtig mit denen. Wenn sie sagen jede Geschmacksrichtung, dann meinen sie es auch - Du kriegst zwar alle gewöhnlichen wie Schokolade und Pfefferminz und Erdbeere, aber auch Spinat und Leber und Kutteln. George meint, er habe mal eine mit Popelgeschmack gehabt.“</p>
+</blockquote>
+<p>— Ron Weasley zu Harry Potter<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a></p>
+<p>In einem Beutel liegen <span class="math inline">\(n=20\)</span> <em>Bertie Botts Bohnen jeder Geschmacksrichtung</em>. Uns wurde verraten, dass fast alle gut schmecken, also z.B. nach Schokolade, Pfefferminz oder Marmelade. Leider gibt es aber auch <span class="math inline">\(x=2\)</span> furchtbar scheußliche Bohnen (Ohrenschmalz-Geschmacksrichtung oder Schlimmeres). Sie haben sich nun bereit erklärt, <span class="math inline">\(k=2\)</span> Bohnen zu ziehen. Und zu essen, und zwar direkt und sofort! Also, jetzt heißt es tapfer sein. Ziehen und runter damit!</p>
+<p>Wie groß ist die Wahrscheinlichkeit, <em>genau eine</em> scheußliche Bohne zu erwischen?</p>
+<p>Es gibt 2 Pfade für 1 Treffer bei 2 Wiederholungen (Züge aus dem Beutel), s. <a href="#fig-bertie1" class="quarto-xref">Abbildung&nbsp;<span>4.9</span></a>: Man kann im ersten Zug eine scheußliche Bohne erwischen, aber nicht im zweiten Zug. Oder man man im zweiten Zug Pech haben (aber nicht im ersten). Die Summe der Wahrscheinlichkeiten beider Pfade ist die Wahrscheinlichkeit für genau <em>eine</em> scheußliche Bohne, das sind 19%.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-bertie1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-bertie1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-bertie1">graph LR
+    A[Start: 20 Bohnen] -- 18/20 --&gt; B1[Bohne 1 gut]
+    A -- 2/20 --&gt; B2[Bohne 1 schlecht]
+    
+    B1 -- 17/19 --&gt; C1[Bohne 2 gut]
+    B1 -- 2/19 --&gt; C2[Bohne 2 schlecht]
+    
+    B2 -- 18/19 --&gt; C3[Bohne 2 gut]
+    B2 -- 1/19 --&gt; C4[Bohne 2 schlecht]
+    
+    C1 --&gt; D1[Ergebnis: gut, gut]
+    C2 --&gt; D2[Ergebnis: gut, schlecht]
+    C3 --&gt; D3[Ergebnis: schlecht, gut]
+    C4 --&gt; D4[Ergebnis: schlecht, schlecht]
+
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bertie1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;4.9: Baumdiagramm für ein ein zweistufiges Zufallsereignis: Bertie Botts Bohnen.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Pfad1</span> <span class="op">&lt;-</span> <span class="fl">2</span><span class="op">/</span><span class="fl">20</span> <span class="op">*</span> <span class="fl">18</span><span class="op">/</span><span class="fl">19</span>  <span class="co"># scheußliche Bohne im 1. Zug</span></span>
+<span><span class="va">Pfad2</span> <span class="op">&lt;-</span> <span class="fl">18</span><span class="op">/</span><span class="fl">20</span> <span class="op">*</span> <span class="fl">2</span><span class="op">/</span><span class="fl">19</span>  <span class="co"># scheußliche Bohne im 2. Zug</span></span>
+<span></span>
+<span></span>
+<span><span class="va">Gesamt_Pr</span> <span class="op">&lt;-</span> <span class="va">Pfad1</span> <span class="op">+</span> <span class="va">Pfad2</span> </span>
+<span><span class="va">Gesamt_Pr</span></span>
+<span><span class="co">## [1] 0.19</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Nutzen Sie <a href="https://www.geogebra.org/m/j545R3Fu">diese App</a>, um das auszuprobieren. Sie müssen in der App noch die Zahl der Bohnen (<span class="math inline">\(n\)</span>) und die Zahl der scheußlichen Bohnen (<span class="math inline">\(x\)</span>) einstellen.<span class="math inline">\(\square\)</span></p>
+</div>
+</section><section id="kettenregel" class="level3" data-number="4.7.3"><h3 data-number="4.7.3" class="anchored" data-anchor-id="kettenregel">
+<span class="header-section-number">4.7.3</span> Kettenregel</h3>
+<div id="def-kettenregel" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.7 (Kettenregel)</strong></span> Allgemein gesagt, spricht man von der <em>Kettenregel</em> der Wahrscheinlichkeitsrechnung, wenn man die gemeinsame Wahrscheinlichkeit auf die bedingte zurückführt, s. <a href="#thm-kette" class="quarto-xref">Theorem&nbsp;<span>4.11</span></a>. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="thm-kette" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.11 (Kettenregel)</strong></span> <span class="math display">\[Pr(A\cap B) = P(A) \cdot P(B|A) = P(B) \cdot P(A|B) \square\]</span></p>
+<p>In Worten: Die Wahrscheinlichkeit von <span class="math inline">\(A\)</span> gegeben <span class="math inline">\(B\)</span> ist gleich der Wahrscheinlichkeit von <span class="math inline">\(A\)</span> mal der Wahrscheinlichkeit von <span class="math inline">\(B\)</span> gegeben <span class="math inline">\(A\)</span>.</p>
+</div>
+<div id="exr-baum3" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 4.4 (Baumdiagramm sucht Problem)</strong></span> Überlegen Sie sich eine Problemstellung (Aufgabenstellung), die mit <a href="https://www.geogebra.org/m/WVKur4yM">dieser Baumdiagramm-App</a> gelöst werden kann.<span class="math inline">\(\square\)</span></p>
+</div>
+<div id="exr-multsatz" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 4.5 (Peer Instruction: Dreifacher Münzwurf)</strong></span> Fünf Studierende unterhalten sich, wie man einen dreifachen Münzwurf mit dem Ergebnis von drei Treffern verstehen kann. Welcher Studierende liegt <em>falsch</em>? Gehen Sie von einer faire Münze aus und Unabhängigkeit der Würfe.</p>
+<ol type="A">
+<li>Wirft man die Münze drei Mal, so gibt es 4 verschiedene Ergebnisse (0 bis 3 Treffer), die alle gleich wahrscheinlich sind. Aber nur ein Ergebnis ist gesucht, nämlich 3 von 3 Treffern. Also ist die Wahrscheinlichkeit 1/6, ca. 17%.</li>
+<li>Man kann einfach einen Computer fragen, z.B. R mit <code>dbinom(x = 3, size = 3, prob = 1/2)</code>, da kommt ungefähr 12% raus.</li>
+<li>Wirft man die Münze drei Mal, so gibt es 8 Ergebnisse, die alle gleich wahrscheinlich sind. Aber nur ein Ergebnis ist gesucht, nämlich 3 von 3 Treffern. Also ist die Wahrscheinlichkeit 1/8, ca. 12,5%.</li>
+<li>Wer rechnen kann, ist klar im Vorteil <span class="math inline">\(\left( \frac{1}{2} \right)^3 = \left( \frac{1}{2^3} \right) = \left( \frac{1}{8} \right)\)</span>
+</li>
+</ol>
+</div>
+</section></section><section id="totale-wahrscheinlichkeit" class="level2" data-number="4.8"><h2 data-number="4.8" class="anchored" data-anchor-id="totale-wahrscheinlichkeit">
+<span class="header-section-number">4.8</span> Totale Wahrscheinlichkeit</h2>
+<div id="exm-bourier-s56" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 4.20 (Gesamter Ausschussanteil)</strong></span> Die folgende Aufgabe bezieht sich auf <span class="citation" data-cites="bourier2011">Bourier (<a href="references.html#ref-bourier2011" role="doc-biblioref">2011</a>)</span>, S. 56. Drei Maschinen (<span class="math inline">\(M_1, M_2, M_3\)</span>) produzieren einen Artikel. Die Maschinen haben einen Anteil an der Produktion von 60, 10 bzw. 30% und eine Ausschussquote von 5,2 bzw. 4%. Sei <span class="math inline">\(M\)</span> das Ereignis, dass ein Artikel von Maschine <span class="math inline">\(M\)</span> stammt, und <span class="math inline">\(S\)</span> (Schrott) das Ereignis, dass ein Artikel Ausschuss (Schrott) ist. Gesucht ist ist der Ausschussanteil insgesamt (über alle drei Maschinen). Anders gesagt: Wie hoch ist die Wahrscheinlichkeit <span class="math inline">\(Pr(S')\)</span>, dass ein zufällig gezogener Artikel Ausschuss ist? <a href="#fig-tot-wskt" class="quarto-xref">Abbildung&nbsp;<span>4.10</span></a> zeigt das Baumdiagramm für die Aufgabe. <span class="math inline">\(\square\)</span></p>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-tot-wskt" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-tot-wskt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-tot-wskt">flowchart LR
+  A[Start] --&gt;|0.6|B[M1]
+  A --&gt;|0.1|C[M2]
+  A --&gt;|0.3|D[M3]
+  B --&gt;|0.05|E[S]
+  B -.-&gt;|0.95|F[Nicht-S]
+  C --&gt;|0.02|G[S]
+  C -.-&gt;|0.98|H[Nicht-S]
+  D --&gt;|0.04|I[S]
+  D -.-&gt;|0.96|J[Nicht-S]
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tot-wskt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;4.10: Totale Wahrscheinlichkeit
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Die Anteile an der Produktion und vom Ausschluss sind in <a href="#fig-ausschuss" class="quarto-xref">Abbildung&nbsp;<span>4.11</span></a> verdeutlicht.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="st">"R-code/plot_maschine_schrott.R"</span><span class="op">)</span></span>
+<span><span class="va">plot_maschine_schrott</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-ausschuss" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-ausschuss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0350-wskt2_files/figure-html/fig-ausschuss-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Abbildung&nbsp;4.11: Anteile von Produktion und Ausschuss"><img src="0350-wskt2_files/figure-html/fig-ausschuss-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ausschuss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;4.11: Anteile von Produktion und Ausschuss
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Dazu addieren wir die Wahrscheinlichkeiten der relevanten Äste. Jeder Ast stellt wiederum das gemeinsame Auftreten der Ereignisse <span class="math inline">\(M_i\)</span> und <span class="math inline">\(S\)</span> dar.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">W_Ast1</span> <span class="op">&lt;-</span> <span class="fl">0.6</span> <span class="op">*</span> <span class="fl">0.05</span>  <span class="co"># Wahrscheinlichkeit für Ast 1</span></span>
+<span><span class="va">W_Ast2</span> <span class="op">&lt;-</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="fl">0.02</span>  <span class="co"># ... Ast 2</span></span>
+<span><span class="va">W_Ast3</span> <span class="op">&lt;-</span> <span class="fl">0.3</span> <span class="op">*</span> <span class="fl">0.04</span>  <span class="co"># ... Ast 3</span></span>
+<span><span class="va">W_total</span> <span class="op">&lt;-</span> <span class="va">W_Ast1</span> <span class="op">+</span> <span class="va">W_Ast2</span> <span class="op">+</span> <span class="va">W_Ast3</span>  <span class="co"># totale W.</span></span>
+<span><span class="va">W_total</span></span>
+<span><span class="co">## [1] 0.044</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Die <em>totale Wahrscheinlichkeit</em> (für Ausschuss) beträgt in diesem Beispiel also <span class="math inline">\(Pr(B') = 0.044 = 4.4\%\)</span>.<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a></p>
+<div id="def-totwskt" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.8 (Totale Wahrscheinlichkeit)</strong></span> Bilden die Ereignisse <span class="math inline">\(M_1, M_2, ..., M_n\)</span> ein vollständiges Ereignissystem und ist <span class="math inline">\(S\)</span> ein beliebiges Ereignis dann gilt <a href="#thm-totale-wskt" class="quarto-xref">Theorem&nbsp;<span>4.12</span></a>. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="thm-totale-wskt" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4.12 (Totale Wahrscheinlichkeit)</strong></span> <span class="math display">\[Pr(S') = \sum_{i=1}^n Pr(M_i) \cdot Pr(S|M_i).\square\]</span></p>
+</div>
+<p>In Worten: Die totale Wahrscheinlichkeit ist die Summe der gewichteten Teil-Wahrscheinlichkeiten.</p>
+<div class="{exm-totwskt1}">
+<p>In <a href="#fig-tot-wskt" class="quarto-xref">Abbildung&nbsp;<span>4.10</span></a> (<a href="#exm-bourier-s56" class="quarto-xref">Beispiel&nbsp;<span>4.20</span></a>) gilt <span class="math inline">\(Pr(S') = 0.6 \cdot 0.05 + 0.1 \cdot 0.02 + 0.3 \cdot  0.04 = 0.03 + 0.002 + 0.012 = 0.04.\square\)</span></p>
+</div>
+<div id="exr-bertie-botts2" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 4.6 (Bertie Botts Bohnen jeder Geschmacksrichtung, Teil 2)</strong></span> Es ist die gleich Aufgabe wie <a href="#exm-bertie-botts" class="quarto-xref">Beispiel&nbsp;<span>4.19</span></a>, aber jetzt lautet die Frage: Wie groß ist die Wahrscheinlichkeit, <em>mindestens eine</em> scheußliche Bohne bei 3 Zügen zu erwischen?<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> <span class="math inline">\(\square\)</span></p>
+</div>
+<section id="baumsammlung" class="level3" data-number="4.8.1"><h3 data-number="4.8.1" class="anchored" data-anchor-id="baumsammlung">
+<span class="header-section-number">4.8.1</span> Baumsammlung</h3>
+<p>Baumdiagramme sind ein hilfreiches Werkzeug für wiederholte Zufallsexperimente. Daher ist hier eine “Baumsammlung”<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a> zusammengestellt.</p>
+<ul>
+<li>Sie werfen 1 Münze, <a href="0300-Wskt.html#fig-baummuenz1" class="quarto-xref">Abbildung&nbsp;<span>3.2</span></a>.</li>
+<li>Sie werfen 2 Münzen, <a href="#fig-zweimuenzen" class="quarto-xref">Abbildung&nbsp;<span>4.6</span></a>.</li>
+<li>Sie werfen 3 Münzen, <a href="#fig-dreimuenzen" class="quarto-xref">Abbildung&nbsp;<span>4.7</span></a>.</li>
+<li>Sie werfen 4 Münzen, <a href="0300-Wskt.html#fig-4muenzen" class="quarto-xref">Abbildung&nbsp;<span>3.20</span></a>.</li>
+<li>Sie werfen 9 Münzen, 🤯 <a href="0500-Globusversuch.html#fig-binom2" class="quarto-xref">Abbildung&nbsp;<span>6.7</span></a>.</li>
+</ul></section></section><section id="vertiefung" class="level2" data-number="4.9"><h2 data-number="4.9" class="anchored" data-anchor-id="vertiefung">
+<span class="header-section-number">4.9</span> Vertiefung</h2>
+<p>Bei <span class="citation" data-cites="henze2019">Henze (<a href="references.html#ref-henze2019" role="doc-biblioref">2019</a>)</span> findet sich eine anspruchsvollere Einführung in das Rechnen mit Wahrscheinlichkeit; dieses Kapitel behandelt ein Teil des Stoffes der Kapitel 2 und 3 von <span class="citation" data-cites="henze2019">Henze (<a href="references.html#ref-henze2019" role="doc-biblioref">2019</a>)</span>.</p>
+<p>Mit <a href="https://www.geogebra.org/m/n4xrk4x5">dieser App, die ein zweistufiges Baumdiagramm zeigt</a>, können Sie das Verhalten von verschiedenen Arten von Wahrscheinlichkeiten weiter untersuchen.</p>
+<p><a href="https://www.geogebra.org/m/tkdfxa8f">Diese App lässt dich herausfinden, ob man wirklich krank ist, wenn der Arzt es bheauptet.</a></p>
+<p>Das <a href="https://youtu.be/HZGCoVF3YvM">Video zu Bayes von 3b1b</a> verdeutlicht das Vorgehen der Bayes-Methode auf einfache und anschauliche Weise.</p>
+<p><span class="citation" data-cites="mittag2020">Mittag &amp; Schüller (<a href="references.html#ref-mittag2020" role="doc-biblioref">2020</a>)</span> stellen in Kap. 11 die Grundlagen der Wahrscheinlichkeitstheorie vor. Ähnliche Darstellungen finden sich in einer großen Zahl an Lehrbüchern.</p>
+</section><section id="aufgaben" class="level2" data-number="4.10"><h2 data-number="4.10" class="anchored" data-anchor-id="aufgaben">
+<span class="header-section-number">4.10</span> Aufgaben</h2>
+<p>Bearbeiten Sie die Aufgabe in der angegeben Literatur.</p>
+<p>Die Webseite <a href="https://datenwerk.netlify.app">datenwerk.netlify.app</a> stellt eine Reihe von einschlägigen Übungsaufgaben bereit. Sie können die Suchfunktion der Webseite nutzen, um die Aufgaben mit den folgenden Namen zu suchen:</p>
+<section id="paper-pencil-aufgaben" class="level3" data-number="4.10.1"><h3 data-number="4.10.1" class="anchored" data-anchor-id="paper-pencil-aufgaben">
+<span class="header-section-number">4.10.1</span> Paper-Pencil-Aufgaben</h3>
+<ol type="1">
+<li><a href="https://datenwerk.netlify.app/posts/additionssatz1/additionssatz1.html">Additionssatz1</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/nerd-gelockert/nerd-gelockert.html">Nerd-gelockert</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/urne1/urne1.html">Urne1</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/urne2/urne2.html">Urne2</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/k-coins-k-hits/k-coins-k-hits.html">k-coins-k-hits</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/sicherheit/sicherheit.html">sicherheit</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/sicherheit2/sicherheit2.html">sicherheit2</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/klausuren-bestehen/klausuren-bestehen.html">Klausuren-bestehen</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/gem-wskt1/gem-wskt1.html">Gem-Wskt1</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/gem-wskt2/gem-wskt2.html">Gem-Wskt2</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/gem-wskt3/gem-wskt3.html">Gem-Wskt3</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/gem-wskt4">Gem-Wskt4</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/wuerfel05/wuerfel05">wuerfel05</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/wuerfel06/wuerfel06">wuerfel06</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/bed-wskt1/bed-wskt1.html">Bed-Wskt1</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/bed-wskt2/bed-wskt2.html">Bed-Wskt2</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/bed-wskt3/bed-wskt3.htmlv">Bed-Wskt3</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/voll-normal">voll-normal</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/corona-blutgruppe/corona-blutgruppe.html">corona-blutgruppe</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/totale-wskt1/totale-wskt1.html">totale-Wskt1</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/wskt-quiz14/wskt-quiz14.html">wskt-quiz14</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/wskt-quiz09/wskt-quiz09.html">wskt-quiz09</a></li>
+<li><a href="https://sebastiansauer.github.io/Datenwerk/posts/prob-vereinigung/">prob-vereinigung</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/bestehen_ohne_lernen/">bestehen_ohne_lernen</a></li>
+</ol></section><section id="aufgaben-für-die-man-einen-computer-braucht" class="level3" data-number="4.10.2"><h3 data-number="4.10.2" class="anchored" data-anchor-id="aufgaben-für-die-man-einen-computer-braucht">
+<span class="header-section-number">4.10.2</span> Aufgaben, für die man einen Computer braucht</h3>
+<ol type="1">
+<li><a href="https://datenwerk.netlify.app/posts/mtcars-abhaengig/mtcars-abhaengig.html">mtcars-abhaengig</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/mtcars-abhaengig_var2/mtcars-abhaengig_var2">mtcars-abhaengig-var2</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/mtcars-abhaengig_var3a/mtcars-abhaengig_var3a">mtcars-abhaengig_var3a</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/wskt-df-r/wskt-df-r">wskt-df-r</a></li>
+</ol></section></section><section id="section" class="level2" data-number="4.11"><h2 data-number="4.11" class="anchored" data-anchor-id="section">
+<span class="header-section-number">4.11</span> —</h2>
+<p><a href="img/outro-03.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="img/outro-03.jpg" class="img-fluid" style="width:100.0%"></a></p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
+<div id="ref-bourier2011" class="csl-entry" role="listitem">
+Bourier, G. (2011). <em>Wahrscheinlichkeitsrechnung und schließende Statistik: praxisorientierte Einführung mit Aufgaben und Lösungen</em> (7., aktualisierte Aufl). Gabler.
+</div>
+<div id="ref-bourier2022" class="csl-entry" role="listitem">
+Bourier, G. (2022). <em>Statistik-Übungen: <span>Beschreibende</span> Statistik – Wahrscheinlichkeitsrechnung – Schließende Statistik</em> (7. Auflage). Springer Gabler.
+</div>
+<div id="ref-henze2019" class="csl-entry" role="listitem">
+Henze, N. (2019). <em>Stochastik: Eine Einführung mit Grundzügen der Maßtheorie: Inkl. zahlreicher Erklärvideos</em>. Springer Berlin Heidelberg. <a href="https://doi.org/10.1007/978-3-662-59563-3">https://doi.org/10.1007/978-3-662-59563-3</a>
+</div>
+<div id="ref-mcelreath2020" class="csl-entry" role="listitem">
+McElreath, R. (2020). <em>Statistical Rethinking: A <span>Bayesian</span> Course with Examples in <span>R</span> and <span>Stan</span></em> (2. Aufl.). <span>Taylor and Francis, CRC Press</span>.
+</div>
+<div id="ref-mittag2020" class="csl-entry" role="listitem">
+Mittag, H.-J., &amp; Schüller, K. (2020). <em>Statistik: Eine Einführung mit interaktiven Elementen</em>. Springer Berlin Heidelberg. <a href="https://doi.org/10.1007/978-3-662-61912-4">https://doi.org/10.1007/978-3-662-61912-4</a>
+</div>
+</div>
+</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>Die Wahrscheinlichkeit, keine <code>6</code> zu würfeln, liegt bei <span class="math inline">\(2/3\)</span>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>vermutlich gibt es noch mehr Annahmen, die wir uns explizit machen sollten.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>genauer besehen sieht sie eher aus wie eine Grütze oder ein Brei<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Sie schmeckt scheußlich.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p><span class="math inline">\(Pr(L).85; Pr(\neg L) = .15; Pr(B) =.81; Pr(\neg B) = .19\)</span><a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Exakte Gleichheit ist in dieser Welt empirisch schwer zu finden. Daher kann man vereinbaren, dass Unabhängigkeit erfüllt ist, wenn die Gleichheit “einigermaßen” oder “ziemlich” gilt, die Gleichheit gewissermaßen “praktisch bedeutsam” ist.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Vgl. <a href="#thm-multtheorem" class="quarto-xref">Theorem&nbsp;<span>4.9</span></a><a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Wer Daten dazu hat oder eine Theorie, der melde sich bitte bei mir.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>hier mit den zwei Ausprägungen <em>DEU</em> und <em>USA</em><a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p> Daten von Our World in Data, <a href="https://ourworldindata.org/covid-deaths" class="uri">https://ourworldindata.org/covid-deaths</a>.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>Der Multiplikationssatz ist symmetrisch<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>Quelle: <a href="https://harrypotter.fandom.com/de/wiki/Bertie_Botts_Bohnen_jeder_Geschmacksrichtung" class="uri">https://harrypotter.fandom.com/de/wiki/Bertie_Botts_Bohnen_jeder_Geschmacksrichtung</a><a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>Einfacher als das Rechnen mit Wahrscheinlichkeiten ist es in solchen Fällen, wenn man anstelle von Wahrscheinlichkeiten absolute Häufigkeiten zum Rechnen verwendet.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>Die Wahrscheinlichkeit <em>keine</em> scheußliche Bohne zu ziehen ist <span class="math inline">\(17/20 \cdot 16/19 \cdot 15/18) \approx 0.6\)</span>. Daher ist die gesuchte Wahrscheinlichkeit (mindestens eine scheußliche Bohne) das Komplement davon: <span class="math inline">\(0.4\)</span>.<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>Wald?<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Kopiert");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Kopiert");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+        for (let i=0; i<annoteTargets.length; i++) {
+          const annoteTarget = annoteTargets[i];
+          const targetCell = annoteTarget.getAttribute("data-target-cell");
+          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+          const contentFn = () => {
+            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+            if (content) {
+              const tipContent = content.cloneNode(true);
+              tipContent.classList.add("code-annotation-tip-content");
+              return tipContent.outerHTML;
+            }
+          }
+          const config = {
+            allowHTML: true,
+            content: contentFn,
+            onShow: (instance) => {
+              selectCodeLines(instance.reference);
+              instance.reference.classList.add('code-annotation-active');
+              window.tippy.hideAll();
+            },
+            onHide: (instance) => {
+              unselectCodeLines();
+              instance.reference.classList.remove('code-annotation-active');
+            },
+            maxWidth: 300,
+            delay: [50, 0],
+            duration: [200, 0],
+            offset: [5, 10],
+            arrow: true,
+            appendTo: function(el) {
+              return el.parentElement.parentElement.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'quarto',
+            placement: 'right',
+            popperOptions: {
+              modifiers: [
+              {
+                name: 'flip',
+                options: {
+                  flipVariations: false, // true by default
+                  allowedAutoPlacements: ['right'],
+                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                },
+              },
+              {
+                name: 'preventOverflow',
+                options: {
+                  mainAxis: false,
+                  altAxis: false
+                }
+              }
+              ]        
+            }      
+          };
+          window.tippy(annoteTarget, config); 
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./0300-Wskt.html" class="pagination-link" aria-label="Hallo, Wahrscheinlichkeit">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Hallo, Wahrscheinlichkeit</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./0400-Verteilungen.html" class="pagination-link" aria-label="Verteilungen">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Verteilungen</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p><a href="./imprint.html">Impressum</a></p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/0350-wskt2.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p><a href="./data-privacy.html">Datenschutzhinweise</a></p>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+</body></html>
