@@ -19,11 +19,10 @@ Nach Absolvieren des jeweiligen Kapitels sollen folgende Lernziele erreicht sein
 Sie können ...
 
 
-- den Begriff der Zufallsvariablen erläutern
-- die Begriffe von Wahrscheinlichkeitsdichte und Verteilungsfunktion erläutern 
+- die Begriffe von Wahrscheinlichkeitsdichte   erläutern 
 - den Begriff einer Gleichverteilung erläutern 
 - den Begriff einer Binomialverteilung erläutern
-- Ben Begriff einer halben Normalverteilung erläutern
+- den Begriff einer halben Normalverteilung erläutern
 - den Begriff einer Exponentialverteilung erläutern
 - zentrale Konzepte in R umsetzen
 
@@ -38,7 +37,7 @@ Der Stoff dieses Kapitels deckt sich (weitgehend) mit @bourier2011, Kap. 6.1 und
 ### Vorbereitung im Eigenstudium
 
 Dieses Kapitel setzt einige Grundbegriffe voraus,
-wie im Buch [Statistik1]() vorgestellt, insbesondere im Kapitel ["Rahmen"](https://statistik1.netlify.app/010-rahmen#was-sind-daten).
+wie im Buch [Statistik1](https://statistik1.netlify.app/) von @sauer2025 vorgestellt, insbesondere im Kapitel ["Rahmen"](https://statistik1.netlify.app/010-rahmen#was-sind-daten).
 Benötigt wird auch der Begriff der [Normalverteilung](https://statistik1.netlify.app/040-verbildlichen#spezialfall-normalverteilung) sowie der Begriff der [Quantile](https://statistik1.netlify.app/050-zusammenfassen.html#quantile).
 
 Lesen Sie selbständig, zusätzlich  zum Stoff dieses Kapitels, noch in @bourier2011 folgende Abschnitte:
@@ -99,25 +98,6 @@ scale_colour_discrete <- function(...)
 
 
 
-### Zentrale Begriffe
-
-
-
-
-#### Eigenschaften von Zufallsvariablen
-
-- Zufallsvariable (random variable)
-- Diskret vs. stetig
-- Wahrscheinlichkeitsdichte (Dichte, (probability) density, f)
-- Wahrscheinlichkeitsfunktion (kumulierte Wahrscheinlichkeit, Wahrscheinlichkeitsmasse)
-
-
-#### Verteilungen
-
-- Gleichverteilung
-- Normalverteilung
-- Standardnormalverteilung
-
 ### Begleitvideos
 
 
@@ -128,6 +108,12 @@ scale_colour_discrete <- function(...)
 
 
 ## Wichtige Verteilungen
+
+:::{#def-verteilung}
+### Verteilung
+Eine Wahrscheinlichkeitsverteilung (bzw. eine HÄufigkeitsverteilung) beschreibt, wie wahrscheinlich (häufig) die Ergebnisse einer Variablen sind. $\square$
+:::
+
 
 Im Folgenden sind einige wichtige Verteilungen aufgeführt, die in diesem Skript (und in der Statistik und Wahrscheinlichkeitstheorie) eine zentrale Rolle spielen.
 
@@ -199,7 +185,7 @@ $$\overbrace{X}^{\text{Unsere Zufallsvariable}} \underbrace{\sim}_{\text{ist ver
 
 Für eine binomialverteilte Zufallsvariable $X$ schreibt man kurz wie in @thm-binvert gezeigt.
 
-::: {#thm-binvert}
+:::{#thm-binvert}
 
 ### Notation für eine binomialverteilte Zufallsvariable
 
@@ -221,14 +207,11 @@ davon 2 Treffer zu erzielen (egal in welcher Reihenfolge)?
 
 
 
-```{r echo = FALSE}
+```{r}
 #| fig-cap: Ein Loskästchen mit 2/5 Treffer und 3/5 Nieten
 #| label: fig-urne
 #| fig-asp: 0.3
-#| echo: false  
-
-
-
+#| echo: false
 d <- tibble(id = 1:5,
          event = c("T", "T", "N", "N", "N"))
 
@@ -256,7 +239,6 @@ p_urn2 <-
   theme_void()
 
 p_urn2
-  
 ```
 
 
@@ -416,7 +398,7 @@ Dabei liegt immer ein Zufallsversuch mit $n$ Durchgängen und $k$ Treffern zugru
 ::: {#thm-binomial}
 ### Binomialverteilung
 
-$$Pr(X=k|p,n) = \frac{n}{k!(n-k)!}p^k(1-p)^{n-k}\quad \square$$
+$$Pr(X=k|p,n) = \frac{n!}{k!(n-k)!}p^k(1-p)^{n-k}\quad \square$$
 :::
 
 
@@ -561,7 +543,7 @@ binomial_plot(9, .7)
 
 
 :::{#exr-binom}
-️ Was fällt Ihnen bei der Binomialverteilung auf? Ist sie symmetrisch? Verändert sich die Wahrscheinlichkeit linear?
+️ Was fällt Ihnen bei der Binomialverteilung auf? Ist sie symmetrisch? Verändert sich die Wahrscheinlichkeit von einer Trefferzahl zur nächsten linear?
 :::
 
 
@@ -759,7 +741,7 @@ p_mind_5
 ```
 
 
-Die Wahrscheinlichkeit, dass mind. 5 Motoren arbeiten beträgt also 
+Die Wahrscheinlichkeit, dass mind. 5 Motoren arbeiten beträgt also ca. 
 `r round(p_mind_5, 4)`.
 
 
@@ -795,8 +777,9 @@ ps_df |>
   ggplot(aes(x = Motorenzahl, y = Pr)) +
   geom_col() +
   scale_x_continuous(breaks = 0:7) +
-  geom_label(aes(label = round(Pr, 3)), size = font_size)
-
+  geom_label(aes(label = round(Pr, 3)), size = font_size) +
+  labs(y = "Wahrscheinlichkeit (gerundet auf 3 Dezimalstellen)",
+     x = "Anzahl der funktionerenden Motoren" ) 
 ```
 
 
@@ -840,7 +823,6 @@ E) Es ist unmöglihc, dass alle 10 USB-Sticks in Ordnung sind. $\square$
 ## Die halbe Normalverteilung
 
 [Grundlagen über die Normalverteilung](https://statistik1.netlify.app/040-verbildlichen#spezialfall-normalverteilung) können in @sauer2025 nachgelesen werden.
-
 Ein Spezialfall der Normalverteilung ist die *halbe* (oder halbseitige) Normalverteilung, s. @fig-halbe-nv.
 
 ```{r}
@@ -967,6 +949,7 @@ Zusätzlich zu den Aufgaben in der genannten Literatur sind folgende Aufgaben zu
 
 
 ![](img/outro-04.jpg){width=100%}
+
 
 
 
