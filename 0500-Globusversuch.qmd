@@ -259,11 +259,6 @@ Also $W=6$ (Wasser, d.h. "Treffer") und $L=3$ (Land, "Niete") ($n=9$ Versuche).
 
 
 
-
-
-### Das Bayes-Update
-
-
 Der Bayes-Golem denkt eigentlich ganz vernünftig:
 Zuerst ("Apriori") hat er ein Vorwissen zum Wasseranteil, die dazugehörige Wahrscheinlichkeitsverteilung nennt man *Apriori-Verteilung* (s. @def-priori).
 In unserem Beispiel ist das Vorwissen recht bescheiden: Jeder Wasseranteil ist ihm gleich plausibel.
@@ -317,7 +312,8 @@ Dann gewichten wir den Likelihood mit dem Vorabwissen, so dass wir die *Aposteri
 :::{#exr-l1}
 ### Wie gut passen die Daten zur Hypothese, dass die Erde komplett trocken ist?
 
-Wir haben in unseren Versuch $W=6$ und $L=3$ erzielt. Diese Daten passen *überhaupt nicht* zur Hypothese, dass die Erdoberfläche komplett trocken ist.
+Wir haben in unseren Versuch $W=6$ und $L=3$ erzielt. 
+Diese Daten passen *überhaupt nicht* zur Hypothese, dass die Erdoberfläche komplett trocken ist.
 Die *Likelihood*, $L$ für $\pi=0$ ist also Null.
 Analog ist die Likelihood für $\pi=1$ auch Null. $\square$
 :::
@@ -326,32 +322,34 @@ Analog ist die Likelihood für $\pi=1$ auch Null. $\square$
 
 ### Berechnung der Likelihood im Globusversuch
 
-Wir haben den Globus 9 Mal geworfen und 6 Mal Wasser beobachtet.
-Das sind unsere Daten.
-Jetzt interessiert uns:
-Welche Hypothese (Welcher Wasseranteil, $\pi$) ist am plausibelsten,
-gegeben diese Daten?
 
 
-Wie wahrscheinlich ist es, einen bestimmten Wasseranteil, z.B. 6 Treffer (bei 9 Würfen) zu erhalten, 
+
+Wie wahrscheinlich ist es, ein bestimmtes Ergebnis, 
+z.B. $W=6$ Treffer (bei 9 Würfen), zu erhalten, 
 wenn man eine bestimmte Hypothese (einen bestimmten Wasseranteil, z.B. 90%) annimmt?
-Diese Wahrscheinlichkeit nennt man die *Likelihood*, $L = Pr(\pi| x = 6, n = 9)$.
+Diese Wahrscheinlichkeit nennt man die *Likelihood*, $L = Pr(\pi| W = 6, n = 9)$.
 
 <!-- Geht man von einer Binomialverteilng aus, ist die Likelihood einfach zu berechnen. -->
 
 Wenn wir eine Binomialverteilung für die Globuswürfe annehmen, 
-dann gehen wir davon aus,  dass die Daten unabhängig voneinander entstehen und sich der Parameterwert nicht zwischenzeitlich ändert
+dann gehen wir davon aus,  dass die Daten unabhängig voneinander entstehen 
+und sich der Parameterwert nicht zwischenzeitlich ändert.
 ^[Die sog. "iid-Annahme", *i*ndependently and *i*dentically distributed: Jeder Wurf der Globusballes ist eine Realisation der gleichen Zufallsvariablen. 
 Jeder Wurf ist unabhängig von allen anderen: 
 Das Ergebnis eines Wurfes hat keinen (stochastischen) Einfluss auf ein Ergebnis anderer Würfe.
-Die Wahrscheinlichkeitsverteilung ist bei jedem Wurf identisch.].
+Die Wahrscheinlichkeitsverteilung ist bei jedem Wurf identisch.]
 Der Wasseranteil der Erde bleibt während des Versuchs gleich (durchaus plausibel).
 
-<!-- Lassen Sie uns im Folgenden die Wahrscheinlichkeit ($Pr$), $W$ mal Wasser und $L$ mal Land zu beobachten, wenn die Wahrscheinlichkeit für Wasser $\pi$ beträgt, so bezeichnen: $Pr(W|\pi, n)$.
-Diese Wahrscheinlichkeit kann man im Fall des Globusversuchs mit der *Binomialverteilung* berechnen. -->
 
-Berechnen wir also die Likelihood für verschiedene Hypothesen (Wasseranteile, $\pi$), für $\pi = 0, 0.1, 0.2, \ldots, 1$,
+
+Berechnen wir also die Likelihood für verschiedene Hypothesen (Wasseranteile, $\pi$), 
+für $\pi = 0, 0.1, 0.2, \ldots, 1$,
 s. @lst-lik1.
+Wir halten also die Daten fest (6 Treffer bei 9 Würfen) und 
+berechnen die Wahrscheinlichkeit dieser Daten für verschiedene Hypothesen (Wasseranteile, $\pi$).
+
+
 
 ```{r lik1}
 #| lst-cap: "Likelihood-Funktion für x=6 Treffer, bei n=9 Würfen, für eine binomialverteilte Zufallsvariable"
@@ -369,20 +367,16 @@ dbinom(x = 6, size = 9, prob = .9)
 dbinom(x = 6, size = 9, prob = 1)
 ```
 
-<!-- Möchte man die Wahrscheinlichkeit ansprechen für das Ereignis "6 mal Wasser und 3 mal Land, 
-wenn wir von einem Wasseranteil von 70% ausgehen", so würden wir kurz schreiben:  $Pr(W=6 | \pi=.7, n=9)$. -->
 
 
-<!-- Zur Erinnerung: Die Binomialverteilung zeigt die Verteilung der
-Wahrscheinlichkeit der Ereignisse (z.B. 2 Mal Kopf) beim wiederholten Münzwurf
-(und allen vergleichbaren Zufallsexperimenten): 
-"Münzwurfverteilung", s. Kap. @sec-bin-distrib. -->
 
+@fig-lik1 visualisiert die 
+Likelihood-Funktion für unser Beispiel (6 Wasser bei 9 Würfen) für verschiedene Hypothesen (Wasseranteile, $\pi$).
+Man sieht, dass die Likelihood um $\pi = 0.7$ herum am höchsten ist.
 
-@fig-lik1 visualisiert die Likelihood-Funktion für unser Beispiel (6 Wasser bei 9 Würfen) für verschiedene Hypothesen (Wasseranteile, $\pi$).
 
 ```{r}
-#| fig-cap: "Likelihood-Funktion für x=6 Treffer, bei n=9 Würfen, für eine binomialverteilte Zufallsvariable"
+#| fig-cap: "Die Likelihood-Funktion für x=6 Treffer, bei n=9 Würfen, für eine binomialverteilte Zufallsvariable (mit 11 Parameterwerten: 0, 0.1, 0.2, ..., 1): Die Parameterwerte um 0.7 herum sind am plausibelsten."
 #| label: fig-lik1
 #| echo: false
 plot_binom_likelihood(x = 6, n = 9) 
@@ -417,14 +411,8 @@ gesamt_wskt
 
 
 Für so viele Würfe ($n=9$) würde ein Baumdiagramm unübersichtlich werden, s. @fig-binom2.
-
-
-
-
-:::callout-note
 Visualisierungen wie Baumdiagramme sind eine praktische Hilfe zum Verständnis,
 kommen aber bei größeren Daten schnell an ihre Grenze.
-:::
 
 
 ```{r}
@@ -441,7 +429,6 @@ my_tree %>%
   coord_flip() +
   scale_y_reverse() +
   theme_void()
-
 ```
 
 
@@ -450,8 +437,8 @@ Jetzt folgen einige Beispiele.
 
 
 :::{#exm-globus697-dbinom}
-### Likelihood für $\pi=6/9$
-Was ist die Likelihood von $p=.7$, gegeben $W=6$ bei $n=9$ bei unserem Globusversuch?
+### Likelihood für $W = 6, n = 9, \pi=.7$
+Was ist die Likelihood von $W=6$ bei $n=9$ gegeben $\pi=.7$ bei unserem Globusversuch?
 
 ```{r QM2-Thema2-kleineModelle-21, echo = TRUE}
 dbinom(x = 6, size = 9, prob = .7)
@@ -470,7 +457,7 @@ Noch "händischer" gerechnet:
 factorial(9)/(factorial(6)*factorial(3)) * (.7)^6 * (.3)^3
 ```
 
-$\pi=.7$ ist offenbar eine gute Hypothese, um die Daten zu erklären. $\square$
+Die Daten passen gut zur Hypothese $\pi=.7$. $\square$
 :::
 
 
@@ -480,14 +467,16 @@ wobei eine Binomialverteilung angenommen wird mit der Trefferwahrscheinlichkeit 
 
 ::: {#exm-globus2}
 
-### Likelihood für $\pi=1/3$
-Was ist die Likelihood von $p=1/3$, gegeben $W=6$ bei $n=9$ bei unserem Globusversuch?
+
+### Likelihood für $W = 6, n = 9, \pi=1/3$
+Was ist die Likelihood von $W=6$ bei $n=9$ gegeben $\pi=1/3$ bei unserem Globusversuch?
 
 ```{r QM2-Thema2-kleineModelle-22a, echo = TRUE}
 dbinom(x = 6, size = 9, prob = 1/3)
 ```
 
-Offenbar ist $\pi=1/3$ eine schlechte Hypothese, um die Daten zu erklären. $\square$
+Offenbar ist $\pi=1/3$ eine schlechte Hypothese, um die Daten zu erklären:
+Die Daten passen nicht gut zu ihr. $\square$
 
 :::
 
@@ -496,7 +485,7 @@ Offenbar ist $\pi=1/3$ eine schlechte Hypothese, um die Daten zu erklären. $\sq
 
 ###  Likelihood für $\pi=0$
 
-Was ist die Likelihood von $\pi=0$, gegeben $W=6$ bei $n=9$ bei unserem Globusversuch?
+Was ist die Likelihood von $W=6$ bei $n=9$ gegeben $\pi=0$ bei unserem Globusversuch?
 
 
 ```{r QM2-Thema2-kleineModelle-22, echo = TRUE}
@@ -504,13 +493,10 @@ dbinom(x = 6, size = 9, prob = 0)
 ```
 
 
-$\pi=0$ ist offenbar eine sehr schlechte Hypothese, um die Daten zu erklären. $\square$
+$\pi=0$ ist offenbar eine sehr schlechte Hypothese, um die Daten zu erklären:
+Die Daten sind unmöglich unter dieser Hypothese. $\square$
 
-(Fast) von Hand gerechnet, mit R als Taschenrechner:
-
-
-
-
+:::
 
 
 Es gibt Taschenrechner(-Apps), die die Binomialverteilung oder den Binomialkoeffizienten berechnen können.^[<https://www.geogebra.org/scientific?lang=de>]
@@ -520,7 +506,7 @@ Es gibt Taschenrechner(-Apps), die die Binomialverteilung oder den Binomialkoeff
 :::{#exr-globus}
 ### Peer Instruction: Welcher Parameterwert ist am plausibelsten?
 
-Wir führen wieder den Globusversuch durch (oder werfen eine Münze) und erhalten folgendes Ergebnis: 7 Mal Wasser und 2 Mal Land (also $W=6$ und $L=3$).
+Wir führen wieder den Globusversuch durch (oder werfen eine Münze) und erhalten folgendes Ergebnis: 7 Mal Wasser und 2 Mal Land (also $W=7$ und $L=2$).
 
 Welcher Wasseranteil, $\pi$ ist am plausibelsten?
 
@@ -554,7 +540,7 @@ Lies: "W ist *bin*omial verteilt mit den Parametern $n$ und $\pi$". $n$ gibt die
 
 
 Mit einem konkretes Beispiel: $W \sim \text{Bin}(9, 0.7)$ bedeutet, 
-dass wir von 9 Würfen ausgehen und eine Wahrscheinlichkeit für Wasser von 70% annehmen.
+dass wir die Wahrscheinlichkeiten für alle Trefferzahl wissen wollen bei $n=9$ Versuchen und eine Wahrscheinlichkeit für Wasser von 70% annehmen.
 
 
 Die Verwendung der Binomialvertielung ist an einige Annahmen geknüpft:
@@ -652,10 +638,10 @@ der Likelihood zur Aposteriori-Wahrscheinlichkeit "umbaut".
 ::: {#thm-bayes1}
 
 ### Bayes' Theorem
-
 $$
 Pr(H|D) = \frac{ Pr(H) \cdot Pr(D|H) }{Pr(D)} = \frac{\text{Apriori} \cdot \text{Likelihood}} {\text{Evidenz}}\quad \square
 $$
+
 :::
 
 
@@ -697,12 +683,11 @@ d.h. als die totale Wahrscheinlichkeit von $D$, s. @thm-evidenz, vgl. @def-totws
 :::
 
 ::: {#thm-evidenz} 
-
 ### Evidenz
-
 $$\begin{aligned}
 Pr(D) = \sum_{i=1}^n Pr(D|H_i) \cdot Pr(H_i)
-\end{aligned}\quad \square$$
+\end{aligned}\quad \square
+$$
 :::
 
 Die verschiedenen Parameterwerte kann man auch als die verschiedenen Hypothesen $H_i$ auffassen.
@@ -710,22 +695,16 @@ Falls es nur zwei Hypothesen bzw. Parameterwerte gibt, vereinfacht sich @thm-evi
 
 
 ::: {#thm-evidenz2} 
-
 ### Evidenz bei zwei Hypothesen
-
 $$\begin{aligned}
 Pr(D) = Pr(D|H_1) \cdot Pr(H_1) + Pr(D|H_2) \cdot Pr(H_2)
-\end{aligned}\quad \square$$
+\end{aligned}\quad \square
+$$
 :::
 
 
 
 
-
-
-<!-- Gesucht ist die Wahrscheinlichkeit einer Hypothese gegeben einer bestimmten Datenlage, $Pr(H|D)$, s. @thm-bayes5 -->
-
-<!-- $$Pr(H|D) = \frac{Pr(D|H) \cdot Pr(H)}{Pr(D)} = \frac{\text{Likelihood}  \cdot \text{Apriori-Wahrscheinlichkeit}}{\text{Evidenz}}$${#thm-bayes5} -->
 
 Schauen wir uns die Bestandteile von Bayes' Theorem (@thm-bayes1) noch etwas näher an:
 
@@ -759,7 +738,6 @@ Das Standardisieren dient nur dazu, einen Wert zwischen 0 und 1 zu erhalten.
 Dies erreichen wir, indem wir durch die Summe aller Post-Wahrscheinlichkeiten dividieren.
 Die Summe der Post-Wahrscheinlichkeiten bezeichnet man (auch) als Evidenz, vgl. Gleichung @thm-post.
 
-::: {#thm-post}
 
 
 
@@ -785,18 +763,21 @@ steht auf einem anderen Blatt.
 
 
 
-## Bayes berechnen mit mit der Bayesbox
+## Die Post berechnen mit mit der Bayesbox
 
 Wir erstellen uns eine kleine Tabelle, die man "Bayesbox" nennen könnte.^[Auch Gitter-Methode oder Grid-Methode genannt.]
+Unser Ziel ist es, die Posteriori-Wahrscheinlichkeit für verschiedene Parameterwerte zu berechnen,
+also die Wahrscheinlichkeit, dass ein bestimmter Wasseranteil $\pi$ vorliegt,
+gegeben die Daten (6 Wasser bei 9 Würfen).
 Dazu gehen wir so vor:
 
 ### Die Idee der Bayesbox
 
 1. Teile den Wertebereich des Parameters in ein "Gitter" auf, z.B. $0.1, 0.2, ..., 0.9, 1$.
-2. Wähle den Apriori-Wert des Parameters für jeden Parameterwert, z.B. 1/11 bei einer Gleichverteilung von 0 bis 1.
-3. Berechne den Likelihood für jeden Parameterwert.
+2. Wähle die Apriori-Wahrscheinlichkeit für jeden Parameterwert, z.B. 1/11 bei einer diskreten Gleichverteilung von 0 bis 1.
+3. Berechne die Likelihood für jeden Parameterwert.
 4. Berechne den unstandardisierten Aposteriori-Wert für jeden Parameterwert (Produkt von Apriori und Likelihood).
-5. Standardisiere den Aposteriori-Wert durch teilen anhand der Summe alle unstand. Aposteriori-Werte.
+5. Standardisiere den Aposteriori-Wert durch Teilen anhand der Summe aller unstandardisierten Aposteriori-Wahrscheinlichkeiten.
 
 
 Für jeden Parameterwert berechnen wir eine (Post-)Wahrscheinlichkeit.^[Ein Parameterwert ist eine mögliche Ausprägung des Parameters.]
@@ -893,7 +874,11 @@ der unstandardisierten Post-Wahrscheinlichkeiten.
 Dabei haben wir die Apriori-Wahrscheinlichkeit für alle Parameterwerte als gleich angenommen, da wir keinerlei Vorwissen hatten, $Pr(H_i) = 1/11$.
 Die Evidenz berechnet sich als Summe der unstandardisierten Post-Wahrscheinlichkeiten, $Pr(D) = 0.09$.
 
-
+Wenn die Apriori-Wahrscheinlichkeit für alle Hypothesen gleich ist,
+dann ist die standardisierte Aposteriori-Wahrscheinlichkeit identisch mit der Likelihood.
+Denn die Post-Wahrscheinlichkeit ist die um die Priori-Wahrscheinlichkeit gewichtete Likelihood.
+Sind die Apriori-Wahrscheinlichkeiten alle gleich,
+so ist die Gewichtung der Likelihood für alle Hypothesen gleich.
 
 
 :::{#exm-globus697-post}
@@ -915,8 +900,9 @@ $$\text{Post} = \frac{\text{Post}_{\text{unstand}}}{\text{Evidenz}} = \frac{0.02
 
 
 Fazit: Nach dem Versuch, d.h. nachdem wir die Daten in Betracht gezogen haben,
-hat sich unsere Meinung über den Wasseranteil von $\pi=.7$ aktualisiert von 0.09 auf 0.27 - das ist eine Verdreifachung. 
-Wir sind uns drei Mal so sicher wie vor dem Versucht, dass der Wasseranteil bin 70% liegt. $\square$
+hat sich unsere Meinung über den Wasseranteil von $\pi=.7$ aktualisiert von 0.09 auf 0.27 -- 
+das ist eine Verdreifachung. 
+Wir sind uns drei Mal so sicher wie vor dem Versuch, dass der Wasseranteil bei 70% liegt. $\square$
 :::
 
 
