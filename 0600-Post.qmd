@@ -94,6 +94,7 @@ Sie ist das zentrale Ergebnis einer Bayes-Analyse.
 ### Bayesbox für $W=6$ Wasser bei $N=9$ Würfen
 Betrachten wir wieder das Globusmodell mit folgendem Ergebnis: 
 $W=6$ Wasser, $N=9$ Würfen, bei Apriori-Indifferenz gegenüber den Parameterwerten. Und, sagen wir, $g=11$ Gitterwerten^[Die Anzahl *g* der Gitterwerte ist nicht Teil des Modells; die Anzahl der Gitterwerte entscheiden nur über die Genauigkeit der Post-Verteilung.] von 0 bis 1, in Schritten von 0.1, $0.1, 0.2, \ldots, 0.9, 1.0$. $\square$
+:::
 
 
 
@@ -110,8 +111,8 @@ Aufgrund der Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten
 
 
 
-```{r QM2-Thema2-kleineModelle-28}
-#| lst-cap: Bayesbox mit 6 Wasser bei 9 Versuchen
+```{r bayesbox_6w_9v}
+#| lst-cap: Bayesbox mit 6 Wasser bei 9 Versuchen (g=11 Gitterwerte)
 #| lst-label: lst-bayes1
 n_success <- 6          
 n_trials  <- 9
@@ -467,7 +468,21 @@ bayesbox_g100 <-
 
 
 
-`bayesbox_g100` ist eine Bayesbox mit $W=6, N=9, g=100$.
+`bayesbox_g100` ist eine Bayesbox mit $W=6, N=9, g=101$;
+sie ist in @tbl-bayesbox-g100 dargestellt.
+
+```{r}
+#| echo: false
+#| label: tbl-bayesbox-g100
+#| tbl-cap: "Bayesbox mit g=101 Gitterwerten für W=6 Wasser bei N=9 Würfen" 
+bayesbox_g100 |> 
+  round(2)
+```
+
+{{< downloadthis data/bayesbox_g100.xlsx dname="bayesbox_g100" label = "Download bayesbox_g100.xlsx" >}}
+{{< downloadthis data/bayesbox_g100.csv dname="bayesbox_g100" label = "Download bayesbox_g100.csv" >}}
+
+
 
 Und daraus ziehen wir uns $n=1000=10^3$ Stichproben:
 
@@ -603,6 +618,18 @@ ggplot(aes(x = p_grid)) +
 
 p_100_samples
 ```
+
+
+:::{#exr-samples-diy}
+### Erstellen Sie Ihre eigene Stichproben-Post-Verteilung
+Erstellen Sie eine Stichproben-Post-Verteilung auf Basis der Bayesbox `bayesbox_6w_9v `.
+Ziehen Sie $n=100$ Stichproben.
+Tun Sie das *per Hand*:
+Übertragen Sie die Werte Der Spalte `p_grid` auf kleine Zettel.
+Dabei soll der Anteil der Zettel pro Wert von `p_grid` der Posteriori-Wahrscheinlichkeit (`post`) entsprechen (gerundet auf zwei Dezimalstellen). 
+Beispiel: Wenn der Parameterwert 0.6 eine Posteriori-Wahrscheinlichkeit von 0.27 hat, dann schreiben Sie 27 Zettel (von 100) mit dem Wert 0.6. $\square$
+:::
+
 
 
 ## Die Post-Verteilung befragen
@@ -1069,10 +1096,10 @@ anim_save("img/p_quantiles_anim.gif", p_quantiles_anim, renderer = gifski_render
 
 ::: {.content-visible when-format="html"}
 
-Das 10%, 20%, ... 100%-Quantil^[d.h. die *Dezile*] (auf Basis von `samples_k100`) sind in @fig-quantiles-anim illustriert.
+Das 10%, 20%, ... 100%-Quantil^[d.h. die *Dezile*] (auf Basis von `bayesbox_g100_samples`) sind in @fig-quantiles-anim illustriert.
 
 
-![Quantile in 10%-Schriten durch die Verteilung von `samples_k100`](img/p_deciles.gif){#fig-quantiles-anim width=50%}
+![Quantile in 10%-Schriten durch die Verteilung von `bayesbox_g100_samples`](img/p_deciles.gif){#fig-quantiles-anim width=50%}
 :::
 
 ### Schiefe Posteriori-Verteilungen sind möglich
@@ -1082,7 +1109,7 @@ Das 10%, 20%, ... 100%-Quantil^[d.h. die *Dezile*] (auf Basis von `samples_k100`
 Noch einmal zum Globusversuch: Gehen wir von 3 Würfen mit 3 Mal Wasser (Treffer) aus; auf welche Wasseranteile (Parameterwerte) werden wir jetzt schließen? $\square$
 :::
 
-Erstellen wir uns dazu mal eine Post-Verteilung (3 Treffer, 3 Würfe), s. @lst-d33 mit dem Objekt `bayesbox_3w_3v3`.
+Erstellen wir uns dazu mal eine Post-Verteilung (3 Treffer, 3 Würfe), s. @lst-d33 mit dem Objekt `bayesbox_3w_3v`.
 
 ```{r QM2-Thema3-Post-befragen-13}
 #| lst-cap: Schiefe Post-Verteilung in einer Bayesbox
