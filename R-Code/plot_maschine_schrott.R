@@ -35,7 +35,7 @@ plot_maschine_schrott_ALT <-
     y = "Anteil"
   ) +
   scale_fill_manual(
-    values = c("Schrott" = "red", "ok" = "grey"),
+    values = c("Schrott" = "red", "ok" = "grey40"),
     labels = c("Ausschuss", "OK")
   ) +
   theme_minimal() +

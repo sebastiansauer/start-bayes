@@ -1,10 +1,7 @@
 plot_ask_for_quantile <- function(
   data = bayesbox_g100,
   samples = bayesbox_g100_samples,
-  p = 0.5,
-  x_label = "Wasseranteil",
-  y_label = "Wahrscheinlichkeitsdichte",
-  area_fill_color = blue
+  p = 0.5
 ) {
   title <- paste0(
     "Welcher Wasseranteil q wird mit ",
@@ -12,7 +9,7 @@ plot_ask_for_quantile <- function(
     " Wahrscheinlichkeit nicht übertroffen?"
   )
 
-  q <- quantile(samples$p_grid, prob = p)
+  q <- as.numeric(quantile(samples$p_grid, prob = p))
   q_10_and_90 <- quantile(samples$p_grid, prob = c(.1, .9))
 
   # bayesbox_g100_samples |>
@@ -25,35 +22,31 @@ plot_ask_for_quantile <- function(
     ggplot(aes(x = p_grid, y = post)) +
     geom_line(color = "grey40") +
     labs(
-      title = "Welcher Wasseranteil q wird mit 50% Wahrscheinlichkeit nicht übertroffen?",
+      title = "Welcher Wasseranteil wird mit 50% Wahrscheinlichkeit nicht übertroffen?",
       x = "Wasseranteil",
       y = "Wahrscheinlichkeitsdichte"
     ) +
     geom_area(
-      data = samples %>%
+      data = data %>%
         filter(p_grid <= q),
       fill = blue
     ) +
     geom_point() +
     scale_x_continuous(
-      breaks = c(0, as.numeric(q), 1),
-      labels = c("0", "q=0.64", "1")
+      breaks = c(0, 1 / 2, as.numeric(q), 1)
     ) +
     geom_vline(
       xintercept = as.numeric(q),
       color = "grey40",
       linetype = "dashed"
     ) +
-    annotate("label", x = as.numeric(q), y = .01, label = "p=0.5", color = blue)
+    annotate(
+      "label",
+      x = as.numeric(q),
+      y = .01,
+      label = paste0("prob=", p),
+      color = blue
+    )
 
   print(p_quantile)
 }
-
-
-
-
-
-
-
-
-
