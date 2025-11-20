@@ -291,12 +291,15 @@ source("R-Code/Kruschke-plot3.R")
 
 ![Modellschema für das Modell `m_kung`](img/kruschke_regr_zero_predictor.png){#fig-mod-kung1}
 
-Zur Berechnung von `m_kung` nutzen wir jetzt dieses Mal aber *nicht* die Gittermethode (Bayes-Box), sondern lassen R die Arbeit verrichten.
+Zur Berechnung von `m_kung` nutzen wir jetzt dieses Mal aber *nicht* die Gittermethode (Bayes-Box), 
+sondern lassen R die Arbeit verrichten.
 
-Da gibt es einen neuen Golem, ziemlich kräftig der Bursche, der soll die Arbeit für uns tun. Der Golem hört auf den Namen `rstanarm`.
+Da gibt es einen neuen Golem, ziemlich kräftig der Bursche, 
+der soll die Arbeit für uns tun. 
+Der Golem hört auf den Namen `rstanarm`.
 
 ::: {.content-visible when-format="html"}
-## Zufällige Motivationsabschnitt
+### Zufällige Motivationsabschnitt
 
 ![Gut gemacht!](img/pretty_good.gif){width="50%"}
 :::
@@ -306,9 +309,15 @@ Da gibt es einen neuen Golem, ziemlich kräftig der Bursche, der soll die Arbeit
 Okay, Stan, Golem unseres Vertrauens! An die Arbeit! Berechne uns das Kung-Modell! Nennen wir das Modell `m_kung`.
 
 
+```{r}
+#| results: hide
+m_kung <- 
+  stan_glm(height ~ 1, 
+  prior_intercept = normal(178, 20),
+  prior_aux = exponetial(1/8),
+  refresh = 0,
+  data = kung_erwachsen)  # <1>
 
-```{r Kung-4, message=FALSE, results="hide"}
-m_kung <- stan_glm(height ~ 1, data = kung_erwachsen, refresh = 0)  # <1>
 m41_post <- as_tibble(m_kung)    # <2>
 names(m41_post) <- c("mu", "sigma")  # <3>  
 ```
@@ -333,7 +342,7 @@ Das ist ok, aber wenn Sie Vorab-Wissen haben, sollten Sie das an `rstanarm` weit
 weil es ja schade wäre, wenn Sie Wissen haben, das von Ihrem Modell nicht genutzt wird.
 
 
-[^0800-gauss-8]: aus dem R-Paket `rstanam`, das zuvor installiert und gestartet sein muss, bevor Sie den Befehl nutzen können
+[^0800-gauss-8]: aus dem R-Paket `rstanarm`, das zuvor installiert und gestartet sein muss, bevor Sie den Befehl nutzen können
 
 Plotten wir mal die gemeinsame Posteriori-Verteilung von `m_kung`, s. @fig-m_kung_neue_prioris-post-joint
 
@@ -441,29 +450,21 @@ m41_post %>%
              ncol = 2)
 ```
 
-### Posteriori-Stichproben mit `stan_glm()` berechnen
+### Posteriori-Stichproben von `stan_glm()` berechnen lassen
 
-Mit `stan_glm()` können wir komfortabel die Posteriori-Verteilung berechnen. Die Gittermethode wird nicht verwendet, aber die Ergebnisse sind - in bestimmten Situationen - ähnlich. Es werden aber auch viele Stichproben simuliert (sog. MCMC-Methode). Gibt man keine Priori-Werte an, so greift die Funktion auf Standardwerte zurück.
+Mit `stan_glm()` können wir komfortabel die Posteriori-Verteilung berechnen. 
+Die Gittermethode wird nicht verwendet, aber die Ergebnisse sind - für unsere Fälle - ähnlich. 
+Es werden aber auch viele Stichproben simuliert (sog. MCMC-Methode). 
 
 Grob gesagt berechnen wir die Post-Verteilung mit `stan_glm` so: `stan_glm(AV ~ UV, data = meine_daten)`.
 
-Modelldefinition:
 
-$h_i \sim \mathcal{N}(\mu, \sigma)$, Likelihood
-
-$\mu \sim \mathcal{N}(155, 19)$, Prior zum Größenmittelwert (von Stan übernommen)
-
-$\sigma \sim \mathcal{E}(0.125)$, Prior zur Streuung der Größen (von Stan übernommen)
-
-### Ausgabe von `stan_glm()`
-
-Wir können, wie wir es oben getan haben, uns die Stichproben der Post-Verteilung ausgeben lassen, und diese z.B. plotten.
+Wir können, wie wir es oben getan haben, uns die Stichproben der Post-Verteilung ausgeben lassen, 
+und diese z.B. plotten.
 
 Wir können es aber auch komfortabler haben ... Mit dem Befehl `parameters` kann man sich die geschätzten Parameterwerte einfach ausgeben lassen (s. @fig-m_kung_neue_prioris-post-joint).
 
 ```{r Kung-24, echo = TRUE, results="hide"}
-m_kung <- stan_glm(height ~ 1, data = kung_erwachsen, refresh = 0)  # aus Paket rstanarm
-
 parameters(m_kung)  # aus Paket `easystats`
 ```
 
@@ -475,10 +476,15 @@ ci_low <- parameters(m_kung)$CI_low |> round(2)
 ci_high <- parameters(m_kung)$CI_high |> round(2)
 ```
 
-Das Wesentliche: Unser Golem schätzt den Größenmittelwert der Kung auf ca. 155cm bzw. auf einen Bereich von etwa `r ci_low` bis `r ci_high` schätzt. Informativ ist vielleicht noch, dass wir den `Prior` erfahren, der im Modell verwendet wurde. Dazu später mehr.
+Das Wesentliche: Unser Golem schätzt den Größenmittelwert der Kung auf ca. 155cm bzw. 
+auf einen Bereich von etwa `r ci_low` bis `r ci_high` schätzt. 
+Informativ ist vielleicht noch, dass wir den `Prior` erfahren, der im Modell verwendet wurde. Dazu später mehr.
 
 ::: callout-note
-In dieser Ausgabe sind ein paar Angaben, die wir nicht verstehen, wie `pd`, `Rhat` und `ESS`. Kein Problem: Einfach ignorieren 🤓 Wer Näheres wissen will, findet [hier](https://easystats.github.io/easystats/) einen Anfang. Außerdem sei an @mcelreath2020 und @gelman2021 verwiesen. $\square$
+In dieser Ausgabe sind ein paar Angaben, die wir nicht verstehen, wie `pd`, `Rhat` und `ESS`. 
+Kein Problem: Einfach ignorieren 🤓 Wer Näheres wissen will, 
+findet [hier](https://easystats.github.io/easystats/) einen Anfang. 
+Außerdem sei an @mcelreath2020 und @gelman2021 verwiesen. $\square$
 :::
 
 ## Wie tickt `stan_glm()`?
@@ -487,6 +493,7 @@ In dieser Ausgabe sind ein paar Angaben, die wir nicht verstehen, wie `pd`, `Rha
 ::::: columns
 ::: {.column width="20%"}
 ![](img/stanlogo.png){width="50%"} [Quelle](https://mc-stan.org/)
+![Bayes:Start!](img/Golem_hex.png){width="10%"}
 :::
 
 ::: {.column width="80%"}
@@ -632,15 +639,22 @@ Das Modell ist sich recht sicher: die Ungewissheit der mittleren Körpergröße 
 
 ### Standard-Prioriwerte bei `stan_glm()`
 
-`stan_glm()` nimmt für uns Priori-Wert an. Welche das sind, kann man sich so anzeigen lassen:
+Man kann `stan_glm()` auch ohne Priori-Werte aufrufen.
+In dem Fall bestimmt Stan die Priori-Werte selber.
+Welche das sind, kann man sich so anzeigen lassen:
 
 ```{r Kung-8-bis, echo = TRUE}
 prior_summary(m_kung)
 ```
+Aber welche Priori-Werte verwendet Stan?
+Ganz einfach: Stan zieht die Stichproben-Daten als Prioris heran.
+Strenggenommen ist das nicht "pures Bayes", weil die Priori-Werte ja *vorab*, 
+also vor Kenntnis der Daten bestimmt werden sollen. 
 
-`stan_glm()` verwendet (in der Voreinstellung) *schwach informative* Priori-Werte, die nur wenig Vorabwissen in das Modell geben. Es werden dafür die Stichproben-Daten als Priori-Daten verwendet: Mittelwerte und Streuungen der AV werden als Grundlage für die Priori-Verteilungen herangezogen. Strenggenommen ist das nicht "pures Bayes", weil die Priori-Werte ja *vorab*, also vor Kenntnis der Daten bestimmt werden sollen. Bitte reichen Sie Ihre Beschwerden bei Andrew Gelman ein.
 
-Man sollte diese Standardwerte als Minimalvorschlag sehen. Kennt man sich im Sachgebiet aus, kann man meist bessere Prioris finden. Die Voreinstellung ist nicht zwingend; andere Werte wären auch denkbar.
+Man sollte diese Standardwerte als (komfortablen) Minimalvorschlag sehen. 
+Kennt man sich im Sachgebiet aus, kann man meist bessere Prioris finden. 
+Die Voreinstellung ist nicht zwingend; andere Werte wären auch denkbar.
 
 ::: callout-note
 ### Standardwerte von `stan_glm`
@@ -653,15 +667,29 @@ Man sollte diese Standardwerte als Minimalvorschlag sehen. Kennt man sich im Sac
     -   als "Streuung", d.h. $\lambda$ von $h_i$ wird $\frac{1}{sd(Y)}$ angenommen. $\square$
 :::
 
-Eine sinnvolle Strategie ist, einen Prior so zu wählen, dass man nicht übergewiss ist, also nicht zu sicher Dinge behauptet, die dann vielleicht doch passieren (also die Ungewissheit zu gering spezifiziert), andererseits sollte man extreme, unplausible Werte ausschließen.
+Eine sinnvolle Strategie ist, einen Prior so zu wählen, dass man nicht übergewiss ist, 
+also nicht zu sicher Dinge behauptet, die dann vielleicht doch passieren 
+(also die Ungewissheit zu gering spezifiziert), andererseits sollte man extreme, 
+unplausible Werte ausschließen.
 
 ::: callout-important
-Bei der Wahl der Prioris gibt es nicht die eine, richtige Wahl. Die beste Entscheidung ist auf transparente Art den Stand der Forschung einfließen zu lassen und eigene Entscheidungen zu begründen. Häufig sind mehrere Entscheidungen möglich. Möchte man lieber vorsichtig sein, weil man wenig über den Gegenstand weiß, dann könnte man z.B. auf die Voreinstellung von `rstanarm` vertrauen, die "schwachinformativ" ist, also nur wenig Priori-Information in das Modell einfließen lässt.
+Bei der Wahl der Prioris gibt es nicht die eine, richtige Wahl. 
+Die beste Entscheidung ist auf transparente Art den Stand der Forschung einfließen zu lassen und eigene Entscheidungen zu begründen. 
+Häufig sind mehrere Entscheidungen möglich. Möchte man lieber vorsichtig sein,
+weil man wenig über den Gegenstand weiß, dann könnte man z.B. auf die Voreinstellung von `rstanarm` vertrauen,
+die "schwachinformativ" ist, also nur wenig Priori-Information in das Modell einfließen lässt.
 :::
 
 ### Wenn es schnell gehen muss
 
-`stan_glm()` ist deutlich langsamer als z.B. der befreundete Golem `lm()`. Der Grund für Stans Langsamkeit ist, dass er viele Stichproben zieht, also viel zu zählen hat. Außerdem wiederholt er das Stichprobenziehen (im Standard) 4 Mal, damit sein Meister prüfen kann, ob er (Stan) die Arbeit auch immer richtig gemacht hat. Die Idee dabei ist, wenn alle vier Durchführungen (auch "Ketten" engl., chains) genannt, zum etwa gleichen Ergebnis kommen, dann wird schon alles mit rechten Dingen zugegangen sein. Weichen die Ergebnisse der 4 Ketten voneinander ab, so ist Stan ein Fehler unterlaufen, oder, irgendetwas ist "dumm gelaufen". An dieser Stelle schauen wir uns die Ketten nicht näher an, aber es sei notiert, dass man die Anzahl der Ketten mit dem Argument `chains` steuern kann. Möchte man, dass Stan sich beeilt, so kann man `chains = 1` setzen, das spart Zeit, s. `m_kung_1kette`. 
+`stan_glm()` ist deutlich langsamer als z.B. der befreundete Golem `lm()`.
+Der Grund für Stans Langsamkeit ist, dass er viele Stichproben zieht, also viel zu zählen hat.
+Außerdem wiederholt er das Stichprobenziehen (im Standard) 4 Mal, damit sein Meister prüfen kann, ob er (Stan) die Arbeit auch immer richtig gemacht hat.
+Die Idee dabei ist, wenn alle vier Durchführungen (auch "Ketten" engl., chains) genannt,
+zum etwa gleichen Ergebnis kommen, dann wird schon alles mit rechten Dingen zugegangen sein.
+Weichen die Ergebnisse der 4 Ketten voneinander ab, so ist Stan ein Fehler unterlaufen, oder, irgendetwas ist "dumm gelaufen".
+An dieser Stelle schauen wir uns die Ketten nicht näher an, aber es sei notiert, dass man die Anzahl der Ketten mit dem Argument `chains` steuern kann.
+Möchte man, dass Stan sich beeilt, so kann man `chains = 1` setzen, das spart Zeit, s. `m_kung_1kette`. 
 
 ```{r m41a, echo = TRUE, results="hide"}
 m_kung_1kette <- stan_glm(height ~ 1, 
@@ -678,42 +706,44 @@ parameters(m_kung_1kette)
 
 Im Modell `m_kung` haben wir auf die Priori-Werte der Voreinstellung von `rstanarm` vertraut. Jetzt lassen wir mal unsere eigenen Priori-Werte einfließen, in unserem zweiten Kung-Modell, `m_kung_neue_prioris`.
 
-### m_kung_neue_prioris
+### m_kung_mit_standard_prioris
 
-Dann lassen wir `stan_glm()` (Stan) unser zweites Modell berechnen.[^0800-gauss-9] Dieses Mal geben wir die Priori-Werte explizit an, @tbl-m_kung_neue_prioris-params.
+Dann lassen wir `stan_glm()` (Stan) unser zweites Modell berechnen.[^0800-gauss-9] 
+Dieses Mal lassen wir Stan die Priori-Werte selber bestimmen, s. @tbl-m_kung_neue_prioris-params.
 
 [^0800-gauss-9]: Hey Stan, los, an die Arbeit!
 
-```{r Kung-15-bis, echo = TRUE}
+```{r}
 #| eval: false
 m_kung_neue_prioris <- 
-  stan_glm(height ~ 1, 
-           prior_intercept = normal(178, 20),  # mu
-           prior_aux = exponential(0.125),  # sigma
+  stan_glm(height ~ 1,
            refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
            data = kung_erwachsen)
 parameters(m_kung_neue_prioris)
 ```
 
-```{r Kung-15-bis-print}
+```{r}
 #| echo: false
 #| eval: true
 #| label: tbl-m_kung_neue_prioris-params
-#| tbl-cap: "Parameter von m_kung_neue_prioris mit eigenen Prioriwerten"
+#| tbl-cap: "Parameter von m_kung_neue_prioris mit Standard-rioriwerten"
 m_kung_neue_prioris <- 
   stan_glm(height ~ 1, 
-           prior_intercept = normal(178, 20),  # mu
-           prior_aux = exponential(0.125),  # sigma
            refresh = FALSE,  # bitte nicht so viel Ausgabe drucken
            seed = 42,  # Zufallszahlen fixieren
            data = kung_erwachsen)
 parameters(m_kung_neue_prioris) |> display()
 ```
 
-Wir haben noch nicht alle Informationen kennengelernt, die in @tbl-m_kung_neue_prioris-params ausgegeben werden. Im Zweifel: Einfach ignorieren. Wichtige Fähigkeit im Studium. 🤓
+Wir haben noch nicht alle Informationen kennengelernt, die in @tbl-m_kung_neue_prioris-params ausgegeben werden. 
+Im Zweifel: Einfach ignorieren. Wichtige Fähigkeit im Studium. 🤓
 
 ::: callout-important
-Vergleichen Sie die Parameterwerte von `m_kung` und `m_kung_neue_prioris`! Was fällt Ihnen auf? Nichts? Gut! Tatsächlich liefern beide Modelle sehr ähnliche Parameterwerte. Die Prioriwerte waren nicht so wichtig, weil wir genug Daten haben. Hat man einigermaßen viele Daten, so fallen Prioriwerte nicht mehr ins Gewicht, zumindest wenn sie moderat gewählt waren.
+Vergleichen Sie die Parameterwerte von `m_kung` und `m_kung_neue_prioris`! 
+Was fällt Ihnen auf? Nichts? Gut! 
+Tatsächlich liefern beide Modelle sehr ähnliche Parameterwerte. Die Prioriwerte waren nicht so wichtig, 
+weil wir genug Daten haben. Hat man einigermaßen viele Daten, 
+so fallen Prioriwerte nicht mehr ins Gewicht, zumindest wenn sie moderat gewählt waren.
 :::
 
 ```{r Kung-16-bis, eval = FALSE}
@@ -738,7 +768,10 @@ m_kung_neue_prioris_tibble <-
 head(m_kung_neue_prioris_tibble)
 ```
 
-Außerdem ist der Name der ersten Spalte eigentlich unzulässig, da Spaltennamen in R nicht mit Sonderzeichen anfangen dürfen (sondern mit Buchstaben). Daher müssen wir den Namen mit "Samthandschuhen" anpacken. Auf Errisch sind das die Backticks, die wir um den Namen rumwickeln müssen, s. die folgende Syntax.
+Außerdem ist der Name der ersten Spalte eigentlich unzulässig, 
+da Spaltennamen in R nicht mit Sonderzeichen anfangen dürfen (sondern mit Buchstaben). 
+Daher müssen wir den Namen mit "Samthandschuhen" anpacken. 
+Auf Errisch sind das die Backticks, die wir um den Namen rumwickeln müssen, s. die folgende Syntax.
 
 ::: panel-tabset
 ### Mit `{ggpubr}`
@@ -757,19 +790,31 @@ m_kung_neue_prioris_tibble |>
 ```
 :::
 
-Als Ausblick: Ein Vergleich mehrerer Priori-Werte wäre auch nützlich, um ein skeptisches Publikum von der Wahl (bzw. der Indifferenz) der gewählten Priori-Werte zu überzeugen.
+Als Ausblick: Ein Vergleich mehrerer Priori-Werte wäre auch nützlich, 
+um ein skeptisches Publikum von der Wahl (bzw. der Indifferenz) der gewählten Priori-Werte zu überzeugen.
 
 ### Welche Körpergrößen erwartet unser Modell
 
-Bisher haben wir untersucht, wie die Verteilung der *mittleren* Körpergrößen, $\mu$, laut unserem Modell aussehen könnte; wir haben uns also mit der Post-Verteilung von $\mu$ beschäftigt. Wir könnten aber auch an der Frage der Verteilung der *tatsächlichen* Körpergrößen, $h_i$, laut Modell, interessiert sein: Wie groß sind sie denn, die !Kung, laut unserem Modell?
+Bisher haben wir untersucht, wie die Verteilung der *mittleren* Körpergrößen, $\mu$, 
+laut unserem Modell aussehen könnte; wir haben uns also mit der Post-Verteilung von $\mu$ beschäftigt. 
+Wir könnten aber auch an der Frage der Verteilung der *tatsächlichen* Körpergrößen, $h_i$, laut Modell, interessiert sein: 
+Wie groß sind sie denn, die !Kung, laut unserem Modell?
 
-Wie wir wissen, liefert unser Stan-Golem eine *Stichproben-Postverteilung*. Wenn wir das Ergebnisobjekt unserer Analyse, `m_kung` in eine Tabelle (Tibble) umwandeln und (die ersten paar Zeilen) betrachen, sehen wir diese Stichproben:
+
+Wie wir wissen, liefert unser Stan-Golem eine *Stichproben-Postverteilung*.
+Wenn wir das Ergebnisobjekt unserer Analyse, `m_kung` in eine Tabelle (Tibble) umwandeln und (die ersten paar Zeilen) betrachen,
+sehen wir diese Stichproben:
 
 ```{r}
 m_kung |> as_tibble() |> head()
 ```
 
-Laut unserem Modell sind die Körpergrößen, $h_i$, normalverteilt mit $\mu$ und $\sigma$. $\mu$ wird von Stan, der in Begriffen der Regressionsanalyse denkt, schnöde als `(Intercept)` bezeichnet. Wir könnten jetzt also für jede Zeile eine Normalverteilung berechnen. Und daraus zufällig eine Zahl ziehen. Damit hätten wir dann unsere Verteilung von Körpergrößen laut Modell. Diese Verteilung nennt man auch *Posterior-Prädiktiv-Verteilung*. Prädiktiv daher, weil sie die Werte der Körpergrößen "vorhersagt".
+Laut unserem Modell sind die Körpergrößen, $h_i$, normalverteilt mit $\mu$ und $\sigma$.
+$\mu$ wird von Stan, der in Begriffen der Regressionsanalyse denkt, schnöde als `(Intercept)` bezeichnet.
+Wir könnten jetzt also für jede Zeile eine Normalverteilung berechnen.
+Und daraus zufällig eine Zahl ziehen. Damit hätten wir dann unsere Verteilung von Körpergrößen laut Modell.
+Diese Verteilung nennt man auch *Posterior-Prädiktiv-Verteilung*.
+Prädiktiv daher, weil sie die Werte der Körpergrößen "vorhersagt".
 
 Wir können uns diese Verteilung auch komfortabel von R ausgeben lassen, s. @fig-ppcheck.
 
@@ -955,9 +1000,11 @@ sim2 %>%
   mutate(prop = n()/n)
 ```
 
-🤔 Das Modell geht apriori von ein paar Prozent Menschen mit *negativer* Größe aus. Ein Haufen Riesen 👹 werden auch erwartet.
+🤔 Das Modell geht apriori von ein paar Prozent Menschen mit *negativer* Größe aus. 
+Ein Haufen Riesen 👹 werden bei den !Kung auch erwartet.
 
-🤯 Vage (flache, informationslose, "neutrale", "objektive") Priori-Werte machen oft keinen Sinn, weil sie extreme, unplausible Werte zulassen.
+🤯 Vage (flache, informationslose, "neutrale", "objektive") Priori-Werte machen oft keinen Sinn, 
+weil sie extreme, unplausible Werte zulassen.
 
 ## Aufgaben
 
