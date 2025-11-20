@@ -1,11 +1,11 @@
 library(tidyverse)
-library(beyonce)
-library(brms)
+#library(beyonce)
+#library(brms)
 library(patchwork)
 library(tidybayes)
 library(bayesplot)
 
-bp <- beyonce_palette(126)[]
+#bp <- beyonce_palette(126)[]
 #beyonce_palette(1)
 
 col1 <- "grey20"
@@ -18,7 +18,7 @@ col3 <- "grey80"
 # Normal density
 p1 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |> 
   ggplot(aes(x = x, y = (dnorm(x)) / max(dnorm(x)))) +
-  geom_area(fill = col3) +
+  geom_area(fill = col3, color = blue) +
   annotate(geom = "text",
            x = 0, y = 0.2,
            label = "Normal",
@@ -68,7 +68,7 @@ p3 <- tibble(x = c(0.33, 1.67),
 # Exponential density
 p4 <- tibble(x = seq(from = 0, to = 1, by = 0.01)) |> 
   ggplot(aes(x = x, y = (dexp(x, 2) / max(dexp(x, 2))))) +
-  geom_area(fill = col3) +
+  geom_area(fill = col3, color = green) +
   annotate(geom = "text",
            x = 0.5, y = 0.2,
            label = "exp",

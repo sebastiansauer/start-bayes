@@ -1,15 +1,16 @@
 library(tidyverse)
-library(beyonce)
-library(brms)
+#library(beyonce)
+#library(brms)
 library(patchwork)
 library(tidybayes)
 library(bayesplot)
 
+# Genutzt für Abb 8.2 (m_kung) in Start-Bayes 8.3.4
+
 # Source: https://bookdown.org/content/3686/16.html
 
-bp <- beyonce_palette(126)[]
+#bp <- beyonce_palette(127)[]
 #beyonce_palette(1)
-
 col1 <- "grey20"
 col2 <- "black"
 col3 <- "grey80"
@@ -17,7 +18,7 @@ col3 <- "grey80"
 # Normal density
 p1 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |> 
   ggplot(aes(x = x, y = (dnorm(x)) / max(dnorm(x)))) +
-  geom_area(fill = col3) +
+  geom_area(fill = col3, color = blue) +
   annotate(geom = "text",
            x = 0, y = 0.2,
            label = "Normal",
@@ -51,7 +52,7 @@ p2 <- tibble(x = seq(from = 0, to = 3, by = 0.01),
 # Exponential density
 p2a <- tibble(x = seq(from = 0, to = 1, by = 0.01)) |> 
   ggplot(aes(x = x, y = (dexp(x, 2) / max(dexp(x, 2))))) +
-  geom_area(fill = col3) +
+  geom_area(fill = col3, color = green) +
   annotate(geom = "text",
            x = 0.5, y = 0.2,
            label = "exp",
@@ -87,7 +88,7 @@ p3 <- tibble(x = c(0.43, 1.5),
 # A second normal density
 p4 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |> 
   ggplot(aes(x = x, y = (dnorm(x)) / max(dnorm(x)))) +
-  geom_area(fill = col3) +
+  geom_area(fill = col3, color = orange) +
   annotate(geom = "text",
            x = 0, y = 0.2,
            label = "Normal",
@@ -115,7 +116,7 @@ p5 <- tibble(x = c(0.375, 0.625),
 # Some text
 p6 <- tibble(x = 0.5,
              y = 0.5,
-             label = "italic(y[i])") |> 
+             label = "italic(h[i])") |> 
   ggplot(aes(x = x, y = y, label = label)) +
   geom_text(color = col1, family = "Times", parse = TRUE, size = 7) +
   xlim(0, 1) +

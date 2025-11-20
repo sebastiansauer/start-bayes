@@ -14,8 +14,8 @@ Nach Absolvieren des jeweiligen Kapitels sollen folgende Lernziele erreicht sein
 
 Sie können …
 
--   ein Gaußmodell spezifizieren und in R berechnen
--   an Beispielen verdeutlichen, wie sich eine vage bzw. eine informationsreiche Priori-Verteilung auf die Posteriori-Verteilung auswirkt
+- ein Gaußmodell spezifizieren und in R berechnen
+- an Beispielen verdeutlichen, wie sich eine vage bzw. eine informationsreiche Priori-Verteilung auf die Posteriori-Verteilung auswirkt
 
 ### Begleitliteratur
 
@@ -32,7 +32,9 @@ Der Stoff dieses Kapitels orientiert sich an @mcelreath2020, Kap. 4.1 bis 4.3.
 Für `rstanarm` wird ggf. [weitere Software](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started) benötigt.
 
 ::: callout-note
-Software, und das sind R-Pakete, müssen Sie nur einmalig installieren. Aber bei jedem Start von R bzw. RStudio müssen Sie die (benötigten!) Pakete starten.
+Software, und das sind R-Pakete, müssen Sie nur einmalig installieren. 
+Aber bei jedem Start von R bzw. RStudio müssen Sie die (benötigten!) Pakete starten.
+
 :::
 
 ```{r load-libs-hidden}
@@ -72,26 +74,37 @@ Kung_path <-
 
 kung <- read.csv(Kung_path) 
 
-head(kung)
+head(kung, n = 5)
 ```
 
 [Datenquelle](https://raw.githubusercontent.com/sebastiansauer/2021-wise/main/Data/Howell1a.csv)
 
-{{< downloadthis data/Howell1a.csv dname="Howell1a" >}}
+{{< downloadthis data/Howell1a.csv dname="Howell1a" label = "Download CSV">}}
+{{< downloadthis data/Howell1a.xlsx dname="Howell1a" label = "Download XLSX">}}
 
 ### Einstieg
 
 ::: {#exm-gauss}
 ### Was war noch mal eine Normalverteilung?
 
-In diesem Kapitel benötigen Sie ein gutes Verständnis der Normalverteilung (die auch als Gauss-Verteilung bezeichnet wird). Fassen Sie daher die wesentlichen Aspekte der Normalverteilung (soweit im Unterricht behandelt) zusammen! $\square$
+In diesem Kapitel benötigen Sie ein gutes Verständnis der Normalverteilung (die auch als Gauss-Verteilung bezeichnet wird). 
+Fassen Sie daher die wesentlichen Aspekte der Normalverteilung (soweit im Unterricht behandelt) zusammen! $\square$
 :::
 
 ::: {#exm-post-gauss}
 ### Was war noch mal eine Posteriori-Verteilung?
 
-In diesem Kapitel befragen wir die Post-Verteilung für ein normalverteilte Zufallsvariable, nämlich die Körpergröße der !Kung San. Was war noch mal eine Post-Verteilung und wozu ist sie gut? $\square$
+In diesem Kapitel befragen wir die Post-Verteilung für ein normalverteilte Zufallsvariable, nämlich die Körpergröße der !Kung San.
+Was war noch mal eine Post-Verteilung und wozu ist sie gut? $\square$
 :::
+
+
+
+### Stan stellt sich vor
+
+
+![Hallo, Leute! Ich bin Stan! Ich mache hier die Schwerarbeit.](img/Golem_hex.png){width="30%"}
+
 
 ## Wie groß sind die !Kung San?
 
@@ -243,7 +256,9 @@ Zu Erinnerung: Die Posteriori-Wahrscheinlichkeit ist das Ergebnis von Priori-Wah
 
 Die *Körpergrößen der einzelnen Personen* $h_i$ nehmen wir als normalverteilt an mit Mittelwert $\mu$ und Streuung $\sigma$:
 
-$$h_i \sim \mathcal{N}(\color{blue}{\mu},\color{green}{\sigma})   \qquad{\text{Likelihood}}$$
+$$\textcolor{orange}{h_i} \sim \mathcal{\textcolor{orange}{N}}(\textcolor{blue}{\mu}, \textcolor{green}{\sigma})
+\qquad
+\textcolor{black}{\textcolor{orange}{Likelihood}}$$
 
 ### Prioris der Parameter
 
@@ -263,19 +278,22 @@ Weil es so schön ist, schreiben/zeichnen wir es hier noch einmal auf, @eq-mod-k
 
 $$
 \begin{aligned}
-h_i &\sim \mathcal{N}(\mu, \sigma) & \text{Likelihood}  \\
-\mu &\sim \mathcal{N}(178, 20) & \text{Prior} \\
+\mu &\sim \mathcal{N}(M=178, S=20) & \text{Prior} \\
 \sigma &\sim \mathcal{E}(1/8) & \text{Prior}
+h_i &\sim \mathcal{N}(\mu, \sigma) & \text{Likelihood}  \\
 \end{aligned}
 $$ {#eq-mod-kung1}
+
+```{r}
+source("R-Code/Kruschke-plot3.R")
+```
+
 
 ![Modellschema für das Modell `m_kung`](img/kruschke_regr_zero_predictor.png){#fig-mod-kung1}
 
 Zur Berechnung von `m_kung` nutzen wir jetzt dieses Mal aber *nicht* die Gittermethode (Bayes-Box), sondern lassen R die Arbeit verrichten.
 
-Da gibt es einen neuen Golem, ziemlich kräftig der Bursche, der soll die Arbeit für uns tun. Der Golem hört auf den Namen `rstanarm`[^0800-gauss-6].
-
-[^0800-gauss-6]: Hey, *ich* habe ihn diesen Namen nicht gegeben.
+Da gibt es einen neuen Golem, ziemlich kräftig der Bursche, der soll die Arbeit für uns tun. Der Golem hört auf den Namen `rstanarm`.
 
 ::: {.content-visible when-format="html"}
 ## Zufällige Motivationsabschnitt
@@ -285,9 +303,9 @@ Da gibt es einen neuen Golem, ziemlich kräftig der Bursche, der soll die Arbeit
 
 ## Posteriori-Verteilung des Größen-Modells, `m_kung`
 
-Okay, Golem, an die Arbeit! Berechne uns das Kung-Modell! Nennen wir das Modell `m_kung`[^0800-gauss-7].
+Okay, Stan, Golem unseres Vertrauens! An die Arbeit! Berechne uns das Kung-Modell! Nennen wir das Modell `m_kung`.
 
-[^0800-gauss-7]: *m* wie Modell und 4, weil das Modell in Kapitel 4 von @mcelreath2020 in ähnlicher Form berichtet wird, und 1 weil es unsere erste Variante dieses Modells ist.
+
 
 ```{r Kung-4, message=FALSE, results="hide"}
 m_kung <- stan_glm(height ~ 1, data = kung_erwachsen, refresh = 0)  # <1>
@@ -299,7 +317,21 @@ names(m41_post) <- c("mu", "sigma")  # <3>
 2.  Modellergebnis in Tabelle umwandeln
 3.  Schönere Namen für die Spalten geben
 
-Das Argument `refresh = 0` ist nur eine Nebensache, aber es ist praktisch, da es verhindert, dass die Details zum Ziehen der Stichproben am Bildschirm ausgegeben werden. Ich finde diese Ausgabe meist nicht informativ, so dass ich sie lieber unterdrücke. `stan_glm`[^0800-gauss-8] ist eine Funktion, mit der man Regressionsmodelle berechnen kann. Nun haben wir in diesem Fall kein "richtiges" Regressionsmodell. Man könnte sagen, wir haben eine AV (Körpergröße), aber keine UV (keine Prädiktoren). Glücklicherweise können wir auch solche "armen" Regressionsmodelle formulieren: `av ~ 1` bzw. in unserem Beispiel `height ~ 1` bedeutet, dass man nur die Verteilung der AV berechnen möchte, aber keine Prädiktoren hat (das soll die `1` symbolisieren). Für das Modell `m_kung` haben wir *keine* Prioris spezifiziert. Wir greifen damit auf die *Voreinstellung* (defaults) der Prioris von `rstanarm` zurück. Das ist ok, aber wenn Sie Vorab-Wissen haben, sollten Sie das an `rstanarm` weitergeben, weil es ja schade wäre, wenn Sie Wissen haben, das von Ihrem Modell nicht genutzt wird.
+Das Argument `refresh = 0` ist nur eine Nebensache, aber es ist praktisch, 
+da es verhindert, dass die Details zum Ziehen der Stichproben am Bildschirm ausgegeben werden. 
+Ich finde diese Ausgabe meist nicht informativ, so dass ich sie lieber unterdrücke.
+`stan_glm`[^0800-gauss-8] ist eine Funktion,
+mit der man Regressionsmodelle berechnen kann. 
+Nun haben wir in diesem Fall kein "richtiges" Regressionsmodell. Man könnte sagen, wir haben eine AV (Körpergröße), aber keine UV (keine Prädiktoren). 
+Glücklicherweise können wir auch solche "armen" Regressionsmodelle formulieren: 
+`av ~ 1` bzw. in unserem Beispiel `height ~ 1` bedeutet, 
+dass man nur die Verteilung der AV berechnen möchte, 
+aber keine Prädiktoren hat (das soll die `1` symbolisieren). 
+Für das Modell `m_kung` haben wir *keine* Prioris spezifiziert. 
+Wir greifen damit auf die *Voreinstellung* (defaults) der Prioris von `rstanarm` zurück.
+Das ist ok, aber wenn Sie Vorab-Wissen haben, sollten Sie das an `rstanarm` weitergeben,
+weil es ja schade wäre, wenn Sie Wissen haben, das von Ihrem Modell nicht genutzt wird.
+
 
 [^0800-gauss-8]: aus dem R-Paket `rstanam`, das zuvor installiert und gestartet sein muss, bevor Sie den Befehl nutzen können
 

@@ -71,6 +71,7 @@ xcol <- "#CC79A7"
 yellow <- "#F0E442FF"
 blue <- "#0072B2FF"
 orange <- "#E69F00FF"
+green <- errorcol
 
 
 
@@ -78,15 +79,6 @@ orange <- "#E69F00FF"
 #ggplot2::theme_set(see::theme_modern(axis.title.size = 18))
 
 labeltextsize <- 8
-
-
-
-utils::data("mariokart", package = "openintro")
-
-mariokart_no_extreme <- mariokart[mariokart$total_pr < 100, ]
-
-
-mariokart_path <- "https://vincentarelbundock.github.io/Rdatasets/csv/openintro/mariokart.csv"
 
 
 
