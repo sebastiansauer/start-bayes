@@ -2,8 +2,8 @@ library(tidyverse)
 #library(beyonce)
 #library(brms)
 library(patchwork)
-library(tidybayes)
-library(bayesplot)
+# library(tidybayes)
+# library(bayesplot)
 
 #bp <- beyonce_palette(126)[]
 #beyonce_palette(1)

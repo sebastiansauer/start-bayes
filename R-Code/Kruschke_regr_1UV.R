@@ -1,9 +1,9 @@
 library(tidyverse)
 #library(beyonce)
-library(brms)
+# library(brms)
 library(patchwork)
-library(tidybayes)
-library(bayesplot)
+# library(tidybayes)
+# library(bayesplot)
 
 # Source: https://bookdown.org/content/3686/16.html
 

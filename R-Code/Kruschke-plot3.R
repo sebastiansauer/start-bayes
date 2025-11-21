@@ -2,8 +2,8 @@ library(tidyverse)
 #library(beyonce)
 #library(brms)
 library(patchwork)
-library(tidybayes)
-library(bayesplot)
+#library(tidybayes)
+#library(bayesplot)
 
 # Genutzt für Abb 8.2 (m_kung) in Start-Bayes 8.3.4
 

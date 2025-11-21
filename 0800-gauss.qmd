@@ -169,7 +169,6 @@ Wir interessieren uns also für den Mittelwert der Körpergröße (erwachsene Pe
 
 [^0800-gauss-2]: Bildquelle: Own alterations andFile:SVG_Human_With_All_Organs.svg by Madhero88, CC BY-SA, 3.0
 
-[^0800-gauss-3]: Bildquelle: Own alterations andFile:SVG_Human_With_All_Organs.svg by Madhero88, CC BY-SA, 3.0
 
 Wir sind uns über diesen Mittelwert in der Population nicht sicher[^0800-gauss-4], und unsere Ungewissheit quantifizieren wir anhand einer Normalverteilung mit Mittelwert von 178 cm und Streuung von 20 cm, s. @eq-kung.
 
@@ -314,12 +313,12 @@ Okay, Stan, Golem unseres Vertrauens! An die Arbeit! Berechne uns das Kung-Model
 m_kung <- 
   stan_glm(height ~ 1, 
   prior_intercept = normal(178, 20),
-  prior_aux = exponetial(1/8),
+  prior_aux = exponential(1/8),
   refresh = 0,
   data = kung_erwachsen)  # <1>
 
-m41_post <- as_tibble(m_kung)    # <2>
-names(m41_post) <- c("mu", "sigma")  # <3>  
+m_kung_post <- as_tibble(m_kung)    # <2>
+names(m_kung_post) <- c("mu", "sigma")  # <3>  
 ```
 
 1.  Bayes-Regressionsmodell berechnen
@@ -356,7 +355,7 @@ Gemeinsame Post-Verteilung von Mittelwert und Streuung
 #| label: fig-m_kung_neue_prioris-post-joint
 #| fig-cap: "Die gemeinsame Post-Verteilung von Mittelwert und Streuung von m_kung_neue_prioris"
 
-m41_post %>% 
+m_kung_post %>% 
   ggplot() +
   aes(x = mu, y = sigma) %>% 
   geom_hex() +
@@ -377,16 +376,16 @@ Hier sind noch zwei andere Visualisierungen der Post-Verteilung von `m_kung_neue
 #| label: fig-m_kung_neue_prioris-post-anders1
 
 
-p_m41_post <- 
-  m41_post %>% 
+p_m_kung_post <- 
+  m_kung_post %>% 
   ggplot() +
   aes(x = mu, y = sigma) +
   geom_point(alpha = .1) 
 
-p10 <- ggExtra::ggMarginal(p_m41_post, type = "density")
+p10 <- ggExtra::ggMarginal(p_m_kung_post, type = "density")
 
 p20 <- 
-  m41_post %>% 
+  m_kung_post %>% 
   ggplot(aes(x = mu)) + 
   geom_histogram()
 
@@ -435,7 +434,7 @@ Abschließend, eigentlich nur Spielerei, noch eine andere Visualisierung der Pos
 #| fig-cap: Die beiden Randverteilungen der Post-Verteilungen, d.h. die Verteilungen für mu und für sigma
 #| fig-asp: 0.5
 
-m41_post %>% 
+m_kung_post %>% 
   pivot_longer(mu:sigma) %>% 
   ggplot(aes(x = value)) + 
   geom_density(fill = "grey33") +
@@ -474,9 +473,10 @@ parameters(m_kung) %>% display()
 
 ci_low <- parameters(m_kung)$CI_low |> round(2)
 ci_high <- parameters(m_kung)$CI_high |> round(2)
+y_pointestimate <- round(as.numeric(parameters(m_kung)$Median), 0)
 ```
 
-Das Wesentliche: Unser Golem schätzt den Größenmittelwert der Kung auf ca. 155cm bzw. 
+Das Wesentliche: Unser Golem schätzt den Größenmittelwert der Kung auf ca. `r y_pointestimate`cm bzw. 
 auf einen Bereich von etwa `r ci_low` bis `r ci_high` schätzt. 
 Informativ ist vielleicht noch, dass wir den `Prior` erfahren, der im Modell verwendet wurde. Dazu später mehr.
 
