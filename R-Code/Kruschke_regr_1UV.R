@@ -1,5 +1,5 @@
 library(tidyverse)
-#library(beyonce)
+# library(beyonce)
 # library(brms)
 library(patchwork)
 # library(tidybayes)
@@ -8,9 +8,7 @@ library(patchwork)
 # Source: https://bookdown.org/content/3686/16.html
 
 bp <- NA
-#beyonce_palette(1)
-
-
+# beyonce_palette(1)
 
 
 col1 <- "grey20"
@@ -22,36 +20,42 @@ bp[6] <- col3
 bp[1] <- col2
 
 
-
-
 # Normal density
-p1 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |> 
+p1 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |>
   ggplot(aes(x = x, y = (dnorm(x)) / max(dnorm(x)))) +
   geom_area(fill = bp[6]) +
-  annotate(geom = "text",
-           x = 0, y = 0.2,
-           label = "Normal",
-           color = bp[1], size = 7) +
-  annotate(geom = "text",
-           x = c(0, 1.5), y = 0.6,
-           label = c("italic(M)[0]", "italic(S)[0]"), 
-           color = bp[1], family = "Times", parse = TRUE, size = 7) +
+  annotate(
+    geom = "text",
+    x = 0, y = 0.2,
+    label = "Normal",
+    color = bp[1], size = 7
+  ) +
+  annotate(
+    geom = "text",
+    x = c(0, 1.5), y = 0.6,
+    label = c("italic(M)[0]", "italic(S)[0]"),
+    color = bp[1], family = "Times", parse = TRUE, size = 7
+  ) +
   scale_x_continuous(expand = c(0, 0)) +
   theme_void() +
   theme(axis.line.x = element_line(color = bp[1], linewidth = 0.5))
 
 # A second normal density
-p2 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |> 
+p2 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |>
   ggplot(aes(x = x, y = (dnorm(x)) / max(dnorm(x)))) +
   geom_area(fill = bp[6]) +
-  annotate(geom = "text",
-           x = 0, y = 0.2,
-           label = "Normal",
-           color = bp[1], size = 7) +
-  annotate(geom = "text",
-           x = c(0, 1.5), y = 0.6,
-           label = c("italic(M)[1]", "italic(S)[1]"), 
-           color = bp[1], family = "Times", parse = TRUE, size = 7) +
+  annotate(
+    geom = "text",
+    x = 0, y = 0.2,
+    label = "Normal",
+    color = bp[1], size = 7
+  ) +
+  annotate(
+    geom = "text",
+    x = c(0, 1.5), y = 0.6,
+    label = c("italic(M)[1]", "italic(S)[1]"),
+    color = bp[1], family = "Times", parse = TRUE, size = 7
+  ) +
   scale_x_continuous(expand = c(0, 0)) +
   theme_void() +
   theme(axis.line.x = element_line(color = bp[1], linewidth = 0.5))
@@ -59,42 +63,53 @@ p2 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |>
 ## Two annotated arrows
 # Save our custom arrow settings
 my_arrow <- arrow(angle = 20, length = unit(0.35, "cm"), type = "closed")
-p3 <- tibble(x = c(0.33, 1.67),
-             y = c(1, 1),
-             xend = c(0.75, 1.1),
-             yend = c(0, 0)) |>
-  ggplot(aes(x = x, xend = xend,
-             y = y, yend = yend)) +
+p3 <- tibble(
+  x = c(0.33, 1.67),
+  y = c(1, 1),
+  xend = c(0.75, 1.1),
+  yend = c(0, 0)
+) |>
+  ggplot(aes(
+    x = x, xend = xend,
+    y = y, yend = yend
+  )) +
   geom_segment(arrow = my_arrow, color = bp[1]) +
-  annotate(geom = "text",
-           x = c(0.4, 1.25), y = 0.5,
-           label = "'~'",
-           color = bp[1], family = "Times", parse = TRUE, size = 10) +
+  annotate(
+    geom = "text",
+    x = c(0.4, 1.25), y = 0.5,
+    label = "'~'",
+    color = bp[1], family = "Times", parse = TRUE, size = 10
+  ) +
   xlim(0, 2) +
   theme_void()
 
 # Exponential density
-p4 <- tibble(x = seq(from = 0, to = 1, by = 0.01)) |> 
+p4 <- tibble(x = seq(from = 0, to = 1, by = 0.01)) |>
   ggplot(aes(x = x, y = (dexp(x, 2) / max(dexp(x, 2))))) +
   geom_area(fill = bp[6]) +
-  annotate(geom = "text",
-           x = 0.5, y = 0.2,
-           label = "Expo",
-           color = bp[1], size = 7) +
-  annotate(geom = "text",
-           x = 0.5, y = 0.6,
-           label = "italic(lambda)",
-           color = bp[1], family = "Times", parse = TRUE, size = 7) +
+  annotate(
+    geom = "text",
+    x = 0.5, y = 0.2,
+    label = "Expo",
+    color = bp[1], size = 7
+  ) +
+  annotate(
+    geom = "text",
+    x = 0.5, y = 0.6,
+    label = "italic(lambda)",
+    color = bp[1], family = "Times", parse = TRUE, size = 7
+  ) +
   scale_x_continuous(expand = c(0, 0)) +
   theme_void() +
   theme(axis.line.x = element_line(color = bp[1], linewidth = 0.5))
 
 
-
 # Likelihood formula
-p5 <- tibble(x = 0.5,
-             y = 0.25,
-             label = "beta[0]+beta[1]*italic(x)[italic(i)]") |> 
+p5 <- tibble(
+  x = 0.5,
+  y = 0.25,
+  label = "beta[0]+beta[1]*italic(x)[italic(i)]"
+) |>
   ggplot(aes(x = x, y = y, label = label)) +
   geom_text(color = bp[1], family = "Times", parse = TRUE, size = 7) +
   scale_x_continuous(expand = c(0, 0), limits = c(0, 1)) +
@@ -102,72 +117,94 @@ p5 <- tibble(x = 0.5,
   theme_void()
 
 # Half-normal density
-p6 <- tibble(x = seq(from = 0, to = 3, by = 0.01)) |> 
+p6 <- tibble(x = seq(from = 0, to = 3, by = 0.01)) |>
   ggplot(aes(x = x, y = (dnorm(x)) / max(dnorm(x)))) +
   geom_area(fill = bp[6]) +
-  annotate(geom = "text",
-           x = 1.5, y = 0.2,
-           label = "half-normal",
-           color = bp[1], size = 7) +
-  annotate(geom = "text",
-           x = 1.5, y = 0.6,
-           label = "0*','*~italic(S)[sigma]", 
-           color = bp[1], family = "Times", parse = TRUE, size = 7) +
+  annotate(
+    geom = "text",
+    x = 1.5, y = 0.2,
+    label = "half-normal",
+    color = bp[1], size = 7
+  ) +
+  annotate(
+    geom = "text",
+    x = 1.5, y = 0.6,
+    label = "0*','*~italic(S)[sigma]",
+    color = bp[1], family = "Times", parse = TRUE, size = 7
+  ) +
   scale_x_continuous(expand = c(0, 0)) +
   theme_void() +
   theme(axis.line.x = element_line(color = bp[1], linewidth = 0.5))
 
 # two annotated arrows
-p7 <- tibble(x = c( 0.43, 1.5),
-             y = c(0.55, 1),
-             xend = c(1.225, 1.5),
-             yend = c(0.15, 0.2)) |>
-  ggplot(aes(x = x, xend = xend,
-             y = y, yend = yend)) +
+p7 <- tibble(
+  x = c(0.43, 1.5),
+  y = c(0.55, 1),
+  xend = c(1.225, 1.5),
+  yend = c(0.15, 0.2)
+) |>
+  ggplot(aes(
+    x = x, xend = xend,
+    y = y, yend = yend
+  )) +
   geom_segment(arrow = my_arrow, color = bp[1]) +
-  annotate(geom = "text",
-           x = c(0.7, 1.38), y = c(0.22, 0.65),
-           label = c("", "'='"),
-           color = bp[1], family = "Times", parse = TRUE, size = 10) +
-  annotate(geom = "text",
-           x = 0.43, y = 0.7,
-           label = "'~'",
-           color = bp[1], family = "Times", parse = TRUE, size = 7) +
+  annotate(
+    geom = "text",
+    x = c(0.7, 1.38), y = c(0.22, 0.65),
+    label = c("", "'='"),
+    color = bp[1], family = "Times", parse = TRUE, size = 10
+  ) +
+  annotate(
+    geom = "text",
+    x = 0.43, y = 0.7,
+    label = "'~'",
+    color = bp[1], family = "Times", parse = TRUE, size = 7
+  ) +
   xlim(0, 3) +
   theme_void()
 
 # Student-t density / Normal
-p8 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |> 
+p8 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |>
   ggplot(aes(x = x, y = (dt(x, 3) / max(dt(x, 3))))) +
   geom_area(fill = bp[6]) +
-  annotate(geom = "text",
-           x = 0, y = 0.2,
-           label = "Normal",
-           color = bp[1], size = 7) +
-  annotate(geom = "text",
-           x = -0.7, y = 0.6,
-           label = "sigma~mu[italic(i)]",
-           color = bp[1], family = "Times", parse = TRUE, size = 7) +
+  annotate(
+    geom = "text",
+    x = 0, y = 0.2,
+    label = "Normal",
+    color = bp[1], size = 7
+  ) +
+  annotate(
+    geom = "text",
+    x = -0.7, y = 0.6,
+    label = "sigma~mu[italic(i)]",
+    color = bp[1], family = "Times", parse = TRUE, size = 7
+  ) +
   scale_x_continuous(expand = c(0, 0)) +
   theme_void() +
   theme(axis.line.x = element_line(color = bp[1], linewidth = 0.5))
 
 # The final annotated arrow to y_i
-p9 <- tibble(x = c(0.375, 0.625),
-             y = c(1/3, 1/3),
-             label = c("'~'", "italic(i)")) |> 
+p9 <- tibble(
+  x = c(0.375, 0.625),
+  y = c(1 / 3, 1 / 3),
+  label = c("'~'", "italic(i)")
+) |>
   ggplot(aes(x = x, y = y, label = label)) +
   geom_text(color = bp[1], family = "Times", parse = TRUE, size = c(10, 7)) +
-  geom_segment(x = 0.5, xend = 0.5,
-               y = 1, yend = 0, 
-               arrow = my_arrow, color = bp[1]) +
+  geom_segment(
+    x = 0.5, xend = 0.5,
+    y = 1, yend = 0,
+    arrow = my_arrow, color = bp[1]
+  ) +
   xlim(0, 1) +
   theme_void()
 
 # Some text
-p10 <- tibble(x = 0.5,
-              y = 0.5,
-              label = "italic(y[i])") |> 
+p10 <- tibble(
+  x = 0.5,
+  y = 0.5,
+  label = "italic(y[i])"
+) |>
   ggplot(aes(x = x, y = y, label = label)) +
   geom_text(color = bp[1], family = "Times", parse = TRUE, size = 7) +
   xlim(0, 1) +
@@ -183,17 +220,18 @@ layout <- c(
   area(t = 1, b = 2, l = 7, r = 9),
   area(t = 4, b = 5, l = 1, r = 3),
   area(t = 4, b = 5, l = 5, r = 7),
-  #area(t = 4, b = 5, l = 9, r = 11),
+  # area(t = 4, b = 5, l = 9, r = 11),
   area(t = 3, b = 4, l = 3, r = 9),
   area(t = 7, b = 8, l = 5, r = 7),
   area(t = 6, b = 7, l = 1, r = 11),
   area(t = 9, b = 9, l = 5, r = 7),
-  area(t = 10, b = 10, l = 5, r = 7))
+  area(t = 10, b = 10, l = 5, r = 7)
+)
 
 # Combine and plot!
 # p6 is the half normal
 
-(p1 + p2 + p4 + p5 +  p3 + p8 + p7 + p9 + p10) +
+(p1 + p2 + p4 + p5 + p3 + p8 + p7 + p9 + p10) +
   plot_layout(design = layout) &
   ylim(0, 1) &
   theme(plot.margin = margin(0, 5.5, 0, 5.5))
