@@ -464,9 +464,9 @@ sich aus dem linearen Modell (unserer Regressionsformel).
 @thm-modm42 stellt @fig-kruschke_regr_one_predictor als Modellgleichung dar.
 @fig-regression-normal-dist-gray zeigt anhand der Regressionsgerade,
 wie die vorhergesagten Körpergrößen zustande kommen:
-$\mu$ (vorhergesagte Körpergröße) beruht auf dem jeweiligen $X$-Wert (d.h. Gewicht);
+$\mu$ (vorhergesagte Körpergröße) beruht auf dem jeweiligen $X$-Wert (d.h. Gewicht, UV);
 zusammen mit der Streuung der Körpergrößen um den Mittelwert ($\sigma$)
-ergibt sich dann die Normalverteilung der Körpergrößen.
+ergibt sich dann die Normalverteilung der Körpergrößen, $y_i$ (AV).
 
 ![Die Körpergrößen, $Y$ (AV) sind abhängig vom Wert des Körpergewichts, $X$, (UV)](img/regression-normal-dist-gray.png){#fig-regression-normal-dist-gray width=75%}
 
@@ -578,14 +578,13 @@ Die Anzahl der Prioris entspricht übrigens der Anzahl der Parameter des Modells
 
 
 
-
-
-### Prioris plus Daten gleich Post
-
-Nennen wir das Modull `m_kung_gewicht_c`.
-
+Jetzt sind wir bereit, das Model bzw. die Post-Verteilung zu berechnen.
+Erinnern wir uns: "Prioris plus Daten gleich Post".
 Los, Stan, an die Arbeit!
 Berechne uns die Post-Verteilung.
+Nennen wir das Modull `m_kung_gewicht_c`.
+
+
 
 ```{r}
 #| results: hide
@@ -602,10 +601,30 @@ parameters(m_kung_gewicht_c)
 ```
 
 ```{r}
-#| label: m_kung_gewicht_c_params
+#| label: tbl-m_kung_gewicht_c_params
 #| tbl-cap: "Parameter von m_kung_gewicht_c"
 parameters(m_kung_gewicht_c) |> display()
 ```
+
+
+Wie man in @tbl-m_kung_gewicht_c_params sieht, wird
+der Zusammenhang von Gewicht und Größe, d.h. $\beta_1$, die Steigung der Regressionsgeraden,
+auf einen Wert zwischen ca. 0.8 bis 1.0 kg Unterschied in der Körpergröße geschätzt (wenn sich die Personen um 1 kg Körpergewicht unterscheiden).
+Es gibt also einen Zusammenhang zwischen Gewicht und Größe (laut unserem Modell).
+Danke, Stan!
+
+
+
+:::{#exr-wie-ensteht-mu}
+### Peer-Instruction: Wie leitet sich der Wert der Körpergrößen $h_i$ her?
+
+Welche Aussage zur Herleitung der *Körpergrößen*, $h_i$, ist korrekt?
+
+- Die Körpergrößen sind gleich mit um das Regressionsgewicht gewichtete Wert des jeweiligen Körpergewichts.
+- Die Körpergrößen sind apriori normalverteilt mit dem Mittelwert 178 cm (in diesem Modell).
+- Die Körpergrößen sind apriori normalverteilt mit dem Mittelwert, der sich aus dem Regressionsmodell ergibt für jede Beobachtung $i$.
+- Die Körpergrößen sind das Resultat zweier Parameter: Der mittleren Körpergröße, $\mu$, sowie der Streuung in der Population, $\sigma$. $\square$
+:::
 
 
 
