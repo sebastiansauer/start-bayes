@@ -1,4 +1,4 @@
-# Bayes-Versuch
+# Bayes-Globus 
 
 
 
@@ -512,7 +512,7 @@ gesamt_wkst <- anz_pfade * wskt_pro_pfad
 gesamt_wkst
 ```
 
-(Fast) von Hand gerechnet, mit R als Taschenrechner:
+(Fast) von Hand gerechnet:
 
 ```{r}
 factorial(9)/(factorial(6)*factorial(3)) * (.7)^6 * (.3)^3
@@ -584,7 +584,7 @@ $$\pi \sim \text{Unif}(0,1).$${#eq-prior-unif-globus}
 
 Lies: "$\pi$ ist gleich (uniform) verteilt mit der Untergrenze 0 und der Obergrenze 1".
 
-Man könnte auch sagen: Wir haben praktisch kein Vorwissen, wir sind erstmal (apriori) indifferent,
+Man könnte auch sagen: Wir haben praktisch kein Vorwissen, wir sind erstmal (aprior) indifferent,
 jeder Parameterwert erscheint uns erstmal gleich wahrscheinlich, 
 s. @fig-unif01.
 
@@ -614,7 +614,7 @@ uniform_plot(0, 1)
 ### Posteriori-Verteilung
 
 die Posteriori-Verteilung quantifiziert unser Wissen nach Kenntnis der Daten, aufbauend auf unserem Vorwissen (Priori-Wissen).
-Die Posteriori-Verteilung ist das Ergebnis des Bayes-Updates.
+Die Posteriori-Verteilung ist das Ergebnis des Bayes-Updates, s. @eq-post-globus1.
 
 Die Wahrscheinlichkeit bestimmter Hypothesen nennt man Posteriori-Wahrscheinlichkeit und bezeichnet sie kurz mit $Pr(H|D)$.
 Lies: "Die Wahrscheinlichkeit der Hypothese H gegeben der Daten D".
@@ -643,25 +643,18 @@ In der Praxis nutzt man Bayes häufig,
 wenn man Daten $D$ gesammelt hat,
 und wissen möchte,
 wie wahrscheinlich eine Hypothese $H$ ist,
-im Lichte dieser gesammelten Daten, s. @thm-bayes1.
+im Lichte dieser gesammelten Daten, s. @eq-bayes3.
 
 <!-- $$D \quad \underrightarrow{Bayes} \quad H$$ -->
 
 
-::: {#thm-bayes1}
+$$Pr(H|D) = \frac{ Pr(H) \cdot Pr(D|H) }{Pr(D)}$${#eq-bayes3}
 
-### Bayes' Theorem
-
-$$Pr(H|D) = \frac{ Pr(H) \cdot Pr(D|H) }{Pr(D)}\quad \square$$
-:::
-
-
-
-Bayes' Theorem (@thm-bayes1) fragt nach $Pr(H|D)$:
+Bayes' Theorem (@eq-bayes3) fragt nach $Pr(H|D)$:
 
 >    Was ist die Wahrscheinlichkeit der Hypothese H, jetzt wo wir die Daten haben (und ein Modell?)
 
-Und antwortet so (@thm-bayes1):
+Und antwortet so (@eq-bayes3):
 
 >    Diese Wahrscheinlichkeit entspricht der Grundrate (Apriori-Wahrscheinlichkeit) der Hypothese mal der Plausibilität (Likelihood) der Daten unter Annahme (gegeben) der Hypothese. Aus Standardisierungsgründen dividiert man noch die totale Wahrscheinlichkeit der Daten über alle Hypothesen.
 
@@ -686,54 +679,37 @@ Also zeigt Bayes' Theorem nichts anderes als eine normale bedingte Wahrscheinlic
 
 
 
-$Pr(H| D)$ kann man  umformen (vgl. @thm-pr-cond und @def-gem-wskt-abh),
-dann erhält man Bayes' Theorem, s. @thm-bayes3.
-
-:::{#thm-bayes3}
-
-### Bayes' Theorem 2
+$Pr(H| D)$ kann man  umformen (vgl. @eq-pr-cond und @def-gem-wskt-abh),
+dann erhält man Bayes' Theorem, s. @eq-bayes1:
 
 $$\begin{aligned}
 Pr(H|D) &=\frac{\overbrace{ Pr(H\cap D)}^\text{umformen}}{Pr(D)} \\  &= \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}}
-\end{aligned}\quad \square$$
-:::
+\end{aligned}$$ {#eq-bayes1}
 
 
 
 ### Die Evidenz zur Standardisierung 
 
-Die Aufgabe der Evidenz ist nur dafür zu sorgen, dass der Wert von $Pr(H|D)$ insgesamt nur Werte zwischen 0 und 1 annehmen kann, also eine brave, normale Wahrscheinlichkeit ist. Würde man in  @thm-bayes3 nicht durch die Evidenz teilen, so wäre die Posteriori-Wahrscheinlichkeit nicht normiert, d.h. sie könnte Werte >1 annehmen.
+Die Aufgabe der Evidenz ist nur dafür zu sorgen, dass der Wert von $Pr(H|D)$ insgesamt nur Werte zwischen 0 und 1 annehmen kann, also eine brave, normale Wahrscheinlichkeit ist. Würde man in  @eq-bayes1 nicht durch die Evidenz teilen, so wäre die Posteriori-Wahrscheinlichkeit nicht normiert, d.h. sie könnte Werte >1 annehmen.
 
 
 
 :::{#def-evidenz}
 ### Evidenz
 $Pr(D)$ nennt man die *Evidenz*. 
-Die Evidenz berechnet sich als Summe der Likelihoods für alle Parameterwerte $H_i$, d.h. als die totale Wahrscheinlichkeit von $D$, s. @thm-evidenz, vgl. auch @def-totwskt. $\square$
-:::
-
-::: {#thm-evidenz} 
-
-### Evidenz
+Die Evidenz berechnet sich als Summe der Likelihoods für alle Parameterwerte $H_i$, d.h. als die totale Wahrscheinlichkeit von $D$, s. @eq-evidenz, vgl. auch @def-totwskt:
 
 $$\begin{aligned}
 Pr(D) = \sum_{i=1}^n Pr(D|H_i) \cdot Pr(H_i)
-\end{aligned}\quad \square$$
-:::
+\end{aligned}$${#eq-evidenz} 
 
 Die verschiedenen Parameterwerte kann man auch als die verschiedenen Hypothesen $H_i$ auffassen.
-Falls es nur zwei Hypothesen bzw. Parameterwerte gibt, vereinfacht sich @thm-evidenz zu @thm-evidenz2.
-
-
-::: {#thm-evidenz2} 
-
-### Evidenz 2
+Falls es nur zwei Hypothesen bzw. Parameterwerte gibt, vereinfacht sich @eq-evidenz zu @eq-evidenz2.
 
 $$\begin{aligned}
 Pr(D) = Pr(D|H_1) \cdot Pr(H_1) + Pr(D|H_2) \cdot Pr(H_2)
-\end{aligned}\quad \square$$
+\end{aligned}$${#eq-evidenz2} 
 :::
-
 
 
 
@@ -757,11 +733,11 @@ also ca. 4%. $\square$
 
 ### Bayes' Theorem als Formel
 
-<!-- Gesucht ist die Wahrscheinlichkeit einer Hypothese gegeben einer bestimmten Datenlage, $Pr(H|D)$, s. @thm-bayes5 -->
+<!-- Gesucht ist die Wahrscheinlichkeit einer Hypothese gegeben einer bestimmten Datenlage, $Pr(H|D)$, s. @eq-bayes5 -->
 
-<!-- $$Pr(H|D) = \frac{Pr(D|H) \cdot Pr(H)}{Pr(D)} = \frac{\text{Likelihood}  \cdot \text{Priori-Wahrscheinlichkeit}}{\text{Evidenz}}$${#thm-bayes5} -->
+<!-- $$Pr(H|D) = \frac{Pr(D|H) \cdot Pr(H)}{Pr(D)} = \frac{\text{Likelihood}  \cdot \text{Priori-Wahrscheinlichkeit}}{\text{Evidenz}}$${#eq-bayes5} -->
 
-Schauen wir uns die Bestandteile von Bayes' Theorem (@thm-bayes3) noch etwas näher an:
+Schauen wir uns die Bestandteile von Bayes' Theorem (@eq-bayes1) noch etwas näher an:
 
 -   (standardisierte) Posteriori-Wahrscheinlichkeit: $Pr_{Post} := Pr(H|D)$
 
@@ -783,15 +759,10 @@ Die $Pr_{Post}$ ist proportional zu $L \times Pr_{Priori}$.
 
 ### Posteriori als Produkt von Priori und Likelihood
 
-Die *unstandardisierte* Posteriori-Wahrscheinlichkeit $Pr_{\text{unPost}}$ ist einfach das Produkt von 
-Likelihood und Priori, s. @thm-unpost.
+Die *unstandardisierte* Post-Wahrscheinlichkeit $Pr_{\text{unPost}}$ ist einfach das Produkt von 
+Likelihood und Priori, s. @eq-unpost.
 
-::: {#thm-unpost}
-
-### Unstandardisierte Posteriori-Wahrscheinlichkeit 
-
-$$Pr_{\text{unPost}} = L \times \text{Priori}\quad \square$$
-:::
+$$Pr_{\text{unPost}} = L \times \text{Priori}$${#eq-unpost}
 
 
 
@@ -807,14 +778,10 @@ Standardisiert man die unstandardisierte Post-Verteilung,
 so erhält man die standardisierte Post-Verteilung.
 Das Standardisieren dient nur dazu, einen Wert zwischen 0 und 1 zu erhalten. 
 Dies erreichen wir, indem wir durch die Summe aller Post-Wahrscheinlichkeiten dividieren.
-Die Summe der Post-Wahrscheinlichkeiten bezeichnet man (auch) als Evidenz, vgl. Gleichung @thm-post.
+Die Summe der Post-Wahrscheinlichkeiten bezeichnet man (auch) als Evidenz, vgl. Gleichung @eq-post.
 
-::: {#thm-post}
 
-### Standardisierte Posteriori-Verteilung
-
-$$\text{Posteriori} = \frac{\text{Likelihood} \times \text{Priori}}{\text{Evidenz}}\quad \square$$
-:::
+$$\text{Posteriori} = \frac{\text{Likelihood} \times \text{Priori}}{\text{Evidenz}}$${#eq-post}
 
 
 
@@ -943,16 +910,12 @@ $$\text{Post}_{\text{unstand}} = \text{Priori} \cdot \text{Likelihood}$${#eq-pos
 Um zur *standardisierten* Posteriori-Wahrscheinlichkeit zu gelangten,
 teilen wir in jeder Zeile der Bayesbox (also für jede Hypothese) 
 die unstandardisierte Post-Wahrscheinlichkeit durch die Summe 
-der unstandardisierten Post-Wahrscheinlichkeiten, s. @thm-poststand-allgemein.
+der unstandardisierten Post-Wahrscheinlichkeiten, s. @eq-poststand-allgemein.
 
-::: {#thm-poststand-allgemein}
 
-### Posteriori-Verteilung 2
+$$\text{Post} = \frac{\text{Post}_{\text{unstand}}}{\text{Evidenz}} = \frac{Pr(H) \cdot Pr(H|D)}{Pr(D)}$${#eq-poststand-allgemein}
 
-$$\text{Post} = \frac{\text{Post}_{\text{unstand}}}{\text{Evidenz}} = \frac{Pr(H) \cdot Pr(H|D)}{Pr(D)}\quad \square$$
-:::
-
-Dabei haben wir die Priori-Wahrscheinlichkeit für alle Parameterwerte als gleich angenommen, da wir keinerlei Vorwissen hatten, $Pr(H_i) = 1/11$.
+Dabei haben wir die Priori-Wahrscheinlihkeit für alle Parameterwerte als gleich angenommen, da wir keinerlei Vorwissen hatten, $Pr(H_i) = 1/11$.
 Die Evidenz berechnet sich als Summe der unstandardisierten Post-Wahrscheinlichkeiten, $Pr(D) = 0.09$.
 
 :::callout-note
@@ -1180,16 +1143,13 @@ Zur Erinnerung: $Pr(A)$ ist die totale Wahrscheinlichkeit
 
 Man kann sich Bayes' Theorem  auch wie folgt herleiten:
 
+
 $Pr(D\cap H) = Pr(D \cap H) = Pr(D) \cdot Pr(H|D) = Pr(H) \cdot Pr(D|H)$
 
-Dann lösen wir nach P$(H|D)$ auf, s. @thm-bayes3.
+Dann lösen wir nach P$(H|D)$ auf, s. @eq-bayes2.
 
-::: {#thm-bayes3}
 
-### Bayes' Theorem 3
-
-$$Pr(H|D) = \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}}\quad \square$$
-:::
+$$Pr(H|D) = \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}}$${#eq-bayes2}
 
 
 
@@ -1200,20 +1160,14 @@ Das ist vielleicht ein bisschen fancy,
 aber man kann Bayes' Theorem auch nutzen, um die Wahrscheinlichkeit einer *zusammengesetzten Hypothese* zu berechnen: $H = H_1 \cap H_2$. 
 Ein Beispiel wäre: "Was ist die Wahrscheinlichkeit, dass es Regen ($R$) *und* Blitzeis ($B$) gibt, wenn es kalt ($K$) ist?".
 
-Das sieht dann so aus wie in @thm-bayes4 gezeigt.
-
-
-::: {#thm-bayes4}
-
-### Bayes' Theorem für zusammengesetzte Hypothesen
+Das sieht dann so aus, @eq-bayes4:
 
 $$
 \begin{aligned}
 Pr(R \cap B |K) &= \frac{ Pr(R \cap B) \cdot Pr(K|R \cap B) }{Pr(D)} \\
 &= \frac{ Pr(R ) \cdot Pr(B) \cdot Pr(K|R \cap B) }{Pr(D)}
 \end{aligned}
-\quad \square$$
-:::
+$${#eq-bayes4}
 
 
 Hier haben wir $Pr(R \cap B)$  aufgelöst in $Pr(R) \cdot Pr(B)$,
