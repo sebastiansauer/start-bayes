@@ -1,0 +1,261 @@
+
+### Die Apfel-fällt-nicht-weit-vom-Stamm-Verteilung
+
+<!-- :::{#exm-klasurnote} -->
+<!-- Sie haben in Statistik eine Klausur geschrieben. -->
+<!-- Sie gehen davon aus, dass Sie etw -->
+
+Anstelle der halben Normalverteilung man auch die Exponentialverteilung verwenden.
+Die beiden Verteilungen haben einen ähnlichen Verlauf,
+nur dass bei Exponentialverteilung Extremwerte wahrscheinlicher sind.
+Das kann vorteilhaft sein, wenn man ein Phänomen darstellen will,
+dessen Skalierung man nicht genau kennt.
+Die Normalverteilung setzt dem Streuung der Werte deutlich engere Grenzen
+als die Exponentialverteilung.
+@fig-exp-hnv stellt die beiden Verteilungen nebeneinander.
+
+
+```{r}
+#| fig-asp: 0.5
+#| label: fig-exp-hnv
+#| fig-cap: "Exponentialverteilung (blau, Rate = 1) vs. halbe Normalverteilung (sd = 1)"
+#| echo: false
+
+
+df <- data.frame(x = seq(0, 4, length.out = 500))
+df$y_halfnorm <- dnorm(df$x) * 2       # Half-normal density
+df$y_exp <- dexp(df$x, rate = 1)       # Exponential density (λ = 1)
+
+ggplot(df, aes(x)) +
+  # Filled areas
+  geom_area(aes(y = y_halfnorm), fill = "grey70", alpha = 0.6) +
+  geom_area(aes(y = y_exp), fill = "#56B4E9", alpha = 0.4) +
+  # Curves
+  geom_line(aes(y = y_halfnorm), color = "black", size = 1) +
+  geom_line(aes(y = y_exp), color = "#56B4E9", size = 1) +
+  # Labels
+  annotate("label", x = 3.2, y = dnorm(3.2) * 2 + 0.02, 
+           label = "Half-Normal", color = "black", hjust = 0) +
+  annotate("label", x = 2.5, y = dexp(2.5, rate = 1) + 0.02, 
+           label = "Exponential", color = "#56B4E9", hjust = 0) +
+  # Theme adjustments
+  theme_minimal() +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.y  = element_blank()
+  ) +
+  scale_x_continuous(limits = c(0, 4))
+
+```
+
+
+
+
+
+```{r Post-Regression-18}
+#| fig-asp: 0.5
+#| label: fig-exp
+#| fig-cap: "Die Exponentialverteilung: Die meisten Äpfel fallen nicht weit vom Stamm ..."
+#| echo: false
+#| dev: "ragg_png"
+#| eval: false
+
+# Set the rate parameter for the exponential distribution
+rate <- 1
+
+# Create a data frame for the exponential distribution
+x_vals <- seq(0, 5, by = 0.01) # X-axis range
+y_vals <- dexp(x_vals, rate = rate) # Density values
+data <- data.frame(x = x_vals, y = y_vals)
+
+ggplot(data, aes(x = x, y = y)) +
+  geom_line(color = okabeito_colors()[1], size = 1) +
+  theme_minimal() +
+ # labs(title = "Exponential Distribution", x = "", y = "Density") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  # Add emojis as text annotations
+  annotate("text", x = 0, y = 0, label = "🌳", size = 12, vjust = 0) +
+  annotate("text", x = 1, y = 0, label = "🍎", size = 6, vjust = 0) +
+  annotate("text", x = 2, y = 0, label = "🍎", size = 6, vjust = 0) +
+  annotate("text", x = 3, y = 0, label = "🍎", size = 6, vjust = 0)
+
+
+```
+
+
+Für eine exponentialverteilte Variable $X$ schreibt man auch:
+
+
+$$X \sim \operatorname{Exp}(1)$$
+
+
+Eine Verteilung dieser Form nennt man *Exponentialverteilung*.
+Sie hat einige nützliche Eigenschaften:
+
+
+
+
+1. Eine *Exp*onentialverteilung ist nur für positive Werte, $x>0$, definiert.
+2. Steigt X um eine *Einheit*, so ändert sich Y um einen *konstanten Faktor*.
+3. Sie hat nur einen Parameter, genannt *Rate* oder $\lambda$ ("lambda").
+4. $\frac{1}{\lambda}$  gibt gleichzeitig Mittelwert und Streuung ("Gestrecktheit") der Verteilung an.
+5. Je größer die Rate $\lambda$, desto schneller der "Verfall" der Kurve und desto *kleiner* die Streuung und der Mittelwert der Verteilung (und umgekehrt: Je größer  $1/\lambda$, desto *größer* die Streuung und der Mittelwert der Verteilung.)
+
+
+
+Ohne auf die mathematischen Eigenschaften im Detail einzugehen,
+halten wir fest, dass der Graph dieser Funktion gut zu unseren Plänen passt.
+
+
+
+### Visualisierung verschiedener Exponentialverteilungen
+
+Schauen wir uns einige Beispiele von Exponentialverteilungen an.
+Unterschiede in Exponentialverteilungen sind rein auf Unterschiede in $\lambda$ (lambda) zurückzuführen, s. @fig-exps.
+
+```{r gg-exp-fun}
+#| echo: false
+gg_exp <- function(r, max_x = 25, probs = c(0.05, .25, .50, .75, .95)) {
+  
+  d <-
+  tibble(
+    x = seq(0, 5,.1),
+    y = dexp(x, rate = r)
+  )
+  
+  d_qs <-
+    tibble(
+      prob = probs,
+      q = qexp(prob, rate = r) 
+    )
+  
+  med_exp <- round(log(2) / r, 2)
+  
+  
+  p <- 
+    ggplot(NULL, aes(c(0, max_x))) +
+    geom_area(stat = "function", 
+              fun = dexp, 
+              fill = "grey", 
+              args = list(rate = r))  +
+    labs(title = paste0("Exp(", r, ")"),
+         x = "sigma",
+         caption = paste0("Median (Md): ", med_exp)) +
+    geom_vline(data = d_qs,
+             aes(xintercept = q)) +
+    geom_label(data = d_qs,
+             aes(x = q, 
+                 label = prob,
+                 y = prob))
+ 
+}
+```
+
+::::{#fig-exps}
+
+::: {.panel-tabset}
+
+
+
+### lambda = 2
+
+```{r}
+#| echo: false
+gg_exp(r = 2) + labs(subtitle = "lambda = 2") + theme_modern()
+```
+
+
+### lambda = 1
+
+```{r}
+#| echo: false
+gg_exp(r = 1) + labs(subtitle = "lambda = 1") + theme_modern()
+```
+
+### lambda = 1/2
+
+```{r}
+#| echo: false
+gg_exp(r = 1/2) + labs(subtitle = "lambda = 1/2") + theme_modern()
+```
+
+
+### lambda = 1/4
+
+```{r}
+#| echo: false
+gg_exp(r = 1/4) + labs(subtitle = "lambda = 1/4") + theme_modern()
+```
+
+
+
+### lambda = 1/8
+
+```{r}
+#| echo: false
+gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8") + theme_modern() 
+```
+
+:::
+::::
+
+
+
+
+
+
+
+:::callout-note
+Eine "gut passende" oder gar die "richtige" Verteilung zu finden, 
+ist nicht immer einfach, wenn nicht unmöglich.
+Gut beraten ist man mit der Regel, 
+im Zweifel lieber eine liberale Verteilung zu wählen,
+die einen breiteren Raum an möglichen Werten zulässt. 
+Allerdings sollte man nicht das Baby mit dem Wasser auskippen und extreme Werte, wie etwa mehrere Kilometer Körpergröße, besser verbieten.
+:::
+
+Man kann sich den Median und andere Quantile der Exponentialverteilung mit `qexp` ausgeben lassen,
+wobei mit man `p` den Wert der Verteilungsfunktion angibt,
+für den man das Quantil haben möchte, z.B. `p = .5` für den Mediaan
+(mit `pexp()` kann man sich analog die die Verteilungsfunktion ausgeben lassen.) 
+Mit `rate` wird $\lambda$ (lambda) bezeichnet.^[Es gibt auch [Online-Apps, die diese Werte ausgeben](https://homepage.divms.uiowa.edu/~mbognar/applets/exp-like.html.]
+
+Dieser Aufruf zum Beispiel, `qexp(p = .5, rate = 1/8)`,
+gibt uns das 50%-Quantil einer Exponentialverteilung mit Rate ($\lambda$) 1/8 zurück, ca. 5.5: 
+Mit einer Wahrscheinlichkeit von 50% wird ein Wert von 5.5 nicht überschritten bei dieser Verteilung.
+
+Die Grenzen der inneren 95% dieser Verteilung kann man sich auch ausgeben.
+
+```{r}
+qexp(p = c(0.025, .975), rate = 1/8)
+```
+
+Tabelle @tbl-exp zeigt die Mediane einiger Exponentialverteilungen,
+d.h. Exponentialverteilungen mit verschiedenen Werten für $\lambda$.
+
+```{r}
+#| label: tbl-exp
+#| echo: false
+#| tbl-cap: "Median-Werte von Exponentialverteilungen mit verschiedenen Werten für λ (lambda). p50: 50%-Quantil (Median), p95: 95%-Quantil (Dieser Wert wird mit 95% Wahrscheinlichkeit nicht überschritten; er bietet sich als *Obere Grenze* der plausiblen Werte an.)"
+d_exp <- 
+  tibble(
+    lambda = c(100, 50, 8, 4, 2, 1, 1/2, 1/4, 1/8, 1/50, 1/100),
+    p50 = qexp(p = .5, rate = lambda),
+    p95 = qexp(p = .95, rate = lambda))
+
+d_exp %>% knitr::kable()
+```
+
+
+
+
+
+
+
+
+
+
+

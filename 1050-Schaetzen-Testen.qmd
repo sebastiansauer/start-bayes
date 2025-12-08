@@ -50,6 +50,7 @@ In diesem Kapitel werden folgende R-Pakete benötigt:
 library(rstanarm)   # Bayes-Modelle
 library(tidyverse)
 library(easystats)
+library(palmerpenguins)  # Datensatz "penguins"
 ```
 
 
@@ -72,11 +73,19 @@ theme_set(theme_modern())
 ### Benötigte Daten: Pinguine
 
 
-Wir benötigen in diesem Kapitel den Datensatz zu Pinguinen:  `penguins`.
+![Possierlich: Die Pinguine [@horst_statistics_2024]](img/penguins.png){#fig-penguins width="50%"}
 
+:::{#exr-peng-start}
+Machen Sie sich zunächst mit dem Pinguin-Datensatz vertraut. 
+Sie finden den Datensatz `penguins` im R-Paket `palmerpenguins`, 
+das Sie auf gewohnte Art installieren können.
+im Internet findet man den Datensatz auch als CSV-Datei; s. unten.
+Importierne Sie den Datensatz und verschaffen Sie sich einen Überblick über 
+die Verteilungen jeder Variablen des Datensatzes.
 
 
 Sie können den Datensatz `penguins` entweder via dem Pfad importieren:
+
 
 
 ```{r import-penguins}
@@ -97,7 +106,7 @@ Oder via dem zugehörigen R-Paket:
 data("penguins", package = "palmerpenguins")
 ```
 
-Beide Möglichkeit sind okay.
+Beide Möglichkeit des Datenimports sind okay. $\square$
 
 
 ### Einstieg
@@ -110,7 +119,7 @@ Betrachten Sie die zwei folgenden Aussagen, die jeweils ein Forschungsziel angeb
 
 
 :::{#exm-schaetzen-testen}
-Diskutieren Sie die epistemologische Ausrichtung sowie mögliches Für und Wider der beiden Ausrichtungen! $\square$
+Diskutieren Sie die epistemologische Ausrichtung sowie mögliches Für und Wider der beiden Ausrichtungen! Einmal Behauptung, einmal Frage -- was macht das für einen Unterschied? $\square$
 :::
 
 
@@ -120,31 +129,47 @@ Diskutieren Sie die epistemologische Ausrichtung sowie mögliches Für und Wider
 
 Forschungsfragen kann man, allgemein gesprochen, auf zwei Arten beantworten:
 
-1. *Hypothesen prüfend*: "Die Daten widerlegen die Hypothese (nicht)"
-2. *Parameter schätzend*: "Der Effekt von X auf Y liegt zwischen A und B".
+1. *Hypothesen testen*: "Die Daten widerlegen die Hypothese (nicht)"
+2. *Parameter schätzen*: "Der Effekt von X auf Y liegt zwischen A und B".
 
-### Hypothesen prüfen
+### Hypothesen testen
 
-Hypothesen prüfende Analysen kommen zu einer Ja-Nein-Aussage bzgl. einer Hypothese. Genauer muss man sagen: Im besten Fall kommen sie zu einer Ja-Nein-Aussage. Es kann natürlich sein, dass die Datenlage so nebelig oder das Problem so knifflig ist, dass man ehrlicherweise zugeben muss, dass man sich nicht sicher ist oder sagar komplett im Dunkeln tappt.
+Hypothesen testende Analysen kommen zu einer Ja-Nein-Aussage bzgl. einer Hypothese. 
+Genauer muss man sagen: Im besten Fall kommen sie zu einer Ja-Nein-Aussage.
+Es kann natürlich sein, dass die Datenlage so nebelig oder das Problem so knifflig ist, dass man ehrlicherweise zugeben muss, 
+dass man sich nicht sicher ist oder sagar komplett im Dunkeln tappt.
 
 :::{#exm-lernen-hyp}
 ### "Lernen erhöht den Prüfungserfolg"
-Die Hypothese *Lernen erhöht den Prüfungserfolg* kann durch eine Studie und eine entsprechende Analyse grundsätzlich folgende drei Ergebnisse finden. 1) Die Daten widersprechen der Hypothese: Lernen bringt offenbar doch nichts für den Klausurerfolg. 2) Die Daten unterstützen die Hypothese: Lernen erhöht den Prüfungserfolg. 3) Die Daten sind uneindeutig, es ist keine Aussage zum Einfluss von Lernen auf den Prüfungserfolg möglich. $\square$
+Die Hypothese *Lernen erhöht den Prüfungserfolg* kann durch eine Studie und eine entsprechende Analyse grundsätzlich folgende drei Ergebnisse finden.
+1) Die Daten widersprechen der Hypothese: 
+Lernen bringt offenbar doch nichts für den Klausurerfolg. 
+2) Die Daten unterstützen die Hypothese: Lernen erhöht den Prüfungserfolg.
+3) Die Daten sind uneindeutig, es ist keine Aussage zum Einfluss von Lernen auf den Prüfungserfolg möglich. $\square$
 :::
 
-Das Prüfen einer Hypothese kann zu drei Arten von Ergebnissen führen. Die ersten beiden sind informationsreich, die dritte ist informationsarm.
+Das Testen einer Hypothese kann zu drei Arten von Ergebnissen führen. 
+Die ersten beiden sind informationsreich, die dritte ist informationsarm.
 
-1. 🟥 Die Daten *widersprechen* der Hypothese: Auf Basis der Daten (und des Modells) muss man die Hypothese ablehnen (verwerfen, sagt man), also als falsch (falsifziert) betrachten oder zumindest hat die Glaubwürdigkeit der Hypothese gelitten.
+1. 🟥 Die Daten *widersprechen* der Hypothese: Auf Basis der Daten (und des Modells) muss man die Hypothese ablehnen (verwerfen, sagt man), 
+also als falsch (falsifziert) betrachten oder zumindest hat die Glaubwürdigkeit der Hypothese gelitten.
 
-2. 🟢 Die Daten *unterstützen* die Hypothese: Auf Basis der Daten (und des Modells) muss man die Hypothese annehmen (oder kann die Gegenthese zumindest nicht verwerfen). Oder zumindest hat die Hypothese an Glaubwürdigkeit gewonnen.
+2. 🟢 Die Daten *unterstützen* die Hypothese: 
+Auf Basis der Daten (und des Modells) muss man die Hypothese annehmen (oder kann die Gegenthese zumindest nicht verwerfen). 
+Oder zumindest hat die Hypothese an Glaubwürdigkeit gewonnen.
 
-3. ❓ Die Datenlage ist *unklar*; zum Teil unterstützen die Daten die Hypothese zum Teil widersprechen sie ihr. Man kann keine oder kaum Schlüsse aus den Daten ziehen. In diesem Fall gibt es keinen Erkenntnisgewinn.
+3. ❓ Die Datenlage ist *unklar*; zum Teil unterstützen die Daten die Hypothese zum Teil widersprechen sie ihr. 
+Man kann keine oder kaum Schlüsse aus den Daten ziehen. 
+In diesem Fall gibt es keinen Erkenntnisgewinn.
 
 
 Hypothesen prüfen ist *binär* in dem Sinne, dass sie zu "Schwarz-Weiß-Ergebnissen" führen (sofern die Datenlage stark genug ist).
 
 :::{.callout-important}
-Eine gängige Variante des Hypothesen testen^[vor allem in der Frequentistischen Statistik]  ist das Testen der Hypothese "kein Effekt" (Null Effekt), man spricht vom *Nullhypothesen testen*. $\square$
+Eine gängige Variante des Hypothesen testen^[vor allem in der Frequentistischen Statistik] 
+ist das Testen der Hypothese "Es liegt kein (null) Effekt vor" (Null Effekt).
+Man geht also davon aus, dass es keinen Zusammenhang zwischen UV und AV gibt und
+spricht vom *Nullhypothesen testen*, $H_0$. $\square$
 :::
 
 :::{.exm-null}
@@ -158,7 +183,9 @@ Eine gängige Variante des Hypothesen testen^[vor allem in der Frequentistischen
 :::
 
 
-*Vorteil* des Hypothesen testen ist das klare, einfache Ergebnisse, was die Entscheidungsfindung unterstützen kann, da es die Komplexität reduziert.
+*Vorteil* des Hypothesen testen ist das klare, einfache Ergebnis --
+die Hypothese ist abgelehnt, angenommen, oder die Datenlage ist unklar.
+Das unterstützt die Entscheidungsfindung, da es die Komplexität reduziert.
 
 
 :::callout-note
@@ -178,13 +205,16 @@ um die Hypothese zu widerlegen (falsifizieren). $\square$
 In der Wissenschaftspraxis werden die meisten Hypothesen probabilistisch untersucht. 
 Komplett sichere Belege, wie in Poppers Beispiel mit dem schwarzen Schwan, gibt es nicht.
 Das bedeutet, dass Evidenz im bestätigenden wie im widerlegenden Sinne tendenziell (probabilistisch) zu betrachten ist.
-Auf dieser Basis und der Basis zuverlässiger, repräsentativer Daten erscheint plausibel, dass Hypothesen sowohl bestätigt als auch widerlegt werden können [@kruschke2018; @morey2011]. $\square$
+Auf dieser Basis und der Basis zuverlässiger, 
+repräsentativer Daten erscheint plausibel, dass Hypothesen sowohl bestätigt als auch widerlegt werden können [@kruschke2018; @morey2011]. $\square$
 :::
 
 ### Parameter schätzen
 
-Beim Parameter schätzen untersucht man, *wie groß* ein Effekt ist, etwa der Zusammenhang zwischen X und Y.
-Es geht also um eine Skalierung, um ein *wieviel* und nicht um ein "ja/nein", was beim Hypothesen testen der Fall ist.
+Beim Schätzen von Parametern untersucht man, *wie groß* ein Effekt ist, 
+etwa der Zusammenhang zwischen X und Y.
+Es geht also um eine Skalierung, um ein *wieviel* und nicht um ein "ja/nein", 
+was beim Hypothesen testen der Fall ist.
 
 Beim Parameter schätzen gibt es zwei Varianten:
 
@@ -196,6 +226,31 @@ Allerdings kann man das Parameter schätzen auch wie einen Hypothesentest nutzen
 Ist ein bestimmter Wert, etwa die Null, nicht im Schätzbereich enthalten, so kann man die Hypothese verwerfen, dass der Parameter gleich diesem Wert (etwa Null) ist.
 
 
+:::{#exm-pinguins}
+
+Wie groß ist der Schätzbereich für den Effekt des Parameter "Geschlecht" auf das mittlere Gewicht von Pinguinen? 
+Hat die UV *Geschlecht* einen großen Einfluss auf das mittlere Gewicht dieser Tiere?
+Anders gefragt: Um welchen Wert sind männliche Tiere im Schnitt schwerer als weibliche Tiere?
+
+```{r}
+#| results: hide
+data(penguins, package = "palmerpenguins")
+penguins_nona <-
+  penguins |> drop_na(sex, body_mass_g)  # keine fehlenden Werte
+
+m_penguins_sex <- 
+  stan_glm(body_mass_g ~ sex, data = penguins_nona)
+```
+
+```{r}
+#| echo: false
+parameters(m_penguins_sex) |> print_md()
+```
+
+Grob gesagt sind männliche Tiere ca. 500 g bis 800 g schwerer als weibliche Tiere im Schnitt (95%-ETI), 
+laut unserem Modell; der Punktschätzer liegt bei einem Gewichtsunterschied von ca. `r round(as.numeric(coef(m_penguins_sex)[2]))` g $\square$
+:::
+
 :::{#exm-param-hyptest}
 ### Parameterschätzen als Nullhypothesentest
 
@@ -204,9 +259,16 @@ Ist ein bestimmter Wert, etwa die Null, nicht im Schätzbereich enthalten, so ka
 @eq-muf-mum formalisiert diese Forschungsfrage als statistische Hypothese $H$.
 
 $$H: \mu_M \ge \mu_F \rightarrow d = \mu_M - \mu_F \ge 0$${#eq-muf-mum}
+:::{#thm-muf-mum}
+
+### Nullhypothesentest
+
+$$H: \mu_M \ge \mu_F \leftrightarrow d = \mu_M - \mu_F \ge 0\quad \square$$
+:::
+>>>>>>> 8e9995b848160b6995d3275bca373d67083b5bdd
 
 Der Unterschied zwischen den Mittelwerten, $d$, ist genau dann Null, wenn $\beta_1$ in unserem Regressionsmodell `m1` gleich Null ist.
-Entsprechend gilt $d \ge 0$ wenn $\beta_1 \ge 0$.
+Entsprechend gilt $d \ne 0$ wenn $\beta_1 \ne 0$.
 
 
 ```{r}
@@ -218,7 +280,8 @@ m1 <- stan_glm(
 )
 ```
 
-Dann zählen wir einfach den Anteil der Stichproben in der Post-Verteilung für die UV `sexmale`, die einen Wert größer Null aufweisen:
+Um die Forschungsfrage zu beantworten zählen wir wie gewohnt den Anteil der Stichproben 
+in der Post-Verteilung für die UV `sexmale`, die einen Wert größer Null aufweisen:
 
 ```{r}
 m1_post <-
@@ -228,14 +291,19 @@ m1_post <-
 m1_post |> 
   count(sexmale < 0)
 ```
-100% (4000 von 4000) Stichproben finden einen Wert größer Null für `sexmale`, dass also weibliche Tiere leichter bzw. männliche Tiere schwerer sind.
+100% (4000 von 4000) Stichproben finden einen Wert größer Null für `sexmale`, 
+dass also weibliche Tiere leichter bzw. männliche Tiere schwerer sind (im Durchschnitt).
 Entsprechend finden 0% der Stichproben einen Wert, der für das Gegenteil spricht (das weibliche Tiere schwerer wären).
-Damit resümieren wir, dass unser Modell 100% Wahrscheinlichkeit für die Hypothese einräumt: $p_H = 1$. $\square$
+Damit resümieren wir, dass unser Modell 100% Wahrscheinlichkeit für die Hypothese einräumt: $p_H = 1$.
+Achtung: Die 100%-ige Sicherheit für die Hypothese stammt aus der kleinen Welt,
+nicht unbedingt aus der großen welt.
+$\square$
 :::
 
 
 
-*Vorteil* der Parameterschätzung ist die Nuanciertheit des Ergebnisses, die der Komplexität echter Systeme besser Rechnung trägt.
+*Vorteil* der Parameterschätzung (gegenüber dem Testen von Hypothesen) ist die Nuanciertheit des Ergebnisses, 
+die der Komplexität echter Systeme besser Rechnung trägt.
 
 
 
@@ -279,23 +347,21 @@ knitr::include_graphics("img/5v5531.jpg")
 
 Nullhypothesen, $H_0$, sind z.B.: $\rho=0$, $\rho_1 = \rho_2$, $\mu_1 = \mu_2$, $\mu=0$, $\beta_1=0$.
 Nullhypothesen zu testen, ist sehr verbreitet.
-Ein Grund ist, dass in der Frequentistischen Statistik keine andere Art von Hypothesentest möglich ist.^[Mittlerweile gibt es neue Frequentistische Ansätze für ein Verfahren ähnlich dem ROPE-Ansatz, der weiter unten vorgestellt wird.]
-
+Ein Grund ist, dass in der Frequentistischen Statistik keine andere Art von Hypothesentest (einfach) möglich ist.^[Mittlerweile gibt es neue Frequentistische Ansätze für ein Verfahren ähnlich dem ROPE-Ansatz, der weiter unten vorgestellt wird.]
 Ein anderer Grund ist vermutlich, ... wir haben es schon immer so gemacht. 🤷‍♀️
-
 Alternativen zum Testen von Nullhypothesen sind: 
   
-- Posteriori-Intervalle (PI oder HDI) berichten
+- Posteriori-Intervalle (ETI oder HDI) berichten
 - *Rope*-Konzept [@kruschke2018]
-- Wahrscheinlichkeit von inhaltlich bedeutsamen Hypothesen quantifizieren.
-- Wahrscheinlichkeit quantifizieren, dass der Effekt ein positives bzw. ein negatives Vorzeichen hat.
+- Wahrscheinlichkeit von inhaltlich bedeutsamen Hypothesen quantifizieren (z.B. dass $\beta_1 > 0.42$)
+- Wahrscheinlichkeit quantifizieren, dass der Effekt ein positives bzw. ein negatives Vorzeichen hat (*probability of direction, pd*)
 
 
 
 
 
 
-### "Praktisch" kein Unterschied: Das Rope-Konzept
+### "Praktisch kein Unterschied": Das Rope-Konzept
 
 
 📺 [ROPE-Video](https://www.youtube.com/watch?v=VweMjEBeQFg)
@@ -303,18 +369,24 @@ Alternativen zum Testen von Nullhypothesen sind:
 
 :::{#exm-rope}
 ### Beispiele für ROPE
-Sagen wir, wenn sich zwei Preismittelwerte um höchstens $d=100$€ unterscheiden, gilt dieser Unterschied für uns als "praktisch gleich", "praktisch kein Unterschied" bzw. vernachlässigbar.
 
-Bei Pinguinarten definiert eine Biologin nach umfangreichem Studium der Literatur, dass ein Unterschied von max. 100g "vernachlässigbar wenig" ist.
+- Sagen wir, wenn sich zwei Preismittelwerte um höchstens $d=100$€ unterscheiden, gilt dieser Unterschied für einen Marketingmanager als "praktisch gleich", "praktisch kein Unterschied",
+"nicht substanziell", "unbedeutend" bzw. "vernachlässigbar gering"
 
-Eine findige Geschäftsfrau entscheidet für ihre Firma, dass ein Umssatzunterschied von 100k Euro "praktisch irrelevant" sei. $\square$
+- Bei Pinguinarten definiert eine Biologin nach umfangreichem Studium der Literatur, dass ein Unterschied von max. 100 g Körpergewicht "vernachlässigbar wenig" ist.
+
+- Eine findige Geschäftsfrau entscheidet für ihre Firma, dass ein Umsatzunterschied von 100k Euro "praktisch irrelevant" sei. $\square$
 :::
 
 
 
-Nimmt man (praktisch) keinen Unterschied/Zusammenhang/Effekt an, spricht man von einer *Nullhypothese*: $H_0$.
+Wie legt man den Grenzwert $d$ fest,
+bis zu dem ein Unterschied (*D*ifferenz) gerade noch bzw. gerade nicht mehr
+unbedeutend ist?
 Die Wahl von $d$ ist *subjektiv* in dem Sinne als sie von inhaltlichen Überlegungen geleitet sein sollte.
 Diesen Bereich bezeichnen wir den *Indifferenzbereich* (Äquivalenzzone, Bereich eines vernachlässigbaren Unterschieds oder *Region of practical equivalence*, Rope). 
+
+
 Jetzt prüfen wir, ob ein "Großteil" der Posteriori-Stichproben im Rope liegt.
 Unter "Großteil" wird häufig das *95%-HDI* verstanden (das ist auch der Standard der R-Funktion `rope()`, die wir hier nutzen).
 
@@ -326,12 +398,12 @@ Unter "Großteil" wird häufig das *95%-HDI* verstanden (das ist auch der Standa
 
 *Entscheidungsregel* nach @kruschke2018:
   
-- Großteil liegt *innerhalb* von Rope  ➡️ *Annahme* der Nullhypothese "praktisch kein Effekt", $H_0$
-- Großteil liegt *außerhalb* von Rope  ➡️ *Ablehnung* der Nullhypothese "praktisch kein Effekt", $H_0$
-- Ansonsten  ➡️  keine Entscheidung 
+- Großteil der Post-Verteilung liegt *innerhalb* von Rope $\rightarrow$ *Annahme* der Nullhypothese "praktisch kein Effekt", $H_0$
+- Großteil der Post-Verteilung liegt *außerhalb* von Rope $\rightarrow$ *Ablehnung* der Nullhypothese "praktisch kein Effekt", $H_0$
+- Ansonsten $\rightarrow$ keine Entscheidung 
 
 
-Mit "Großteil" meinen wir (per Default) das 95%-HDI (der Posteriori-Verteilung).
+Mit "Großteil" meinen wir (per Default) das 95%-KI (der Posteriori-Verteilung).
 
 ### Vernachlässigbarer Regressionseffekt
 
@@ -342,12 +414,13 @@ Mit "Großteil" meinen wir (per Default) das 95%-HDI (der Posteriori-Verteilung)
 Wenn eine Veränderung über "praktisch den ganzen Wertebereich" von $x$ nur einen vernachlässigbaren Effekt auf $y$ hat.
 Ein vernachlässigbarer Effekt ist dabei $\hat{y}= \pm 0.1 sd_y$.
 Der "praktisch ganze Wertebereich" von $x$ sei $\bar{x} \pm 2 sd_x$.
-Resultiert der Vergleich von $\bar{x} -2 sd$ mit $\bar{x}+2sd$ nur eine Veränderung in $\hat{y}$ von $\bar{y} - 0.1sd_y$ auf $\bar{y} + 0.1 sd_y$, so ist der Regressionskoeffizient praktisch Null, der Effekt also vernachlässigbar.
-Das impliziert Rope-Grenzen von $\beta_x = \pm 0.05$ für z-standardisierte Variablen.
+Resultiert der Vergleich UV von $\bar{x} -2 sd$ mit $\bar{x}+2sd$ nur in einer Veränderung von $\hat{y}$ (der AV) von $\bar{y} - 0.1sd_y$ auf $\bar{y} + 0.1 sd_y$, so ist der Regressionskoeffizient praktisch Null, der Effekt also vernachlässigbar.
+Das impliziert Rope-Grenzen von $\beta_x = \pm 0.1$ für z-standardisierte UV und AV.
+Einfach gesprochen: Eine vernünftige Voreinstellung für die Rope-Grenzen sind $\pm 10 \%$ der SD der AV. 
 
 :::{.callout-note}
 ### ROPE-Defaults
-Im der Voreinstellung umfasst die Größe des ROPE ±5% der SD der AV. $\square$
+Im der Voreinstellung umfasst die Größe des ROPE ±10% der SD der AV. $\square$
 :::
 
 
@@ -357,13 +430,13 @@ Im der Voreinstellung umfasst die Größe des ROPE ±5% der SD der AV. $\square$
 ```{r out.width="100%"}
 #| echo: false
 #| fig-align: "center"
-#| fig-cap: "Die Entscheidungsregeln zum ROPE illustiert."
+#| fig-cap: "Die Entscheidungsregeln zum ROPE illustiert [@kruschke2018]; A: Verwerfen der ROPE-Hypothese; B und C: Akzeptieren; D-F: Unklare Datenlage, keine Entscheidung zur ROPE-Hypothese"
 #| label: fig-kruschke-rope
 knitr::include_graphics("img/Kruschke-2018-Fig1.png")
 ```
 
 @fig-kruschke-rope illustriert die Entscheidungsregel zum ROPE 
-für mehrere Situatioenen [@kruschke2018, Abbildung 1, S. 272]:
+für mehrere Situationen [@kruschke2018, Abbildung 1, S. 272]:
   
 - Liegt das HDI komplett außerhalb des ROPE, verwirft man die Nullhypothese.
 - Liegt das HDI komplett innerhalb des ROPE, akzeptiert man die Nullhypothese.
@@ -373,20 +446,23 @@ für mehrere Situatioenen [@kruschke2018, Abbildung 1, S. 272]:
 
 ### Rope berechnen
 
-Hier ist das Modell, das Gewicht als Funktion der Pinguinart erklärt (`m10.6`).
+Hier ist das Modell, das Gewicht als Funktion der Pinguinart erklärt (`m_penguins_species`).
 
 ```{r}
-m10.6 <- stan_glm(body_mass_g ~ species, 
+m_penguins_species <- stan_glm(body_mass_g ~ species, 
                   data = penguins, 
                   refresh = 0,  # unterdrückt Ausgabe der Posteriori-Stichproben
                   seed = 42  # zur Reproduzierbarkeit
                   )
 ```
 
-Den Rope berechnet man mit `rope(model)`.
+Den Rope berechnet man mit `rope(model)`, s. @tbl-peng-species-rope.
 
 ```{r}
-rope(m10.6)
+#| echo: false
+#| label: tbl-peng-species-rope
+#| tbl-cap: "Der Rope-Bereich für die Stufen der UV (Arten von Pinguinen)"
+rope(m_penguins_species)
 ```
 
 Die Faktorstufe `Chinstrap` von `species` hat doch einen beträchtlichen Teil ihrer Wahrscheinlichkeitsmasse der Posteriori-Verteilung im ROPE. 
@@ -394,7 +470,11 @@ Wir können daher für diese Gruppe  das ROPE *nicht* verwerfen.
 Die Datenlage ist *unklar*. 
 Es ist keine abschließende Entscheidung über die Hypothese möglich.
 
-Aber: `Gentoo` liegt zu 0% im Rope. Für Gentoo können wir das Rope *verwerfen*.
+Aber: `Gentoo` liegt zu 0% im Rope. 
+Für die Gruppe *Gentoo* können wir die ROPE-Hypothese *verwerfen*.
+Der Effekt von *Gentoo* ist größer als vernachlässigbar.
+Anders gesagt: Tiere der Art *Gentoo* sind im Schnett substanziell schwerer als Tiere der Referenzgruppe (*Adelie*).
+Der ROPE-Grenzwert wurde hier per Voreinstellung auf 80 g Unterschied festgelegt (10% der SD der AV).
 
 
 
@@ -406,14 +486,14 @@ Die angegebenen Prozentwerte beziehen sich nicht auf die 100% der Post-Verteilun
 Das hört sich abstrakt an? Dann lassen Sie uns das lieber visualisieren. 🎨
 
 
-### Visualisierung unserer Rope-Werte, m10.6
+### Visualisierung unserer Rope-Werte, m_penguins_species
   
-Ein Großteil der Posteriori-Masse von `m10.6` liegt  *nicht* innerhalb des Rope. 
+Ein Großteil der Posteriori-Masse von `m_penguins_species` liegt  *nicht* innerhalb des Rope. 
 Aber können wir umgekehrt sagen, dass ein Großteil außerhalb liegt? Das erkennt man optisch ganz gut, s. @fig-rope-penguins.
 
 ```{r}
 #| eval: false
-rope(m10.6) %>% plot()
+rope(m_penguins_species) %>% plot()
 ```
 
 
@@ -423,25 +503,28 @@ rope(m10.6) %>% plot()
 #| echo: false
 #| fig-cap: "Rope und HDI überlappen bei Chinstrap, aber nicht bei Gentoo. Im ersten Fall nehmen wir die Rope-Null-Hypothese an, im zweiten Fall verwerfen wir sie."
 #| fig-subcap: 
-#|   - "Diagramm mit `rope(m10.6) %>% plot()`"
-#|   - "Diagramm mit `parameters(m10.6) %>% plot()`"
-plot(rope(m10.6)) + scale_fill_okabeito()
+#|   - "Diagramm mit `rope(m_penguins_species) %>% plot()`"
+#|   - "Diagramm mit `parameters(m_penguins_species) %>% plot()`"
+plot(rope(m_penguins_species)) + scale_fill_okabeito()
 
-parameters(m10.6) %>% 
+parameters(m_penguins_species) %>% 
   plot() +
   geom_rect(aes(xmin = 0-80, xmax = 0+80, ymin = -Inf, ymax = Inf), 
               fill = "blue", alpha = 0.2, color = NA)
 ```
 
 
-Das ROPE druchkreuzt die "Berge" der Posteriori-Verteilung für Chinstrap deutlich.
+Das ROPE druchkreuzt die "Berge" der Posteriori-Verteilung für *Chinstrap* deutlich.
 Aber: Das 95%-HDI liegt nicht komplett innerhalb des Rope.
-Wir können das Nullhypothese für Chinstrap *nicht verwerfen*, aber auch *nicht bestätigen*.
+Wir können das Nullhypothese für Chinstrap *nicht verwerfen*, aber auch *nicht bestätigen* --
+eine unklare Datenlage.
 
-Gentoo hingegen wird vom vom Rope nicht durchkreuzt, 
-es ist weit entfernt vom "blauen Fluss" des Rope: Gentoo liegt außerhalb des Rope. 
-Es gibt einen "substanziellen" Unterschied, größer als das ROPE. 
-Wir verwerfen die "Praktisch-Null-Hypothese" in diesem Fall.
+*Gentoo* hingegen wird vom vom Rope nicht durchkreuzt, 
+es ist weit entfernt vom "blauen vertikalen Band" des Rope: Gentoo liegt außerhalb des Rope. 
+Es gibt einen "substanziellen" Unterschied
+zwischen dem Mittelwert der AV in Gruppe Gentoo und in der Referenzgruppe Adelie.
+
+Wir verwerfen die ROPE-Hypothese, die "Praktisch-Null-Hypothese", in diesem Fall.
 
 
 
@@ -454,14 +537,15 @@ Wir verwerfen die "Praktisch-Null-Hypothese" in diesem Fall.
 
 Wir können festlegen, was wir unter "praktischer Äquivalenz" verstehen,
 also die Grenzen des Ropes verändern.
-Sagen wir, 100 Gramm sind unsere Grenze für einen vernachlässigbaren Effekt, s. @fig-rope-range.
+Sagen wir, 200 Gramm sind unsere Grenze für einen vernachlässigbaren Effekt, s. @fig-rope-range.
 
 
 ```{r echo = TRUE, results="hide"}
 #| label: fig-rope-range
-#| fig-cap: ROPE mit selber eingestellter Grenze von ±100 (Gramm)
-rope(m10.6, range = c(-100, 100))
-plot(rope(m10.6, range = c(-100, 100))) + scale_fill_okabeito()
+#| fig-cap: ROPE mit selber eingestellter Grenze von ±200 (Gramm)
+rope(m_penguins_species, range = c(-200, 200))
+plot(rope(m_penguins_species, range = c(-200, 200))) + 
+  scale_fill_okabeito()  # schönes Farbschmea
 ```
 
 
@@ -469,14 +553,15 @@ plot(rope(m10.6, range = c(-100, 100))) + scale_fill_okabeito()
 
 
 
-Im Standard werden 95%-HDI berichtet, das kann man so ändern, wenn man möchte:
+In der Voreinstellung werden 95%-ETI berichtet, das kann man so ändern, wenn man möchte:
   
 ```{r echo=TRUE, eval = FALSE}
-rope(m10.6, range = c(-100,100), ci = .89, ci_method = "ETI")
+rope(m_penguins_species, range = c(-100,100), ci = .89, ci_method = "HDI")
 ```
 
-`ETI` (equal tails interval) steht für ein PI.
-Jetzt wird berichtet, welcher Teil eines 89%-CI^[89 ist die nächst kleinste Primzahl unter 95; und 95 wird gemeinhin als Grenzwert für Schätzbereiche verwendet. Damit ist 95 hier eine "magic number", ein Defacto-Standard ohne hinreichende Begründung. Um darauf hinzuweisen, benutzen einige Forschis mit ähem subtilen Humor lieber die 89 als die 95. 🤷‍♂️ ] sich im Rope befindet.
+`ETI` (equal tails interval) steht für ein ETI.
+Jetzt wird berichtet, welcher Teil eines 89%-CI^[89 ist die nächst kleinste Primzahl unter 95; und 95 wird gemeinhin als Grenzwert für Schätzbereiche verwendet. 
+Damit ist 95 hier eine "magic number", ein Defacto-Standard ohne hinreichende Begründung. Um darauf hinzuweisen, benutzen einige Forscherinnen und Forscher mit ähem subtilen Humor lieber die 89 als die 95. 🤷‍♂️ ] sich im Rope befindet.
 
 
 
@@ -524,7 +609,6 @@ Bei einer Parameterschätzung erhält man  auch Informationen zur Präzision der
 Ist der Schätzbereich schmal, so ist die Schätzung präzise (und vice versa).
 Allerdings könnte ein Modell aus mehreren Parameterschätzungen bestehen, die unterschiedlich präzise sind. 
 Da kann es helfen, eine zusammenfassen Beurteilung zur Präzision, oder allgemeiner zur Güte des Modells, zu erhalten.
-
 Im Folgenden ist eine Kennzahl von mehreren gebräuchlichen und sinnvollen vorgestellt, $R^2$.
 
 
@@ -542,64 +626,35 @@ Daher ist es wünschenswert, diese Information in $R^2$ einfließen zu lassen: *
 
 
 
-<!-- R^2_{Bayes} = \frac{\text{erklärte Varianz}}{\text{erkärte Varianz + Residualvarianz}} = \frac{var_{fit}}{var_{fit}+var_{res}} -->
-  
-  <!-- - $var_{fit}$ ist die Varianz der vorhergesagten Schätzwerte $\hat{y}_i$. -->
-  
-
-
-<!-- ```{r echo = TRUE} -->
-<!-- r2(m10.6) -->
-<!-- ``` -->
-
 
 Möchte man es ausführlicher, und im Komfort einer Bayes-Analyse schwelgen,
-so kann man sich die Posteriori-Verteilung von $R2$ ausgeben lassen, s. @fig-m106-r2.
+so kann man sich die Posteriori-Verteilung von $R^22$ ausgeben lassen, s. @fig-m106-r2.
 
 ```{r}
-#| fig.cap: "Die Verteilung von R-Quadrat im Modell m10.6"
+#| fig.cap: "Die Verteilung von R-Quadrat im Modell m_penguins_species"
 #| label: fig-m106-r2
-m10.6_r2 <-
-  m10.6 %>% 
+m_penguins_species_r2 <-
+  m_penguins_species %>% 
   r2_posterior() %>% 
   as_tibble()
 
-hdi(m10.6_r2) %>% 
-  plot()
+hdi(m_penguins_species_r2) %>%  # Intervallgrenzen der Post-Verteilung von R2
+  plot()  # visualisieren
 ```
 
+$R^2$ und $\sigma$ sind negativ assoziiert: 
+In einem Datensatz mit mit hohem $R^2$ ist $\sigma$ gering und umgekehrt.
+Beide Koeffizienten berechnen sich auf Basis von $\sigma$.
+Im Unterschied zum Frequentistischen R-Quadrat erhält man in der Bayes-Statistik
+nicht nur einen Punktschätzer für $R^ 2$, sondern wie auch sonst eine Post-Verteilung,
+so dass man z.B. einen Schätzbereich angeben kann.
 
+Schneller bekommt man den Punkt- und den Intervallschätzer für $R^2$ mit `r2(m_penguins_species)`.
 
-
-### Definition vom "klassischen" $R^2$
-
-
-
-
-Wie genau sind die Vorhersagen des Modells? $\sigma$ (Vorhersagefehler) quantifiziert die Streuung der Residuen $r_i = y_i - X_i\hat{\beta}$, mit $\hat{y}_i = X_i\hat{\beta}$. 
-Anders gesagt: $\hat{y} = \beta_0 + \beta_1x_1 + \beta_2x_2 + \cdots = X\hat{\beta}$.
-Anders gesagt gibt $\sigma$ die "typische" Abweichung einer Beobachtung vom vorhergesagten Wert an.
-Es ist nützlich, $\sigma$ in Bezug zu setzen zur Streuung der AV, $sd_y=s_y$:
-  $R^2 = 1- (\hat{\sigma}^2/s^2_y)$.
-$R2$ gibt damit den Anteil der vom Modell erklärten Varianz, $V$, an.
-Berechnet man das Modell mit der Methode der kleinsten Quadrate (nicht mit Bayes), dann ist der obige Ausdruck äquivalent zu:
-  $R^2=V_{i=1}^n \hat{y}_i/s_y^2$
-  Die beiden obigen Ausdrücke nehmen $\hat{y}_i$ als fix (sicher) an und vernachlässigen Ungewissheit; sie sind übergewiss aus Bayes-Sicht.
-
-
-
-
-### Bayes' $R^2$
-
-Besser ist es (aus Bayes-Sicht), die Ungewissheit der Vorhersagen bei der Berechnung der Modellgüte miteinzubeziehen:
-  $\text{Bayes }R^2 = \frac{\text{erkärte Varianz}}{\text{Erklärte Varianz + Residualvarianz}}= \frac{V_{mod}}{V_{mod} + V_{res}}$.
-
-$V_{mod}$ ist die Varianz in der PPV mit $s = 1, \ldots, S$ simulierten Stichproben, $V(\hat{y}_i)$ und $V_{res}$ ist die Residualvarianz im Modell.
-Für jede Stichprobe $s$ berechnet man die vorhergesagten Werte, $\hat{y}_i^s$, die Residualvarianz $\sigma^2_s$ und den Anteil der erklärten Varianz:
-  $\text{Bayes }R^2_s = \frac{V(\hat{y}_i^s)}{V(\hat{y}_i^s+\sigma_s^2)}$, vgl. 
-@gelman2019, @gelman2021, Kap. 11.7.
-
-
+```{r}
+#| echo: false
+r2(m_penguins_species)
+```
 
 
 

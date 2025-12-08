@@ -1,39 +1,59 @@
-q_80 <- quantile(samples$p_grid, prob = .8)
-q_10_and_90 <- quantile(samples$p_grid, prob = c(.1, .9))
+plot_ask_for_quantile <- function(
+  data = bayesbox_g100,
+  samples = bayesbox_g100_samples,
+  p = 0.5,
+  x_label = "Wasseranteil",
+  y_label = "Wahrscheinlichkeitsdichte",
+  area_fill_color = blue
+) {
+  title <- paste0(
+    "Welcher Wasseranteil q wird mit ",
+    p * 100,
+    " Wahrscheinlichkeit nicht übertroffen?"
+  )
 
-p1 <-
-  d_k100 %>% 
-  ggplot(aes(x = p_grid, y = post)) +
-  geom_line() +
-  labs(title="80% Wahrscheinlichkeitsmasse (p80)",
-       x = "Parameterwerte",
-       y = "Wahrscheinlichkeitsdichte") +
-  geom_area(data = d_k100 %>% 
-              filter(p_grid < q_80),
-            fill = "blue") +
-  annotate("label", x = .65, y = .01, label = "p80", color = "blue")
+  q <- quantile(samples$p_grid, prob = p)
+  q_10_and_90 <- quantile(samples$p_grid, prob = c(.1, .9))
 
-p1
+  # bayesbox_g100_samples |>
+  #   ggplot(aes(x = p_grid)) +
+  #   geom_histogram(aes(y = ..density..), bins = 30, fill = "lightgrey", color = "black") +
+  #   geom_vline(xintercept = q_80, color = "blue", linetype = "dashed")
+
+  p_quantile <-
+    data %>%
+    ggplot(aes(x = p_grid, y = post)) +
+    geom_line(color = "grey40") +
+    labs(
+      title = "Welcher Wasseranteil q wird mit 50% Wahrscheinlichkeit nicht übertroffen?",
+      x = "Wasseranteil",
+      y = "Wahrscheinlichkeitsdichte"
+    ) +
+    geom_area(
+      data = samples %>%
+        filter(p_grid <= q),
+      fill = blue
+    ) +
+    geom_point() +
+    scale_x_continuous(
+      breaks = c(0, as.numeric(q), 1),
+      labels = c("0", "q=0.64", "1")
+    ) +
+    geom_vline(
+      xintercept = as.numeric(q),
+      color = "grey40",
+      linetype = "dashed"
+    ) +
+    annotate("label", x = as.numeric(q), y = .01, label = "p=0.5", color = blue)
+
+  print(p_quantile)
+}
 
 
-p2 <-
-  d_k100 %>% 
-  ggplot(aes(x = p_grid, y = post)) +
-  geom_line(color = "grey20") +
-  labs(title="80%-Quantil (q80)",
-       caption = paste0("q80: ", round(q_80, 2)),
-       x = "Parameterwerte",
-       y = "Wahrscheinlichkeitsdichte") +
-  geom_area(data = d_k100 %>% 
-              filter(p_grid < q_80),
-            fill = "grey80",
-            color = "grey20") +
-  geom_vline(xintercept = q_80, color = "blue") +
-  annotate("label", x = q_80, y = .02, label = "q", color = "blue") +
-  scale_x_continuous(breaks = .78) +
-  theme(axis.text.x = element_text(colour = "blue"))
-
-p2
 
 
-p1 + p2
+
+
+
+
+

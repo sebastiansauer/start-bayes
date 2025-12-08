@@ -1,0 +1,168 @@
+
+#### Logarithmus
+
+Ein Logarithmus ist die Umkehrung der Potenzierung.
+
+Der Logarithmus beantwortet folgende Frage:
+Mit welchem Exponenten muss ich eine bestimmte Zahl (die Basis) potenzieren, um eine andere Zahl zu erhalten? Die Antwort auf diese Frage ist der Logarithmus.
+
+Formal ausgedrückt:
+
+:::{#def-logarithmus}
+### Logarithmus
+Der Logarithmus von einer Zahl $a$ zur Basis $b$ ist die Zahl $x$, mit der man $b$ potenzieren muss, um $a$ zu erhalten, s. @thm-logarithmus. $\square$
+:::
+
+:::{#thm-logarithmus}
+### Logarithmus
+$$\log b(x) = y \quad \text{wenn und nur wenn} \quad b^y = x$$
+:::
+
+Der Logarithmus zur Basis 2^[als "Logarithmus Dualis", ld, bezeichnet] gibt die "Verdopplungen" bzw. "Halbierungen" der Wahrscheinlichkeit an, wobei $ld(1/2) = -1.\square$
+
+
+
+:::{#exm-log2-1}
+$ld(1/2) = -1$
+```{r}
+log(.5, base = 2)
+```
+
+1/2 ist genau "minus 1 Verdopplung" von 1 entfernt, d.h. eine Halbierung.
+
+$ld(1/4) = -2$
+```{r}
+log(1/4, base = 2)
+```
+1/4 ist genau "minus 2 Verdopplungen" von 1 entfernt, d.h. zwei Halbierungen.
+
+$ld(1/8) = -3$
+```{r}
+log(1/8, base = 2)
+```
+
+1/8 (0.125) ist 3 Halbierungen von 1 entfernt.$\square$
+:::
+
+
+
+
+
+#### Simulieren wir eine Binomialverteilung 
+
+
+Die Binomialverteilung lässt sich gut als "Münzwurf-Verteilung" auffassen.
+
+Werfen wir eine Münze und sehen wir, was passiert.
+
+
+```{r}
+sample(x = c(0, 1), size = 1)
+```
+
+
+Mit `sample()` ziehen wir eine Stichprobe aus dem Ereignisraum `x`, hier 0 und 1. 
+Dabei vereinbaren wir (willkürlich), dass 0 für "Kopf" steht und 1 für "Zahl".
+`size = 1` bedeutet, wir werfen die Münze ein Mal (d.h. Stichprobengröße *size* ist 1).
+
+Okay, noch an Bord? Dann werfen wir die Münze 10 Mal.
+
+
+```{r}
+sample(x = c(0, 1), size = 10, replace = TRUE)
+```
+
+`replace = TRUE` heißt, wir legen die Münze wieder zurück auf den Tisch, wenn wir sie geworfen haben.
+Oder anders ausgedrückt: *Ziehen mit Zurücklegen*.
+
+
+
+R, mach dich bereit, wirf die Münze 1000 ($n=10^3$ oder `1e3`) Mal^[R meckert nicht bei langweiligen Aufgaben.].
+
+
+```{r}
+n <- 1e3
+
+muenze_oft <- 
+  sample(x = c(0, 1), size = n, replace = TRUE) 
+
+
+muenze_oft %>% 
+  sum()
+```
+
+
+Mit `sum()` nach dem Pfeifensymbol `%>%` haben wir aus dem Vektor `muenze_oft`, der aus der ersten Zeile resultiert,
+die Summe ausgerechnet. 
+
+Jetzt wissen wir, wie oft die Münze "Zahl" gezeigt hat, nämlich `r sum(muenze_oft)` Mal.
+
+
+
+::: callout-note
+Wenn Sie einen Zufallsversuch wiederholen, muss nicht jedes Mal das gleiche Ergebnis resultieren. Entsprechend wird bei wiederholten Ausführung der Funktion `sample()` nicht immer das gleiche Ergebnis resultieren. Wundern Sie sich also nicht, wenn bei Ihrem Computer eine ähnliche, aber nicht gleiche, Zahl herauskommt.
+:::
+
+
+Visualisieren wir mal unsere Münzwürfe. Dazu erstellen wir zuerst eine geeignete Tabelle, @tbl-muenz.
+
+
+```{r}
+muenz_tab <-
+  tibble(
+    id = 1:n,
+    x = muenze_oft,
+    x_cumsum = cumsum(x) / id  # gibt Anteil von "Zahl" wieder
+  )
+```
+
+
+```{r}
+#| echo: false
+#| label: tbl-muenz
+#| tbl-cap: "Die kumulierte Summe beim Münzwurf (nur die ersten paar Zeilen)"
+head(muenz_tab)
+```
+
+
+Und hier der Anteil von "Zahl" im Verlauf unserer Münzwürfe, s. @fig-lln.^[`library(ggpubr); ggline(muenz_tab, x = "id", y = "x_cumsum")`]
+
+
+```{r}
+#| label: fig-lln
+#| echo: false
+#| fig-cap: "Das Gesetz der großen Zahl am Beispiel der Stabilisierung des Trefferanteils beim wiederholten Münzwurf"
+#| fig-asp: 0.3
+
+muenz_tab %>% 
+  slice_head(n = 1e3) %>% 
+  ggplot() +
+  aes(x = id, y = x_cumsum) +
+  geom_line() +
+  theme_minimal()
+```
+
+
+
+Grob gesagt scheint sich ein Münzwurf nach, naja, vielleicht 500 Würfen "einigermaßen" zu stabilisieren.^[Was "einigermaßen" bedeuten soll, ist kein statistischer Begriff, sondern einer, der im echten Leben von den Menschen beantwortet werden muss, die eine Entscheidung zu treffen haben.]
+
+
+
+::: callout-important
+#### Das Gesetz der großen Zahl
+
+Zieht man (zufällig) immer mehr Werte aus einer Verteilung (mit endlichem Mittelwert), nähert sich der Mittelwert der Stichprobe immer mehr mit dem Mittelwert (oft als *Erwartungswert* bezeichnet) der Verteilung an.
+:::
+
+
+
+```{r lln, out.width = "100%", fig.align="center", fig.asp = .5}
+#| eval: false
+#| echo: false
+source(paste0(here::here(),"/R-Code/img15.R"))
+```
+
+
+
+<!-- 3b1b hat ein [nettes Video zu diesem Thema](https://youtu.be/8idr1WZ1A7Q), das sich als Vertiefung eignet. -->
+

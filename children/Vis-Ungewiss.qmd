@@ -1,0 +1,184 @@
+### Visualisierung von Ungewissheit
+
+
+::: {#def-punktschaetzer}
+
+### Punktschätzer
+
+Gibt man nur einen Punktwert an, wie 42%, als Ergebnis einer Inferenz, spricht man von einem *Punktschätzer*.
+
+
+Punktschätzer beinhalten *keine Angabe* der Schätz(un)genauigkeit, s. Abb. @fig-ungewiss2, links. Rot markiert: Die Punktschätzung von `mpg` für `hp=200`.
+
+:::
+
+
+<!-- ![Eine Punktschätzung der Regressionsgeraden und die zugehörige Ungewissheit Ungewissheit](img/fig-punktschaetzer.png){#fig-punktschaetzer2} -->
+
+
+
+
+```{r fig-punktschaetzer-ALT-DONT-RUN}
+#| echo: false
+#| message: false
+#| eval: true
+
+lm1_glm <- lm(mpg ~ hp, data = mtcars)
+
+mtcars <-
+  mtcars %>%
+  mutate(pred = 30 - hp*0.07)
+
+
+pred_interval <-
+  tibble(
+    hp = seq(min(mtcars$hp), max(mtcars$hp), by = 1),
+    mpg = predict(lm1_glm, newdata = data.frame(hp)),
+    lwr = mpg - 2*3,
+    upr = mpg + 2*3
+  )
+
+plot1 <-
+  ggplot(mtcars,
+       aes(x = hp, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  annotate("point", x = 200,
+           y = predict(lm1_glm, newdata = data.frame(hp = 200)),
+           color = "red",
+           alpha = .5,
+           size = 5)
+
+
+lm1_glm <- lm(mpg ~ hp, data = mtcars)
+
+mtcars <-
+  mtcars %>%
+  mutate(pred = 30 - hp*0.07)
+
+
+pred_interval <-
+  tibble(
+    hp = seq(min(mtcars$hp), max(mtcars$hp), by = 1),
+    mpg = predict(lm1_glm, newdata = data.frame(hp)),
+    lwr = mpg - 2*3,
+    upr = mpg + 2*3
+  )
+
+
+plot2 <-
+  ggplot(mtcars,
+       aes(x = hp, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  annotate("point", x = 200,
+           y = predict(lm1_glm, newdata = data.frame(hp = 200)),
+           color = "red",
+           alpha = .5,
+           size = 5)
+```
+
+
+```{r}
+#| echo: false
+lm1 <- lm(mpg ~ hp, data = mtcars)
+
+p_ungewiss1 <-
+  mtcars %>%
+  ggplot(aes(x = hp, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  scale_y_continuous(limits = c(0,40)) +
+  annotate("point", x = 200, y = predict(lm1, newdata = data.frame(hp=200)),
+           color = "red", size = 5, alpha = .5)
+
+```
+
+
+
+
+
+
+
+In Abb. @fig-ungewiss2, links, ist die Ungewissheit in den *Regressionskoeffizienten* visualisiert:
+Wie sicher sind wir uns bzgl. der Lage der Regressionskoeffizienten? Vgl. @def-punktschaetzer.
+
+
+
+Auch wenn wir uns *sicher* wären im Hinblick auf die Regressionsgewichte in Abb. @fig-ungewiss2, links,
+bliebe Ungewissheit bei der Vorhersage des Bereichs plausibler Werte für individuelle Vorhersagen, s. @fig-ungewiss2, rechts.
+Unsere Schätzungen wären auch dann nicht sicher, nicht fehlerfrei, wenn wir den genauen Verlauf der Regressiongerade sicher wüssten.
+Das liegt daran, da das Modell nicht alle Einflüsse auf Y berücksichtigt, sondern nur einen einzigen, hier als X bezeichnet.
+Das Modell hat also keine perfekte Information, es ist ungewiss über alle möglichen Einflussfaktoren auf Y.
+Wüsste unser Modell alle Einflussfaktoren genau, so wäre unser Vorhersageintervall sehr schmal (bzw. hätte null Breite).
+
+In Abb. @fig-ungewiss2, rechts, ist nicht nur die Ungewissheit durch die Regressionsgewichte,
+sondern auch die Ungewissheit zur Vorhersage der Y-Werte individueller Beobachtungen dargestellt.
+In diesem Fall spricht man von einem "Vorhersageintervall",
+da man nicht nur von "typischen Fällen" auf der Regressiongeraden spricht,
+sondern für echte Fälle Vorhersagen (Schätzungen) tätigt, wo auch die Ungewissheit der Modellgüte relevant ist.
+
+
+<!-- ![Das Vorhersageintevall zeigt eine Punktschätzung und ihre Ungewissheit](img/fig-predintervall.png){fig-ungewiss2 width="50%"} -->
+
+
+```{r p-zweifach}
+#| echo: false
+#| fig-cap: Die zwei Arten der Ungewissheit visualisiert
+#| label: fig-ungewiss2
+#| message: false
+#| layout-ncol: 2
+#| eval: true
+#| fig-subcap:
+#|   - Eine Punktschätzung der Regressionsgeraden und die zugehörige Ungewissheit der Koeffizienten
+#|   - "Das Vorhersageintevall zur Regressionsgeraden zeigt die Ungewissheit für die jeweiligen Beobachtungen"
+
+
+lm1_pred <- predict(lm1, interval = "prediction")
+
+mtcars <-
+  mtcars %>%
+  mutate(upr = predict(lm1, interval = "prediction")[, 3],
+         lwr = predict(lm1, interval = "prediction")[, 2])
+
+p_ungewiss2 <- ggplot(mtcars) +
+  aes(x = hp, y = mpg) +
+  geom_point()+
+  # geom_line(aes(x = hp, y = upr), linetype = "dashed") +
+  geom_ribbon(aes(ymin = lwr, ymax = upr, x = hp), fill = "#56B4E9FF", alpha = .3) +
+  geom_smooth(method = "lm", se = FALSE) +
+  annotate("point", x = 200,
+           y = predict(lm1, newdata = data.frame(hp = 200)),
+           color = "#E69F00FF",
+           alpha = .5,
+           size = 5) +
+  annotate("errorbar", x = 200, ymin = 8.5, ymax = 24.5, color = "#009E73FF", size = 2) +
+  scale_y_continuous(limits = c(0,40))
+
+
+p_ungewiss1
+p_ungewiss2
+```
+
+@fig-ungewiss2 zeigt auch, dass für eine Beobachtung mit `hp=200` der *Punktschätzer*
+der geschätzte Wert von `mpg` bei ca `16.5` liegt.
+Das ist sozusagen unser *Best Guess*.
+Weiterhin ist (in grün) das *Vorhersageintervall* für `hp=200` angezeigt.
+Für Beobachtungen mit `hp=200` liegt der Bereich plausibler `mpg`-Werte
+in dem (grün) markierten Bereich (ca. 8 bis 25).
+
+:::{#def-vorhersageintervall}
+### Vorhersageintervall
+Ein Vorhersageintervall zeigt den Bereich plausibler Werte (laut unserer Analyse)
+für eine Beobachtung mit bestimmten Prädiktor-Werten.$\square$
+:::
+
+
+
+Wie man sieht, wird die Ungewissheit *größer*, wenn man beide Arten der Ungewissheit berücksichtigt.
+Das Vorhersage-Intervall berücksichtigt Ungewissheit in erstens der Regressionsgerade, $\beta_0, \beta_1$, und in der Präzision der Vorhersagen,  $\sigma$, bei der Vorhersage von $\hat{y_i}$.
+
+
+:::{#exr-zweifache-ungewissheit}
+🏋 Geben Sie ein vergleichbares Beispiel an!
+:::

@@ -1,0 +1,690 @@
+## Normalverteilung
+
+
+### Grundlagen
+
+
+::: {#def-nv}
+### Normalverteilung
+Normalverteilungen haben eine charakteristische Glockenform;
+sie sind symmetrisch^[d.h. die Schiefe (`skewness`) ist 0].
+Normalverteilungen können sich unterscheiden in ihrem  Mittelwert $\mu$ und ihrer Streuung, $\sigma$.
+Diese beiden Größen ("Parameter") determinieren den Graphen einer bestimmten Normalverteilungsfunktion, s. @fig-norms.
+Sind diese beiden Parameter bekannt, so ist die Dichte jedes beliebigen Datenpunkts (aus dieser Normalverteilung) bestimmt.$\square$
+:::
+
+Eine normalverteilte Zufallsvariable $X$ mit einem bestimmten Mittelwert und einer bestimmten Streuung schreibt man kurz so:
+
+$$X \sim \mathcal{N}(\mu, \sigma)$$
+
+::: {#def-parameter}
+### Parameter
+
+Ein Parameter (einer Verteilung) legt die "Varianten" einer Verteilung fest. Durch die Wahl der Parameterwerte nimmt eine Verteilung eine genaue Form an.$\square$
+
+:::
+
+![Beispiele von Normalverteilungen mit verschiedenen Mittelwerten und Streuungen, Quelle: Wikipedia](img/normals.png){#fig-norms width=50% fig-align="center"}
+
+
+Beispiel: Wie groß sind Studentis ([Quelle des Datensatzes](https://rdrr.io/cran/openintro/man/speed_gender_height.html))? 
+
+Das Quantil von z.B. 25% zeigt die Körpergröße der 25% kleinsten Studentis an, analog für 50%, 75%, vgl. @tbl-quantiles.
+
+```{r QM2-Thema3-Teil1-5, echo = FALSE}
+#| tbl-cap: Quantile der Körpergrößen von Studentis
+#| label: tbl-quantiles
+data(speed_gender_height, package = "openintro")
+
+height_summary <- 
+  speed_gender_height %>% 
+  drop_na(height) %>% 
+  mutate(height = height * 2.54) %>% 
+  summarise(q25 = quantile(height, prob = .25),
+            q50 = quantile(height, prob = .5),
+            q75 = quantile(height, prob = .75))
+
+height_summary %>% 
+  gt()
+```
+
+@fig-quantiles zeigt eine Visualisierung der Quantile.
+
+```{r QM2-Thema3-Teil1-6}
+#| echo: false
+#| results: hold
+#| fig-width: 12
+#| fig-asp: 0.618
+#| fig-cap: "Quantile verschieden visualisiert"
+#| label: fig-quantiles
+
+speed_gender_height <-
+  speed_gender_height %>% 
+  mutate(height_cm = height * 2.54)
+
+p1 <- 
+  speed_gender_height %>% 
+  ggplot() +
+  aes(x = 1, y = height_cm) +
+  geom_boxplot() +
+  labs(x = "",
+       y = "Größe in cm",
+       title = "Die Box zeigt das 25%-, 50%- und 75%-Quantil")
+
+height_summary_long <- 
+  height_summary %>% 
+  pivot_longer(everything(),
+               names_to = "q",
+               values_to = "height_cm") 
+
+p2 <- 
+  speed_gender_height %>% 
+  ggplot() +
+  aes(x = height_cm) +
+  geom_histogram() +
+  geom_vline(data = height_summary_long,
+             aes(xintercept = height_cm)) +
+  geom_text(data = height_summary_long,
+             aes(x = height_cm+1,
+                 y = 0,
+                 label = paste0(q, ": ",height_cm)),
+             angle = 90,
+            hjust = 0,
+            color = "white"
+             ) +
+  labs(title = "Die vertikalen Striche zeigen die Quantile",
+       y = "Häufigkeit")  +
+  theme_minimal()
+ 
+plots(p1, p2)
+```
+
+
+::: callout-note
+Das 25%-Quantil nennt man *1. Quartil*, das 50%-Quantil auch *2. Quartil*, das 75%-Quantil das *3. Quartil*, und das 100%-Quantil (Maximalwert) das *4. Quartil*.
+:::
+
+
+
+
+
+
+
+Verwechseln Sie die Normalverteilung nicht mit der Paranormalverteilung, s. @fig-paranormal.
+
+![Die Paranormalverteilung](img/ch33910f1.jpg){#fig-paranormal width=30%}
+
+
+### IQ-Verteilung
+
+Die Verteilung der Zufallsvariablen IQ ist normalverteilt mit einem Mittelwert von 100 und einer Streuung von 15, s. @fig-norm-100-15:
+
+$IQ \sim \mathcal{N}(100,15)$
+
+:::{#exr-iq}
+### Wie schlau muss man (nicht) sein?
+- Wie schlau muss man sein, um zu den unteren 75%, 50%, 25%, 5%, 1% zu gehören?
+- Anders gesagt: Welcher IQ-Wert wird von 75%, 50%, ... der Leute nicht überschritten?$\square$
+:::   
+
+
+![Visualisierung der theoretischen IQ-Verteilung](img/norm-100-15.png){#fig-norm-100-15 width="50%"}
+
+[Quelle:](https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models): John Kruschke.
+
+
+:::: {.columns}
+
+::: {.column width="70%"}
+
+Ziehen wir zufällig $1e4$ (10000) Stichproben aus $\mathcal{N}(100,15)$ und berechnen die Quantile mit dem R-Befehl `quantile()`, s. @tbl-quantiles2.
+
+```{r echo = TRUE}
+d <-
+  tibble(
+  iq = rnorm(n = 1e4, 
+             mean = 100, 
+             sd = 15))
+
+probs <- c(0.975, 0.75,.5,.25,.05,.01)
+
+d_summary <- d %>% 
+  summarise(p = probs,
+            q = quantile(iq, probs))
+```
+
+:::
+
+::: {.column width="25%"}
+
+
+```{r}
+#| echo: false
+#| tbl-cap: Quantile der IQ-Verteilung
+#| label: tbl-quantiles2
+d_summary %>% 
+  gt() %>% 
+  fmt_number(p, decimals = 2) %>% 
+  fmt_number(q, decimals = 0)
+```
+
+:::
+
+::::
+
+
+Das *Quantil* $q$ zur kumulierten Wahrscheinlichkeit $p=75$ ist 110, etc. 
+
+
+
+
+
+
+Umgekehrt können wir uns auch fragen: Gegeben einer Realisation der Zufallsvariablen (z.B. IQ), was ist die zugehörige Wahrscheinlichkeit (Wert der Verteilungsfunktion?)
+
+
+:::{#exr-schlau2}
+### Wie schlau muss man (nicht) sein, Teil 2
+- Welcher Anteil der Fläche unter der Kurve $p$ gehört zu den IQ-Werten 75, 100, 115, 130?
+- Anders gesagt: Welcher Anteil der Wahrscheinlichkeitsmasse der Verteilung liegt unter IQ=75, IQ=100, etc.?$\square$
+:::
+
+
+Ziehen wir Stichproben aus $\mathcal{N}(100,15)$. 
+Was ist die Wahrscheinlichkeit für eine `iq < 100`?
+
+```{r echo = TRUE, eval = FALSE}
+d <-
+  tibble(
+    iq = rnorm(1e4, 
+               mean = 100, 
+               sd = 15)) %>% 
+  mutate(iq = round(iq))
+
+qs <- c(75,100,115,130)
+
+d %>% 
+  count(p_100 = iq < 100) %>% 
+  mutate(prop = n / sum(n)) 
+```
+
+
+@tbl-iq100 zeigt uns die Antwort. 
+
+:::{.callout-note}
+Wir schätzen die wahre, "theoretische" Wahrscheinlichkeit durch einfaches Ausprobieren: 
+Wir führen das Zufallsexperiment einfach häufig durch.
+Dann zählen wir den Anteil der Treffer. 
+Nennt man auch "Simulieren"; klingt cooler als "Ausprobieren".🤓$\square$
+:::
+
+
+```{r echo = FALSE, eval = TRUE}
+#| tbl-cap: Wahrscheinlichkeit für iq < 100
+#| label: tbl-iq100
+d <-
+  tibble(
+    iq = rnorm(1e4, 
+               mean = 100, 
+               sd = 15)) %>% 
+  mutate(iq = round(iq))
+
+qs <- c(75,100,115,130)
+
+d %>% 
+  count(p_100 = iq < 100) %>% 
+  mutate(prop = n / sum(n)) %>% 
+  gt() %>% 
+  fmt_number(columns = 3)
+```
+
+Anstelle von `iq < 100` kann man `iq < 115` einsetzen, etc.
+ 
+```{r eval= FALSE}
+#| echo: false
+d %>% 
+  mutate(prop = percent_rank(iq)) %>% 
+  filter(iq %in% qs) %>% 
+  distinct(iq, .keep_all = TRUE)
+```
+
+Die *Verteilungsfunktion* (der Anteil der Wahrscheinlichkeitsmasse), `p`, für IQ-Werte nicht größer als 100,  $IQ\le100$, ist 50%, etc. 
+
+
+
+### Quantile der Normalverteilung 
+
+
+
+
+💡 Zur Erinnerung: *Quantile* teilen eine Verteilung so ein, dass ein Anteil $p$ kleiner oder gleich und der andere Teil $1-p$ größer  dem Quantil $q$ ist.
+
+
+:::{#exm-quantil} 
+"50%-Quantil = 100" meint, dass 50% der Elemente der Verteilung einen Wert kleiner oder gleich als 100 haben.
+Man schreibt auch: `q(.5) = 100`.
+:::
+
+
+💡  Zur Erinnerung: Die *Verteilungsfunktion F* (für einen Wert $x$ der Zufallsvariable $X$) gibt die Wahrscheinlichkeit an, dass $X$ einen Wert höchstens so groß wie $x$ annimmt. Sie zeigt also die kumulierte Wahrscheinlichkeit $[-\infty, q)$.
+
+
+:::{#exm-f}
+"F(100) = 50%" meint: Die Wahrscheinlichkeit für eine Ausprägung von höchstens als 100 beträgt 50%.$\square$
+:::
+
+
+Schauen wir uns die Quantile der Normalverteilung einmal näher an.
+Wir gehen von einer Normalverteilung aus, wie sie zur Beschreibung von Intelligenz (IQ) verwendet wird, s. @fig-nv-quants.
+
+
+```{r }
+#| echo: false
+#| label: fig-nv-quants
+#| fig-cap: Quantile der IQ-Verteilung (normalverteilt mit MW=100 und SD=15)
+
+  
+
+p1 <- 
+  ggplot(NULL, aes(c(60,145))) +
+  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 100)) +
+  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
+  labs(x = "X", y = "Dichte",
+       title = "50%-Quantil: 100;\nVerteilungsfunktion von 100:50%") +
+  scale_y_continuous(breaks = NULL)
+
+p2 <-
+    ggplot(NULL, aes(c(60,145))) +
+  geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 125)) +
+  geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
+  labs(x = "X", y = "Dichte",
+       title = "95%-Quantil: 125;\nVerteilungsfunktion von 125:95%") +
+  scale_y_continuous(breaks = NULL)
+
+
+plots(p1, p2)
+```
+
+$$IQ \sim \mathcal{N}(100, 15)$$
+Mit R kann man sich die beiden Größen komfortabel berechnen lassen:
+
+```{r echo = TRUE, eval = FALSE}
+qnorm(.50, mean = 100, sd = 15)  # 50%-Quantil
+pnorm(100, mean = 100, sd = 15)  # Verteilungsfunktion für IQ=100
+```
+
+
+### Standardnormalverteilung {#sec-standardnormalverteilung}
+
+Bei einer *Standard*normalverteilung gilt, dass der Mittelwert 0 ist und die Standardabweichung 1, s. @thm-standardnormal.
+
+
+::: {#thm-standardnormal}
+
+### Standardnormalverteilung
+
+
+$$X \sim \mathcal{N}(0, 1)\quad \square$$
+:::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r Normalverteilung-3}
+#| echo: false
+#| fig-cap: "Normalverteilung mit Mittelwert 0 und SD 1, auch *Standard-Normalverteilung* genannt"
+#| label: fig-snv
+ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1)) +
+  labs(y = "Dichte", x = "Merkmal, X") +
+  theme_modern()
+```
+
+:::
+
+::: {.column width="50%"}
+Bei $X=0$ einer *Standard-Normalverteilung* (s. @fig-snv) gilt:
+
+- hat eine Einheit von $X$ die Wahrscheinlichkeitsmasse von 40% (Wahrscheinlichkeitsdichte)
+- sind 50% der Wahrscheinlichkeitsmasse (Fläche unter der Kurve) kleiner als dieser Wert (Verteilungsfunktion).
+
+In Summe liegen 100% der Wahrscheinlichkeitsmasse unter der Kurve.
+:::
+
+::::
+
+
+
+
+Man kann jeder Normalverteilung in eine Standardnormalverteilung überführen mit der *z-Transformation*.
+
+Ein *z-Wert* ist das Ergebnis einer *z-Transformation*, 
+die definiert ist als der Abstand in SD-Einheiten,   
+den ein Wert vom Mittelwert entfernt ist, s. @thm-ztrans.
+
+
+::: {#thm-ztrans}
+
+### z-Transformation
+
+
+$$z = \frac{x - \mu}{\sigma}\quad \square$$
+:::
+
+@tbl-F-norm und @fig-quantnormanim zeigen wichtige Werte der Verteilungsfunktion für die Standardnormalverteilung.
+
+
+
+::::: {.columns}
+
+
+
+:::: {.column width="25%"}
+
+
+
+```{r}
+#| tbl-cap: "Ausgewählte Werte der Verteilungsfunktion der Standardnormalverteilung"
+#| echo: false
+#| label: tbl-F-norm
+d_F_norm <-
+  tibble(z = -3:3,
+             F = pnorm(z) |> round(3))
+d_F_norm |> 
+  gt()
+```
+::::
+
+
+
+:::: {.column width="70%"}
+
+
+```{r}
+#| echo: false
+#| label: fig-quantnormanim 
+#| fig-cap: Die Verteilungsfunktion für die z-Werte von -3 bis +3
+
+library(mosaic)
+
+p_z_F <- xpnorm(q = -3:3, return = "plot")
+  
+p_z_F +
+  labs(y = "Wahrscheinlichkeit", x = "z") +  # Add labels
+  theme(theme_minimal()) +
+  geom_vline(data = d_F_norm, aes(xintercept = z), linetype = "dashed") + # Vertical lines
+  annotate(geom = "label", 
+           x = d_F_norm$z, 
+           label = round(d_F_norm$F, 2), 
+           #fill = "Wahrscheinlichkeit",
+           y = d_F_norm$F * 0.4 ) + # Correct labels
+  scale_fill_okabeito(name = "Wahrscheinlichkeit") +
+  theme(legend.position = "none")
+```
+
+
+
+<!-- ::: {.content-visible when-format="html"} -->
+<!-- ![Die Quantile einer Standardnormalverteilung für 10%, 20%, ... 100% (die Dezile) visualisiert](img/normal_distribution_animation.gif){#fig-quantnormanim width=50%} -->
+
+<!-- ::: -->
+
+::::
+
+
+:::::
+
+
+### Vertiefung
+
+
+
+#### Normal auf dem Fußballfeld
+
+Sie und 100 Ihrer besten Freunde stehen auf der Mittellinie eines Fußballfelds. Auf Kommando werfen alle jeweils eine Münze; bei Kopf geht man einen Schritt nach links, bei Zahl nach rechts. Das wird 16 Mal wiederholt. Wie wird die Verteilung der Positionen wohl aussehen?
+
+
+```{r Normalverteilung-6, fig.asp = .45, fig.width=7}
+#| echo: false
+source(paste0(here::here(),"/R-Code/img13.R"))
+```
+
+[@mcelreath2020]
+
+
+
+
+
+
+
+#### Normal durch Addieren
+
+Die Summe vieler (gleich starker) Zufallswerte (aus der gleichen Verteilung) erzeugt eine Normalverteilung; egal aus welcher Verteilung die Zufallswerte kommen (Zentraler Grenzwertsatz), vgl. @fig-fussball.
+
+
+```{r Normalverteilung-7, out.width="100%", fig.asp = 0.5, fig.align="center", fig.width=7}
+#| echo: false
+#| fig-cap: "Entstehen einer Normalverteilung durch Addition vieler unabhgängiger Ereignisse"
+#| label: fig-fussball
+source(paste0(here::here(),"/R-Code/img14.R"))
+```
+
+
+
+
+
+
+#### Normalverteilung als konservative Wahl
+
+Dem Mathematiker [Carl Friedrich Gauss](https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F) (s. @fig-gauss) wird die Ehre zuerkannt,
+die Normalverteilung eingeführt zu haben.
+
+```{r Normalverteilung-1-bis, echo = FALSE }
+#| fig-align: "center"
+#| label: fig-gauss
+#| fig-cap: "Zehn-Mark-Geldschein mit Gauss und Normalverteilung"
+knitr::include_graphics("img/10_Deutsche_Mark_-_detail.png")
+```
+
+Quelle: Uni Greifswald, Public domain, via Wikimedia Commons
+
+
+::: callout-note
+*Ontologische Begründung*
+
+- Wirken viele, gleichstarke Einflüsse additiv zusammen, entsteht eine Normalverteilung  [@mcelreath2020], Kap. 4.1.4.
+
+*Epistemologische Begründung*
+
+- Wenn wir nur wissen, dass eine Variable über einen endlichen Mittelwert und eine endliche Varianz verfügt und wir keine weiteren Annahmen treffen bzw. über kein weiteres Vorwissen verfügen, dann ist die Normalverteilung die plausibelste Verteilung (maximale Entropie) [@mcelreath2020], Kap. 7 und 10.
+:::
+
+
+
+
+
+#### Normalverteilung vs. randlastige Verteilungen
+
+
+
+Bei randlastigen Verteilungen ("fat tails") kommen Extremereignisse viel häufiger vor als bei Normalverteilungen. Deshalb ist es wichtig sein, zu wissen, ob eine Normalverteilung oder eine randlastige Verteilung vorliegt. Viele statistische Methoden sind nicht zuverlässig bei (stark) randlastigen Methoden. @fig-fat grenzt eine Normalverteilung von einer "Fat-Tail-Verteilung" ab.
+
+
+```{r Normalverteilung-9, fig.asp=0.5}
+#| echo: false
+#| fig-cap: Normalverteilung vs. randlastige Verteilungen
+#| label: fig-fat
+ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1), color = "#E69F00FF") +
+  labs(y = "Dichte", x = "Merkmal, X") +
+  stat_function(fun = dt, n = 101, args = list(df = 1, ncp =0), color = "#56B4E9FF") +
+  labs(caption = "orange: Normalverteilung\n blau: randlastige Verteilung (t-Verteilung mit df=1)")
+```
+
+
+:::::{#exm-normal-rand}
+#### Beispiele für Normal- und randlastige Verteilungen
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+Normal verteilt:
+
+- Größe 
+- Münzwürfe
+- Gewicht
+- IQ
+- Blutdruck
+- Ausschuss einer Maschine
+:::
+
+::: {.column width="50%"}
+Randlastig verteilt:
+
+- Vermögen
+- Verkaufte Bücher (Anzahl)
+- Ruhm (z.B. Anzahl Follower auf Instagram)
+- Aktienkurse (Kurswert)
+- Erdbeben (Stärke)
+- Anzahl von Todesopfern in Pandemien
+- Anzahl von Todesopfern in Kriege
+- Erfolg auf Tinder (Anzahl erfolgreicher Matches)
+- Meteroritengröße (Volumen)
+- Stadtgrößen (Einwohnerzahl)
+
+:::
+
+::::
+
+:::::
+
+
+
+
+
+#### Formel der Normalverteilung
+
+Vereinfacht ausgedrückt lässt die Normalverteilung $\mathcal{N}$ durch Exponenzieren einer Quadratfunktion beschreiben:
+
+$$\mathcal{N} \propto e^{-x^2}$$
+
+mit $e=2.71...$, der Eulerschen Zahl.^[Das Zeichen $y \propto x$ bedeutet "x ist proportional zu y", also $y = mx$.]
+
+
+Wie man sieht (@fig-normal1) ergibt sich eine Normalverteilung. 
+
+
+```{r norm, eval = FALSE, echo = FALSE}
+d <-
+  tibble(
+    x = seq(-3, 3, 
+            length.out = 100),
+    y = exp(-x^2)
+  )
+
+ggline(d, x = "x",y = "y")  # aus {ggpubr}
+```
+
+
+
+```{r Normalverteilung-10, echo = FALSE}
+#| fig-asp: 0.5
+#| label: fig-normal1
+#| fig-cap: "Wir basteln uns eine Normalverteilung"
+d <-
+  tibble(
+    x = seq(-3, 3, 
+            length.out = 100),
+    y = exp(-x^2)
+  )
+
+d %>% 
+  ggplot() +
+  aes(x = x, y = y) +
+  geom_line()
+```
+
+
+Eine Normalverteilung mit $\mu=0$ und $\sigma=1$ nennt man auch *Standardnormalverteilung* und 
+man schreibt:
+
+
+$$IQ \sim \mathcal{N}(0,1)$$
+
+Die Normalverteilung wird auch *[Gauss](https://de.wikipedia.org/wiki/Carl_Friedrich_Gau%C3%9F)-Verteilung* oder *Glockenkurve* genannt.
+
+
+
+
+
+#### Simulation einer Normalverteilung
+
+
+R hat eine Funktion eingebaut zur Erzeugung von Zufallszahlen (Zufallszahlengenerator), z.B. normalverteilte.
+Man übergibt dieser Funktion den gewünschten Mittelwert und die gewünschte Streuung und die Funktion zieht dann zufällig Werte aus dieser Verteilung.
+
+Diesen Zufallszahlengenerator kann man mit einem Duschkopf vergleichen, s. @fig-shower.
+An diesem Duschkopf kann man einen Schwenker einstellen, der den Duschkopf
+ausrichtet, also steuert, ob die Wassertropfen weit in die eine oder die andere
+Richtugn fallen.
+Zweitens hat unser Duschkopf noch einen Streuregler,
+der den Wasserstrahl entweder eng bündelt^[Massagedusche, behauptet der Hersteller] oder weit auseinanderfächert. Im ersten Fall fällt der Wasserstrahl eng und schmal aus. Im zweiten Fall fällt der Wasserstrahl breit aus.
+
+![Zufallszahlengenerator als Duschkopf](img/shower-data.png){#fig-shower width="50%"}
+
+[Quelle](https://jkkweb.sitehost.iu.edu/KruschkeFreqAndBayesAppTutorial.html#data_are_described_by_mathematical_models): John Kruschke.
+
+
+
+Eine Zufallszahl (*r*andom number), die *norm*alverteilt ist, mit $\mu=0$ und $\sigma=1$ kann man in R so erzeugen:
+
+
+
+```{r}
+rnorm(n = 1, mean = 0, sd = 1)
+```
+
+
+
+Ein Fallbeispiel: Der Inhalt einer Tüte mit Zucker, $X$, sei normalverteilt mit $\mu = 10002$ g und $\sigma=1.5$ g. Aus vertragsrechtlichen Gründen darf das Füllgewicht von 1000g nicht unterschritten werden, sonst drohen Konventionalstrafen.
+
+Wie groß ist die Wahrscheinlichkeit, dass 1000g unterschritten werden?
+
+
+Simulieren wir uns 1e5 (100000) Zuckertüten!
+
+
+```{r}
+n <- 1e5
+d <- 
+  tibble(
+    id = 1:n,
+    x = rnorm(n = n, mean = 1002, sd = 1.5)
+  )
+
+head(d)
+```
+
+Zählen wir, viele der Zuckertüten ein Gewicht von weniger als 1000g aufweisen:
+
+
+```{r}
+d %>% 
+  count(x < 1000)
+```
+
+Ein ziemlich^["Ziemlich" ist natürlich subjektiv; je nach Situation kann es zu viel oder nicht zu viel sein.] kleiner Anteil. Rechnen wir uns noch die Anteile (*prop*ortion) aus:
+
+
+```{r}
+d %>% 
+  count(x < 1000) %>% 
+  mutate(prop = n/1e4)
+```
+
+
+
+
+
+

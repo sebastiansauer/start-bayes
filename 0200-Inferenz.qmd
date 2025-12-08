@@ -6,7 +6,13 @@
 library(tidyverse)
 library(easystats)
 library(nycflights13)
+library(ggrepel)
+library(gt)
+library(dagitty)
+library(knitr)
+
 ```
+
 
 
 ```{r r-setup}
@@ -41,7 +47,7 @@ Nach Absolvieren des jeweiligen Kapitels sollen folgende Lernziele erreicht sein
 Sie können ...
 
 
-
+- die drei Zielarten der Statistik nennen und beschreiben können
 - die Definition von Inferenzstatistik sowie Beispiele für inferenzstatistische Fragestellungen nennen
 - zentrale Begriffe der Inferenzstatistik nennen und in Grundzügen erklären
 - den Nutzen von Inferenzstatistik nennen
@@ -56,14 +62,16 @@ Sie können ...
 ### Begleitliteratur
 
 Bei @gelman2021, Kap. 1 findet sich eine Darstellung ähnlich zu der in diesem Kapitel.
+Die Begleitliteratur ist nicht prüfungsrelevant; sie dient zur Vertiefung und als
+Grundlage einer ausführlicheren Erläuterung des Stoffes.
 
 
 
 ### Vorbereitung im Eigenstudium
 
 - [Statistik 1, Kap. "Rahmen"](https://statistik1.netlify.app/010-rahmen)
-- [Statistik 1](https://statistik1.netlify.app/), dort alle Inhalte zum Thema "Modellieren" und "Regression"
-
+- [Statistik 1](https://statistik1.netlify.app/), dort alle Inhalte aller Kapitel zum Thema "Modellieren" bzw. "Regression"
+- [Statistik 1, Abschnitt zur Normalverteilung]()
 
 
 
@@ -83,9 +91,55 @@ Ja, diese Frage haben Sie sich auch schon mal gestellt?
 Abb. @fig-goals gibt einen Überblick über die Ziele der Statistik.^[Ziele existieren nicht "in echt" in der Welt. Wir denken sie uns aus.
 Ziele haben also keine ontologische Wirklichkeit,
 sie sind epistemologische Dinge (existieren nur in unserem Kopf).
-Das heißt, dass man sich nach Beliebem Ziele ausdenken kann.
-Allerdings hilft es, wenn man andere Menschen vom Nutzen der eigenen Ideen überzeugen kann...]
-Nach dieser Einteilung lassen sich drei Arten von Zielen unterscheiden: Beschreiben, Vorhersagen und Erklären.
+
+Das heißt, dass man sich nach Belieben Ziele ausdenken kann.
+Allerdings hilft es, wenn man andere Menschen vom Nutzen der eigenen Ideen überzeugen kann.]
+Nach dieser Einteilung lassen sich drei Arten von Zielen unterscheiden: *Beschreiben*, *Vorhersagen* und *Erklären* [@shmueli2010].
+
+
+## Die drei Zielarten der Statistik
+
+### Überblick
+
+
+#### 📄  *Beschreiben* (deskriptiv)
+
+- Wie stark ist der (lineare) Zusammenhang $r$ von Größe und Gewicht (bei Erwachsenen) in meiner Stichprobe?
+- Wie stark ist der (lineare) Zusammenhang $b$ von Lernzeit und Note (im Fach Statistik) in meinem Datensatz?
+- Haben unsere Kunden bisher Webshop A oder B bevorzugt, laut unseren Daten?
+
+
+
+#### 🔮 *Vorhersagen* (prädiktiv, prognostisch)
+
+- Wie schwer ist wohl Herr X? Er ist ein deutscher erwachsener Mann der Größe 1,80m; mehr wissen wir nicht.
+- Welche Note kann man erwarten, wenn man nichts für die Klausur lernt?
+- Wie viel wird ein Kunde ausgeben, wenn er sich in der Variante *A* des Webshops aufhält?
+
+
+
+#### 🔗 Erklären 
+
+**Kausalinferenz:**
+
+- Ist Größe eine Ursache von Gewicht (bei deutschen Männern)?
+- Wenn ich 100 Stunden lerne, welche Note schreibe ich dann?
+
+**Populationsinferenz:**
+
+- Wie stark ist der (lineare) Zusammenhang $b$ von Lernzeit und Note (im Fach Statistik) in der Grundgesamtheit?
+- Wie stark ist der (lineare) Zusammenhang $r$ von Größe und Gewicht (bei Erwachsenen) in der Grundgesamtheit?
+- Bevorzugen unsere Kunden allgemein Webshop A oder B laut unseren Daten?
+
+
+
+:::callout-note
+Das Erkenntnisziel wissenschaftlicher Studien ist zumeist erklärend.
+Anhand der verwendeten statistischen Methode (z.B. Regressionsanalyse)
+kann man *nicht* feststellen, zu welchem Erkenntnisziel die Studie gehört.
+Um das Erkenntnisziel festzustellen, liest man sich die Forschungsfrage oder das Ziel der Studie durch.
+:::
+
 
 
 :::{#exm-ziele-stat}
@@ -96,43 +150,172 @@ Nach dieser Einteilung lassen sich drei Arten von Zielen unterscheiden: Beschrei
 :::
 
 Für die Wissenschaft ist *Erklären* das wichtigste Ziel. 
-Bei wenig beackerten Wissenschaftsfeldern ist das *Beschreiben* ein sinnvoller erster Schritt,
-der allerdings nicht Stolperfallen ist, wie in @sec-kausal erläutert.
-*Vorhersagen* ist mehr für die Praxis als für die Wissenschaft relevant.^[Vielleicht hat Ihr Dozent Sie schon mal mit einem Prognosewettbewerb gequält? Ja? Genau! In einem Prognosewettbewerb ist das Ziel eine - natürlich möglichst exakte - Vorhersage zu treffen.]
+Bei wenig beackerten Wissenschaftsfeldern ist das *Beschreiben* ein sinnvoller erster Schritt.
+*Vorhersagen* ist mehr für die Praxis als für die Wissenschaft relevant.
 
 ```{mermaid}
 %%| label: fig-goals
-%%| fig-cap: Eine Einteilung der Ziele von statistischen Analysen
+%%| fig-cap: Eine Einteilung zentraler Ziele von statistischen Analysen
 flowchart TD 
-  A{Goals} --> B(describe)
-  A --> C(predict)
-  A --> D(explain)
-  B --> E(distribution)
-  B --> F(assocation)
-  B --> G(extrapolation)
-  C --> H(point estimate)
-  C --> I(interval)
-  D --> J(causal inference)
-  D --> K(population)
-  D --> L(latent construct)
-
+  A{Ziele} --> B(Beschreiben)
+  A --> C(Vorhersagen)
+  A --> D(Erklären)
+  B --> E(Verteilung)
+  B --> F(Zusammenhang)
+  C --> H(Punktschätzung)
+  C --> I(Bereichsschätzung)
+  D --> J(Kausalinferenz)
+  D --> K(Populationsinferenz)
 ```
 
 
+### Zielart *Beschreiben*
+
+Statistische Analysen mit dem Ziel zu beschreiben fassen die Daten zusammen (zu möglichst aussagekräftigen Kennzahlen).
+Beschreibende Statistik nennt man auch *deskriptive Statistik*; Mittelwert, Korrelation und Regressionskoeffizienten sind typische Kennzahlen ("Statistiken");  s. @fig-beschreiben.
+
+
+::: {#fig-beschreiben layout-ncol=2}
+
+![Die deskriptive Statistik fasst eine Spalte zu einer einzelnen Zahl zusammen.](img/desk-stats-zsmnfassen-crop.png){#fig-desk width=50%}
+
+
+![Zwei Spalten werden zu einer Zahl zusammengefasst](img/desk-stat-zsmnfassen-cor-crop.png){#fig-desk2 width=50%}
+
+Beschreibende Statistik fasst eine oder mehr Variablen eines Datensatzes zu einer einzelnen Kennzahl zusammen.
+:::
+
+Der beschreibenden Statistik geht es *nicht* darum, 
+Erkenntnisse zu ziehen, die über die Daten hinaus gehen.
+So ist man in der beschreibenden Statistik nicht daran interessiert,
+Aussagen über die zugrundeliegende Population anzustellen.
+
+::: {#exm-desk}
+In einem Hörsaal sitzen 100 Studis. Alle schreiben Ihre Körpergröße auf einen Zettel. Die Dozentin sammelt die Zettel ein und rechnet dann den Mittelwert der Körpergröße der anwesenden Studentis aus. Voilà: Deskriptive Statistik!$\square$
+:::
+
+
+:::{#def-desk}
+### Deskriptivstatistik
+*Deskriptivstastistik* fasst Merkmale aus einer Stichprobe zu Kennzahlen (Statistiken) zusammen.
+:::
 
 
 
 
+### Zielart *Vorhersagen*
 
+Beim Vorhersagen versucht man, auf Basis von Daten, 
+gegeben bestimmter Werte der UV den Wert einer AV vorherzusagen, s. @fig-vorhersagen.
 
-## Was ist Inferenz?
+:::{#exm-toni-lernt}
+### Ali lernt für die Klausur
+Oh nein, die Klausur im Fach Statistik steht an. 
+Ali lernt ziemlich viel. 
+Wie viel Punkte (von 100 möglichen) wird er wohl erzielen?
+Ziehen wir ein einfaches statistisches Modell zur Rate,
+um eine Vorhersage für den "Klausurerfolg" von Ali zu erhalten.
+Wir können vom Modell eine einzelne Zahl (83) als Punkt-Schätzwert bzw. Vorhersagewert erhalten oder einen Schätzbereich (80-86 Punkte). $\square$
+:::
+
+Hier ist das Regressionsmodell für Ali (`lm_toni`), s. @lst-toni.
 
 ```{r}
-#| include: false
-library(tidyverse)
-library(knitr)
-library(easystats)
+#| lst-label: lst-toni
+#| lst-cap: Regressionsmodell für Klausurerfolg als Funktion der Lernzeit (`lm_toni`)
+noten2 <- read.csv("data/noten2.csv")
+lm_toni <- lm(y ~ x, data = noten2)
 ```
+
+
+```{r lm1-b0-b1}
+#| echo: false
+
+lm1_b0 <- coef(lm_toni)[1]
+lm1_b2 <- coef(lm_toni)[2]
+
+toni_punkte <- predict(lm_toni, newdata = data.frame(x=42))
+toni_vorhersageintervall <- predict(lm_toni, newdata =  data.frame(x=42), 
+                                    interval = "confidence", level = 0.95)
+```
+
+
+
+```{r fig-noten}
+#| label: fig-vorhersagen
+#| echo: false
+#| fig-cap: "Noten und Lernzeit: Rohdaten (a) und mit Modell (b). Mittelwerte sind mit gestrichelten Linien eingezeichnet. Die Vorhersage für Ali ist farbig markiert. Ali hat 42 Stunden gelernt für die Klausur; das Modell sagt ihm 83 Punkte (von 100) bzw. einen Bereich von 80 bis 86 Punkten voraus."
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - "Regressionsgerade mit Punkt-Vorhersage für Ali"
+#|   - "Regressionsgerade mit Vorhersagebereich (und herangezoomt) für Ali"
+
+#noten2 <- read.csv(noten2, "data/noten2.csv")
+
+
+p_toni_streudiagramm <-
+ggplot(noten2) +
+  aes(x, y) +
+  geom_point() +
+  labs(x = "Lernzeit",
+       y = "Klausurpunkte") +
+  theme_minimal() +
+  theme_large_text()
+
+p_toni_punktschaetzung <- 
+  noten2 %>% 
+  ggplot(aes(x, y)) +
+  geom_point() +
+  geom_vline(xintercept = mean(noten2$x), linetype = "dashed", color = "grey") +  
+  geom_hline(yintercept = mean(noten2$y), linetype = "dashed", color = "grey") +   
+  geom_abline(slope = coef(lm_toni)[2], intercept = coef(lm_toni)[1], color = modelcol, size = 1.5) +
+  theme_minimal() +
+  annotate("label", x = mean(noten2$x), y = -Inf, 
+           label = paste0("MW: ", round(mean(noten2$x))), vjust = "bottom") +
+  annotate("label", y = mean(noten2$y), x = -Inf, 
+           label = paste0("MW: ", round(mean(noten2$y))), hjust = "left")   +
+  annotate("point", x = 42, y = toni_punkte, color = ycol,
+           alpha = .7, size = 3) +
+  scale_x_continuous(breaks = c(20, 40, 60, 80, 100)) +
+  labs(x = "Lernzeit",
+       y = "Klausurpunkte") +
+  theme_large_text() +
+  geom_label_repel(data = data.frame(x = 42, y = toni_punkte), label = "Ali",
+       force = 20,
+                      box.padding = unit(1, "lines"),
+                      point.padding = unit(1, "lines"),
+                      segment.color = "grey50",
+                      segment.size = 1,
+                      arrow = arrow(length = unit(0.01, "npc")),
+                      # Styling to create a label-like appearance
+                      bg.color = "white",       # Background color of the label
+                      color = "black",           # Text color
+                      fill = "white",          # Alternative way to set background
+                      alpha = 0.8,             # Transparency of the background
+                      segment.alpha = 1,     # Transparency of the segment
+                     
+                      size = 6)  +               # Adjust text size
+ theme(plot.margin = margin(1, 1, 1, 1, "cm"))
+
+p_toni_punktschaetzung
+
+p_toni_punktschaetzung +
+  annotate("errorbar",
+           x = 42, y = toni_punkte,
+           xmin = 42, xmax = 42,
+           ymin = toni_vorhersageintervall[1, "lwr"],
+           ymax = toni_vorhersageintervall[1, "upr"],
+           color = ycol) +
+  coord_cartesian(xlim = c(32, 52), 
+                  ylim = c(75, 87))
+```
+
+
+
+
+
+### Zielart *Erklären* -- Populationsinferenz
+
 
 
 <!-- TODO: -->
@@ -147,60 +330,53 @@ library(easystats)
 📺 [Was ist Inferenz?](https://www.youtube.com/watch?v=QNMVi6IqQ90&list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN)
 
 
+Populationsinferenz ist das Schließen von der Stichprobe auf die Grundgesamtheit
 
-Statistische Inferenz hat zum Ziel, vom Teil aufs Ganze zu schließen, bzw. vom Konkreten auf das Abstrakte.
-^[Statistische Inferenz sieht sich drei "Herausforderungen" gegenüber, laut  @gelman2021, Kap. 1.1.; 
-Diese betreffen das Schließen (oder Generalisieren) vom Einzelfall auf das Allgemeine: 
-1. Von der Stichprobe aus die Grundgesamtheit (Population), 
-2. Von der Experimental- auf die Kontrollgruppe (Kausalinferenz), 
-3. Von einem Messwert auf das zugrundeliegende Konstrukt. 
-In diesem Kurs beschäftigen wir uns mit den ersten beiden Herausforderungen.]
+Statistische Populationsinferenz -- meist kurz als *Inferenz* bezeichnet -- hat zum Ziel, 
+vom Teil aufs Ganze zu schließen, bzw. vom Konkreten auf das Abstrakte.
+In der Datenanalyse heißt das: Was sagt meine Datensatz, der auf einer Stichprobe beruht,
+über die zugrundeliegende Grundgesamtheit aus?
 
-
+:::{exr-stipro}
 Typischerweise untersuchen im Rahmen einer statistischen Analyse eine *Stichprobe*, 
-wie z.B. Ihr Freundeskreis, der leichtsinnig genug war, auf Ihre WhatsApp-Nachricht "Tolle Studie zu dem Geheimnis des Glücks!!!" zu klicken.
+wie z.B. Ihr Freundeskreis, der leichtsinnig genug war, 
+auf Ihre WhatsApp-Nachricht "Tolle Studie zu dem Geheimnis des Glücks!!!" zu klicken.
 Ihr Freundeskreis ist ein *Teil* der Menschen (z.B. aus Deutschland), also eine Stichprobe.
-Schauen wir uns den Unterschied zwischen Stichprobe und Population näher an.
+Schauen wir uns den Unterschied zwischen Stichprobe und Population näher an. $\square$
+:::
 
-## Stichprobe vs. Population
+Stichprobe vs. Population
 
 
-Nehmen wir an, wir möchten herausfinden, wie groß der Anteil der R-Fans in der Population der Studierenden ist. 
+Nehmen wir an, wir möchten herausfinden, 
+wie groß der Anteil der R-Fans in der Grundgesamthit (synonym: Population) aller Studierenden ist. 
 Den Anteil der F-Fans bezeichnen wir der Einfachheit halber hier mit `A`^[~~Meistens~~ Manchmal darf man bei der Statistik nicht nach einem tieferen Sinn suchen. Ist Statistik eine Art moderne Kunst?].
 
 Das *Grundproblem der Inferenzstatistik* ist, dass wir an Aussagen zur Grundgesamtheit interessiert sind, aber nur eine Stichprobe, also einen Ausschnitt oder eine Teilmenge der Grundgesamtheit (synonym: Population) vorliegen haben.
 
 Wir müssen also den Anteil der R-Fans *in der Population* auf Basis des Anteils *in der Stichprobe* schließen:
-Wir verallgemeinern oder generalisieren von der Stichprobe auf die Grundgesamtheit, s. Abb. @fig-pop und @fig-sample.
+Wir verallgemeinern oder generalisieren von der Stichprobe auf die Grundgesamtheit, s. Abb. @fig-pop-sample.
 
 
 
-:::: {layout-ncol="2"}
-
-:::{#population}
-![Population](img/pvoll.png){#fig-pop}
-:::
+:::: {#fig-pop-sample layout-ncol=2}
 
 
-:::{#sample}
-![Sample](img/psti.png){#fig-sample}
-:::
+![Population](img/pvoll.png)
+
+
+![Sample](img/psti.png)
 
 
 
-Population vs. Sample. Autor: Karsten Lübke. OEM
+Population vs. Stichprobe. Die Stichprobe entnimmt einen *Teil* der Daten der Population. Autor: Karsten Lübke. Lizenz: OEM.
 ::::
-
-<!-- Quelle: LAYOUT in PDF: https://github.com/quarto-dev/quarto-cli/discussions/7497 -->
-
-
-<!-- ![Population](img/pvoll.png){#fig-pop width="40%"} -->
-<!-- ![Sample](img/psti.png){#fig-sample width="40%"} -->
-<!-- Ohne Zwischenzeile funktioniert die REferenz nicht, aber es sähe besesr im PDF-Druck aus. -->
 
 
 Häufig ist das praktische Vorgehen recht simpel: 
-Ah, in unserer Stichprobe sind 42% R-Fans!^[Manch einer hätte mit mehr gerechnet; andere mit weniger...]. Man schreibt gerne: $p = 0.42$ (`p` wie `proportion`). Die Stichprobe sei repräsentativ für die Grundgesamtheit aller Studierender. 
+Ah, in unserer Stichprobe sind 42% R-Fans!^[Manch einer hätte mit mehr gerechnet; andere mit weniger...]. 
+Man schreibt: $p = 0.42$ (`p` wie `proportion`, engl. für "Anteil"). 
+Die Stichprobe sei repräsentativ für die Grundgesamtheit aller Studierender. 
 Messerscharf schließen wir:
 In der Grundgesamtheit ist der Anteil der R-Fans auch 42%, $\pi=0.42$.
 
@@ -212,43 +388,22 @@ Wir verwenden lateinische Buchstaben (p), um Kennzahlen einer Stichprobe zu bene
 
 
 
-### Deskriptiv- vs. Inferenzstatistik
-
-Statistik gibt es in zwei Geschmacksrichtungen, könnte man sagen: Deskriptiv- und Inferenzstatistik, s. Abb. @fig-inf1.
 
 
-
-
-
-Vereinfacht gesprochen fasst die Deskriptivstatistik  Daten (einer Stichprobe) zu einer einzelnen Kennzahl zusammen.
-
-::: {#exm-desk}
-In einem Hörsaal sitzen 100 Studis. Alle schreiben Ihre Körpergröße auf einen Zettel. Die Dozentin sammelt die Zettel ein und rechnet dann den Mittelwert der Körpergröße der anwesenden Studentis aus. Voilà: Deskriptive Statistik!$\square$
-:::
-
-![Deskriptiv- vs. Inferenzstatistik](img/desk_vs_inf-crop.png){#fig-inf1 width=70% fig-align="center"}
-
-
-:::{#exr-smple-pop}
-🏋 Schließen Sie die Augen und zeichnen Sie obiges Diagramm, @fig-inf1!$\square$
-:::
-
-
-
-:::{#def-desk}
-### Deskriptivstatistik
-*Deskriptivstastistik* fasst Stichprobenmerkmale zu Kennzahlen (Statistiken) zusammen.
-:::
 
 :::{#def-inf}
-### Inferenzstatistik
-*Inferenzstatistik* ist ein Verfahren zum Schließen von Statistiken (eine Kennzahl einer Stichprobe) auf *Parameter* (eine Kennzahl  einer Grundgesamtheit).
-Inferenz bedeutet Schließen bzw. Schlussfolgdern: 
+### (Populations-)Inferenzstatistik
+*Populations-Inferenzstatistik* -- meist kurz als *Inferenzstatistik* bezeichnet -- 
+ist ein Verfahren zum Schließen von Statistiken (eine Kennzahl einer Stichprobe)
+auf *Parameter* (eine Kennzahl einer Grundgesamtheit).
+Inferenz bedeutet Schließen bzw. Schlussfolgern: 
 auf Basis von vorliegenden Wissen wird neues Wissen generiert.
 Inferenzstatistik ist ein Verfahren, das mathematische Modelle (oft aus der Stochastik) verwendet, 
-um ausgehend von einer bestimmten Datenlage, 
-die eine Stichprobe einer Grundgesamtheit darstellt, allgemeine Schlüsse zu ziehen.
+um ausgehend von einer bestimmten Datenlage auf allgemeine Aussagen zu schließen.
+Wir unterscheiden zwei Hauptarten der Inferenzstatistik:
 
+1. Populationsinferenz
+2. Kausalinferenz $\square$
 :::
 
 
@@ -259,13 +414,14 @@ die eine Stichprobe einer Grundgesamtheit darstellt, allgemeine Schlüsse zu zie
 :::
 
 
-### Deskriptiv- und Inferenzstatistik gehen Hand in Hand
 
-Für jede beliebige Statistik (Kennzahl von Stichprobendaten) kann man die Methoden der Inferenzstatistik verwenden, 
+Für jede beliebige Statistik (Kennzahl von Stichprobendaten) kann man die Methoden der Populationsinferenz verwenden, 
 um den zugehörigen Kennwert (Parameter) der Population zu bestimmen, s. Tabelle @tbl-kennwerte. 
 Da man die Parameter der Population so gut wie nie sicher kennt (schließlich
-hat man meist nur Auszüge, Teile der Population, also Stichproben), muss man sich mit *Schätzwerten* begnügen.
+hat man meist nur Auszüge, Teile der Population, also Stichproben), 
+muss man sich mit *Schätzwerten* begnügen.
 Schätzwerte macht man kenntlich mit einem "Dach-Zeichen" über dem Parameter, also z.b. $\hat{\mu}$, lies: "mü-Dach".
+
 
 ```{r}
 #| echo: false
@@ -298,7 +454,6 @@ für Parameter (Population) verwendet man *griechische* Buchstaben.
 :::
 
 
-### Schätzen von Parametern einer Grundgesamtheit
 
 Meist begnügt man sich  beim Analysieren von Daten nicht mit Aussagen für eine Stichprobe, sondern will auf eine Grundgesamtheit verallgemeinern.
 
@@ -307,7 +462,7 @@ Leider sind die Parameter einer Grundgesamtheit zumeist unbekannt, daher muss ma
 Schätzwerte werden mit einem "Dach" über dem Kennwert gekennzeichnet, s. letzte Spalte in @tbl-kennwerte.
 
 
-In der angewandten Forschung interessieren häufig Fragen wie: "Welche Entscheidung ist (wahrscheinlich) besser?".
+In der angewandten Forschung und im praktischen Leben interessieren häufig Fragen wie: "Welche Entscheidung ist (wahrscheinlich) besser?".
 Da bekanntlich (fast) keine Aussagen sicher sind, spielt *Wahrscheinlichkeit* eine wichtige Rolle in den Forschungsfragen bzw. in deren Antworten.
 
 :::callout-note
@@ -330,6 +485,22 @@ Wie groß ist die Wahrscheinlichkeit$Pr(\mu_{V1} > \mu_{V2})$?
 :::
 
 
+:::{#exr-regr-koeff-zielart}
+### Peer Instruction: Regressionskoeffizienten
+
+Eine Regressionsgerade wird durch zwei Koeffizienten festgelegt: ihren Achsenabschnitt, $\beta_0$, sowie ihre Steigung, $\beta_1$. Berechnet man also eine Regressionsgerade, so verfolgt man damit welche Zielart der Statistik?
+
+A) Beschreiben
+B) Vorhersagen
+C) Erklären - Kausal
+D) Erklären - Population
+E) Alle der oben genannten sind möglich
+F) Keine der oben genannten $\square$
+:::
+
+
+
+
 ## Modellieren
 
 ### Modellieren als Grundraster des Erkennens
@@ -344,7 +515,7 @@ Jedes Detail zu berücksichtigen ist nicht möglich.
 Wir müssen die Sache vereinfachen: 
 Alle Informationen ausblenden, die nicht zwingend nötig sind.
 Aber gleichzeitig die Strukturelemente der wirklichen Welt, 
-die für unsere Fragestellung zentral ist, beibehalten.
+die für unsere Fragestellung zentral sind, beibehalten.
 
 
 
@@ -359,7 +530,6 @@ Der Nutzen eines Modells ist, einen (übermäßig) komplexen Sachverhalt zu vere
 Man versucht zu vereinfachen, 
 ohne Wesentliches wegzulassen. 
 Der Speck muss weg, sozusagen. Das Wesentliche bleibt.
-
 Auf die Statistik bezogen heißt das,
 dass man einen Datensatz dabei so zusammenfasst,
 damit man das Wesentliche erkennt.
@@ -368,13 +538,6 @@ Was ist das "Wesentliche"?
 Oft interessiert man sich für die Ursachen eines Phänomens. 
 Etwa: "Wie kommt es bloß, dass ich ohne zu lernen die Klausur so gut bestanden habe?"^[Das ist natürlich nur ein fiktives, 
 komplett unrealistisches Beispiel, das auch unklaren Ursachen den Weg auf diese Seite gefunden hat.]
-Noch allgemeiner ist man dabei häufig am Zusammenhang von `X ` und `Y` interessiert, 
-s. @fig-xy, die ein Sinnbild von statistischen Modellen widergibt.
-
-Was ist das "Wesentliche"? Oft interessiert man sich für die Ursachen eines Phänomens. 
-Etwa: "Wie kommt es bloß, dass ich ohne zu lernen die Klausur so gut bestanden 
-habe?"^[Das ist natürlich nur ein fiktives, komplett unrealistisches Beispiel, 
-das auch unklaren Ursachen den Weg auf diese Seite gefunden hat.]
 Noch allgemeiner ist man dabei häufig am Zusammenhang von `X ` und `Y` interessiert, 
 s. @fig-xy, die ein Sinnbild von statistischen Modellen widergibt.
 
@@ -394,7 +557,7 @@ X1 --> Y2
 X2 --> Y2
 ```
 
-oben: Sinnbild eines statistischen Modells; unten: Sinnbild eines statistischen Modells, mit zwei Inputvariablen (Ursachen)
+oben: Sinnbild eines einfachen statistischen Modellsb (eine UV, eine AV); unten: Sinnbild eines statistischen Modells, mit zwei UV
 
 
 :::
@@ -404,23 +567,25 @@ Man kann @fig-xy als ein Sinnbild einer (mathematischen) Funktion lesen.
 
 :::{#def-fun}
 ### Funktion
-Eine Funktion $f$ setzt zwei Größen in Beziehung. $\square$
+Eine mathematische Funktion $f$ setzt zwei Größen in Beziehung. $\square$
 :::
 
-In Mathe-Sprech:
 
-$f: X \rightarrow Y$
+In Mathe-Sprech: 
+$f: X \rightarrow Y$, lies: "$f$ bildet $X$ auf $Y$ ab."
 
 oder:
-
-$y = f(x)$, lies: "Y ist eine Funktion von X".
-
+$y = f(x)$, lies: "Y ist eine Funktion von X". $\square$
 
 
 
 
 
-Es hört sich zugspitzt an, aber eigentlich ist fast alles Modellieren:
+
+
+
+Es hört sich zugespitzt an, aber eigentlich ist fast alles, 
+was man tut, Modellieren:
 Wenn man den Anteil der R-Fans in einer Gruppe Studierender ausrechnet,
 macht man sich ein Modell:
 man vereinfacht diesen Ausschnitt der Wirklichkeit anhand einer statistischen Kennzahl,
@@ -429,24 +594,30 @@ die das forschungsleitende Interesse zusammenfasst.
 ### Vertiefung
 
 Lesen Sie die Einführung zum Thema Modellieren bei @poldrack2022 (Kap. 5.1).
+Die Statistik kann man verstehen als ein Verfahren, dass wissenschaftliche Modelle in statistische übersetzt 
+und letztere dann einer empirischen Analyse unterzieht.
+Alle statistischen Ergebnisse beruhen auf Modelle und sind nur insoweit gültig, 
+wie das zugrundeliegende Modell gültig ist.
 
 
-:::callout-note
-Nutzen Sie die Übersetzungsfunktion Ihres Browsers, wenn Sie einen englischen Text lieber auf Deutsch lesen wollen. Oder einen deutschen lieber auf Englisch.
-:::
+
+
 
 
 ## Regression
 
+
+### Regression zum Modellieren
+
 Einflussreiche Leute schwören auf die Regressionsanalyse (@fig-gandalf).
 
-![One regression](img/einring.jpg){width="50%" #fig-gandalf fig-align="center"}
+![Eine Regression](img/einring.jpg){width="50%" #fig-gandalf fig-align="center"}
 
 
 
 
 
-::: {.content-visible when-format="html"}
+::::: {.content-visible when-format="html"}
 
 @fig-linfun zeigt ein interaktives Beispiel einer linearen Funktion. 
 Sie können Punkte per Klick/Touch hinzufügen.
@@ -456,9 +627,7 @@ Sie können Punkte per Klick/Touch hinzufügen.
 
 ::: {.figure-content}
 
-<!-- ```{=html} -->
-<!-- <iframe width="500" height="400" src="https://www.geogebra.org/m/vfjW1dZt" title="Visualisierung eines Geradenmodells"></iframe> -->
-<!-- ``` -->
+
 
 
 
@@ -468,16 +637,17 @@ Sie können Punkte per Klick/Touch hinzufügen.
 
 Interaktives Beispiel für eines lineares Modell. Fügen Sie Punkte per Klick/Touch hinzu.
 
-:::
+::::
+:::::
 
 
-
-Alternativ können Sie [diese App](https://gallery.shinyapps.io/simple_regression/) njutzen, Regressionskoeffizienten, Steigung (slope) und Achsenabschnitt (Intercept), zu optimieren.
+Alternativ können Sie [diese App](https://gallery.shinyapps.io/simple_regression/) nutzen,
+Regressionskoeffizienten, Steigung (slope) und Achsenabschnitt (Intercept), zu optimieren.
 Dabei meint "optimieren", die Abweichungen (Residuen, Residualfehler; die roten Balken in der App) zu minimieren.^[<https://gallery.shinyapps.io/simple_regression/>]
 
 
 
-:::
+
 
 
 [Hier](https://shinyapps.org/showapp.php?app=https://shiny.psy.lmu.de/felix/lmfit&by=Felix%20Sch%C3%B6nbrodt&title=Find-a-fit!&shorttitle=Find-a-fit!) finden Sie eine App, die Ihnen gestattet, selber Hand an eine Regressionsgerade zu legen.
@@ -491,11 +661,10 @@ der Ihnen mit Hilfe von Bildern und Animationen (okay, und etwas) Text die Grund
 
 
 
-### Regression zum Modellieren
 
 Die Regression ist eine Art Schweizer Taschenmesser der Statistik: Für vieles gut einsetzbar.
 Anstelle von vielen verschiedenen Verfahren des statistischen Modellierens kann man (fast) immer die Regression verwenden.
-Das ist nicht nur einfacher, sondern auch schöner. 
+Das ist nicht nur einfacher, sondern auch mathematisch schöner. 
 Wir werden im Folgenden stets die Regression zum Modellieren verwenden.
 Dann wenden wir die Methoden der Inferenz auf die Kennzahlen der Regression an.
 
@@ -508,23 +677,33 @@ Regression + Inferenz = 💖
 
 Alternativ zur Regression könnte man sich in den Wald der statistischen Verfahren begeben, [wie hier von der Uni Münster als Ausschnitt (!) aufgeführt](https://web.archive.org/web/20091029162244/http://www.wiwi.uni-muenster.de/ioeb/en/organisation/pfaff/stat_overview_table.html).
 Auf dieser Basis kann man meditieren,
-welches statistischen Verfahren man für eine bestimmte Fragestellung verwenden sollte, s. Abb.  @fig-choose-test.
+welches statistischen Verfahren man für eine bestimmte Fragestellung verwenden sollte, s. @fig-choose-test.
 Muss man aber nicht -- man kann stattdessen die Regression benutzen.
 
-![Wähle deine Statistik mit Bedacht. Oder wähle die Regressionsanalyse.](img/choose-test.png){#fig-choose-test}
+
 
 :::callout-note
 Es ist meist einfacher und nützlicher, die Regression zu verwenden, anstelle der Vielzahl von anderen Verfahren (die zumeist Spezialfälle der Regression sind). In diesem Kurs werden wir für alle Fragestellungen die Regression verwenden.^[Wie Jonas [Kristoffer Lindeløv](https://lindeloev.github.io/tests-as-linear/) uns erklärt, sind viele statistische Verfahren, wie der sog. t-Test Spezialfälle der Regression.]$\square$
 :::
 
 
+:::{#fig-regr-oder-wald layout-ncol=2}
+
+![Die eine Regression](img/regr.png){#fig-regrtext}
+
+![Wald von anderen Verfahren](img/choose-test.png){#fig-choose-test}
+
+Wähle die Regression. Oder den Wahl der Verfahren. Spoiler: Nimm lieber die Regression.
+:::
+
+
 
 :::{#exm-spezialfaelle-regr}
-Typische Spezialfälle der Regression sind 
+Typische *Spezialfälle* der Regression sind 
 
 - t-Test: UV: zweistufig nominal, AV: metrisch
 - ANOVA: UV: mehrstufig nominal, AV: metrisch 
-- Korrelation: Wenn UV und AV z-standradisiert sind (d.h. Mittelwert von 0 und Standardabweichung von 1 haben), dann ist die Korrelation gleich dem Regressionskoeffizienten $\beta_1$ (bei einer einfachen Regression mit einer einzigen UV). $\square$
+- Korrelation: Wenn UV und AV z-standardisiert sind (d.h. Mittelwert von 0 und Standardabweichung von 1 haben), dann ist die Korrelation gleich dem Regressionskoeffizienten $\beta_1$ (bei einer einfachen Regression mit einer einzigen UV). $\square$
 :::
 
 
@@ -538,39 +717,49 @@ Typische Spezialfälle der Regression sind
 
 
 Hier ist die Regressionsgleichung in voller Pracht; s. @fig-regr-rules.
-Links sieht man eine einfache Regression mit `hp` als Prädiktor (`X`, unabhängige Variable) und `mpg` als abhängige Variable (`Y`).
-Das rechte Teildiagramm zeigt eine multiple Regression mit den Prädiktoren `hp` und `am`.^[Der Datensatz `mtcars` wird gerne als Studienobjekt verwendet, da er einfach ist und für viele Beispiele geeignet. 
+Links sieht man eine einfache Regression mit `hp` als UV (`X`, auch: Prädiktor) und `mpg` als AV (`Y`).
+Das rechte Teildiagramm zeigt eine multiple Regression mit den UVs `hp` und `am`.^[Der Datensatz `mtcars` wird gerne als Studienobjekt verwendet, da er einfach ist und für viele Beispiele geeignet. 
 Wenn Sie sich einen Sachverhalt an einem einfachen Datensatz vergegenwärtigen wollen, bietet sich auch der Datensatz `mtcars` an. 
 Zudem ist er "fest in R eingebaut"; mit `data(mtcars)` können Sie ihn verfügbar machen.]
-
 Im einfachsten Fall sind die vom Modell vorhergesagten (geschätzten) Werte, $\hat{y}$, durch eine einfache Gerade beschrieben, s. @fig-regr-rules, links.
-Eine Gerade lässt sich durch folgende Formel beschreiben: $\hat{y} = \beta_0 + \beta_1$. 
+
+In allgemeiner Form schreibt man die Regressionsgleichung als lineare Gleichung, d.h. in Form einer Gerade, s. @thm-lm.
+
+
+:::{#thm-lm}
+
+### Lineares Modell (Regressionsgleichung)
+
+$$y = \beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k + \epsilon$$
+
+Man nennt alle $\beta_0, \beta_1, \beta_2, ...$ die  *Regressionsgewichte* (*Koeffizienten* oder *Parameter*) des Modells [@gelman2021].
 Dabei ist $\beta_0$ der *Achsenabschnitt* (eng. intercept) und $\beta_1$ die *Steigung* der Regressiongeraden.
-
-
-:::{def-lm}
-In allgemeiner Form schreibt man die Regressionsgleichung so, s. @eq-lm
-
-
-$$y = \beta_0 + \beta_1 x_1 + \ldots + \beta_k x_k + \epsilon$${#eq-lm}
-
-Man nennt alle $\beta_0, \beta_1, \beta_2, ...$ die *Koeffizienten*, *Regressionsgewichte* oder *Parameter* des Modells [@gelman2021].
+$\square$
 :::
 
-Anhand von @eq-lm erkennt man auch, warum man von einem *linearen Modell* spricht: 
-Y wird als gewichteter Mittelwert mehrerer Summanden ($X_1, X_2, ...$) berechnet.
+
+Anhand von @thm-lm erkennt man auch, warum man von einem *linearen Modell* spricht: 
+Y wird als gewichteter Mittelwert mehrerer Summanden berechnet.
+
+Eine Regressionsgerade ist durch zwei Parameter festgelegt: den Achsenabschnitt, $\beta_0$ und die Steigung, $\beta_1$, s. @fig-regr-rules.
+
+
+
+
+
 
 
 
 ```{r}
 #| message: false
+#| eval: true
 #| echo: false
 #| layout-ncol: 2
 #| label: fig-regr-rules
 #| fig-cap: Die Regressionsgerade in voller Pracht
 #| fig-subcap: 
-#|   - "Einfache Regression (ein Prädiktor: hp)"
-#|   - "Multiple Regression (zwei Prädiktoren: hp und am)"
+#|   - "Einfache Regression (eine UV: hp)"
+#|   - "Multiple Regression (zwei UV: hp und am)"
 data(mtcars)
 
 mtcars$am <- factor(mtcars$am)
@@ -592,12 +781,14 @@ ggplot(mtcars) +
 
 
 
-## Unsicherheit
+## Ungewissheit
 
 ### Inferenz beinhaltet Ungewissheit
 
 
-Inferenzstatistische Schlüsse sind mit Unsicherheit (Ungewissheit) behaftet: Schließlich kennt man nur einen Teil (die Stichprobe) eines Ganzen (die Population), möchte aber vom Teil auf das Ganze schließen.
+Inferenzstatistische Schlüsse sind mit *Ungewissheit* (Unsicherheit über die Zuverlässigkeit der Ergebnisse) behaftet: 
+Schließlich kennt man nur einen Teil (die Stichprobe) eines Ganzen (die Population), möchte aber vom Teil auf das Ganze schließen.
+Aus diesem begrenzten Wissen resultiert notwendig Ungewissheit über die gesamte Population.
 
 
 
@@ -613,8 +804,7 @@ Man spricht von *Ungewissheit*, da man sich auf die *Unsicherheit das Wissen* ü
 Schließt man etwa, dass in einer Grundgesamtheit der Anteil der R-Fans bei 42% liegt, 
 so geschieht das unter Unsicherheit; es ist ungewiss.
 Man ist sich nicht sicher, 
-dass es wirklich 42% in der Population sind - und nicht etwa etwas mehr oder etwas weniger.
-
+dass es wirklich 42% in der Population sind -- und nicht etwa etwas mehr oder etwas weniger.
 Schließlich hat man *nicht* die ganze Population gesehen bzw. vermessen. 
 *Sicher* ist man sich hingegen für die Stichprobe (Messfehler einmal ausgeblendet).
 Zur Bemessung der Unsicherheit (Ungewissheit) bedient man sich der Wahrscheinlichkeitsrechnung (wo immer möglich).
@@ -656,43 +846,77 @@ Aussagen mit Unsicherheit können unterschiedlich präzise formuliert sein.
 :::
 
 
-### Wahrscheinlichkeit
-
-
-
-:::{#def-wskt}
-### Wahrscheinlichkeit
-Die Wahrscheinlichkeit ist ein Maß dafür, für wie sicher jemand es hält, dass ein Ereignis eintritt. Die Wahrscheinlichkeit eines Ereignisses wird als Zahl zwischen 0 und 1 angegeben, wobei 0 bedeutet, dass das Ereignis als unmöglich angesehen wird, und 1 bedeutet, dass das Ereignis als sicher betrachtet wird. 
-Je näher die Wahrscheinlichkeit bei 0 (1) liegt, desto sicherer sind wir,
-dass das Ereignis (nicht) der Fall ist.$\square$
-:::
-
-Die Wahrscheinlichkeitsrechnung ist die typische Methode, um Ungewissheit zu präzisieren, d.h. zu quantifizieren.
 
 
 ### Zwei Arten von Ungewissheit
 
-Im Modellieren im Allgemeinen und in Regressionsmodellen im Besonderen lassen sich (mindestens) zwei Arten von Ungewissheiten angeben, s. auch Abb. @fig-zwei-arten.
+Im Modellieren im Allgemeinen und in Regressionsmodellen im Besonderen lassen sich (mindestens) zwei Arten von Ungewissheiten angeben:
 
 
 1. Wie (un)gewiss ist man sich über die *Regressionsgewichte*?
+2. Wie (un)gewiss ist man sich über die *Vorhersagegenauigkeit*?
 
-2. Wie (un)gewiss ist man sich über die *Korrektheit* des Modells? (Sind alle relevanten Variablen im Modell enthalten? Sind die Annahmen des Modells erfüllt?
 
 
-```{mermaid}
-%%| label: fig-zwei-arten
-%%| fig-cap: Zwei Arten der Ungewissheit beim Modellieren
-flowchart LR
-X1 -->|Präzision von Steigung und Achsenabschnitt?|B
-X2 -. Korrektheit des Modells? .-> B
+
+
+
+
+#### Betas: Ungewissheit zur Regressionsgeraden
+
+Wenn wir von den Daten der Stichproben auf die Grundgesamtheit schließen,
+können wir nicht sicher sein, ob die Regressionskoeffizienten (Achsenabschnitt, Steigung
+der Regressiongeraden) exakt richtig sind, s. @fig-betas-ungewiss.
+
+```{r}
+#| label: fig-betas-ungewiss
+#| fig-cap: "Wir könnten nicht sicher sein, dass der Achsenabschnitt und die Geradensteigung unseres Modells exakt richtig sind. Diese Werte könnten auch etwas größer oder kleiner sein."
+#| layout-ncol: 2
+#| echo: false
+#| fig-subcap:
+#|   - "Ungewissheit für den Achsenabschnitt: Die Gerade könnte 'höher' oder 'niedriger' aufgehängt sein."
+#|   - "Ungewissheit für die Steigung der Regressionsgeraden: Die Gerade könnte mehr oder weniger steigen."
+
+p_toni_regr_b0 <- 
+  noten2 %>% 
+  ggplot(aes(x, y)) +
+  geom_point() +
+ geom_abline(slope = coef(lm_toni)[2], 
+             intercept = coef(lm_toni)[1], color = modelcol, size = 1.5) +
+  theme_minimal() +
+   scale_x_continuous(breaks = c(20, 40, 60, 80, 100)) +
+  labs(x = "Lernzeit",
+       y = "Klausurpunkte") +
+   geom_abline(slope = coef(lm_toni)[2], intercept = coef(lm_toni)[1] + 5, 
+               color = "grey60", size = 1, linetype = "dashed") +
+   geom_abline(slope = coef(lm_toni)[2], intercept = coef(lm_toni)[1] - 5, 
+               color = "grey60", size = 1, linetype = "dashed") 
+
+p_toni_regr_b0
+
+
+
+p_toni_regr_b1 <- 
+  noten2 %>% 
+  ggplot(aes(x, y)) +
+  geom_point() +
+ geom_abline(slope = coef(lm_toni)[2], intercept = coef(lm_toni)[1], color = modelcol, size = 1.5) +
+  theme_minimal() +
+   scale_x_continuous(breaks = c(20, 40, 60, 80, 100)) +
+  labs(x = "Lernzeit",
+       y = "Klausurpunkte") +
+   geom_abline(slope = coef(lm_toni)[2] + 0.1, intercept = coef(lm_toni)[1], 
+               color = "grey60", size = 1, linetype = "dashed") +
+   geom_abline(slope = coef(lm_toni)[2] - 0.1, intercept = coef(lm_toni)[1], 
+               color = "grey60", size = 1, linetype = "dashed") 
+
+p_toni_regr_b1
 
 ```
 
 
-### Ungewissheit der Modellkoeffizienten
 
-Wie man in @fig-regr-div sieht, können sich die Koeffizienten (Achsenabschnitt und Steigung) unterscheiden.
+Wie man in @fig-regr-div sieht, können sich die Koeffizienten des Modells ($\beta_0$, Achsenabschnitt und $\beta_1$, Steigung) unterscheiden.
 Woran liegt das?
 
 :::{#exm-flights}
@@ -752,40 +976,54 @@ ggplot(stipro3, aes(x = air_time, y = arr_delay)) +
 ```
 
 
-Der Grund für die Schwankungen der Modellparameter zwischen den Stichproben ist die Zufälligkeit des Stichprobenziehens. 
+Der Grund für die Schwankungen der Modellparameter zwischen den Stichproben ist die *Zufälligkeit* des *Stichprobenziehens.* 
 Je nachdem, wie es der Zufall (oder sonst wer) will, landen bestimmte Fälle (Flüge in unserem Beispiel) in unserer Stichprobe.
-Zumeist unterscheiden sich die Stichproben; theoretisch könnten sie aber auch rein zufällig gleich sein.
+Zumeist unterscheiden sich die Stichproben; 
+theoretisch könnten sie aber auch rein zufällig gleich sein.
 
 :::callout-important
-Stichproben-Kennwerte schwanken um den tatsächlichen Wert in der Population herum.$\square$
+Stichproben-Kennwerte schwanken um den tatsächlichen Wert in der Population herum. $\square$
 :::
 
 Um diese Ungewissheit, die sich in den Schwankungen der Stichproben-Regressionskoeffizienten ausdrückt, anzuzeigen, 
 ist ein "grauer Schleier" um die Regressionsgeraden in @fig-regr-div gekennzeichnet.
 Dieser grauer Schleier gibt also eine Spannbreite anderer, 
-plausibler Ergebnisse an, die sich in einer anderen Stichprobe auch manifestieren könnten.
+plausibler Lagen der Regressionsgeraden an, 
+die sich in einer anderen Stichprobe auch manifestieren könnten.
 
 
 
-#### Ungewissheit zur Korrektheit des Modells
+#### Sigma: Ungewissheit zur Genauigkeit der Vorhersage
 
-Angenommen, wir sind uns *sicher* über die Werte der Modellparameter,
+Angenommen, wir sind uns *sicher* über die Werte der Modellparameter ($\beta_0, \beta_1$).
 also über die Lage der Regressionsgeraden, anschaulich gesprochen.
-Dann bliebe immer noch Ungewissheit, inwieweit das Modell korrekt spezifiziert ist: 
-Sind genau die richtigen Variablen im Modell enthalten?
-
-
+Dann bliebe immer noch Ungewissheit, 
+wie *genau* die Vorhersagen sind,
+wie groß also die Abstände zwischen vorhergesagten und tatsächlichen Werten.
+Wenn nicht die richtigen UVs im Modell sind (relevante fehlen oder auch irrelevante sind enthalten), 
+dann liegen Vorhersagen und wirkliche Werte weiter auseinander:
+diese Streuung kann man als "Rauschen" bezeichnen, s. @fig-resid-var.
 Diese Art der Ungewissheit ist dann interessant, 
-wenn man für einzelne Fälle eine Vorhersage macht und sich fragt, 
-wie präzise diese Vorhersage ist.
+wenn man Vorhersagen macht und sich fragt, 
+wie *präzise* diese Vorhersage ist.
+Die Präzision eines Modells kann man mit einem von zwei Kennwerten ausdrücken, die die gleiche Aussage machen.
+Diese zwei Kennwerte sind $R^2$ (R-Quadrat) und $\sigma$ (sigma).
+
+
+:::{#def-sigma}
+### Sigma als mittleren Vorhersagefehler
+$\sigma$ gibt (grob gesagt) den mittleren Vorhersagefehler des Modells an.
+Einfach gesprochen sagt $\sigma$ wie weit eine Vorhersage im Durchschnitt vom wahren Wert entfernt ist. $\square$
+:::
+
 
 
 ```{r}
 #| label: fig-resid-var
-#| fig-cap: Regressionsanalyse mit gleicher Regressionsgerade, aber unterschiedlicher Vorhersagegüte
+#| fig-cap: "Regressionsanalyse mit *gleicher* Regressionsgerade, aber *unterschiedlicher* Vorhersagegüte. Die Vorhersagefehler sind mit mit farbigen vertikalen Balken markiert. Je kürzer die Balken, desto besser (genauer) die Vorhersage."
 #| fig-subcap: 
-#|   - geringer Vorhersagefehler (hohe Vorhersagegüte)
-#|   - hoher Vorhersagefehler
+#|   - "Geringer Vorhersagefehler (hohe Vorhersagegüte): Die vertikalen Balken sind kurz."
+#|   - "Hoher Vorhersagefehler: Die vertikalen Balken sind lang."
 #|   - auch hoher Vorhersagefehler
 #| echo: false
 #| layout-ncol: 3
@@ -811,18 +1049,31 @@ d1 <-
 ggplot(d1, aes(x, y1)) + 
   geom_point() +
   geom_smooth(method = "lm", se = TRUE) +
-  scale_y_continuous(limits = c(-4, 4))
+  #scale_y_continuous(limits = c(-4, 4)) +
+  geom_segment(aes(x = x, xend = x,
+                   y = pred, yend = y1),
+               color = errorcol)
 
 
 ggplot(d1, aes(x, y2)) + 
   geom_point() +
   geom_smooth(method = "lm", se = TRUE) +
-  scale_y_continuous(limits = c(-4, 4))
+ # scale_y_continuous(limits = c(-4, 4)) +
+  geom_segment(aes(x = x, xend = x,
+                   y = pred, yend = y2),
+               color = errorcol)
 
-ggplot(d1, aes(x, y3)) + 
-  geom_point() +
+
+# lm3 <- lm(y3 ~ x, data = d1)
+
+ggplot(d1, aes(x, y1)) + 
+  geom_point(aes(y = y3)) +
   geom_smooth(method = "lm", se = TRUE) +
-  scale_y_continuous(limits = c(-4, 4))
+ # scale_y_continuous(limits = c(-4, 4)) +
+  geom_segment(aes(x = x, xend = x,
+                   y = pred, yend = y3),
+               color = errorcol)
+
 
 ```
 
@@ -1037,81 +1288,109 @@ Das Vorhersage-Intervall berücksichtigt Ungewissheit in $\beta_0, \beta_1, \eps
 
 
 
+
 ### Konfidenzintervall
 
 
-Wir sehen in @fig-ungewiss2, dass ein "Ungewissheitskorridor" angegeben wird für die Lage der Regressionsgerade (linkes Teildiagramm) 
-bzw. für den Bereich plausibler Vorhersagen im konkreten Fall einer Beobachtung mit bestimmten X-Wert.
-Entsprechend wird nicht ein *Punktschätzer*, sondern ein *Schätzbereich* angegeben.
-Man spricht auch von einem *Konfidenzintervall* oder *Unsicherheitsbereich*.^[Tatsächlich gibt es mehrere Synonyme oder ähnliche Begriffe für Konfidenzintervall. Wir kommen später darauf detaillierter zu sprechen.]
+Wir haben gesesehen, dass wir die Werte der Parameter nur mit Ungewissheit angegeben können (s. @fig-betas-ungewiss und @fig-resid-var).
+Um dieser Ungewissheit Rechnung zu tragen, gibt man nicht nur einen einzelnen Wert an,
+einen *Punktschätzer*, 
+sondern man gibt ein *Schätzbereich* an auf Basis der Daten, s. @tbl-toni-params.
+
+Man spricht anstatt von Schätzbereich auch von einem *Konfidenzintervall*.^[Tatsächlich gibt es mehrere Synonyme oder ähnliche Begriffe für Konfidenzintervall. Wir kommen später darauf detaillierter zu sprechen.]
+
+```{r}
+#| label: tbl-toni-params
+#| tbl-cap: Punktschätzer und Schätzbereiche für die Modellkoeffizienten von `lm_toni`
+model_parameters(lm_toni) |> 
+  print_md()
+```
+Unser Modell gibt den 95%-Schätzbereich für den Achsenabschnitt an ca. von 36 bis 56 Klausurpunkte
+Die Steigung wird geschätzt auf ca. 0.7 bis 1.1 Klausurpunkte pro Stunde Lernzeit.
 
 ::: {#def-konfintervall}
 
 ### Konfidenzintervall
 
-Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schätzbereiche für Parameter wie Regressionskoeffizienten . 
-Die Grenzen eines Konfidenzintervall markieren einen Bereich plausibler Werte für einen Parameter. 
+Ein Konfidenzintervall (confidence intervall, CI) ist ein Oberbegriff für Schätzbereiche für Parameter wie Regressionskoeffizienten.
+Die Grenzen eines Konfidenzintervall markieren die Grenzen eines Bereichs plausibler Werte für einen Parameter. $\square$
 
 :::
 
 
 
-Es gibt verschiedene Arten, Konfidenzintervalle zu berechnen; 
+Es gibt verschiedene Arten, Konfidenzintervalle zu berechnen;
 wir sprechen in späteren Kapiteln dazu ausführlicher.
-Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben. 
-Im Kontext der Bayes-Analyse - auf der dieser Kurs aufbaut - ist ein Konfidenzintervall einfach zu interpretieren. 
-Sagen wir, wir finden, dass in einem Modell ein 95%-Konfidenzintervall für den Anteil der R-Fans angegeben wird, 
+Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben.
+Im Kontext der Bayes-Analyse - auf der dieser Kurs aufbaut - ist ein Konfidenzintervall einfach zu interpretieren.
+Sagen wir, wir finden, dass in einem Modell ein 95%-Konfidenzintervall für den Anteil der R-Fans angegeben wird,
 dass sich von 40 bis 44 Prozent erstreckt.
-Dieser Befund lässt sich so interpretieren: “Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95% im Bereich von 40 bis 44 Prozentpunkten.” 
-Diese (einfache) Interpretation ist im Frequentismus *nicht* möglich.
+Dieser Befund lässt sich so interpretieren: 
+
+> “Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95% im Bereich von 40 bis 44 Prozentpunkten.”
 
 
 
 
 
-:::{#exm-ungewisskorr}
+
+
+:::{#exr-ungewisskorr}
 Geben Sie Beispiele für Konfidenzintervalle an.
 :::
 
-##  Frequentismus vs. Bayes-Inferenz
+
+
+
+
+
+
+
+##  Frequentistische Inferenz vs. Bayes-Inferenz
+
+Es gibt zwei Hauptarten von Inferenzstatistik: Frequentistische Inferenz und Bayes-Inferenz.
 
 
 ::::{.columns}
 :::{.column}
-###  Frequentismus: Klassische Inferenz
+**Frequentismus: Klassische Inferenz**
 
--   Die Berücksichtigung von Vorwissen zum Sachgegenstand wird vom Frequentismus als subjektiv zurückgewiesen.
--   Nur die Daten selber fliesen in die Ergebnisse ein, keine Vorannahmen.
--   Wahrscheinlichkeit wird über relative Häufigkeiten definiert.
--   Es ist *nicht* möglich, die Wahrscheinlichkeit einer Hypothese bzw. eines Werts in der Population (eines Parameters) anzugeben.
--   Stattdessen wird angegeben, wie häufig eine vergleichbare Datenlage zu erwarten ist, wenn der Versuch sehr häufig wiederholt ist.
--   Ein Großteil der Forschung (in den Sozialwissenschaften) verwendet (aktuell) diesen Ansatz.
+1. Ziel ist es, den Anteil von Fehlentscheidungen zu kontrollieren.
+2. Keine Berücksichtigung von Vorwissen zum Sachgegenstand
+3. Wahrscheinlichkeit wird über relative Häufigkeiten definiert.
+4. Es ist *nicht* möglich, die Wahrscheinlichkeit einer Hypothese bzw. eines Werts in der Population (eines Parameters) anzugeben.
+5. Stattdessen wird angegeben, wie häufig eine vergleichbare Datenlage zu erwarten ist, wenn der Versuch sehr häufig (unendlich oft) wiederholt ist.
+6. Ein Großteil der Forschung (in den Sozialwissenschaften) verwendet (aktuell) diesen Ansatz.
 :::
 
 
 :::{.column}
-### Bayesianische Inferenz
+**Bayesianische Inferenz**
 
--   Vorwissen (Priori-Wissen) fließt explizit in die Analyse ein (zusammen mit den Daten).
--   *Wenn* das Vorwissen gut ist, wird die Vorhersage durch das Vorwissen genauer, ansonsten ungenauer.
--   Die Wahl des Vorwissens muss explizit (kritisierbar) sein.
--   In der Bayes-Inferenz sind Wahrscheinlichkeitsaussagen für Hypothesen möglich.
--   Die Bayes-Inferenz erfordert mitunter viel Rechenzeit und ist daher erst in den letzten Jahren (für gängige Computer) komfortabel geworden.
+1. Ziel ist es, die Wahrscheinlichkeit einer Hypothese korrekt zu bemessen.
+2.   Vorwissen (Priori-Wissen) fließt explizit in die Analyse ein (zusammen mit den Daten).
+3.   *Wenn* das Vorwissen gut ist, wird die Vorhersage durch das Vorwissen genauer, ansonsten ungenauer.
+4.   Die Wahl des Vorwissens muss explizit (kritisierbar) sein.
+4.   In der Bayes-Inferenz sind Wahrscheinlichkeitsaussagen für Hypothesen möglich.
+4.   Die Bayes-Inferenz erfordert mitunter viel Rechenzeit und ist daher erst in den letzten Jahren (für gängige Computer) komfortabel geworden.
 :::
 ::::
 
+### Frequentistische Inferenz und der p-Wert
 
 
 
-### Frequentismus
+Der zentrale Kennwert der Frequentistische Inferenz (synonym: Frequentismus) ist der *p-Wert*.
 
-#### Der p-Wert
+Der *p*-Wert ist so definiert, vgl. @wasserstein2016: 
 
-Die zentrale Statistik des Frequentismus heißt der *p-Wert*
 
-Der p-Wert ist so definiert, vgl. @wasserstein2016: 
+>   Wie hoch ist die Wahrscheinlichkeit eines empirischen Befunds (oder noch extremere Werte), vorausgesetzt die Nullhypothese $H_0$ gilt und man wiederholt den Versuch unendlich oft (mit gleichen Bedingungen, aber zufällig verschieden und auf Basis unseres Modells)?
 
->   Wie wahrscheinlich ist der Wert der Teststatistik (oder noch extremere Werte), vorausgesetzt die Nullhypothese gilt und man wiederholt den Versuch unendlich oft (mit gleichen Bedingungen, aber zufällig verschieden und auf Basis unseres Modells)?
+
+
+Einfacher gesagt:
+
 
 Findet man $p<.05$ (oder einen anderen Prozentwert, aber meistens wird 5% hergenommen), 
 so spricht man von "(statistischer) Signifikanz" und nimmt dies als Beleg, dass man einen Effekt gefunden hat, 
@@ -1119,9 +1398,24 @@ die Hypothese eines Nulleffekts (z.B. kein Zusammenhang von X und Y) also verwer
 Faktisch entscheidet man sich, die Forschungshypothese weiterhin als "vorläufig gültig" 
 oder zumindest als "nicht widerlegt" zu betrachten.
 
+>  Der *p*-Wert ist die Wahrscheinlichkeit, ein Ergebnis zu erhalten, das mindestens so extrem ist wie das beobachtete, unter der Annahme, dass es keinen Effekt gibt.
+
+
+Noch einfacher:
+
+- Man nimmt an, dass es keinen Effekt gibt (z.B. kein Zusammenhang zwischen den untersuchten Variablen)
+
+- Dann fragt man: Wie überraschend wären meine Daten unter dieser Annahme?
+
+- Der p-Wert gibt genau diese Überraschungs-Wahrscheinlichkeit an.
+
+
+<!-- Kurz gesagt: $p := Pr(T'  \ge T| H_0)$. -->
+
+
 
 :::{#exr-p}
-🏋 Recherchieren Sie eine Definition des p-Werts und lesen Sie sie einem Freund. 
+🏋 Recherchieren Sie eine Definition des *p*-Werts und lesen Sie sie einem Freund. 
 Beobachten sie die Reaktionen auf Ihre Erklärung.$\square$
 :::
 
@@ -1129,14 +1423,13 @@ Der p-Wert wird oft falsch verstanden [@badenes-ribera2016].
 Aber er ist auch nicht leicht zu verstehen, meint Meister Yoda, s. @fig-yoda.
 Hier sind einige *FALSCHE* Interpretationen zum p-Wert laut der Autoren:
 
-- 🙅‍♀ Der p-Wert würde die Wahrscheinlichkeit der Nullhypothese oder der Forschungshypothese angeben. 🙊 
-- 🙅‍♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. 🙊 
+- 🙅‍♀ Der p-Wert würde die Wahrscheinlichkeit der Nullhypothese oder der Forschungshypothese angeben. 🙊 FALSCH!
+- 🙅‍♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. 🙊   FALSCH!
 
 
 ![Der p-Wert ist wenig intuitiv, meint Meister Yoda](img/pvalue-yoda.jpg){#fig-yoda width=50%}
 
 
-#### Konfidenzintervalle
 
 Die korrekte Definition der Konfidenzintervalls in *frequentistischer* Lesart lautet:
 
@@ -1170,6 +1463,7 @@ Auf Dauer enthalten 95% der Konfidenzintervalle den wahren Wert in der Populatio
 ::::
 :::::
 
+
 :::{.callout-important}
 Ein frequentistisches Konfidenzintervall macht keine Aussage zur Wahrscheinlichkeit 
 eines Werts in der Population (eines Parameters). 
@@ -1179,6 +1473,188 @@ darüber macht das frequentistische Konfidenzintervall keine Aussagen. $\square$
 :::
 
 #### Aus der Forschung (Vertiefung^[nicht prüfungsrelevant])
+
+
+
+
+### Bayes-Inferenz
+
+Die zentrale Statistik der Bayes-Inferenz bzw. (synonym) Bayes-Statistik ist die *Posteriori-Verteilung*.
+
+Die Posteriori-Verteilung beantwortet uns die Frage: 
+"Wie wahrscheinlich ist die Forschungshypothese (oder Varianten von ihr), jetzt, 
+nachdem wir die Daten kennen, auf Basis unseres Modells?"
+
+
+In der Bayes-Statistik sind Aussagen folgender Art erlaubt:
+
+>    Mit einer Wahrscheinlichkeit von 95% ist der neue Webshop besser als der alte.
+>    Mit einer Wahrscheinlichkeit von 89% liegt die Wirksamkeit des neuen Medikaments zwischen 0.1 und 0.4.
+
+
+<!-- 
+[In diesem Post](https://data-se.netlify.app/2022/01/27/warum-bayes/) wird für Bayes geworben 
+und (einseitig) Stellung pro Bayes bezogen. -->
+
+
+
+
+### Statistische Signifikanz
+
+
+Im *Frequentismus* spricht man von statistischer Signifikanz, wenn der p-Wert kleiner ist als 5%: $p<.05$ (oder einen anderen Prozentwert als 5%, aber meistens wird 5% hergenommen).
+Man nimmt diesen Befund als Beleg, dass man einen Effekt gefunden hat, 
+die Hypothese eines Nulleffekts (z.B. kein Zusammenhang von X und Y) also verwerfen kann.
+Faktisch entscheidet man sich, die Forschungshypothese weiterhin als "vorläufig gültig" 
+oder zumindest als "nicht widerlegt" zu betrachten.
+
+
+In der *Bayes-Statistik* ist der Begriff der Signifikanz nicht einheitlich definiert. 
+Mit Bezug auf @gelman2021 (S. 57) wird in diesem Buch der Begriff wie folgt definiert - 
+mit Gültigkeit sowohl für Bayes-Statistik als auch für Frequentistische Statistik.
+
+
+:::{#def-signifikanz}
+### Statistische Signifikanz
+Ist der Wert Null nicht im Schätzbereich enthalten, 
+so liegt ein statistisch signifikantes Ergebnis vor. $\square$
+:::
+
+Oft werden 95%-Konfidenzintervalle verwendet, obwohl das nur eine Konvention ist. 
+Die Signifikanzaussage bezieht sich immer auf ein Schätzbereich bestimmter Größe, 
+z.B. 95% (und des Modells inklusive Daten).
+
+Liegt ein statistisch signifikantes Ergebnis vor, so *verwirft* man die *Nullhypothese* und akzeptiert die *Alternativhypothese* (synonym: Effekthypothese).
+
+:::{#def-nullhyp}
+### Exakte Nullhypothese
+Die exakte Nullhypothese (meist kurz nur als Nullhypothese bezeichnet), $H_0$, besagt, dass *kein* (null) Effekt (keine Abweichung vom Referenzwert, kein Unterschied zwischen Gruppen, kein Zusammenhang zwischen UV und AV, Veränderung vor vs. nach der Intervention, ...) vorliegt. $\square$
+:::
+
+:::{#def-alternativhyp}
+### Alternativhypothese (Effekthypothese)
+Eine Hypothese, die besagt, dass es einen (substanziellen) Effekt gibt.
+Das kann z.B. ein Unterschied zwischen den untersuchten Gruppen sein oder ein
+Zusammenhang zwischen den untersuchten Variablen.
+Logisch betrachtet ist die Alternativhypothese meist das Gegenteil der Nullhypothese. $\square$
+:::
+
+:::{#exm-effekt}
+### Beispiele für Effekthypothesen
+
+- Die Trefferquote der Münze ist $\pi = .7$ (Kopf), weicht also um 0.2 von 0.5, dem Wert laut Nullhypothese, ab.
+- Der Unterschied im mittleren Gewicht zwischen den Gruppen beträgt ca. 500-600 g.
+- Der Korrelationskoeffizient $\rho$ liegt bei ca. .5 bis .7, ist also nicht Null.
+- Der standardisierte Regressionskoeffizient $\beta$ liegt bei ca. .1 bis .2, ist also nicht Null.
+- Der Unterschied in Gestimmtheit vor vs. nach der Induktion von Einsamkeit liegt bei $X_d = .3$, ist also nicht Null. $\square$
+:::
+
+
+:::{#exm-nullhyp}
+### Beispiele für Nullhypothesen
+
+A) H₀: μ = 100 (Der Populationsmittelwert beträgt 100)
+B) H₀: μ₁ = μ₂ (Es gibt keinen Unterschied zwischen den Mittelwerten zweier Gruppen)
+C) H₀: ρ = 0 (Es besteht kein linearer Zusammenhang zwischen zwei Variablen)
+D) H₀: π = 0.5 (Die Wahrscheinlichkeit für "Erfolg" beträgt 50%; die Münze ist "fair")
+E) H₀: μ₁ = μ₂ = μ₃ = μ₄ (Alle Gruppenmittelwerte sind gleich; bei ANOVA)
+F) H₀: β₁ = 0 (Der Regressionskoeffizient ist null; kein Effekt des Prädiktors)
+G) H₀: σ₁² = σ₂² (Die Varianzen zweier Populationen sind gleich) $\square$
+:::
+
+Statistische Signifikanz im Frequentismus (nicht in der Bayes-Statistik) ist auch 
+eine Funktion der Stichprobengröße:
+Wenn die Stichprobe groß genug ist, wird jeder Test signifikant.
+Daher hat ein signifikantes Ergebnis zwei mögliche Ursachen: 
+Der Effekt ist groß oder (auch) die Stichprobe ist groß, s. @fig-pwert2.
+
+```{mermaid}
+%%| label: fig-pwert2
+%%| fig-cap: "Der p-Wert ist nicht nur eine Funktion der Effektgröße, sondern auch der Stichprobengröße. Große Stichproben werden zwangsläufig signifikant, sofern der Effekt nicht exakt Null ist."
+flowchart LR
+S[Stichprobengröße]
+E[Effektgröße]
+p[p<0.5]
+S-->p
+E-->p
+```
+
+
+
+
+Übrigens sollte man nicht nur von "Signifikanz", 
+sondern von "statistischer Signifikanz" sprechen, um klar zu machen, 
+dass man nicht ein Alltagsverständnis von Signifikanz ("groß", "bedeutsam") meint, 
+sondern einen wohl definierten statistischen Begriff. Das ist wichtig, 
+weil es sonst leicht zu Fehlinterpretationen kommt.
+
+
+@makowski2019 schlagen vor, welche Kennwerte der Bayes-Statistik analog zum $p$-Wert herangezogen werden können.
+Eine Möglichkeit dafür ist der Kennwert *pd* (*probability of direction*).
+
+
+
+:::{#exr-smartphone-addiction}
+### Abhängigkeit vom Handy
+
+Die Studie von @kabadayi2024 untersucht den Zusammenhang von Smartphone-Abhängigkeit mit gesundheitlichen Problemen wie Depression, Stress, Einsamkeit und Schlafschwierigkeiten bei Heranwachsenden.
+
+[Lesen Sie den Abstract der Studie](https://bmcpsychology.biomedcentral.com/articles/10.1186/s40359-024-02117-6) und Tabelle 2 (sowie alle Teile, die Sie benötigen, um Tabelle 2 zu verstehen).
+
+
+1. Was ist der stärkste Zusammenhang bzgl. Smartphone-Abhängigkeit? Wie hoch ist er? Wie groß ist die erklärte Varianz des Zusammenhangs?
+2. Zwischen welchen Variablen findet sich ein "statistisch signifikanter" Zusammenhang?
+3. Erklären Sie, was ein "statistisch signifikanter Zusammenhang" hier bedeutet? $\square$
+:::
+
+
+
+
+### Frequentist und Bayesianer
+
+
+Im Cartoon 1132 [von xkcd](https://xkcd.com/) wird sich über das Nicht-Berücksichtigen von Vorab-Informationen (Prior-Verteilung) lustig gemacht, s. @fig-xkcd-bayes.
+
+![Frequentist wettet mit Bayesianer](img/frequentists_vs_bayesians_2x.png){#fig-xkcd-bayes width=50%}
+
+[Quelle](https://xkcd.com/1132/)
+
+
+
+
+
+
+<div>
+
+<a href="https://imgflip.com/memegenerator">from Imgflip Meme Generator</a>
+
+</div>
+
+
+
+
+
+
+
+
+
+:::{#exr-pwert}
+### Peer Instruction: p-Wert
+Der p-Wert ist der zentrale Kennwert der frequentistischen Statistik. Aber er wird immer wieder missverstanden. Welche Aussage zum p-Wert ist korrekt?
+
+A) Ein p-Wert von 0,04 bedeutet, dass die Nullhypothese mit 96 % Wahrscheinlichkeit falsch ist.
+B) Ein p-Wert größer als 0,05 beweist, dass die Nullhypothese wahr ist.
+C) Ein kleiner p-Wert bedeutet, dass ein großer Effekt vorliegt.
+D) Ein p-Wert von 0,01 bedeutet, dass sich bei Wiederholung der Studis mit 99% wieder ein signifikantes Ergebnis finden wird.
+E) Keine der oben genannten. $\square$
+:::
+
+
+## Vertiefung
+
+
+
+### Vertiefung -- Frequentistische Konfidenzintervalle werden oft falsch verstanden (Vertiefung^[nicht prüfungsrelevant])
 
 
 Frequentistische Konfidenzintervalle werden oft falsch verstanden, 
@@ -1228,62 +1704,244 @@ also mit "stimmt" angekreuzt wurden, s. @fig-ci-wrong.
 ![Eine hohe Zustimmung zu den sechs falschen Aussagen](img/ci-wrong.png){#fig-ci-wrong width=75%}
 
 
-#### Bayes-Statistik
-
-Die zentrale Statistik der Bayes-Statistik ist die *Posteriori-Verteilung*.
-
-Die Posteriori-Verteilung beantwortet uns die Frage: 
-"Wie wahrscheinlich ist die Forschungshypothese (oder Varianten von ihr), jetzt, 
-nachdem wir die Daten kennen, auf Basis unseres Modells?"
 
 
-In der Bayes-Statistik sind Aussagen folgender Art erlaubt:
-
->    Mit einer Wahrscheinlichkeit von 95% ist der neue Webshop besser als der alte.
->    Mit einer Wahrscheinlichkeit von 89% liegt die Wirksamkeit des neuen Medikaments zwischen 0.1 und 0.4.
+### Zielart *Erklären* -- Kausalinferenz
 
 
-
-[In diesem Post](https://data-se.netlify.app/2022/01/27/warum-bayes/) wird für Bayes geworben 
-und (einseitig) Stellung pro Bayes bezogen.
-
-
-
-### Frequentist und Bayesianer
+Mittels Kausalinferenz können wir schließen, welche Variablen *Ursachen* und welche *Wirkung* sind --
+und welche Variablen **Scheinkorrelation** erzeugen.
+Das ist wichtig, denn nur wenn man die Ursache kennt, weiß man, was man tun muss, 
+um eine Wirkung zu erzielen.
 
 
-Im Cartoon 1132 [von xkcd](https://xkcd.com/) wird sich über das Nicht-Berücksichtigen von Vorab-Informationen (Prior-Verteilung) lustig gemacht, s. @fig-xkcd-bayes.
+#### Studie A: Östrogen
 
-![Frequentist wettet mit Bayesianer](img/frequentists_vs_bayesians_2x.png){#fig-xkcd-bayes width=50%}
-
-[Quelle](https://xkcd.com/1132/)
-
-
+Medikament einnehmen?
+Oder lieber nicht?
+Mit Blick auf @tbl-studie-a: Was raten Sie dem Arzt? Medikament einnehmen, ja oder nein?
 
 
+```{r tbl-studie-a}
+#| echo: false
+#| label: tbl-studie-a
+#| tbl-cap: "Daten zur Studie A"
+
+studie_a <-
+  tibble::tribble(
+     ~ Gruppe,      ~`Mit Medikament`,         ~`Ohne Medikament`,
+"Männer",    "81/87 überlebt (93%)", "234/270 überlebt (87%)",
+"Frauen",  "192/263 überlebt (73%)",   "55/80 überlebt (69%)",
+"Gesamt",  "273/350 überlebt (78%)", "289/350 überlebt (83%)"
+  ) 
 
 
-<div>
+studie_a %>% 
+  gt()
+```
 
-<a href="https://imgflip.com/memegenerator">from Imgflip Meme Generator</a>
 
-</div>
+@fig-studie-a zeigt die Daten aus @tbl-studie-a in einem Balkendiagram.
 
-### Beispiel zum Nutzen von Apriori-Wissen 1
+```{r}
+#| label: fig-studie-a
+#| fig-cap: "Daten zur Studie A in einem Balkendiagram"
+#| echo: false
 
-Ein Betrunkener behauptet, er könne hellsehen.
-Er wirft eine Münze 10 Mal und sagt jedes Mal korrekt vorher, welche Seite oben landen wird.
-Die Wahrscheinlichkeit dieses Ergebnisses ist sehr gering ($2^{-10}$) unter der Hypothese, dass die Münze fair ist, dass Ergebnis also "zufällig" ist, also $p < .05$ und damit ist das Ergebnis "statistisch signifikant".
+source("R-Code/kausalstudie1.R")
+plot_kausalstudie_a
+```
 
-Unser Vorwissen lässt uns allerdings trotzdem an der Hellsichtigkeit des Betrunkenen zweifeln, so dass die meisten von uns die Hypothese von der Zufälligkeit des Ergebnisses wohl nicht verwerfen.
 
-### Beispiel zum Nutzen von Apriori-Wissen 2
 
-Eine Studie [@gelman2021] fand einen "großen Effekt" auf das Einkommen von Babies, die eine Stunde pro Woche während zwei Jahren an einem psychosozialen Entwicklungsprogramm teilnahmen (im Vergleich zu einer Kontrollgruppe), $n=127$.
-Nach 20 Jahren war das mittlere Einkommen der Experimentalgruppe um 42% höher (als in der Kontrollgruppe) mit einem Konfidenzintervall von \[+2%,+98%\].
+Die Daten stammen aus einer (fiktiven) klinischen Studie, $n=700$, 
+hoher Qualität (Beobachtungsstudie).
+Bei Männern scheint das Medikament zu helfen; 
+bei Frauen auch.
+Aber *insgesamt* (Summe von Frauen und Männern) *nicht*?!
+Kann das sein?
+Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? 
+Vielleicht nur dann, wenn er das Geschlecht kennt [@pearl2016]?!
 
-Allerdings lässt uns unser Vorwissen vermuten, dass so ein Treatment das Einkommen nach 20 Jahren kaum verdoppeln lässt. Wir würden den Effekt lieber in einem konservativeren Intervall schätzen (enger um Null).
 
+
+
+
+
+In Wahrheit sehe die kausale Struktur so aus:
+Das Geschlecht (Östrogen) hat einen positiven (+) Einfluss auf Einnahme des Medikaments und negativen Einfluss (-) auf Heilung.
+Das Medikament hat einen positiven (+) Einfluss auf Heilung.
+Betrachtet man die Gesamt-Daten zur Heilung, so ist der Effekt von Geschlecht (Östrogen) und Medikament *vermengt* (konfundiert, confounded).
+Die kausale Struktur, also welche Variable beeinflusst bzw. nicht,
+ist in @fig-dag-studie-a dargestellt.
+
+
+
+```{r dag-studie-a}
+#| echo: false
+#| label: fig-dag-studie-a
+#| fig-cap: "Zwei direkte Effekte (gender, drug) und ein indirekter Effekt (gender über drug) auf recovery"
+#| out-width: "50%"
+
+
+
+dag_studie_a <-
+  dagitty("dag{
+          gender -> drug
+          drug -> recovery
+          gender -> recovery
+          }
+      ")
+
+coordinates(dag_studie_a) <-
+  list(x = c(gender = 0, drug = 0, recovery  = 1),
+       y = c(gender = 0, drug = 1, recovery = 0.5))
+
+
+plot(dag_studie_a)
+```
+
+
+Betrachtung der Gesamtdaten zeigt in diesem Fall einen *konfundierten* Effekt: Geschlecht konfundiert den Zusammenhang von Medikament und Heilung.
+
+
+:::callout-important
+Aufteilen in Teilgruppen (Männer bzw. Frauen) ist also in diesem Fall der korrekte, richtige Weg.
+Achtung: Das Stratifizieren ist nicht immer und nicht automatisch die richtige Lösung.
+Stratifizieren bedeutet,
+den Gesamtdatensatz in Gruppen oder "Schichten" ("Strata").
+Würde man die Gesamzahl an Patienten mit vs. ohne Medikatment vergleichen, käme man zu einem falschen Schluss.
+:::
+
+
+
+
+### Studie B: Blutdruck
+
+
+Medikament einnehmen?
+Oder lieber nicht?
+
+Mit Blick auf @tbl-studie-b: Was raten Sie dem Arzt? Medikament einnehmen, ja oder nein?
+
+
+```{r dag-studie-b-table}
+#| echo: false
+#| message: false
+#| label: tbl-studie-b
+#| tbl-cap: "Daten zur Wirksamkeit eines Medikaments (Studie B)"
+studie_b <- 
+  tibble::tribble(
+~ Gruppe,          ~`Ohne Medikament`,          ~`Mit Medikament`,
+"geringer Blutdruck",    "81/87 überlebt (93%)", "234/270 überlebt (87%)",
+"hoher Blutdruck",  "192/263 überlebt (73%)",   "55/80 überlebt (69%)",
+"Gesamt",  "273/350 überlebt (78%)", "289/350 überlebt (83%)"
+  )
+
+studie_b %>% 
+  gt()
+```
+
+
+
+
+
+
+Die Daten stammen aus einer (fiktiven) klinischen Studie, $n=700$, hoher Qualität (Beobachtungsstudie).
+Bei geringem Blutdruck scheint das Medikament zu schaden.
+Bei hohem Blutdrck scheint das Medikamenet auch zu schaden.
+Aber *insgesamt* (Summe über beide Gruppe) *nicht*, da scheint es zu nutzen?!
+Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, 
+wenn er den Blutdruck nicht kennt [@pearl2016]?
+
+
+ Kausalmodell zur Studie B
+
+
+
+
+
+Das Medikament hat einen (absenkenden) Einfluss auf den Blutdruck.
+Gleichzeitig hat das Medikament einen (toxischen) Effekt auf die Heilung.
+Verringerter Blutdruck hat einen positiven Einfluss auf die Heilung.
+Sucht man innerhalb der Leute mit gesenktem Blutdruck nach Effekten, findet man nur den toxischen Effekt: Gegeben diesen Blutdruck ist das Medikament schädlich aufgrund des toxischen Effekts. Der positive Effekt der Blutdruck-Senkung ist auf diese Art nicht zu sehen.
+
+Das Kausalmodell von Studie B ist in @fig-dag-studie-b dargestellt.
+
+
+
+```{r dag-studie-b}
+#| echo: false
+#| label: fig-dag-studie-b
+#| fig-cap: "Drug hat keinen direkten, aber zwei indirekte Effekt auf recovery, einer davon ist heilsam, einer schädlich"
+#| out-width: "50%"
+dag_studie_b <-
+  dagitty("dag{
+          drug -> pressure
+          drug -> toxic
+          pressure -> recovery
+          toxic -> recovery
+          }
+      ")
+
+
+coordinates(dag_studie_b) <-
+  list(x = c(drug = 0, pressure = 1, toxic = 1, recovery  = 2),
+       y = c(drug = 1, pressure = 0, toxic = 2, recovery = 1))
+
+
+plot(dag_studie_b)
+```
+
+Betrachtung der Teildaten zeigt nur den toxischen Effekt des Medikaments, nicht den nützlichen (Reduktion des Blutdrucks).
+
+
+
+
+:::callout-important
+Betrachtung der Gesamtdaten zeigt in diesem Fall den wahren, kausalen Effekt. 
+Stratifizieren wäre falsch, da dann nur der toxische Effekt, aber nicht der heilsame Effekt sichtbar wäre.
+:::
+
+
+
+
+
+
+### Studie A und B: Gleiche Daten, unterschiedliches Kausalmodell
+
+
+Vergleichen Sie die DAGs @fig-dag-studie-a und @fig-dag-studie-b,
+die die *Kausalmodelle* der Studien A und B darstellen:
+Sie sind *unterschiedlich*.
+Aber: Die *Daten* sind *identisch*.
+
+
+
+Kausale Interpretation - und damit Entscheidungen für Handlungen - 
+war nur möglich, da das Kausalmodell bekannt ist. 
+Die Daten alleine reichen nicht (bei Beobachtungsstudien).
+
+
+
+
+
+
+### Sorry, Statistik: Du allein schaffst es nicht
+
+
+
+
+Datenanalyse alleine reicht nicht für Kausalschlüsse. 🧟
+
+Kausalinferenz 📚 plus Datenanalyse 📊 erlaubt Kausalschlüsse. 📚➕📊  🟰  🤩
+
+
+
+:::callout-important
+Für Entscheidungen ("Was soll ich tun?") braucht man kausales Wissen.
+Kausales Wissen basiert auf einer Theorie (Kausalmodell) plus Daten.
+:::
 
 
 
@@ -1299,10 +1957,13 @@ Allerdings lässt uns unser Vorwissen vermuten, dass so ein Treatment das Einkom
 [Kontinuierliches Lernen](https://imgflip.com/i/77wn7m) ist der Schlüssel zum Erfolg.
 :::
 
-
+Wenn Sie an einer (nicht prüfungsrelevanten) Vertiefung interessiert sind, Lesen Sie die Einführung zum Thema Modellieren bei @poldrack2022 (Kap. 5.1).
 
 
 ## Aufgaben
+
+Schauen Sie sich die Aufgaben mit dem Tag *inference* auf dem [Datenwerk](https://datenwerk.netlify.app/#category=inference) an.
+
 
 
 ### Paper-Pencil-Aufgaben
@@ -1311,18 +1972,20 @@ Allerdings lässt uns unser Vorwissen vermuten, dass so ein Treatment das Einkom
 1. [Griech-Buchstaben-Inferenz](https://datenwerk.netlify.app/posts/griech-buchstaben-inferenz/griech-buchstaben-inferenz/)
 3. [ttest-als-regr](https://datenwerk.netlify.app/posts/ttest-als-regr/ttest-als-regr/)
 4. [ttest-skalenniveau](https://datenwerk.netlify.app/posts/ttest-skalenniveau/ttest-skalenniveau/)
+5. [pwert2](https://sebastiansauer.github.io/Datenwerk/posts/pwert2/)
+6. [interpret-ci](https://sebastiansauer.github.io/Datenwerk/posts/interpret-ci/)
+6. [interpret-ci2](https://sebastiansauer.github.io/Datenwerk/posts/interpret-ci2/)
+7. [gruppenvergleich-regression](https://sebastiansauer.github.io/Datenwerk/posts/gruppenvergleich-regression/)
 12. [Warum-Bayes](https://datenwerk.netlify.app/posts/warum-bayes/warum-bayes)
 13. [samples-nyc2](https://datenwerk.netlify.app/posts/samples-nyc2/)
-
-
-
+15. [parameter-genau](https://sebastiansauer.github.io/Datenwerk/posts/parameter-genau/)
+11. [punktschaetzer-reicht-nicht](https://datenwerk.netlify.app/posts/punktschaetzer-reicht-nicht/punktschaetzer-reicht-nicht.html)
 
 ### Aufgaben, für die man einen Computer braucht
 
 
-1. [korr-als-regr](https://datenwerk.netlify.app/posts/korr-als-regr/korr-als-regr.html)
-11. [punktschaetzer-reicht-nicht](https://datenwerk.netlify.app/posts/punktschaetzer-reicht-nicht/punktschaetzer-reicht-nicht.html)
-8. [ungewiss-arten-regr](https://datenwerk.netlify.app/posts/ungewiss-arten-regr/ungewiss-arten-regr.html)
+1. [korr-als-regr](https://datenwerk.netlify.app/posts/korr-als-regr/korr-als-regr.html
+2. [ungewiss-arten-regr](https://datenwerk.netlify.app/posts/ungewiss-arten-regr/ungewiss-arten-regr.html)
 6. [inferenz-fuer-alle](https://datenwerk.netlify.app/posts/inferenz-fuer-alle/inferenz-fuer-alle.html)
 7. [adjustieren1a](https://datenwerk.netlify.app/posts/adjustieren1a/adjustieren1a.html)
 5. [adjustieren2a](https://datenwerk.netlify.app/posts/adjustieren2a/adjustieren2a.html)
