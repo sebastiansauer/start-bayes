@@ -398,22 +398,22 @@ Dabei liegt immer ein Zufallsversuch mit $n$ Durchgängen und $k$ Treffern zugru
 ::: {#thm-binomial}
 ### Binomialverteilung
 
-$$Pr(X=k|p,n) = \frac{n!}{k!(n-k)!}p^k(1-p)^{n-k}\quad \square$$
+$$\begin{aligned}
+Pr(X=k|p,n) &= \text{Anzahl Pfade} \cdot \text{Pfad-Wskt} \\
+&= \underbrace{\binom{n}{k} }_{\text{Anzahl Pfade}} \cdot \quad \underbrace{p^k(1-p)^{n-k}}_{\text{Pfad-Wskt}} \\
+\end{aligned}$$
 :::
 
 
  @thm-binomial kann wie folgt auf Deutsch übersetzen:
 
->   Die Wahrscheinlichkeit für das Ereignis $X$ gegeben $p$ und $n$ berechnet als Produkt von zwei Termen. Der erste Term ist der Quotient von der Fakultät von n im Zähler und im Nenner das Produkt von erstens der Fakultät von k mit zweitens der Fakultät von (n-k). Der zweite Term ist das Produkt von p hoch k mal der komplementären Wahrscheinlichkeit von p hoch (n-k).
-
-Oder noch kürzer:
-
->    Die Wahrscheinlichkeit für das Ereignis "X" gegeben p und k berechnet als Produkt von zwei Termen. Erstens der Anzahl der günstigen Pfade, k und zweitens der Wahrscheinlichkeit für einen günstigen Pfad, P(A).
+>   Die Wahrscheinlichkeit für das Ereignis $X$ gegeben $p$ und $n$ berechnet als Produkt von zwei Termen. Der erste Term gibt die Anzahl der (günstigen) Pfade, $k$ (aus $n$ möglichen Pfaden). Der zweite Term gibt die Wahrscheinlichkeit für einen günstigen Pfad (einen Treffer), $p=P(A)$, die "Pfad-Wskt".
 
 
 
 
-Die Anzahl der (günstigen) Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, den man so darstellt, s. @thm-binkoeff.^[wobei gelten muss $n \ge k$]
+Die Anzahl der (günstigen) Pfade kann man mit dem *Binomialkoeffizient* ausrechnen, 
+den man mit $\binom{n}{k}$ darstellt, s. @thm-binkoeff.^[wobei gelten muss $n \ge k$]
 
 :::{#def-binkoeff}
 ### Binomialkoeffizient
@@ -424,9 +424,10 @@ Der Binomialkoeffizient gibt an, auf wie vielen verschiedenen Arten man aus eine
 
 ### Binomialkoeffizient
 
-$$\tbinom{n}{k}= \frac{n!}{k!(n-k)!} \quad \square$$
+$$\tbinom{n}{k}= \frac{n!}{k!\cdot (n-k)!} \quad \square$$
 
-Lies: "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige Ereignisse (günstige Pfade) oder kürzer "k aus n".\square
+Lies: "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige 
+Ereignisse (Pfade) oder kürzer "k aus n" bzw. "n über k".\square
 :::
 
 Um den Binomialkoeffizient zu berechnen, 
@@ -436,6 +437,7 @@ Man schreibt sie mit einem Ausrufezeichen hinter der Zahl, also zum Beispiel $3!
 Dabei multipliziert man alle natürlichen Zahlen von der gegebenen Zahl bis hinunter zur 1.
 
 :::{#exm-fakultaet}
+- $1! = 1$
 - $3! = 3 \cdot 2 \cdot 1$
 - $4! = 4 \cdot 3 \cdot 2 \cdot 1$
 - $0! = 1$ (per Definition) $\square$
@@ -445,11 +447,142 @@ Dabei multipliziert man alle natürlichen Zahlen von der gegebenen Zahl bis hinu
 
 
 Puh, Formeln sind vielleicht doch ganz praktisch, 
-wenn man sich diese lange Übersetzung der Formel in Prosa duchliest.
+wenn man sich diese lange Übersetzung der Formel in Prosa durchliest.
 Noch praktischer ist es aber, dass es Rechenmaschinen gibt, 
 die die Formel kennen und für uns ausrechnen. 
 
 
+
+:::{#exm-binkoeff}
+### 2 von 4 Freunden auswählen
+
+Sie sind auf einer Party. Großartige Feier. Es wird spät, und langsam wird es Zeit,
+nach Hause zu fahren. Heute sind Sie der Fahrer.
+In Ihrem Auto haben Sie noch 2 freie Plätze: 💺💺. 
+Aber 4 Ihrer Freunde möchten bei Ihnen mitfahren.
+Da stellt sich also die Frage: Wen wählen Sie aus?
+
+
+1. Anton 🙋‍♂️ 
+2. Berta 👩‍💻
+3. Carla 👧
+4. Dario 🧑‍🦱
+
+
+
+Für den 1. freien Platz stehen alle 4 Freunde zur Auswahl.
+Für den 2. freien Platz stehen noch 3 Freunde zur Auswahl.
+Das sind 12 Möglichkeiten.
+
+
+@fig-freunde-auswahl zeigt als Baumdiagramm Ihre Auswahl-Möglichkeiten.
+Das Diagramm zeigt auch, welche Möglichkeiten Sie hätten,
+wenn Sie alle 4 Freunde auswählen könnten. 
+
+
+
+
+```{dot}
+//| label: fig-freunde-auswahl
+//| fig-cap: |
+//|   Sie wählen nacheinander 4 Freunde (A,B,C,D) aus. 
+//|   Wie viele Möglichkeiten gibt es dafür?
+//|   Zuerst haben Sie 4 Möglichkeiten.
+//|   Nachdem Sie den 1. Freund gewählt haben, haben Sie noch 3 weitere zur Auswahl.
+//|   Dann noch 2 und schließlich bleibt der Letzte.
+digraph permutations4 {
+    layout=twopi;
+    overlap=false;
+    node [shape=circle, fontsize=8];
+
+    Root -> {A B C D};
+
+    /* Ebene 2 */
+    A -> {AB AC AD};
+    B -> {BA BC BD};
+    C -> {CA CB CD};
+    D -> {DA DB DC};
+
+    /* Ebene 3 */
+    AB -> {ABC ABD};
+    AC -> {ACB ACD};
+    AD -> {ADB ADC};
+
+    BA -> {BAC BAD};
+    BC -> {BCA BCD};
+    BD -> {BDA BDC};
+
+    CA -> {CAB CAD};
+    CB -> {CBA CBD};
+    CD -> {CDA CDB};
+
+    DA -> {DAB DAC};
+    DB -> {DBA DBC};
+    DC -> {DCA DCB};
+
+    /* Ebene 4 (Endknoten – 24 Permutationen) */
+    ABC -> ABCD;
+    ABD -> ABDC;
+
+    ACB -> ACBD;
+    ACD -> ACDB;
+
+    ADB -> ADBC;
+    ADC -> ADCB;
+
+    BAC -> BACD;
+    BAD -> BADC;
+
+    BCA -> BCAD;
+    BCD -> BCDA;
+
+    BDA -> BDAC;
+    BDC -> BDCA;
+
+    CAB -> CABD;
+    CAD -> CADB;
+
+    CBA -> CBAD;
+    CBD -> CBDA;
+
+    CDA -> CDAB;
+    CDB -> CDBA;
+
+    DAB -> DABC;
+    DAC -> DACB;
+
+    DBA -> DBAC;
+    DBC -> DBCA;
+
+    DCA -> DCAB;
+    DCB -> DCBA;
+}
+
+```
+
+Würden Sie alle 4 Freunde wählen, wären das $4\cdot 3 \cdot 2 \cdot 1 = 4! = 24$ Möglichkeiten.
+Zum Beispiel "ABCD", "ABDC", "ADBC" etc.
+Wir wählen aber nur 2 von 4 Freunden.
+Daher haben wir nur $4\cdot 3 \cancel{\cdot 2 \cdot 1} = 4! - 2! = 12$ Möglichkeiten.
+Zum Beispiel "AB", "BA", "AC".
+Allerdings ist es für die Frage, wer in Ihrem Auto mitfährt, egal,
+ob Sie "AB" oder "BA" auswählen -- das läuft auf die gleichen Mitfahrer heraus.
+Also müssen wir diese Variationen noch von unseren Möglichkeiten abziehen.
+Wie viele Variationen für die Mitfahrer "A" und "B" gibt es?
+Das sind 2 Möglichkeiten: Für den 1. freien Sitz haben Sie die Wahl zwischen 2 Personen,
+für den 2. freien Sitz dann nur noch eine Wahl.
+Das macht also $2!$ Variationen -- davon behalten wir nur eine.
+Wir "schneiden" also jeden 2. Baumast ab, teilen also die Anzahl der Äste (Pfade)
+durch 2.
+
+Insgesamt gibt es also 6 mögliche Mitfahrer-Kombinationen:
+"AB", "AC", "AD", "BC", "BD", "CD".
+
+$$\binom{4}{2} = \frac{4!} {2! \cdot 2!} = \frac{4\cdot 3 \cdot 2}{2 \cdot 2} = 3 \cdot 2 = 6$$
+
+
+$\square$
+:::
 
 
 ::: {#exm-klausur20}
@@ -458,7 +591,8 @@ die die Formel kennen und für uns ausrechnen.
 
 Ei Professi stellt einen Klausur mit 20 Richtig-Falsch-Fragen.
 Wie groß ist die Wahrscheinlichkeit, 
-durch bloßes Münze werfen *genau* 15 Fragen richtig zu raten?^[Hey, endlich mal was für echte Leben!]
+durch bloßes Münze werfen *genau* 15 Fragen richtig zu raten?^[Hey, 
+endlich mal was für echte Leben!]
 
 
 
@@ -489,7 +623,8 @@ Die Wahrscheinlichkeit höchstens 15 Treffer (d.h. 0, 1, 2, ... 15 Treffer) zu e
 
 #### 3 Münzwürfe mit 3 Treffern
 
-Was ist die Wahrscheinlichkeit bei 3 Münzwürfen (genau) 3 Treffer (Kopf) zu erzielen, s. @fig-p-bin-exms, links?
+Was ist die Wahrscheinlichkeit bei 3 Münzwürfen (genau) 3 Treffer (Kopf) zu erzielen, 
+s. @fig-p-bin-exms, links?
 
 Das ist eine Frage an die Binomialverteilung;
 in R kann man das mit der Funktion `dbinom` beantworten.

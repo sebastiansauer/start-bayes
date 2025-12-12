@@ -60,7 +60,7 @@ writeLines("# Definitionen\n\n", fileConn)
 # writeLines("### Definitions\n\n", fileConn) # Adding a heading for the definitions section
 
 for (definition in definitions) {
-  line <- paste0("- **", definition[2], "**: @def-", definition[1], "\n\n")
+  line <- paste0("1. **", definition[2], "**: @def-", definition[1], "\n")
   writeLines(line, fileConn)
 }
 close(fileConn)

@@ -60,7 +60,7 @@ writeLines("# Theoreme\n\n", fileConn)
 # writeLines("### theorems\n\n", fileConn) # Adding a heading for the theorems section
 
 for (theorem in theorems) {
-  line <- paste0("- **", theorem[2], "**: @thm-", theorem[1], "\n\n")
+  line <- paste0("1. **", theorem[2], "**: @thm-", theorem[1], "\n")
   writeLines(line, fileConn)
 }
 close(fileConn)
