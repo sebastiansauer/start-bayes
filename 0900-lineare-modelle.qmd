@@ -16,10 +16,9 @@ Nach Absolvieren des jeweiligen Kapitels sollen folgende Lernziele erreicht sein
 Sie können ...
 
 
-
+- Das Zusammenspiel von Apriori-Verteilungen und linearem Modell zur Berechnung der Likelihood erläutern
 - die Post-Verteilung für einfache lineare Modelle in R berechnen
-- zentrale Informationen zu Modellparametern - wie Lage- oder Streuungsmaße und auch Schätzintervalle - aus der Post-Verteilung herauslesen
-- künftige, laut Modell zu erwartende Beobachtungen mit der PPV simulieren
+- zentrale Informationen zu Modellparametern des Regressionsmodells -- wie Lage-- oder Streuungsmaße und auch Schätzintervalle - aus der Post-Verteilung herauslesen
 
 
 ### Begleitliteratur
@@ -33,7 +32,7 @@ Der Stoff dieses Kapitels orientiert sich an @mcelreath2020, Kap. 4.4.
 ### Vorbereitung im Eigenstudium
 
 - [Statistik1, Kap. "Geradenmodelle 1"](https://statistik1.netlify.app/080-regression1)
-
+- [Statistik1, Abschnitt "*z*-Transformation"](https://statistik1.netlify.app/060-modellguete.html#die-z-transformation)
 
 
 
@@ -66,10 +65,12 @@ Da wir in diesem Kapitel immer mal wieder eine Funktion aus dem R-Paket `{easyst
 
 ### Benötigte Daten {#sec-data-lm}
 
-In diesem Kapitel benötigen wir den Datensatz zu den !Kung-Leuten, `Howell1a`, @mcelreath2020.
-Sie können ihn [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv) herunterladen.
+In diesem Kapitel benötigen wir den Datensatz zu den !Kung-Leuten, aus der Datei `Howell1a.csv`, @mcelreath2020.
 
-{{< downloadthis data/Howell1a.csv dname = "Howell1a" >}}
+
+{{< downloadthis data/Howell1a.csv dname="Howell1a" label = "Download CSV">}}
+{{< downloadthis data/Howell1a.xlsx dname="Howell1a" label = "Download XLSX">}}
+
 
 ```{r Post-Regression-2}
 #| fig-asp: 0.5
@@ -88,85 +89,31 @@ kung_erwachsen <- kung %>% filter(age > 18)  # <3>
 ### Einstieg
 
 
-:::{#exm-wdh-lm}
+:::{#exr-wdh-lm}
 ### Grundkonzepte der linearen Regression
 Fassen Sie die Grundkonzepte der linearen Regression kurz zusammen! $\square$
 :::
 
-:::{#exm-wdh-post}
+:::{#exr-wdh-post}
 ### Was ist eine Post-Verteilung und wozu ist sie gut?
-Erklären Sie kurz, was eine Post-Verteilung ist - insbesondere im Zusammenhang mit den Koeffizienten einer einfachen Regression - und wozu sie gut ist. $\square$
+Erklären Sie kurz, was eine Post-Verteilung ist -- insbesondere im Zusammenhang mit den Koeffizienten einer einfachen Regression -- und wozu sie gut ist. $\square$
 :::
 
 
 ### Überblick
 
-Dieses Kapitel stellt ein einfaches Regressionsmodell vor, wo die Körpergröße auf das Gewicht zurückgeführt wird; also ein sehr eingängiges Modell.  
-Neu ist dabei lediglich, dass die Parameter des Modells - $\beta_0$, $\beta_1$, $\sigma$ - jetzt über eine Post-Verteilung verfügen. 
+Dieses Kapitel stellt ein einfaches Regressionsmodell vor, 
+wo die Körpergröße auf das Gewicht zurückgeführt wird; also ein sehr eingängiges Modell.  
+Neu (im Vergleich zu einer Frequentistischen Regression mit `lm`) ist dabei lediglich, dass die drei Parameter des Modells -- $\beta_0$, $\beta_1$, $\sigma$ -- jetzt über eine Post-Verteilung verfügen. 
 Die Post-Verteilung ist der Zusatznutzen der Bayes-Statistik.
 Die "normale" Regression hat uns nur einzelne Werte für die Modellparameter geliefert ("Punktschätzer"). 
-Mit Bayes haben wir eine ganz Verteilung pro Parameter.
+Mit Bayes haben wir eine ganze Verteilung pro Parameter;
+das ist informationsreicher als mit der Frequentistischen Regressionsanalyse.
 
 
 
 
-## Post-Verteilung der Regression
-
-
-### Einfache Regression
-
-
-
-Die (einfache) Regression prüft, 
-inwieweit zwei Variablen, $Y$ und $X$ linear zusammenhängen.
-Je mehr sie zusammenhängen, desto besser kann man $X$ nutzen, um $Y$ vorherzusagen (und umgekehrt).
-Hängen $X$ und $Y$ zusammen, heißt das nicht (unbedingt), 
-dass es einen *kausalen* Zusammenhang zwischen $X$ und $Y$ gibt.
-*Linear* ist ein Zusammenhang, wenn der Zuwachs in $Y$ relativ zu $X$ konstant ist: wenn $X$ um eine Einheit steigt, steigt $Y$ immer um $b$ Einheiten (nicht kausal, sondern deskriptiv gemeint).^[
-[Datenquelle](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv), @mcelreath2020.]
-
-Laden wir die !Kung-Daten und visualisieren wir uns den Zusammenhang zwischen Gewicht (X, UV) und Größe (Y, AV), @fig-kung-zshg.
-
-
-
-
-:::::{#fig-kung-zshg}
-
-
-
-:::: {.figure-content}
-
-:::{.panel-tabset}
-
-### Mit `ggplot2`
-
-```{r}
-kung_erwachsen %>% 
-  ggplot(
-       aes(x = weight, y = height)) +
-  geom_point(alpha = .7) +
-  geom_smooth(method = "lm")
-```
-
-
-### Mit `ggpubr`
-
-```{r}
-ggscatter(kung_erwachsen,
-          x = "weight", y = "height",
-          add = "reg.line") 
-```
-
-
-
-:::
-::::
-
-
-
-Der Zusammenhang zwischen Gewicht (X) und Größe (Y)
-
-:::::
+## Den Datensatz verstehen
 
 
 
@@ -177,9 +124,6 @@ Der Zusammenhang zwischen Gewicht (X) und Größe (Y)
 rm(kung)
 rm(kung_erwachsen)
 ```
-
-
-Die Daten können Sie [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv) herunterladen. 
 
 
 @tbl-kung1 zeigt die zentralen deskriptiven Statistiken zum !Kung-Datensatz.
@@ -206,15 +150,16 @@ describe_distribution(kung_erwachsen) |> display()
 ```
 
 
-Wie aus @tbl-kung1 abzulesen ist, beträgt das mittlere Körpergewicht (`weight`) liegt ca. 45kg (sd 7 kg).
-
-
-### Etwas mehr EDA
+Wie aus @tbl-kung1 abzulesen ist, beträgt das mittlere Körpergewicht (`weight`) liegt ca. 45kg (sd ca 7 kg).
 
 
 
 
-Wir brauchen die EDA hier nicht wirklich, aber es ist praktisch. Das Paket `DataExplorer` hat ein paar nette Hilfen zur explorativen Datenanalyse.
+
+Wir brauchen explorative Datenanalyse (EDA) nicht wirklich, um einfache Bayes-Regressionen zu verstehen.
+Aber EDA hilft, die Daten zu verstehen,
+was essenziell ist, wenn man Erkenntnisse aus den Daten gewinnen will.
+Das Paket `DataExplorer` hat ein paar nette Hilfen zur explorativen Datenanalyse.
 
 
 ```{r}
@@ -222,8 +167,8 @@ Wir brauchen die EDA hier nicht wirklich, aber es ist praktisch. Das Paket `Data
 library(DataExplorer)
 ```
 
-#### Gibt es fehlende Werte?
-
+Was man im Rahmen einer EDA stets prüfen sollte, sind fehlende Werte. 
+Gibt es in diesem Datensatz fehlende Werte?
 Nein, s. Abb. @fig-na.
 
 ```{r}
@@ -234,23 +179,44 @@ kung_erwachsen %>% plot_missing()
 
 
 
-#### Verteilung der numerischen Variablen
-
-Betrachten wir die Verteilung der *numerischen* Variablen des Datensatzes, s. @fig-kung_erwachsen-hists.
+Betrachten wir als Nächstes die Verteilung der *numerischen* Variablen des Datensatzes, s. @fig-kung_erwachsen-hists.
 
 
 ```{r}
-#| label: fig-kung_erwachsen-hists
-#| fig-cap: "Verteilung (als Histogramme dargestellt) der numerischen Variablen des Datensatzes"
+#| eval: false
 kung_erwachsen %>% plot_histogram()
 ```
 
 
+```{r}
+#| label: fig-kung_erwachsen-hists
+#| echo: false
+#| fig-cap: "Verteilung (als Histogramme dargestellt) der numerischen Variablen des Datensatzes"
+kung_erwachsen |> 
+  select(age, height, weight) |>  # Fixed duplicate 'age' column
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value") |>  # Pivot to long format
+  ggplot(aes(x = value)) +
+  geom_histogram(aes(y = after_stat(density)), fill = "grey60") +  # Histogram with density scaling
+  geom_density(color = "blue", size = 1) +  # Density plot in blue
+  theme_minimal() +  # Optional: Clean theme
+  facet_wrap(~ variable, scales = "free") + # Faceting by variable, free scales for each facet
+  scale_y_continuous(breaks = NULL)
+```
 
-#### Verteilung der kategorialen Variablen
+Wie man in @fig-kung_erwachsen-hists sieht, ist Alter (`age`) rechtsschief verteilt,
+wohingegen Größe (`height`) und Gewicht (`weight`) deutlich symmetrischer oder sogar normalverteilt sind.
+`height` ist bimodal (zweigipflig), 
+vermutlich auf Grund der Vermischung der Verteilung der beiden Geschlechter.
 
+Betrachten wir nin die Verteilung der *kategorialen* Variablen des Datensatzes, s. @fig-kung_erwachsen-bars.
+Es gibt etwas mehr Männer als Frauen im Datensatz.
 
-Betrachten wir die Verteilung der *kategorialen* Variablen des Datensatzes, s. @fig-kung_erwachsen-bars.
+```{r}
+kung_erwachsen |> 
+  count(male) |> 
+  mutate(Anteil_maenner = n / sum(n))
+```
+
 
 
 ```{r}
@@ -260,9 +226,9 @@ kung_erwachsen %>% plot_bar()
 ```
 
 
-
-#### Korrelationen
-
+Korrelationen sind, ähnlich wie Regressionen, eine Methode, um Zusammenhänge zwischen Variablen darzustellen.
+Allerdings sind Korrelationen nur für zwischen zwei Variablen definiert; 
+Regressionsanalysen können komfortabel mehrere Variablen berücksichtigen.
 Die Korrelationen der (numerischen) Variablen sind in @fig-num-korrs dargestellt.
 
 ```{r}
@@ -272,13 +238,87 @@ kung_erwachsen %>% plot_correlation()
 ```
 
 
+Starke Zusammenhänge finden sich (wenig überraschend) zwischen Größe und Gewicht sowie zwischen Geschlecht und Größe/Gewicht.
+
+
 :::{#exr-Bonus}
-### EDA-Bericht
+### Vertiefung: EDA-Bericht
 
 Probieren Sie mal die folgende Funktion aus, die Ihnen einen Bericht zur EDA erstellt: `create_report(kung_erwachsen)`. $\square$
 :::
 
 
+
+### Der Zusammenhang von Gewicht und Größe
+
+
+
+Die (einfache) Regression prüft, 
+inwieweit zwei Variablen, $Y$ und $X$ linear zusammenhängen.
+Je mehr sie zusammenhängen, desto besser kann man $X$ nutzen, um $Y$ vorherzusagen (und umgekehrt).
+Hängen $X$ und $Y$ zusammen, heißt das nicht (unbedingt), 
+dass es einen *kausalen* Zusammenhang zwischen $X$ und $Y$ gibt.
+*Linear* ist ein Zusammenhang, wenn der Zuwachs in $Y$ relativ zu $X$ konstant ist: wenn $X$ um eine Einheit steigt, steigt $Y$ immer um $b$ Einheiten (nicht kausal, sondern deskriptiv gemeint).^[
+[Datenquelle](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/Howell1a.csv), @mcelreath2020.]
+
+Laden wir die !Kung-Daten und visualisieren wir uns den Zusammenhang zwischen *Gewicht* (X, UV) und *Größe* (Y, AV), @fig-kung-zshg.
+
+
+
+
+:::::{#fig-kung-zshg}
+
+
+
+:::: {.figure-content}
+
+:::{.panel-tabset}
+
+### Mit `ggplot2`
+
+```{r}
+kung_erwachsen %>% 
+  ggplot(
+       aes(x = weight, y = height)) +
+  geom_point(alpha = .7) +
+  geom_smooth(method = "lm")
+```
+
+
+### Mit `ggpubr`
+
+```{r}
+#| eval: false
+ggscatter(kung_erwachsen,
+          x = "weight", y = "height",
+          add = "reg.line") 
+```
+
+```{r}
+#| echo: false
+ggscatter(kung_erwachsen,
+          x = "weight", y = "height",
+          add = "reg.line", 
+          color = "black",
+          alpha = .7, 
+          add.params = list(color = "blue", se = TRUE))  # color for the regression line
+
+```
+
+
+
+
+:::
+::::
+
+
+
+Der Zusammenhang zwischen Gewicht (X) und Größe (Y)
+
+:::::
+
+Wie man sieht in @fig-kung-zshg, gibt es einen deutlichen linearen Zusammenhang zwischen Gewicht und Größe:
+Je schwerer (je höher das Gewicht einer Person), desto größer (dest höher ihr Wert in der Körpergröße).
 
 
 
@@ -287,17 +327,23 @@ Probieren Sie mal die folgende Funktion aus, die Ihnen einen Bericht zur EDA ers
 ### Prädiktor zentrieren 
 
 
+:::{.callout-note}
+Wenn Sie mit der *z*-Transformation nicht vertraut sind,
+macht es Sinn, das Thema (jetzt) zu lernen, s.B. [hier](https://statistik1.netlify.app/060-modellguete.html#die-z-transformation). $\square$
+:::
 
 
-Zieht man von jedem Gewichtswert den Mittelwert ab, so bekommt man die Abweichung des Gewichts vom Mittelwert (Prädiktor "zentrieren", engl. to *c*enter).
-Wenn man den Prädiktor (`weight`) zentriert hat, ist der Achsenabschnitt, $\beta_0$, einfacher zu verstehen.
-In einem Modell mit zentriertem Prädiktor (`weight`) gibt der Achsenabschnitt die Größe einer Person mit durchschnittlichem Gewicht an. 
-Würde man `weight` nicht zentrieren, gibt der Achsenabschnitt die Größe einer Person mit `weight=0` an, was nicht wirklich sinnvoll zu interpretieren ist.
-Vgl. @gelman2021, Kap. 10.4,  12.2.
+Zieht man von jedem Gewichtswert den Mittelwert ab, so bekommt man die Abweichung des Gewichts vom Mittelwert; der Prädiktor ist dann *zentriert*, (engl. to *c*enter).
+Wenn man den Prädiktor *Gewicht* (`weight`) zentriert hat, ist der Achsenabschnitt, $\beta_0$, einfacher zu verstehen:
+In einem Modell mit zentriertem Prädiktor (`weight`) gibt der Achsenabschnitt 
+die Größe einer Person mit durchschnittlichem Gewicht an. 
+Würde man `weight` nicht zentrieren, gibt der Achsenabschnitt die Größe einer Person 
+mit `weight=0` an, was nicht wirklich sinnvoll zu interpretieren ist;
+vgl. @gelman2021, Kap. 10.4,  12.2.
+Man zentriert eine Variable $X$, indem man von $x_i$ den Mittelwert $\bar{x}$ abzieht: $x_i - \bar{x}$. 
+Im Folgenden zentrieren wir *Gewicht* (`weight`);
+die resultierende Variable nennen wir `weight_c` (*c* wie "centered").
 
-
-
-Man zentriert eine Variable $X$, indem man von $x_i$ den Mittelwert $\bar{x}$ abzieht: $x_i - \bar{x}$.
 
 
 ```{r Post-Regression-7, echo = TRUE}
@@ -308,7 +354,7 @@ kung_zentriert <-
 ```
 
 
-Mit Hilfe von `center()` aus `{easystats}` kann man sich das Zentrieren auch erleichtern.
+Mit Hilfe der Funktion `center()` aus `{easystats}` kann man sich das Zentrieren erleichtern.
 
 
 ```{r}
@@ -324,7 +370,11 @@ kung_zentriert <-
 
 ```{r Post-Regression-8}
 #| echo: false
+#| label: tbl-kung-zentriert
+#| tbl-cap: "Gewicht (`weight`) und zentriertes Gewicht (`weight_c`): Zentrierte Gewichtswerte zeigen, wie viele Kilogramm eine Person vom Mittelwert entfernt ist. So ist die Person mit der ID 1 drei Kilogramm schwerer als der Mittelwert von 45 kg."
 kung_zentriert %>% 
+  mutate(id = 1:n()) |> 
+  select(id, weight, weight_c, everything()) |> 
   slice_head(n=3) %>% 
   gt() %>% 
   fmt_number(columns = everything(), decimals = 0)
@@ -339,7 +389,7 @@ Der Mittelwert von `weight_c` (das zentrierte Gewicht) liegt jetzt bei 0, s. @fi
 ```{r Post-Regression-9, fig.asp=0.4}
 #| echo: false
 #| label: fig-kung_zentriert-center
-#| fig-cap: 'Das Zentrieren ändert die Verteilungsform nicht, sondern "schiebt" die Verteilung nur zur Seite'
+#| fig-cap: 'Das Zentrieren ändert die Verteilungsform nicht, sondern "schiebt" die Verteilung nur zur Seite. Der resultierende Mittelwert ist dann Null. Dier zentrierten Werte zeigen, wie weit ein Messwert vom Mittelwert entfernt ist (hier in der Einheit kg).'
 
 kung_zentriert %>% 
   select(weight, weight_c) %>% 
@@ -363,18 +413,25 @@ kung_zentriert %>%
 
 
 
-Das schwierigste ist dabei, nicht zu vergessen, dass `kung_zentriert` die Tabelle mit zentriertem Prädiktor ist, nicht `kung_erwachsen`.
+Das Schwierigste ist dabei nur, nicht zu vergessen, dass `kung_zentriert` die Tabelle mit zentriertem Prädiktor ist, nicht `kung_erwachsen`.
 
 
 ## Modell m_kung_gewicht_c: zentrierter Prädiktor
 
 📺 [Prädiktoren zentrieren](https://youtu.be/3Z1dXPO_MSE)
 
+Erstellen wir nun ein Regressionsmodell mit dem zentrierten Prädiktor, Gewicht.
+Die Forschungsfrage lautet: "Wie stark ist der lineare Zusammenhang von Größe und Gewicht?".
+Anders formuliert: "Um wiele Zentimeter Körpergröße unterscheiden sich zwei erwachsene Kung,
+wobei die eine Person um 1 kg leichter ist als die andere?".
 
-Einige Regressionskoeffizienten, wie der Achsenabschnitt (Intercept) sind schwer zu interpretieren:
+
+
+Einige Regressionskoeffizienten, wie der Achsenabschnitt (engl. intercept) sind schwer zu interpretieren:
 Bei einem (erwachsenen) Menschen mit *Gewicht 0*, was wäre wohl die Körpergröße?
 Hm, Philosophie steht heute nicht auf der Tagesordnung.
-Da wäre es schön, wenn wir die Daten so umformen könnten, dass der Achsenabschnitt eine sinnvolle Aussage macht.
+Da wäre es schön, wenn wir die Daten so umformen könnten, 
+dass der Achsenabschnitt eine sinnvolle Aussage macht.
 Zum Glück geht das leicht: Wir zentrieren den Prädiktor (Gewicht)!
 
 
@@ -386,25 +443,32 @@ Durch Zentrieren kann man die Ergebnisse einer Regression einfacher interpretier
 
 
 
-### Modelldefinition von `m_kung_gewicht_c`
+Zuerst stellen wri die Modelldefinition von `m_kung_gewicht_c` auf.
 
-Für jede Ausprägung des Prädiktors (`weight_centered`), $wc_i$, wird eine Post-Verteilung für die abhängige Variable (`height`, $h_i$) berechnet.
+Für jede Ausprägung des Prädiktors *Gewicht zentriert* (`weight_centered`), $wc_i$, wird eine Post-Verteilung für die abhängige Variable *Größe* (`height`, $h_i$) berechnet.
 Der Mittelwert $\mu$ für jede Post-Verteilung ergibt 
 sich aus dem linearen Modell (unserer Regressionsformel).
- Die Post-Verteilung berechnet sich auf Basis der Priori-Werte und des Likelihood (Bayes-Formel).
+ Die Post-Verteilung berechnet sich auf Basis der Priori-Werte und des Likelihoods (Bayes-Formel).
  Wir brauchen Priori-Werte für die Steigung $\beta_1$ 
  und den Achsenabschnitt $\beta_0$ der Regressionsgeraden.
  Außerdem brauchen wir einen Priori-Wert, 
  der die Streuung $\sigma$ der Größe (`height`) angibt; dieser Wert wird als exponentialverteilt angenommen.
- Der Likelihood gibt an, wie wahrscheinlich ein Wert `height` ist, 
+ Der Likelihood gibt an, wie wahrscheinlich ein bestimmter Wert `height` ist, 
  gegeben $\mu$ und $\sigma$. 
 @thm-modm42 stellt die Modelldefinition dar.
-@fig-kruschke_regr_one_predctor zeigt, wie die drei Parameter zusammen die Likelihood definieren.
+@fig-kruschke_regr_one_predictor zeigt, wie die drei Parameter zusammen die Likelihood definieren.
 
-![](img/kruschke_regr_1UV.png){#ig-kruschke_regr_one_predctor width=75%}
+![](img/kruschke_regr_1UV.png){#fig-kruschke_regr_one_predictor width=75%}
 
 
+@thm-modm42 stellt @fig-kruschke_regr_one_predictor als Modellgleichung dar.
+@fig-regression-normal-dist-gray zeigt anhand der Regressionsgerade,
+wie die vorhergesagten Körpergrößen zustande kommen:
+$\mu$ (vorhergesagte Körpergröße) beruht auf dem jeweiligen $X$-Wert (d.h. Gewicht, UV);
+zusammen mit der Streuung der Körpergrößen um den Mittelwert ($\sigma$)
+ergibt sich dann die Normalverteilung der Körpergrößen, $y_i$ (AV).
 
+![Die Körpergrößen, $Y$ (AV) sind abhängig vom Wert des Körpergewichts, $X$, (UV)](img/regression-normal-dist-gray.png){#fig-regression-normal-dist-gray width=75%}
 
 
 ::: {#thm-modm42}
@@ -413,7 +477,7 @@ sich aus dem linearen Modell (unserer Regressionsformel).
 
 $$\begin{align*}
 \color{red}{\text{height}_i} & \color{red}\sim \color{red}{\operatorname{Normal}(\mu_i, \sigma)} && \color{red}{\text{Likelihood}} \\
-\color{green}{\mu_i} & \color{green}= \color{green}{\beta_0 + \beta_1\cdot \text{weightcentered}_i}  && \color{green}{\text{Lineares Modell} } \\
+\color{green}{\mu_i} & \color{green}= \color{green}{\beta_0 + \beta_1\cdot \text{weightcentered}_i}  && \color{green}{\text{Lineares Modell, Regressionsformel} } \\
 \color{blue}{\beta_0} & \color{blue}\sim \color{blue}{\operatorname{Normal}(178, 20)} && \color{blue}{\text{Priori}} \\
 \color{blue}{\beta_1}  & \color{blue}\sim \color{blue}{\operatorname{Normal}(0, 10)}  && \color{blue}{\text{Priori}}\\
 \color{blue}\sigma & \color{blue}\sim \color{blue}{\operatorname{Exp}(0.1)}  && \color{blue}{\text{Priori}}
@@ -422,18 +486,17 @@ $$\begin{align*}
 
 
 
-:::callout-note
-Der Achsenabschnitt (engl. *intercept*) eines Regressionsmodell wird in der Literatur oft mit $\beta_0$ bezeichnet,
-aber manchmal auch mit $\alpha$.
-Und manchmal mit noch anderen Buchstaben, das Alphabet ist weit. 🤷
-:::
+<!-- :::callout-note -->
+<!-- Der Achsenabschnitt (engl. *intercept*) eines Regressionsmodell wird in der Literatur oft mit $\beta_0$ bezeichnet, -->
+<!-- aber manchmal auch mit $\alpha$. -->
+<!-- Und manchmal mit noch anderen Buchstaben, das Alphabet ist weit. 🤷 -->
+<!-- ::: -->
 
 
 
 
 
 
-### Likelihood, `m_kung_gewicht_c`
 
 
 
@@ -446,18 +509,19 @@ $$
 
 
 
- Der Likelihood von `m_kung_gewicht_c` ist ähnlich zu den vorherigen Modellen (`m41, m42`).
+ Der Likelihood von `m_kung_gewicht_c` ist ähnlich zu den vorherigen Modellen (`m_kung`).
  Nur gibt es jetzt ein kleines "Index-i" am $\mu$ und am $h$ (h wie `heights`).
  Es gibt jetzt nicht mehr nur einen Mittelwert $\mu$,
+ wie in `m_kung`,
  sondern für jede Beobachtung (Zeile) einen Mittelwert $\mu_i$.
  Lies  etwa so:
 
->    "Die Wahrscheinlichkeit, eine bestimmte Größe bei Person $i$ zu beobachten, gegeben $\mu$ und $\sigma$ ist normalverteilt (mit Mittelwert $\mu$ und Streuung $\sigma$)".
+>    "Die Wahrscheinlichkeit, eine bestimmte Größe $h$ bei Person $i$ zu beobachten, gegeben $\mu$ und $\sigma$ ist normalverteilt (mit Mittelwert $\mu$ und Streuung $\sigma$)".
 
 
 
 
-### Regressionsformel, `m_kung_gewicht_c`
+Betrachten wir als nächstes die Regressionsformel, `m_kung_gewicht_c`:
 
 
 $$
@@ -467,11 +531,13 @@ $$
 $$
 
 
- $\mu$ ist jetzt nicht mehr ein Parameter, der (stochastisch) geschätzt werden muss. $\mu$ wird jetzt (deterministisch) *berechnet*. Gegeben $\beta_0$ und $\beta_1$ ist $\mu$ ohne Ungewissheit bekannt.
- $\text{weight}_i$ ist der Prädiktorwert (`weight`) der $i$ten Beobachtung, also einer !Kung-Person (Zeile $i$ im Datensatz).
+ $\mu$ ist jetzt *nicht* mehr ein Parameter, der (stochastisch) geschätzt werden muss (wie in `m_kung`). 
+ $\mu$ wird jetzt (deterministisch) *berechnet*. 
+ Gegeben $\beta_0$ und $\beta_1$ ist $\mu$ also ohne Ungewissheit bekannt.
+ $\text{weight}_i$ ist der Gewichtswert (`weight`) der $i$ten Beobachtung, also einer !Kung-Person (Zeile $i$ im Datensatz).
 Lies  etwa so:
 
->    "Der Mittelwert $\mu_i$ der $i$ten Person berechnet sich als Summe von $\beta_0$ und $\beta_1$ mal  $\text{weight}_i$".
+>    "Der vorhergesagte mittlere Wert der Körpergröße, $\mu_i$, der $i$ten Person berechnet sich als Summe von $\beta_0$ und $\beta_1$ mal  $\text{weight}_i$".
 
 
  $\mu_i$ ist eine lineare Funktion von `weight`.
@@ -480,31 +546,86 @@ Lies  etwa so:
 
 
 
-### Priori-Werte des Modells `m_kung_gewicht_c`
+Was sind unsere Priori-Verteilung des Modells `m_kung_gewicht_c`?
+Sie gleichen denen von `m_kung`, allerdings haben wir jetzt zusätzlich $\beta_1$.
+Dieser Parameter gibt die Steigung der Regressionsgeraden an (auch als "Regressiongsgewicht" bezeichnet).
+Damit wird die Stärke des (linearen) Zusammenhangs zwischen UV (X) und AV (Y) festgelegt.
+Hier definieren wir den Zusammenhang als normalverteilt mit Mittelwert 0 und Streuung 10 cm.
+Damit liegt der Bereich plausibler Werte für den Zusammenhang von Gewicht und Größe zwischen -20 cm bis +20 cm Unterschied in der Körpergröße pro Kilogramm Unterschied im Körpergewicht.
+Das ist ein recht informationsarmer Wert: Viele Werte sind möglich, auch unerwartete.
+Man kann argumentieren, dass diese Apriori-Verteilung biologisch nicht realistisch ist.
+Dazu später mehr.
 
 
 
 \begin{align*}
-\color{blue}\beta_1 & \color{blue}\sim \color{blue}{\operatorname{Normal}(178, 20)} && \color{blue}{\text{Priori Achsenabschnitt}} \\
+\color{blue}\beta_0 & \color{blue}\sim \color{blue}{\operatorname{Normal}(178, 20)} && \color{blue}{\text{Priori Achsenabschnitt}} \\
 \color{blue}\beta_1  & \color{blue}\sim \color{blue}{\operatorname{Normal}(0, 10)}  && \color{blue}{\text{Priori Regressionsgewicht}}\\
 \color{blue}\sigma & \color{blue}\sim \color{blue}{\operatorname{Exp}(0.1)}  && \color{blue}{\text{Priori Sigma}}
 \end{align*}
 
 Parameter sind hypothetische Kreaturen: Man kann sie nicht beobachten, sie existieren nicht wirklich. Ihre Verteilungen nennt man Priori-Verteilungen.
-$\beta_0$ wurde in `m41` als $\mu$ bezeichnet, da wir dort eine "Regression ohne Prädiktoren" berechnet haben.
+$\beta_0$ wurde in `m_kung` als $\mu$ bezeichnet, da wir dort eine "Regression ohne Prädiktoren" berechnet haben.
 $\sigma$ ist uns schon als Parameter bekannt und behält seine Bedeutung aus dem letzten Kapitel.
 Da `height` nicht zentriert ist, der Mittelwert von $\beta_0$ bei 178 und nicht 0.
 $\beta_1$ fasst unser Vorwissen, ob und wie sehr der Zusammenhang zwischen Gewicht und Größe positiv (gleichsinnig) ist.
-Die Anzahl der Prioris entspricht der Anzahl der Parameter des Modells.
+$\beta_1$ ist hier schwach informativ: Im Schnitt, behauptet diese Apriori-Verteilunng,
+sei der Zusammenhang gleich Null. 
+Aber die Apriori-Verteilung akzeptiert auch recht starke positive und negative (!) Werte. 
+Diese Wahl an Apriori-Werten ist nicht unbedingt ideal.
+Wir sollten uns künftig noch andere (bessere) Parameter für die Apriori-Verteilung von $\beta_1$ überlegen.
+Die Anzahl der Prioris entspricht übrigens der Anzahl der Parameter des Modells.
 
 
 
+Jetzt sind wir bereit, das Model bzw. die Post-Verteilung zu berechnen.
+Erinnern wir uns: "Prioris plus Daten gleich Post".
+Los, Stan, an die Arbeit!
+Berechne uns die Post-Verteilung.
+Nennen wir das Modull `m_kung_gewicht_c`.
 
 
-### Prioris plus Daten gleich Post
+
+```{r}
+#| results: hide
+m_kung_gewicht_c <-
+  stan_glm(
+    height ~ weight_c,  # Regressionsformel
+    prior = normal(0, 10),  # Regressionsgewicht (beta 1)
+    prior_intercept = normal(178, 20),  # beta 0
+    prior_aux = exponential(0.1),  # sigma
+    refresh = 0,  # zeig mir keine Details
+    data = kung_zentriert)
+
+parameters(m_kung_gewicht_c)
+```
+
+```{r}
+#| label: tbl-m_kung_gewicht_c_params
+#| tbl-cap: "Parameter von m_kung_gewicht_c"
+parameters(m_kung_gewicht_c) |> display()
+```
 
 
-![Parameter ]
+Wie man in @tbl-m_kung_gewicht_c_params sieht, wird
+der Zusammenhang von Gewicht und Größe, d.h. $\beta_1$, die Steigung der Regressionsgeraden,
+auf einen Wert zwischen ca. 0.8 bis 1.0 kg Unterschied in der Körpergröße geschätzt (wenn sich die Personen um 1 kg Körpergewicht unterscheiden).
+Es gibt also einen Zusammenhang zwischen Gewicht und Größe (laut unserem Modell).
+Danke, Stan!
+
+
+
+:::{#exr-wie-ensteht-mu}
+### Peer-Instruction: Wie leitet sich der Wert der Körpergrößen $h_i$ her?
+
+Welche Aussage zur Herleitung der *Körpergrößen*, $h_i$, ist korrekt?
+
+- Die Körpergrößen sind gleich mit dem um das Regressionsgewicht gewichteten Wert des jeweiligen Körpergewichts (d.h. $h_i = \beta_1 \cdot wc_i$).
+- Die Körpergrößen sind apriori normalverteilt mit dem Mittelwert 178 cm (in diesem Modell).
+- Die Körpergrößen sind apriori normalverteilt mit dem Mittelwert, der sich aus dem Regressionsmodell ergibt für jede Beobachtung $i$.
+- Die Körpergrößen sind das Resultat zweier Parameter: Der mittleren Körpergröße, $\mu$, sowie der Streuung in der Population, $\sigma$. $\square$
+:::
+
 
 
 ## Die Post-Verteilung befragen
@@ -516,15 +637,20 @@ Die Anzahl der Prioris entspricht der Anzahl der Parameter des Modells.
 
 ### `m_kung_starkes_beta1`
 
-
-Sagen wir, auf Basis gut geprüfter Evidenz haben wir folgendes Modell festgelegt: `height ~ weight_c`, s. @eq-m_kung_starkes_beta1. Dabei haben wir folgende Prioris gewählt:
+Mit der Apriori-Verteilung von $beta_1$ in `m_kung_gewicht_c` sind wir nicht zufrieden.
+Sagen wir stattdessen, auf Basis gut geprüfter Evidenz haben wir folgendes Modell festgelegt: 
+`height ~ weight_c`, s. @eq-m_kung_starkes_beta1. 
+Dabei haben wir folgende Apriori-Verteilungen gewählt:
 
 
 $$\beta_1 \sim N(5,3); \\
 \beta_0 \sim N(178, 20); \\
 \sigma \sim E(0.1)$${#eq-m_kung_starkes_beta1}
 
-
+Dieses Mal haben wir für $\beta_1$ durchaus "meinungsstarke" Werte ausgewählt.
+Im Schnitt gehen wir von einem Zusammenhang aus,
+so dass es einen Unterschied von 5 cm in der AV (Größe) gibt, 
+wenn sich die UV (Gewicht) um 1 Einheit (1 kg) unterscheidet zwischen zwei Personen.
 Wir nennen das Modell `m_kung_starkes_beta1`^[Wer ist hier für die Namensgebung zuständig? Besoffen oder was?], s. @lst-m_kung_starkes_beta1.
 
 
@@ -567,6 +693,7 @@ solange alle den gleichen verwenden.
 Der Autor verwendet z.B. oft den Wert 42.
 Zur Erinnerung: Der Golem zieht Zufallszahlen,
 damit erstellt er Stichproben, die die Postverteilung schätzen.
+Das Argument `seed` ist nur relevant, wenn man die Ergebnisse von Stan zwischen zwei Durchläufen vergleichen möchte. Ansonsten hat es keine Bedeutung.
 :::
 
 
@@ -575,11 +702,31 @@ damit erstellt er Stichproben, die die Postverteilung schätzen.
 ### Mittelwerte von $\beta_0$ und $\beta_1$ aus der Post-Verteilung
 
 
+Betrachten wir die ersten paar Zeilen aus der Post-Verteilung, 
+s. @tbl-m_kung_starkes_beta1_post.
+Dazu wandeln wir das Ergebnis-Objekt von `stan_glm`, d.h. `m_kung_starkes_beta1`
+in eine Tablle (einen "Tibble") um.
 
-Die ersten paar Zeilen:
+
+
+```{r}
+#| eval: false
+#| lst-label: lst-m_kung_starkes_beta1_post
+#| lst-cap: "Die Post-Verteilung bekommen wir, indem wir das Ergebnisobjekt von `stan_glm` in einen Tibble (Dataframe) umwandeln."
+m_kung_starkes_beta1_post <- 
+m_kung_starkes_beta1 %>% 
+  as_tibble() %>% 
+  head()
+```
 
 ```{r Post-Regression-befragen-3}
 #| echo: false
+#| label: tbl-m_kung_starkes_beta1_post
+#| tbl-cap: "Die ersten paar Zeilen der Post-Verteilung von `m_kung_starkes_beta1`"
+m_kung_starkes_beta1_post <- 
+m_kung_starkes_beta1 |> 
+  as_tibble()
+
 m_kung_starkes_beta1 %>%  
   as_tibble() %>% 
   mutate(id = 1:nrow(.), .before = 1) %>% 
@@ -588,20 +735,14 @@ m_kung_starkes_beta1 %>%
   fmt_number(columns = 2:4, decimals = 1)
 ```
 
-Hier sind die Zusammenfassungen der Stichproben aus der Post-Verteilung, komfortabel zu erhalten mit dem Befehle `parameters`, s. @tbl-m_kung_starkes_beta1-params.
-
-```{r Post-Regression-befragen-4, echo = TRUE}
-#| echo: true
-#| results: hide
-#| message: false
-#| tbl-cap: Parameter von m_kung_starkes_beta1
-#| label: tbl-m_kung_starkes_beta1-params
-parameters(m_kung_starkes_beta1)
-```
+ @tbl-m_kung_starkes_beta1-params zeigt die Zusammenfassung der Stichproben aus der Post-Verteilung;
+ komfortabel zu erhalten mit dem Befehle `parameters(m_kung_starkes_beta1) `.
 
 
 ```{r Post-Regression-befragen-5}
 #| echo: false
+#| tbl-cap: Parameter von m_kung_starkes_beta1
+#| label: tbl-m_kung_starkes_beta1-params
 parameters(m_kung_starkes_beta1) %>% 
   display()
 ```
@@ -615,13 +756,15 @@ parameters(m_kung_starkes_beta1) %>%
 Die Kennzahl  `pd` (propability of direction) gibt die *Effektwahrscheinlichkeit* an: Die Wahrscheinlichkeit,
 dass der Effekt positiv (also größer als Null) oder negativ ist (je nachdem ob der Median des Effekts positiv oder negativ ist).
 `pd` gibt aber nicht an, wie stark der Effekt ist, nur ob er klar auf einer Seite der Null liegt.
-Damit ist er so etwas (grob!) Ähnliches wie der p-Wert in der Frequentistischen Statistik [@makowski2019].
+Damit ist er so etwas (grob!) Ähnliches wie der p-Wert in der Frequentistischen Statistik [@makowski2019]. $\square$
 
 :::
 
 
-Am besten das Diagramm dazu anschauen, s @fig-pd1.
-
+Am besten das Diagramm zur Effektwahrscheinlichkeit (`pd`) anschauen, s @fig-pd1.
+`Rhat` und `ESS` sind Kennzahlen, die untersuchen, ob mit der Stichprobenziehung im Bayes-Modell alles gut funktioniert hat. Bei einfachen Modellen (die wir hier berechnen) sollte da in der Regel alles in Ordnung sein.
+`Rhat` sollte nicht (viel) größer als 1 oder 1,01 sein. `ESS` (effective sample size) gibt die Anzahl der effektiv nutzbaren Stichproben an (im Standard werden 4000 berechnet). Die Zahl sollte nicht deutlich geringer sein.
+Wir werden uns aber mit diesen beiden Kennwerten nicht weiter beschäftigen in diesem Kurs.
 
 ```{r}
 #| fig-cap: Diagramm zur Probability of Direction, Modell m_kung_starkes_beta1
@@ -631,10 +774,7 @@ plot(p_direction(m_kung_starkes_beta1))
 
 
 
-`Rhat` und `ESS` sind Kennzahlen, die untersuchen, ob mit der Stichprobenziehung im Bayes-Modell alles gut funktioniert hat. Bei einfachen Modellen (die wir hier berechnen) sollte da in der Regel alles in Ordnung sein.
-`Rhat` sollte nicht (viel) größer als 1 oder 1,01 sein. `ESS` (effective sample size) gibt die Anzahl der effektiv nutzbaren Stichproben an (im Standard werden 4000 berechnet). Die Zahl sollte nicht deutlich geringer sein.
 
-Wir werden uns aber mit diesen beiden Kennwerten nicht weiter beschäftigen in diesem Kurs.
 
 
 ### Visualisieren der "mittleren" Regressiongeraden
@@ -643,26 +783,14 @@ Wir werden uns aber mit diesen beiden Kennwerten nicht weiter beschäftigen in d
 
 Zur Erinnerung: Die Bayes-Analyse liefert uns viele Stichproben zu den gesuchten Parametern,
 hier $\beta_0$, $\beta_1$ und $\sigma$.
-Überzeugen wir uns mit einem Blick in die Post-Verteilung von `m_kung_starkes_beta1`:
-
-
-
-```{r}
-m_kung_starkes_beta1 %>% 
-  as_tibble() %>% 
-  head()
-```
-
+Überzeugen wir uns mit einem Blick in die Post-Verteilung von `m_kung_starkes_beta1`, s. @tbl-m_kung_starkes_beta1_post.
 Wir können z.B. ein Lagemaß wie den Median hernehmen, um die "mittlere" Regressionsgerade zu betrachten, s. @fig-kung-zentiert-regr-line.
 
-::::{#fig-kung-zentiert-regr-line}
-
-:::{.panel-tabset}
-
-### Mit `ggplot`
 
 ```{r Post-Regression-befragen-6, echo = TRUE, eval = FALSE}
 #| echo: true
+#| label: fig-kung-zentiert-regr-line
+#| fig-cap: "Die mittlere Regressionsgerade, unser 'Best-Guess' zum Zusammenhang von Gewicht und Größe"
 #| eval: true
 kung_zentriert %>% 
   ggplot() +
@@ -675,20 +803,7 @@ kung_zentriert %>%
 ```
 
 
-### Mit `easystats`
 
-Einfacher ist die Syntax vielleicht, wenn man die Funktion `estimate_expectation` benutzt, s. @fig-expect-m_kung_starkes_beta1-expect.
-Mit "expectation" sind hier die erwarteten Werte, also die Regressionsgerade, gemeint.
-
-```{r}
-#| fig-cap: Erwartete Werte des Modell m_kung_starkes_beta1, sprich, die Regressionsgerade
-#| label: fig-expect-m_kung_starkes_beta1-expect
-estimate_expectation(m_kung_starkes_beta1, by = "weight_c") |> plot()  # aus {easystats}
-
-```
-
-:::
-::::
 
 
 ### Zentrale Statistiken zu den Parametern
@@ -699,51 +814,35 @@ Hier folgen einige Beispiele an Fragen, die wir an unser Modell bzw. die Post-Ve
 
 #### Lagemaße zu den Parametern
 
-- Was ist die mittlere Größe einer !Kung-Person? ($\beta_0$)
+- Was ist die mittlere Größe der erwachsenen Kung? (Das war die Forschungsfrage des letzten Kapitels; $\beta_0$)
 - Was ist der Schätzwert für den Zusammenhang von Gewicht und Größe? ($\beta_1$)
 - Was ist der Schätzwert für Ungewissheit in der Schätzung der Größe? ($\sigma$)
-- Was ist der wahrscheinlichste Wert für z.B: $\beta_1$?
+- Was ist der wahrscheinlichste und der mediane Wert für $\beta_1$?
 
 
 Eine nützliche Zusammenfassung der Post-Verteilung bekommt man mit `parameters(modell)`, s. @tbl-m_kung_starkes_beta1-params.
-
-
+Wandelt man das Ausgabe-Objekt der Bayes-Regression, 
+d.h. `m_kung_starkes_beta1`, mit `as_tibble()` in eine Tabelle um,
+so bekommt man eine Tabelle mit den Stichproben der Post-Verteilung, s. @tbl-m_kung_starkes_beta1_post.
 
 
 ```{r Post-Regression-befragen-7a}
 #| echo: false
 #| eval: false
 m_kung_starkes_beta1 %>% 
-  parameters() %>% 
-  display()
+  parameters()
 ```
 
-
-Wandelt man das Ausgabe-Objekt der Bayes-Regression, d.h. `m_kung_starkes_beta1`, mit `as_tibble()` in eine Tabelle um,
-so bekommt man eine Tabelle mit den Stichproben der Post-Verteilung:
-
-
-```{r}
-m_kung_starkes_beta1_post <- 
-  m_kung_starkes_beta1 %>% 
-  as_tibble()
-
-m_kung_starkes_beta1_post %>% 
-  head()
-```
 
 
 Wie wir gesehen haben, nutzen wir diese Tabelle der Post-Verteilung immer wieder.
-Speichern wir uns sie also als ein Objekt ab, `m_kung_starkes_beta1_post`.
+Daher haben wir sie uns als ein Objekt abgespeichert, `m_kung_starkes_beta1_post`,
+s. @lst-m_kung_starkes_beta1_post.
 Jetzt haben wir wieder eine schöne Tabelle mit Stichproben aus der Post-Verteilung,
 die wir wie gewohnt befragen können.
-Eine Visualisierung zeigt gut sowohl Lage- als auch Streuungsmaße der Parameter, zumindest grob.,
-
-
-
-
-
-Oder man erstellt selber ein Diagramm mit `ggplot` oder `ggpubr`, s. @fig-m_kung_starkes_beta1-post.
+Oder man erstellt selber ein Diagramm mit `ggplot` oder `ggpubr`, 
+s. @fig-m_kung_starkes_beta1-post,
+um einen Überblick über Lage- und Streuungsmaße der Post-Verteilung zu bekommen.
 
 
 
@@ -773,7 +872,9 @@ m_kung_starkes_beta1_post %>%
 
 
 Hier ist die Verteilung von $\sigma$ visualisiert, s. @fig-m_kung_starkes_beta1-post2.
-
+Interessanterweise ist die *Post-*Verteilung von $\sigma$ *normalverteilt* 
+und *nicht* mehr *exponentialverteilt*, wie in der *Apriori*-Verteilung:
+Die Daten haben die Apriori-Verteilung "überstimmt".
 
 ```{r}
 #| label: fig-m_kung_starkes_beta1-post2
@@ -790,10 +891,13 @@ gleich mit Intervallgrenzen, z.B. 95%, s. @fig-m_kung_starkes_beta1-plot.
 
 ```{r}
 #| label: fig-m_kung_starkes_beta1-plot
-#| fig-cap: "Die Parameter Gewicht (zentriert) und sigma des Modells m_kung_starkes_beta1"
-m_kung_starkes_beta1_hdi <- hdi(m_kung_starkes_beta1_post)  # analog mit eti(m_kung_starkes_beta1)
+#| fig-cap: "Die Parameter Gewicht (zentriert) Modells m_kung_starkes_beta1"
+m_kung_starkes_beta1_hdi <- 
+  m_kung_starkes_beta1_post |> 
+  select(weight_c) |>  # analog für `select(sigma)`
+  hdi()   # analog mit eti()
 
-plot(m_kung_starkes_beta1_hdi)
+plot(m_kung_starkes_beta1_hdi, data = m_kung_starkes_beta1_post)
 ```
 
 Ergänzt man bei `plot()` noch `show_intercept = TRUE` wird auch der Achsenabschnitt angezeigt.
@@ -828,7 +932,9 @@ auf ein 90%- oder 89%-Intervall auszuweichen, aufgrund der besseren numerischen 
 
 @fig-ungewissheit-kung stellt die Ungewissheit der Post-Verteilung dar, in dem einige Stichproben aus der Post-Verteilung visualisiert werden.
 
-::::{#fig-ungewissheit-kung}
+:::::{#fig-ungewissheit-kung}
+
+:::: {.figure-content}
 
 :::{.panel-tabset}
 
@@ -893,6 +999,7 @@ Die ersten 1000000^[1e6] ... okay, lassen wir es gut sein^[Im Standard beschert 
 :::
 
 ::::
+:::::
 
 
 Einfacher ist die Visualisierung mit `estimate_expectation`, s. @fig-m_kung_starkes_beta1-estimate-expectation.
@@ -900,7 +1007,9 @@ Einfacher ist die Visualisierung mit `estimate_expectation`, s. @fig-m_kung_star
 ```{r}
 #| fig-cap: Schätzbereich für die bedingten mittleren Körpergröße, also die Regressionsgerade mit Unsicherheitsintervall
 #| label: fig-m_kung_starkes_beta1-estimate-expectation
-estimate_expectation(m_kung_starkes_beta1, by = "weight_c") %>% plot()
+estimate_expectation(m_kung_starkes_beta1, by = "weight_c") %>%  # Regressionsgerade
+  plot() +
+  geom_point(data = kung_zentriert, aes(x = weight_c, y = height)) # Punkte
 ```
 
 
@@ -912,7 +1021,7 @@ Zur Erinnerung: Bei einem zentrierten Prädiktor misst der Achsenabschnitt die m
 
 - Welche mittlere Größe wird mit einer Wahrscheinlichkeit von 50%, 90% bzw. 95% Wahrscheinlichkeit nicht überschritten?
 - Welche mittlere Größe mit Wahrscheinlichkeit von 95% nicht unterschritten?
-- Von wo bis wo reicht der innere 50%-Schätzbereich der mittleren Größe?
+- Von wo bis wo reicht der innere 50%-Schätzbereich (ETI) der mittleren Körpergröße?
 
 
 
@@ -927,7 +1036,7 @@ m_kung_starkes_beta1_post %>%
     q_05 = quantile(`(Intercept)`, prob = .95))
 ```
 
-50%-PI:
+50%-ETI:
 
 ```{r}
 m_kung_starkes_beta1 %>% 
@@ -992,12 +1101,13 @@ Die Wahrscheinlichkeit beträgt `r wskt_klein`.
 
 
 
-
+:::{#exm-typ-bayes-nutzer}
 ### Typischer Bayes-Nutzer in Aktion
 
 ![Typischer Bayes-Nutzer, der ein Ungewissheitsintervall berechnet. Bildquelle: Easystats, bayestestR](img/bayesianMaster.jpg){width="50%" fig-align="center"}
 
-[Quelle](https://easystats.github.io/bayestestR/articles/bayestestR.html)
+[Quelle](https://easystats.github.io/bayestestR/articles/bayestestR.html) $\square$
+:::
 
 
 
@@ -1010,7 +1120,6 @@ Die Wahrscheinlichkeit beträgt `r wskt_klein`.
 
 
 Komfort pur: Unser Modell erlaubt uns für jeden beliebigen Wert des Prädiktors eine Post-Verteilung (von $\mu$) zu berechnen.
-
 Hier am Beispiel von `m_kung_post`, s. @fig-post42.
 
 ```{r m42-read-from-disk, echo = FALSE}
@@ -1267,29 +1376,21 @@ plots(plot_condition_with_cond_post, p_post_at,
 
 
 Was ist wohl die Wahrscheinlichkeit der Körpergröße bei einem bestimmten Gewicht?
-
 Angenommen wir wissen, dass das Gewicht bei, sagen wir 45 kg liegt.
 Welche Körpergröße ist (im Schnitt) zu erwarten? Wie unsicher sind wir uns über diesen Mittelwert?
-
-Etwas formaler ausgedrückt:
-
+Etwas formaler ausgedrückt: 
 $\mu|\text{weight}=45$
 
 
 45 kg entspricht genau dem Mittelwert von `weight`. Geht man von zentrierten Prädiktorwerten aus, gilt in dem Fall `weight_c = 0`.
-Erstellen wir uns dazu eine Tabelle:
+Erstellen wir uns dazu eine Tabelle, Und plotten diese, s. @fig-mu-at-45.
 
 
 ```{r mu-at-45-def, echo = TRUE}
+#| results: hide
 mu_at_45 <-
   m_kung_gewicht_c_post %>% 
   mutate(mu_at_45 = `(Intercept)`)
-```
-
-Und plotten diese, s. @fig-mu-at-45.
-
-```{r Post-Regression-befragen-15, echo = TRUE, eval = FALSE}
-#| eval: false
 
 mu_at_45 %>% 
   ggplot(aes(x = mu_at_45)) +
@@ -1313,9 +1414,10 @@ mu_at_45 %>%
 
 Analog können wir fragen,
 wie groß wohl eine Person mit 50 kg im Mittelwert sein wird und wie (un)gewiss wir uns über diesen Mittelwert sind.
-
-
 50 kg, das sind 5 über dem Mittelwert, in zentrierten Einheiten ausgedrückt also `weight_c = 5`. Auch dazu erstellen wir uns eine Tabelle, s. @tbl-mu-at-50.
+Die Verteilung der mittleren Größe bei einem Gewicht von 50kg ist weiter "rechts" (Richtung höhere Größe) lokalisiert, s. @fig-mu-at-50.
+Dazu addieren wir zum Wert des Achsenabschnitts (`intercept`) das Fünffache des Regressionsgewichts, $\beta_1$ (`weight_c`): `mu_at_50 = (Intercept)m + 5 * weight_c`.
+Das Diagramm erhält man mit `ggplot(mu_at_50, aes(x = mu_at_50)) + geom_density()`.
 
 
 
@@ -1329,15 +1431,7 @@ mu_at_50 <-
 head(mu_at_50)
 ```
 
-Die Verteilung der mittleren Größe bei einem Gewicht von 50kg ist weiter "rechts" (Richtung höhere Größe) zentriert, s. @fig-mu-at-50.
 
-
-```{r Post-Regression-befragen-16, echo = TRUE, eval = FALSE}
-#| eval: false
-mu_at_50 %>% 
-  ggplot(aes(x = mu_at_50)) +
-  geom_density()
-```
 
 
 
@@ -1360,24 +1454,29 @@ mu_at_50 %>%
 
 ### Lagemaße und Streuungen
 
-Befragen wir die bedingte Post-Verteilung. 
-Eine erste Frage zielt nach den typischen deskriptiven Statistiken, also nach Lage und Streuung der Verteilung der Körpergröße.
+Befragen wir die *bedingte* Post-Verteilung. 
+Eine erste Frage zielt nach den typischen deskriptiven Statistiken, 
+also nach Lage und Streuung der Verteilung der Körpergröße.
 
 
 
 
-Was ist das 90% PI für $\mu|w=50$ ?
+Was ist das 90% ETI für $\mu|w=50$?
+Man erhält es mit dem Befehl `mu_at_50 %>% eti(ci = .9)`
 
-```{r Post-Regression-befragen-19, echo = TRUE}
+```{r Post-Regression-befragen-19}
+#|echo: false
 mu_at_50 %>% 
   eti(ci = .9)
 ```
 
-Die mittlere Größe - gegeben $w=50$ - liegt mit 90% Wahrscheinlichkeit zwischen den beiden Werten (ca.) 159cm und 160cm.
+Die mittlere Größe -- gegeben $w=50$ -- liegt mit 90% Wahrscheinlichkeit zwischen den beiden Werten (ca.) 159 cm und 160 cm.
 
 
 
-Welche mittlere Größe wird mit 95% Wahrscheinlichkeit nicht überschritten, wenn die Person 45kg wiegt?
+Welche mittlere Größe wird mit 95% Wahrscheinlichkeit nicht überschritten, 
+wenn die Person 45kg wiegt?
+Dazu berechnen wir das gefragte Quantil (also bei 95%).
 
 ```{r Post-Regression-befragen-20, echo = TRUE}
 mu_at_45 %>% 

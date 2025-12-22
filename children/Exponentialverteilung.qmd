@@ -102,7 +102,11 @@ Sie hat einige nützliche Eigenschaften:
 2. Steigt X um eine *Einheit*, so ändert sich Y um einen *konstanten Faktor*.
 3. Sie hat nur einen Parameter, genannt *Rate* oder $\lambda$ ("lambda").
 4. $\frac{1}{\lambda}$  gibt gleichzeitig Mittelwert und Streuung ("Gestrecktheit") der Verteilung an.
-5. Je größer die Rate $\lambda$, desto schneller der "Verfall" der Kurve und desto *kleiner* die Streuung und der Mittelwert der Verteilung (und umgekehrt: Je größer  $1/\lambda$, desto *größer* die Streuung und der Mittelwert der Verteilung.)
+5. Je größer die Rate $\lambda$, desto schneller der "Verfall" der Kurve und 
+desto *kleiner* die Streuung und der Mittelwert der Verteilung (und umgekehrt: Je größer  $1/\lambda$, 
+desto *größer* die Streuung und der Mittelwert der Verteilung.)
+6. Steigt $X$ um 1 Einheit, sinkt (die Wahrscheinlichkeitsdichte von) $Y$ 
+um einen konstanten Faktor (der abhängig von $\lambda$) ist.
 
 
 
@@ -219,7 +223,7 @@ Allerdings sollte man nicht das Baby mit dem Wasser auskippen und extreme Werte,
 
 Man kann sich den Median und andere Quantile der Exponentialverteilung mit `qexp` ausgeben lassen,
 wobei mit man `p` den Wert der Verteilungsfunktion angibt,
-für den man das Quantil haben möchte, z.B. `p = .5` für den Mediaan
+für den man das Quantil haben möchte, z.B. `p = .5` für den Median
 (mit `pexp()` kann man sich analog die die Verteilungsfunktion ausgeben lassen.) 
 Mit `rate` wird $\lambda$ (lambda) bezeichnet.^[Es gibt auch [Online-Apps, die diese Werte ausgeben](https://homepage.divms.uiowa.edu/~mbognar/applets/exp-like.html.]
 
@@ -233,7 +237,7 @@ Die Grenzen der inneren 95% dieser Verteilung kann man sich auch ausgeben.
 qexp(p = c(0.025, .975), rate = 1/8)
 ```
 
-Tabelle @tbl-exp zeigt die Mediane einiger Exponentialverteilungen,
+Tabelle @tbl-exp zeigt ausgewählte Perzentile (50%, 95%) einiger Exponentialverteilungen,
 d.h. Exponentialverteilungen mit verschiedenen Werten für $\lambda$.
 
 ```{r}
@@ -242,7 +246,7 @@ d.h. Exponentialverteilungen mit verschiedenen Werten für $\lambda$.
 #| tbl-cap: "Median-Werte von Exponentialverteilungen mit verschiedenen Werten für λ (lambda). p50: 50%-Quantil (Median), p95: 95%-Quantil (Dieser Wert wird mit 95% Wahrscheinlichkeit nicht überschritten; er bietet sich als *Obere Grenze* der plausiblen Werte an.)"
 d_exp <- 
   tibble(
-    lambda = c(100, 50, 8, 4, 2, 1, 1/2, 1/4, 1/8, 1/50, 1/100),
+    lambda = c(100, 50, 25, 10, 8, 4, 2, 1, 1/2, 1/4, 1/8, 1/10, 1/25, 1/50, 1/100),
     p50 = qexp(p = .5, rate = lambda),
     p95 = qexp(p = .95, rate = lambda))
 

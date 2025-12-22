@@ -1,13 +1,13 @@
 library(tidyverse)
-library(beyonce)
-library(brms)
+# library(beyonce)
+# library(brms)
 library(patchwork)
-library(tidybayes)
-library(bayesplot)
+# library(tidybayes)
+# library(bayesplot)
 
 # Source: https://bookdown.org/content/3686/16.html
 
-bp <- beyonce_palette(126)[]
+#bp <- beyonce_palette(126)[]
 #beyonce_palette(1)
 
 col1 <- "grey20"
@@ -17,7 +17,7 @@ col3 <- "grey80"
 # Normal density
 p1 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |> 
   ggplot(aes(x = x, y = (dnorm(x)) / max(dnorm(x)))) +
-  geom_area(fill = col3) +
+  geom_area(fill = col3, color = blue) +
   annotate(geom = "text",
            x = 0, y = 0.2,
            label = "Normal",

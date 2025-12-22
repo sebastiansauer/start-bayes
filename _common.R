@@ -1,15 +1,6 @@
 
 set.seed(42)
 
-library(knitr)
-# define a method for objects of the class data.frame
-knit_print.head = function(x, ...) {
-  res = paste(c('', '', kable(head(x))), collapse = '\n')
-  asis_output(res)
-}
-# register the method
-registerS3method("knit_print", "data.frame", knit_print.head)
-
 base_size <- 18
 base_family <- "Lato Regular"
 
@@ -71,6 +62,7 @@ xcol <- "#CC79A7"
 yellow <- "#F0E442FF"
 blue <- "#0072B2FF"
 orange <- "#E69F00FF"
+green <- errorcol
 
 
 
@@ -78,15 +70,6 @@ orange <- "#E69F00FF"
 #ggplot2::theme_set(see::theme_modern(axis.title.size = 18))
 
 labeltextsize <- 8
-
-
-
-utils::data("mariokart", package = "openintro")
-
-mariokart_no_extreme <- mariokart[mariokart$total_pr < 100, ]
-
-
-mariokart_path <- "https://vincentarelbundock.github.io/Rdatasets/csv/openintro/mariokart.csv"
 
 
 

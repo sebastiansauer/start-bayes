@@ -6,14 +6,12 @@
 ## Lernsteuerung
 
 
-### Position im Modulverlauf
 
 @fig-modulverlauf gibt einen Überblick zum aktuellen Standort im Modulverlauf.
 
 
+<!-- TODO 3. Ebene der Überschrift hier herausnehmen - in allen Kapiteln -->
 
-
-### Lernziele
 
 Nach Absolvieren des jeweiligen Kapitels sollen folgende Lernziele erreicht sein.
 
@@ -24,13 +22,10 @@ Sie können...
 - typische Forschungsfragen auswerten
 
 
-### Begleitliteratur
 
 Der Stoff dieses Kapitels orientiert sich an @mcelreath2020, Kap. 4.4 sowie @gelman2021, Kap. 7 und 10.
 
 
-
-### Vorbereitung im Eigenstudium
 
 Frischen Sie Ihr Wissen in den Grundlagen der einfachen und multiplen Regression (inkl. Interaktionseffekte) auf. Dazu sind z.B. folgende Literaturstellen geeignet.
 
@@ -40,7 +35,6 @@ Frischen Sie Ihr Wissen in den Grundlagen der einfachen und multiplen Regression
 
 
 
-### R-Pakete
 
 In diesem Kapitel werden die üblichen R-Pakete benötigt.
 
@@ -49,8 +43,8 @@ In diesem Kapitel werden die üblichen R-Pakete benötigt.
 #| results: "hide"
 #| warning: false
 library(rstanarm)   # Bayes-Modelle
-library(tidyverse)
-library(easystats)
+library(tidyverse)  # Datenjudo
+library(easystats)  # Statistik-Komfort
 ```
 
 
@@ -71,26 +65,20 @@ theme_set(theme_modern())
 
 
 
-### Benötigte Daten
 
 
 Wir benötigen in diesem Kapitel folgende Datensätze: `kidiq`, `penguins`.
-
-#### `kidiq`
-
 Den Datensatz `kidiq` importieren Sie am einfachsten aus dem R-Paket `rstanarm`, das Sie schon installiert haben.
-
-```{r}
-data("kidiq", package = "rstanarm")
-```
-
 Alternativ können Sie die Daten [hier](https://raw.githubusercontent.com/sebastiansauer/Lehre/main/data/kidiq.csv) herunterladen.
 
 {{< downloadthis data/kidiq.csv dname="kidiq" >}}
 
 
-#### `penguins`
+```{r}
+data("kidiq", package = "rstanarm")
+```
 
+Außerdem benötigen wir den Datensatz `penguins`.
 Sie können den Datensatz `penguins` entweder via dem Pfad importieren oder via dem zugehörigen R-Paket. Beide Möglichkeit sind okay.
 
 
@@ -133,7 +121,8 @@ Erkären Sie die Grundkonzepte der Interaktion (hier synonym: Moderation) im Rah
 
 Wenn Sie die Skalenniveaus wissen, können Sie die Forschungsfrage korrekt auswerten, 
 also das korrekte (Regressions-)Modell spezifizieren.
-Wir werden hier viele der typischen Forschungsfragen (aus psychologischen und ähnlichen Fragestellungen) mit Hilfe von Regressionsmodellen beantworten. Das hat den Vorteil,
+Wir werden hier viele der typischen Forschungsfragen (aus psychologischen und ähnlichen Fragestellungen) 
+mit Hilfe von Regressionsmodellen beantworten. Das hat den Vorteil,
 dass sie nicht viele verschiedene Auswertungsmethoden (t-Test, Varianzanalyse, ...) lernen müssen.
 Außerdem ist die Regressionsanalyse (für viele Situationen) die beste Heransgehensweise, 
 da sie viele Möglichkeiten für Erweiterungen bietet.
@@ -156,7 +145,8 @@ abgesehen von einer paar Erweiterungen.
 
 
 
-Wir konzentrieren uns im Folgenden auf Forschungsfragen auf Basis von Regressionsmodellen mit *metrischer* AV. Andere Skalenniveaus bei der AV klammern wir aus.
+Wir konzentrieren uns im Folgenden auf Forschungsfragen auf Basis von Regressionsmodellen mit *metrischer* AV. 
+Andere Skalenniveaus bei der AV klammern wir aus.
 Im Folgenden sind für die UV(s)  nominale sowie metrische Skalenniveaus erlaubt. 
 Modelle mit mehreren UV (und mehreren Stufen an UV) sind ebenfalls erlaubt.
 
@@ -169,11 +159,11 @@ Für jede Variante ist zumeist ein Beispiel, die Modellformel, der Kausalgraph^[
 Dabei wird folgende Nomenklatur verwendet, um die Skalenniveaus der beteiligten Variablen einer Forschungsfrage zu benennen:
 
 
-- `y`: metrische abhängige Variable
-- `g`: Gruppierungsvariable; nominal skalierter unabhängige Variable (querschnittlich)
-- `b`: binäre Variable
-- `x`: metrische unabhängige Variable
-- `u`: ungemessene Variable
+- `y`: metrische AV
+- `g`: Gruppierungsvariable; nominal skalierte UV (querschnittlich)
+- `b`: binäre UV
+- `x`: metrische UV
+- `u`: ungemessene (unbekannte) Variable
 
 
 
@@ -183,7 +173,6 @@ Dabei wird folgende Nomenklatur verwendet, um die Skalenniveaus der beteiligten 
 
 
 
-### Forschungsfrage
 
 *Hintergrund:*
 
@@ -202,30 +191,32 @@ in der Hoffnung, "Risikofaktoren" für geringere Intelligenz zu entdecken.
 >    Ist der mittlere IQ-Wert (`kid_score`) von Kindern, deren jeweilige Mutter über einen Schlusabschluss (`mom_hs`, $x=1$) verfügt höher, als bei Kinderen, deren jeweilige Mutter nicht über einen Schulabschluss verfügt ($x=0$)? (ceteris paribus)^[Häufig erlaubt uns unser Vorwissen eine gerichtete Hypothese - "größer als/kleiner als" - zu formulieren, anstelle der   "empirisch ärmeren" einfachen, ungerichteten Ungleichheit].
 
 
-Die Modellformel zur Forschungsfrage lautet: `y ~  b` bzw. `kid_iq ~ mom_hs`.
+Die Modellformel zur Forschungsfrage lautet allgemein `y ~ b` bzw konkret für den vorliegendne Fall `kid_iq ~ mom_hs`.
 
-Formaler ausgedrückt und als Behauptung (Hypothese) formuliert, 
-sieht die Forschungsfrage so aus (@thm-fofra1).
+@thm-fofra1 drückt die Forschungsfrage formaler und als Hypothese (Behauptung) aus.
 
 :::{#thm-fofra1}
 
 ### Hypothese für ungleiche Mittelwerte
 
-$$H_A: \mu_{x=0|M} \ne \mu_{x=1|M}\quad \square$$
+$$H_A: \mu_{x=1} \gt \mu_{x=0}\quad \square$$
 :::
 
 In Worten: "Der mittlere IQ-Wert für Kinder, 
 deren Mütter über einen Schulabschluss verfügen ist höher als in der Gruppe von Kindern, deren Mütter über keinen Schulabschluss verfügen". 
-Zu beachten ist, dass sich eine Population immer auf Parameterwerte bezieht, 
+Zu beachten ist, dass sich eine Hypothese immer auf Parameterwerte bezieht, 
 also auf die Population, nicht auf die Statistiken der Stichprobe.
 
-Die zugehörige Nullhypothese lautet:
+Die zugehörige Nullhypothese, $H_0$ lautet:
 
 
-$$H_0: \mu_{x=1|M} = \mu_{x=0|M}\quad \square$$
+$$H_0: \mu_{x=1} = \mu_{x=0}\quad \square$$
+
+Für die Praktisch-Null-Hypothese (ROPE-Hypothese) wählen wir 5 IQ-Punkte als Grenzwert für gerade noch unbedeutend.
 
 
-### Modell
+$$H_{ROPE}: \mu_{x=1} > \mu_{x=0} + 5\quad \square$$
+
 
 Die Regressionsformel zur Forschungsfrage lautet: `y ~ b` bzw. `kid_iq ~ mom_hs`.
 
@@ -237,7 +228,7 @@ Y hat, laut unserem Modell, zwei Ursachen:
 2. u, das steht für "unbekannt"^[unknown, sozusagen der unbekannte Gott, also für alle sonstigen Einflüsse; man kann das "u" ohne Schaden weglassen, da wir es sowieso nicht modellieren. Hier ist es nur aufgeführt, um zu verdeutlichen, dass wir nicht so verwegen sind, zu behaupten, es gäbe keine anderen Einflüsse als `mom_hs` auf die IQ des Kindes.]
 
 
-```{r out.width = "100%", fig.asp = .5}
+```{r out.width = "75%", fig.asp = .5}
 #| label: fig-binuv
 #| fig-cap: "DAG für `kid_iq ~ mom_hs`"
 #| echo: false
@@ -251,22 +242,21 @@ plot(graphLayout(mein_modell))
 ```
 
 
-
+Auf dieser Basis berechnen wir unser Regressionsmodell mit Stan: `stan_glm(kid_score ~ mom_hs, data = kidiq)`
 
 
 ```{r m10-1, echo = TRUE, results = "hide"}
 #| results: "hide"
-data("kidiq")  # Paket rstanarm
 m10.1 <- stan_glm(
   kid_score ~ mom_hs, 
-  seed = 42,
   data = kidiq)
 ```
 
 
-
-
 Der Einfachheit halber übernehmen wir die Prioriwerte von Stan, s. @lst-m101.
+
+
+
 
 ```{r}
 #| lst-cap: "Standard-Prioriwerte für m10.1, von Stan vergeben"
@@ -276,7 +266,8 @@ prior_summary(m10.1)
 
 
 Die komplette Modellspezifikation ist in @eq-m101 aufgeführt.
-
+Wie man sieht, sind die Priori-Verteilungen sehr breit -- zu breit vielleicht.
+Das sollten wir in einem nächsten Mal verbessern.
 
 
 
@@ -302,33 +293,37 @@ display(parameters(m10.1))
 
 
 
-### Interpretation der Koeffizienten
-
 `m10.1: kid_score = 78 + 12*mom_hs + error`
 
-Der *Achsensabschnitt* (intercept, $\beta_0$ oder auch mit $\alpha$ bezeichnet) ist der mittlere (bzw. vorhergesagte) IQ-Wert von Kindern, deren Mütter über keinen Schulabschluss (`mom_hs = 0`) verfügen:
+Der *Achsenabschnitt* (intercept, $\beta_0$ oder auch mit $\alpha$ bezeichnet) ist der mittlere 
+vorhergesagte IQ-Wert von Kindern, deren Mütter über *keinen* Schulabschluss (`mom_hs = 0`) verfügen:
 
 `kid_score = 78 + 0*12 + error`
 
-Das *Regressionsgewicht* (slope, $\beta_1$, $\beta$) ist der Unterschied im IQ-Wert von Kindern mit Mütter mit Schlulabschluss (im Vergleich zum IQ-Wert von Kindern mit Mütter ohne Schlusabschluss). Dieser Unterschied entspricht der Steigung der Regressionsgeraden.
+Das *Regressionsgewicht* (slope, $\beta_1$, $\beta$) ist der Unterschied im IQ-Wert
+von Kindern mit Mütter mit Schlulabschluss (im Vergleich zum IQ-Wert 
+von Kindern mit Mütter ohne Schlusabschluss). 
+Dieser Unterschied entspricht der Steigung der Regressionsgeraden.
 
 `kid_score = 78 + 1*12 + error = 90 + error`
 
-Der Wert von `error` zeigt, wie genau die Schätzung (Vorhersage) ist bzw. wie stark Prädiktor (UV) und Kriterium (AV) zusammenhängen.
-
-
-`error` entspricht dem Vorhersagefehler, also dem Unterschied vom tatsächlichen IQ-Wert des Kindes ($y$) zum vom Modell vorhergesagten Wert ($\hat{y}$).
-
-
-### `y ~ g` als Mittelwertsdifferenz 
-
-Ein lineares Modell der Art `y ~ g` kann man als Berechnung des Unterschieds im Mittelwert von `y` zwischen beiden Gruppen (g0 vs. g1) verstehen.
+Der Wert von `error` ($e$) zeigt, wie genau die Schätzung (Vorhersage) ist bzw. 
+wie stark UV und AV zusammenhängen.
+`error` entspricht dem Vorhersagefehler, also dem Unterschied vom 
+tatsächlichen IQ-Wert des Kindes ($y$) zum vom Modell vorhergesagten Wert ($\hat{y}$).
 
 
 
->    👨‍🏫 Hey R-Golem! Nimm den Datensatz `kidiq`, gruppiere nach `mom_hs` und fasse zusammen anhand des Mittelwerts. Die resultierende Zahl soll heißen `kid_score_avg`.  An die Arbeit!
+Ein lineares Modell der Art `y ~ g` kann man als Berechnung des Unterschieds 
+im Mittelwert von `y` zwischen beiden Gruppen (g0 vs. g1) verstehen.
 
->    🤖 Loving it!
+
+
+>    👨‍🏫 Hey Stan! Nimm den Datensatz `kidiq`, gruppiere nach `mom_hs` und 
+fasse zusammen anhand des Mittelwerts. 
+Die resultierende Zahl soll heißen `kid_score_avg`.  An die Arbeit!
+
+>    🤖 Schon mal was von "bitte" gehört?
 
 
 :::{.panel-tabset}
@@ -354,12 +349,14 @@ kidiq %>%
   display()
 ```
 
-Der mittlere (average, avg) IQ-Wert unterscheidet sich um ca. 12 Punkte (89.4-77.6), zugunsten der Kinder von Müttern mit Abschluss. 
+Der mittlere (average, avg) IQ-Wert unterscheidet sich um ca. 12 Punkte (89.4-77.6), 
+zugunsten der Kinder von Müttern mit Abschluss. 
 :::
 
 
 
-In @fig-momkid ist der Unterschied im IQ der Kinder als Funktion des Schlussabschlusses der Mutter dargestellt, auf Basis des Datensatzes `kidiq`.
+In @fig-momkid ist der Unterschied im IQ der Kinder als Funktion des Schlussabschlusses der Mutter dargestellt, 
+auf Basis des Datensatzes `kidiq`.
 
 
 ```{r}
@@ -371,7 +368,11 @@ estimate_relation(m10.1) %>% plot()
 ```{r plot-kidiq}
 #| label: fig-momkid
 #| echo: false
-#| fig-cap: "Kinder, deren Mütter über einen Schulabschluss verfügen, haben im Mittel einen höheren Intelligenztestwert, laut dem vorliegenden Modell. Die Regressionsgerade ist als durchgezogene Linie dargestellt. Die Mittelwerte pro Gruppe als Punkte und als gestrichelte, horizontale Linie."
+#| fig-cap: "Kinder, deren Mütter über einen Schulabschluss verfügen (mom_hs=1), haben im Mittel einen höheren Intelligenztestwert (als Kinder, deren Mütter keinen Schulabschluss haben, mom_hs=0), laut dem vorliegenden Modell. Die Regressionsgerade ist als durchgezogene Linie dargestellt. Die Mittelwerte pro Gruppe als Punkte und als gestrichelte, horizontale Linie."
+
+m10.1_g1_mean <- as.numeric(coef(m10.1)[1]) |> round(0)
+m10.1_g2_mean <- as.numeric(coef(m10.1)[1] + coef(m10.1)[2]) |> round(0)
+
 ggplot(kidiq) +
   aes(x = mom_hs, y = kid_score) +
   geom_jitter(width = 0.1, alpha = .5) +
@@ -383,27 +384,25 @@ ggplot(kidiq) +
   geom_hline(yintercept = mean(kidiq$kid_score[kidiq$mom_hs == 0]), 
              linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = mean(kidiq$kid_score[kidiq$mom_hs == 1]), 
-             linetype = "dashed", color = "grey40")
+             linetype = "dashed", color = "grey40") +
+  scale_y_continuous(breaks = c(m10.1_g1_mean, m10.1_g2_mean))
 
 ```
 
 
 
 
-### Rope
+
 
 Prüfen wir mit `rope(m10.1)`, ob der Effekt der UV (Unterschied zwischen den Gruppen) "praktisch Null" ist; dazu nutzen wir das ROPE-Verfahren.
 
 ```{r}
 #| eval: false
-rope(m10.1)
+rope(m10.1, range = c(-5, 5))
 ```
 
 
-```{r}
-#| echo: false
-rope(m10.1) |> plot()
-```
+
 
 
 Das Ergebnis zeigt uns, dass es 0% Überlappung vom Rope und dem 95%-HDI (der Posterior-Verteilung) gibt.
@@ -416,11 +415,11 @@ Fazit: Wir verwerfen die Praktisch-Null-Hypothese. Adios!
 #| label: fig-rope-m101
 #| layout-ncol: 2
 #| echo: false
-#| fig-cap: "Rope und HDI überlappen nicht. Wir verwerfen die Praktisch-Null-Hypothese."
+#| fig-cap: "Der Bereich plausibler Werte (der Post-Verteilung von m10.1) liegt komplett außerhalb des Bereichs zu vernachlässigend kleiner Werte (ROPE-Bereich). Wir verwerfen die Praktisch-Null-Hypothese (ROPE-Hypothese)."
 #| fig-subcap: 
 #|   - "Diagramm mit rope(m10.1) %>% plot()"
 #|   - "Diagramm mit parameters(m10.1) %>% plot()"
-rope(m10.1) %>% plot()
+rope(m10.1, range = c(-5, 5)) %>% plot()
 parameters(m10.1) %>% 
   plot() +
   geom_rect(aes(xmin = 0-2, xmax = 0+2, ymin = -Inf, ymax = Inf), 
@@ -430,11 +429,11 @@ parameters(m10.1) %>%
 
 
 
-### t-Test
 
-In der *frequentistischen* Statistik (die mehrheitlich unterricht wird) untersucht man diese Datensituation -- Mittelwertsdifferenz zwischen zwei Gruppen - mit einem *t-Test*.
-
-Der *t*-Test ist ein inferenzstatistisches Verfahren, das prüft, ob die Mittelwertsdifferenz (in der Population) $\mu_d$ Null ist: $\mu_d = 0$.^[Genauer gesagt wird geprüft, 
+In der *frequentistischen* Statistik (die mehrheitlich unterricht wird) untersucht man diese Datensituation -- Mittelwertsdifferenz zwischen zwei Gruppen -- mit einem sog. *t-Test*.
+Der *t*-Test (für zwei Gruppen) ist ein inferenzstatistisches Verfahren, das prüft, 
+ob die Mittelwertsdifferenz zwischen zwei Gruppen (in der Population) $\mu_d$ Null ist: 
+$\mu_d = 0$.^[Genauer gesagt wird geprüft, 
 wie wahrscheinlich es auf Basis des Modell ist, 
 noch extremere Ergebnisse zu beachten unter der Annahme, dass die (exakte) Nullhypothese wahr ist. 
 Es ist etwas kompliziert.]
@@ -452,9 +451,7 @@ wenn es um die Regressionskoeffizienten geht.]
 
 
 
-### Antwort auf die Forschungsfrage
-
-Betrachten wir die Ergebnisse von `m10.1`.
+Zur Beantwortung der Forschungsfrage betrachten wir die Ergebnisse von `m10.1`.
 
 :::{.panel-tabset}
 
@@ -491,7 +488,8 @@ m10.1_post %>%
 
 
 
-Berechnen wir zur Übung ein 95%-PI von Hand; komfortabler geht es mit `eti(m10.1)`, s. @tbl-m101.
+Berechnen wir zur Übung ein 95%-PI von Hand; 
+komfortabler geht es mit `eti(m10.1)`, s. @tbl-m101.
 
 
 ```{r echo = TRUE}
@@ -512,24 +510,19 @@ Kindern von Müttern mit bzw. ohne Schulabschluss im Bereich von 7 bis 14 IQ-Pun
 laut unserem Modell: $95\%PI: [7,16]$.
 Die Hypothese, dass es keinen  Unterschied oder einen Unterschied in die andere Richtung geben sollte, 
 ist vor diesem Hintergrund als unwahrscheinlich abzulehnen.
-
-Visualisieren wir abschließend die Posteriori-Verteilung, s. @fig-m101hdi.
-
-```{r plot-hdi-m101}
-#| label: fig-m101hdi
-#| fig-cap: "Das 95% ETI zum (statistischen) Effekt des mütterlichen Schulabschlusses"
-plot(eti(m10.1))
-```
+Mit `plot(eti(m10.1))` kann man das 95%-ETI der Post-Verteilung visualisieren.
 
 
-
-Zur Einnerung: Korrelation ungleich Kausation.
+:::{.callout-important}
+Zur Erinnerung: Korrelation ungleich Kausation.
 Von einem "Effekt" zu sprechen,
 lässt in den meisten Köpfen wohl die Assoziation zu einem *kausalen* Effekt
 entstehen. 
 Ein Kausaleffekt ist eine starke (und sehr interessante und wichtige) Behauptung,
 die mehr Fundierung bedarf als eine einfache Korrelation bzw. ein
- einfacher Zusammenhang. Für eine Kausalaussage braucht man ein Argument, etwa einen Verweis auf bestehende Studien oder eine Theorie.
+ einfacher Zusammenhang. Für eine Kausalaussage braucht man ein Argument,
+etwa einen Verweis auf bestehende Studien oder eine Theorie. $\square$
+:::
  
 
 
@@ -553,27 +546,34 @@ die mehr Fundierung bedarf als eine einfache Korrelation bzw. ein
 
 
 
-### Vertiefung: Toleranzbereich {#sec-toleranz}
+## Vertiefung: Toleranzbereich {#sec-toleranz}
 
 🏎️VERTIEFUNG, nicht prüfungsrelevant🏎️
 
 
-Berechnet man ein Regressionsmodell mit `stan_glm` (🤖😁), dann zieht man dabei Zufallszahlen 🎲.
-Der Hintergrund ist, dass Stan eine Stichproben-Post-Verteilung erstellt, und das Ziehen der Stichproben erfolgt zufällig.
-Das erklärt, warum Ihre Ergebnisse einer Regressionsanalyse mittels `stan_glm` von denen in diesem Buch abweichen können.
+Berechnet man ein Regressionsmodell mit `stan_glm` (🤖😁), 
+dann zieht man dabei Zufallszahlen 🎲.
+Der Hintergrund ist, dass Stan eine Stichproben-Post-Verteilung erstellt, 
+und das Ziehen der Stichproben erfolgt zufällig.
+Das erklärt, warum Ihre Ergebnisse einer Regressionsanalyse mittels `stan_glm` 
+von denen in diesem Buch abweichen können.
 
-Um zu prüfen, ob Ihre Ergebnisse "ähnlich genug" oder "innerhalb eines Toleranzbereichs" sind, kann man die Funktion `is_in_tolerance()` aus dem R-Paket `prada` nutzen.
+Um zu prüfen, ob Ihre Ergebnisse "ähnlich genug" oder "innerhalb eines Toleranzbereichs" sind, 
+kann man die Funktion `is_in_tolerance()` aus dem R-Paket `prada` nutzen.
 
 :::{.callout-note}
 ### Größe des Toleranzbereichs
 
 Die Größe des *relativen Toleranzbereichs* ist in `is_in_toleranzce()` auf 5% festgelegt.
-Das heißt, ein Unterschied von 5% zwischen einem Referenzwert (dem "wahren" Wert) und Ihrem Wert ist *okay*, also im Toleranzbereich.
-Außerdem gibt es noch einen *absoluten Toleranzbereich*, der auf *5% der SD der AV* festgelegt ist (bei Regressionsmodellen).
+Das heißt, ein Unterschied von 5% zwischen einem Referenzwert (dem "wahren" Wert) 
+und Ihrem Wert ist *okay*, also im Toleranzbereich.
+Außerdem gibt es noch einen *absoluten Toleranzbereich*, 
+der auf *10% der SD der AV* festgelegt ist (bei Regressionsmodellen).
 Der *größere* der beiden Werte gilt. $\square$
 :::
 
-Wenn Sie diese Funktion nutzen wollen, müssen Sie zunächst das Paket installieren (von Github, nicht vom Standard-R-App-Store CRAN) und dann wie gewohnt starten.
+Wenn Sie diese Funktion nutzen wollen, müssen Sie zunächst das Paket installieren (von Github, 
+nicht vom Standard-R-App-Store CRAN) und dann wie gewohnt starten.
 
 ```{r}
 #| eval: false
@@ -592,43 +592,67 @@ library(prada)
 
 Dann testen Sie, ob Ihr Modellparameter, z.B. $\beta_1$ innerhalb eines Toleranzbereichs liegt.
 
-Sagen wir der "richtige" oder "wahre" Wert (oder schlicht der Wert einer Musterlösung) für $\beta_0$ ist `77`. Unser Wert sei `77.56`.
+Sagen wir der "richtige" oder "wahre" Wert (oder schlicht der Wert einer Musterlösung) für $\beta_0$ ist `77`. 
+Unser Wert sei `77.56`.
 Liegt dieser Wert noch innerhalb eines Toleranzbereichs?
 
 ```{r}
 is_in_tolerance(asis = 77.56,  # Ihr Wert
                 tobe = 77,   # Referenzwert
                 tol_rel = .05,   # relative Toleranz
-                tol_abs = .05 * sd(kidiq$kid_score)  # absolute Toleranz
+                tol_abs = .10 * sd(kidiq$kid_score)  # absolute Toleranz
                 )
 ```
 
 Ja, unser Wert ist *innerhalb* des Toleranzbereichs. ✅ 
 
+
+:::{#exr-peer-m10.1-priors}
+### Peer-Instruction: Wählen Sie plausible Priori-Verteilungen für Modell `m10.1`!
+
+Die Apriori-Verteilungen, die Stan als Voreinstellung gewählt hat,
+sind recht weit.
+Das ist nicht unbedingt falsch, aber z.B. weniger Streuung in den Verteilungen wäre
+wohl plausibler.
+
+Bearbeiten Sie dazu folgende Aufgaben in Kleingruppen:
+
+a) Welche Parameter gibt es in `m10.1`?
+b) Geben Sie passende Parameter für diese Apriori-Verteilungen an in mathematischer Notation.
+c) Geben Sie den pasenden R-Befehl für diese Apriori-Werte an.
+
+
+Bereiten Sie Ihre Lösungen schriftlich elektronisch vor.
+Die Lehrkraft wird Sie ggf. bitten, Ihre Aufgaben im Plenum zu präsentieren. $square$
+:::
+
+
+
+
 ## `y ~ x + b`
 
+*Forschungsfrage:*
+
+>    Wie stark ist der statistische Effekt von jeweils Schulabschluss der Mutter 
+   (`mom_hs`) und  IQ der Mutter (`mom_iq`)  auf den IQ des Kindes (`kid_score`) ?
 
 
 
-### Forschungsfrage
+Die *Modellformel* zur Forschungsfrage lautet: `y ~ x + b` bzw. `kid_score ~ mom_iq + mom_hs`.
 
-
->    Wie stark ist der statistische Effekt von jeweils Schulabschluss der Mutter (`mom_hs`) und  IQ der Mutter (`mom_iq`)  auf den IQ des Kindes (`kid_score`) ?
-
-
-
-Die Modellformel zur Forschungsfrage lautet: `y ~ x + b` bzw. `kid_score ~ mom_iq + mom_hs`.
-
-Die Hypothesen lauten:
+Die *Hypothesen* lauten:
 
 1. Der Schulabschluss der Mutter hat einen positiven Effekt auf den IQ des Kindes:  $\beta_{momhs} > 0$.
 2. Der IQ der Mutter hat einen positiven Effekt auf den IQ des Kindes:  $\beta_{momiq} > 0$.
 
 Der Kausalgraph^[DAG, s. @sec-kausal] zur Modellformel sieht aus in @fig-yxb dargestellt.
-Laut unserem Modell ist `y` also eine Funktion zweier (kausaler) Einflüsse, `b` und `u`, wobei `u` für "unbekannt" steht, also für alle sonstigen Einflüsse.^[Dabei nehmen wir an, dass `x` und `u` nicht voneinander abhängen, was man daran erkennt, dass es keine Pfeile zwischen den beiden Variablen gibt.]
+Laut unserem Modell ist `y` also eine Funktion zweier (kausaler) Einflüsse, 
+`b` und `u`, wobei `u` für "unbekannt" steht, also für alle sonstigen 
+Einflüsse.^[Dabei nehmen wir an, dass `x` und `u` nicht voneinander abhängen, 
+was man daran erkennt, dass es keine Pfeile zwischen den beiden Variablen gibt.]
 
 
-```{r out.width = "100%", fig.asp = .5}
+```{r out.width = "750%", fig.asp = .5}
 #| label: fig-yxb
 #| fig-cap: "DAG für `y ~ b`"
 #| echo: false
@@ -650,7 +674,6 @@ Deskriptive Statistiken zum Datensatz sind in Tabelle @tbl-kidiq1 dargestellt.
 
 
 ```{r Thema6-Teil2-1, echo = TRUE, results="hide"}
-data("kidiq")  # Paket rstanarm, alternativ über CSV einlesen
 describe_distribution(kidiq)
 ```
 
@@ -666,20 +689,14 @@ describe_distribution(kidiq) %>%
 
 
 
-
-
-
-
-### 1 metrischer Prädiktor
-
-
-Berechnen wir folgendes Modell: `kid_score ~ mom_iq` (`m10.2`), s. Tab. @tbl-m102.
+Berechnen wir als Erstes folgendes einfaches Modell mit nur einer UV: 
+`kid_score ~ mom_iq` (`m10.2`), s. Tab. @tbl-m102.
 
 
 ```{r Thema6-Teil2-3, results = "hide"}
 #| results: "hide"
 m10.2 <-
-  stan_glm(kid_score ~ mom_iq, data = kidiq, seed = 42)
+  stan_glm(kid_score ~ mom_iq, data = kidiq)
 
 m10.2 %>% 
   parameters()
@@ -695,9 +712,10 @@ m10.2 %>%
   display()
 ```
 
-
-`kid_score = 26 + 0.6 * mom_iq + error`
-
+Setzt man die (Punktschätzer der) Parameter in die allgemeine Regressionsgleichung von `m10.2` ein,
+so erhält man:
+`kid_score = 26 + 0.6 * mom_iq + error`.
+Visualisieren wir uns noch das Modell m10.2, s. @fig-kidiqmomiq.
 
 
 
@@ -706,7 +724,6 @@ m10.2 %>%
 
 ### mit `ggplot2`
 
-Visualisieren wir uns noch das Modell m10.2, s. @fig-kidiqmomiq.
 
 ```{r Thema6-Teil2-4}
 #| label: fig-kidiqmomiq
@@ -721,12 +738,14 @@ kidiq %>%
 
 ### Mit `easystats`
 
-Alternativ kann man sich - einfacher - das Modell (m10.2) so visualisieren, mit Hilfe des R-Pakets `easystats`, s. @fig-m102-a.
+Alternativ kann man sich das Modell (m10.2) mit `plot(estimate_relation)`visualisieren, 
+mit Hilfe des R-Pakets `easystats`, s. @fig-m102-a.
 
 ```{r}
 #| label: fig-m102-a
 #| fig-cap: "Die geschätzten Erwartungswerte von m10.2 visualisiert"
-plot(estimate_relation(m10.2))
+plot(estimate_relation(m10.2)) +
+  geom_point(data = kidiq, aes(x = mom_iq, y = kid_score))
 ```
 
 :::
@@ -741,11 +760,8 @@ Der Achsenabschnitt hilft uns nicht weiter, da es keine Menschen mit einem IQ vo
 
 
 
-
-### Beide Prädiktoren, `m10.3`
-
-
-Berechnen wir als nächstes ein Modell mit beiden Prädiktoren: `kid_score ~ mom_hs + mom_iq`, s. @tbl-m103.
+Berechnen wir als nächstes ein Modell mit beiden Prädiktoren: `kid_score ~ mom_hs + mom_iq`, 
+s. @tbl-m103; Modell `m10.3`.
 
     
 
@@ -754,7 +770,6 @@ m10.3 <-
   stan_glm(
     kid_score ~ mom_iq + mom_hs, 
     refresh = 0,
-    seed = 42,
     data = kidiq)
 ```
 
@@ -770,7 +785,9 @@ parameters(m10.3) %>%
 
 
 
-Will man nur schnell die Koeffizienten des Modells (d.h. Punktschätzer der Modellparametern, in diesem Fall den Median) wissen, so kann man anstelle von `parameters(mein_modell)` auch `coef(mein_modell)` schreiben:
+Will man nur schnell die Koeffizienten des Modells (d.h. Punktschätzer der Modellparametern, in diesem Fall den Median) wissen, so kann man anstelle von `parameters(mein_modell)` auch `coef(mein_modell)` schreiben.
+Aber natürlich ist es möglich (und einfacher) anstelle von `coef` den Befehl `parameters` zu verwenden.
+
 
 ```{r}
 coef(m10.3)
@@ -786,9 +803,8 @@ coef(m10.3)[3]
 ```
 
 
-Aber natürlich ist es möglich (und einfacher) anstelle von `coef` den Befehl `parameters` zu verwenden.
 
-Und die Visualisierung des Modells `m10.3`, s. @fig-m103.
+@fig-m103 visualisiert das Modell `m10.3`.
 
 
 ```{r Thema6-Teil2-5, fig.asp = 0.62}
@@ -803,13 +819,12 @@ m10.3a <-
   stan_glm(
     kid_score ~ mom_iq + mom_hs, 
     refresh = 0,
-    seed = 42,
     data = kidiq2)
 
 pred <- estimate_relation(m10.3a)
-plot(pred)
 
-
+plot(pred) +
+  geom_point(data = kidiq2, aes(x = mom_iq, y = kid_score, color = mom_hs))
 ```
 
 
@@ -820,23 +835,27 @@ plot(pred)
 - *Koeffizient zur mütterlichen IQ*: Vergleicht man Kinder von Müttern mit gleichem Wert im Schulabschluss, aber mit 1 IQ-Punkt Unterschied, so sagt das Modell einen Unterschied von 0.6 IQ-Punkten bei den Kindern voraus.
 
 
-### Antwort auf die Forschungsfrage
 
 
 
-Mit 95% Wahrscheinlichkeit liegt der Unterschied im mittleren IQ-Wert zwischen Kindern von Müttern mit bzw. ohne Schulabschluss im Bereich von 1.6 bis 10.1 IQ-Punkten, laut unserem Modell. Der Effekt des mütterlichen IQs wird auf 0.5 bis 0.7 geschätzt (95%-ETI). Da für beide UV die Null nicht im Intervall plausibler Werte liegt, kann ein Null-Effekt (die exakte Nullhypothese) abgelehnt werden.
+Mit 95% Wahrscheinlichkeit liegt der Unterschied im mittleren IQ-Wert zwischen Kindern von Müttern 
+mit bzw. ohne Schulabschluss im Bereich von 1.6 bis 10.1 IQ-Punkten, laut unserem Modell. 
+Der Effekt des mütterlichen IQs wird auf 0.5 bis 0.7 geschätzt (95%-ETI). 
+Da für beide UV die Null nicht im Intervall plausibler Werte liegt, 
+kann ein Null-Effekt (die exakte Nullhypothese) abgelehnt werden.
 
 
 
 
 ## `y ~ x + b + x:b`
 
-### Forschungsfrage und Modelldefinition
+*Forschungsfrage*:
 
 
 >   Gibt es einen Interaktionseffekt zwischen mütterlichem Schulabschluss und mütterlichem IQ (auf den IQ-Wert des Kindes)?
 
-Außerdem ist man vermutlich auch an den Effekten der beiden UV auf die AV interessiert; diese Fragen haben wir im letzten Abschnitt untersucht (und greifen sie daher nicht noch mal ausführlich auf).
+Außerdem ist man vermutlich auch an den Effekten der beiden UV auf die AV interessiert; 
+diese Fragen haben wir im letzten Abschnitt untersucht (und greifen sie daher nicht noch mal ausführlich auf).
 
 
 
@@ -866,30 +885,33 @@ plot(graphLayout(mein_modell))
 
 
 
-### Interaktion zur Modellformel hinzufügen
+
 
 In `m10.3` hat das Modell die Regressionsgeraden gezwungen, parallel zu sein. 
 Betrachtet man das Streudiagramm, so sieht man, das nicht-parallele Geraden besser passen.
-Sind die Regressionsgeraden nicht parallel, so spricht man von einer *Interaktion* (synonym: Interaktionseffekt, Moderation).
+Sind die Regressionsgeraden nicht parallel, so spricht man von einer *Interaktion* 
+(synonym: Interaktionseffekt, Moderation).
+Fügen wir also im nächsten Modell, `m10.4` einen Interaktionseffekt hinzu.
 
 :::callout-important
 Liegt eine Interaktion vor, so unterscheidet sich die Steigung der Geraden in den Gruppen.
 Liegt keine Interaktion vor, so sind die Geraden parallel.$\square$
 :::
 
-Wir berechnen mit m10.4 das Modell mit folgender Modellformel: `kid_score ~ mom_hs + mom_iq + mom_hs:mom_iq`, s. @lst-m104, @fig-m104 und @tbl-m104.
+Wir berechnen mit m10.4 das Modell mit folgender Modellformel: 
+`kid_score ~ mom_hs + mom_iq + mom_hs:mom_iq`, s. @lst-m104, @fig-m104 und @tbl-m104.
 
 ```{r m10-4, echo = TRUE}
 #| lst-cap: "Die Modelldefition von m10.4 mit stanglm"
 #| lst-label: lst-m104
 m10.4 <- 
   stan_glm(kid_score ~ mom_iq + mom_hs + mom_hs:mom_iq, 
-           seed = 42,
            data = kidiq, 
            refresh = 0)
 ```
 
-In der Regressionsformel sieht man, dass ein zusätzlicher Parametern, eben der Interaktionseffekt, in das Modell aufgenommen wurde.
+In der Regressionsformel sieht man, dass ein zusätzlicher Parametern, eben der Interaktionseffekt, 
+in das Modell aufgenommen wurde.
 
 
 ```{r}
@@ -906,7 +928,7 @@ Mit `estimate_relation(m10.4) |> plot()` kann man  sich das Modell visualisieren
 ```{r Thema6-Teil2-6, fig.width=8}
 #| echo: false
 #| label: fig-m104
-#| fig-cap: "Wie m10.3, aber mit Interaktionseffekt. Es ist gut zu erkennen, dass der Achsenabschnitt für diese Daten kaum zu interpretieren ist."
+#| fig-cap: "`m10.4`: Wie `m10.3`, aber mit Interaktionseffekt. Es ist gut zu erkennen, dass der Achsenabschnitt für diese Daten kaum zu interpretieren ist."
 kidiq %>% 
   mutate(mom_hs = factor(mom_hs)) %>%  
   ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
@@ -922,24 +944,22 @@ kidiq %>%
   scale_color_okabeito() +
   scale_x_continuous(limits = c(0, 140)) +
   theme(legend.position = c(0.9, 0.2)) +
-  theme_minimal()
+  theme_minimal() +
+  theme(legend.position = c(0.9, 0.1))
 ```
 
 
 
 
 
-
-### Interpretation von `m10.4`
-
-*Achsenabschnitt:* IQ-Schätzwerte für Kinder mit Mütter ohne Abschluss und mit einem IQ von 0. Kaum zu interpretieren.
-- `mom_hs`: Unterschied der IQ-Schätzwerte zwischen Kindern mit Mutter ohne 
+Der *Achsenabschnitt* gibt die IQ-Schätzwerte für Kinder mit Mütter ohne Abschluss und mit einem IQ von 0 an. 
+Kaum zu interpretieren.
+`mom_hs`: Dieser Koeffizient zeigt den Unterschied der IQ-Schätzwerte zwischen Kindern mit Mutter ohne 
 bzw. mit Schulabschluss und jeweils mit einem IQ von 0. Puh.
 `mom_iq`: Unterschied der IQ-Schätzwerte zwischen Kindern mit Müttern, 
 die sich um einen IQ-Punkt unterscheiden aber jeweils ohne Schulabschluss.
-*Interaktion*: Der Unterschied in den Steigungen der Regressiongeraden, also der Unterschied 
+*Interaktion* (`mom_hs:mom_iq`): Der Unterschied in den Steigungen der Regressiongeraden, also der Unterschied 
 des Koeffizienten für `mom_iq` zwischen Mütter mit bzw. ohne Schulabschluss.
-
 Für beide Gruppen, `mom_hs=0` und `mom_hs=1` gilt folgende Regressionsformel, s. @eq-lm4.
 
 
@@ -953,7 +973,7 @@ Auf Errisch schreibt mit @eq-lm4 so (s. @lst-m104):
 
 Der Doppelpunkt zwischen `mom_hs` und `mom_iq` steht für den Interaktionseffekt der beiden Variablen.
 
-Trägt man die Werte der Koeffizienten ($\beta_0, \beta_1, \beta_2, \beta_3$) ein, 
+Trägt man die Punkteschätzer der Koeffizienten ($\beta_0, \beta_1, \beta_2, \beta_3$) ein, 
 so erhält man @eq-lm4-with-values.
 
 $$\text{kid score} = `r round(coef(m10.4)[1], 1)` + `r round(coef(m10.4)[3], 1)` \cdot \text{mom hs} + `r round(coef(m10.4)[2], 1)`  \cdot \text{mom iq} + `r round(coef(m10.4)[4], 1)` \cdot \text{mom hs} \cdot \text{mom iq}$$ {#eq-lm4-with-values}
@@ -1001,8 +1021,6 @@ Wir müssen dringend die unzentrierten Prädiktoren loswerden ...
 
 
 
-### Antwort auf die Forschungsfrage
-
 
 Wie in @tbl-m104 ersichtlich, kann für alle drei Effekte (mütterliche IQ, mütterlicher Schulabschluss und Interaktion von mütterlichem IQ mit mütterlichem Schulabschluss) ein Nulleffekt ausgeschlossen werden.
 Ob die Effekte stärker als "praktisch Null" sind, kann mittels des ROPE-Verfahren untersucht werden.
@@ -1010,15 +1028,13 @@ Ob die Effekte stärker als "praktisch Null" sind, kann mittels des ROPE-Verfahr
 
 ## `y ~ x_c + b + x_c:b`
 
-### Zentrieren von Prädiktoren
+
 
 Unter *Zentrieren* (to *c*enter) versteht man das Bilden der Differenz eines Messwerts zu seinem Mittelwert.^[Vgl. [Abschnitt "UV zentrieren"](https://statistik1.netlify.app/090-regression2.html#uv-zentrieren) im Kursbuch [Statistik1](https://statistik1.netlify.app/).]
 Zentrierte Werte geben also an, wie weit ein Messwert vom mittleren (typischen) Messwert entfernt ist.
 Mit zentrierten Werten ist eine Regression einfacher zu interpretieren.
 Hier zentrieren wir (nur) `mom_iq`; 
 die zentrierte Variable kennzeichnen wir durch den Suffix `_c`, also `mom_iq_c`.
-
-
 Man könnte auch `mom_hs` zentrieren,
 aber für eine einfache Interpretation ist es meist nützlich,
 nur metrische Prädiktoren zu zentrieren.
@@ -1031,7 +1047,6 @@ kidiq <-
 
 m10.5 <- stan_glm(kid_score ~ mom_hs + mom_iq_c + mom_hs:mom_iq_c, 
                   data = kidiq, 
-                  seed = 42,
                   refresh = 0)
 
 coef(m10.5)  # nur die Punktschätzer für die Koeffizienten ausgeben
@@ -1051,12 +1066,12 @@ parameters(m10.5) %>%
 
 
 
-### Interpretation von `m10.5`
+Zur Interpretation von `m10.5`:
 
-- Der *Achsenabschnitt* (`Intercept`) gibt den geschätzten IQ des Kindes an, wenn man eine Mutter *mittlerer* Intelligenz und *ohne* Schulabschluss betrachtet.
-- `mom_hs` gibt den Unterschied im geschätzten IQ des Kindes an, wenn man Mütter mittlerer Intelligenz aber mit bzw. ohne Schlusabschluss vergleicht.
-- `mom_iq_c` gibt den Unterschied im geschätzten IQ des Kindes an, wenn man Mütter ohne Schlusabschluss aber mit einem IQ-Punkt Unterschied vergleicht.
-- `mom_hs:mom_iq_c` gibt den Unterschied in den Koeffizienten für `mom_iq_c` an zwischen den beiden Grupen von `mom_hs`.
+- Der *Achsenabschnitt* (`Intercept`) gibt den geschätzten mittleren IQ des Kindes an, wenn man eine Mutter *mittlerer* Intelligenz und *ohne* Schulabschluss betrachtet.
+- `mom_hs` gibt den Unterschied im geschätzten mittleren IQ des Kindes an, wenn man Mütter mittlerer Intelligenz aber mit bzw. ohne Schlusabschluss vergleicht.
+- `mom_iq_c` gibt den Unterschied im geschätzten mittleren IQ des Kindes an, wenn man Mütter ohne Schlusabschluss aber mit einem IQ-Punkt Unterschied vergleicht.
+- `mom_hs:mom_iq_c` gibt den mittleren Unterschied in den Koeffizienten für `mom_iq_c` an zwischen den beiden Grupen von `mom_hs`.
 
 
 
@@ -1087,9 +1102,9 @@ kidiq %>%
 ```
 
 
-### Zentrieren ändert nichts an den Vorhersagen
-
+Zentrieren ändert nichts an den Vorhersagen.
 Betrachten wir die Vorhersagen von `m10.4`.
+Mit `predict` kann man sich die Vorhersagen eines Modells ausgeben lassen.
 
 ```{r Thema6-Teil2-8, echo = TRUE}
 new <- tibble(mom_hs = 0, mom_iq = mean(kidiq$mom_iq))
@@ -1097,7 +1112,8 @@ pred_new <- predict(m10.4, newdata = new)
 mean(pred_new)
 ```
 
-Und vergleichen wir mit diesen die Vorhersagen von `m10.5`: Wir sehen, die Vorhersagen sind (bis auf Rundungsfehler) identisch.
+Und vergleichen wir Vorhersagen von `m10.4` mit denen von `m10.5`: 
+Wir sehen, die Vorhersagen sind (bis auf Rundungsfehler) identisch.
 
 
 ```{r Thema6-Teil2-9, echo = TRUE}
@@ -1112,16 +1128,18 @@ mean(pred_new)
 Auch die Streuungen der vorhergesagten Werte unterscheiden sich nicht (wirklich): $\sigma_{m10.4}= `r round(sigma(m10.4))`$; $\sigma_{m10.5}= `r round(sigma(m10.5))`$.
 
 
-Das Zentrieren ändert auch *nicht* die zentrierten Regressionskoeffizienten, da die Streuungen dieser Variable nicht verändert wurden.
+Das Zentrieren ändert auch *nicht* die Regressionskoeffizienten, 
+da die Streuungen dieser Variablen nicht verändert wurden durch das Zentrieren.
 
 
 
 
-
-### Perzentilintervalle aus der Posterori-Verteilung
-
-@tbl-m105 zeigt die Punktschätzer der Parameter für m10.5 sowie ihre Perzentilintervalle^[auch ETI (Equal Tails Interval) genannt].
+@tbl-m105 zeigt die Punktschätzer der Parameter für `m10.5` sowie ihre ETI.
 Nutzen Sie dafür `parameters(m10.5)`, s. @tbl-m105.
+Highest Density (Posterior) Intervalle (HDI oder HDPI) kann man sich  komfortabel ausgeben 
+lassen mit `hdi(m10.5)` oder mit `parameters(m10.5, ci_method = "hdi")`,
+s. @tbl-m105-hdi.
+Im Falle symmetrischer Posteriori-Verteilungen (wie hier) kommen beide Arten von Intervallen zu gleichen Ergebnissen.
 
 ```{r}
 #| tbl-cap: "Parameter von m10.5 und ETIs"
@@ -1132,10 +1150,6 @@ parameters(m10.5) %>%
 ```
 
 
-
-Highest Density (Posterior) Intervalle (HDI oder HDPI) kann man sich  komfortabel ausgeben lassen mit `hdi(m10.5)` oder mit `parameters(m10.5, ci_method = "hdi")`,
-s. @tbl-m105-hdi.
-
 ```{r Thema6-Teil2-11}
 #| tbl-cap: "Parameter von m10.5 und HDIs"
 #| label: tbl-m105-hdi
@@ -1143,11 +1157,9 @@ parameters(m10.5, ci_method = "hdi") %>%
   display()
 ```
 
-Im Falle symmetrischer Posteriori-Verteilungen (wie hier) kommen beide Arten von Intervallen zu gleichen Ergebnissen.
 
 
 
-### Beantworten der Forschungsfrage
 
 >   Das Model zeigt keine Belege, dass sich die mittlere Intelligenz von Kindern bei Müttern mit bzw. ohne Schlusabluss unterscheidet (95%PI: [-2.0, 7.8]); die Befundlage ist unklar. Hingegen fand sich ein Effekt der mütterlichen Intelligenz; pro Punkt Unterschied in mütterlichem IQ fand sich ein Unterschied von 0.7 bis 1.3 IQ-Punkte beim Kind (95%PI). Außerdem fand sich ein Beleg, dass der Zusammenhang des IQ zwischen Mutter und Kind durch den Schulabschluss moderiert wird: Bei Mütter mit Schulabschluss war der Regressionskoeffizient zwischen Mutter-IQ und Kind-IQ geringer (95%PI: [-0.80, -0.17]).
 
@@ -1157,7 +1169,7 @@ Im Falle symmetrischer Posteriori-Verteilungen (wie hier) kommen beide Arten von
 
 
 :::callout-important
-Das Modell hat mittels @fig-yg mutig Kausalaussagen postuliert. Das ist zwar schön, bedarf aber einer Begründung mit Rückgriff auf die Literatur (was hier nicht getan wurde).
+Das Modell hat mittels @fig-yg mutig Kausalaussagen postuliert. Das ist zwar schön, bedarf aber einer Begründung mit Rückgriff auf die Literatur (was hier nicht getan wurde). Ohne eine Begründung ist die Behauptung der Kausalaussage nicht zu verteidigen.
 :::
 
 
@@ -1185,7 +1197,6 @@ Hier untersuchen wir ein Modell mit einer nominalen UV mit mehreren Stufen.
 
 
 
-### Forschungsfrage
 
 
 
@@ -1196,11 +1207,8 @@ Doch nach einiger Zeit kamen Sie in eine Sinnkrise.
 Sie warfen Ihre Job hin und beschlossen, in die Wissenschaft zu gehen.
 Kurz entschlossen bewarben Sie sich auf das erste Stellenangebot
 als Nachwuchswissenschaftler:in.
-
 Ihr Forschungsprojekt führte Sie in die Antarktis...
 Nun, das war zumindest ein Gegenentwurf zu Ihrem bisherigen Jet-Set-Leben.
-
-
 Ihre Aufgabe bestand nun darin, Pinguine zu untersuchen.
 Genauer gesagt ging es um Größenunterschiede zwischen drei Pinguinarten.
 Ja, stimmt, an so ein Forschungsprojekt hatten Sie vorher nie auch nur nur im Traum gedacht.
@@ -1208,8 +1216,7 @@ Ja, stimmt, an so ein Forschungsprojekt hatten Sie vorher nie auch nur nur im Tr
 
 
 
-</br>
-
+*Forschungsfrage*:
 
 > Unterscheiden sich die mittleren Körpergewichte der drei Pinguinarten?
 
@@ -1223,7 +1230,7 @@ Die allgemeine Modellformel zur Forschungsfrage lautet: `y ~ g`.
 Der DAG zur Modellformel sieht aus in @fig-yg dargestellt.
 
 
-```{r out.width = "100%", fig.asp = .5}
+```{r out.width = "75%", fig.asp = .5}
 #| label: fig-yg
 #| fig-cap: "DAG für `y ~ g`"
 #| echo: false
@@ -1237,13 +1244,13 @@ plot(graphLayout(mein_modell))
 ```
 
 
-### Alle Mittelwerte sind gleich, exakt gleich (?)
+Prüfen wir die Nullhypothese, $H_0$, dass alle Mittelwerte gleich sind, exakt gleich (?)
 
 - Formal: $\mu_1 = \mu_2 = \ldots = \mu_k$ mit $k$ verschiedenen Gruppen von Pinguinarten.
 
 - Hypothesen, die keinen (Null) Unterschied zwischen Gruppen oder keinen Zusammenhang zwischen Variablen postulieren, kann man als *Nullhypothesen* bezeichnen.
 
-- Moment. Dass sich *alle* Mittelwerte um 0,00000000 unterscheiden, ist wohl nicht zu vermuten. Wer glaubt sowas? 🤔 Daher ist die bessere Forschungsfrage:
+- Moment. Dass sich *alle* Mittelwerte um 0,00000000 unterscheiden, ist wohl nicht zu vermuten. Daher ist die bessere Forschungsfrage:
 
 > *Wie sehr* unterscheiden sich mittlere Körpergewichte in Abhängigkeit von der Pinguinart?
 
@@ -1251,13 +1258,14 @@ Alternativ können wir  die Hypothese prüfen, ob die Mittelwerte "praktisch" gl
 
 
 
-### Erster Blick in den Datensatz `penguins`
+Werfen wir einen Blick in den Datensatz `penguins`.
+Hier ist die Verteilung des Gewichts jeder Spezies im Datensatz, @tbl-penguins.
 
 ![Palmer Penguins](img/penguins-logo.png){width="25%"}
 
 [Datenquelle](https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv), [Beschreibung des Datensatzes](https://vincentarelbundock.github.io/Rdatasets/doc/palmerpenguins/penguins.html)
 
-Hier ist die Verteilung des Gewichts jeder Spezies im Datensatz, @tbl-penguins.
+
 
 ```{r}
 #| results: hide
@@ -1281,12 +1289,8 @@ penguins %>%
 
 
 Was fällt Ihnen auf?
-
-
-
-### Visualisierung (EDA)
-
-
+Visualisieren wir als Nächstes die Verteilung der AV, um
+den Datensatz genauer zu verstehen.
 Hier kommen die Pinguine! Wie schwer sind die Tiere in unserer Stichprobe, 
 s. @fig-penguines1? 
 
@@ -1332,10 +1336,9 @@ ggviolin(penguins,
 
 
 
-### Gewicht pro Spezies, `m10.6`
 
-Berechnen wir das mittlere Gewicht pro Spezies (Gruppe) der Pinguine, s. `m10.6` und @tbl-m106-params.
-
+Berechnen wir nun das mittlere Gewicht pro Spezies (Gruppe) der Pinguine, 
+s. `m10.6` und @tbl-m106-params.
 Die Modellformel  für `m10.6` lautet also `body_mass_g ~ species`.
 
 
@@ -1345,8 +1348,7 @@ options(mc.cores = parallel::detectCores())  # Turbo einschalten
 
 m10.6 <- stan_glm(body_mass_g ~ species, 
                   data = penguins, 
-                  refresh = 0,  # unterdrückt Ausgabe der Posteriori-Stichproben
-                  seed = 42  # zur Reproduzierbarkeit
+refresh = 0,  # unterdrückt Ausgabe der Posteriori-Stichproben
                   )
 
 m10.6 %>% parameters()
@@ -1364,10 +1366,12 @@ m10.6 %>%
 
 
 
-### Interpretation von `m10.6`
+Zur Interpretation von `m10.6`:
 
-Die UV hat drei verschiedene Stufen (Werte, Ausprägungen; hier: Spezies), aber es werden in @tbl-m106-params nur zwei Stufen angezeigt (also eine weniger) zusätzlich zum Achsenabsdhnitt.
-Die fehlende Stufe (`Adelie`, nicht ausgegeben) ist die *Vergleichs- oder Referenzkategorie* (baseline) und ist im Achsenabschnitt ausgedrückt (Intercept).
+Die UV hat drei verschiedene Stufen (Werte, Ausprägungen; hier: Spezies), 
+aber es werden in @tbl-m106-params nur zwei Stufen angezeigt (also eine weniger) zusätzlich zum Achsenabschnitt.
+Die fehlende Stufe (`Adelie`, nicht ausgegeben) ist die *Vergleichs- oder Referenzkategorie* (baseline) 
+und ist im Achsenabschnitt ausgedrückt (Intercept).
 Die Koeffizienten für `species` geben jeweils den (vorhergesagten) Unterschied zur Vergleichskategorie wieder.
 Pinguine der Spezies `Adelie` haben laut Modell ein mittleres Gewicht von ca. 3700g.
 Pinguine der Spezies Gentoo sind laut Modell im Mittel gut 1000g schwerer als Pinguine der Spezies `Adelie`, etc.
@@ -1386,7 +1390,7 @@ plot(hdi(m10.6)) + scale_fill_okabeito()
 Das [Farbschema nach Okabe und Ito](https://jfly.uni-koeln.de/color/) ist gut geeignet, um nominal skalierte Farben zu kodieren (s. [Details hier](https://data-se.netlify.app/2023/06/30/farbpaletten/)).
 
 
-### Glauben wir jetzt an Gruppeneffekte?
+Glauben wir jetzt an Gruppeneffekte?
 
 Glauben wir jetzt, auf Basis der Modellparameter,
 an Unterschiede (hinsichtlich der AV) zwischen den Gruppen (UV)?
@@ -1394,30 +1398,24 @@ an Unterschiede (hinsichtlich der AV) zwischen den Gruppen (UV)?
 Es scheinen sich nicht alle Gruppen voneinander zu unterscheiden. 
 So ist der Mittelwert der Gruppe `Gentoo` deutlich höher als der der beiden anderen Gruppen. 
 Umgekehrt sind sich die Pinguinarten `Adelie` und `Chinstrap` in ihren Mittelwerten ziemlich ähnlich.
-
 Wie in @fig-m106-params ersichtlich,
 überlappt sich der Schätzbereich für den Parameter von Gentoo *nicht* mit der Null;
 hingegen überlappt sich der Schätzbereich des Parameters für Chinstrap deutlich mit der Nullinie.
-
-
-
 Auf Basis unseres Modells verwerfen wir die also (mit hoher Sicherheit) die Hypothese, dass *alle* Mittelwerte   *exakt* identisch sind.
-
-Ehrlicherweise hätte sowieso (fast) niemand geglaubt, dass die *exakte Nullhypothese* $\mu_1 = \mu_2 = \ldots = \mu_k$ bis in die letzte Dezimale gilt. Anders gesagt: Die Wahrscheinlichkeit eines bestimmten Wertes einer stetigen Zufallsvariable ist praktisch Null.
-Aber: Viele Forschis prüfen gerne die Nullhypothese, daher diskutieren wir den Begriff der (exakten) Nullhypothese.
-Das Verfahren der Frequentistischen Statistik, um die Nullhypothese $\mu_1 = \mu_2 = \ldots = \mu_k$ zu testen, nennt man *Varianzanalyse* (analysis of variance, kurz *ANOVA*).
-In der Bayes-Statistik nutzt man - wie immer - primär die Post-Verteilung, um Fragen der Inferenz (z.B. Gruppenunterschiede dieser Art)  inferenzstatistisch zu beurteilen.
-
-
-
-
-
-
+Ehrlicherweise ist sowieso zweifelhaft, dass die *exakte Nullhypothese* 
+$\mu_1 = \mu_2 = \ldots = \mu_k$ bis in die letzte Dezimale gilt. 
+Anders gesagt: Die Wahrscheinlichkeit eines bestimmten Wertes einer stetigen Zufallsvariable ist praktisch Null.
+Aber: Viele Forscherinnen und Forscher prüfen gerne die Nullhypothese, 
+daher diskutieren wir hier den Begriff der (exakten) Nullhypothese.
+Das Verfahren der Frequentistischen Statistik, um die Nullhypothese $\mu_1 = \mu_2 = \ldots = \mu_k$ zu testen, 
+nennt man *Varianzanalyse* (analysis of variance, kurz *ANOVA*).
+In der Bayes-Statistik nutzt man -- wie immer -- primär die Post-Verteilung, 
+um Fragen der Inferenz (z.B. Gruppenunterschiede dieser Art)zu beurteilen.
 
 
-### Priori-Werte ändern
 
-Unser Modell `m10.6` hat schwach informierte (weakly informative) Priors.
+
+Unser Modell `m10.6` verwendet schwach informierte (weakly informative) Priors.
 Für Achsenabschnitt und die Regressionskoeffizienten trifft unser Golem Stan folgende Annahmen in der Voreinstellung:
 
 - Achsenabschnitt und Regressionsgewichte werden als normalverteilt angenommen
@@ -1444,7 +1442,6 @@ m10.6b <- stan_glm(
   body_mass_g ~ species, 
   data = penguins, 
   refresh = 0,
-  seed = 42,
   prior = normal(location = c(0, 0),  # betas, Mittelwert
                  scale = c(500, 500)),  # betas, Streuung
   prior_intercept = normal(3000, 500),  # Achsenabschnitt, Mittelwert und Streuung
@@ -1454,7 +1451,7 @@ coef(m10.6b)
 ```
 
 
-Anstelle von Rohwerten (hier Angabe von Gramm Gewicht) kann man die Streuung auch in z-Werten eingeben, das macht es etwas einfacher.
+Anstelle von Rohwerten (hier Angabe von Gramm Gewicht) kann man die Streuung auch in z-Werten eingeben, das macht es etwas einfacher, s. `m10.6c`.
 Dazu gibt man bei dem oder den entsprechenden Parametern den Zusatz `autoscale = TRUE` an.
 
 
@@ -1464,7 +1461,6 @@ m10.6c <- stan_glm(
   body_mass_g ~ species, 
   data = penguins, 
   refresh = 0,
-  seed = 42,
   prior = normal(location = c(0, 0),  # betas, Mittelwert
                  scale = c(2.5, 2.5),  # betas, Streuung
                  autoscale = TRUE),  # in z-Einheiten
@@ -1493,7 +1489,7 @@ Implizit bekommt man die Informationen zu $\sigma$ mitgeteilt durch die Größe 
 
 
 
-### Vertiefung: Wechsel der Referenzkategorie
+## Vertiefung: Wechsel der Referenzkategorie
 
 `species` ist eine nominale Variable, da passt in R der Typ `factor` (Faktor) am besten. Aktuell ist der Typ noch `character` (Text):
 
@@ -1570,36 +1566,36 @@ hdi(m10.6a) |> display()
 Hier untersuchen wir Forschungsfragen mit zwei metrischen UV (und einer metrischen AV).
 
 
-### Forschungsfrage
+*Forschungsfrage*:
 
 >   Stehen sowohl der IQ der Mutter als auch, unabhängig davon, das Alter der Mutter im Zusammenhang mit dem IQ des Kindes?
 
 
-- Das ist eine *deskriptive* Forschungsfrage. *Keine* Kausalwirkung (etwa "IQ der Mutter ist die Ursache zum IQ des Kindes") wird impliziert. 
-- Es geht in dieser Forschungsfrage rein darum, Zusammenhänge in den Daten - bzw. in der Population - aufzuzeigen.
-- Viele Forschungsfagen gehen allerdings weiter und haben explizit Kausalwirkungen im Fokus. Für solche Fragen ist ein Kausalmodell nötig: Fachlich fundierte Annahmen über Kausalzusammenhänge zwischen UV und AV.
+Das ist eine *deskriptive* Forschungsfrage. *Keine* Kausalwirkung (etwa "IQ der Mutter ist die Ursache zum IQ des Kindes") wird impliziert. 
+Es geht in dieser Forschungsfrage rein darum, Zusammenhänge in den Daten - bzw. in der Population - aufzuzeigen.
+Viele Forschungsfragen gehen allerdings weiter und haben explizit Kausalwirkungen im Fokus. 
+Für solche Fragen ist ein Kausalmodell nötig: Fachlich fundierte Annahmen 
+über Kausalzusammenhänge zwischen UV und AV.
 
 
 
 
-### Was heißt, X hängt mit Y zusammen?
+Was heißt, X hängt mit Y zusammen?
 
 
-- Der Begriff "Zusammenhang" ist nicht exakt.
-- Häufig wird er (für metrische Variablen) verstanden als
-    - lineare Korrelation $\rho$ bzw. $r$ 
-    - lineare Regression $\beta$, bzw. $b$ 
+Der Begriff "Zusammenhang" ist nicht exakt.
+ Häufig wird er (für metrische Variablen) verstanden als lineare Korrelation $\rho$ bzw. $r$  lineare Regression $\beta$, bzw. $b$. 
 
 
-- Der Regressionskoeffizient 
-    - misst die *Steigung* der Regressionsgerade
-    - zeigt, wie groß der vorhergesagte Unterschied in Y, wenn man zwei Personen (Beobachtungseinheiten) vergleicht, die sich um eine Einheit in X unterscheiden
-    - wird manchmal mit dem "Effekt von X auf Y" übersetzt. Vorsicht: "Effekt" klingt nach Kausalzusammenhang. Eine Regression ist keine hinreichende Begründung für einen Kausalzusammenhang. 
+Der Regressionskoeffizient misst die *Steigung* der Regressionsgerade und zeigt, wie groß der vorhergesagte Unterschied in Y ist, wenn man zwei Personen (Beobachtungseinheiten) vergleicht, die sich um eine Einheit in X unterscheiden.
+Der Regressionskoeffizient wird manchmal mit dem "Effekt von X auf Y" übersetzt. 
+Vorsicht: "Effekt" klingt nach Kausalzusammenhang. 
+Eine Regression ist keine hinreichende Begründung für einen Kausalzusammenhang. 
     
-- Der Korrelationskoeffizient
-    - misst eine Art der Stärke des linearen Zusammenhangs
-    - zeigt, wie klein die Vorhersagefehler der zugehörigen Regression im Schnitt sind.
-    - [Korrelation ist nicht (automatisch) Kausation.](https://xkcd.com/552/)
+    
+Der Korrelationskoeffizient misst eine Art der Stärke des linearen Zusammenhangs.
+er zeigt, wie klein die Vorhersagefehler der zugehörigen Regression im Schnitt sind.
+[Korrelation ist nicht (automatisch) Kausation.](https://xkcd.com/552/)
     
 
 
@@ -1610,15 +1606,15 @@ bevor man ein (Regressions-)Modell aufstellt, s. @tbl-cor-kidiq.
 
 ```{r echo = TRUE, eval = FALSE}
 kidiq %>% 
-  correlation()
+  correlation(bayesian = TRUE)
 ```
 
 ```{r}
 #| echo: false
 #| label: tbl-cor-kidiq
-#| tbl-cap: "Korrelation der Variablen im Datensatz kidiq (inkl. frequentistischer Statistiken wie t- und p-Werten, die wir hier ignorieren)"
+#| tbl-cap: "Korrelation der Variablen im Datensatz `kidiq`"
 kidiq %>% 
-  correlation() %>% 
+  correlation(bayesian = TRUE) %>% 
   display()
 ```
 
@@ -1628,7 +1624,7 @@ kidiq %>%
 ```{r}
 #| eval: false
 kidiq %>% 
-  correlation() %>% 
+  correlation(bayesian = TRUE) %>% 
   summary()
 ```
 
@@ -1657,9 +1653,8 @@ kidiq %>%
 
 
 
-### Univariate Regressionen
 
-Wir berechnen jeweils eine univariate Regression, pro Prädiktor,
+Wir berechnen zunächst jeweils eine univariate Regression, pro Prädiktor,
 also eine für `mom_iq` und eine für `mom_age`.
 
 ```{r echo = TRUE}
@@ -1691,8 +1686,7 @@ parameters(m10.8) |>
 
 
 
-### Visualisierung der univariaten Regressionen
-
+Visualisieren wir nun die univariaten Regressionen.
 In @fig-regr-one-pred ist die univariate Regression mit jeweils einem der beiden Prädiktoren dargestellt.
 
 
@@ -1728,14 +1722,12 @@ plots(p1, p2,
 ```
 
 
-Univariate Regressionen
 
 
 
 
-### Multiples Modell (beide Prädiktoren), m10.9
 
-
+Berechnen wir im Foglenden das multiple Modell (beide Prädiktoren), `m10.9`.
 `m10.9` stellt das multiple Regressionsmodell dar;
 *multipel* bedeutet in diesem Fall, dass mehr als ein Prädiktor im Modell aufgenommen ist, s @tbl-m109.
 
@@ -1848,7 +1840,6 @@ Auf der Achse von mom_iq erkennt man deutlich (anhand der Farbänderung) die Ver
 
 
 
-### Visualisierung in 10 Dimensionen
 
 @fig-ten-dims visualisiert den Zusammenhang von 10 Variablen untereinander.
 
@@ -1862,7 +1853,6 @@ ggplot(data.frame(x=NA, y=NA)) +
 ```
 
 Leider macht mein Hirn hier nicht mit. Unsere Schwächen, eine große Zahl an Dimensionen zu visualisieren, ist der Grund, warum wir mathematische Modelle brauchen.
-
 Daher kann man ein Modell verstehen als eine Zusammenfassung eines (ggf. hochdimensionalen) Variablenraums.
 
 
@@ -1874,9 +1864,7 @@ Daher kann man ein Modell verstehen als eine Zusammenfassung eines (ggf. hochdim
 In diesem Abschnitt untersuchen wir ein Modell mit zwei z-standardisierten, metrischen Prädiktoren (und einer metrischen, *nicht*-standardisierten AV).
 
 
-### Relevanz der Prädiktoren
-
-
+Zur Relevanz der Prädiktoren:
 Woher weiß man,
 welche UV am stärksten mit der AV zusammenhängt?
 Man könnte auch sagen: Welcher Prädiktor (welche UV) am "wichtigsten" ist
@@ -1907,7 +1895,7 @@ Die Antwort hängt auch von der Streuung bzw. Skalierung der Variablen ab.
 Um die Relevanz der Prädiktoren vergleichen zu können, müsste man vielleicht die Veränderung von `kid_score` betrachten, wenn man von kleinsten zum größten Prädiktorwert geht.
 Allerdings sind Extremwerte meist instabil (da sie von einer einzigen Beobachtung bestimmt werden).
 Sinnvoller ist es daher, die Veränderung in der AV zu betrachten, wenn man den Prädiktor von "unterdurchschnittlich" auf "überdurchschnittlich" ändert.
-Das kann man mit *z-Standardisierung* erreichen, s. @sec-standardnormalverteilung.
+Das kann man mit *z-Standardisierung* erreichen.
 
 
 
@@ -1944,8 +1932,7 @@ So werden vergleichende Aussagen für verschiedene Verteilungen möglich.
 
 
 
-### Statistiken zu den z-transformierten Variablen
-
+Zu den Statistiken zu den z-transformierten Variablen: 
 @tbl-kidiq1 zeigt die Verteilung der (metrischen) Variablen im Datensatz `kidiq`.
 
 Metrische Variablen in z-Werte zu transformieren, hat verschiedenen Vorteile:
@@ -1957,7 +1944,7 @@ Metrische Variablen in z-Werte zu transformieren, hat verschiedenen Vorteile:
 - kleine und ähnlich große Wertebereich erleichtern dem Golem die Rechenarbeit
 
 
-Man kann die z-Transformation ("Skalierung") mit `standardize` (aus `easystats`) durchführen, s. @tbl-kidiq-z.
+Man kann die z-Transformation ("Standardisierung") mit `standardize` (aus `easystats`) durchführen, s. @tbl-kidiq-z.
 
 
 ```{r kidiq-stand}
@@ -2015,7 +2002,7 @@ kidiq %>%
 
 
 
-### Modell
+
 
 Berechnen wir das Modell `m10.10`: `y ~ x1_z + x2_z`.
 
@@ -2047,7 +2034,7 @@ Standardisiert man aber die AV, so liefern die Regressionskoeffizienten (Betas) 
 um wie viele *SD-*Einheiten sich die AV verändert, wenn sich ein Prädiktor um eine *SD-*Einheit verändert.
 Das kann auch eine interessante(re) Aussage sein.
 
-### Modell `y_z ~ x1_z + x2_z`
+
 
 Berechnen wir das Modell `m10.12`: `y_z ~ x1_z + x2_z`.
 
@@ -2070,8 +2057,6 @@ Man sieht, dass die Intelligenz der Mutter *deutlich wichtiger* ist das Alter de
 
 
 
-
-### 95%-PI
 
 
 Mit `parameters` können wir uns ein PI für `m10.12` ausgeben lassen, s. @fig-m1011hdi;
@@ -2098,7 +2083,7 @@ plot(eti(m10.12)) + scale_fill_okabeito()
 
 
 
-### Modellgüte
+Wie ist es um die Modellgüte in `m10.12` bestellt? Berechnen wir $R^2$.
 
 ```{r m10-11-r2}
 r2(m10.12)
@@ -2128,8 +2113,6 @@ interpret_r2(0.2)  # aus `easystats`
 Danke, Herr Cohen!
 
 
-### Priori-Verteilung für `m10.12` und Modelldefinition
-
 Die Prioris für `m10.12` kann man sich mit `prior_summary(m10.12)` ausgeben lassen.
 Danke, Stan!
 
@@ -2141,7 +2124,11 @@ prior_summary(m10.12)  # aus rstanarm
 
 >   🤖  Nix zu danken!
 
-Wie gesagt, Stan nimmt dafür einfach die empirischen Mittelwerte und Streuungen her.^[Nicht unbedingt die feine bayesianische Art, denn die Prioris sollten ja eigentlich apriori, also vor Kenntnis der Daten, bestimmt werden. Auf der anderen Seite behauptet Stan, von uns zur Rede gestellt, dass die empirischen Mittelwerte ja doch gute Schätzer der echten Parameter sein müssten, wenn die Stichprobe, die wir ihm angeschleppt hätten, tatsächlich gut ist...]
+Wie gesagt, Stan nimmt dafür einfach die empirischen Mittelwerte und Streuungen 
+her.^[Nicht unbedingt die feine bayesianische Art, denn die Prioris sollten ja eigentlich apriori, also vor Kenntnis der Daten, bestimmt werden. 
+Auf der anderen Seite behauptet Stan, von uns zur Rede gestellt, 
+dass die empirischen Mittelwerte ja doch gute Schätzer der echten Parameter sein müssten, 
+wenn die Stichprobe, die wir ihm angeschleppt hätten, tatsächlich gut ist...]
 
 Stans Ausgabe kann man in Mathe-Sprech so darstellen, s. @eq-m1012.
 
@@ -2158,20 +2145,19 @@ $$
 $${#eq-m1012}
 
 Man beachte, dass der Achsenabschnitt zur Intelligenz der Kinder auf Null festgelegt wird:
-Bei *mittlerer* Intelligenz und *mittlerem* Alter der Mutter wird *mittlere* Intelligenz des Kindes erwartet in `m10.12`. 
-Dadurch, dass nicht nur UV, sondern auch AV z-standardisiert (d.h. zentriert und in der Streuung auf 1 standardisiert) sind, ist der Mittelwert der AV Null.
-
+Bei *mittlerer* Intelligenz und *mittlerem* Alter der Mutter wird *mittlere* 
+Intelligenz des Kindes erwartet in `m10.12`. 
+Dadurch, dass nicht nur UV, sondern auch AV z-standardisiert 
+(d.h. zentriert und in der Streuung auf 1 standardisiert) sind, ist der Mittelwert der AV Null.
 Schreibt man einen Bericht, so bietet es sich an, die Modelldefinition zumindest im Anhang aufzuführen.
 
 
-:::{#exm-anz-mod-m1011}
+:::{#exr-anz-mod-m1011}
 ### Anzahl der Modellparameter
 Wie viele Modellparameter hat `m10.12`?^[4: $\beta_0, \beta_1, \beta_2, \sigma$]
 :::
 
-### Antwort auf die Forschungsfrage
-
-
+Unsere Antwort auf die Forschungsfrage:
 
 >   Das Modell spricht sich klar für einen statistischen, linearen Effekt von Intelligenz der Mutter auf die Intelligenz des Kindes aus, wenn das Alter der Mutter statistisch kontrolliert wird (95%PI: [0.38, 0.51]). 
 Pro Einheit Standardabweichung in der UV (Intelligenz der Mutter) ändert sich die AV um ca. 0.44 Standardabweichungseinheiten.
@@ -2204,14 +2190,13 @@ wenn wir sie a) explizit untersuchen und b) sich in der Literatur Belege dafür 
 
 
 
-### Verwandtheit von Korrelation und Regression
 
 
 Sind X und Y *z-standardisiert*, so sind Korrelation und Regression identisch, s. @thm-br.
 
 ::: {#thm-br}
 
-### Regression als Korrelation
+Man kann die Regression als Korrelation verstehen:
 
 $$b = r \frac{sd_x}{sd_y}\quad \square$$
 :::
@@ -2242,22 +2227,25 @@ kidiq_z %>%
 
 
 
-### Prüfen der Linearitätsannahme
 
 
-Zentrale Annahme eines linearen Modells: Die AV ist eine *lineare* Funktion der einzelnen Prädiktoren, $y= \beta_0 + \beta_1x_1 + \beta_2 x_2 + \cdots $, vgl. @thm-lm.
+Zentrale Annahme eines linearen Modells: Die AV ist eine *lineare* Funktion der einzelnen Prädiktoren, $y= \beta_0 + \beta_1x_1 + \beta_2 x_2 + \cdots$, vgl. @thm-lm.
 
 Hingegen ist es weniger wichtig, dass die AV (y) normalverteilt ist.
-Zwar nimmt die Regression häufig normalverteilte Residuen an^[was auf normal verteilte AV hinauslaufen kann aber nicht muss], aber diese Annahme ist nicht wichtig, wenn es nur darum geht, die Regressionskoeffizienten zu schätzen [@gelman2021].
+Zwar nimmt die Regression häufig normalverteilte Residuen 
+an^[was auf normal verteilte AV hinauslaufen kann aber nicht muss], 
+aber diese Annahme ist nicht wichtig, wenn es nur darum geht, die Regressionskoeffizienten zu schätzen [@gelman2021].
 
 
 
 
 
-Ist die Linearitätsannahme erfüllt, so sollte der Residualplot nur *zufällige* Streuung um $y=0$ herum zeigen, s. @fig-kidiqresiduum.
+Ist die Linearitätsannahme erfüllt, so sollte der Residualplot nur *zufällige* 
+Streuung um $y=0$ herum zeigen, s. @fig-kidiqresiduum.
 
 
-Ein Residuum $e$ ist der Vorhersagefehler, also die Differenz zwischen vorhergesagtem und tatsächlichem Wert: $e_i = y_i - \hat{y}_i$
+Ein Residuum $e$ ist der Vorhersagefehler, also die Differenz zwischen vorhergesagtem 
+und tatsächlichem Wert: $e_i = y_i - \hat{y}_i$
 
 ```{r kidiq-def}
 kidiq <-
@@ -2290,20 +2278,21 @@ Hier erkennt man keine größeren Auffälligkeiten.
 
 
 
-### Modellprüfung mit der PPV
+Mit der PPV kann man die Güte des Modells prüfen.
 
 
 ```{r m10-11-pp-check, echo = TRUE, fig.asp = .5}
 pp_check(m10.12)
 ```
 
-Unser Modell - bzw. die Stichproben unserer Posteriori-Verteilung, $y_{rep}$ verfehlt den Mittelwert von $y$ leider recht häufig.
+Unser Modell - bzw. die Stichproben unserer Posteriori-Verteilung, $y_{rep}$ verfehlt 
+den Mittelwert von $y$ leider recht häufig.
 
 
 
 
 
-### Visualisierung der bereinigten Regressionskoeffizienten
+Visualisieren wir noch die bereinigten Regressionskoeffizienten, s. @fig-bereinigt.
 
 
 ```{r kidiq3}
@@ -2427,8 +2416,13 @@ plots(m10.12a_plot, m10.12b_plot, m10.12c_plot, m10.12d_plot,
 
 @fig-bereinigt zeigt in der oberen Reihe die Regression eines Prädiktors auf den anderen Prädiktor.
 Untere Reihe: Regression der Residuen der oberen Reihe auf die AV, `kid-score_z`. 
-Unten links (C): Die Residuen von `mom_iq_c` sind kaum mit der AV assoziiert. Das heißt, nutzt man den Teil von `mom_age_z`, der nicht mit `mom_iq_z` zusammenhängt, um `kid_score` vorher zusagen, findet man keinen (*kaum*) Zusammenhang.
-Unten rechts (D): Die Residuen von `mom_age_c` sind *stark* mit der AV assoziiert. Das heißt, nutzt man den Teil von `mom_iq_z`, der nicht mit `mom_age_z` zusammenhängt, um `kid_score` vorher zusagen, findet man einen starken Zusammenhang.
+Unten links (C): Die Residuen von `mom_iq_c` sind kaum mit der AV assoziiert. 
+Das heißt, nutzt man den Teil von `mom_age_z`, der nicht mit `mom_iq_z` zusammenhängt, 
+um `kid_score` vorher zusagen, 
+findet man keinen (*kaum*) Zusammenhang.
+Unten rechts (D): Die Residuen von `mom_age_c` sind *stark* mit der AV assoziiert. 
+Das heißt, nutzt man den Teil von `mom_iq_z`, der nicht mit `mom_age_z` zusammenhängt, 
+um `kid_score` vorher zusagen, findet man einen starken Zusammenhang.
 
 
 
@@ -2439,8 +2433,8 @@ Eine multiple Regression liefert die gleichen Regressionskoeffizienten wie die M
 
 
 
-### Bayesianisch gleich Frequentistisch?
-
+Was ist eigentlich der numerische Unterschied Bayesianischen vs. Frequentistischen Modellen?
+Schauen wir es uns an.
 
 
 
@@ -2540,7 +2534,7 @@ plots(m13a_plot, m13b_plot, m13c_plot, m13d_plot, n_rows = 2, tags = "A",
 ```
 
 
-Übrigens liefern `stan_glm()` und `lm` oft ähnliche Ergebnisse (bei schwach informativen Prioriwerten):
+Wie man sieht liefern `stan_glm()` und `lm` ähnliche Ergebnisse (bei schwach informativen Prioriwerten):
 
 ```{r stan-vs-lm}
 stan_glm(mpg ~ hp + cyl, data = mtcars, refresh = 0) %>% coef()
@@ -2550,8 +2544,10 @@ lm(mpg ~ hp + cyl, data = mtcars) %>% coef()
 
 
 :::callout-important
-Wenn auch die  Ergebnisse eines Frequentistischen und Bayes-Modell numerisch ähnlich sein können, so ist doch die Interpretation grundverschieden. 
-Bayesmodelle erlauben Wahrscheinlichkeitsaussagen zu den Parametern, Frequentistische Modelle nicht.
+Wenn auch die  Ergebnisse eines Frequentistischen und Bayes-Modell numerisch ähnlich sein können, 
+so ist doch die Interpretation grundverschieden. 
+Bayesmodelle erlauben Wahrscheinlichkeitsaussagen zu den Parametern, 
+Frequentistische Modelle nicht.
 :::
 
 
@@ -2666,7 +2662,9 @@ Genug für heute. 👍
 
 Weiter Hinweise zu den Themen dieses Kapitels dazu finden sich bei @gelman2021, Kap. 10, insbesondere 10.3.
 
-@gelman2021 bieten einen Zugang mittleren Anspruchs zur Regressionsmodellierung. Das Buch ist von einem weltweit führenden Statistiker geschrieben und vermittelt tiefe Einblicke bei gleichzeitig überschaubarem mathematischen Aufwand. 
+@gelman2021 bieten einen Zugang mittleren Anspruchs zur Regressionsmodellierung. 
+Das Buch ist von einem weltweit führenden Statistiker geschrieben und vermittelt 
+tiefe Einblicke bei gleichzeitig überschaubarem mathematischen Aufwand. 
 
 Für das vorliegende Kapitel sind insbesondere daraus die Kapitel 6,7, und 10 relevant.
 
@@ -2682,7 +2680,7 @@ Für das vorliegende Kapitel sind insbesondere daraus die Kapitel 6,7, und 10 re
 1. [anz-params](https://datenwerk.netlify.app/posts/anz-params/)
 1. [fofrage-regrformel2](https://datenwerk.netlify.app/posts/fofrage-regrformel2/)
 2. [modelldef-regrformel](https://datenwerk.netlify.app/posts/modelldef-regrformel/)
-4. [finde-prior/](https://datenwerk.netlify.app/posts/finde-prior/)
+4. [finde-prior](https://datenwerk.netlify.app/posts/finde-prior/)
 2. [Nullhyp-Beispiel](https://datenwerk.netlify.app/posts/nullhyp-beispiel/nullhyp-beispiel)
 2. [Griech-Buchstaben-Inferenz](https://datenwerk.netlify.app/posts/griech-buchstaben-inferenz/griech-buchstaben-inferenz)
 3. [Interaktionseffekt1](https://datenwerk.netlify.app/posts/interaktionseffekt1/interaktionseffekt1)
@@ -2706,7 +2704,7 @@ Für das vorliegende Kapitel sind insbesondere daraus die Kapitel 6,7, und 10 re
 
 
 
-### Vertiefung
+### Vertiefende Aufgaben 
 
 1. [Anova-skalenniveau](https://datenwerk.netlify.app/posts/anova-skalenniveau/anova-skalenniveau.html)
 2. [ttest-skalenniveau](https://datenwerk.netlify.app/posts/ttest-skalenniveau/ttest-skalenniveau.html)

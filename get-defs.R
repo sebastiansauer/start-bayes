@@ -5,8 +5,8 @@ library(stringr)
 quarto_dir <- "."
 
 # Define the pattern to match the definition shortcode:
-pattern_def <- ':::\\s?\\{#def-(.+?)\\}'
-pattern_word <- '(.+)'  # that's the definitions following the id of the def.
+pattern_def <- ":::\\s?\\{#def-(.+?)\\}"
+pattern_word <- "(.+)" # that's the definitions following the id of the def.
 
 # Initialize an empty list to store definitions:
 definitions <- list()
@@ -23,19 +23,19 @@ files <- read_files(quarto_dir)
 # Iterate over all files and extract definitions:
 for (file in files) {
   content <- readLines(file, warn = FALSE)
-  
+
   # Use a loop to go through lines and capture definitions and their corresponding words:
   for (i in seq_along(content)) {
     def_match <- str_match(content[i], pattern_def)
     if (!is.na(def_match[1])) {
       term <- def_match[2]
-      
+
       # Look ahead to find the word pattern
       j <- i + 1
       while (j <= length(content) && content[j] == "") {
         j <- j + 1
       }
-      
+
       if (j <= length(content)) {
         word_match <- str_match(content[j], pattern_word)
         if (!is.na(word_match[1])) {
@@ -57,13 +57,12 @@ definitions <- definitions[order(sapply(definitions, `[`, 1))]
 output_file <- file.path(quarto_dir, "definitions.qmd")
 fileConn <- file(output_file, "w")
 writeLines("# Definitionen\n\n", fileConn)
-#writeLines("### Definitions\n\n", fileConn) # Adding a heading for the definitions section
+# writeLines("### Definitions\n\n", fileConn) # Adding a heading for the definitions section
 
 for (definition in definitions) {
-  line <- paste0("- **", definition[2], "**: @def-", definition[1], "\n\n")
+  line <- paste0("1. **", definition[2], "**: @def-", definition[1], "\n")
   writeLines(line, fileConn)
 }
 close(fileConn)
 
 cat("Extracted", length(definitions), "definitions to definitions file\n")
-
