@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.27">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>4&nbsp; Rechnen mit Wahrscheinlichkeit – Start:Bayes!</title>
 <style>
@@ -86,18 +86,19 @@ div.csl-indent {
 <link href="./img/Golem_hex.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-2fef5ea3f8957b3e4ecc936fc74692ca.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-8e2bfcb8bc6552a7f7d2e060577a719b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-07788d60b690ac42ea903764c198f837.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-8e2bfcb8bc6552a7f7d2e060577a719b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-cfa408634a1d24e6e0b787a3a7260859.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-1724a6097eea06b88b87879f5d7ee85f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-cfa408634a1d24e6e0b787a3a7260859.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -148,7 +149,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -476,7 +477,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Anhang</span></a>
+ <span class="menu-text">Kausalität</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -484,20 +485,43 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./1150-konfundierung.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Konfundierung</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1180-kausalatome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Die Atome des Kausalität</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Anhang</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./1200-abschluss.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Abschluss</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Abschluss</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./definitions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Definitionen</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Definitionen</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./theorems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Theoreme</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Theoreme</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -509,13 +533,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./imprint.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Impressum</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Impressum</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data-privacy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Datenschutzhinweise</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Datenschutzhinweise</span></span></a>
   </div>
 </li>
       </ul>
@@ -527,66 +551,19 @@ window.Quarto = {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99"><h2 id="toc-title">Inhaltsverzeichnis</h2>
    
-  <ul>
-<li>
-<a href="#lernsteuerung" id="toc-lernsteuerung" class="nav-link active" data-scroll-target="#lernsteuerung"><span class="header-section-number">4.1</span> Lernsteuerung</a>
-  <ul>
-<li><a href="#position-im-modulverlauf" id="toc-position-im-modulverlauf" class="nav-link" data-scroll-target="#position-im-modulverlauf"><span class="header-section-number">4.1.1</span> Position im Modulverlauf</a></li>
-  <li><a href="#%C3%BCberblick" id="toc-überblick" class="nav-link" data-scroll-target="#%C3%BCberblick"><span class="header-section-number">4.1.2</span> Überblick</a></li>
-  <li><a href="#lernziele" id="toc-lernziele" class="nav-link" data-scroll-target="#lernziele"><span class="header-section-number">4.1.3</span> Lernziele</a></li>
-  <li><a href="#begleitliteratur" id="toc-begleitliteratur" class="nav-link" data-scroll-target="#begleitliteratur"><span class="header-section-number">4.1.4</span> Begleitliteratur</a></li>
-  <li><a href="#pr%C3%BCfungsrelevanter-stoff" id="toc-prüfungsrelevanter-stoff" class="nav-link" data-scroll-target="#pr%C3%BCfungsrelevanter-stoff"><span class="header-section-number">4.1.5</span> Prüfungsrelevanter Stoff</a></li>
-  </ul>
-</li>
+  <ul class="collapse">
+<li><a href="#lernsteuerung" id="toc-lernsteuerung" class="nav-link active" data-scroll-target="#lernsteuerung"><span class="header-section-number">4.1</span> Lernsteuerung</a></li>
   <li><a href="#%C3%BCberblick-1" id="toc-überblick-1" class="nav-link" data-scroll-target="#%C3%BCberblick-1"><span class="header-section-number">4.2</span> Überblick</a></li>
   <li><a href="#additionssatz" id="toc-additionssatz" class="nav-link" data-scroll-target="#additionssatz"><span class="header-section-number">4.3</span> Additionssatz</a></li>
-  <li>
-<a href="#vereinigung-von-ereignissen-additionssatz" id="toc-vereinigung-von-ereignissen-additionssatz" class="nav-link" data-scroll-target="#vereinigung-von-ereignissen-additionssatz"><span class="header-section-number">4.4</span> Vereinigung von Ereignissen: Additionssatz</a>
-  <ul>
-<li><a href="#addition-disjunkter-ereignisse" id="toc-addition-disjunkter-ereignisse" class="nav-link" data-scroll-target="#addition-disjunkter-ereignisse"><span class="header-section-number">4.4.1</span> Addition disjunkter Ereignisse</a></li>
-  <li><a href="#addition-allgemeiner-ereignisse" id="toc-addition-allgemeiner-ereignisse" class="nav-link" data-scroll-target="#addition-allgemeiner-ereignisse"><span class="header-section-number">4.4.2</span> Addition allgemeiner Ereignisse</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#bedingte-wahrscheinlichkeit" id="toc-bedingte-wahrscheinlichkeit" class="nav-link" data-scroll-target="#bedingte-wahrscheinlichkeit"><span class="header-section-number">4.5</span> Bedingte Wahrscheinlichkeit</a>
-  <ul>
-<li><a href="#illustration-zur-bedingten-wahrscheinlichkeit" id="toc-illustration-zur-bedingten-wahrscheinlichkeit" class="nav-link" data-scroll-target="#illustration-zur-bedingten-wahrscheinlichkeit"><span class="header-section-number">4.5.1</span> Illustration zur bedingten Wahrscheinlichkeit</a></li>
-  <li><a href="#bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle" id="toc-bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle" class="nav-link" data-scroll-target="#bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle"><span class="header-section-number">4.5.2</span> Bedingte Wahrscheinlichkeit als Filtern einer Tabelle</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#stochastische-un-abh%C3%A4ngigkeit" id="toc-stochastische-un-abhängigkeit" class="nav-link" data-scroll-target="#stochastische-un-abh%C3%A4ngigkeit"><span class="header-section-number">4.6</span> Stochastische (Un-)Abhängigkeit</a>
-  <ul>
-<li><a href="#warum-ist-das-wichtig" id="toc-warum-ist-das-wichtig" class="nav-link" data-scroll-target="#warum-ist-das-wichtig"><span class="header-section-number">4.6.1</span> Warum ist das wichtig?</a></li>
-  <li><a href="#unabh%C3%A4ngigkeit" id="toc-unabhängigkeit" class="nav-link" data-scroll-target="#unabh%C3%A4ngigkeit"><span class="header-section-number">4.6.2</span> Unabhängigkeit</a></li>
-  <li><a href="#stochastische-abh%C3%A4ngigkeit" id="toc-stochastische-abhängigkeit" class="nav-link" data-scroll-target="#stochastische-abh%C3%A4ngigkeit"><span class="header-section-number">4.6.3</span> Stochastische Abhängigkeit</a></li>
-  <li><a href="#unabh%C3%A4ngigkeit-ist-symmetrisch" id="toc-unabhängigkeit-ist-symmetrisch" class="nav-link" data-scroll-target="#unabh%C3%A4ngigkeit-ist-symmetrisch"><span class="header-section-number">4.6.4</span> Unabhängigkeit ist symmetrisch</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz" id="toc-wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz" class="nav-link" data-scroll-target="#wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz"><span class="header-section-number">4.7</span> Wahrscheinlichkeit gemeinsamer Ereignisse: Multiplikationssatz</a>
-  <ul>
-<li><a href="#gemeinsame-wahrscheinlichkeit-unabh%C3%A4ngiger-ereignisse" id="toc-gemeinsame-wahrscheinlichkeit-unabhängiger-ereignisse" class="nav-link" data-scroll-target="#gemeinsame-wahrscheinlichkeit-unabh%C3%A4ngiger-ereignisse"><span class="header-section-number">4.7.1</span> Gemeinsame Wahrscheinlichkeit unabhängiger Ereignisse</a></li>
-  <li><a href="#gemeinsame-wahrscheinlichkeit-allgemeiner-ereignisse" id="toc-gemeinsame-wahrscheinlichkeit-allgemeiner-ereignisse" class="nav-link" data-scroll-target="#gemeinsame-wahrscheinlichkeit-allgemeiner-ereignisse"><span class="header-section-number">4.7.2</span> Gemeinsame Wahrscheinlichkeit allgemeiner Ereignisse</a></li>
-  <li><a href="#kettenregel" id="toc-kettenregel" class="nav-link" data-scroll-target="#kettenregel"><span class="header-section-number">4.7.3</span> Kettenregel</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#totale-wahrscheinlichkeit" id="toc-totale-wahrscheinlichkeit" class="nav-link" data-scroll-target="#totale-wahrscheinlichkeit"><span class="header-section-number">4.8</span> Totale Wahrscheinlichkeit</a>
-  <ul>
-<li><a href="#baumsammlung" id="toc-baumsammlung" class="nav-link" data-scroll-target="#baumsammlung"><span class="header-section-number">4.8.1</span> Baumsammlung</a></li>
-  </ul>
-</li>
+  <li><a href="#vereinigung-von-ereignissen-additionssatz" id="toc-vereinigung-von-ereignissen-additionssatz" class="nav-link" data-scroll-target="#vereinigung-von-ereignissen-additionssatz"><span class="header-section-number">4.4</span> Vereinigung von Ereignissen: Additionssatz</a></li>
+  <li><a href="#bedingte-wahrscheinlichkeit" id="toc-bedingte-wahrscheinlichkeit" class="nav-link" data-scroll-target="#bedingte-wahrscheinlichkeit"><span class="header-section-number">4.5</span> Bedingte Wahrscheinlichkeit</a></li>
+  <li><a href="#stochastische-un-abh%C3%A4ngigkeit" id="toc-stochastische-un-abhängigkeit" class="nav-link" data-scroll-target="#stochastische-un-abh%C3%A4ngigkeit"><span class="header-section-number">4.6</span> Stochastische (Un-)Abhängigkeit</a></li>
+  <li><a href="#wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz" id="toc-wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz" class="nav-link" data-scroll-target="#wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz"><span class="header-section-number">4.7</span> Wahrscheinlichkeit gemeinsamer Ereignisse: Multiplikationssatz</a></li>
+  <li><a href="#totale-wahrscheinlichkeit" id="toc-totale-wahrscheinlichkeit" class="nav-link" data-scroll-target="#totale-wahrscheinlichkeit"><span class="header-section-number">4.8</span> Totale Wahrscheinlichkeit</a></li>
   <li><a href="#vertiefung" id="toc-vertiefung" class="nav-link" data-scroll-target="#vertiefung"><span class="header-section-number">4.9</span> Vertiefung</a></li>
-  <li>
-<a href="#aufgaben" id="toc-aufgaben" class="nav-link" data-scroll-target="#aufgaben"><span class="header-section-number">4.10</span> Aufgaben</a>
-  <ul>
-<li><a href="#paper-pencil-aufgaben" id="toc-paper-pencil-aufgaben" class="nav-link" data-scroll-target="#paper-pencil-aufgaben"><span class="header-section-number">4.10.1</span> Paper-Pencil-Aufgaben</a></li>
-  <li><a href="#aufgaben-f%C3%BCr-die-man-einen-computer-braucht" id="toc-aufgaben-für-die-man-einen-computer-braucht" class="nav-link" data-scroll-target="#aufgaben-f%C3%BCr-die-man-einen-computer-braucht"><span class="header-section-number">4.10.2</span> Aufgaben, für die man einen Computer braucht</a></li>
-  </ul>
-</li>
+  <li><a href="#aufgaben" id="toc-aufgaben" class="nav-link" data-scroll-target="#aufgaben"><span class="header-section-number">4.10</span> Aufgaben</a></li>
   <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><span class="header-section-number">4.11</span> —</a></li>
-  </ul><div class="toc-actions"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/0350-wskt2.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></nav>
+  </ul><div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/0350-wskt2.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./0200-Inferenz.html">Grundlagen</a></li><li class="breadcrumb-item"><a href="./0350-wskt2.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Rechnen mit Wahrscheinlichkeit</span></a></li></ol></nav><div class="quarto-title">
@@ -1167,7 +1144,7 @@ Tabelle&nbsp;4.1: Daten von 100 Studis; L: Lerner, B: Bestanden, N: Negation/Nic
   height: 0px !important;
 }
 </style>
-<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings header">
 <th id="a." class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.</th>
 <th id="S1_B" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">S1_B</th>
@@ -1236,10 +1213,10 @@ Pr(A) &amp;= Pr(S_1B \cup S_2B) \\
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-schema-p-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist">
-<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page"><span class="math inline">\(Pr(A)\)</span></a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false"><span class="math inline">\(Pr(B)\)</span></a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false"><span class="math inline">\(Pr(B|A)\)</span></a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false"><span class="math inline">\(Pr(A \cap B)\)</span></a></li>
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page"><span class="math inline">\(Pr(A)\)</span></a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href=""><span class="math inline">\(Pr(B)\)</span></a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href=""><span class="math inline">\(Pr(B|A)\)</span></a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href=""><span class="math inline">\(Pr(A \cap B)\)</span></a></li>
 </ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
@@ -1398,7 +1375,7 @@ Tabelle&nbsp;4.3: Eine bedingte Wahrscheinlichkeit kann man als gefilterte Tabel
 Tabelle&nbsp;4.4: Daten von 100 Studis; L: Lerner, B: Bestanden, N: Negation/Nicht
 </figcaption><div aria-describedby="tbl-klausur-lernen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="table do-not-create-environment cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small">
 <thead><tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">.</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">L</th>
@@ -1934,7 +1911,7 @@ Tabelle&nbsp;4.5: Kontingenztablle (Häufigkeiten) für ‘Überleben auf der Ti
   height: 0px !important;
 }
 </style>
-<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings header">
 <th id="Age_prime" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Age_prime</th>
 <th id="n" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">n</th>
@@ -1942,7 +1919,7 @@ Tabelle&nbsp;4.5: Kontingenztablle (Häufigkeiten) für ‘Überleben auf der Ti
 </tr></thead>
 <tbody class="gt_table_body">
 <tr class="gt_group_heading_row odd">
-<td colspan="3" id="0" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">0</td>
+<th colspan="3" id="0" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">0</th>
 </tr>
 <tr class="gt_row_group_first even">
 <td class="gt_row gt_center" headers="0  Age_prime">non-prime</td>
@@ -1955,7 +1932,7 @@ Tabelle&nbsp;4.5: Kontingenztablle (Häufigkeiten) für ‘Überleben auf der Ti
 <td class="gt_row gt_right" headers="0  prop">0.83</td>
 </tr>
 <tr class="gt_group_heading_row even">
-<td colspan="3" id="1" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">1</td>
+<th colspan="3" id="1" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">1</th>
 </tr>
 <tr class="gt_row_group_first odd">
 <td class="gt_row gt_center" headers="1  Age_prime">non-prime</td>
@@ -2559,7 +2536,7 @@ Tabelle&nbsp;4.6: Wahrscheinlichkeiten der Ereignisse im zweimaligen Münzwurf
   height: 0px !important;
 }
 </style>
-<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings header">
 <th id="Ereignis" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Ereignis</th>
 <th id="Pr" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Pr</th>
@@ -2592,9 +2569,9 @@ Tabelle&nbsp;4.6: Wahrscheinlichkeiten der Ereignisse im zweimaligen Münzwurf
 <p>Sei <span class="math inline">\(K_1\)</span> das Ereignis, mit der 1. Münze Kopf zu werfen; sei <span class="math inline">\(K_2\)</span> das Ereignis, mit der 2. Münze Kopf zu werfen.</p>
 <p>Wir suchen <span class="math inline">\(Pr(K_1 \cap K_2)\)</span>. Aufgrund der stochastischen Unabhängigkeit der beiden Ereignisse gilt: <span class="math inline">\(Pr(K_1 \cap K_2) = Pr(K_1) \cdot Pr(K_2)\)</span>.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Pr_K1K2</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Pr_K1K2</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span></span>
 <span><span class="va">Pr_K1K2</span></span>
-<span><span class="co">## [1] 0.25</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">## [1] 0.25</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="def-multsatz" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 4.5 (Multiplikationssatz der Wahrscheinlichkeit für unabhängige Ereignisse)</strong></span> Die Wahrscheinlichkeit, dass zwei (oder mehr) unabhängige Ereignisse <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> <em>gemeinsam</em> eintreten, ist gleich dem Produkt ihrer jeweiligen Wahrscheinlichkeiten, s. <a href="#thm-multtheorem" class="quarto-xref">Theorem&nbsp;<span>4.9</span></a>. <span class="math inline">\(\square\)</span></p>
@@ -3096,7 +3073,7 @@ Tabelle&nbsp;4.7: Ausgewählte Wahrscheinlichkeiten von Ereignissen im dreifache
   height: 0px !important;
 }
 </style>
-<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings header">
 <th id="Ereignis" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Ereignis</th>
 <th id="Pr" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Pr</th>
@@ -3225,13 +3202,13 @@ Abbildung&nbsp;4.9: Baumdiagramm für ein ein zweistufiges Zufallsereignis: Bert
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Pfad1</span> <span class="op">&lt;-</span> <span class="fl">2</span><span class="op">/</span><span class="fl">20</span> <span class="op">*</span> <span class="fl">18</span><span class="op">/</span><span class="fl">19</span>  <span class="co"># scheußliche Bohne im 1. Zug</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Pfad1</span> <span class="op">&lt;-</span> <span class="fl">2</span><span class="op">/</span><span class="fl">20</span> <span class="op">*</span> <span class="fl">18</span><span class="op">/</span><span class="fl">19</span>  <span class="co"># scheußliche Bohne im 1. Zug</span></span>
 <span><span class="va">Pfad2</span> <span class="op">&lt;-</span> <span class="fl">18</span><span class="op">/</span><span class="fl">20</span> <span class="op">*</span> <span class="fl">2</span><span class="op">/</span><span class="fl">19</span>  <span class="co"># scheußliche Bohne im 2. Zug</span></span>
 <span></span>
 <span></span>
 <span><span class="va">Gesamt_Pr</span> <span class="op">&lt;-</span> <span class="va">Pfad1</span> <span class="op">+</span> <span class="va">Pfad2</span> </span>
 <span><span class="va">Gesamt_Pr</span></span>
-<span><span class="co">## [1] 0.19</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">## [1] 0.19</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Nutzen Sie <a href="https://www.geogebra.org/m/j545R3Fu">diese App</a>, um das auszuprobieren. Sie müssen in der App noch die Zahl der Bohnen (<span class="math inline">\(n\)</span>) und die Zahl der scheußlichen Bohnen (<span class="math inline">\(x\)</span>) einstellen.<span class="math inline">\(\square\)</span></p>
 </div>
@@ -3288,8 +3265,8 @@ Abbildung&nbsp;4.10: Totale Wahrscheinlichkeit
 </div>
 <p>Die Anteile an der Produktion und vom Ausschluss sind in <a href="#fig-ausschuss" class="quarto-xref">Abbildung&nbsp;<span>4.11</span></a> verdeutlicht.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="st">"R-Code/plot_maschine_schrott.R"</span><span class="op">)</span></span>
-<span><span class="va">plot_maschine_schrott</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="st">"R-Code/plot_maschine_schrott.R"</span><span class="op">)</span></span>
+<span><span class="va">plot_maschine_schrott</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="fig-ausschuss" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-ausschuss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -3303,12 +3280,12 @@ Abbildung&nbsp;4.11: Anteile von Produktion und Ausschuss
 </div>
 <p>Dazu addieren wir die Wahrscheinlichkeiten der relevanten Äste. Jeder Ast stellt wiederum das gemeinsame Auftreten der Ereignisse <span class="math inline">\(M_i\)</span> und <span class="math inline">\(S\)</span> dar.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">W_Ast1</span> <span class="op">&lt;-</span> <span class="fl">0.6</span> <span class="op">*</span> <span class="fl">0.05</span>  <span class="co"># Wahrscheinlichkeit für Ast 1</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">W_Ast1</span> <span class="op">&lt;-</span> <span class="fl">0.6</span> <span class="op">*</span> <span class="fl">0.05</span>  <span class="co"># Wahrscheinlichkeit für Ast 1</span></span>
 <span><span class="va">W_Ast2</span> <span class="op">&lt;-</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="fl">0.02</span>  <span class="co"># ... Ast 2</span></span>
 <span><span class="va">W_Ast3</span> <span class="op">&lt;-</span> <span class="fl">0.3</span> <span class="op">*</span> <span class="fl">0.04</span>  <span class="co"># ... Ast 3</span></span>
 <span><span class="va">W_total</span> <span class="op">&lt;-</span> <span class="va">W_Ast1</span> <span class="op">+</span> <span class="va">W_Ast2</span> <span class="op">+</span> <span class="va">W_Ast3</span>  <span class="co"># totale W.</span></span>
 <span><span class="va">W_total</span></span>
-<span><span class="co">## [1] 0.044</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">## [1] 0.044</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Die <em>totale Wahrscheinlichkeit</em> (für Ausschuss) beträgt in diesem Beispiel also <span class="math inline">\(Pr(B') = 0.044 = 4.4\%\)</span>.<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a></p>
 <div id="def-totwskt" class="theorem definition">
@@ -3481,13 +3458,14 @@ Mittag, H.-J., &amp; Schüller, K. (2020). <em>Statistik: Eine Einführung mit i
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

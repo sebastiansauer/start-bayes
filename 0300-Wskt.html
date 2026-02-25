@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.27">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>3&nbsp; Hallo, Wahrscheinlichkeit – Start:Bayes!</title>
 <style>
@@ -86,18 +86,19 @@ div.csl-indent {
 <link href="./img/Golem_hex.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-2fef5ea3f8957b3e4ecc936fc74692ca.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-8e2bfcb8bc6552a7f7d2e060577a719b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-07788d60b690ac42ea903764c198f837.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-8e2bfcb8bc6552a7f7d2e060577a719b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-cfa408634a1d24e6e0b787a3a7260859.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-1724a6097eea06b88b87879f5d7ee85f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-cfa408634a1d24e6e0b787a3a7260859.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -140,7 +141,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -468,7 +469,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Anhang</span></a>
+ <span class="menu-text">Kausalität</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -476,20 +477,43 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./1150-konfundierung.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Konfundierung</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1180-kausalatome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Die Atome des Kausalität</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Anhang</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./1200-abschluss.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Abschluss</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Abschluss</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./definitions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Definitionen</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Definitionen</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./theorems.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Theoreme</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Theoreme</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -501,13 +525,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./imprint.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Impressum</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Impressum</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data-privacy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Datenschutzhinweise</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Datenschutzhinweise</span></span></a>
   </div>
 </li>
       </ul>
@@ -519,86 +543,15 @@ window.Quarto = {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99"><h2 id="toc-title">Inhaltsverzeichnis</h2>
    
-  <ul>
-<li>
-<a href="#lernsteuerung" id="toc-lernsteuerung" class="nav-link active" data-scroll-target="#lernsteuerung"><span class="header-section-number">3.1</span> Lernsteuerung</a>
-  <ul>
-<li><a href="#position-im-modulverlauf" id="toc-position-im-modulverlauf" class="nav-link" data-scroll-target="#position-im-modulverlauf"><span class="header-section-number">3.1.1</span> Position im Modulverlauf</a></li>
-  <li><a href="#%C3%BCberblick" id="toc-überblick" class="nav-link" data-scroll-target="#%C3%BCberblick"><span class="header-section-number">3.1.2</span> Überblick</a></li>
-  <li><a href="#wozu-brauche-ich-dieses-kapitel" id="toc-wozu-brauche-ich-dieses-kapitel" class="nav-link" data-scroll-target="#wozu-brauche-ich-dieses-kapitel"><span class="header-section-number">3.1.3</span> Wozu brauche ich dieses Kapitel?</a></li>
-  <li><a href="#lernziele" id="toc-lernziele" class="nav-link" data-scroll-target="#lernziele"><span class="header-section-number">3.1.4</span> Lernziele</a></li>
-  <li><a href="#begleitliteratur" id="toc-begleitliteratur" class="nav-link" data-scroll-target="#begleitliteratur"><span class="header-section-number">3.1.5</span> Begleitliteratur</a></li>
-  <li><a href="#pr%C3%BCfungsrelevanter-stoff" id="toc-prüfungsrelevanter-stoff" class="nav-link" data-scroll-target="#pr%C3%BCfungsrelevanter-stoff"><span class="header-section-number">3.1.6</span> Prüfungsrelevanter Stoff</a></li>
-  <li><a href="#begleitvideos" id="toc-begleitvideos" class="nav-link" data-scroll-target="#begleitvideos"><span class="header-section-number">3.1.7</span> Begleitvideos</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#grundbegriffe" id="toc-grundbegriffe" class="nav-link" data-scroll-target="#grundbegriffe"><span class="header-section-number">3.2</span> Grundbegriffe</a>
-  <ul>
-<li><a href="#zufallsvorgang" id="toc-zufallsvorgang" class="nav-link" data-scroll-target="#zufallsvorgang"><span class="header-section-number">3.2.1</span> Zufallsvorgang</a></li>
-  <li><a href="#ergebnisraum" id="toc-ergebnisraum" class="nav-link" data-scroll-target="#ergebnisraum"><span class="header-section-number">3.2.2</span> Ergebnisraum</a></li>
-  <li><a href="#ereignis" id="toc-ereignis" class="nav-link" data-scroll-target="#ereignis"><span class="header-section-number">3.2.3</span> Ereignis</a></li>
-  <li><a href="#unm%C3%B6gliches-und-sicheres-ereignis" id="toc-unmögliches-und-sicheres-ereignis" class="nav-link" data-scroll-target="#unm%C3%B6gliches-und-sicheres-ereignis"><span class="header-section-number">3.2.4</span> Unmögliches und sicheres Ereignis</a></li>
-  <li><a href="#elementarereignis" id="toc-elementarereignis" class="nav-link" data-scroll-target="#elementarereignis"><span class="header-section-number">3.2.5</span> Elementarereignis</a></li>
-  <li><a href="#vollst%C3%A4ndiges-ereignissystem" id="toc-vollständiges-ereignissystem" class="nav-link" data-scroll-target="#vollst%C3%A4ndiges-ereignissystem"><span class="header-section-number">3.2.6</span> Vollständiges Ereignissystem</a></li>
-  <li><a href="#m%C3%A4chtigkeit" id="toc-mächtigkeit" class="nav-link" data-scroll-target="#m%C3%A4chtigkeit"><span class="header-section-number">3.2.7</span> Mächtigkeit</a></li>
-  <li><a href="#disjunkte-ereignisse" id="toc-disjunkte-ereignisse" class="nav-link" data-scroll-target="#disjunkte-ereignisse"><span class="header-section-number">3.2.8</span> Disjunkte Ereignisse</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#was-ist-wahrscheinlichkeit" id="toc-was-ist-wahrscheinlichkeit" class="nav-link" data-scroll-target="#was-ist-wahrscheinlichkeit"><span class="header-section-number">3.3</span> Was ist Wahrscheinlichkeit?</a>
-  <ul>
-<li>
-<a href="#formallogische-definitition" id="toc-formallogische-definitition" class="nav-link" data-scroll-target="#formallogische-definitition"><span class="header-section-number">3.3.1</span> Formallogische Definitition</a>
   <ul class="collapse">
-<li><a href="#wahrscheinlichkeit-als-erweiterung-der-logik" id="toc-wahrscheinlichkeit-als-erweiterung-der-logik" class="nav-link" data-scroll-target="#wahrscheinlichkeit-als-erweiterung-der-logik"><span class="header-section-number">3.3.1.1</span> Wahrscheinlichkeit als Erweiterung der Logik</a></li>
-  <li><a href="#wahrscheinlichkeit-als-ungewissheit" id="toc-wahrscheinlichkeit-als-ungewissheit" class="nav-link" data-scroll-target="#wahrscheinlichkeit-als-ungewissheit"><span class="header-section-number">3.3.1.2</span> Wahrscheinlichkeit als Ungewissheit</a></li>
-  <li><a href="#wahrscheinlichkeit-ist-bedingt-auf-ein-hintergrundwissen" id="toc-wahrscheinlichkeit-ist-bedingt-auf-ein-hintergrundwissen" class="nav-link" data-scroll-target="#wahrscheinlichkeit-ist-bedingt-auf-ein-hintergrundwissen"><span class="header-section-number">3.3.1.3</span> Wahrscheinlichkeit ist bedingt auf ein Hintergrundwissen</a></li>
-  </ul>
-</li>
-  <li><a href="#frequentistische-definition" id="toc-frequentistische-definition" class="nav-link" data-scroll-target="#frequentistische-definition"><span class="header-section-number">3.3.2</span> Frequentistische Definition</a></li>
-  <li><a href="#sec-kolmogorov" id="toc-sec-kolmogorov" class="nav-link" data-scroll-target="#sec-kolmogorov"><span class="header-section-number">3.3.3</span> Kolmogorovs Definition</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#relationen-von-ereignissen" id="toc-relationen-von-ereignissen" class="nav-link" data-scroll-target="#relationen-von-ereignissen"><span class="header-section-number">3.4</span> Relationen von Ereignissen</a>
-  <ul>
-<li><a href="#%C3%BCberblick-1" id="toc-überblick-1" class="nav-link" data-scroll-target="#%C3%BCberblick-1"><span class="header-section-number">3.4.1</span> Überblick</a></li>
-  <li><a href="#vereinigung-von-ereignissen" id="toc-vereinigung-von-ereignissen" class="nav-link" data-scroll-target="#vereinigung-von-ereignissen"><span class="header-section-number">3.4.2</span> Vereinigung von Ereignissen</a></li>
-  <li><a href="#durch-schnitt-von-ereignissen" id="toc-durch-schnitt-von-ereignissen" class="nav-link" data-scroll-target="#durch-schnitt-von-ereignissen"><span class="header-section-number">3.4.3</span> (Durch-)Schnitt von Ereignissen</a></li>
-  <li><a href="#komplement%C3%A4rereignis" id="toc-komplementärereignis" class="nav-link" data-scroll-target="#komplement%C3%A4rereignis"><span class="header-section-number">3.4.4</span> Komplementärereignis</a></li>
-  <li><a href="#logische-differenz" id="toc-logische-differenz" class="nav-link" data-scroll-target="#logische-differenz"><span class="header-section-number">3.4.5</span> Logische Differenz</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#zufallsvariable" id="toc-zufallsvariable" class="nav-link" data-scroll-target="#zufallsvariable"><span class="header-section-number">3.5</span> Zufallsvariable</a>
-  <ul>
-<li><a href="#grundlagen" id="toc-grundlagen" class="nav-link" data-scroll-target="#grundlagen"><span class="header-section-number">3.5.1</span> Grundlagen</a></li>
-  <li>
-<a href="#diskrete-zufallsvariable" id="toc-diskrete-zufallsvariable" class="nav-link" data-scroll-target="#diskrete-zufallsvariable"><span class="header-section-number">3.5.2</span> Diskrete Zufallsvariable</a>
-  <ul class="collapse">
-<li><a href="#grundlagen-1" id="toc-grundlagen-1" class="nav-link" data-scroll-target="#grundlagen-1"><span class="header-section-number">3.5.2.1</span> Grundlagen</a></li>
-  <li><a href="#vertiefung-verteilungsfunktion" id="toc-vertiefung-verteilungsfunktion" class="nav-link" data-scroll-target="#vertiefung-verteilungsfunktion"><span class="header-section-number">3.5.2.2</span> Vertiefung: Verteilungsfunktion</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#stetige-zufallsvariablen" id="toc-stetige-zufallsvariablen" class="nav-link" data-scroll-target="#stetige-zufallsvariablen"><span class="header-section-number">3.5.3</span> Stetige Zufallsvariablen</a>
-  <ul class="collapse">
-<li><a href="#grundlagen-2" id="toc-grundlagen-2" class="nav-link" data-scroll-target="#grundlagen-2"><span class="header-section-number">3.5.3.1</span> Grundlagen</a></li>
-  <li><a href="#vertiefung-verteilungsfunktion-1" id="toc-vertiefung-verteilungsfunktion-1" class="nav-link" data-scroll-target="#vertiefung-verteilungsfunktion-1"><span class="header-section-number">3.5.3.2</span> Vertiefung: Verteilungsfunktion</a></li>
-  </ul>
-</li>
-  </ul>
-</li>
-  <li>
-<a href="#aufgaben" id="toc-aufgaben" class="nav-link" data-scroll-target="#aufgaben"><span class="header-section-number">3.6</span> Aufgaben</a>
-  <ul>
-<li><a href="#paper-pencil-aufgaben" id="toc-paper-pencil-aufgaben" class="nav-link" data-scroll-target="#paper-pencil-aufgaben"><span class="header-section-number">3.6.1</span> Paper-Pencil-Aufgaben</a></li>
-  <li><a href="#aufgaben-f%C3%BCr-die-man-einen-computer-braucht" id="toc-aufgaben-für-die-man-einen-computer-braucht" class="nav-link" data-scroll-target="#aufgaben-f%C3%BCr-die-man-einen-computer-braucht"><span class="header-section-number">3.6.2</span> Aufgaben, für die man einen Computer braucht</a></li>
-  </ul>
-</li>
+<li><a href="#lernsteuerung" id="toc-lernsteuerung" class="nav-link active" data-scroll-target="#lernsteuerung"><span class="header-section-number">3.1</span> Lernsteuerung</a></li>
+  <li><a href="#grundbegriffe" id="toc-grundbegriffe" class="nav-link" data-scroll-target="#grundbegriffe"><span class="header-section-number">3.2</span> Grundbegriffe</a></li>
+  <li><a href="#was-ist-wahrscheinlichkeit" id="toc-was-ist-wahrscheinlichkeit" class="nav-link" data-scroll-target="#was-ist-wahrscheinlichkeit"><span class="header-section-number">3.3</span> Was ist Wahrscheinlichkeit?</a></li>
+  <li><a href="#relationen-von-ereignissen" id="toc-relationen-von-ereignissen" class="nav-link" data-scroll-target="#relationen-von-ereignissen"><span class="header-section-number">3.4</span> Relationen von Ereignissen</a></li>
+  <li><a href="#zufallsvariable" id="toc-zufallsvariable" class="nav-link" data-scroll-target="#zufallsvariable"><span class="header-section-number">3.5</span> Zufallsvariable</a></li>
+  <li><a href="#aufgaben" id="toc-aufgaben" class="nav-link" data-scroll-target="#aufgaben"><span class="header-section-number">3.6</span> Aufgaben</a></li>
   <li><a href="#literatur" id="toc-literatur" class="nav-link" data-scroll-target="#literatur"><span class="header-section-number">3.7</span> Literatur</a></li>
-  </ul><div class="toc-actions"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/0300-Wskt.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></nav>
+  </ul><div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/0300-Wskt.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./0200-Inferenz.html">Grundlagen</a></li><li class="breadcrumb-item"><a href="./0300-Wskt.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Hallo, Wahrscheinlichkeit</span></a></li></ol></nav><div class="quarto-title">
@@ -1067,7 +1020,7 @@ Abbildung&nbsp;3.10: Das Gesetz der großen Zahl am Beispiel der Stabilisierung 
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Wozu sind die Venn-Diagramme gut? Warum soll ich die lernen?
+<span class="screen-reader-only">Hinweis</span>Wozu sind die Venn-Diagramme gut? Warum soll ich die lernen?
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1111,11 +1064,11 @@ Abbildung&nbsp;3.12: Beispiel zur Vereinigung zweier Mengen
 <p>Zur besseren Verbildlichung betrachten Sie mal diese <a href="https://www.geogebra.org/m/GEZV4xXc#material/cmXR8fHN">Animation zur Vereinigung von Mengen</a>; <a href="Geogebra, J. Merschhemke">Quelle</a>.</p>
 <p>In R heißt die Vereinigung von Mengen <code><a href="https://rdrr.io/r/base/sets.html">union()</a></code>. Einfach mal Ausprobieren.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sets.html">union</a></span><span class="op">(</span><span class="va">A</span>, <span class="va">B</span><span class="op">)</span></span>
-<span><span class="co">## [1] 1 2 3</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">## [1] 1 2 3</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section><section id="durch-schnitt-von-ereignissen" class="level3" data-number="3.4.3"><h3 data-number="3.4.3" class="anchored" data-anchor-id="durch-schnitt-von-ereignissen">
 <span class="header-section-number">3.4.3</span> (Durch-)Schnitt von Ereignissen</h3>
@@ -1151,10 +1104,10 @@ Abbildung&nbsp;3.14: Beispiel zum Schnitt zweier Mengen
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">6</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">6</span><span class="op">)</span></span>
 <span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">6</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sets.html">intersect</a></span><span class="op">(</span><span class="va">A</span>, <span class="va">B</span><span class="op">)</span></span>
-<span><span class="co">## [1] 6</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">## [1] 6</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1162,7 +1115,7 @@ Abbildung&nbsp;3.14: Beispiel zum Schnitt zweier Mengen
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Eselsbrücke zur Vereinigungs- und Schnittmenge
+<span class="screen-reader-only">Hinweis</span>Eselsbrücke zur Vereinigungs- und Schnittmenge
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1245,11 +1198,11 @@ Abbildung&nbsp;3.19: Beispiel für die logische Differenz
 </div>
 <p>In R gibt es die Funktion <code><a href="https://rdrr.io/r/base/sets.html">setdiff()</a></code>, die eine Mengendifferenz ausgibt.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span><span class="op">)</span></span>
 <span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">6</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span><span class="op">(</span><span class="va">A</span>, <span class="va">B</span><span class="op">)</span></span>
-<span><span class="co">## [1] 5</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">## [1] 5</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>🤯 Von der Menge <span class="math inline">\(A\)</span> die Menge <span class="math inline">\(B\)</span> abzuziehen, ist etwas anderes, als von <span class="math inline">\(B\)</span> die Menge <span class="math inline">\(A\)</span> abzuziehen.</p>
 <div class="callout callout-style-default callout-caution callout-titled">
@@ -1266,8 +1219,8 @@ Vorsicht
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span><span class="op">(</span><span class="va">B</span>, <span class="va">A</span><span class="op">)</span></span>
-<span><span class="co">## [1] 2</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span><span class="op">(</span><span class="va">B</span>, <span class="va">A</span><span class="op">)</span></span>
+<span><span class="co">## [1] 2</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="exr-setminus2" class="theorem exercise">
 <p><span class="theorem-title"><strong>Übungsaufgabe 3.6 (<span class="math inline">\(B\)</span> minus <span class="math inline">\(A\)</span>?)</strong></span> Berechnen Sie <span class="math inline">\(B \setminus A\)</span>. <span class="math inline">\(\square\)</span><a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a></p>
@@ -1755,7 +1708,7 @@ Tabelle&nbsp;3.1: Schorschs Zufallsexperiment, Auszug der Elementarereignisse (E
   height: 0px !important;
 }
 </style>
-<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings header">
 <th id="i" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">i</th>
 <th id="Elementarereignis" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Elementarereignis</th>
@@ -2351,7 +2304,7 @@ Tabelle&nbsp;3.2: Gegenüberstellung von Wahrscheinlichkeitstheorie und deskript
   height: 0px !important;
 }
 </style>
-<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings header">
 <th id="Wahrscheinlichkeitstheorie" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Wahrscheinlichkeitstheorie</th>
 <th id="Deskriptive-Statistik" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Deskriptive Statistik</th>
@@ -2701,13 +2654,14 @@ Jaynes, E. T., &amp; Bretthorst, G. L. (2003). <em>Probability Theory: The Logic
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
