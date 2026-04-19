@@ -45,7 +45,6 @@ Wir nutzen den Datensatz [Saratoga County](https://vincentarelbundock.github.io/
 Hier gibt es eine 
 [Beschreibung des Datensatzes](https://vincentarelbundock.github.io/Rdatasets/doc/mosaicData/SaratogaHouses.html).
 
-{{< downloadthis data/SaratogaHouses.csv dname="SaratogaHouses" >}}
 
 Sie können ihn entweder über die Webseite herunterladen:
 
@@ -63,7 +62,9 @@ data("SaratogaHouses", package = "mosaicData")
 d <- SaratogaHouses  # kürzerer Name, das ist leichter zu tippen
 ```
 
+Alternativ können Sie ihn hier hertunerladen:
 
+{{< downloadthis data/SaratogaHouses.csv dname="SaratogaHouses" >}}
 
 ### Lernziele
 
@@ -163,19 +164,31 @@ s. @fig-dates-beauty.
 #| label: fig-dates-beauty
 #| fig-cap: Ihre Datingpartner sind komischerweise entweder schlau oder schön (aber nicht beides), zumindest in der Tendenz.
 #| out-width: "50%"
+
+d2 <- d2 %>% 
+  mutate(
+    status_label = ifelse(status, "Date", "kein Date"),
+    symbol = ifelse(status, "✓", "✗")
+  )
+
+
 p_coll2 <- 
   d2 %>% 
-  ggplot() +
-  aes(x  = x,
-      y = y,
-      color = status) +
-  geom_point() +
-  scale_color_manual(values = c("grey80", "black")) +
+  ggplot(aes(x = x, y = y, color = status_label, label = symbol)) +
+  geom_text() +
+  scale_color_manual(
+    values = c("kein Date" = "grey80", "Date" = "black"),
+    guide = guide_legend(override.aes = list(label = c("✗", "✓")))) +
   theme_bw() +
-  labs(x = "Looks",
-       y = "Talent") +
-    theme(legend.position = "bottom",
-          axis.text = element_blank())
+  labs(
+    x = "Looks",
+    y = "Talent",
+    color = NULL
+  ) +
+  theme(
+    legend.position = "bottom",
+    axis.text = element_blank()
+  )
 
 p_coll2
 ```
