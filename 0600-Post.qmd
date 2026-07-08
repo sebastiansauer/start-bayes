@@ -254,7 +254,7 @@ bayesbox(hyps = p_grid, priors = 1, liks = L)  # <2>
 
 
 
-1. Das Paket `prada` steht nicht im Standard-R-App-Store ("CRAN"), sondern auf Github. Sie könnnen es so installieren: `devtools::install_github("sebastiansauer/prada")`.
+1. Das Paket `prada` steht nicht im Standard-R-App-Store ("CRAN"), sondern auf Github. Sie könnnen es so installieren: `pak::pak("sebastiansauer/prada")`.
 2. Die Funktion verhält sich wie eine gewöhnliche Bayesbox: Bei `hyps` schreibt man die Hypothesen (bzw. Parameterwerte) auf. Bei `priors` die Priori-Werte und bei `liks` die Likelihoods der jeweiligen Hypothesen.
 
 
@@ -792,10 +792,10 @@ samples_6w_9v %>%
 >    👨‍🏫 Das wollte ich auch gerade sagen...
 
 ```{r QM2-Thema3-Post-befragen-8a}
-samples_6w_9v %>% 
-  count(p_grid > .5 & p_grid < .75) %>% 
-  summarise(Anteil = n / 1e4,
-            Prozent = 100 * n / 1e4)  # In Prozent
+samples_6w_9v %>%
+  count(p_grid > .5 & p_grid < .75) %>%
+  mutate(Anteil = n / 1e4,
+         Prozent = 100 * n / 1e4)  # In Prozent
 ```
 
 Anstelle von `count()` könnte man, wenn man möchte, auch `filter()` verwenden.
@@ -824,16 +824,16 @@ Noch ein Beispiel für eine Forschungsfrage: *Mit welcher Wahrscheinlichkeit lie
 
 ```{r QM2-Thema3-Post-befragen-9}
 #| eval: false
-samples_6w_9v %>% 
-  count(p_grid >= .9 & p_grid <= 1) %>% 
-  summarise(prop = 100 * n() / 1e4)  # prop wie "proportion", Anteil
+samples_6w_9v %>%
+  count(p_grid >= .9 & p_grid <= 1) %>%
+  mutate(prop = 100 * n / 1e4)  # prop wie "proportion", Anteil
 ```
 ### Output
 ```{r QM2-Thema3-Post-befragen-9a}
 #| echo: false
-samples_6w_9v %>% 
-  count(p_grid >= .9 & p_grid <= 1) %>% 
-  summarise(prop = 100 * n() / 1e4)  # prop wie "proportion", Anteil
+samples_6w_9v %>%
+  count(p_grid >= .9 & p_grid <= 1) %>%
+  mutate(prop = 100 * n / 1e4)  # prop wie "proportion", Anteil
 ```
 :::
 

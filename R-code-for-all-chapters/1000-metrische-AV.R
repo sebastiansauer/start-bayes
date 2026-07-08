@@ -85,8 +85,7 @@ pi_mom_hs
 
 plot(eti(m10.1))
 
-## library(remotes)  # dieses Paket können Sie mit `install.packages("remotes") installieren
-## install_github("sebastiansauer/prada")
+## pak::pak("sebastiansauer/prada")  # `pak` können Sie mit `install.packages("pak")` installieren
 
 library(prada)
 
