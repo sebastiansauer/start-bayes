@@ -50,179 +50,19 @@ Bereiten Sie sich im Eigenstudium auf dieses Kapitel vor. Lesen Sie dazu folgend
 - [Statistik 1, Kap. "Punktmodelle 2"](https://statistik1.netlify.app/070-zusammenhaenge), insbesondere zu Regressionskoeffizienten
 
 
+### Benötigte R-Pakete
 
-
-
-## Schließen von der Stichprobe auf die Grundgesamtheit 
-
-
-
-<!-- TODO: -->
-<!-- Attentio Grabber zum Einstieg -->
-<!-- An Vorwissen anknüpfen -->
-<!-- -- gilt auch für übrige Kapitel und übrige Bücher -->
-
-
-<!-- ### Inferenz als Generalisieren -->
-
-
-📺 [Was ist Inferenz?](https://www.youtube.com/watch?v=QNMVi6IqQ90&list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN)
-
-
-Populationsinferenz ist das Schließen von der Stichprobe auf die Grundgesamtheit.
-
-Statistische Populationsinferenz -- oft kurz als *Inferenz* bezeichnet -- hat zum Ziel, 
-vom Teil aufs Ganze zu schließen, bzw. vom Konkreten auf das Abstrakte.
-In der Datenanalyse heißt das: Was sagt meine Datensatz, der auf einer Stichprobe beruht,
-über die zugrundeliegende Grundgesamtheit aus?
-
-:::{exr-stipro}
-Typischerweise untersuchen im Rahmen einer statistischen Analyse eine *Stichprobe*, 
-wie z.B. Ihr Freundeskreis, der leichtsinnig genug war, 
-auf Ihre WhatsApp-Nachricht "Tolle Studie zum Geheimnis des Glücks!!!" zu klicken.
-Ihr Freundeskreis ist ein *Teil* der Menschen (z.B. aus Deutschland), also eine Stichprobe.
-Schauen wir uns den Unterschied zwischen Stichprobe und Population näher an. $\square$
-:::
-
-Stichprobe vs. Population
-
-
-Nehmen wir an, wir möchten herausfinden, 
-wie groß der Anteil der R-Fans in der Grundgesamthit (synonym: Population) aller Studierenden ist. 
-Den Anteil der F-Fans bezeichnen wir der Einfachheit halber hier mit `A`^[~~Meistens~~ Manchmal darf man bei der Statistik nicht nach einem tieferen Sinn suchen. Ist Statistik eine Art moderne Kunst?].
-
-Das *Grundproblem der Inferenzstatistik* ist, dass wir an Aussagen zur Grundgesamtheit interessiert sind, aber nur eine Stichprobe, also einen Ausschnitt oder eine Teilmenge der Grundgesamtheit (synonym: Population) vorliegen haben.
-
-Wir müssen also den Anteil der R-Fans *in der Population* auf Basis des Anteils *in der Stichprobe* schließen:
-Wir verallgemeinern oder generalisieren von der Stichprobe auf die Grundgesamtheit, s. Abb. @fig-pop-sample.
-
-
-
-:::: {#fig-pop-sample layout-ncol=2}
-
-
-![Population](img/pvoll.png)
-
-
-![Sample](img/psti.png)
-
-
-
-Population vs. Stichprobe. Die Stichprobe entnimmt einen *Teil* der Daten der Population. Autor: Karsten Lübke. Lizenz: OEM.
-::::
-
-
-Häufig ist das praktische Vorgehen recht simpel: 
-Ah, in unserer Stichprobe sind 42% R-Fans!^[Manch einer hätte mit mehr gerechnet; andere mit weniger...]. 
-Man schreibt: $p = 0.42$ (`p` wie `proportion`, engl. für "Anteil"). 
-Die Stichprobe sei repräsentativ für die Grundgesamtheit aller Studierender. 
-Messerscharf schließen wir:
-In der Grundgesamtheit ist der Anteil der R-Fans auch 42%, $\pi=0.42$.
-
-
-:::callout-note
-Wir verwenden lateinische Buchstaben (p), um Kennzahlen einer Stichprobe zu benennen, und griechische ($\pi$) für Populationen.$\square$
-:::
-
-
-
-
-
-
-
-:::{#def-inf}
-### (Populations-)Inferenzstatistik
-*Populations-Inferenzstatistik* -- meist kurz als *Inferenzstatistik* bezeichnet -- 
-ist ein Verfahren zum Schließen von Statistiken (eine Kennzahl einer Stichprobe)
-auf *Parameter* (eine Kennzahl einer Grundgesamtheit).
-Inferenz bedeutet Schließen bzw. Schlussfolgern: 
-auf Basis von vorliegenden Wissen wird neues Wissen generiert.
-Inferenzstatistik ist ein Verfahren, das mathematische Modelle (oft aus der Stochastik) 
-verwendet, 
-um ausgehend von einer bestimmten Datenlage auf allgemeine Aussagen zu schließen.
-Wir unterscheiden zwei Hauptarten der Inferenzstatistik: 1. Populationsinferenz, 2. Kausalinferenz $\square$
-:::
-
-
-
-
-:::{#exr-inf}
-🏋️️ Heute Nacht vor dem Schlafen wiederholen Sie die Definition
-. Üben Sie jetzt schon mal.$\square$
-:::
-
-
-
-Für jede beliebige Statistik (Kennzahl von Stichprobendaten) kann man die Methoden der Populationsinferenz verwenden, 
-um den zugehörigen Kennwert (Parameter) der Population zu bestimmen, 
-s. Tabelle @tbl-kennwerte. 
-Da man die Parameter der Population so gut wie nie sicher kennt 
-(schließlich
-hat man meist nur Auszüge, Teile der Population, also Stichproben),
-muss man sich mit *Schätzwerten* begnügen.
-
+In diesem Kapitel benötigen Sie folgende R-Pakete.
 
 ```{r}
-#| echo: false
-#| label: tbl-kennwerte
-#| tbl-cap: Bezeichnungen für Kennwerte
-#| message: false
-x <- tribble(
-    ~Kennwert, ~Stichprobe, ~`Grundgesamtheit (Aussprache)`, ~Schätzwert,
-   "Mittelwert", "$\\bar{X}$", "$\\mu$ (mü)" ,      "$\\hat{\\mu}$",
-  "Streuung",     "$sd$",      "$\\sigma$ (sigma)", "$\\hat{\\sigma}$",
-  "Anteil", "$p$", "$\\pi$ (pi)", "$\\hat{\\pi}$",
-  "Korrelation", "$r$", "$\\rho$ (rho)", "$\\hat{\\rho}$" ,
-  "Regression", "$b$", "$\\beta$ (beta)", "$\\hat{\\beta}$"
-
-)
-
-knitr::kable(x, escape = FALSE, booktabs = TRUE, format = "simple") 
+#| eval: false
+library(tidyverse)
+library(easystats)
+library(nycflights13)
 ```
 
 
-
-
-
-Für Statistiken (Daten einer Stichprobe) verwendet man *lateinische* Buchstaben; 
-für Parameter (Population) verwendet man *griechische* Buchstaben.
-
-
-:::{#exr-greek}
-🏋️ Geben Sie die griechischen Buchstaben für typische Statistiken an. Ohne auf die Tabelle zu schauen.😜$\square$!
-:::
-
-
-
-Meist begnügt man sich  beim Analysieren von Daten nicht mit Aussagen für eine Stichprobe, sondern will auf eine Grundgesamtheit verallgemeinern.
-
-Leider sind die Parameter einer Grundgesamtheit zumeist unbekannt, daher muss man sich mit *Schätzungen* begnügen.
-Schätzwerte werden mit einem "Dach" über dem Kennwert gekennzeichnet, s. letzte Spalte in @tbl-kennwerte.
-
-
-In der angewandten Forschung und im praktischen Leben interessieren häufig Fragen wie:
-"Welche Entscheidung ist (wahrscheinlich) besser?".
-Da bekanntlich (fast) keine Aussagen sicher sind, spielt *Wahrscheinlichkeit* 
-eine wichtige Rolle in den Forschungsfragen bzw. in deren Antworten.
-
-:::callout-note
-Wahrscheinlichkeit wird oft mit *Pr* oder *p* abgekürzt, für engl. *probability*.$\square$
-:::
-
-
-:::{#exm-inf}
-Sie testen zwei Varianten Ihres Webshops (V1 und V2), die sich im Farbschema unterscheiden und ansonsten identisch sind: Hat das Farbschema einen Einfluss auf den Umsatz?
-
-Dazu vergleichen Sie den mittleren Umsatz pro Tag von V1 vs. V2, $\bar{X}_{V1}$ und $\bar{X}_{V2}$. 
-Die Mittelwerte unterscheiden sich etwas, $\bar{X}_{V1} > \bar{X}_{V2}$. 
-Sind diese Unterschiede "zufällig" oder "substanziell"? Gilt also $\mu_{V1} > \mu_{V2}$ oder gilt $\mu_{V1} \le \mu_{V2}$? 
-Wie groß ist die Wahrscheinlichkeit $Pr(\mu_{V1} > \mu_{V2})$?
-:::
-
-
-
-
-## Was ist Populationsinferenz?
+## Populationsinferenz
 
 :::{#def-popinf}
 ### Populationsinferenz
@@ -636,14 +476,6 @@ Dieser Befund lässt sich so interpretieren:
 :::{#exr-ungewisskorr}
 Geben Sie Beispiele für Konfidenzintervalle an.
 :::
-
-
-
-
-
-
-
-
 
 
 
