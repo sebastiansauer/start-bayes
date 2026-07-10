@@ -87,13 +87,17 @@ library(prada)    # optional, bayesbox automatisiert
 ## Zur Erinnerung: Bayesbox in R berechnen
 
 Berechnen wir mit der Bayesbox ("Gittermethode")  die Postverteilung für den Globusversuch.
-Die Bayesbox ist ein Weg, die Posteriori-Verteilung zu berechnen. Die Posteriori-Verteilung birgt viele nützliche Informationen.
+Die Bayesbox ist ein Weg, die Posteriori-Verteilung zu berechnen.
+Die Posteriori-Verteilung birgt viele nützliche Informationen.
 Sie ist das zentrale Ergebnis einer Bayes-Analyse.
 
 :::{#exm-globus69}
 ### Bayesbox für $W=6$ Wasser bei $N=9$ Würfen
 Betrachten wir wieder das Globusmodell mit folgendem Ergebnis: 
-$W=6$ Wasser, $N=9$ Würfen, bei Apriori-Indifferenz gegenüber den Parameterwerten. Und, sagen wir, $g=11$ Gitterwerten^[Die Anzahl *g* der Gitterwerte ist nicht Teil des Modells; die Anzahl der Gitterwerte entscheiden nur über die Genauigkeit der Post-Verteilung.] von 0 bis 1, in Schritten von 0.1, $0.1, 0.2, \ldots, 0.9, 1.0$. $\square$
+$W=6$ Wasser, $N=9$ Würfen, bei Apriori-Indifferenz gegenüber den Parameterwerten.
+Und, sagen wir, $g=11$ Gitterwerten^[Die Anzahl *g* der Gitterwerte ist nicht Teil des Modells;
+die Anzahl der Gitterwerte entscheiden nur über die Genauigkeit der Post-Verteilung.] von 0 bis 1, in Schritten von 0.1, $0.1, 0.2, \ldots, 0.9, 1.0$.
+$\square$
 :::
 
 
@@ -105,7 +109,8 @@ $W=6$ Wasser, $N=9$ Würfen, bei Apriori-Indifferenz gegenüber den Parameterwer
 
 ### Lösung
 
-Aufgrund der Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten den Likelihoods. Die höchste Wahrscheinlichkeit (d.h. Likelihood) hat derjenige Parameterwert, zu dem die Daten am besten passen, und das ist 6/9 = 2/3, d. @lst-bayes1. $\square$
+Aufgrund der Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten den Likelihoods. Die höchste Wahrscheinlichkeit (d.h. Likelihood) hat derjenige Parameterwert, zu dem die Daten am besten passen, und das ist 6/9 = 2/3, d. @lst-bayes1.
+$\square$
 :::
 ::::
 
@@ -172,7 +177,8 @@ p_d
 :::
 
 ::: {.content-visible unless-format="html"}
-Abb. @fig-post1a zeigt die resultierende Bayesbox (s. @exm-globus69); vor allem ist die Post-Verteilung wichtig.
+Abb. @fig-post1a zeigt die resultierende Bayesbox (s. @exm-globus69);
+vor allem ist die Post-Verteilung wichtig.
 ```{r plot-post-bayesbox_6w_9v }
 #| echo: false
 #| label: fig-post1a
@@ -200,7 +206,8 @@ p_d
 
 
 
-Voilà, die Post-Verteilung zu @exm-globus69 als Tabelle, die "Bayesbox": s. @tbl-post1.
+Voilà, die Post-Verteilung zu @exm-globus69 als Tabelle, die "Bayesbox":
+s. @tbl-post1.
 
 
 ```{r QM2-Thema3-Teil1-1}
@@ -229,7 +236,8 @@ source("https://raw.githubusercontent.com/sebastiansauer/prada/master/R/NAME_bay
 bayesbox(hyps = p_grid, priors = 1, liks = L) 
 ```
 
-Mit `source` importiert man eine R-Skriptdatei. In diesem Fall steht dort der Code für die Funktion `bayesbox`.
+Mit `source` importiert man eine R-Skriptdatei.
+In diesem Fall steht dort der Code für die Funktion `bayesbox`.
 
 Oder Sie starten das R-Paket `prada` (mit `library(prada)`), wo die Funktion wohnt:
 
@@ -254,8 +262,12 @@ bayesbox(hyps = p_grid, priors = 1, liks = L)  # <2>
 
 
 
-1. Das Paket `prada` steht nicht im Standard-R-App-Store ("CRAN"), sondern auf Github. Sie könnnen es so installieren: `pak::pak("sebastiansauer/prada")`.
-2. Die Funktion verhält sich wie eine gewöhnliche Bayesbox: Bei `hyps` schreibt man die Hypothesen (bzw. Parameterwerte) auf. Bei `priors` die Priori-Werte und bei `liks` die Likelihoods der jeweiligen Hypothesen.
+1. Das Paket `prada` steht nicht im Standard-R-App-Store ("CRAN"), sondern auf Github.
+Sie könnnen es so installieren:
+`pak::pak("sebastiansauer/prada")`.
+2. Die Funktion verhält sich wie eine gewöhnliche Bayesbox:
+Bei `hyps` schreibt man die Hypothesen (bzw. Parameterwerte) auf.
+Bei `priors` die Priori-Werte und bei `liks` die Likelihoods der jeweiligen Hypothesen.
 
 
 
@@ -270,10 +282,12 @@ bayesbox(hyps = p_grid, priors = 1, liks = L)  # <2>
 ### Bayesbox geht nur für einfache Modelle
 
 Bisher, für einfache Fragestellungen, hat unsere Bayesbox gut funktioniert.
-Allerdings: Funktioniert sie auch bei komplexeren Modellen?
+Allerdings:
+Funktioniert sie auch bei komplexeren Modellen?
 Schließlich wollen wir ja auch irgendwann Regressionsmodelle berechnen.
 Angenommen, wir haben ein Regressionsmodell mit 1 Prädiktor,
-dann haben wir folgende drei Parameter zu schätzen: $\beta_0, \beta_1, \sigma$.
+dann haben wir folgende drei Parameter zu schätzen:
+$\beta_0, \beta_1, \sigma$.
 Hört sich gar nicht so viel an. 
 Aber Moment, wir müssten dann z.B. die Frage beantworten, 
 wie wahrscheinlich die Daten aposteriori sind,
@@ -287,7 +301,8 @@ Bei einer multiplen Regression mit sagen wir 10 Parametern mit jeweils 100 Auspr
 
 >    🤖 Bitte tue mir das nicht an!
 
->    👨‍🏫 Schon gut, das können wir R nicht zumuten. Wir brauchen eine andere Lösung!
+>    👨‍🏫 Schon gut, das können wir R nicht zumuten.
+> Wir brauchen eine andere Lösung!
 
 
 
@@ -296,10 +311,12 @@ Bei einer multiplen Regression mit sagen wir 10 Parametern mit jeweils 100 Auspr
 
 ### Wir arbeiten jetzt mit Häufigkeit, nicht mit Wahrscheinlichkeit
 
-Kurz gesagt: Komplexere Bayes-Modelle können nicht mehr "einfach mal eben" ausgerechnet werden; 
+Kurz gesagt:
+Komplexere Bayes-Modelle können nicht mehr "einfach mal eben" ausgerechnet werden;
 die Mathematik wird zu rechenintensiv.
 Glücklicherweiße gibt es einen Trick, der die Sache nicht nur rechnerisch, sondern auch konzeptionell viel einfacher macht.
-Dieser Trick lautet: Wir arbeiten nicht mehr mit Wahrscheinlichkeiten, sondern mit *Häufigkeiten.*
+Dieser Trick lautet:
+Wir arbeiten nicht mehr mit Wahrscheinlichkeiten, sondern mit *Häufigkeiten.*
 Praktischerweise werden wir in Kürze einen R-Golem kennenlernen,
 der das für uns erledigt (er heißt *Stan* und kommt aus dem Paket `rstanarm`).
 Dieser Golem liefert uns *Stichproben* aus der Post-Verteilung zurück.
@@ -309,7 +326,8 @@ Lernen wir jetzt also, wie man mit solchen Stichproben umgeht.
 
 
 Die Bayesbox-Methode^[auch Grid-Methode genannt] ist bei größeren Datensätzen (oder größeren Modellen) zu unpraktisch.
-In der Praxis werden daher andere, schnellere Verfahren verwendet, sog. Monte-Carlo-Markov-Ketten (MCMC).
+In der Praxis werden daher andere, schnellere Verfahren verwendet, sog.
+Monte-Carlo-Markov-Ketten (MCMC).
 Wie diese Verfahren funktionieren sind aber nicht mehr Gegenstand dieses Kurses.
 Wir wenden Sie einfach an, freuen uns und lassen es damit gut sein.^[Eine gute Einführung in die Hintergründe findet sich bei @mcelreath2020.]
 
@@ -360,7 +378,9 @@ Das Argument `weight_by` legt die Wahrscheinlichkeit fest, mit der eine Zeile ge
 Wir begnügen uns mit der Spalte mit den Wasseranteilswerten (Parameterwerten), `p_grid`, 
 die anderen Spalten brauchen wir nicht.
 
-Wenn Sie jetzt denken: "Warum machen wir das jetzt? Brauchen wir doch gar nicht!" -- Dann haben Sie Recht, für dieses Kapitel.
+Wenn Sie jetzt denken:
+"Warum machen wir das jetzt?
+Brauchen wir doch gar nicht!" -- Dann haben Sie Recht, für dieses Kapitel.
 Ab dem nächsten Kapitel werden wir aber, wenn wir mit komplexeren Modellen zu tun haben, nur noch mit Post-Verteilungen auf Stichprobenbasis arbeiten, 
 weil wir Regressionsmodelle nicht mehr mit der Bayesbox berechnen können.
 Die Anzahl der Zeilen wäre einfach zu groß.
@@ -418,7 +438,8 @@ Aus @fig-samples1 können wir einfach auslesen, wie wahrscheinlich gewisse Param
 So sehen wir, dass das Modell Parameterwerte (Wasseranteil, $\pi$) zwischen ca. 50% und 70% für am wahrscheinlichsten hält.
 Aber auch kleine Anteile wie 25% sind nicht auszuschließen (auf Basis der Daten und der Modellannahmen).
 
-Vergleichen Sie  @fig-samples1 mit @fig-gitter: beide sind sehr ähnlich!
+Vergleichen Sie  @fig-samples1 mit @fig-gitter:
+beide sind sehr ähnlich!
 Das Stichprobenziehen (@fig-samples1) nähert sich recht gut an die exakte Berechnung an (@fig-gitter).
 
 
@@ -461,7 +482,8 @@ bayesbox_g100 <-
 2. $W=6$ Treffer (Wasser)
 3. $N=9$ Versuche
 4. Bayesbox anlegen mit 100 Zeilen, d.h. verschiedenen 100 Parameterwerten
-5. Apriori indifferent: Alle Hypothesen haben die gleiche Apriori-Plausibilität
+5. Apriori indifferent:
+Alle Hypothesen haben die gleiche Apriori-Plausibilität
 6. Die Likelihood ist binomialverteilt.
 7. Post-Verteilung berechnen wie gewohnt
 
@@ -581,7 +603,8 @@ Das ist gut, denn wir werden in Zukunft nur noch mit dem Stichproben-Verfahren (
 Mehr Stichproben und mehr Gitterwerte glätten die Stichproben-Post-Verteilung.
 :::
 
-Jetzt die Post-Verteilung noch mal mit mehr Stichproben: $n=10^6$ Stichproben bei $g=101$ Gitterwerten aus der Posteriori-Verteilung, s. @fig-post-dk100.
+Jetzt die Post-Verteilung noch mal mit mehr Stichproben:
+$n=10^6$ Stichproben bei $g=101$ Gitterwerten aus der Posteriori-Verteilung, s. @fig-post-dk100.
 
 ```{r QM2-Thema3-Post-befragen-5}
 #| echo: false
@@ -627,7 +650,9 @@ Ziehen Sie $n=100$ Stichproben.
 Tun Sie das *per Hand*:
 Übertragen Sie die Werte Der Spalte `p_grid` auf kleine Zettel.
 Dabei soll der Anteil der Zettel pro Wert von `p_grid` der Posteriori-Wahrscheinlichkeit (`post`) entsprechen (gerundet auf zwei Dezimalstellen). 
-Beispiel: Wenn der Parameterwert 0.6 eine Posteriori-Wahrscheinlichkeit von 0.27 hat, dann schreiben Sie 27 Zettel (von 100) mit dem Wert 0.6. $\square$
+Beispiel:
+Wenn der Parameterwert 0.6 eine Posteriori-Wahrscheinlichkeit von 0.27 hat, dann schreiben Sie 27 Zettel (von 100) mit dem Wert 0.6.
+$\square$
 :::
 
 
@@ -700,8 +725,10 @@ plot_ask_for_probability()
 
 
 
-Im *linken* Teildiagramm von @fig-p-vs-q fragen wir: "Welcher Wasseranteil wird mit einer gegebenen Wahrscheinlichkeit *p* nicht überschritten?" -- Wir suchen also einen Parameterwert (Quantil, q).
-Im *rechten* Teildiagramm fragen wir: "Wie wahrscheinlich ist ein Wasseranteil von höchstens q?" -- Wir suchen also eine Wahrscheinlichkeit (p).
+Im *linken* Teildiagramm von @fig-p-vs-q fragen wir:
+"Welcher Wasseranteil wird mit einer gegebenen Wahrscheinlichkeit *p* nicht überschritten?" -- Wir suchen also einen Parameterwert (Quantil, q).
+Im *rechten* Teildiagramm fragen wir:
+"Wie wahrscheinlich ist ein Wasseranteil von höchstens q?" -- Wir suchen also eine Wahrscheinlichkeit (p).
 
 
 
@@ -712,7 +739,8 @@ Im *rechten* Teildiagramm fragen wir: "Wie wahrscheinlich ist ein Wasseranteil v
 
 
 
-Sagen wir, dass sei unsere Forschungsfrage: *Wie groß ist die Wahrscheinlichkeit, dass der Wasseranteil unter 50% liegt?*
+Sagen wir, dass sei unsere Forschungsfrage:
+*Wie groß ist die Wahrscheinlichkeit, dass der Wasseranteil unter 50% liegt?*
 Um diese Frage zu beantworten, zählen wir einfach, 
 wie viele Stichproben die Bedingung erfüllen,
 und summieren die Wahrscheinlichkeiten dieser Stichproben.
@@ -735,11 +763,14 @@ In unseren Daten ist die Wahrscheinlichkeit ca. 10%.
 :::{#exr-count}
 ### Was macht die Funktion `count `? 
 
-Zur Erinnerung: Der Befehl `count` macht Folgendes: 
-Er gruppiert die Stichprobe nach dem Prüfkriterium (hier: `p_grid < .5`, d.h. 
+Zur Erinnerung:
+Der Befehl `count` macht Folgendes:
+Er gruppiert die Stichprobe nach dem Prüfkriterium (hier:
+`p_grid < .5`, d.h.
 Wasseranteil höchstens 50%). 
 Dann zählt er in jeder der beiden Teiltabelle 
-die Zeilen und liefert diese zwei Zahlen dann zurück. $\square$
+die Zeilen und liefert diese zwei Zahlen dann zurück.
+$\square$
 :::
 
 :::: {.columns}
@@ -777,7 +808,8 @@ bayesbox_6w_9v %>%
 
 ### Wasseranteil zwischen 50 und 75%?
 
-Noch eine Forschungsfrage: *Mit welcher Wahrscheinlichkeit liegt der Parameter (Wasseranteil) zwischen 0.5 und 0.75?*
+Noch eine Forschungsfrage:
+*Mit welcher Wahrscheinlichkeit liegt der Parameter (Wasseranteil) zwischen 0.5 und 0.75?*
 
 
 Wir zählen die Stichproben, die diesen Kriterien entsprechen.
@@ -787,7 +819,8 @@ samples_6w_9v %>%
   count(p_grid > .5 & p_grid < .75)
 ```
 
->    🤖 Ich würde empfehlen, die Anzahl noch in Anteile umzurechnen. Die kann man dann als Wahrscheinlichkeiten auffassen.
+>    🤖 Ich würde empfehlen, die Anzahl noch in Anteile umzurechnen.
+> Die kann man dann als Wahrscheinlichkeiten auffassen.
 
 >    👨‍🏫 Das wollte ich auch gerade sagen...
 
@@ -816,7 +849,8 @@ Fertig 😄  $\square$
 
 ### Wasseranteil zwischen 90& und 100%?
 
-Noch ein Beispiel für eine Forschungsfrage: *Mit welcher Wahrscheinlichkeit liegt der Parameter zwischen 0.9 und 1*? 
+Noch ein Beispiel für eine Forschungsfrage:
+*Mit welcher Wahrscheinlichkeit liegt der Parameter zwischen 0.9 und 1*?
 
 ::: {.panel-tabset}
 ### Syntax
@@ -838,7 +872,9 @@ samples_6w_9v %>%
 :::
 
 
-Laut unserem Modell ist es also sehr unwahrscheinlich, dass der Wasseranteil der Erde mind.  90% beträgt.  $\square$
+Laut unserem Modell ist es also sehr unwahrscheinlich, dass der Wasseranteil der Erde mind.
+90% beträgt.
+$\square$
 
 
 :::
@@ -904,7 +940,8 @@ Schätzbereiche von Parameterwerten nennt man auch *Konfidenz- oder Vertrauensin
 
 
 
-Welcher Parameterwert wird mit 90% Wahrscheinlichkeit nicht überschritten, laut unserem Modell? (Gesucht sind also die unteren 90% der Posteriori-Wahrscheinlichkeit.)
+Welcher Parameterwert wird mit 90% Wahrscheinlichkeit nicht überschritten, laut unserem Modell?
+(Gesucht sind also die unteren 90% der Posteriori-Wahrscheinlichkeit.)
 Wir möchten also ziemlich sicher, was die Obergrenze an Wasser auf diesem Planeten ist.
 Diese Frage können wir mit dem Befehl `quantile` beantworten.
 
@@ -1096,7 +1133,8 @@ anim_save("img/p_quantiles_anim.gif", p_quantiles_anim, renderer = gifski_render
 
 ::: {.content-visible when-format="html"}
 
-Das 10%, 20%, ... 100%-Quantil^[d.h. die *Dezile*] (auf Basis von `bayesbox_g100_samples`) sind in @fig-quantiles-anim illustriert.
+Das 10%, 20%, ...
+100%-Quantil^[d.h. die *Dezile*] (auf Basis von `bayesbox_g100_samples`) sind in @fig-quantiles-anim illustriert.
 
 
 ![Quantile in 10%-Schriten durch die Verteilung von `bayesbox_g100_samples`](img/p_deciles.gif){#fig-quantiles-anim width=50%}
@@ -1106,7 +1144,10 @@ Das 10%, 20%, ... 100%-Quantil^[d.h. die *Dezile*] (auf Basis von `bayesbox_g100
 
 :::{#exm-globus-3w_3v}
 ### Globusversuch: 3 Würfe, 3 Treffer
-Noch einmal zum Globusversuch: Gehen wir von 3 Würfen mit 3 Mal Wasser (Treffer) aus; auf welche Wasseranteile (Parameterwerte) werden wir jetzt schließen? $\square$
+Noch einmal zum Globusversuch:
+Gehen wir von 3 Würfen mit 3 Mal Wasser (Treffer) aus;
+auf welche Wasseranteile (Parameterwerte) werden wir jetzt schließen?
+$\square$
 :::
 
 Erstellen wir uns dazu mal eine Post-Verteilung (3 Treffer, 3 Würfe), s. @lst-d33 mit dem Objekt `bayesbox_3w_3v`.
@@ -1206,7 +1247,8 @@ p1
 p2
 ```
 
-Ein *Perzentilintervall* kann bei schiefen Verteilungen den wahrscheinlichsten Parameterwert nicht enthalten, diesen plausiblen Wert also zurückweisen. Das macht keinen Sinn.
+Ein *Perzentilintervall* kann bei schiefen Verteilungen den wahrscheinlichsten Parameterwert nicht enthalten, diesen plausiblen Wert also zurückweisen.
+Das macht keinen Sinn.
 
 
 Ein *Highest-Density-Intervall* (HDI^[Auch als *Highest Hensity Posterior Interval* (HDPI) bezeichnet.]) ist schmäler als der Perzintilintervall und enthält immer den wahrscheinlichsten Parameterwert.
@@ -1253,7 +1295,8 @@ Das ist ein Nachteil der ETI.
 
 ### Intervalle höchster Dichte (Highest Density Intervals)
 
-Intervalle höchster Dichte (Highest density Intervals, HDI oder HDPI) sind definiert als das *schmälste* Intervall, das den gesuchten Parameter enthält (in Bezug auf ein gegebenes Modell). $\square$
+Intervalle höchster Dichte (Highest density Intervals, HDI oder HDPI) sind definiert als das *schmälste* Intervall, das den gesuchten Parameter enthält (in Bezug auf ein gegebenes Modell).
+$\square$
 
 :::
 
@@ -1351,12 +1394,14 @@ sich im  von ca. .67 bis .78 befindet (auf Basis eines HDI).
 
 Fassen wir zentrale Punkte an einem Beispiel zusammen.
 
-Im Globusversuch, Datensatz `samples_6w_9v`, s. @lst-post-sample. Sagen wir, wir haben 6 Treffer bei 9 Würfen erzielt.
+Im Globusversuch, Datensatz `samples_6w_9v`, s. @lst-post-sample.
+Sagen wir, wir haben 6 Treffer bei 9 Würfen erzielt.
 
 
 
 
-*Lageparameter*: Welchen mittleren Wasseranteil kann man erwarten?
+*Lageparameter*:
+Welchen mittleren Wasseranteil kann man erwarten?
 
 ```{r QM2-Thema3-Post-befragen-19}
 samples_6w_9v %>% 
@@ -1365,7 +1410,8 @@ samples_6w_9v %>%
     median = median(p_grid))  
 ```
 
-*Streuungsparameter*: Wie unsicher sind wir in der Schätzung des Wasseranteils?
+*Streuungsparameter*:
+Wie unsicher sind wir in der Schätzung des Wasseranteils?
 
 ```{r QM2-Thema3-Post-befragen-20}
 samples_6w_9v %>% 
@@ -1382,7 +1428,8 @@ Anstelle der Streuungsparameter für den gesuchten Parameter ist es aber üblich
 :::callout-important
 Alles Wasser oder was?
 Im Beispiel dieses Kapitels haben wir unser gefragt, was wohl der Wasseranteil auf dem Planeten Erde ist. 
-Halten Sie sich klar vor Augen: Der Wasseranteil ist ein Beispiel für einen *Parameter*, einer unbekannten Größes eines Modells.
+Halten Sie sich klar vor Augen:
+Der Wasseranteil ist ein Beispiel für einen *Parameter*, einer unbekannten Größes eines Modells.
 :::
 
 
