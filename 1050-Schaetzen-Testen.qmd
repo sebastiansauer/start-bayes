@@ -83,13 +83,13 @@ theme_set(theme_modern())
 Machen Sie sich zunächst mit dem Pinguin-Datensatz vertraut. 
 Sie finden den Datensatz `penguins` im R-Paket `palmerpenguins`, 
 das Sie auf gewohnte Art installieren können.
-im Internet findet man den Datensatz auch als CSV-Datei; s. unten.
+Im Internet findet man den Datensatz auch als CSV-Datei; s. unten.
 Importieren Sie den Datensatz und verschaffen Sie sich einen Überblick über 
 die Verteilungen jeder Variablen des Datensatzes.
 :::
 
 
-Sie können den Datensatz `penguins` entweder via dem Pfad importieren:
+Sie können den Datensatz `penguins` entweder über den Pfad importieren:
 
 
 
@@ -105,13 +105,13 @@ penguins <- read.csv(penguins_url)
 {{< downloadthis data/penguins.csv dname="penguins" >}}
 
 
-Oder via dem zugehörigen R-Paket:
+Oder über das zugehörige R-Paket:
 
 ```{r}
 data("penguins", package = "palmerpenguins")
 ```
 
-Beide Möglichkeit des Datenimports sind okay. $\square$
+Beide Möglichkeiten des Datenimports sind okay. $\square$
 
 
 ### Einstieg
@@ -164,7 +164,7 @@ also als falsch (falsifziert) betrachten oder zumindest hat die Glaubwürdigkeit
 Auf Basis der Daten (und des Modells) muss man die Hypothese annehmen (oder kann die Gegenthese zumindest nicht verwerfen). 
 Oder zumindest hat die Hypothese an Glaubwürdigkeit gewonnen.
 
-3. ❓ Die Datenlage ist *unklar*; zum Teil unterstützen die Daten die Hypothese zum Teil widersprechen sie ihr. 
+3. ❓ Die Datenlage ist *unklar*; zum Teil unterstützen die Daten die Hypothese, zum Teil widersprechen sie ihr.
 Man kann keine oder kaum Schlüsse aus den Daten ziehen. 
 In diesem Fall gibt es keinen (nennenswerten) Erkenntnisgewinn.
 
@@ -172,7 +172,7 @@ In diesem Fall gibt es keinen (nennenswerten) Erkenntnisgewinn.
 Hypothesen prüfen ist *binär* in dem Sinne, dass sie zu "Schwarz-Weiß-Ergebnissen" führen (sofern die Datenlage stark genug ist).
 
 :::{.callout-important}
-Eine gängige Variante des Hypothesen testen^[vor allem in der Frequentistischen Statistik] 
+Eine gängige Variante des Hypothesentestens^[vor allem in der Frequentistischen Statistik]
 ist das Testen der Hypothese "Es liegt kein (null) Effekt vor" (Null Effekt).
 Man geht also davon aus, dass es keinen Zusammenhang zwischen UV und AV gibt und
 spricht vom *Nullhypothesen testen*, $H_0$. $\square$
@@ -213,7 +213,7 @@ um die Hypothese $H$ zu widerlegen (falsifizieren). $\square$
 In der Wissenschaftspraxis werden die meisten Hypothesen probabilistisch untersucht. 
 Komplett sichere Belege, wie in Poppers Beispiel mit dem schwarzen Schwan, gibt es nicht.
 Das bedeutet, dass Evidenz im bestätigenden wie im widerlegenden Sinne 
-tendenziell (d.h.probabilistisch) zu betrachten ist.
+tendenziell (d.h. probabilistisch) zu betrachten ist.
 Auf dieser Basis und der Basis zuverlässiger, 
 repräsentativer Daten erscheint plausibel, dass Hypothesen sowohl bestätigt als 
 auch widerlegt werden können [@kruschke2018; @morey2011]. $\square$
@@ -240,10 +240,10 @@ Das Hypothesen testen ist daher (implizit) im Parameter schätzen enthalten.
 
 :::{#exm-pinguins}
 
-Wie groß ist der Schätzbereich für den Effekt des Parameter "Geschlecht" auf das mittlere Gewicht von Pinguinen? 
+Wie groß ist der Schätzbereich für den Effekt des Parameters "Geschlecht" auf das mittlere Gewicht von Pinguinen?
 Hat die UV *Geschlecht* einen großen Einfluss auf das mittlere Gewicht dieser Tiere?
 Anders gefragt: Um welchen Wert sind männliche Tiere im Schnitt schwerer als weibliche Tiere?
-@tbl-m-penguins-sex-params gibt uns die Antwort
+@tbl-m-penguins-sex-params gibt uns die Antwort.
 
 ```{r}
 #| results: hide
@@ -258,7 +258,7 @@ m_penguins_sex <-
 ```{r}
 #| echo: false
 #| label: tbl-m-penguins-sex-params
-#| tbl-cap: "Parameterschätzung des Modells m_penguins; der Gewichtssnterschied zwischen den Mittelwerten der Geschlechter beträgt etwa 700 g."
+#| tbl-cap: "Parameterschätzung des Modells m_penguins; der Gewichtsunterschied zwischen den Mittelwerten der Geschlechter beträgt etwa 700 g."
 parameters(m_penguins_sex) |> print_md()
 ```
 
@@ -291,7 +291,7 @@ Entsprechend gilt $d \ne 0$ wenn $\beta_1 \ne 0$.
 
 
 
-Um die Forschungsfrage zu beantworten zählen wir wie gewohnt den Anteil der Stichproben 
+Um die Forschungsfrage zu beantworten, zählen wir wie gewohnt den Anteil der Stichproben
 in der Post-Verteilung für die UV `sexmale`, die einen Wert größer Null aufweisen:
 
 ```{r}
@@ -302,16 +302,16 @@ m_penguins_sex_post <-
 m_penguins_sex_post |> 
   count(sexmale > 0)
 ```
-100% (4000 von 4000) Stichproben finden einen Wert größer Null für `sexmale`, 
-dass also weibliche Tiere leichter bzw. männliche Tiere schwerer sind (im Durchschnitt).
+100% (4000 von 4000) Stichproben finden einen Wert größer Null für `sexmale`;
+das heißt, weibliche Tiere sind leichter bzw. männliche Tiere schwerer (im Durchschnitt).
 Entsprechend finden 0% der Stichproben einen Wert, der für das Gegenteil spricht 
 (das weibliche Tiere schwerer wären).
 Damit resümieren wir, dass unser Modell 100% Wahrscheinlichkeit für die Hypothese einräumt: $p_H = 1$.
 Achtung: Die 100%-ige Sicherheit für die Hypothese stammt aus der kleinen Welt,
-nicht unbedingt aus der großen welt. 
+nicht unbedingt aus der großen Welt.
 
-Einfach noch zeigt uns `parameters(m_penguins_sex)`, wie groß die Wahrscheinlichkeit für $\beta_1 > 0$ ist,
-nämlich anhand des Koeffizienten `pd`, s. tbl-m-penguins-sex-params.
+Einfacher zeigt uns `parameters(m_penguins_sex)`, wie groß die Wahrscheinlichkeit für $\beta_1 > 0$ ist,
+nämlich anhand des Koeffizienten `pd`, s. @tbl-m-penguins-sex-params.
 
 Aber das Auslesen der Post-Verteilung erlaubt uns auch, andere Hypothesen zu prüfen,
 etwa die Wahrscheinlichkeit der Hypothese, dass der Gewichtsunterschied zwischen 
@@ -427,7 +427,7 @@ Alternativen zum Testen von Nullhypothesen sind:
 ### ROPE
 
 ROPE (Region of Practical Equivalence) ist ein Bereich um den Nullwert, 
-der als praktisch äquivalent zu Null angesehen wird. $\square$.
+der als praktisch äquivalent zu Null angesehen wird. $\square$
 :::
 
 
@@ -493,7 +493,7 @@ knitr::include_graphics("img/Kruschke-2018-Fig1.png")
 
 @fig-kruschke-rope illustriert die Entscheidungsregel zum ROPE 
 für die drei Situationen *Verwerfen* der ROPE-Hypothese, *Beibehalten* und 
-*unklare Datenlage* [@kruschke2018, Abbildung 1, S. 272],
+*unklare Datenlage* [@kruschke2018, Abbildung 1, S. 272].
 
 
 
@@ -520,7 +520,7 @@ rope(m_penguins_species)
 
 Die Faktorstufe `Chinstrap` der UV `species` hat 
 doch einen beträchtlichen Teil ihrer Wahrscheinlichkeitsmasse der Posteriori-Verteilung im ROPE. 
-Wir können daher für diese Gruppe  das ROPE *nicht* verwerfen. 
+Wir können daher für diese Gruppe das ROPE *nicht* verwerfen.
 Die Datenlage ist *unklar*. 
 Es ist keine abschließende Entscheidung über die Hypothese möglich.
 
@@ -546,7 +546,7 @@ Das hört sich abstrakt an? Dann lassen Sie uns das lieber visualisieren. 🎨
 
 ### Visualisierung unserer Rope-Werte, m_penguins_species
   
-Ein Großteil der Posteriori-Masse von `m_penguins_species` liegt  *nicht* innerhalb des Rope. 
+Ein Großteil der Posteriori-Masse von `m_penguins_species` liegt *nicht* innerhalb des Rope.
 Aber können wir umgekehrt sagen, dass ein Großteil außerhalb liegt? Das erkennt man optisch ganz gut, s. @fig-rope-penguins.
 
 
@@ -568,12 +568,12 @@ parameters(m_penguins_species) %>%
 ```
 
 
-Das ROPE druchkreuzt die "Berge" der Posteriori-Verteilung für *Chinstrap* deutlich.
+Das ROPE durchkreuzt die "Berge" der Posteriori-Verteilung für *Chinstrap* deutlich.
 Aber: Das 95%-HDI liegt nicht komplett innerhalb des Rope.
 Wir können das Nullhypothese für Chinstrap *nicht verwerfen*, aber auch *nicht bestätigen* --
 eine unklare Datenlage.
 
-*Gentoo* hingegen wird vom vom Rope nicht durchkreuzt, 
+*Gentoo* hingegen wird vom Rope nicht durchkreuzt,
 es ist weit entfernt vom "blauen vertikalen Band" des Rope: 
 Gentoo liegt außerhalb des Rope. 
 Es gibt einen "substanziellen" Unterschied
@@ -608,11 +608,11 @@ plot(rope(m_penguins_species, range = c(-200, 200))) +
 
 
 In der Voreinstellung werden 95%-ETI berichtet, das kann man wie folgt ändern,
-wenn man möchte. Die ROPE-Grenzen sind in @ tbl-rope-species-rope-fine zu sehen.
+wenn man möchte. Die ROPE-Grenzen sind in @tbl-rope-species-rope-fine zu sehen.
   
 ```{r echo=TRUE}
 #| label: tbl-rope-species-rope-fine
-#| tbl-cap: "ROPE-Grenzen für das Modell `m_penguins_specie`s mit ROPE-Grenzen von 500 g."
+#| tbl-cap: "ROPE-Grenzen für das Modell `m_penguins_species` mit ROPE-Grenzen von 500 g."
 rope(m_penguins_species, range = c(-500,500), ci = .89, ci_method = "HDI")
 ```
 
@@ -621,7 +621,7 @@ Jetzt wird berichtet, welcher Teil eines 89%-CI^[89 ist die nächst kleinste Pri
 und 95 wird gemeinhin als Grenzwert für Schätzbereiche verwendet. 
 Damit ist 95 hier eine "magic number", ein Defacto-Standard ohne hinreichende Begründung. 
 Um darauf hinzuweisen, benutzen einige Forscherinnen und Forscher mit
-ähem subtilen Humor lieber die 89 als die 95. 🤷‍♂️ ] sich im Rope befindet.
+-- ähem -- subtilem Humor lieber die 89 als die 95. 🤷‍♂️ ] sich im Rope befindet.
 
 
 
@@ -639,7 +639,7 @@ Welche Aussage dazu ist korrekt?
 
 A) Der Robo-Professor hat einen Einfluss von 10% auf die Lernleistung der Studierenden.
 B) Der Einfluss des Robo-Professors auf die Lernleistung der Studierenden ist substanziell.
-C) Es gib keinen Einfluss des Robo-Professors auf die Lernleistung der Studierenden.
+C) Es gibt keinen Einfluss des Robo-Professors auf die Lernleistung der Studierenden.
 D) Es ist nicht auszuschließen, dass der Robo-Professor keinen substanziellen Einfluss auf die Lernleistung der Studierenden hat.
 E)  Der Einfluss des Robo-Professors auf die Lernleistung der Studierenden ist vernachlässigbar. $\square$
 :::
@@ -684,14 +684,14 @@ aber es ist auch plausibel, dass es keinen praktisch bedeutsamen Unterschied gib
 
 Hat man ein Modell aufgestellt und geprüft und Ergebnisse erhalten, 
 möchte man wissen, wie belastbar diese Ergebnisse sind.
-Eine Abschätzung zur Belastbarkeit des Modellergebnisse liefern Kennwerte der Modellgüte. 
+Eine Abschätzung zur Belastbarkeit der Modellergebnisse liefern Kennwerte der Modellgüte.
 Diese Kennwerte zielen z.B. darauf ab, wie *präzise* die Aussagen des Modells sind. 
 Je präziser die Aussagen eines Modells, desto nützlicher ist es natürlich.
-Bei einer Parameterschätzung erhält man  auch Informationen zur Präzision der Schätzung:
+Bei einer Parameterschätzung erhält man auch Informationen zur Präzision der Schätzung:
 Ist der Schätzbereich schmal, so ist die Schätzung präzise (und vice versa).
-Allerdings könnte ein Modell aus mehreren Parameterschätzungen bestehen, die unterschiedlich präzise sind. 
-Da kann es helfen, eine zusammenfassen Beurteilung zur Präzision, oder allgemeiner zur Güte des Modells, zu erhalten.
-Im Folgenden ist eine Kennzahl von mehreren gebräuchlichen und sinnvollen vorgestellt, $R^2$.
+Allerdings könnte ein Modell aus mehreren Parameterschätzungen bestehen, die unterschiedlich präzise sind.
+Da kann es helfen, eine zusammenfassende Beurteilung zur Präzision, oder allgemeiner zur Güte des Modells, zu erhalten.
+Im Folgenden wird eine von mehreren gebräuchlichen und sinnvollen Kennzahlen vorgestellt, $R^2$.
 
 
 ### Modellgüte mit $R^2$ bestimmen
@@ -699,7 +699,7 @@ Im Folgenden ist eine Kennzahl von mehreren gebräuchlichen und sinnvollen vorge
 
 
 $R^2$ gibt den Anteil der Gesamtvarianz (der AV) an, den das Modell erklärt.
-- Höhere Wert von $R^2$ bedeuten, dass das Modell die Daten besser erklärt.
+- Höhere Werte von $R^2$ bedeuten, dass das Modell die Daten besser erklärt.
 $R^2$ wird normalerweise auf Basis eines Punktschätzers definiert.
 Solch eine Definition lässt aber viel Information - über die Ungewissheit der Schätzung - außen vor.
 Daher ist es wünschenswert, diese Information in $R^2$ einfließen zu lassen: *Bayes-R-Quadrat*.
@@ -723,16 +723,12 @@ hdi(m_penguins_species_r2) %>%  # Intervallgrenzen der Post-Verteilung von R2
   plot()  # visualisieren
 ```
 
-`
-
-
-
-$R^2$ und $\sigma$ sind negativ assoziiert: 
-In einem Datensatz mit mit hohem $R^2$ ist $\sigma$ gering und umgekehrt.
+$R^2$ und $\sigma$ sind negativ assoziiert:
+In einem Datensatz mit hohem $R^2$ ist $\sigma$ gering und umgekehrt.
 Beide Koeffizienten berechnen sich auf Basis von $\sigma$ und haben den gleichen Zweck:
 die Abschätzung der Güte eines Modells.
 Im Unterschied zum Frequentistischen R-Quadrat erhält man in der Bayes-Statistik
-nicht nur einen Punktschätzer für $R^ 2$, sondern wie auch sonst eine Post-Verteilung,
+nicht nur einen Punktschätzer für $R^2$, sondern wie auch sonst eine Post-Verteilung,
 so dass man z.B. einen Schätzbereich angeben kann.
 
 Schneller bekommt man den Punkt- und den Intervallschätzer für $R^2$ mit `r2(m_penguins_species)`.

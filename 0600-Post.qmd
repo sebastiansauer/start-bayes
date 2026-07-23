@@ -86,7 +86,7 @@ library(prada)    # optional, bayesbox automatisiert
 
 ## Zur Erinnerung: Bayesbox in R berechnen
 
-Berechnen wir mit der Bayesbox ("Gittermethode")  die Postverteilung für den Globusversuch.
+Berechnen wir mit der Bayesbox ("Gittermethode") die Postverteilung für den Globusversuch.
 Die Bayesbox ist ein Weg, die Posteriori-Verteilung zu berechnen.
 Die Posteriori-Verteilung birgt viele nützliche Informationen.
 Sie ist das zentrale Ergebnis einer Bayes-Analyse.
@@ -109,7 +109,7 @@ $\square$
 
 ### Lösung
 
-Aufgrund der Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten den Likelihoods. Die höchste Wahrscheinlichkeit (d.h. Likelihood) hat derjenige Parameterwert, zu dem die Daten am besten passen, und das ist 6/9 = 2/3, d. @lst-bayes1.
+Aufgrund der Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten den Likelihoods. Die höchste Wahrscheinlichkeit (d.h. Likelihood) hat derjenige Parameterwert, zu dem die Daten am besten passen, und das ist 6/9 = 2/3, s. @lst-bayes1.
 $\square$
 :::
 ::::
@@ -138,7 +138,7 @@ bayesbox_6w_9v <-                                                    # <3>
 
 :::: {.column width="50%"}
 
-Abb. @fig-post1 zeigt die resultierende Bayesbox; 
+Abb. @fig-post1b zeigt die resultierende Bayesbox;
 vor allem ist die Post-Verteilung wichtig.
 
 ```{r}
@@ -152,12 +152,12 @@ ggline(bayesbox_6w_9v , x = "p_grid", y = "post")
 
 ```{r plot-post-d}
 #| echo: false
-#| label: fig-post1
+#| label: fig-post1b
 #| fig-cap: Die Postverteilung für W=6, N=9; der wahrscheinlichste Parameterwert ist farblich hervorgehoben
 #
 
 p_d <-
-bayesbox_6w_9v  %>% 
+bayesbox_6w_9v  %>%
   ggplot() +
   aes(x = p_grid, y = post) +
   geom_point(alpha = .5, size = 3) +
@@ -228,7 +228,7 @@ bayesbox_6w_9v  %>%
 ### Bayesbox automatisiert
 
 Übrigens kann man die Berechnung der Bayesbox auch automatisieren, s. @tbl-bayes-fun und @lst-bayesfun.
-Entweder importiert ("sourct") man die Funktion `bayesbox` direkt von Github:
+Entweder importiert ("sourced") man die Funktion `bayesbox` direkt von Github:
 
 ```{r}
 #| eval: false
@@ -263,7 +263,7 @@ bayesbox(hyps = p_grid, priors = 1, liks = L)  # <2>
 
 
 1. Das Paket `prada` steht nicht im Standard-R-App-Store ("CRAN"), sondern auf Github.
-Sie könnnen es so installieren:
+Sie können es so installieren:
 `pak::pak("sebastiansauer/prada")`.
 2. Die Funktion verhält sich wie eine gewöhnliche Bayesbox:
 Bei `hyps` schreibt man die Hypothesen (bzw. Parameterwerte) auf.
@@ -314,7 +314,7 @@ Bei einer multiplen Regression mit sagen wir 10 Parametern mit jeweils 100 Auspr
 Kurz gesagt:
 Komplexere Bayes-Modelle können nicht mehr "einfach mal eben" ausgerechnet werden;
 die Mathematik wird zu rechenintensiv.
-Glücklicherweiße gibt es einen Trick, der die Sache nicht nur rechnerisch, sondern auch konzeptionell viel einfacher macht.
+Glücklicherweise gibt es einen Trick, der die Sache nicht nur rechnerisch, sondern auch konzeptionell viel einfacher macht.
 Dieser Trick lautet:
 Wir arbeiten nicht mehr mit Wahrscheinlichkeiten, sondern mit *Häufigkeiten.*
 Praktischerweise werden wir in Kürze einen R-Golem kennenlernen,
@@ -338,7 +338,7 @@ Wir wenden Sie einfach an, freuen uns und lassen es damit gut sein.^[Eine gute E
 Wie gesagt, typische R-Werkzeuge ("R-Golems", wie Stan) liefern uns die Post-Verteilung in Stichprobenform zurück.
 Bevor wir uns aber mit diesen R-Werkzeugen beschäftigen,
 sollten wir uns vertraut machen mit einer Post-Verteilung in Stichprobenform.
-Erstellen wir uns also einen Tabelle mit Stichprobendaten aus der Posteriori-Verteilung (s. Dataframe `bayesbox_6w_9v `), s. @lst-post-sample.
+Erstellen wir uns also eine Tabelle mit Stichprobendaten aus der Posteriori-Verteilung (s. Dataframe `bayesbox_6w_9v`), s. @lst-post-sample.
 
 
 
@@ -371,7 +371,7 @@ samples_6w_9v <-
 
 
 
-Die Wahrscheinlichkeit, einen bestimmten Parameterwert (d.h. aus der Spalte `p_grid`) aus Tabelle `bayesbox_6w_9v ` zu ziehen, 
+Die Wahrscheinlichkeit, einen bestimmten Parameterwert (d.h. aus der Spalte `p_grid`) aus Tabelle `bayesbox_6w_9v` zu ziehen,
 ist proportional zur Posteriori-Wahrscheinlichkeit (`post`) dieses Werts. 
 Ziehen mit Zurücklegen hält die Wahrscheinlichkeiten während des Ziehens konstant.
 Das Argument `weight_by` legt die Wahrscheinlichkeit fest, mit der eine Zeile gezogen wird.
@@ -435,7 +435,7 @@ samples_6w_9v |>
 
 
 Aus @fig-samples1 können wir einfach auslesen, wie wahrscheinlich gewisse Parameterwerte sind.
-So sehen wir, dass das Modell Parameterwerte (Wasseranteil, $\pi$) zwischen ca. 50% und 70% für am wahrscheinlichsten hält.
+So sehen wir, dass das Modell Parameterwerte (Wasseranteil, $\pi$) zwischen ca. 50% und 70% am wahrscheinlichsten hält.
 Aber auch kleine Anteile wie 25% sind nicht auszuschließen (auf Basis der Daten und der Modellannahmen).
 
 Vergleichen Sie  @fig-samples1 mit @fig-gitter:
@@ -645,10 +645,10 @@ p_100_samples
 
 :::{#exr-samples-diy}
 ### Erstellen Sie Ihre eigene Stichproben-Post-Verteilung
-Erstellen Sie eine Stichproben-Post-Verteilung auf Basis der Bayesbox `bayesbox_6w_9v `.
+Erstellen Sie eine Stichproben-Post-Verteilung auf Basis der Bayesbox `bayesbox_6w_9v`.
 Ziehen Sie $n=100$ Stichproben.
 Tun Sie das *per Hand*:
-Übertragen Sie die Werte Der Spalte `p_grid` auf kleine Zettel.
+Übertragen Sie die Werte der Spalte `p_grid` auf kleine Zettel.
 Dabei soll der Anteil der Zettel pro Wert von `p_grid` der Posteriori-Wahrscheinlichkeit (`post`) entsprechen (gerundet auf zwei Dezimalstellen). 
 Beispiel:
 Wenn der Parameterwert 0.6 eine Posteriori-Wahrscheinlichkeit von 0.27 hat, dann schreiben Sie 27 Zettel (von 100) mit dem Wert 0.6.
@@ -755,20 +755,20 @@ samples_6w_9v %>%
 
 Wenn wir insgesamt 10000 (1e4) Stichproben gezogen haben, 
 können wir noch durch diese Zahl teilen, um einen Anteil zu bekommen.
-Dieser Anteil ist die Antwort auf die Forschungsfrage: 
-Wie Wahrscheinlichkeit (laut Modell) für einen Wasseranteil kleiner als 50%?
+Dieser Anteil ist die Antwort auf die Forschungsfrage:
+Wie wahrscheinlich ist (laut Modell) ein Wasseranteil kleiner als 50%?
 In unseren Daten ist die Wahrscheinlichkeit ca. 10%.
 
 
 :::{#exr-count}
-### Was macht die Funktion `count `? 
+### Was macht die Funktion `count`?
 
 Zur Erinnerung:
 Der Befehl `count` macht Folgendes:
 Er gruppiert die Stichprobe nach dem Prüfkriterium (hier:
 `p_grid < .5`, d.h.
-Wasseranteil höchstens 50%). 
-Dann zählt er in jeder der beiden Teiltabelle 
+Wasseranteil höchstens 50%).
+Dann zählt er in jeder der beiden Teiltabellen
 die Zeilen und liefert diese zwei Zahlen dann zurück.
 $\square$
 :::
@@ -847,7 +847,7 @@ Fertig 😄  $\square$
 
 :::{#exm-param3}
 
-### Wasseranteil zwischen 90& und 100%?
+### Wasseranteil zwischen 90% und 100%?
 
 Noch ein Beispiel für eine Forschungsfrage:
 *Mit welcher Wahrscheinlichkeit liegt der Parameter zwischen 0.9 und 1*?
@@ -942,7 +942,7 @@ Schätzbereiche von Parameterwerten nennt man auch *Konfidenz- oder Vertrauensin
 
 Welcher Parameterwert wird mit 90% Wahrscheinlichkeit nicht überschritten, laut unserem Modell?
 (Gesucht sind also die unteren 90% der Posteriori-Wahrscheinlichkeit.)
-Wir möchten also ziemlich sicher, was die Obergrenze an Wasser auf diesem Planeten ist.
+Wir möchten also ziemlich sicher sein, was die Obergrenze an Wasser auf diesem Planeten ist.
 Diese Frage können wir mit dem Befehl `quantile` beantworten.
 
 
@@ -1067,7 +1067,7 @@ Intervalle (Bereiche), die die "abzuschneidende" Wahrscheinlichkeitsmasse hälft
 
 ```{r piplot}
 #| echo: false
-#| fig-cap: "Perzintilintervalle: Das Intervall umfasst die mittleren 80% der Wahrscheinlichkeit"
+#| fig-cap: "Perzentilintervalle: Das Intervall umfasst die mittleren 80% der Wahrscheinlichkeit"
 #| label: fig-eti-hdi
 
 eti_80 <- eti(bayesbox_g100_samples$p_grid, ci = .8)
@@ -1133,8 +1133,8 @@ anim_save("img/p_quantiles_anim.gif", p_quantiles_anim, renderer = gifski_render
 
 ::: {.content-visible when-format="html"}
 
-Das 10%, 20%, ...
-100%-Quantil^[d.h. die *Dezile*] (auf Basis von `bayesbox_g100_samples`) sind in @fig-quantiles-anim illustriert.
+Die 10%-, 20%-, ...,
+100%-Quantile^[d.h. die *Dezile*] (auf Basis von `bayesbox_g100_samples`) sind in @fig-quantiles-anim illustriert.
 
 
 ![Quantile in 10%-Schriten durch die Verteilung von `bayesbox_g100_samples`](img/p_deciles.gif){#fig-quantiles-anim width=50%}
@@ -1251,7 +1251,7 @@ Ein *Perzentilintervall* kann bei schiefen Verteilungen den wahrscheinlichsten P
 Das macht keinen Sinn.
 
 
-Ein *Highest-Density-Intervall* (HDI^[Auch als *Highest Hensity Posterior Interval* (HDPI) bezeichnet.]) ist schmäler als der Perzintilintervall und enthält immer den wahrscheinlichsten Parameterwert.
+Ein *Highest-Density-Intervall* (HDI^[Auch als *Highest Density Posterior Interval* (HDPI) bezeichnet.]) ist schmäler als das Perzentilintervall und enthält immer den wahrscheinlichsten Parameterwert.
 
 :::: {.columns}
 
@@ -1295,7 +1295,7 @@ Das ist ein Nachteil der ETI.
 
 ### Intervalle höchster Dichte (Highest Density Intervals)
 
-Intervalle höchster Dichte (Highest density Intervals, HDI oder HDPI) sind definiert als das *schmälste* Intervall, das den gesuchten Parameter enthält (in Bezug auf ein gegebenes Modell).
+Intervalle höchster Dichte (Highest Density Intervals, HDI oder HDPI) sind definiert als das *schmälste* Intervall, das den gesuchten Parameter enthält (in Bezug auf ein gegebenes Modell).
 $\square$
 
 :::
@@ -1307,8 +1307,8 @@ $\square$
 
 
 Der wahrscheinlichste Parameterwert ($1$) *ist* im Intervall enthalten, was Sinn macht, s. @fig-schief.
-Bei einem HDI sind die abgeschnitten Ränder nicht mehr gleich groß,
-im Sinne von enthalten nicht (zwangsläufig) die gleiche Wahrscheinlichkeitsmasse. 
+Bei einem HDI sind die abgeschnittenen Ränder nicht mehr gleich groß,
+im Sinne davon, dass sie nicht (zwangsläufig) die gleiche Wahrscheinlichkeitsmasse enthalten.
 Beim PI ist die Wahrscheinlichkeitsmasse in diesen Rändern hingegen gleich groß.
 
 
@@ -1374,9 +1374,9 @@ samples_6w_9v %>%
 
 
 
-Das Modell ist sich also zu 50% sicher, 
-dass der gesuchte Parameter (der Wasseranteil der Erdoberfläche) 
-sich im  von ca. .67 bis .78 befindet (auf Basis eines HDI).
+Das Modell ist sich also zu 50% sicher,
+dass der gesuchte Parameter (der Wasseranteil der Erdoberfläche)
+sich im Bereich von ca. .67 bis .78 befindet (auf Basis eines HDI).
 
 
 ## Fazit
@@ -1394,7 +1394,7 @@ sich im  von ca. .67 bis .78 befindet (auf Basis eines HDI).
 
 Fassen wir zentrale Punkte an einem Beispiel zusammen.
 
-Im Globusversuch, Datensatz `samples_6w_9v`, s. @lst-post-sample.
+Wir greifen dazu wieder auf den Globusversuch zurück, Datensatz `samples_6w_9v`, s. @lst-post-sample.
 Sagen wir, wir haben 6 Treffer bei 9 Würfen erzielt.
 
 
@@ -1421,13 +1421,13 @@ samples_6w_9v %>%
     p_mad = mad(p_grid))  # Mean Absolute Deviation, Mittlerer Absolutfehler
 ```
 
-Anstelle der Streuungsparameter für den gesuchten Parameter ist es aber üblicher, ein HDI oder PI für den gesuchten Paramenter anzugeben.
+Anstelle von Streuungsparametern ist es aber üblicher, ein HDI oder PI für den gesuchten Parameter anzugeben.
 
 
 
 :::callout-important
 Alles Wasser oder was?
-Im Beispiel dieses Kapitels haben wir unser gefragt, was wohl der Wasseranteil auf dem Planeten Erde ist. 
+Im Beispiel dieses Kapitels haben wir uns gefragt, was wohl der Wasseranteil auf dem Planeten Erde ist.
 Halten Sie sich klar vor Augen:
 Der Wasseranteil ist ein Beispiel für einen *Parameter*, einer unbekannten Größes eines Modells.
 :::

@@ -74,7 +74,7 @@ Lesen Sie dazu folgende Themen:
 Diese Begleitvideos helfen Ihnen bei der Vor- und Nachbereitung dieses Kapitels:
 
 - [Video zur Inferenz, Teil 1](https://youtu.be/gcwWwBy0kPI)
-- [Video zur Inferenz, Teil 2](https://https://youtu.be/QNMVi6IqQ90)
+- [Video zur Inferenz, Teil 2](https://youtu.be/QNMVi6IqQ90)
 
 
 📺 [Wozu ist Statistik eigentlich da?](https://www.youtube.com/watch?v=gcwWwBy0kPI&list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN&index=2)
@@ -95,7 +95,7 @@ Beschreiben, Vorhersagen, Erklären.
 :::{#exm-ziele-stat}
 ### Beispiele für die Zielarten statistischer Analysen
 - Beschreiben: “Wie groß ist der Gender-Paygap in der Branche X im Zeitraum Y?”
-- Vorhersagen: Wenn eine Person, Mr. X, 100 Stunden auf die Statistikklausur lernen, welche Note kann diese Person dann erwarten?
+- Vorhersagen: Wenn eine Person, Mr. X, 100 Stunden auf die Statistikklausur lernt, welche Note kann diese Person dann erwarten?
 - Erklären: Wie viel bringt (mir) das Lernen auf die Statistikklausur?$\square$
 :::
 
@@ -126,15 +126,19 @@ flowchart TD
 
 
 
-## Zielart *Beschreiben* (deskriptiv)
+## Zielart *Beschreiben*
+
+
+Wenn das Ziel die Beschreibung eines Datensatzes ist,
+so spricht man von *deskriptiver* Statistik.
 
 
 
-Statistische Analysen mit dem Ziel zu beschreiben fassen die Daten zusammen (zu möglichst aussagekräftigen Kennzahlen).
+Statistische Analysen mit dem Ziel zu beschreiben, fassen die Daten zusammen (zu möglichst aussagekräftigen Kennzahlen).
 Beschreibende Statistik nennt man auch *deskriptive Statistik*; Mittelwert, Korrelation und Regressionskoeffizienten sind typische Kennzahlen ("Statistiken");  s. @fig-beschreiben.
 
 
-::: {exm-ziel-beschreiben}
+::: {#exm-ziel-beschreiben}
 - Wie stark ist der (lineare) Zusammenhang $r$ von Größe und Gewicht (bei Erwachsenen) in meiner Stichprobe?
 - Wie stark ist der (lineare) Zusammenhang $b$ von Lernzeit und Note (im Fach Statistik) in meinem Datensatz?
 - Haben unsere Kunden bisher Webshop A oder B bevorzugt, laut unseren Daten? $\square$
@@ -174,20 +178,24 @@ In einem Hörsaal sitzen 100 Studis. Alle schreiben Ihre Körpergröße auf eine
 
 
 
-## Zielart *Vorhersagen* (prädiktiv, prognostisch)
+## Zielart *Vorhersagen*
+
+Wenn das Ziel die Vorhersage bestimmter Ergebnisse ist,
+spricht man von *prädiktiven* bzw. *prognostischen* Analysen.
+
 
 Beim Vorhersagen versucht man, auf Basis von Daten, 
 gegeben bestimmter Werte der UV den Wert einer AV vorherzusagen, s. @fig-vorhersagen.
 
 
-:::{exm-ziel-vorhersagen}
+:::{#exm-ziel-vorhersagen}
 - Wie schwer ist wohl Herr X? Er ist ein deutscher erwachsener Mann der Größe 1,80m; mehr wissen wir nicht.
 - Welche Note kann man erwarten, wenn man nichts für die Klausur lernt?
 - Wie viel wird ein Kunde ausgeben, wenn er sich in der Variante *A* des Webshops aufhält? $\square$
 ::::
 
 
-:::{#exm-toni-lernt}
+:::{#exm-ali-lernt}
 ### Ali lernt für die Klausur
 Oh nein, die Klausur im Fach Statistik steht an. 
 Ali lernt ziemlich viel. 
@@ -197,24 +205,24 @@ um eine Vorhersage für den "Klausurerfolg" von Ali zu erhalten.
 Wir können vom Modell eine einzelne Zahl (83) als Punkt-Schätzwert bzw. Vorhersagewert erhalten oder einen Schätzbereich (80-86 Punkte). $\square$
 :::
 
-Hier ist das Regressionsmodell für Ali (`lm_toni`), s. @lst-toni.
+Hier ist das Regressionsmodell für Ali (`lm_ali`), s. @lst-ali.
 
 ```{r}
-#| lst-label: lst-toni
-#| lst-cap: Regressionsmodell für Klausurerfolg als Funktion der Lernzeit (`lm_toni`)
+#| lst-label: lst-ali
+#| lst-cap: Regressionsmodell für Klausurerfolg als Funktion der Lernzeit (`lm_ali`)
 noten2 <- read.csv("data/noten2.csv")
-lm_toni <- lm(y ~ x, data = noten2)
+lm_ali <- lm(y ~ x, data = noten2)
 ```
 
 
 ```{r lm1-b0-b1}
 #| echo: false
 
-lm1_b0 <- coef(lm_toni)[1]
-lm1_b2 <- coef(lm_toni)[2]
+lm1_b0 <- coef(lm_ali)[1]
+lm1_b2 <- coef(lm_ali)[2]
 
-toni_punkte <- predict(lm_toni, newdata = data.frame(x=42))
-toni_vorhersageintervall <- predict(lm_toni, newdata =  data.frame(x=42), 
+ali_punkte <- predict(lm_ali, newdata = data.frame(x=42))
+ali_vorhersageintervall <- predict(lm_ali, newdata =  data.frame(x=42), 
                                     interval = "confidence", level = 0.95)
 ```
 
@@ -232,7 +240,7 @@ toni_vorhersageintervall <- predict(lm_toni, newdata =  data.frame(x=42),
 #noten2 <- read.csv(noten2, "data/noten2.csv")
 
 
-p_toni_streudiagramm <-
+p_ali_streudiagramm <-
 ggplot(noten2) +
   aes(x, y) +
   geom_point() +
@@ -241,25 +249,25 @@ ggplot(noten2) +
   theme_minimal() +
   theme_large_text()
 
-p_toni_punktschaetzung <- 
+p_ali_punktschaetzung <- 
   noten2 %>% 
   ggplot(aes(x, y)) +
   geom_point() +
   geom_vline(xintercept = mean(noten2$x), linetype = "dashed", color = "grey") +  
   geom_hline(yintercept = mean(noten2$y), linetype = "dashed", color = "grey") +   
-  geom_abline(slope = coef(lm_toni)[2], intercept = coef(lm_toni)[1], color = modelcol, size = 1.5) +
+  geom_abline(slope = coef(lm_ali)[2], intercept = coef(lm_ali)[1], color = modelcol, size = 1.5) +
   theme_minimal() +
   annotate("label", x = mean(noten2$x), y = -Inf, 
            label = paste0("MW: ", round(mean(noten2$x))), vjust = "bottom") +
   annotate("label", y = mean(noten2$y), x = -Inf, 
            label = paste0("MW: ", round(mean(noten2$y))), hjust = "left")   +
-  annotate("point", x = 42, y = toni_punkte, color = ycol,
+  annotate("point", x = 42, y = ali_punkte, color = ycol,
            alpha = .7, size = 3) +
   scale_x_continuous(breaks = c(20, 40, 60, 80, 100)) +
   labs(x = "Lernzeit",
        y = "Klausurpunkte") +
   theme_large_text() +
-  geom_label_repel(data = data.frame(x = 42, y = toni_punkte), label = "Ali",
+  geom_label_repel(data = data.frame(x = 42, y = ali_punkte), label = "Ali",
        force = 20,
                       box.padding = unit(1, "lines"),
                       point.padding = unit(1, "lines"),
@@ -276,14 +284,14 @@ p_toni_punktschaetzung <-
                       size = 6)  +               # Adjust text size
  theme(plot.margin = margin(1, 1, 1, 1, "cm"))
 
-p_toni_punktschaetzung
+p_ali_punktschaetzung
 
-p_toni_punktschaetzung +
+p_ali_punktschaetzung +
   annotate("errorbar",
-           x = 42, y = toni_punkte,
+           x = 42, y = ali_punkte,
            xmin = 42, xmax = 42,
-           ymin = toni_vorhersageintervall[1, "lwr"],
-           ymax = toni_vorhersageintervall[1, "upr"],
+           ymin = ali_vorhersageintervall[1, "lwr"],
+           ymax = ali_vorhersageintervall[1, "upr"],
            color = ycol) +
   coord_cartesian(xlim = c(32, 52), 
                   ylim = c(75, 87))
@@ -292,7 +300,10 @@ p_toni_punktschaetzung +
 
 
 
-## Zielart Erklären (Schließen, Inferieren)
+## Zielart *Erklären*
+
+
+Man spricht synonym von *schließender Statistik* oder *Inferenzstatistik*.
 
 
 ### Die zwei Arten von erklärenden Studien
@@ -303,14 +314,14 @@ p_toni_punktschaetzung +
 2. Kausalinferenz 
 
 
-:::{exm-popinferenz}
+:::{#exm-popinferenz}
 - Wie stark ist der (lineare) Zusammenhang $b$ von Lernzeit und Note (im Fach Statistik) in der Grundgesamtheit (nicht in der Stichprobe)?
 - Bevorzugen unsere Kunden allgemein Webshop A oder B laut unseren Daten? $\square$
 :::
 
 
 
-:::{exm-kausal}
+:::{#exm-kausal}
 - Ist Größe eine Ursache von Gewicht (bei deutschen Männern)?
 - Wenn ich 100 Stunden lerne, welche Note schreibe ich dann? $\square$
 :::
@@ -383,7 +394,7 @@ Vielleicht nur dann, wenn er das Geschlecht kennt [@pearl2016]?!
 
 
 
-In Wahrheit sehe die kausale Struktur so aus:
+In Wahrheit sieht die kausale Struktur so aus:
 Das Geschlecht (Östrogen) hat einen positiven (+) Einfluss auf Einnahme des Medikaments und negativen Einfluss (-) auf Heilung.
 Das Medikament hat einen positiven (+) Einfluss auf Heilung.
 Betrachtet man die Gesamt-Daten zur Heilung, so ist der Effekt von Geschlecht (Östrogen) und Medikament *vermengt* (konfundiert, confounded).
@@ -424,7 +435,7 @@ Betrachtung der Gesamtdaten zeigt in diesem Fall einen *konfundierten* Effekt: G
 Aufteilen in Teilgruppen (Männer bzw. Frauen) ist also in diesem Fall der korrekte, richtige Weg.
 Achtung: Das Stratifizieren ist nicht immer und nicht automatisch die richtige Lösung.
 Stratifizieren bedeutet,
-den Gesamtdatensatz in Gruppen oder "Schichten" ("Strata").
+den Gesamtdatensatz in Gruppen oder "Schichten" ("Strata") aufzuteilen.
 Würde man die Gesamtzahl an Patienten mit vs. ohne Medikament vergleichen, käme man zu einem falschen Schluss.
 :::
 
@@ -465,13 +476,12 @@ studie_b %>%
 Die Daten stammen aus einer (fiktiven) klinischen Studie, $n=700$, hoher Qualität (Beobachtungsstudie).
 Bei geringem Blutdruck scheint das Medikament zu schaden.
 Bei hohem Blutdruck scheint das Medikament auch zu schaden.
-Aber *insgesamt* (Summe über beide Gruppe) *nicht*, da scheint es zu nutzen?!
+Aber *insgesamt* (Summe über beide Gruppen) *nicht*, da scheint es zu nutzen?!
 Was sollen wir den Arzt raten? Soll er das Medikament verschreiben? Vielleicht nur dann, 
 wenn er den Blutdruck nicht kennt [@pearl2016]?
 
 
- Kausalmodell zur Studie B
-
+#### Kausalmodell zur Studie B
 
 
 
@@ -533,8 +543,8 @@ Aber: Die *Daten* sind *identisch*.
 
 
 
-Kausale Interpretation - und damit Entscheidungen für Handlungen - 
-war nur möglich, da das Kausalmodell bekannt ist. 
+Kausale Interpretation - und damit Entscheidungen für Handlungen -
+ist nur möglich, da das Kausalmodell bekannt ist.
 Die Daten alleine reichen nicht (bei Beobachtungsstudien).
 
 
@@ -602,7 +612,7 @@ Was ist das "Wesentliche"?
 Oft interessiert man sich für die Ursachen eines Phänomens. 
 Etwa: "Wie kommt es bloß, dass ich ohne zu lernen die Klausur so gut bestanden habe?"^[Das ist natürlich nur ein fiktives, 
 komplett unrealistisches Beispiel, das auch unklaren Ursachen den Weg auf diese Seite gefunden hat.]
-Noch allgemeiner ist man dabei häufig am Zusammenhang von `X ` und `Y` interessiert, 
+Noch allgemeiner ist man dabei häufig am Zusammenhang von `X` und `Y` interessiert,
 s. @fig-xy, die ein Sinnbild von statistischen Modellen wiedergibt.
 
 
@@ -661,9 +671,9 @@ Wenn man den Anteil der R-Fans in einer Gruppe Studierender ausrechnet,
 macht man sich ein Modell:
 man vereinfacht diesen Ausschnitt der Wirklichkeit anhand einer statistischen Kennzahl,
 die das forschungsleitende Interesse zusammenfasst.
-Die Statistik kann man verstehen als ein Verfahren, dass wissenschaftliche Modelle in statistische übersetzt 
+Die Statistik kann man verstehen als ein Verfahren, das wissenschaftliche Modelle in statistische übersetzt
 und letztere dann einer empirischen Analyse unterzieht.
-Alle statistischen Ergebnisse beruhen auf Modelle und sind nur insoweit gültig, wie das zugrundeliegende Modell gültig ist.
+Alle statistischen Ergebnisse beruhen auf Modellen und sind nur insoweit gültig, wie das zugrundeliegende Modell gültig ist.
 
 
 
@@ -672,8 +682,8 @@ Alle statistischen Ergebnisse beruhen auf Modelle und sind nur insoweit gültig,
 
 In allen drei Zielarten der Statistik wird modelliert.
 
-- Beschreibende Studien nutzen Kennzahlen wie den Mittelwert um "sich ein Bild zu machen" von einer Verteilung.
-- Vorhersagestudien nutzen Modelle als Werkzeug, um genaue Vorhersagen zu machen, ohne Anspruch, die Wirklichkeit zu erklären
+- Beschreibende Studien nutzen Kennzahlen wie den Mittelwert, um "sich ein Bild zu machen" von einer Verteilung.
+- Vorhersagestudien nutzen Modelle als Werkzeug, um genaue Vorhersagen zu machen, ohne Anspruch, die Wirklichkeit zu erklären.
 - Erklärende Studien nutzen Modelle, um die Wirklichkeit möglichst korrekt darzustellen.
 
 
@@ -708,13 +718,13 @@ Sie können Punkte per Klick/Touch hinzufügen.
 
 :::
 
-Interaktives Beispiel für eines lineares Modell. Fügen Sie Punkte per Klick/Touch hinzu.
+Interaktives Beispiel für ein lineares Modell. Fügen Sie Punkte per Klick/Touch hinzu.
 
 ::::
 :::::
 
 
-Alternativ können Sie [diese App](https://gallery.shinyapps.io/simple_regression/) nutzen,
+Alternativ können Sie [diese App](https://gallery.shinyapps.io/simple_regression/) nutzen, um
 Regressionskoeffizienten, Steigung (slope) und Achsenabschnitt (Intercept), zu optimieren.
 Dabei meint "optimieren", die Abweichungen (Residuen, Residualfehler; die roten Balken in der App) zu minimieren.^[<https://gallery.shinyapps.io/simple_regression/>]
 
@@ -766,7 +776,7 @@ Es ist meist einfacher und nützlicher, die Regression zu verwenden, anstelle de
 
 ![Wald von anderen Verfahren](img/choose-test.png){#fig-choose-test}
 
-Wähle die Regression. Oder den Wahl der Verfahren. Spoiler: Nimm lieber die Regression.
+Wähle die Regression. Oder die Wahl der Verfahren. Spoiler: Nimm lieber die Regression.
 :::
 
 
@@ -897,15 +907,15 @@ library(exams2forms)
 
 quiz_inferenz_files <- list(
   "exr/zielarten-stat-schoice/zielarten-stat-schoice.Rmd",
-  "exr/regr-spezialfaelle-schoice/regr-spezialfaelle-schoice.Rmd",
+  "exr/zielart-beschreiben-definition-schoice/zielart-beschreiben-definition-schoice.Rmd",
+  "exr/zielart-vorhersagen-punkt-bereich-schoice/zielart-vorhersagen-punkt-bereich-schoice.Rmd",
+  "exr/erklaeren-population-vs-kausal-schoice/erklaeren-population-vs-kausal-schoice.Rmd",
   "exr/simpson-paradox-schoice/simpson-paradox-schoice.Rmd",
   "exr/mediator-vs-confounder-schoice/mediator-vs-confounder-schoice.Rmd",
-  "exr/methode-bestimmt-nicht-zielart-schoice/methode-bestimmt-nicht-zielart-schoice.Rmd",
   "exr/modell-definition-schoice/modell-definition-schoice.Rmd",
   "exr/effekt-definition-nicht-kausal-schoice/effekt-definition-nicht-kausal-schoice.Rmd",
-  "exr/erklaeren-population-vs-kausal-schoice/erklaeren-population-vs-kausal-schoice.Rmd",
-  "exr/regressionsgleichung-berechnen-schoice/regressionsgleichung-berechnen-schoice.Rmd",
-  "exr/regr-koeff-welche-zielart-schoice/regr-koeff-welche-zielart-schoice.Rmd"
+  "exr/regr-spezialfaelle-schoice/regr-spezialfaelle-schoice.Rmd",
+  "exr/regressionsgleichung-berechnen-schoice/regressionsgleichung-berechnen-schoice.Rmd"
 )
 ```
 
