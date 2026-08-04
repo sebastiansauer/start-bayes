@@ -1,0 +1,2661 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+<meta charset="UTF-8">
+<meta name="generator" content="quarto-1.9.37">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>3&nbsp; Populationsinferenz – Start:Bayes!</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./0300-Wskt.html" rel="next">
+<link href="./0200-zielarten.html" rel="prev">
+<link href="./img/Golem_hex.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-a4c491303f69927a1321bd3546903061.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-2dc673c3628f6ea71864dee0e7890cee.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-a4c491303f69927a1321bd3546903061.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Keine Treffer",
+    "search-matching-documents-text": "Treffer",
+    "search-copy-link-title": "Link in die Suche kopieren",
+    "search-hide-matches-text": "Zusätzliche Treffer verbergen",
+    "search-more-match-text": "weitere Treffer in diesem Dokument",
+    "search-more-matches-text": "weitere Treffer in diesem Dokument",
+    "search-clear-button-title": "Zurücksetzen",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Abbrechen",
+    "search-submit-button-title": "Abschicken",
+    "search-label": "Suchen"
+  }
+}</script><meta name="mermaid-theme" content="neutral">
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script><script src="site_libs/quarto-diagram/mermaid-init.js"></script><link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="specifics/styles.css">
+<link rel="stylesheet" href="specifics/webex.css">
+</head>
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./0200-zielarten.html">Grundlagen</a></li><li class="breadcrumb-item"><a href="./0250-inferenz.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Populationsinferenz</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Suchen" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Start:Bayes!</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/sebastiansauer/start-bayes" title="Quellcode" class="quarto-navigation-tool px-1" aria-label="Quellcode"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Dunkelmodus umschalten"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Lesemodus umschalten">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Suchen"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Organisatorisches</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Einführung</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Grundlagen</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0200-zielarten.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Die drei Zielarten der Statistik</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0250-inferenz.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Populationsinferenz</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0300-Wskt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Hallo, Wahrscheinlichkeit</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0350-wskt2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Rechnen mit Wahrscheinlichkeit</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0400-Verteilungen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Verteilungen</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bayes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0500-Globusversuch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Der Globus-Versuch</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0600-Post.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Die Post befragen</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lineare Modelle</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0800-gauss.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Gauss-Modelle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0900-lineare-modelle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Einfache lineare Modelle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1050-Schaetzen-Testen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Schätzen vs.&nbsp;Testen</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1000-metrische-AV.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Fallbeispiele</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Kausalität</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1150-konfundierung.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Konfundierung</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1180-kausalatome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Die Atome der Kausalität</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Literaturverzeichnis</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Anhang</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1200-abschluss.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Abschluss</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./definitions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Definitionen</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./theorems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Theoreme</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./imprint.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Impressum</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-privacy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Datenschutzhinweise</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99"><h2 id="toc-title">Inhaltsverzeichnis</h2>
+   
+  <ul>
+<li>
+<a href="#lernsteuerung" id="toc-lernsteuerung" class="nav-link active" data-scroll-target="#lernsteuerung"><span class="header-section-number">3.1</span> Lernsteuerung</a>
+  <ul class="collapse">
+<li><a href="#position-im-modulverlauf" id="toc-position-im-modulverlauf" class="nav-link" data-scroll-target="#position-im-modulverlauf"><span class="header-section-number">3.1.1</span> Position im Modulverlauf</a></li>
+  <li><a href="#lernziele" id="toc-lernziele" class="nav-link" data-scroll-target="#lernziele"><span class="header-section-number">3.1.2</span> Lernziele</a></li>
+  <li><a href="#begleitliteratur" id="toc-begleitliteratur" class="nav-link" data-scroll-target="#begleitliteratur"><span class="header-section-number">3.1.3</span> Begleitliteratur</a></li>
+  <li><a href="#vorbereitung-im-eigenstudium" id="toc-vorbereitung-im-eigenstudium" class="nav-link" data-scroll-target="#vorbereitung-im-eigenstudium"><span class="header-section-number">3.1.4</span> Vorbereitung im Eigenstudium</a></li>
+  </ul>
+</li>
+  <li><a href="#schlie%C3%9Fen-von-der-stichprobe-auf-die-grundgesamtheit" id="toc-schließen-von-der-stichprobe-auf-die-grundgesamtheit" class="nav-link" data-scroll-target="#schlie%C3%9Fen-von-der-stichprobe-auf-die-grundgesamtheit"><span class="header-section-number">3.2</span> Schließen von der Stichprobe auf die Grundgesamtheit</a></li>
+  <li>
+<a href="#was-ist-populationsinferenz" id="toc-was-ist-populationsinferenz" class="nav-link" data-scroll-target="#was-ist-populationsinferenz"><span class="header-section-number">3.3</span> Was ist Populationsinferenz?</a>
+  <ul class="collapse">
+<li><a href="#inferenz-beinhaltet-ungewissheit" id="toc-inferenz-beinhaltet-ungewissheit" class="nav-link" data-scroll-target="#inferenz-beinhaltet-ungewissheit"><span class="header-section-number">3.3.1</span> Inferenz beinhaltet Ungewissheit</a></li>
+  <li><a href="#zwei-arten-von-ungewissheit" id="toc-zwei-arten-von-ungewissheit" class="nav-link" data-scroll-target="#zwei-arten-von-ungewissheit"><span class="header-section-number">3.3.2</span> Zwei Arten von Ungewissheit</a></li>
+  <li><a href="#ich-wei%C3%9F-was-ich-nicht-wei%C3%9F-ungewissheit-angeben" id="toc-ich-weiß-was-ich-nicht-weiß-ungewissheit-angeben" class="nav-link" data-scroll-target="#ich-wei%C3%9F-was-ich-nicht-wei%C3%9F-ungewissheit-angeben"><span class="header-section-number">3.3.3</span> Ich weiß, was ich nicht weiß: Ungewissheit angeben</a></li>
+  <li><a href="#konfidenzintervall" id="toc-konfidenzintervall" class="nav-link" data-scroll-target="#konfidenzintervall"><span class="header-section-number">3.3.4</span> Konfidenzintervall</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#frequentistische-inferenz-vs.-bayes-inferenz" id="toc-frequentistische-inferenz-vs.-bayes-inferenz" class="nav-link" data-scroll-target="#frequentistische-inferenz-vs.-bayes-inferenz"><span class="header-section-number">3.4</span> Frequentistische Inferenz vs.&nbsp;Bayes-Inferenz</a>
+  <ul class="collapse">
+<li><a href="#frequentistische-inferenz-und-der-p-wert" id="toc-frequentistische-inferenz-und-der-p-wert" class="nav-link" data-scroll-target="#frequentistische-inferenz-und-der-p-wert"><span class="header-section-number">3.4.1</span> Frequentistische Inferenz und der p-Wert</a></li>
+  <li><a href="#bayes-inferenz" id="toc-bayes-inferenz" class="nav-link" data-scroll-target="#bayes-inferenz"><span class="header-section-number">3.4.2</span> Bayes-Inferenz</a></li>
+  <li><a href="#statistische-signifikanz" id="toc-statistische-signifikanz" class="nav-link" data-scroll-target="#statistische-signifikanz"><span class="header-section-number">3.4.3</span> Statistische Signifikanz</a></li>
+  <li><a href="#frequentist-und-bayesianer" id="toc-frequentist-und-bayesianer" class="nav-link" data-scroll-target="#frequentist-und-bayesianer"><span class="header-section-number">3.4.4</span> Frequentist und Bayesianer</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#aufgaben" id="toc-aufgaben" class="nav-link" data-scroll-target="#aufgaben"><span class="header-section-number">3.5</span> Aufgaben</a>
+  <ul class="collapse">
+<li><a href="#paper-pencil-aufgaben" id="toc-paper-pencil-aufgaben" class="nav-link" data-scroll-target="#paper-pencil-aufgaben"><span class="header-section-number">3.5.1</span> Paper-Pencil-Aufgaben</a></li>
+  <li><a href="#aufgaben-f%C3%BCr-die-man-einen-computer-braucht" id="toc-aufgaben-für-die-man-einen-computer-braucht" class="nav-link" data-scroll-target="#aufgaben-f%C3%BCr-die-man-einen-computer-braucht"><span class="header-section-number">3.5.2</span> Aufgaben, für die man einen Computer braucht</a></li>
+  <li><a href="#quiz-aufgaben" id="toc-quiz-aufgaben" class="nav-link" data-scroll-target="#quiz-aufgaben"><span class="header-section-number">3.5.3</span> Quiz-Aufgaben</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/0250-inferenz.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./0200-zielarten.html">Grundlagen</a></li><li class="breadcrumb-item"><a href="./0250-inferenz.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Populationsinferenz</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-inferenz" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Populationsinferenz</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><section id="lernsteuerung" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="lernsteuerung">
+<span class="header-section-number">3.1</span> Lernsteuerung</h2>
+<section id="position-im-modulverlauf" class="level3" data-number="3.1.1"><h3 data-number="3.1.1" class="anchored" data-anchor-id="position-im-modulverlauf">
+<span class="header-section-number">3.1.1</span> Position im Modulverlauf</h3>
+<p><a href="index.html#fig-modulverlauf" class="quarto-xref">Abbildung&nbsp;<span>1.1</span></a> gibt einen Überblick zum aktuellen Standort im Modulverlauf.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="img/Golem_hex.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Bayes:Start!"><img src="img/Golem_hex.png" class="img-fluid figure-img" style="width:10.0%" alt="Bayes:Start!"></a></p>
+<figcaption>Bayes:Start!</figcaption></figure>
+</div>
+</section><section id="lernziele" class="level3" data-number="3.1.2"><h3 data-number="3.1.2" class="anchored" data-anchor-id="lernziele">
+<span class="header-section-number">3.1.2</span> Lernziele</h3>
+<p>Nach Absolvieren des jeweiligen Kapitels sollen folgende Lernziele erreicht sein.</p>
+<p>Sie können …</p>
+<ul>
+<li>den Begriff der Populationsinferenz definieren und von der Deskriptivstatistik abgrenzen</li>
+<li>erläutern, warum inferenzstatistische Schlüsse notwendigerweise mit Ungewissheit behaftet sind</li>
+<li>zwischen Ungewissheit zu den Regressionskoeffizienten und Ungewissheit zur Vorhersagegenauigkeit (<span class="math inline">\(\sigma\)</span>) unterscheiden</li>
+<li>den Begriff des Konfidenzintervalls (Schätzbereichs) erläutern und interpretieren</li>
+<li>frequentistische und Bayes-Inferenz einander gegenüberstellen</li>
+<li>den p-Wert informell definieren und typische Fehlinterpretationen benennen</li>
+<li>den Begriff der statistischen Signifikanz erläutern</li>
+<li>Null- und Alternativhypothese unterscheiden und anhand von Beispielen erläutern</li>
+</ul></section><section id="begleitliteratur" class="level3" data-number="3.1.3"><h3 data-number="3.1.3" class="anchored" data-anchor-id="begleitliteratur">
+<span class="header-section-number">3.1.3</span> Begleitliteratur</h3>
+<p>Bei <span class="citation" data-cites="gelman2021">Gelman et al. (<a href="references.html#ref-gelman2021" role="doc-biblioref">2021</a>)</span>, Kap. 4, findet sich eine Darstellung, die sich mit den Inhalten dieses Kapitels überschneidet. Die Begleitliteratur ist nicht prüfungsrelevant; sie dient zur Vertiefung und als Grundlage einer ausführlicheren Erläuterung des Stoffes.</p>
+</section><section id="vorbereitung-im-eigenstudium" class="level3" data-number="3.1.4"><h3 data-number="3.1.4" class="anchored" data-anchor-id="vorbereitung-im-eigenstudium">
+<span class="header-section-number">3.1.4</span> Vorbereitung im Eigenstudium</h3>
+<p>Bereiten Sie sich im Eigenstudium auf dieses Kapitel vor. Lesen Sie dazu folgende Themen:</p>
+<ul>
+<li><a href="https://statistik1.netlify.app/010-rahmen">Statistik 1, Kap. “Rahmen”</a></li>
+<li>
+<a href="https://statistik1.netlify.app/070-zusammenhaenge">Statistik 1, Kap. “Punktmodelle 2”</a>, insbesondere zu Regressionskoeffizienten</li>
+</ul></section></section><section id="schließen-von-der-stichprobe-auf-die-grundgesamtheit" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="schließen-von-der-stichprobe-auf-die-grundgesamtheit">
+<span class="header-section-number">3.2</span> Schließen von der Stichprobe auf die Grundgesamtheit</h2>
+<!-- TODO: -->
+<!-- Attentio Grabber zum Einstieg -->
+<!-- An Vorwissen anknüpfen -->
+<!-- -- gilt auch für übrige Kapitel und übrige Bücher -->
+<!-- ### Inferenz als Generalisieren -->
+<p>📺 <a href="https://www.youtube.com/watch?v=QNMVi6IqQ90&amp;list=PLRR4REmBgpIGgz2Oe2Z9FcoLYBDnaWatN">Was ist Inferenz?</a></p>
+<p>Populationsinferenz ist das Schließen von der Stichprobe auf die Grundgesamtheit.</p>
+<p>Statistische Populationsinferenz – oft kurz als <em>Inferenz</em> bezeichnet – hat zum Ziel, vom Teil aufs Ganze zu schließen, bzw. vom Konkreten auf das Abstrakte. In der Datenanalyse heißt das: Was sagt mein Datensatz, der auf einer Stichprobe beruht, über die zugrundeliegende Grundgesamtheit aus?</p>
+<div id="exr-stipro" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.1</strong></span> Typischerweise untersuchen Sie im Rahmen einer statistischen Analyse eine <em>Stichprobe</em>, wie z.B. Ihr Freundeskreis, der leichtsinnig genug war, auf Ihre WhatsApp-Nachricht “Tolle Studie zum Geheimnis des Glücks!!!” zu klicken. Ihr Freundeskreis ist ein <em>Teil</em> der Menschen (z.B. aus Deutschland), also eine Stichprobe. Schauen wir uns den Unterschied zwischen Stichprobe und Population näher an. <span class="math inline">\(\square\)</span></p>
+</div>
+<p>Nehmen wir an, wir möchten herausfinden, wie groß der Anteil der R-Fans in der Grundgesamtheit (synonym: Population) aller Studierenden ist. Den Anteil der R-Fans bezeichnen wir der Einfachheit halber hier mit <code>A</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>Das <em>Grundproblem der Inferenzstatistik</em> ist, dass wir an Aussagen zur Grundgesamtheit interessiert sind, aber nur eine Stichprobe, also einen Ausschnitt oder eine Teilmenge der Grundgesamtheit (synonym: Population) vorliegen haben.</p>
+<p>Wir müssen also den Anteil der R-Fans <em>in der Population</em> auf Basis des Anteils <em>in der Stichprobe</em> schließen: Wir verallgemeinern oder generalisieren von der Stichprobe auf die Grundgesamtheit, s. Abb. <a href="#fig-pop-sample" class="quarto-xref">Abbildung&nbsp;<span>3.1</span></a>.</p>
+<div id="fig-pop-sample" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pop-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="img/pvoll.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Grundgesamtheit (Population)"><img src="img/pvoll.png" class="img-fluid figure-img"></a></p>
+<figcaption>Grundgesamtheit (Population)</figcaption></figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="img/psti.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Stichprobe (Sample)"><img src="img/psti.png" class="img-fluid figure-img"></a></p>
+<figcaption>Stichprobe (Sample)</figcaption></figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pop-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;3.1: Population vs.&nbsp;Stichprobe. Die Stichprobe entnimmt einen <em>Teil</em> der Daten der Population. Autor: Karsten Lübke. Lizenz: OEM.
+</figcaption></figure>
+</div>
+<p>Häufig ist das praktische Vorgehen recht simpel: Ah, in unserer Stichprobe sind 42% R-Fans!<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Man schreibt: <span class="math inline">\(p = 0.42\)</span> (<code>p</code> wie <code>proportion</code>, engl. für “Anteil”). Die Stichprobe sei repräsentativ für die Grundgesamtheit aller Studierenden. Messerscharf schließen wir: In der Grundgesamtheit ist der Anteil der R-Fans auch 42%, <span class="math inline">\(\pi=0.42\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Wir verwenden lateinische Buchstaben (p), um Kennzahlen einer Stichprobe zu benennen, und griechische (<span class="math inline">\(\pi\)</span>) für Populationen.<span class="math inline">\(\square\)</span></p>
+</div>
+</div>
+<div id="def-inf" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.1 ((Populations-)Inferenzstatistik)</strong></span> <em>Populations-Inferenzstatistik</em> – meist kurz als <em>Inferenzstatistik</em> bezeichnet – ist ein Verfahren zum Schließen von Statistiken (eine Kennzahl einer Stichprobe) auf <em>Parameter</em> (eine Kennzahl einer Grundgesamtheit). Inferenz bedeutet Schließen bzw. Schlussfolgern: auf Basis von vorliegenden Wissen wird neues Wissen generiert. Inferenzstatistik ist ein Verfahren, das mathematische Modelle (oft aus der Stochastik) verwendet, um ausgehend von einer bestimmten Datenlage auf allgemeine Aussagen zu schließen. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="exr-inf" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.2</strong></span> 🏋️️ Heute Nacht vor dem Schlafen wiederholen Sie die Definition. Üben Sie jetzt schon mal.<span class="math inline">\(\square\)</span></p>
+</div>
+<p>Für jede beliebige Statistik (Kennzahl von Stichprobendaten) kann man die Methoden der Populationsinferenz verwenden, um den zugehörigen Kennwert (Parameter) der Population zu bestimmen, s. Tabelle <a href="#tbl-kennwerte" class="quarto-xref">Tabelle&nbsp;<span>3.1</span></a>. Da man die Parameter der Population so gut wie nie sicher kennt (schließlich hat man meist nur Auszüge, Teile der Population, also Stichproben), muss man sich mit <em>Schätzwerten</em> begnügen.</p>
+<div class="cell" data-layout-align="center">
+<div id="tbl-kennwerte" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-kennwerte-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;3.1: Bezeichnungen für Kennwerte
+</figcaption><div aria-describedby="tbl-kennwerte-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: left;">Kennwert</th>
+<th style="text-align: left;">Stichprobe</th>
+<th style="text-align: left;">Grundgesamtheit (Aussprache)</th>
+<th style="text-align: left;">Schätzwert</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Mittelwert</td>
+<td style="text-align: left;"><span class="math inline">\(\bar{X}\)</span></td>
+<td style="text-align: left;">
+<span class="math inline">\(\mu\)</span> (mü)</td>
+<td style="text-align: left;"><span class="math inline">\(\hat{\mu}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Streuung</td>
+<td style="text-align: left;"><span class="math inline">\(sd\)</span></td>
+<td style="text-align: left;">
+<span class="math inline">\(\sigma\)</span> (sigma)</td>
+<td style="text-align: left;"><span class="math inline">\(\hat{\sigma}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Anteil</td>
+<td style="text-align: left;"><span class="math inline">\(p\)</span></td>
+<td style="text-align: left;">
+<span class="math inline">\(\pi\)</span> (pi)</td>
+<td style="text-align: left;"><span class="math inline">\(\hat{\pi}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Korrelation</td>
+<td style="text-align: left;"><span class="math inline">\(r\)</span></td>
+<td style="text-align: left;">
+<span class="math inline">\(\rho\)</span> (rho)</td>
+<td style="text-align: left;"><span class="math inline">\(\hat{\rho}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Regression</td>
+<td style="text-align: left;"><span class="math inline">\(b\)</span></td>
+<td style="text-align: left;">
+<span class="math inline">\(\beta\)</span> (beta)</td>
+<td style="text-align: left;"><span class="math inline">\(\hat{\beta}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Für Statistiken (Daten einer Stichprobe) verwendet man <em>lateinische</em> Buchstaben; für Parameter (Population) verwendet man <em>griechische</em> Buchstaben.</p>
+<div id="exr-greek" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.3</strong></span> 🏋️ Geben Sie die griechischen Buchstaben für typische Statistiken an. Ohne auf die Tabelle zu schauen.😜<span class="math inline">\(\square\)</span></p>
+</div>
+<p>Meist begnügt man sich beim Analysieren von Daten nicht mit Aussagen für eine Stichprobe, sondern will auf eine Grundgesamtheit verallgemeinern.</p>
+<p>Leider sind die Parameter einer Grundgesamtheit zumeist unbekannt, daher muss man sich mit <em>Schätzungen</em> begnügen. Schätzwerte werden mit einem “Dach” über dem Kennwert gekennzeichnet, s. letzte Spalte in <a href="#tbl-kennwerte" class="quarto-xref">Tabelle&nbsp;<span>3.1</span></a>.</p>
+<p>In der angewandten Forschung und im praktischen Leben interessieren häufig Fragen wie: “Welche Entscheidung ist (wahrscheinlich) besser?”. Da bekanntlich (fast) keine Aussagen sicher sind, spielt <em>Wahrscheinlichkeit</em> eine wichtige Rolle in den Forschungsfragen bzw. in deren Antworten.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Wahrscheinlichkeit wird oft mit <em>Pr</em> oder <em>p</em> abgekürzt, für engl. <em>probability</em>.<span class="math inline">\(\square\)</span></p>
+</div>
+</div>
+<div id="exm-inf" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 3.1</strong></span> Sie testen zwei Varianten Ihres Webshops (V1 und V2), die sich im Farbschema unterscheiden und ansonsten identisch sind: Hat das Farbschema einen Einfluss auf den Umsatz?</p>
+<p>Dazu vergleichen Sie den mittleren Umsatz pro Tag von V1 vs.&nbsp;V2, <span class="math inline">\(\bar{X}_{V1}\)</span> und <span class="math inline">\(\bar{X}_{V2}\)</span>. Die Mittelwerte unterscheiden sich etwas, <span class="math inline">\(\bar{X}_{V1} &gt; \bar{X}_{V2}\)</span>. Sind diese Unterschiede “zufällig” oder “substanziell”? Gilt also <span class="math inline">\(\mu_{V1} &gt; \mu_{V2}\)</span> oder gilt <span class="math inline">\(\mu_{V1} \le \mu_{V2}\)</span>? Wie groß ist die Wahrscheinlichkeit <span class="math inline">\(Pr(\mu_{V1} &gt; \mu_{V2})\)</span>?</p>
+</div>
+</section><section id="was-ist-populationsinferenz" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="was-ist-populationsinferenz">
+<span class="header-section-number">3.3</span> Was ist Populationsinferenz?</h2>
+<div id="def-popinf" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.2 (Populationsinferenz)</strong></span> <em>Populationsinferenz</em> (auch Inferenzstatistik oder schließende Statistik genannt) ist der Teilbereich der Statistik, der sich damit befasst, von den Daten einer begrenzten Stichprobe auf eine zugrundeliegende Grundgesamtheit (Population) zu verallgemeinern (zu schließen). <span class="math inline">\(\square\)</span></p>
+</div>
+<p>Deskriptivstatistik (Beschreiben) und Inferenzstatistik (Erklären) gehen Hand in Hand: Mit der Deskriptivstatistik berechnet man Statistiken zur Stichprobe. Dabei resultiert die Stichprobe durch eine zufällige Auswahl von Objekten aus der Grundgesamtheit. Mit der Inferenzstatistik verallgemeinert man von der Stichprobe auf die Grundgesamtheit, s. <a href="#fig-desk-inf" class="quarto-xref">Abbildung&nbsp;<span>3.2</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-desk-inf" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-desk-inf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-desk-inf">graph LR
+    %% 1. Definition der Grundgesamtheit (viele Emojis)
+    Population["Grundgesamtheit (Population)
+    👥👤👨‍👩‍👧‍👦🧑‍🤝‍🧑🌍
+    (N = groß)"]
+    
+    %% 2. Definition der Stichprobe (wenige Emojis)
+    Sample["Stichprobe
+    👤🧑
+    (n = klein)"]
+
+     
+   
+    Population --&gt;|Zufallsauswahl| Sample
+
+   
+    Sample -- Inferenzschluss --&gt; Population
+    
+   
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-desk-inf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;3.2: Zusammenhang von Deskriptivstatistik und Inferenzstatistik
+</figcaption></figure>
+</div>
+</div>
+</div>
+<section id="inferenz-beinhaltet-ungewissheit" class="level3" data-number="3.3.1"><h3 data-number="3.3.1" class="anchored" data-anchor-id="inferenz-beinhaltet-ungewissheit">
+<span class="header-section-number">3.3.1</span> Inferenz beinhaltet Ungewissheit</h3>
+<p>Inferenzstatistische Schlüsse sind mit <em>Ungewissheit</em> (Unsicherheit über die Zuverlässigkeit der Ergebnisse) behaftet: Schließlich kennt man nur einen Teil (die Stichprobe) eines Ganzen (die Population), möchte aber vom Teil auf das Ganze schließen. Aus diesem begrenzten Wissen resultiert notwendig Ungewissheit über die gesamte Population.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nichts Genaues weiß man nicht: Schließt man von einem Teil auf das Ganze, so geschieht das unter Unsicherheit. Man spricht von <em>Ungewissheit</em>, da man sich auf die <em>Unsicherheit des Wissens</em> über die Genauigkeit des Schließens bezieht.</p>
+</div>
+</div>
+<p>Schließt man etwa, dass in einer Grundgesamtheit der Anteil der R-Fans bei 42% liegt, so geschieht das unter Unsicherheit; es ist ungewiss. Man ist sich nicht sicher, dass es wirklich 42% in der Population sind – und nicht etwa etwas mehr oder etwas weniger. Schließlich hat man <em>nicht</em> die ganze Population gesehen bzw. vermessen. <em>Sicher</em> ist man sich hingegen für die Stichprobe (Messfehler einmal ausgeblendet). Zur Bemessung der Unsicherheit (Ungewissheit) bedient man sich der Wahrscheinlichkeitsrechnung (wo immer möglich). Die Wahrscheinlichkeitstheorie bzw. -rechnung wird daher auch als die Mathematik des Zufalls bezeichnet.</p>
+<div id="def-zufall" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.3 (Zufälliges Ereignis)</strong></span> Unter einem zufälligen (engl. random) Ereignis verstehen wir ein Ereignis, das nicht (komplett) vorherzusehen ist, wie etwa die Augenzahl Ihres nächsten Würfelwurfs. Zufällig bedeutet nicht (zwangsläufig), dass das Ereignis keine Ursachen besitzt. So gehorchen die Bewegungen eines Würfels den Gesetzen der Physik, nur sind uns diese oder die genauen Randbedingungen nicht (ausreichend) bekannt. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="exr-muenz" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.4</strong></span> 🏋 Welche physikalischen Randbedingungen wirken wohl auf einen Münzwurf ein? <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="exm-muenz" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 3.2 (Beispiele zur Quantifizierung von Ungewissheit)</strong></span> Aussagen mit Unsicherheit können unterschiedlich präzise formuliert sein.</p>
+<ul>
+<li><p>Morgen regnet’s <span class="math inline">\(\Leftrightarrow\)</span> Morgen wird es hier mehr als 0 mm Niederschlag geben (<span class="math inline">\(p=97\%\)</span>).</p></li>
+<li><p>Methode <span class="math inline">\(A\)</span> ist besser als Methode <span class="math inline">\(B\)</span> <span class="math inline">\(\Leftrightarrow\)</span> Mit einer Wahrscheinlichkeit von 57% ist der Mittelwert von <span class="math inline">\(Y\)</span> für Methode <span class="math inline">\(A\)</span> höher als für Methode <span class="math inline">\(B\)</span>.</p></li>
+<li><p>Die Maschine fällt demnächst aus <span class="math inline">\(\Leftrightarrow\)</span> Mit einer Wahrscheinlichkeit von 97% wird die Maschine in den nächsten 1-3 Tagen ausfallen, laut unserem Modell.</p></li>
+<li><p>Die Investition lohnt sich <span class="math inline">\(\Leftrightarrow\)</span> Die Investition hat einen Erwartungswert von 42 Euro; mit 90% Wahrscheinlichkeit wird der Gewinn zwischen -10000 und 100 Euro.</p></li>
+</ul>
+</div>
+<div id="exr-ungewiss" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.5</strong></span> 🏋 Geben Sie weitere Beispiele an!</p>
+</div>
+</section><section id="zwei-arten-von-ungewissheit" class="level3" data-number="3.3.2"><h3 data-number="3.3.2" class="anchored" data-anchor-id="zwei-arten-von-ungewissheit">
+<span class="header-section-number">3.3.2</span> Zwei Arten von Ungewissheit</h3>
+<p>Im Modellieren im Allgemeinen und in Regressionsmodellen im Besonderen lassen sich (mindestens) zwei Arten von Ungewissheiten angeben:</p>
+<ol type="1">
+<li><p>Wie (un)gewiss ist man sich über die <em>Regressionsgewichte</em>?</p></li>
+<li><p>Wie (un)gewiss ist man sich über die <em>Vorhersagegenauigkeit</em>?</p></li>
+</ol>
+<section id="betas-ungewissheit-zur-regressionsgeraden" class="level4" data-number="3.3.2.1"><h4 data-number="3.3.2.1" class="anchored" data-anchor-id="betas-ungewissheit-zur-regressionsgeraden">
+<span class="header-section-number">3.3.2.1</span> Betas: Ungewissheit zur Regressionsgeraden</h4>
+<p>Wenn wir von den Daten der Stichproben auf die Grundgesamtheit schließen, können wir nicht sicher sein, ob die Regressionskoeffizienten (Achsenabschnitt, Steigung der Regressionsgeraden) exakt richtig sind, s. <a href="#fig-betas-ungewiss" class="quarto-xref">Abbildung&nbsp;<span>3.3</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div id="lst-toni2" class="r cell-code listing quarto-float quarto-figure quarto-figure-left anchored">
+<figure class="quarto-float quarto-float-lst figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-toni2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;3.1: Regressionsmodell für Klausurerfolg als Funktion der Lernzeit (<code>lm_toni</code>)
+</figcaption><div aria-describedby="lst-toni2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">noten2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"data/noten2.csv"</span><span class="op">)</span></span>
+<span><span class="va">lm_toni</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">noten2</span><span class="op">)</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</figure>
+</div>
+</div>
+<div id="fig-betas-ungewiss" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-betas-ungewiss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-betas-ungewiss" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-betas-ungewiss-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-betas-ungewiss-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0250-inferenz_files/figure-html/fig-betas-ungewiss-1.png" class="lightbox" data-gallery="fig-betas-ungewiss" title="Abbildung&nbsp;3.3&nbsp;(a): Ungewissheit für den Achsenabschnitt: Die Gerade könnte ‘höher’ oder ‘niedriger’ aufgehängt sein."><img src="0250-inferenz_files/figure-html/fig-betas-ungewiss-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-betas-ungewiss"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-betas-ungewiss-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Ungewissheit für den Achsenabschnitt: Die Gerade könnte ‘höher’ oder ‘niedriger’ aufgehängt sein.
+</figcaption></figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-betas-ungewiss" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-betas-ungewiss-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-betas-ungewiss-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0250-inferenz_files/figure-html/fig-betas-ungewiss-2.png" class="lightbox" data-gallery="fig-betas-ungewiss" title="Abbildung&nbsp;3.3&nbsp;(b): Ungewissheit für die Steigung der Regressionsgeraden: Die Gerade könnte mehr oder weniger steigen."><img src="0250-inferenz_files/figure-html/fig-betas-ungewiss-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-betas-ungewiss"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-betas-ungewiss-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Ungewissheit für die Steigung der Regressionsgeraden: Die Gerade könnte mehr oder weniger steigen.
+</figcaption></figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-betas-ungewiss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;3.3: Wir könnten nicht sicher sein, dass der Achsenabschnitt und die Geradensteigung unseres Modells exakt richtig sind. Diese Werte könnten auch etwas größer oder kleiner sein.
+</figcaption></figure>
+</div>
+<p>Wie man in <a href="#fig-regr-div" class="quarto-xref">Abbildung&nbsp;<span>3.4</span></a> sieht, können sich die Koeffizienten des Modells (<span class="math inline">\(\beta_0\)</span>, Achsenabschnitt und <span class="math inline">\(\beta_1\)</span>, Steigung) unterscheiden. Woran liegt das?</p>
+<div id="exm-flights" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 3.3 (Stichproben der New Yorker Flüge)</strong></span> Nehmen wir an, wir ziehen ein paar Zufallstichproben aus der Menge (Population) aller Flüge, die in New York im Jahre 2013 gestartet sind. In jeder Stichprobe berechnen wir eine Regression zwischen Flugzeit und Verspätung des Flugs am Ankunftsort. Sicherlich werden sich die Stichproben in ihren Kennwerten, z.B. in den Koeffizienten der genannten Regression, unterscheiden.<span class="math inline">\(\square\)</span></p>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/nycflights13">nycflights13</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">flights</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">stipro1</span> <span class="op">&lt;-</span> <span class="fu">sample_n</span><span class="op">(</span><span class="va">flights</span>, size <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">stipro2</span> <span class="op">&lt;-</span> <span class="fu">sample_n</span><span class="op">(</span><span class="va">flights</span>, size <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">stipro3</span> <span class="op">&lt;-</span> <span class="fu">sample_n</span><span class="op">(</span><span class="va">flights</span>, size <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="fig-regr-div" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-regr-div-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-div" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-regr-div-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-regr-div-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0250-inferenz_files/figure-html/fig-regr-div-1.png" class="lightbox" data-gallery="fig-regr-div" title="Abbildung&nbsp;3.4&nbsp;(a): Stichprobe 1"><img src="0250-inferenz_files/figure-html/fig-regr-div-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-regr-div"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-div-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Stichprobe 1
+</figcaption></figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-div" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-regr-div-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-regr-div-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0250-inferenz_files/figure-html/fig-regr-div-2.png" class="lightbox" data-gallery="fig-regr-div" title="Abbildung&nbsp;3.4&nbsp;(b): Stichprobe 2"><img src="0250-inferenz_files/figure-html/fig-regr-div-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-regr-div"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-div-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Stichprobe 2
+</figcaption></figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-div" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-regr-div-3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-regr-div-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0250-inferenz_files/figure-html/fig-regr-div-3.png" class="lightbox" data-gallery="fig-regr-div" title="Abbildung&nbsp;3.4&nbsp;(c): Stichprobe 3"><img src="0250-inferenz_files/figure-html/fig-regr-div-3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-regr-div"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-div-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Stichprobe 3
+</figcaption></figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-regr-div-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;3.4: Regressionsanalysen mit verschiedenen Koeffizienten aufgrund der Zufälligkeit des Stichprobenziehens
+</figcaption></figure>
+</div>
+<p>Der Grund für die Schwankungen der Modellparameter zwischen den Stichproben ist die <em>Zufälligkeit</em> des <em>Stichprobenziehens.</em> Je nachdem, wie es der Zufall (oder sonst wer) will, landen bestimmte Fälle (Flüge in unserem Beispiel) in unserer Stichprobe. Zumeist unterscheiden sich die Stichproben; theoretisch könnten sie aber auch rein zufällig gleich sein.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Stichproben-Kennwerte schwanken um den tatsächlichen Wert in der Population herum. <span class="math inline">\(\square\)</span></p>
+</div>
+</div>
+<p>Um diese Ungewissheit, die sich in den Schwankungen der Stichproben-Regressionskoeffizienten ausdrückt, anzuzeigen, ist ein “grauer Schleier” um die Regressionsgeraden in <a href="#fig-regr-div" class="quarto-xref">Abbildung&nbsp;<span>3.4</span></a> gekennzeichnet. Dieser graue Schleier gibt also eine Spannbreite anderer, plausibler Lagen der Regressionsgeraden an, die sich in einer anderen Stichprobe auch manifestieren könnten.</p>
+</section><section id="sigma-ungewissheit-zur-genauigkeit-der-vorhersage" class="level4" data-number="3.3.2.2"><h4 data-number="3.3.2.2" class="anchored" data-anchor-id="sigma-ungewissheit-zur-genauigkeit-der-vorhersage">
+<span class="header-section-number">3.3.2.2</span> Sigma: Ungewissheit zur Genauigkeit der Vorhersage</h4>
+<p>Angenommen, wir sind uns <em>sicher</em> über die Werte der Modellparameter (<span class="math inline">\(\beta_0, \beta_1\)</span>), also über die Lage der Regressionsgeraden, anschaulich gesprochen. Dann bliebe immer noch Ungewissheit, wie <em>genau</em> die Vorhersagen sind, wie groß also die Abstände zwischen vorhergesagten und tatsächlichen Werten. Wenn nicht die richtigen UVs im Modell sind (relevante fehlen oder auch irrelevante sind enthalten), dann liegen Vorhersagen und wirkliche Werte weiter auseinander: diese Streuung kann man als “Rauschen” bezeichnen, s. <a href="#fig-resid-var" class="quarto-xref">Abbildung&nbsp;<span>3.5</span></a>. Diese Art der Ungewissheit ist dann interessant, wenn man Vorhersagen macht und sich fragt, wie <em>präzise</em> diese Vorhersage ist. Die Präzision eines Modells kann man mit einem von zwei Kennwerten ausdrücken, die die gleiche Aussage machen. Diese zwei Kennwerte sind <span class="math inline">\(R^2\)</span> (R-Quadrat) und <span class="math inline">\(\sigma\)</span> (sigma).</p>
+<div id="def-sigma" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.4 (Sigma als mittleren Vorhersagefehler)</strong></span> <span class="math inline">\(\sigma\)</span> gibt (grob gesagt) den mittleren Vorhersagefehler des Modells an. Einfach gesprochen sagt <span class="math inline">\(\sigma\)</span> wie weit eine Vorhersage im Durchschnitt vom wahren Wert entfernt ist. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="fig-resid-var" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-resid-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-resid-var" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-resid-var-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-resid-var-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0250-inferenz_files/figure-html/fig-resid-var-1.png" class="lightbox" data-gallery="fig-resid-var" title="Abbildung&nbsp;3.5&nbsp;(a): Geringer Vorhersagefehler (hohe Vorhersagegüte): Die vertikalen Balken sind kurz."><img src="0250-inferenz_files/figure-html/fig-resid-var-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-resid-var"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-resid-var-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Geringer Vorhersagefehler (hohe Vorhersagegüte): Die vertikalen Balken sind kurz.
+</figcaption></figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-resid-var" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-resid-var-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-resid-var-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0250-inferenz_files/figure-html/fig-resid-var-2.png" class="lightbox" data-gallery="fig-resid-var" title="Abbildung&nbsp;3.5&nbsp;(b): Hoher Vorhersagefehler: Die vertikalen Balken sind lang."><img src="0250-inferenz_files/figure-html/fig-resid-var-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-resid-var"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-resid-var-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Hoher Vorhersagefehler: Die vertikalen Balken sind lang.
+</figcaption></figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-resid-var" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-resid-var-3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-resid-var-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0250-inferenz_files/figure-html/fig-resid-var-3.png" class="lightbox" data-gallery="fig-resid-var" title="Abbildung&nbsp;3.5&nbsp;(c): auch hoher Vorhersagefehler"><img src="0250-inferenz_files/figure-html/fig-resid-var-3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-resid-var"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-resid-var-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) auch hoher Vorhersagefehler
+</figcaption></figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-resid-var-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;3.5: Regressionsanalyse mit <em>gleicher</em> Regressionsgerade, aber <em>unterschiedlicher</em> Vorhersagegüte. Die Vorhersagefehler sind mit mit farbigen vertikalen Balken markiert. Je kürzer die Balken, desto besser (genauer) die Vorhersage.
+</figcaption></figure>
+</div>
+</section></section><section id="ich-weiß-was-ich-nicht-weiß-ungewissheit-angeben" class="level3" data-number="3.3.3"><h3 data-number="3.3.3" class="anchored" data-anchor-id="ich-weiß-was-ich-nicht-weiß-ungewissheit-angeben">
+<span class="header-section-number">3.3.3</span> Ich weiß, was ich nicht weiß: Ungewissheit angeben</h3>
+<p>Streng genommen ist eine Inferenz ohne Angabe der Ungewissheit (Genauigkeit der Schätzung) wertlos. Angenommen, jemand sagt, dass sie den Anteil der R-Fans (in der Population) auf 42% schätzt, lässt aber offen wie <em>sicher</em> (präzise) die Schätzung (der Modellparameter) ist. Wir wissen also nicht, ob z.B. 2% oder 82% noch erwartbar sind. Oder ob man im Gegenteil mit hoher Sicherheit sagen kann, die Schätzung schließt sogar 41% oder 43% aus.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Schließt man auf eine Population, schätzt also die Modellparameter, so sollte stets die (Un-)Genauigkeit der Schätzung, also die Ungewissheit des Modells, angegeben sein.<span class="math inline">\(\square\)</span></p>
+</div>
+</div>
+<p>Im Rahmen der Regressionsanalyse schlägt sich die Ungewissheit an zwei Stellen (und in drei Parametern) nieder:</p>
+<ol type="1">
+<li>zur Präzision der Regressionsgeraden <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span>
+</li>
+<li>zur Modellgüte (<span class="math inline">\(R^2\)</span>) bzw. zum Vorhersagefehler, <span class="math inline">\(\sigma\)</span><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>
+</li>
+</ol></section><section id="konfidenzintervall" class="level3" data-number="3.3.4"><h3 data-number="3.3.4" class="anchored" data-anchor-id="konfidenzintervall">
+<span class="header-section-number">3.3.4</span> Konfidenzintervall</h3>
+<p>Wir haben gesehen, dass wir die Werte der Parameter nur mit Ungewissheit angeben können (s. <a href="#fig-betas-ungewiss" class="quarto-xref">Abbildung&nbsp;<span>3.3</span></a> und <a href="#fig-resid-var" class="quarto-xref">Abbildung&nbsp;<span>3.5</span></a>). Um dieser Ungewissheit Rechnung zu tragen, gibt man nicht nur einen einzelnen Wert an, einen <em>Punktschätzer</em>, sondern man gibt einen <em>Schätzbereich</em> auf Basis der Daten an, s. <a href="#tbl-toni-params" class="quarto-xref">Tabelle&nbsp;<span>3.2</span></a>.</p>
+<p>Man spricht anstatt von Schätzbereich auch von einem <em>Konfidenzintervall</em>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">model_parameters</span><span class="op">(</span><span class="va">lm_toni</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">print_md</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="tbl-toni-params" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-toni-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabelle&nbsp;3.2: Punktschätzer und Schätzbereiche für die Modellkoeffizienten von <code>lm_toni</code>
+</figcaption><div aria-describedby="tbl-toni-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: center;">Coefficient</th>
+<th style="text-align: center;">SE</th>
+<th style="text-align: center;">95% CI</th>
+<th style="text-align: center;">t(98)</th>
+<th style="text-align: center;">p</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">46.19</td>
+<td style="text-align: center;">5.14</td>
+<td style="text-align: center;">(35.99, 56.39)</td>
+<td style="text-align: center;">8.98</td>
+<td style="text-align: center;">&lt; .001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">x</td>
+<td style="text-align: center;">0.88</td>
+<td style="text-align: center;">0.10</td>
+<td style="text-align: center;">(0.68, 1.08)</td>
+<td style="text-align: center;">8.92</td>
+<td style="text-align: center;">&lt; .001</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Unser Modell gibt den 95%-Schätzbereich für den Achsenabschnitt an, ca. von 36 bis 56 Klausurpunkten. Die Steigung wird geschätzt auf ca. 0.7 bis 1.1 Klausurpunkte pro Stunde Lernzeit.</p>
+<div id="def-konfintervall" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.5 (Konfidenzintervall)</strong></span> Ein Konfidenzintervall (confidence interval, CI) ist ein Oberbegriff für Schätzbereiche für Parameter wie Regressionskoeffizienten. Die Grenzen eines Konfidenzintervalls markieren die Grenzen eines Bereichs plausibler Werte für einen Parameter. <span class="math inline">\(\square\)</span></p>
+</div>
+<p>Es gibt verschiedene Arten, Konfidenzintervalle zu berechnen; wir sprechen in späteren Kapiteln dazu ausführlicher. Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben. Im Kontext der Bayes-Analyse - auf der dieser Kurs aufbaut - ist ein Konfidenzintervall einfach zu interpretieren. Sagen wir, wir finden, dass in einem Modell ein 95%-Konfidenzintervall für den Anteil der R-Fans angegeben wird, das sich von 40 bis 44 Prozent erstreckt. Dieser Befund lässt sich so interpretieren:</p>
+<blockquote class="blockquote">
+<p>“Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95% im Bereich von 40 bis 44 Prozentpunkten.”</p>
+</blockquote>
+<div id="exr-ungewisskorr" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.6</strong></span> Geben Sie Beispiele für Konfidenzintervalle an.</p>
+</div>
+</section></section><section id="frequentistische-inferenz-vs.-bayes-inferenz" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="frequentistische-inferenz-vs.-bayes-inferenz">
+<span class="header-section-number">3.4</span> Frequentistische Inferenz vs.&nbsp;Bayes-Inferenz</h2>
+<p>Es gibt zwei Hauptarten von Inferenzstatistik: Frequentistische Inferenz und Bayes-Inferenz.</p>
+<div class="columns">
+<div class="column">
+<p><strong>Frequentismus: Klassische Inferenz</strong></p>
+<ol type="1">
+<li>Ziel ist es, den Anteil von Fehlentscheidungen auf lange Sicht zu kontrollieren.</li>
+<li>Keine Berücksichtigung von Vorwissen zum Sachgegenstand</li>
+<li>Wahrscheinlichkeit wird über relative Häufigkeiten definiert.</li>
+<li>Es ist <em>nicht</em> möglich, die Wahrscheinlichkeit einer Hypothese bzw. eines Werts in der Population (eines Parameters) anzugeben.</li>
+<li>Stattdessen wird angegeben, wie häufig eine vergleichbare Datenlage zu erwarten ist, wenn der Versuch sehr häufig (unendlich oft) wiederholt ist.</li>
+<li>Ein Großteil der Forschung (in den Sozialwissenschaften) verwendet (aktuell) diesen Ansatz.</li>
+</ol>
+</div><div class="column">
+<p><strong>Bayesianische Inferenz</strong></p>
+<ol type="1">
+<li>Ziel ist es, die Wahrscheinlichkeit einer Hypothese korrekt zu bemessen.</li>
+<li>Vorwissen (Priori-Wissen) fließt explizit in die Analyse ein (zusammen mit den Daten).</li>
+<li>
+<em>Wenn</em> das Vorwissen gut ist, wird die Vorhersage durch das Vorwissen genauer, ansonsten ungenauer.</li>
+<li>Die Wahl des Vorwissens muss explizit (kritisierbar) sein.</li>
+<li>In der Bayes-Inferenz sind Wahrscheinlichkeitsaussagen für Hypothesen möglich.</li>
+<li>Die Bayes-Inferenz erfordert mitunter viel Rechenzeit und ist daher erst in den letzten Jahren (für gängige Computer) komfortabel geworden.</li>
+</ol>
+</div>
+</div>
+<section id="frequentistische-inferenz-und-der-p-wert" class="level3" data-number="3.4.1"><h3 data-number="3.4.1" class="anchored" data-anchor-id="frequentistische-inferenz-und-der-p-wert">
+<span class="header-section-number">3.4.1</span> Frequentistische Inferenz und der p-Wert</h3>
+<p>Der zentrale Kennwert der frequentistischen Inferenz (synonym: Frequentismus) ist der <em>p-Wert</em>.</p>
+<p>Der <em>p</em>-Wert ist so definiert, vgl. <span class="citation" data-cites="wasserstein2016">Wasserstein &amp; Lazar (<a href="references.html#ref-wasserstein2016" role="doc-biblioref">2016</a>)</span>:</p>
+<blockquote class="blockquote">
+<p>Wie hoch ist die Wahrscheinlichkeit eines empirischen Befunds (oder noch extremere Werte), vorausgesetzt die Nullhypothese <span class="math inline">\(H_0\)</span> gilt und man wiederholt den Versuch unendlich oft (mit gleichen Bedingungen, aber zufällig verschieden und auf Basis unseres Modells)?</p>
+</blockquote>
+<p>Einfacher gesagt:</p>
+<blockquote class="blockquote">
+<p>Der <em>p</em>-Wert ist die Wahrscheinlichkeit, ein Ergebnis zu erhalten, das mindestens so extrem ist wie das beobachtete, unter der Annahme, dass es keinen Effekt gibt.</p>
+</blockquote>
+<p>Noch einfacher:</p>
+<ul>
+<li><p>Man nimmt an, dass es keinen Effekt gibt (z.B. kein Zusammenhang zwischen den untersuchten Variablen)</p></li>
+<li><p>Dann fragt man: Wie überraschend wären meine Daten unter dieser Annahme?</p></li>
+<li><p>Der p-Wert gibt genau diese Überraschungs-Wahrscheinlichkeit an.</p></li>
+</ul>
+<!-- Kurz gesagt: $p := Pr(T'  \ge T| H_0)$. --><div id="exr-p" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.7</strong></span> 🏋 Recherchieren Sie eine Definition des <em>p</em>-Werts und lesen Sie sie einem Freund. Beobachten sie die Reaktionen auf Ihre Erklärung.<span class="math inline">\(\square\)</span></p>
+</div>
+<p>Der p-Wert wird oft falsch verstanden <span class="citation" data-cites="badenes-ribera2016">(<a href="references.html#ref-badenes-ribera2016" role="doc-biblioref">Badenes-Ribera et al., 2016</a>)</span>. Aber er ist auch nicht leicht zu verstehen, meint Meister Yoda, s. <a href="#fig-yoda" class="quarto-xref">Abbildung&nbsp;<span>3.6</span></a>. Hier sind einige <em>FALSCHE</em> Interpretationen zum p-Wert laut der Autoren:</p>
+<ul>
+<li>🙅‍♀ Der p-Wert würde die Wahrscheinlichkeit der Nullhypothese oder der Forschungshypothese angeben. 🙊 FALSCH!</li>
+<li>🙅‍♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. 🙊 FALSCH!</li>
+</ul>
+<div id="fig-yoda" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-yoda-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="img/pvalue-yoda.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Abbildung&nbsp;3.6: Der p-Wert ist wenig intuitiv, meint Meister Yoda"><img src="img/pvalue-yoda.jpg" class="img-fluid figure-img" style="width:50.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-yoda-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;3.6: Der p-Wert ist wenig intuitiv, meint Meister Yoda
+</figcaption></figure>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wichtig
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Ein frequentistisches Konfidenzintervall macht keine Aussage zur Wahrscheinlichkeit eines Werts in der Population (eines Parameters). Stattdessen wird eine Aussage über das Ergebnis einer sehr häufig wiederholten Stichprobenziehung berichtet. Ob ein bestimmtes (unseres, Ihres) den wahren Wert enthält, bzw. mit welcher Wahrscheinlichkeit es den wahren Wert enthält, darüber macht das frequentistische Konfidenzintervall keine Aussagen. <span class="math inline">\(\square\)</span></p>
+</div>
+</div>
+</section><section id="bayes-inferenz" class="level3" data-number="3.4.2"><h3 data-number="3.4.2" class="anchored" data-anchor-id="bayes-inferenz">
+<span class="header-section-number">3.4.2</span> Bayes-Inferenz</h3>
+<p>Die zentrale Statistik der Bayes-Inferenz bzw. (synonym) Bayes-Statistik ist die <em>Posteriori-Verteilung</em>.</p>
+<p>Die Posteriori-Verteilung beantwortet uns die Frage: “Wie wahrscheinlich ist die Forschungshypothese (oder Varianten von ihr), jetzt, nachdem wir die Daten kennen, auf Basis unseres Modells?”</p>
+<p>In der Bayes-Statistik sind Aussagen folgender Art erlaubt:</p>
+<blockquote class="blockquote">
+<p>Mit einer Wahrscheinlichkeit von 95% ist der neue Webshop besser als der alte. Mit einer Wahrscheinlichkeit von 89% liegt die Wirksamkeit des neuen Medikaments zwischen 0.1 und 0.4.</p>
+</blockquote>
+<!-- 
+[In diesem Post](https://data-se.netlify.app/2022/01/27/warum-bayes/) wird für Bayes geworben 
+und (einseitig) Stellung pro Bayes bezogen. -->
+</section><section id="statistische-signifikanz" class="level3" data-number="3.4.3"><h3 data-number="3.4.3" class="anchored" data-anchor-id="statistische-signifikanz">
+<span class="header-section-number">3.4.3</span> Statistische Signifikanz</h3>
+<p>Im <em>Frequentismus</em> spricht man von statistischer Signifikanz, wenn der p-Wert kleiner ist als 5%: <span class="math inline">\(p&lt;.05\)</span> (oder einen anderen Prozentwert als 5%, aber meistens wird 5% hergenommen). Man nimmt diesen Befund als Beleg, dass man einen Effekt gefunden hat, die Hypothese eines Nulleffekts (z.B. kein Zusammenhang von X und Y) also verwerfen kann. Faktisch entscheidet man sich, die Forschungshypothese weiterhin als “vorläufig gültig” oder zumindest als “nicht widerlegt” zu betrachten.</p>
+<p>In der <em>Bayes-Statistik</em> ist der Begriff der Signifikanz nicht einheitlich definiert. Mit Bezug auf <span class="citation" data-cites="gelman2021">Gelman et al. (<a href="references.html#ref-gelman2021" role="doc-biblioref">2021</a>)</span> (S. 57) wird in diesem Buch der Begriff wie folgt definiert - mit Gültigkeit sowohl für Bayes-Statistik als auch für Frequentistische Statistik.</p>
+<div id="def-signifikanz" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.6 (Statistische Signifikanz im Frequentismus und im Bayesismus)</strong></span> Ist der Wert Null nicht im Schätzbereich enthalten, so liegt ein statistisch signifikantes Ergebnis vor. <span class="math inline">\(\square\)</span></p>
+</div>
+<p>Oft werden 95%-Konfidenzintervalle verwendet, obwohl das nur eine Konvention ist. Die Signifikanzaussage bezieht sich immer auf einen Schätzbereich bestimmter Größe, z.B. 95% (und des Modells inklusive Daten).</p>
+<p>Liegt ein statistisch signifikantes Ergebnis vor, so <em>verwirft</em> man die <em>Nullhypothese</em> und akzeptiert die <em>Alternativhypothese</em> (synonym: Effekthypothese).</p>
+<div id="def-nullhyp" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.7 (Exakte Nullhypothese)</strong></span> Die exakte Nullhypothese (meist kurz nur als Nullhypothese bezeichnet), <span class="math inline">\(H_0\)</span>, besagt, dass <em>kein</em> (null) Effekt (keine Abweichung vom Referenzwert, kein Unterschied zwischen Gruppen, kein Zusammenhang zwischen UV und AV, Veränderung vor vs.&nbsp;nach der Intervention, …) vorliegt. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="def-alternativhyp" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.8 (Alternativhypothese (Effekthypothese))</strong></span> Eine Hypothese, die besagt, dass es einen (substanziellen) Effekt gibt. Das kann z.B. ein Unterschied zwischen den untersuchten Gruppen sein oder ein Zusammenhang zwischen den untersuchten Variablen. Logisch betrachtet ist die Alternativhypothese meist das Gegenteil der Nullhypothese. <span class="math inline">\(\square\)</span></p>
+</div>
+<div id="exm-effekt" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 3.4 (Beispiele für Effekthypothesen)</strong></span> &nbsp;</p>
+<ul>
+<li>Die Trefferquote der Münze ist <span class="math inline">\(\pi = .7\)</span> (Kopf), weicht also um 0.2 von 0.5, dem Wert laut Nullhypothese, ab.</li>
+<li>Der Unterschied im mittleren Gewicht zwischen den Gruppen beträgt ca. 500-600 g.</li>
+<li>Der Korrelationskoeffizient <span class="math inline">\(\rho\)</span> liegt bei ca. .5 bis .7, ist also nicht Null.</li>
+<li>Der standardisierte Regressionskoeffizient <span class="math inline">\(\beta\)</span> liegt bei ca. .1 bis .2, ist also nicht Null.</li>
+<li>Der Unterschied in Gestimmtheit vor vs.&nbsp;nach der Induktion von Einsamkeit liegt bei <span class="math inline">\(X_d = .3\)</span>, ist also nicht Null. <span class="math inline">\(\square\)</span>
+</li>
+</ul>
+</div>
+<div id="exm-nullhyp" class="theorem example">
+<p><span class="theorem-title"><strong>Beispiel 3.5 (Beispiele für Nullhypothesen)</strong></span> &nbsp;</p>
+<ol type="A">
+<li>H₀: μ = 100 (Der Populationsmittelwert beträgt 100)</li>
+<li>H₀: μ₁ = μ₂ (Es gibt keinen Unterschied zwischen den Mittelwerten zweier Gruppen)</li>
+<li>H₀: ρ = 0 (Es besteht kein linearer Zusammenhang zwischen zwei Variablen)</li>
+<li>H₀: π = 0.5 (Die Wahrscheinlichkeit für “Erfolg” beträgt 50%; die Münze ist “fair”)</li>
+<li>H₀: μ₁ = μ₂ = μ₃ = μ₄ (Alle Gruppenmittelwerte sind gleich; bei ANOVA)</li>
+<li>H₀: β₁ = 0 (Der Regressionskoeffizient ist null; kein Effekt des Prädiktors)</li>
+<li>H₀: σ₁² = σ₂² (Die Varianzen zweier Populationen sind gleich) <span class="math inline">\(\square\)</span>
+</li>
+</ol>
+</div>
+<p>Statistische Signifikanz im Frequentismus (nicht in der Bayes-Statistik) ist auch eine Funktion der Stichprobengröße: Wenn die Stichprobe groß genug ist, wird jeder Test signifikant (sofern der Effekt nicht exakt Null ist). Daher hat ein signifikantes Ergebnis zwei mögliche Ursachen: Der Effekt ist groß oder (auch) die Stichprobe ist groß, s. <a href="#fig-pwert2" class="quarto-xref">Abbildung&nbsp;<span>3.7</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-pwert2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pwert2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-pwert2">flowchart LR
+S[Stichprobengröße]
+E[Effektgröße]
+p[p&lt;0.05]
+S--&gt;p
+E--&gt;p
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pwert2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;3.7: Der p-Wert ist nicht nur eine Funktion der Effektgröße, sondern auch der Stichprobengröße. Große Stichproben werden zwangsläufig signifikant, sofern der Effekt nicht exakt Null ist.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Übrigens sollte man nicht nur von “Signifikanz”, sondern von “statistischer Signifikanz” sprechen, um klar zu machen, dass man nicht ein Alltagsverständnis von Signifikanz (“groß”, “bedeutsam”) meint, sondern einen wohl definierten statistischen Begriff. Das ist wichtig, weil es sonst leicht zu Fehlinterpretationen kommt.</p>
+<p><span class="citation" data-cites="makowski2019">Makowski et al. (<a href="references.html#ref-makowski2019" role="doc-biblioref">2019</a>)</span> schlagen vor, welche Kennwerte der Bayes-Statistik analog zum <span class="math inline">\(p\)</span>-Wert herangezogen werden können. Eine Möglichkeit dafür ist der Kennwert <em>pd</em> (<em>probability of direction</em>).</p>
+<div id="exr-smartphone-addiction" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.8 (Abhängigkeit vom Handy)</strong></span> Die Studie von <span class="citation" data-cites="kabadayi2024">Kabadayi (<a href="references.html#ref-kabadayi2024" role="doc-biblioref">2024</a>)</span> untersucht den Zusammenhang von Smartphone-Abhängigkeit mit gesundheitlichen Problemen wie Depression, Stress, Einsamkeit und Schlafschwierigkeiten bei Heranwachsenden.</p>
+<p><a href="https://bmcpsychology.biomedcentral.com/articles/10.1186/s40359-024-02117-6">Lesen Sie den Abstract der Studie</a> und Tabelle 2 (sowie alle Teile, die Sie benötigen, um Tabelle 2 zu verstehen).</p>
+<ol type="1">
+<li>Was ist der stärkste Zusammenhang bzgl. Smartphone-Abhängigkeit? Wie hoch ist er? Wie groß ist die erklärte Varianz des Zusammenhangs?</li>
+<li>Zwischen welchen Variablen findet sich ein “statistisch signifikanter” Zusammenhang?</li>
+<li>Erklären Sie, was ein “statistisch signifikanter Zusammenhang” hier bedeutet? <span class="math inline">\(\square\)</span>
+</li>
+</ol>
+</div>
+</section><section id="frequentist-und-bayesianer" class="level3" data-number="3.4.4"><h3 data-number="3.4.4" class="anchored" data-anchor-id="frequentist-und-bayesianer">
+<span class="header-section-number">3.4.4</span> Frequentist und Bayesianer</h3>
+<p>Im Cartoon 1132 <a href="https://xkcd.com/">von xkcd</a> wird sich über das Nicht-Berücksichtigen von Vorab-Informationen (Prior-Verteilung) lustig gemacht, s. <a href="#fig-xkcd-bayes" class="quarto-xref">Abbildung&nbsp;<span>3.8</span></a>.</p>
+<div id="fig-xkcd-bayes" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-xkcd-bayes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="img/frequentists_vs_bayesians_2x.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Abbildung&nbsp;3.8: Frequentist wettet mit Bayesianer"><img src="img/frequentists_vs_bayesians_2x.png" class="img-fluid figure-img" style="width:50.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-xkcd-bayes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;3.8: Frequentist wettet mit Bayesianer
+</figcaption></figure>
+</div>
+<p><a href="https://xkcd.com/1132/">Quelle</a></p>
+<div>
+<p><a href="https://imgflip.com/memegenerator">from Imgflip Meme Generator</a></p>
+</div>
+<div id="exr-pwert" class="theorem exercise">
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.9 (Peer Instruction: p-Wert)</strong></span> Der p-Wert ist der zentrale Kennwert der frequentistischen Statistik. Aber er wird immer wieder missverstanden. Welche Aussage zum p-Wert ist korrekt?</p>
+<ol type="A">
+<li>Ein p-Wert von 0,04 bedeutet, dass die Nullhypothese mit 96 % Wahrscheinlichkeit falsch ist.</li>
+<li>Ein p-Wert größer als 0,05 beweist, dass die Nullhypothese wahr ist.</li>
+<li>Ein kleiner p-Wert bedeutet, dass ein großer Effekt vorliegt.</li>
+<li>Ein p-Wert von 0,01 bedeutet, dass sich bei Wiederholung der Studie mit 99% wieder ein signifikantes Ergebnis finden wird.</li>
+<li>Keine der oben genannten. <span class="math inline">\(\square\)</span>
+</li>
+</ol>
+</div>
+</section></section><section id="aufgaben" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="aufgaben">
+<span class="header-section-number">3.5</span> Aufgaben</h2>
+<p>Schauen Sie sich die Aufgaben mit dem Tag <em>inference</em> auf dem <a href="https://datenwerk.netlify.app/#category=inference">Datenwerk</a> an.</p>
+<section id="paper-pencil-aufgaben" class="level3" data-number="3.5.1"><h3 data-number="3.5.1" class="anchored" data-anchor-id="paper-pencil-aufgaben">
+<span class="header-section-number">3.5.1</span> Paper-Pencil-Aufgaben</h3>
+<ol type="1">
+<li><a href="https://datenwerk.netlify.app/posts/griech-buchstaben-inferenz/griech-buchstaben-inferenz/">Griech-Buchstaben-Inferenz</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/inferenz-fuer-alle/inferenz-fuer-alle">inferenz-fuer-alle</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/ttest-als-regr/ttest-als-regr/">ttest-als-regr</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/ttest-skalenniveau/ttest-skalenniveau/">ttest-skalenniveau</a></li>
+<li><a href="https://sebastiansauer.github.io/datenwerk/posts/pwert2/">pwert2</a></li>
+<li><a href="https://sebastiansauer.github.io/datenwerk/posts/interpret-ci/">interpret-ci</a></li>
+<li><a href="https://sebastiansauer.github.io/datenwerk/posts/interpret-ci2/">interpret-ci2</a></li>
+<li><a href="https://sebastiansauer.github.io/datenwerk/posts/gruppenvergleich-regression/">gruppenvergleich-regression</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/warum-bayes/warum-bayes">Warum-Bayes</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/samples-nyc2/">samples-nyc2</a></li>
+<li><a href="https://sebastiansauer.github.io/datenwerk/posts/parameter-genau/">parameter-genau</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/punktschaetzer-reicht-nicht/punktschaetzer-reicht-nicht.html">punktschaetzer-reicht-nicht</a></li>
+</ol></section><section id="aufgaben-für-die-man-einen-computer-braucht" class="level3" data-number="3.5.2"><h3 data-number="3.5.2" class="anchored" data-anchor-id="aufgaben-für-die-man-einen-computer-braucht">
+<span class="header-section-number">3.5.2</span> Aufgaben, für die man einen Computer braucht</h3>
+<ol type="1">
+<li><a href="https://datenwerk.netlify.app/posts/korr-als-regr/korr-als-regr.html">korr-als-regr</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/ungewiss-arten-regr/ungewiss-arten-regr.html">ungewiss-arten-regr</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/inferenz-fuer-alle/inferenz-fuer-alle.html">inferenz-fuer-alle</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/adjustieren1a/adjustieren1a.html">adjustieren1a</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/adjustieren2a/adjustieren2a.html">adjustieren2a</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/lm-standardfehler/lm-standardfehler.html">lm-standardfehler</a></li>
+<li><a href="https://datenwerk.netlify.app/posts/vorhersageintervall1/vorhersageintervall1.html">vorhersageintervall1</a></li>
+</ol></section><section id="quiz-aufgaben" class="level3" data-number="3.5.3"><h3 data-number="3.5.3" class="anchored" data-anchor-id="quiz-aufgaben">
+<span class="header-section-number">3.5.3</span> Quiz-Aufgaben</h3>
+<p>Hier finden Sie Single-Choice-Aufgaben zu diesem Kapitel. Wählen Sie eine Antwort aus und klicken Sie auf das Häkchen, um sie zu überprüfen; über das Fragezeichen erhalten Sie die ausführliche Lösung.</p>
+<div class="cell" data-layout-align="center">
+<div class="webex-question">
+<div class="webex-check webex-box">
+<p>Wie ist <em>Populationsinferenz</em> (Inferenzstatistik, schließende Statistik) korrekt definiert, und wie unterscheidet sie sich von der Deskriptivstatistik?</p>
+<div id="webex-72f58e128e062e314e3f77cca0ba431c" class="webex-radiogroup" data-answer="bAJKBRRVHQMUVW0=">
+<label><input type="radio" autocomplete="off" name="72f58e128e062e314e3f77cca0ba431c"><span>Populationsinferenz und Deskriptivstatistik bezeichnen exakt denselben Vorgang, nur mit unterschiedlichem Namen.</span></label><label><input type="radio" autocomplete="off" name="72f58e128e062e314e3f77cca0ba431c"><span>Populationsinferenz ist nur dann anwendbar, wenn die gesamte Population (nicht nur eine Stichprobe) vermessen wurde.</span></label><label><input type="radio" autocomplete="off" name="72f58e128e062e314e3f77cca0ba431c"><span>Populationsinferenz bezeichnet ausschließlich das Ziehen einer Zufallsstichprobe aus einer Population, nicht die anschließende Verallgemeinerung.</span></label><label><input type="radio" autocomplete="off" name="72f58e128e062e314e3f77cca0ba431c"><span>Populationsinferenz verallgemeinert von den Daten einer begrenzten Stichprobe auf eine zugrundeliegende Grundgesamtheit (Population); Deskriptivstatistik fasst hingegen nur die Stichprobe selbst zu Kennzahlen zusammen, ohne über sie hinauszugehen.</span></label><label><input type="radio" autocomplete="off" name="72f58e128e062e314e3f77cca0ba431c"><span>Deskriptivstatistik verallgemeinert von der Stichprobe auf die Population, Populationsinferenz beschränkt sich hingegen auf die reine Beschreibung der Stichprobe.</span></label>
+</div>
+</div>
+<div class="webex-solution">
+<p>Laut Definition ist Populationsinferenz “der Teilbereich der Statistik, der sich damit befasst, von den Daten einer begrenzten Stichprobe auf eine zugrundeliegende Grundgesamtheit (Population) zu verallgemeinern (zu schließen)”. Die Deskriptivstatistik hingegen fasst nur Merkmale <em>aus der Stichprobe</em> zu Kennzahlen zusammen, ohne den Anspruch, darüber hinaus etwas über die Population auszusagen. Die erste Option ist korrekt.</p>
+<p>Warum die Distraktoren falsch sind:</p>
+<ul>
+<li><p>Die zweite Option ignoriert den zentralen Unterschied: Deskriptivstatistik bleibt bei der Stichprobe, Inferenzstatistik geht darüber hinaus und verallgemeinert auf die Population.</p></li>
+<li><p>Die dritte Option vertauscht die beiden Begriffe genau umgekehrt zur richtigen Zuordnung.</p></li>
+<li><p>Die vierte Option widerspricht dem Sinn der Inferenzstatistik: Gerade weil man <em>nicht</em> die gesamte Population kennt (sondern nur eine Stichprobe), braucht man Inferenzstatistik, um dennoch Aussagen über die Population zu treffen.</p></li>
+<li><p>Die fünfte Option verwechselt einen Teilschritt (Stichprobenziehung) mit dem eigentlichen inferenzstatistischen Vorgang (der Verallgemeinerung von der Stichprobe auf die Population); Populationsinferenz umfasst explizit auch diesen Verallgemeinerungsschritt.</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Wahr</p></li>
+<li><p>Falsch</p></li>
+</ul>
+</div>
+</div>
+<div class="webex-question">
+<div class="webex-check webex-box">
+<p>Schließt man aus einer Stichprobe, dass der Anteil der R-Fans in einer Population bei 42% liegt, so ist dieser Schluss zwangsläufig mit <em>Ungewissheit</em> behaftet. Warum ist das so?</p>
+<div id="webex-ca8478ebc809accceb684beb37c4ae47" class="webex-radiogroup" data-answer="OFEUBBsJSVJPCG0=">
+<label><input type="radio" autocomplete="off" name="ca8478ebc809accceb684beb37c4ae47"><span>Ungewissheit lässt sich durch geschicktes Runden der berechneten Prozentzahl vollständig vermeiden.</span></label><label><input type="radio" autocomplete="off" name="ca8478ebc809accceb684beb37c4ae47"><span>Ungewissheit entsteht nur bei sehr kleinen Stichproben; ab einer Stichprobengröße von <span class="math inline">\(n=100\)</span> verschwindet sie vollständig.</span></label><label><input type="radio" autocomplete="off" name="ca8478ebc809accceb684beb37c4ae47"><span>Weil man nicht die gesamte Population, sondern nur einen (begrenzten) Teil davon – die Stichprobe – kennt; aus diesem begrenzten Wissen resultiert notwendig Unsicherheit darüber, ob der wahre Populationswert exakt dem Stichprobenwert entspricht.</span></label><label><input type="radio" autocomplete="off" name="ca8478ebc809accceb684beb37c4ae47"><span>Weil Stichproben grundsätzlich fehlerhaft erhoben werden und Messfehler die einzige Ursache von Ungewissheit sind.</span></label><label><input type="radio" autocomplete="off" name="ca8478ebc809accceb684beb37c4ae47"><span>Für die Stichprobe selbst besteht ebenso viel Ungewissheit wie für die Population, da man auch die Stichprobenwerte nicht exakt kennt.</span></label>
+</div>
+</div>
+<div class="webex-solution">
+<p>Der Grund für die Ungewissheit liegt darin, dass man (von Messfehlern abgesehen) zwar <em>sicher</em> über die Stichprobe Bescheid weiß, aber eben <em>nicht</em> die gesamte Population gesehen bzw. vermessen hat. Aus diesem notwendig unvollständigen Wissen über die Population resultiert die Ungewissheit, ob der wahre Populationsanteil wirklich genau 42% beträgt oder etwas mehr bzw. weniger. Die erste Option ist korrekt.</p>
+<p>Warum die Distraktoren falsch sind:</p>
+<ul>
+<li><p>Die zweite Option ist zu eng gefasst: Messfehler blendet das Kapitel explizit aus (“Messfehler einmal ausgeblendet”) – die eigentliche Ursache der Ungewissheit ist die <em>Stichprobenziehung</em> selbst (dass man nur einen Teil, nicht die ganze Population kennt), nicht (nur) Messungenauigkeit.</p></li>
+<li><p>Die dritte Option ist falsch: Ungewissheit wird mit wachsender Stichprobengröße zwar tendenziell <em>kleiner</em>, verschwindet aber nicht vollständig, solange nicht die <em>gesamte</em> Population erfasst ist – es gibt keinen “magischen” Schwellenwert wie <span class="math inline">\(n=100\)</span>, ab dem sie komplett verschwindet.</p></li>
+<li><p>Die vierte Option widerspricht dem Kapitel direkt: “Sicher ist man sich hingegen für die Stichprobe (Messfehler einmal ausgeblendet)” – die Ungewissheit betrifft gerade die Verallgemeinerung auf die Population, nicht die (bekannte) Stichprobe selbst.</p></li>
+<li><p>Die fünfte Option verwechselt Rundung (eine rein numerische Darstellungsfrage) mit der inhaltlichen Ungewissheit über den wahren Populationswert – Runden ändert nichts an der zugrundeliegenden Unsicherheit.</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Wahr</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+</ul>
+</div>
+</div>
+<div class="webex-question">
+<div class="webex-check webex-box">
+<p>Zwei Forschende schätzen je ein Regressionsmodell zur Vorhersage von Klausurpunkten anhand der Lernzeit.</p>
+<ul>
+<li>
+<strong>Modell A</strong> hat ein sehr <em>enges</em> Konfidenzintervall für die Steigung <span class="math inline">\(\beta_1\)</span>, aber die einzelnen Datenpunkte streuen recht stark um die Regressionsgerade (kleines <span class="math inline">\(R^2\)</span>, großes <span class="math inline">\(\sigma\)</span>).</li>
+<li>
+<strong>Modell B</strong> hat ein <em>breites</em> Konfidenzintervall für <span class="math inline">\(\beta_1\)</span>, aber die Datenpunkte liegen sehr nah an der Regressionsgeraden (großes <span class="math inline">\(R^2\)</span>, kleines <span class="math inline">\(\sigma\)</span>).</li>
+</ul>
+<p>Welche Aussage zu den zwei Arten der Ungewissheit (Ungewissheit zur Regressionsgeraden vs.&nbsp;Ungewissheit zur Vorhersagegenauigkeit) trifft zu?</p>
+<div id="webex-9d4d726a4c6802de525f72889a0b513f" class="webex-radiogroup" data-answer="YlUYVBsCGlEYU2s=">
+<label><input type="radio" autocomplete="off" name="9d4d726a4c6802de525f72889a0b513f"><span>Modell A hat eine geringe Ungewissheit bzgl. der Lage der Regressionsgeraden (<span class="math inline">\(\beta\)</span>), aber eine hohe Ungewissheit bzgl. der Vorhersagegenauigkeit einzelner Werte (<span class="math inline">\(\sigma\)</span>); bei Modell B ist es umgekehrt.</span></label><label><input type="radio" autocomplete="off" name="9d4d726a4c6802de525f72889a0b513f"><span><span class="math inline">\(R^2\)</span> und <span class="math inline">\(\sigma\)</span> sind zwei völlig unabhängige, unverwandte Kennwerte ohne inhaltlichen Zusammenhang.</span></label><label><input type="radio" autocomplete="off" name="9d4d726a4c6802de525f72889a0b513f"><span>Beide Modelle weisen bzgl. <span class="math inline">\(\beta\)</span> und <span class="math inline">\(\sigma\)</span> die gleiche Ungewissheit auf, da Konfidenzintervall-Breite und Streuung der Residuen dasselbe messen.</span></label><label><input type="radio" autocomplete="off" name="9d4d726a4c6802de525f72889a0b513f"><span>Modell A hat sowohl bzgl. <span class="math inline">\(\beta\)</span> als auch bzgl. <span class="math inline">\(\sigma\)</span> eine höhere Ungewissheit als Modell B.</span></label><label><input type="radio" autocomplete="off" name="9d4d726a4c6802de525f72889a0b513f"><span>Die Breite des Konfidenzintervalls für <span class="math inline">\(\beta_1\)</span> hängt ausschließlich von <span class="math inline">\(\sigma\)</span> ab, die Stichprobengröße spielt dabei keine Rolle.</span></label>
+</div>
+</div>
+<div class="webex-solution">
+<p>Das Kapitel unterscheidet zwei Arten von Ungewissheit im Regressionsmodell: (1) Ungewissheit zu den <em>Regressionsgewichten</em> (<span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span>; ausgedrückt z.B. über die Breite ihrer Konfidenzintervalle) und (2) Ungewissheit zur <em>Vorhersagegenauigkeit</em> (ausgedrückt über <span class="math inline">\(\sigma\)</span> bzw. <span class="math inline">\(R^2\)</span>). Diese beiden Ungewissheiten sind grundsätzlich unabhängig voneinander: Ein Modell kann die Lage der Regressionsgeraden sehr genau kennen (enges Konfidenzintervall für <span class="math inline">\(\beta\)</span>), aber trotzdem einzelne Werte nur ungenau vorhersagen (großes <span class="math inline">\(\sigma\)</span>) – und umgekehrt. Genau das ist bei Modell A (enges <span class="math inline">\(\beta\)</span>-KI, aber großes <span class="math inline">\(\sigma\)</span>) und Modell B (breites <span class="math inline">\(\beta\)</span>-KI, aber kleines <span class="math inline">\(\sigma\)</span>) der Fall. Die erste Antwortoption beschreibt das korrekt.</p>
+<p>Warum die Distraktoren falsch sind:</p>
+<ul>
+<li><p>Konfidenzintervall-Breite (Ungewissheit über <span class="math inline">\(\beta\)</span>) und Residualstreuung (Ungewissheit über <span class="math inline">\(\sigma\)</span>) messen <em>unterschiedliche</em> Dinge; sie können unabhängig voneinander groß oder klein sein, wie das Beispiel zeigt. Die zweite Option unterstellt fälschlich, beide seien identisch.</p></li>
+<li><p>Die dritte Option widerspricht direkt der Aufgabenstellung: Modell A hat gerade ein <em>engeres</em> <span class="math inline">\(\beta\)</span>-Konfidenzintervall als Modell B, also nicht durchgängig mehr Ungewissheit.</p></li>
+<li><p>Die Breite des Konfidenzintervalls für <span class="math inline">\(\beta_1\)</span> hängt zwar auch von <span class="math inline">\(\sigma\)</span> ab, aber ebenso von der Stichprobengröße (größere Stichproben führen tendenziell zu engeren Konfidenzintervallen) sowie von der Streuung der UV. Die vierte Option ist daher eine unzulässige Vereinfachung.</p></li>
+<li><p><span class="math inline">\(R^2\)</span> und <span class="math inline">\(\sigma\)</span> sind laut Kapitel zwei Kennwerte, “die die gleiche Aussage machen” – sie hängen also eng zusammen (beide quantifizieren die Vorhersagegüte/den Vorhersagefehler). Die fünfte Option behauptet das Gegenteil.</p></li>
+<li><p>Wahr</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+</ul>
+</div>
+</div>
+<div class="webex-question">
+<div class="webex-check webex-box">
+<p>Hoekstra et al.&nbsp;(2014) legten Bachelor-Studierenden, Master-Studierenden und Forschenden sechs Aussagen zu einem 95%-Konfidenzintervall (Bereich 0,1 bis 0,4) vor. Alle sechs Aussagen sind für ein <em>frequentistisches</em> Konfidenzintervall falsch – wurden aber mehrheitlich als richtig eingeschätzt. Was ist der zentrale Grund dafür, dass diese Aussagen im Frequentismus falsch sind, während eine sinngemäß gleiche Aussage im Rahmen der <em>Bayes</em>-Statistik richtig wäre?</p>
+<div id="webex-d85b23229513322fb25816b6c760a22d" class="webex-radiogroup" data-answer="PwgZUh4DHgIVBGw=">
+<label><input type="radio" autocomplete="off" name="d85b23229513322fb25816b6c760a22d"><span>Beide Ansätze verbieten es grundsätzlich, einem Parameter eine Wahrscheinlichkeit zuzuordnen; deshalb bleiben alle sechs Aussagen in jedem Fall falsch.</span></label><label><input type="radio" autocomplete="off" name="d85b23229513322fb25816b6c760a22d"><span>Der Unterschied liegt darin, dass die Bayes-Statistik grundsätzlich größere Stichproben benötigt, um Wahrscheinlichkeitsaussagen zu Parametern zu erlauben.</span></label><label><input type="radio" autocomplete="off" name="d85b23229513322fb25816b6c760a22d"><span>Beide Ansätze erlauben direkte Wahrscheinlichkeitsaussagen über Parameter; sie unterscheiden sich nur in der Formel zur Berechnung der Intervallgrenzen.</span></label><label><input type="radio" autocomplete="off" name="d85b23229513322fb25816b6c760a22d"><span>Im Frequentismus ist es erlaubt, einem Parameter eine Wahrscheinlichkeit zuzuordnen, in der Bayes-Statistik dagegen nicht.</span></label><label><input type="radio" autocomplete="off" name="d85b23229513322fb25816b6c760a22d"><span>Im Frequentismus darf einem Parameter (bzw. einer Hypothese über ihn) keine Wahrscheinlichkeit zugeordnet werden; in der Bayes-Statistik ist genau das über die Posteriori-Verteilung möglich.</span></label>
+</div>
+</div>
+<div class="webex-solution">
+<p>Der Kern des Unterschieds liegt in der Definition von Wahrscheinlichkeit und dem, worüber jeweils Wahrscheinlichkeitsaussagen erlaubt sind. Im Frequentismus wird Wahrscheinlichkeit über relative Häufigkeiten bei (gedanklich) unendlicher Wiederholung definiert; ein Parameter hat dort einen festen, aber unbekannten Wert – ihm eine Wahrscheinlichkeit zuzuordnen (z.B. “der wahre Wert liegt mit 95% Wahrscheinlichkeit zwischen 0,1 und 0,4”) ist logisch nicht vorgesehen. Ein frequentistisches Konfidenzintervall macht stattdessen nur eine Aussage über das Verfahren bei wiederholter Stichprobenziehung. In der Bayes-Statistik hingegen ist über die Posteriori-Verteilung genau eine solche Wahrscheinlichkeitsaussage über den Parameter (bzw. eine Hypothese über ihn) möglich und zulässig. Damit ist die erste Antwortoption korrekt.</p>
+<p>Warum die Distraktoren falsch sind:</p>
+<ul>
+<li><p>Die zweite Option kehrt den Sachverhalt genau um: <em>Nicht</em> der Frequentismus, sondern die Bayes-Statistik erlaubt Wahrscheinlichkeitsaussagen über Parameter.</p></li>
+<li><p>Die dritte Option ist falsch, weil sie unterschlägt, dass die Bayes-Statistik solche Aussagen (im Unterschied zum Frequentismus) ausdrücklich zulässt – sonst gäbe es keinen Unterschied zwischen den Ansätzen zu erklären.</p></li>
+<li><p>Die vierte Option erfindet ein Kriterium (Stichprobengröße), das im Kapitel an keiner Stelle als Voraussetzung für Wahrscheinlichkeitsaussagen über Parameter genannt wird; der Unterschied ist konzeptueller, nicht stichprobengrößenbedingter Natur.</p></li>
+<li><p>Die fünfte Option ignoriert den zentralen Punkt der Studie von Hoekstra et al.: Gerade <em>weil</em> der Frequentismus solche Aussagen nicht erlaubt, wurden alle sechs Aussagen als falsch bewertet – der Unterschied liegt nicht nur in der Berechnungsformel.</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Wahr</p></li>
+</ul>
+</div>
+</div>
+<div class="webex-question">
+<div class="webex-check webex-box">
+<p>In einer Studie wird ein Zusammenhang zwischen zwei Variablen untersucht; berichtet wird ein p-Wert von <span class="math inline">\(p = 0{,}03\)</span>. Welche Interpretation dieses p-Werts ist zutreffend?</p>
+<div id="webex-1dad94fe59e58874762b60b87ba05f03" class="webex-radiogroup" data-answer="alRNVBUESlUZCDg=">
+<label><input type="radio" autocomplete="off" name="1dad94fe59e58874762b60b87ba05f03"><span>Die Wahrscheinlichkeit, dass <span class="math inline">\(H_0\)</span> (kein Zusammenhang) zutrifft, beträgt 3 %.</span></label><label><input type="radio" autocomplete="off" name="1dad94fe59e58874762b60b87ba05f03"><span>Die Wahrscheinlichkeit, dass die Forschungshypothese (ein Zusammenhang besteht) zutrifft, beträgt 97 %.</span></label><label><input type="radio" autocomplete="off" name="1dad94fe59e58874762b60b87ba05f03"><span>Der gefundene Zusammenhang ist mit 97%iger Sicherheit auch praktisch bedeutsam.</span></label><label><input type="radio" autocomplete="off" name="1dad94fe59e58874762b60b87ba05f03"><span>Bei einer exakten Wiederholung der Studie würde man mit 97%iger Wahrscheinlichkeit erneut ein statistisch signifikantes Ergebnis erhalten.</span></label><label><input type="radio" autocomplete="off" name="1dad94fe59e58874762b60b87ba05f03"><span>Unter der Annahme, dass in der Population <em>kein</em> Zusammenhang besteht (<span class="math inline">\(H_0\)</span>), wäre ein mindestens so extremes Ergebnis wie das beobachtete mit einer Wahrscheinlichkeit von 3 % zu erwarten, wenn man die Studie (unter gleichen Bedingungen) gedanklich unendlich oft wiederholen würde.</span></label>
+</div>
+</div>
+<div class="webex-solution">
+<p>Der p-Wert ist definiert als die Wahrscheinlichkeit, ein empirisches Ergebnis zu erhalten, das mindestens so extrem ist wie das beobachtete, <em>vorausgesetzt</em> die Nullhypothese <span class="math inline">\(H_0\)</span> gilt (und man wiederholt den Versuch gedanklich unendlich oft unter gleichen Bedingungen). Das entspricht exakt der ersten Antwortoption. Der p-Wert ist also eine bedingte Wahrscheinlichkeit – bedingt auf die Gültigkeit von <span class="math inline">\(H_0\)</span> – und <em>keine</em> Wahrscheinlichkeitsaussage über <span class="math inline">\(H_0\)</span> selbst oder über die Forschungshypothese.</p>
+<p>Warum die Distraktoren falsch sind:</p>
+<ul>
+<li><p>Die zweite Option verwechselt den p-Wert mit der Wahrscheinlichkeit von <span class="math inline">\(H_0\)</span> selbst (<span class="math inline">\(Pr(H_0 | \text{Daten})\)</span>). Der p-Wert ist aber <span class="math inline">\(Pr(\text{Daten (oder extremer)} | H_0)\)</span> – eine bedingte Wahrscheinlichkeit in die <em>andere</em> Richtung. Das ist eine der im Kapitel explizit genannten typischen Fehlinterpretationen.</p></li>
+<li><p>Die dritte Option begeht denselben Fehler in Bezug auf die Forschungshypothese: Der p-Wert sagt nichts über die Wahrscheinlichkeit der Alternativhypothese aus; zudem ergänzen sich “<span class="math inline">\(Pr(H_0)\)</span>” und “<span class="math inline">\(Pr(\text{Forschungshypothese})\)</span>” nicht einfach zu 100 %, wie hier unterstellt.</p></li>
+<li><p>Die vierte Option verwechselt <em>statistische</em> Signifikanz mit <em>praktischer</em> Bedeutsamkeit (Effektgröße). Ein kleiner p-Wert sagt nichts über die Größe oder praktische Relevanz eines Effekts aus – das Kapitel warnt ausdrücklich vor dieser Verwechslung.</p></li>
+<li><p>Die fünfte Option begeht den “Replikations-Fehlschluss”: Der p-Wert einer einzelnen Studie sagt nichts darüber aus, wie wahrscheinlich ein erneut signifikantes Ergebnis bei Replikation ist; diese Wahrscheinlichkeit hängt von der (unbekannten) tatsächlichen Effektgröße, der Power der Studie und weiteren Faktoren ab, nicht einfach vom Komplement des p-Werts.</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Wahr</p></li>
+</ul>
+</div>
+</div>
+<div class="webex-question">
+<div class="webex-check webex-box">
+<p>Nach der im Kapitel verwendeten Definition (angelehnt an Gelman) gilt ein Ergebnis als statistisch signifikant, wenn der Nullwert <em>nicht</em> im Schätzbereich (Konfidenzintervall) enthalten ist. Welche der folgenden Aussagen zur statistischen Signifikanz im Frequentismus ist korrekt?</p>
+<div id="webex-b280cbfb06f6242f5a6af7174c1e1bf5" class="webex-radiogroup" data-answer="OQIUAE9SSlIcBzs=">
+<label><input type="radio" autocomplete="off" name="b280cbfb06f6242f5a6af7174c1e1bf5"><span>Statistische Signifikanz hängt ausschließlich von der Stichprobengröße ab; die Effektgröße ist dabei irrelevant.</span></label><label><input type="radio" autocomplete="off" name="b280cbfb06f6242f5a6af7174c1e1bf5"><span>Ein nicht signifikantes Ergebnis bei kleiner Stichprobe ist der Beweis dafür, dass in der Population kein Effekt existiert.</span></label><label><input type="radio" autocomplete="off" name="b280cbfb06f6242f5a6af7174c1e1bf5"><span>Ein statistisch signifikantes Ergebnis bedeutet automatisch, dass der gefundene Effekt auch praktisch bedeutsam ist.</span></label><label><input type="radio" autocomplete="off" name="b280cbfb06f6242f5a6af7174c1e1bf5"><span>Statistische Signifikanz hängt ausschließlich von der Effektgröße ab; die Stichprobengröße spielt dabei keine Rolle.</span></label><label><input type="radio" autocomplete="off" name="b280cbfb06f6242f5a6af7174c1e1bf5"><span>Ein statistisch signifikantes Ergebnis kann sowohl durch einen großen Effekt als auch durch eine große Stichprobe zustande kommen; bei ausreichend großer Stichprobe wird (fast) jeder von Null verschiedene Effekt irgendwann signifikant.</span></label>
+</div>
+</div>
+<div class="webex-solution">
+<p>Im Kapitel wird ausdrücklich betont, dass statistische Signifikanz im Frequentismus eine Funktion <em>sowohl</em> der Effektgröße <em>als auch</em> der Stichprobengröße ist: Wenn die Stichprobe groß genug ist, wird (fast) jeder Test signifikant, sofern der wahre Effekt nicht exakt Null ist. Ein signifikantes Ergebnis kann also entweder daher rühren, dass der Effekt groß ist, oder daher, dass die Stichprobe groß ist (oder beides). Das entspricht der ersten Antwortoption.</p>
+<p>Warum die Distraktoren falsch sind:</p>
+<ul>
+<li><p>Die zweite Option ignoriert genau den im Kapitel hervorgehobenen Punkt, dass auch die Stichprobengröße die Signifikanz beeinflusst – unabhängig von der tatsächlichen Effektgröße.</p></li>
+<li><p>Die dritte Option geht in die andere Richtung zu weit: Auch die Effektgröße spielt eine Rolle (bei Effekt = 0 in der Population wird ein Ergebnis nicht systematisch signifikant, egal wie groß die Stichprobe ist – abgesehen vom Fehler 1. Art).</p></li>
+<li><p>Die vierte Option verwechselt <em>statistische</em> Signifikanz mit <em>praktischer</em> Bedeutsamkeit. Gerade weil auch sehr kleine, praktisch irrelevante Effekte bei großen Stichproben signifikant werden können, ist diese Gleichsetzung eine der häufigsten Fehlinterpretationen, vor der das Kapitel warnt.</p></li>
+<li><p>Die fünfte Option begeht den Fehlschluss “Abwesenheit von Evidenz ist Evidenz für Abwesenheit”: Ein nicht-signifikantes Ergebnis, insbesondere bei kleiner Stichprobe (und entsprechend geringer Power), zeigt lediglich, dass der Nullwert nicht ausgeschlossen werden konnte – es ist kein Beweis, dass kein Effekt existiert.</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Wahr</p></li>
+</ul>
+</div>
+</div>
+<div class="webex-question">
+<div class="webex-check webex-box">
+<p>Das Kapitel verwendet (mit Bezug auf Gelman) eine bestimmte Definition von <em>statistischer Signifikanz</em>, die explizit sowohl für die frequentistische als auch für die Bayes-Statistik gültig sein soll. Wie lautet diese Definition?</p>
+<div id="webex-519e243c346ea62c3641660ac52b256f" class="webex-radiogroup" data-answer="bgEVVR4EH1IfBGs=">
+<label><input type="radio" autocomplete="off" name="519e243c346ea62c3641660ac52b256f"><span>Ein Ergebnis ist statistisch signifikant, wenn der Effekt größer als 50% der Streuung der AV ist.</span></label><label><input type="radio" autocomplete="off" name="519e243c346ea62c3641660ac52b256f"><span>Ein Ergebnis ist statistisch signifikant, wenn der p-Wert exakt Null beträgt.</span></label><label><input type="radio" autocomplete="off" name="519e243c346ea62c3641660ac52b256f"><span>Statistisch signifikant ist ein Ergebnis genau dann, wenn es auf einer Stichprobe von mindestens <span class="math inline">\(n=1000\)</span> beruht.</span></label><label><input type="radio" autocomplete="off" name="519e243c346ea62c3641660ac52b256f"><span>Ein Ergebnis gilt als statistisch signifikant, wenn der Wert Null <em>nicht</em> im Schätzbereich (Konfidenzintervall bzw. Post-Intervall) für den betreffenden Parameter enthalten ist.</span></label><label><input type="radio" autocomplete="off" name="519e243c346ea62c3641660ac52b256f"><span>Statistische Signifikanz ist ausschließlich für die frequentistische Statistik definierbar, für die Bayes-Statistik gibt es keine entsprechende Definition.</span></label>
+</div>
+</div>
+<div class="webex-solution">
+<p>Die im Kapitel verwendete (an Gelman angelehnte) Definition lautet: “Ist der Wert Null nicht im Schätzbereich enthalten, so liegt ein statistisch signifikantes Ergebnis vor.” Diese Definition ist bewusst so formuliert, dass sie sowohl auf frequentistische Konfidenzintervalle als auch auf Bayes’sche Post-Intervalle (z.B. ein 95%-PI oder HDI) anwendbar ist – sie bezieht sich rein auf die Lage des Schätzbereichs relativ zu Null, unabhängig vom statistischen Paradigma. Die erste Option ist korrekt.</p>
+<p>Warum die Distraktoren falsch sind:</p>
+<ul>
+<li><p>Die zweite Option verwechselt Signifikanz mit einer (in der Praxis ohnehin so gut wie nie auftretenden) exakten Nullwahrscheinlichkeit des p-Werts – die tatsächliche Definition bezieht sich auf die Lage von Null relativ zum Schätzbereich, nicht auf einen bestimmten p-Wert.</p></li>
+<li><p>Die dritte Option widerspricht dem zentralen Anliegen des Kapitels: Die Definition wird ausdrücklich so gewählt, dass sie <em>auch</em> für die Bayes-Statistik gilt, nicht nur für den Frequentismus.</p></li>
+<li><p>Die vierte Option erfindet ein im Kapitel nicht genanntes, willkürliches Kriterium (50% der Streuung der AV) – die tatsächliche Definition bezieht sich allein darauf, ob Null im Schätzbereich liegt.</p></li>
+<li><p>Die fünfte Option nennt eine im Kapitel nicht erwähnte feste Mindeststichprobengröße als Kriterium für Signifikanz – die Definition ist unabhängig von einer konkreten Stichprobengröße formuliert (auch wenn die Stichprobengröße die <em>Breite</em> des Schätzbereichs beeinflusst).</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Wahr</p></li>
+<li><p>Falsch</p></li>
+</ul>
+</div>
+</div>
+<div class="webex-question">
+<div class="webex-check webex-box">
+<p>Welche der folgenden Aussagen beschreibt einen im Kapitel dargestellten, zutreffenden Unterschied zwischen frequentistischer und Bayes-Inferenz?</p>
+<div id="webex-498f4d6aaa7c9faedfc6614ff482e6a1" class="webex-radiogroup" data-answer="bwgUVhhUGlFNUWo=">
+<label><input type="radio" autocomplete="off" name="498f4d6aaa7c9faedfc6614ff482e6a1"><span>In der Bayes-Inferenz fließt Vorwissen (Priori-Wissen) explizit in die Analyse ein, und es sind Wahrscheinlichkeitsaussagen über Hypothesen möglich; im Frequentismus ist beides nicht vorgesehen.</span></label><label><input type="radio" autocomplete="off" name="498f4d6aaa7c9faedfc6614ff482e6a1"><span>In beiden Ansätzen sind direkte Wahrscheinlichkeitsaussagen über Hypothesen oder Parameter möglich; sie unterscheiden sich nur in der Berechnungsmethode.</span></label><label><input type="radio" autocomplete="off" name="498f4d6aaa7c9faedfc6614ff482e6a1"><span>Der Frequentismus berücksichtigt explizit Vorwissen über den untersuchten Sachverhalt, die Bayes-Inferenz hingegen nicht.</span></label><label><input type="radio" autocomplete="off" name="498f4d6aaa7c9faedfc6614ff482e6a1"><span>Beide Ansätze kommen bei denselben Daten immer zu identischen inhaltlichen Schlussfolgerungen, da sie auf denselben Rohdaten beruhen.</span></label><label><input type="radio" autocomplete="off" name="498f4d6aaa7c9faedfc6614ff482e6a1"><span>Die Bayes-Inferenz definiert Wahrscheinlichkeit stets über relative Häufigkeiten bei (gedanklich) unendlicher Wiederholung, der Frequentismus über subjektives Vorwissen.</span></label>
+</div>
+</div>
+<div class="webex-solution">
+<p>Laut Kapitel unterscheiden sich Frequentismus und Bayes-Inferenz insbesondere darin, dass (a) die Bayes-Inferenz Vorwissen (Priori-Wissen) explizit und kritisierbar in die Analyse einbezieht, während der Frequentismus dies nicht tut, und (b) nur die Bayes-Inferenz direkte Wahrscheinlichkeitsaussagen über Hypothesen (bzw. Parameter) erlaubt, während der Frequentismus stattdessen angibt, wie häufig eine vergleichbare Datenlage bei (gedanklich) unendlicher Wiederholung zu erwarten wäre. Das entspricht der ersten Antwortoption.</p>
+<p>Warum die Distraktoren falsch sind:</p>
+<ul>
+<li><p>Die zweite Option kehrt den Sachverhalt genau um: Es ist die Bayes-Inferenz, die Vorwissen explizit berücksichtigt (über die Priori-Verteilung), nicht der Frequentismus.</p></li>
+<li><p>Die dritte Option ist falsch, weil gerade dieser Punkt – ob Wahrscheinlichkeitsaussagen über Hypothesen/Parameter erlaubt sind – der entscheidende konzeptuelle (nicht nur rechnerische) Unterschied zwischen beiden Ansätzen ist.</p></li>
+<li><p>Die vierte Option vertauscht die Definitionen: Der <em>Frequentismus</em> definiert Wahrscheinlichkeit über relative Häufigkeiten bei (gedanklich) unendlicher Wiederholung; die Bayes-Statistik lässt daneben auch subjektives Vorwissen (Priori) als Wahrscheinlichkeit zu.</p></li>
+<li><p>Die fünfte Option ist falsch, da beide Ansätze – je nach gewähltem Modell bzw. Prior – durchaus zu unterschiedlichen Schlussfolgerungen (z.B. unterschiedlichen Interpretationen von Signifikanz oder Unsicherheit) gelangen können, auch bei identischen Rohdaten.</p></li>
+<li><p>Wahr</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+</ul>
+</div>
+</div>
+<div class="webex-question">
+<div class="webex-check webex-box">
+<p>Eine Forscherin möchte prüfen, ob in der Population ein linearer Zusammenhang zwischen Schlafdauer und Konzentrationsfähigkeit besteht. Wie lautet die dazu passende Nullhypothese?</p>
+<div id="webex-5263cc68d52e7d623fcfe9d65d85a11b" class="webex-radiogroup" data-answer="bgIaAk9TGghIBW8=">
+<label><input type="radio" autocomplete="off" name="5263cc68d52e7d623fcfe9d65d85a11b"><span><span class="math inline">\(H_0: r = 0\)</span> (Es besteht kein linearer Zusammenhang in der Stichprobe.)</span></label><label><input type="radio" autocomplete="off" name="5263cc68d52e7d623fcfe9d65d85a11b"><span><span class="math inline">\(H_0: \rho = 0\)</span> (Es besteht kein linearer Zusammenhang zwischen Schlafdauer und Konzentrationsfähigkeit in der Population.)</span></label><label><input type="radio" autocomplete="off" name="5263cc68d52e7d623fcfe9d65d85a11b"><span><span class="math inline">\(H_1: \rho \neq 0\)</span> (Es besteht ein linearer Zusammenhang in der Population.)</span></label><label><input type="radio" autocomplete="off" name="5263cc68d52e7d623fcfe9d65d85a11b"><span><span class="math inline">\(H_0: \mu_1 = \mu_2\)</span> (Es gibt keinen Unterschied zwischen zwei Gruppenmittelwerten.)</span></label><label><input type="radio" autocomplete="off" name="5263cc68d52e7d623fcfe9d65d85a11b"><span><span class="math inline">\(H_0: \rho = 1\)</span> (Es besteht ein perfekter linearer Zusammenhang in der Population.)</span></label>
+</div>
+</div>
+<div class="webex-solution">
+<p>Die Nullhypothese (<span class="math inline">\(H_0\)</span>) besagt stets, dass <em>kein</em> Effekt vorliegt – hier also kein linearer Zusammenhang. Da es sich um eine Aussage über die <em>Grundgesamtheit</em> (Population) handelt, muss der <em>griechische</em> Buchstabe für den Populationsparameter der Korrelation verwendet werden: <span class="math inline">\(\rho\)</span> (rho), nicht der lateinische Buchstabe <span class="math inline">\(r\)</span>, der die Korrelation in der <em>Stichprobe</em> bezeichnet. Damit lautet die korrekte Nullhypothese <span class="math inline">\(H_0: \rho = 0\)</span>, entsprechend der ersten Antwortoption.</p>
+<p>Warum die Distraktoren falsch sind:</p>
+<ul>
+<li><p><span class="math inline">\(H_0: \rho = 1\)</span> würde einen <em>perfekten</em> Zusammenhang als Nullhypothese festlegen – das Gegenteil der eigentlichen Fragestellung (kein Zusammenhang) und zudem unüblich als Referenzwert.</p></li>
+<li><p><span class="math inline">\(H_0: r = 0\)</span> verwendet den lateinischen Buchstaben <span class="math inline">\(r\)</span>, der die Korrelation in der <em>Stichprobe</em> (eine Statistik) bezeichnet. Hypothesen beziehen sich aber per Definition auf <em>Parameter</em> der Population, wofür griechische Buchstaben (hier <span class="math inline">\(\rho\)</span>) verwendet werden – diese Verwechslung von Statistik und Parameter ist ein klassischer Fehler.</p></li>
+<li><p>Die vierte Option ist als <em>Alternativhypothese</em> (<span class="math inline">\(H_1\)</span>) formuliert (es besteht ein Zusammenhang) und beantwortet damit nicht die Frage nach der <em>Nullhypothese</em>; zudem ist die Benennung (<span class="math inline">\(H_1\)</span> statt <span class="math inline">\(H_0\)</span>) hier explizit falsch zugeordnet.</p></li>
+<li><p><span class="math inline">\(H_0: \mu_1 = \mu_2\)</span> bezieht sich auf einen Mittelwertsvergleich zwischen zwei Gruppen und ist die passende Nullhypothese für einen Gruppenvergleich (z.B. t-Test), nicht für einen Zusammenhang zwischen zwei metrischen Variablen wie Schlafdauer und Konzentrationsfähigkeit.</p></li>
+<li><p>Falsch</p></li>
+<li><p>Wahr</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+</ul>
+</div>
+</div>
+<div class="webex-question">
+<div class="webex-check webex-box">
+<p>Was ist laut Kapitel eine <em>Alternativhypothese</em> (Effekthypothese), und welche der folgenden Aussagen ist ein Beispiel dafür?</p>
+<div id="webex-15710b1ecc64054a614bab631d4c1386" class="webex-radiogroup" data-answer="agUbARxSHVVPUms=">
+<label><input type="radio" autocomplete="off" name="15710b1ecc64054a614bab631d4c1386"><span>Eine Alternativhypothese kann niemals mit einem Konfidenzintervall in Verbindung gebracht werden.</span></label><label><input type="radio" autocomplete="off" name="15710b1ecc64054a614bab631d4c1386"><span>“Die Trefferquote der Münze beträgt <span class="math inline">\(\pi=0{,}5\)</span>” ist ein typisches Beispiel für eine Alternativhypothese.</span></label><label><input type="radio" autocomplete="off" name="15710b1ecc64054a614bab631d4c1386"><span>Eine Alternativhypothese bezieht sich immer nur auf Stichprobenkennwerte, niemals auf Populationsparameter.</span></label><label><input type="radio" autocomplete="off" name="15710b1ecc64054a614bab631d4c1386"><span>Eine Alternativhypothese behauptet stets, dass <em>kein</em> Effekt vorliegt – sie ist damit identisch mit der Nullhypothese.</span></label><label><input type="radio" autocomplete="off" name="15710b1ecc64054a614bab631d4c1386"><span>Eine Hypothese, die einen (substanziellen) Effekt behauptet, z.B. einen Unterschied zwischen Gruppen oder einen Zusammenhang zwischen Variablen – logisch betrachtet meist das Gegenteil der Nullhypothese; Beispiel: “Der Korrelationskoeffizient <span class="math inline">\(\rho\)</span> liegt bei ca. 0,5 bis 0,7, ist also nicht Null.”</span></label>
+</div>
+</div>
+<div class="webex-solution">
+<p>Laut Definition ist eine Alternativhypothese “eine Hypothese, die besagt, dass es einen (substanziellen) Effekt gibt […] Logisch betrachtet ist die Alternativhypothese meist das Gegenteil der Nullhypothese.” Ein im Kapitel genanntes Beispiel ist: “Der Korrelationskoeffizient <span class="math inline">\(\rho\)</span> liegt bei ca. .5 bis .7, ist also nicht Null.” Die erste Option ist korrekt.</p>
+<p>Warum die Distraktoren falsch sind:</p>
+<ul>
+<li><p>Die zweite Option verwechselt Alternativ- und Nullhypothese: Die <em>Nullhypothese</em> behauptet keinen (null) Effekt, die <em>Alternativhypothese</em> behauptet gerade das Gegenteil – einen vorhandenen Effekt.</p></li>
+<li><p>Die dritte Option ist falsch: Wie auch die Nullhypothese bezieht sich die Alternativhypothese auf <em>Populationsparameter</em> (z.B. <span class="math inline">\(\rho\)</span>, <span class="math inline">\(\mu_1-\mu_2\)</span>, <span class="math inline">\(\beta_1\)</span>), nicht auf reine Stichprobenkennwerte.</p></li>
+<li><p>Die vierte Option beschreibt gerade eine typische <em>Nullhypothese</em> (die Münze sei fair, <span class="math inline">\(\pi=0{,}5\)</span> als Referenzwert ohne Effekt), nicht eine Alternativhypothese.</p></li>
+<li><p>Die fünfte Option ist falsch: Im Kapitel wird gezeigt, dass Schätzbereiche (Konfidenzintervalle) implizit Hypothesentests erlauben – liegt der Nullwert nicht im Konfidenzintervall, spricht das für die Alternativhypothese (einen vorhandenen Effekt).</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Wahr</p></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
+<div id="ref-badenes-ribera2016" class="csl-entry" role="listitem">
+Badenes-Ribera, L., Frias-Navarro, D., Iotti, B., Bonilla-Campos, A., &amp; Longobardi, C. (2016). Misconceptions of the P-Value among <span>Chilean</span> and <span>Italian Academic Psychologists</span>. <em>Frontiers in Psychology</em>, <em>7</em>. <a href="https://www.frontiersin.org/article/10.3389/fpsyg.2016.01247">https://www.frontiersin.org/article/10.3389/fpsyg.2016.01247</a>
+</div>
+<div id="ref-gelman2021" class="csl-entry" role="listitem">
+Gelman, A., Hill, J., &amp; Vehtari, A. (2021). <em>Regression and Other Stories</em>. Cambridge University Press.
+</div>
+<div id="ref-kabadayi2024" class="csl-entry" role="listitem">
+Kabadayi, F. (2024). Smartphone Addiction, Depression, Distress, Eustress, Loneliness, and Sleep Deprivation in Adolescents: A Latent Profile and Network Analysis Approach. <em>BMC Psychology</em>, <em>12</em>(1), 608. <a href="https://doi.org/10.1186/s40359-024-02117-6">https://doi.org/10.1186/s40359-024-02117-6</a>
+</div>
+<div id="ref-makowski2019" class="csl-entry" role="listitem">
+Makowski, D., Ben-Shachar, M. S., Chen, S. H. A., &amp; Lüdecke, D. (2019). Indices of <span>Effect Existence</span> and <span>Significance</span> in the <span>Bayesian Framework</span>. <em>Frontiers in Psychology</em>, <em>10</em>. <a href="https://www.frontiersin.org/article/10.3389/fpsyg.2019.02767">https://www.frontiersin.org/article/10.3389/fpsyg.2019.02767</a>
+</div>
+<div id="ref-wasserstein2016" class="csl-entry" role="listitem">
+Wasserstein, R. L., &amp; Lazar, N. A. (2016). The <span>ASA</span>’s <span>Statement</span> on p-<span>Values</span>: <span>Context</span>, <span>Process</span>, and <span>Purpose</span>. <em>The American Statistician</em>, <em>70</em>(2), 129–133. <a href="https://doi.org/10.1080/00031305.2016.1154108">https://doi.org/10.1080/00031305.2016.1154108</a>
+</div>
+</div>
+</section></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p><del>Meistens</del> Manchmal darf man bei der Statistik nicht nach einem tieferen Sinn suchen. Ist Statistik eine Art moderne Kunst?<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Manch einer hätte mit mehr gerechnet; andere mit weniger…<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p><span class="math inline">\(\sigma\)</span>, das griechische <em>s</em> für Streuung (um die Regressionsgerade herum), manchmal wird auch e wie <em>error</em> verwendet<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Tatsächlich gibt es mehrere Synonyme oder ähnliche Begriffe für Konfidenzintervall. Wir kommen später darauf detaillierter zu sprechen.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script>
+
+/* definition of content for the buttons */
+const webex_buttons = {check_hidden:          "<b>&check;</b>",
+                       check_hidden_alt:      "Check answer",
+                       check_shown:           "<b>&lsh;</b>",
+                       check_shown_alt:       "Hide check",
+                       check_of_total:        "/",
+                       solution:              "<b>&quest;</b>",
+                       solution_alt:          "Correct solution",
+                       question_next:         "<b>&#8634;</b>",
+                       question_next_alt:     "Next question",
+                       question_previous:     "",
+                       question_previous_alt: ""}
+
+
+/* update total correct if #webex-total_correct exists */
+update_total_correct = function() {
+  console.log("webex: update total_correct");
+
+  document.querySelectorAll(".webex-total_correct").forEach(total => {
+    p = total.closest(".webex-box");
+    var correct = p.getElementsByClassName("webex-correct").length;
+    var solvemes = p.getElementsByClassName("webex-solveme").length;
+    var radiogroups = p.getElementsByClassName("webex-radiogroup").length;
+    var selects = p.getElementsByClassName("webex-select").length;
+    /* no specific class on input node, thus searching via query selector */
+    var checkboxgroups = p.querySelectorAll("div[class=webex-checkboxgroup] input[type=checkbox]").length
+
+    /* show number of correct / total number of answers */
+    total.innerHTML = correct + "&nbsp;" + webex_buttons.check_of_total + "&nbsp;" + (solvemes + radiogroups + checkboxgroups + selects);
+  });
+}
+
+/* check answers */
+check_func = function() {
+  console.log("webex: check answer");
+
+  //var cl = elem.parentElement.classList;
+  var cl = this.closest(".webex-box").classList;
+  if (cl.contains("unchecked")) {
+    cl.remove("unchecked");
+    this.innerHTML = webex_buttons.check_shown; //"Hide check";
+    if (webex_buttons.check_shown_alt.length > 0) this.setAttribute("title", webex_buttons.check_shown_alt);
+  } else {
+    cl.add("unchecked");
+    this.innerHTML = webex_buttons.check_hidden; //"Check answer";
+    if (webex_buttons.check_hidden_alt.length > 0) this.setAttribute("title", webex_buttons.check_hidden_alt);
+  }
+}
+
+/* helper functions for checking the webex ID */
+const id_checker = {"fmt": new RegExp("[g-zG-Z]"),
+                    "load": function(e) { return e.getAttribute("id").match("(?<=(-)).*$")[0]; },
+                    "eval": new TextEncoder(),
+                    "dval": new TextDecoder()}
+
+/* Show/hide correct solution */
+solution_func = function() {
+  console.log("webex: show/hide solution");
+
+  var div = this.closest(".webex-question").querySelector(".webex-solution");
+  var cl = div.classList;
+
+  if (cl.contains("visible")) {
+    cl.remove("visible");
+  } else {
+    cl.add("visible");
+  }
+}
+
+/* function to check if the real answer is numeric */
+convert_to_numeric = function(x) {
+  if (typeof x == "string") {
+    /* do nothing */
+  } else if (x.length == 1) {
+    /* take first element */
+    x = x[0]
+  } else {
+    return NaN;
+  }
+
+  /* remove spaces for easier parsing */
+  x = x.replace(/\s/g, "");
+
+  /* Define patterns for different formats, note that spaces have been removed above */
+  const patterns = [
+    {regex: /^[+-]?\d+(\.\d{3})*,\d+$/, decimal: ",", thousand: "." },  // Format: "1.100.100.100,3"
+    {regex: /^[+-]?\d+(,\d{3})*\.\d+$/, decimal: ".", thousand: "," },  // Format: "1,100,100,100.3"
+    {regex: /^[+-]?\d+(\.|\.\d+)?$/, decimal: "." },                    // Format: "1100100100.5" or "1100100100."
+    {regex: /^[+-]?\d+(,|,\d+)$/, decimal: "," }                        // Format: "1100100100,5" or "1100100100,"
+  ];
+
+
+  /* testing all regular expressions, convert to float if possible */
+  for (const { regex, decimal, thousand } of patterns) {
+    if (regex.test(x)) {
+      let numeric = x;
+      if (thousand) numeric = numeric.replace(new RegExp(`\\${thousand}`, "g"), "");
+      numeric = numeric.replace(decimal, ".");
+      return parseFloat(numeric);
+    }
+  }
+
+  /* input of length 1 but none of the known formats, return NaN */
+  return NaN;
+}
+
+/* Checking webex ID, returns formalsol */
+check_id = function(e) {
+  /* loading webex ID */
+  var id = id_checker["load"](e);
+
+  /* extracting answer */
+  let answer = e.dataset.answer;
+
+  /* checking unique id, prepare and return array */
+  if (!id_checker["fmt"].test(id)) {
+    const a = id_checker["eval"].encode(atob(answer));
+    const b = id_checker["eval"].encode(id);
+    const res = a.map((byte, index) => byte^b[index % b.length]);
+    answer = id_checker["dval"].decode(res);
+    /* Replacing &amp; with ' before parsing */
+    answer = answer.replaceAll("&apos;", "'");
+  }
+
+  return JSON.parse(answer);
+}
+
+/* function for checking solveme answers */
+solveme_func = function(e) {
+  /* avoid that keyup and keychange twice execute this function within nms = 10
+   * ms, clearing inputTimer and add timeout */
+  console.log("webex: check solveme");
+
+  /* float, precision for checking numeric answers */
+  const eps = 0.00000000000001;
+
+  /* get last checked user answer */
+  const question = this.closest(".webex-question")
+
+  /* extracting classes */
+  var cl = this.classList;
+  var my_answer = this.value;
+
+  /* extracting classes */
+  var cl = this.classList;
+
+  /* empty answer? Job done */
+  if (my_answer == "") {
+    cl.remove("webex-correct");
+    cl.remove("webex-incorrect");
+    return false;
+  }
+
+  /* Find closest (parent) webex-question */
+  let formalsols = check_id(this)
+
+  /* by default we assume the users' answer is incorrect */
+  var user_answer_correct = false;
+
+  /* check if the correct answer is numeric, i.e. if 
+   * formalsols is of length 1 containing one single numeric
+   * value in a known format, else, NaN is returned */
+  const num_formalsol = convert_to_numeric(formalsols);
+  const num_my_answer = convert_to_numeric(my_answer);
+
+  /* if the correct answer is numeric (float), the user's answer
+   * must also be numeric. If not, it is wrong. Else we can
+   * compare floating point numbers */
+  if (!isNaN(num_formalsol) && !isNaN(num_my_answer)) {
+    /* check if the real answer and the user input are numerically the same;
+     * adding 'delta' to avoid precision issues */
+    var diff = Math.abs(num_formalsol - num_my_answer);
+    if (diff < parseFloat(this.dataset.tol) + eps) { user_answer_correct = true; }
+
+  /* if the question contains regex, a regular expression is used
+   * to evaluate the users answer. Allows for multiple regular expressions */
+  } else if (cl.contains("regex")) {
+    for (let i = 0; i < formalsols.length; i++) {
+        let regex = new RegExp(formalsols[i], cl.contains("ignorecase") ? "i" : "");
+        if (regex.test(my_answer)) { user_answer_correct = true; break; }
+    }
+
+  /* else we evaluate on 'string level', considering the creators preferences
+   * regarding set options */
+  } else {
+    /* modify/prepare answer */
+    if (cl.contains("ignorecase")) { my_answer = my_answer.toLowerCase(); }
+    if (cl.contains("nospaces"))   { my_answer = my_answer.replace(/ /g, ""); }
+
+    /* if the real answer includes user input - correct */
+    if (formalsols.includes(my_answer)) {
+      user_answer_correct = true;
+  
+      // added regex bit
+      if (cl.contains("regex")) {
+        answer_regex = RegExp(formalsols.join("|"))
+        if (answer_regex.test(my_answer)) {
+          cl.add("webex-correct");
+        }
+      }
+    }
+  }
+
+  if (user_answer_correct) {
+      cl.add("webex-correct");
+      cl.remove("webex-incorrect");
+  } else {
+      cl.add("webex-incorrect");
+      cl.remove("webex-correct");
+  }
+
+  update_total_correct();
+
+}
+
+/* function for checking select answers */
+select_func = function(e) {
+  console.log("webex: check select");
+
+  var options   = [];
+  Array.from(this.querySelectorAll("option")).forEach((option, index) => {
+    if (!option.hasAttribute("value") || !option.getAttribute("value") === "blank") {
+      options.push(option);
+    }
+  });
+
+  /* get selected option */
+  function get_selected(options) { return options.findIndex(option => option.selected); }
+  var option_index = get_selected(options)
+
+  /* loading webex ID */
+  var formalsol = check_id(this)
+
+  /* add class for current selection */
+  this.classList.remove("webex-incorrect");
+  this.classList.remove("webex-correct");
+  if (option_index >= 0) {
+    this.classList.add(formalsol[option_index] === 1 ? "webex-correct" : "webex-incorrect");
+  }
+
+  update_total_correct();
+}
+
+/* function for checking radiogroups answers */
+radiogroups_func = function(e) {
+  console.log("webex: check radiogroups");
+
+  /* get real answer (binary integer array) */
+  var id = e.target.getAttribute("name");
+  var group = document.querySelector(".webex-radiogroup[id='webex-" + id + "']");
+  var formalsol = check_id(group)
+
+  /* check which radiobuttion is selected (user answer) */
+  function get_checked(radios) {
+    return radios.findIndex(radios => radios.checked);
+  }
+  var radios = Array.from(group.querySelectorAll("input[type='radio']"))
+  var radio_index = get_checked(radios);
+
+  /* remove existing classes */
+  radios.forEach(radio => {
+    let cl = radio.closest("label").classList
+    cl.remove("webex-incorrect");
+    cl.remove("webex-correct");
+  });
+
+  /* add class for current selection */
+  let cl = radios[radio_index].closest("label").classList
+  if (formalsol[radio_index] === 1) {
+      cl.add("webex-correct");
+  } else {
+      cl.add("webex-incorrect");
+  }
+
+  update_total_correct();
+}
+
+
+/* function for checking checkboxgroups answers */
+checkboxgroups_func = function(e) {
+  console.log("webex: check checkboxgroups");
+
+  /* get real answer (binary integer array) */
+  var group = document.querySelector(".webex-checkboxgroup[id='" + this.id + "']");
+  var formalsol = check_id(group);
+
+  /* check which checkbox is checked (user answer) */
+  function get_checked(group) {
+      const checkboxes = Array.from(group.querySelectorAll("input[type='checkbox']"));
+      return checkboxes.reduce((indices, checkbox, index) => {
+          if (checkbox.checked) indices.push(index);
+          return indices;
+      }, []);
+  }
+  var checks = Array.from(group.querySelectorAll("input[type='checkbox']"));
+  var check_index = get_checked(group);
+
+  checks.forEach((e, index) => {
+    var label = e.parentNode;
+    var ans = formalsol[index];
+    if ((e.checked && ans === 1) || (!e.checked && ans === 0)) {
+        label.setAttribute("class", "webex-correct")
+    } else {
+        label.setAttribute("class", "webex-incorrect")
+    }
+  });
+
+  update_total_correct();
+}
+
+/* shuffling array (thanks to stack overflow)
+ * If argument x is an integer we create an integer sequence
+ * from 0, 1, ..., (x - 1) and return a shuffled version. If
+ * the input is an array, we simply shuffle it */
+shuffle_array = function(x) {
+   if (Number.isInteger(x) && !isNaN(x)) {
+     x = Array.from({length: x}, (v, i) => i);
+   }
+   let shuffled = x.map(value => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort).map(({ value }) => value)
+   return shuffled;
+}
+
+/* ---------------------------------------------------------
+ * ---------------------------------------------------------
+ * --------------------------------------------------------- */
+window.onload = function() {
+  //console.log("webex: onload");
+
+  /* setting up buttons and actions to show/hide answers */
+  document.querySelectorAll(".webex-check").forEach(section => {
+    section.classList.add("unchecked");
+
+    /* ul to take up the list items with buttons */
+    let button_ul = document.createElement("ul");
+    button_ul.setAttribute("class", "webex-button-list");
+    section.appendChild(button_ul);
+
+    /* button to _check_ if answers given are correct */
+    let li_check = document.createElement("li");
+    button_ul.appendChild(li_check); /* add list item to ul */
+    let btn_check = document.createElement("button");
+    btn_check.innerHTML = webex_buttons.check_hidden;  // "Check answer";
+    btn_check.setAttribute("class", "webex-button webex-button-check");
+    if (webex_buttons.check_hidden_alt.length > 0) btn_check.setAttribute("title", webex_buttons.check_hidden_alt);
+    btn_check.onclick = check_func;
+    li_check.appendChild(btn_check);
+
+    /* span to show current number of points (when _check_ active) */
+    let spn = document.createElement("span");
+    spn.classList.add("webex-total_correct");
+    li_check.appendChild(spn);
+
+    /* button to show the _solution_ if there is one */
+    var has_solution = section.parentNode.querySelectorAll(".webex-solution").length > 0;
+    if (has_solution) {
+      let li_solution = document.createElement("li");
+      button_ul.appendChild(li_solution); /* add list item to ul */
+      let btn_solution = document.createElement("button");
+      btn_solution.innerHTML = webex_buttons.solution; // "Correct answer";
+      btn_solution.setAttribute("class", "webex-button webex-button-solution");
+      if (webex_buttons.solution_alt.length > 0) btn_solution.setAttribute("title", webex_buttons.solution_alt);
+      btn_solution.onclick = solution_func;
+      li_solution.appendChild(btn_solution);
+    }
+
+  });
+
+  /* set up webex-solveme inputs */
+  document.querySelectorAll(".webex-solveme").forEach(solveme => {
+    solveme.setAttribute("autocomplete","off");
+    solveme.setAttribute("autocorrect", "off");
+    solveme.setAttribute("autocapitalize", "off");
+    solveme.setAttribute("spellcheck", "false");
+    solveme.value = "";
+
+    /* adjust answer for 'no spaces' (ignore spaces) */
+    if (solveme.classList.contains("nospaces")) {
+      solveme.dataset.answer = solveme.dataset.answer.replace(/ /g, "");
+    }
+
+    /* attach checking function, triggered on key up, change, and when
+     * elemnt is out of focus. Only evaluated once by tracking changes
+     * via variable solveme_last_user_answer */
+    solveme.addEventListener("keyup",  solveme_func);
+    solveme.addEventListener("change", solveme_func);
+    solveme.addEventListener("blur",   solveme_func);
+
+    /* adding span to show correct/incorrect icon */
+    solveme.insertAdjacentHTML("afterend", " <span class='webex-icon'></span>")
+  });
+
+  /* set up radiogroups (single choice questions with display = "buttons") */
+  document.querySelectorAll(".webex-radiogroup").forEach(radiogroup => {
+    radiogroup.onchange = radiogroups_func;
+  });
+
+  /* set up checkboxgroups (multiple choice questions with display = "buttons") */
+  document.querySelectorAll(".webex-checkboxgroup").forEach(checkboxgroup => {
+    checkboxgroup.onchange = checkboxgroups_func;
+  });
+
+  /* set up selects (dropdown menus) */
+  document.querySelectorAll(".webex-select").forEach(select => {
+    select.onchange = select_func;
+    /* append webex-icon for correct/incorrect icons */
+    var elem = document.createElement("span")
+    elem.classList.add("webex-icon")
+    select.parentNode.appendChild(elem)
+  });
+
+  /* change to next/previous question if multiple are available */
+  function handleQuestionClick(group, questions, step) {
+    return async function() {
+      /* get question order as integer vector */
+      let questionOrder = group.dataset.questionOrder.split(",").map(str => parseInt(str));
+
+      /* current question/position */
+      let currentPosition = parseInt(group.dataset.currentPosition);
+
+      /* Hide the current question */
+      questions.forEach(question => { question.classList.remove("active"); });
+
+      /* Move to the next question index */
+      currentPosition = (currentPosition + step) % questionOrder.length;
+      if (currentPosition < 0) currentPosition = currentPosition + questionOrder.length
+
+      /* Display the new question */
+      questions[questionOrder[currentPosition]].classList.add("active");
+
+      // Update the currentPosition data attribute on the group div
+      group.dataset.currentPosition = currentPosition;
+    };
+  }
+
+  document.querySelectorAll(".webex-group").forEach(group => {
+    const questions = Array.from(group.querySelectorAll(".webex-question"));
+
+    /* Create vector with question order. If the webex-group does
+     * not have class '.noshuffle' we will randomly shuffle the order */
+    let questionOrder = Array.from({length: questions.length}, (v, i) => i);
+    if (!group.classList.contains("noshuffle")) {
+      questionOrder = shuffle_array(questionOrder);
+    }
+
+    /* take start position (if set) or start at 0 */
+    const currentPosition = parseInt(group.getAttribute("data-start-position")) || 0;
+
+    /* show the default question for each group */
+    questions[questionOrder[currentPosition]].classList.add("active");
+
+    /* store random order of questions as well as current position */
+    group.dataset.questionOrder   = questionOrder;
+    group.dataset.currentPosition = currentPosition;
+
+    /* find all webex-questions, search for .webex-button-list and
+     * populate the list with necessary <li><button>...</button></li> elements */
+    questions.forEach(question => {
+        let button_ul = question.querySelector("ul.webex-button-list");
+
+        let li_next = document.createElement("li");
+        let nextButton = document.createElement("button");
+        nextButton.setAttribute("class", "webex-button webex-button-next");
+        if (webex_buttons.question_next_alt.length > 0) nextButton.setAttribute("title", webex_buttons.question_next_alt);
+        nextButton.innerHTML = webex_buttons.question_next; // "Next question";
+        nextButton.addEventListener("click", handleQuestionClick(group, questions, 1));
+        li_next.appendChild(nextButton);
+
+        let li_previous = document.createElement("li");
+        let previousButton = document.createElement("button");
+        previousButton.setAttribute("class", "webex-button webex-button-previous");
+        if (webex_buttons.question_previous_alt.length > 0) previousButton.setAttribute("title", webex_buttons.question_previous_alt);
+        previousButton.innerHTML = webex_buttons.question_previous; // "Previous question";
+        previousButton.addEventListener("click", handleQuestionClick(group, questions, -1));
+        li_previous.appendChild(previousButton);
+
+        if (webex_buttons.question_previous.length > 0) button_ul.appendChild(li_previous);
+        if (webex_buttons.question_next.length > 0) button_ul.appendChild(li_next);
+    });
+  });
+
+  /* Development options */
+  document.querySelectorAll(".webex-question.check").forEach(question => {
+      question.querySelector(".webex-button-check").click()
+  });
+  document.querySelectorAll(".webex-question.solution").forEach(question => {
+      let btn = question.querySelector(".webex-button-solution");
+      if (btn !== null) { btn.click(); }
+  });
+
+  /* Pre-filling <input> fields */
+  document.querySelectorAll(".webex-question.prefill").forEach(question => {
+      question.querySelectorAll("input.webex-solveme").forEach(solveme => {
+          let x = JSON.parse(solveme.dataset.answer);
+          solveme.value = x[0];
+          /* Trigger the on change event */
+          solveme.dispatchEvent(new Event("change"));
+      });
+
+      /* Pre-filling radiogroups, that is for schoice questions */
+      question.querySelectorAll(".webex-radiogroup").forEach(radiogroup => {
+          let x = JSON.parse(radiogroup.dataset.answer);
+          let idx = x.indexOf(1);
+          let radios = radiogroup.querySelectorAll('input[type="radio"]');
+          radios[idx].checked = true;
+          /* Trigger the on change event */
+          radios[idx].dispatchEvent(new Event("change", { bubbles: true }));
+      });
+
+      /* Pre-filling checkboxgroups, that is for schoice questions w/ dropdown menus */
+      question.querySelectorAll(".webex-select").forEach(dropdown => {
+          let x = JSON.parse(dropdown.dataset.answer);
+          let idx = x.indexOf(1) + 1; /* +1 to skip the first blank option */
+          let options = dropdown.querySelectorAll("option");
+          options[idx].selected = true;
+          /* Trigger the on change event */
+          options[idx].dispatchEvent(new Event("change", { bubbles: true }));
+      });
+
+      /* Pre-filling checkboxgroups, that is for mchoice questions */
+      question.querySelectorAll(".webex-checkboxgroup").forEach(radiogroup => {
+          let x = JSON.parse(radiogroup.dataset.answer);
+          let checkboxes = radiogroup.querySelectorAll('input[type="checkbox"]');
+          for (let i = 0; i < checkboxes.length; i++) {
+              checkboxes[i].checked = x[i];
+          }
+          /* Trigger the on change event */
+          checkboxes[0].dispatchEvent(new Event("change", { bubbles: true }));
+      });
+  });
+
+  /* Show set tolerance (devel option) */
+  function calc_width(x, txt, offset = 20) {
+      /* We do the following:
+       * Create a new span, insert the value we need in the .tolerance
+       * input node, and calculate its offsetWidth. Then remove it
+       * again; this is just used to calculate the required width. */
+      var cwtmp = document.createElement("span");
+      x.appendChild(cwtmp);
+      cwtmp.innerHTML = txt || "";
+      var w = parseInt(cwtmp.getBoundingClientRect().width) + offset;
+      cwtmp.remove();
+      return w;
+  }
+
+  /* If tolerance should be shown (devel option) we calculate:
+   * - the width required to properly display the solution
+   * - the width required to properly display the tolerance
+   * - add a new element to display the tolerance
+   * - reduce the width of the solution input box. */
+  document.querySelectorAll(".webex-question.tolerance").forEach(question => {
+      question.querySelectorAll("input[data-tol]").forEach(elem => {
+          var w = null;
+
+          /* Add new element showing the tolerance */
+          let tol = document.createElement("input");
+          tol.type = "text"; // <inpyt type="text">
+          tol.disabled = true; // Disable input element
+          tol.classList.add("tolerance"); // Appending class
+          tol.value = "± " + elem.getAttribute("data-tol");
+
+          /* Add new node */
+          elem.parentNode.insertBefore(tol, elem)
+
+          var body     = document.querySelector("body");
+          //tol.value = "± " + "0.0000007";
+          //tol.value = "± " + "0.07";
+          w    = calc_width(body, tol.value);
+          wold = parseInt(elem.getBoundingClientRect().width);
+          wmin = calc_width(body, elem.value);
+
+          /* Calculate required width of the 'tolerance' node, and the
+           * reduction of the original 'input' node */
+          let wnew = Math.max(wmin, wold - w);
+          tol.style.width  = w + "px";
+          elem.style.width = wnew + "px";
+      });
+  });
+
+  update_total_correct();
+}
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Kopiert");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Kopiert");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+        for (let i=0; i<annoteTargets.length; i++) {
+          const annoteTarget = annoteTargets[i];
+          const targetCell = annoteTarget.getAttribute("data-target-cell");
+          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+          const contentFn = () => {
+            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+            if (content) {
+              const tipContent = content.cloneNode(true);
+              tipContent.classList.add("code-annotation-tip-content");
+              return tipContent.outerHTML;
+            }
+          }
+          const config = {
+            allowHTML: true,
+            content: contentFn,
+            onShow: (instance) => {
+              selectCodeLines(instance.reference);
+              instance.reference.classList.add('code-annotation-active');
+              window.tippy.hideAll();
+            },
+            onHide: (instance) => {
+              unselectCodeLines();
+              instance.reference.classList.remove('code-annotation-active');
+            },
+            maxWidth: 300,
+            delay: [50, 0],
+            duration: [200, 0],
+            offset: [5, 10],
+            arrow: true,
+            appendTo: function(el) {
+              return el.parentElement.parentElement.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'quarto',
+            placement: 'right',
+            popperOptions: {
+              modifiers: [
+              {
+                name: 'flip',
+                options: {
+                  flipVariations: false, // true by default
+                  allowedAutoPlacements: ['right'],
+                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                },
+              },
+              {
+                name: 'preventOverflow',
+                options: {
+                  mainAxis: false,
+                  altAxis: false
+                }
+              }
+              ]        
+            }      
+          };
+          window.tippy(annoteTarget, config); 
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./0200-zielarten.html" class="pagination-link" aria-label="Die drei Zielarten der Statistik">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Die drei Zielarten der Statistik</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./0300-Wskt.html" class="pagination-link" aria-label="Hallo, Wahrscheinlichkeit">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Hallo, Wahrscheinlichkeit</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Powered by <a href="https://quarto.org">Quarto</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p><a href="./imprint.html">Impressum</a></p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/0250-inferenz.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p><a href="./data-privacy.html">Datenschutzhinweise</a></p>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+</body></html>
