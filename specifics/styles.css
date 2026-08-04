@@ -70,3 +70,53 @@ html[lang="de"] q { quotes: "„" "“" "‚" "‘" }
 quotes: "„" "“" "‚" "‘";
 
 
+/* RevealJS-Foliendecks (slides/): Sicherheitsnetz gegen rechts abgeschnittene
+   Formeln. MathJax v2 (HTML-CSS-Output) setzt die Pixelgrößen einmalig beim
+   Typesetting per Inline-Style und reagiert NICHT auf nachträgliche
+   font-size-Änderungen von außen -- zu breite Formeln müssen daher im
+   Quelltext selbst verkleinert werden (siehe quarto-slides-Skill: Formel in
+   ::: {style="font-size: 0.7em;"} ... ::: wrappen, VOR dem Rendern/Typesetting).
+   Diese Regel fängt nur den Rest-Fall ab (z. B. andere Mathe-Engines wie
+   MathJax v3/KaTeX, die responsive sind) und verhindert, dass eine zu breite
+   Formel unsichtbar über den Folienrand hinausläuft, statt wenigstens einen
+   Scrollbalken zu zeigen. !important ist nötig, da MathJax Inline-Styles
+   setzt, die eine normale Regel sonst nicht überschreiben würde. */
+.reveal .slides .MathJax_Display,
+.reveal .slides mjx-container[display="true"] {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+/* RevealJS-Foliendecks (slides/): lightbox: true lässt Quarto unter jedem
+   Bild automatisch eine sichtbare Bildunterschrift (figcaption, = der
+   Alt-Text) einblenden -- das kostet auf vielen Bild-Folien genug Platz, um
+   sie zum Überlaufen zu bringen. Auf Folien ist die Caption redundant
+   (Bild + gesprochener Vortrag reichen); ausblenden statt Platz zu
+   verschwenden. Die Lightbox-Vergrößerung selbst ist davon nicht betroffen,
+   da sie den title-Attributwert der Bild-Verlinkung anzeigt, nicht die
+   figcaption. */
+.reveal .slides figcaption {
+  display: none;
+}
+
+/* Quarto setzt auf Figuren serienmäßig einen großzügigen margin-bottom (für
+   Buchseiten gedacht), der auf den ohnehin knappen RevealJS-Folien viel
+   Platz frisst und mancherorts das entscheidende bisschen zum Überlaufen
+   ist. Auf Folien deutlich reduzieren. */
+.reveal .slides .quarto-figure {
+  margin-bottom: 6px !important;
+}
+
+/* Bilder ohne Bildunterschrift (![](...)) werden von Quarto NICHT in die
+   zentrierende .quarto-figure-center-Hülle gepackt (die bekommen nur Bilder
+   mit Caption), sondern landen als reines <p><img></p> bzw. <p><a><img></a></p>
+   -- und erben damit die linksbündige Standardausrichtung von RevealJS.
+   Zentriert gezielt nur Absätze, die ausschließlich aus einem Bild bestehen,
+   damit nebeneinander gesetzte Bildpaare/-tripel (mehrere ![]() in einem
+   Absatz für Side-by-side-Layouts) NICHT auseinandergerissen werden -- die
+   bleiben als Inline-Elemente im selben, jetzt zentrierten Absatz stehen. */
+.reveal .slides p:has(> img),
+.reveal .slides p:has(> a > img) {
+  text-align: center;
+}

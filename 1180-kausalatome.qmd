@@ -34,6 +34,7 @@ library(gt)
 #library(DT)
 library(ggdag)
 library(dagitty)  # DAGs zeichnen
+library(ggrepel)  # Labels direkt an Linien/Punkte setzen
 
 theme_set(theme_modern())
 ```
@@ -219,9 +220,9 @@ Der DAG in @fig-coll1-dag bietet eine rettende Erklärung.
 coll1_dag <-
   dagify(date ~ Looks + Talent)
 
-p_coll_dag1 <- 
-coll1_dag %>% 
-  ggdag() +
+p_coll_dag1 <-
+coll1_dag %>%
+  ggdag(text_size = 4.5) +
   theme_dag()
 
 p_coll_dag1
@@ -240,7 +241,8 @@ p_coll_dag2 <-
                   m = "date") %>% 
   ggdag_dseparated(controlling_for = "m",
                    text = TRUE,
-                   use_labels = "label") +
+                   use_labels = "label",
+                   text_size = 4.5) +
   theme_dag()
 
 p_coll_dag2
@@ -252,7 +254,7 @@ p_coll_dag2
 ```{r eval = FALSE}
 #| echo: false
 #| eval: false
-ggdag_adjust(coll1_dag, var = "date") +
+ggdag_adjust(coll1_dag, var = "date", text_size = 4.5) +
   theme_dag()
 ```
 
@@ -362,7 +364,7 @@ coll2_dag <- ggdag::dagify(s ~ d + iq,
                                  "iq" = "Intelligenz",
                                  "d" = "Fleiss"))
 
-p_coll_dag2 <- ggdag(coll2_dag, use_labels = "label")  + theme_dag_blank()
+p_coll_dag2 <- ggdag(coll2_dag, use_labels = "label", text_size = 4.5)  + theme_dag_blank()
 p_coll_dag2
 
 # coll2_dag <-
@@ -481,19 +483,38 @@ Nur durch das Stratifizieren (Aufteilen in Subgruppen, Kontrollieren, Adjustiere
 #| echo: false
 #| fig-cap: "Stratifizierung und Scheinkorrelation. A: Keine Stratifizierung und keine Scheinkorrelation. B: Stratifizierung und Scheinkorrelation"
 #| label: fig-eignung-strat
-p1 <- d_eignung %>% 
+p1 <- d_eignung %>%
  ggplot(aes(x = fleiss, y = iq)) +
   geom_point(alpha = .5) +
   geom_smooth(method = "lm")
 
-p2 <- 
-d_eignung %>% 
-  mutate(studium = factor(studium)) %>% 
+d_eignung2 <-
+  d_eignung %>%
+  mutate(studium = factor(studium, labels = c("kein Studium", "Studium")))
+
+# Endpunkte der Regressionsgeraden je Gruppe, um die Labels dort zu platzieren
+label_data <-
+  d_eignung2 %>%
+  group_by(studium) %>%
+  group_modify(~ {
+    fleiss_max <- max(.x$fleiss)
+    tibble(fleiss = fleiss_max,
+           iq = predict(lm(iq ~ fleiss, data = .x),
+                        newdata = tibble(fleiss = fleiss_max)))
+  }) %>%
+  ungroup()
+
+p2 <-
+d_eignung2 %>%
   ggplot(aes(x = fleiss, y = iq, color = studium)) +
   geom_point(alpha = .5) +
-  geom_smooth(method = "lm") +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_text_repel(data = label_data, aes(label = studium),
+                   fontface = "bold", direction = "y", hjust = 0,
+                   nudge_x = .3, segment.color = NA) +
   scale_color_okabeito() +
-  scale_fill_okabeito()
+  scale_fill_okabeito() +
+  theme(legend.position = "none")
 
 
 plots(p1, p2,
@@ -551,7 +572,7 @@ dag_coords <-
 dagify(E ~ G,
        K ~ E + G,
        coords = dag_coords) %>%
-  ggdag() +
+  ggdag(text_size = 4.5) +
   theme_dag()
 ```
 
@@ -1111,13 +1132,14 @@ impliedConditionalIndependencies(dag_6.2)
 Der Kreativitätsforscher Edward de Bono hat verschiedene "Denkmethoden" vorgestellt, die helfen sollen, Probleme besser zu lösen.
 Eine Methode ist die "PMI-Methode". 
 PMI steht für *Plus*, *Minus*, *Interessant*. 
-Bei Plus und Minus soll man eine Bewertung von Positiven bzw. Negativen bzgl. eines Sachverhaltes anführen. Bei *Interessant* verzichtet man aber explizit auf eine Bewertung (im Sinne von "gut" oder "schlecht") und fokussiert sich auf Interessantes, Überraschendes, Bemerkenswertes.
+Bei Plus und Minus soll man eine Bewertung von Positiven bzw. Negativen bzgl. eines Sachverhaltes anführen. 
+Bei *Interessant* verzichtet man aber explizit auf eine Bewertung (im Sinne von "gut" oder "schlecht") und fokussiert sich auf Interessantes, Überraschendes, Bemerkenswertes.
 
 Führen Sie die PMI-Methode zum heutigen Stoff durch!
 
-1. *Plus*: Was fanden Sie am heutigen Stoff gut, sinnvoll, nützlich?
-2. *Minus*: Was finden Sie am heutigen Stoff nicht gut, sinnvoll, nützlich?
-3. *Interessant*: Was finden Sie am heutigen Stoff bemerkenswert, interessant, nachdenkenswert?
+1. *Plus*: Was fanden Sie am heutigen Stoff gut, sinnvoll, nützlich? Warum?
+2. *Minus*: Was finden Sie am heutigen Stoff nicht gut, sinnvoll, nützlich? Warum?
+3. *Interessant*: Was finden Sie am heutigen Stoff bemerkenswert, interessant, nachdenkenswert? Warum?
 
 Reichen Sie die Antworten an der von der Lehrkraft angezeigten Stelle ein! $\square$
 :::

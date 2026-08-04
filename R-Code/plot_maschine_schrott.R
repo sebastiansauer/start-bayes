@@ -49,6 +49,7 @@ plot_maschine_schrott_ALT <-
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+library(see)
 
 # Daten vorbereiten
 df <- tibble::tibble(
@@ -77,10 +78,9 @@ plot_maschine_schrott <-
   labs(
     x = "Maschine",
     y = "Anteil an der Produktion",
-    fill = "Status"
+    fill = NULL
   ) +
-  scale_fill_manual(
-    values = c("Schrott" = "red", "ok" = "grey"),
+  scale_fill_okabeito(
     labels = c("Ausschuss", "OK")
   ) +
   theme_minimal() +

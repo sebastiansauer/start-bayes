@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <meta name="author" content="Sebastian Sauer">
+  <title>Start:Bayes!</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-2740581606dc327e82f18f789b69d8a0.css">
+  <link rel="stylesheet" href="../specifics/styles.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Start:Bayes!</h1>
+  <p class="subtitle">Die Atome der Kausalität</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Sebastian Sauer 
+</div>
+</div>
+</div>
+
+</section>
+<section id="lernziele" class="slide level2 smaller">
+<h2>Lernziele</h2>
+<p>Nach diesem Kapitel können Sie …</p>
+<ul>
+<li>erklären, wann eine Kausalaussage gegeben eines DAGs berechtigt ist</li>
+<li>erklären, warum ein statistisches Modell ohne Kausalmodell zumeist keine Kausalaussagen treffen kann</li>
+<li>die “Atome” der Kausalität eines DAGs benennen</li>
+<li>“kausale Hintertüren” schließen</li>
+</ul>
+<div class="fragment">
+<p>Begleitliteratur: ähnliche Darstellungen finden sich bei Rohrer (2018).</p>
+</div>
+</section>
+<section id="kein-zusammenhang-von-intelligenz-und-schönheit" class="slide level2 smaller">
+<h2>Kein Zusammenhang von Intelligenz und Schönheit (?)</h2>
+<p><a href="../1180-kausalatome_files/figure-html/fig-iq-schoen-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="../1180-kausalatome_files/figure-html/fig-iq-schoen-1.png" style="width:35.0%"></a></p>
+<ul>
+<li>In den Daten: kein Zusammenhang von Intelligenz (<code>talent</code>) und Schönheit (<code>looks</code>)</li>
+<li>Für geringe wie hohe Intelligenzwerte: breites Spektrum an Schönheitswerten</li>
+</ul>
+</section>
+<section id="aber-ihre-dates-sind-entweder-schlau-oder-schön" class="slide level2 smaller">
+<h2>Aber Ihre Dates sind entweder schlau oder schön</h2>
+<p><a href="../1180-kausalatome_files/figure-html/fig-dates-beauty-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="../1180-kausalatome_files/figure-html/fig-dates-beauty-1.png" style="width:35.0%"></a></p>
+<ul>
+<li>Die Menschen, die Sie daten, sind entweder schön <strong>oder</strong> schlau — selten beides</li>
+<li>Wie kann das sein, wenn Schönheit und Intelligenz unabhängig sind?</li>
+</ul>
+</section>
+<section id="dag-zur-rettung" class="slide level2 smaller">
+<h2>DAG zur Rettung</h2>
+<p><a href="../1180-kausalatome_files/figure-html/fig-coll1-dag-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="../1180-kausalatome_files/figure-html/fig-coll1-dag-1.png" style="width:35.0%"></a></p>
+<ul>
+<li><code>date</code> ist eine <strong>gemeinsame Wirkung</strong> von <code>Looks</code> und <code>Talent</code></li>
+<li>Stratifiziert man nach <code>date</code> (z. B. “nur Dates betrachten”), entsteht eine <strong>Scheinkorrelation</strong> zwischen Schönheit und Intelligenz</li>
+</ul>
+</section>
+<section id="kollision-zwei-darstellungen" class="slide level2">
+<h2>Kollision — zwei Darstellungen</h2>
+<p><a href="../1180-kausalatome_files/figure-html/fig-coll2-dag-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="../1180-kausalatome_files/figure-html/fig-coll2-dag-1.png" style="width:55.0%"></a></p>
+<p>Kontrolliert man die gemeinsame Wirkung <code>m</code>, entsteht eine Scheinkorrelation zwischen den beiden Ursachen <code>x</code> und <code>y</code>.</p>
+</section>
+<section id="definition-kollision" class="slide level2 smaller">
+<h2>Definition: Kollision</h2>
+<div title="Definition: Kollision">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definition: Kollision</strong></p>
+</div>
+<div class="callout-content">
+<p>Als <strong>Kollision</strong> (Kollisionsverzerrung, Auswahlverzerrung, engl. <em>collider</em>) bezeichnet man einen DAG, bei dem eine Wirkung zwei Ursachen hat (eine gemeinsame Wirkung zweier Ursachen) <span class="citation" data-cites="pearl2016">(<a href="#/vielen-dank" role="doc-biblioref" onclick="">Pearl et al., 2016</a>, p.&nbsp;40)</span>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Wichtig</strong></p>
+</div>
+<div class="callout-content">
+<p>Zu viele oder falsche Prädiktoren in einer Regression können bewirken, dass die Koeffizienten nicht die kausalen Effekte zeigen, sondern durch Scheinkorrelation verzerrte Werte.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tipp</strong></p>
+</div>
+<div class="callout-content">
+<p>🙅‍♀️ Kontrollieren Sie keine Kollisionsvariablen.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="einfaches-beispiel-zur-kollision" class="slide level2">
+<h2>Einfaches Beispiel zur Kollision</h2>
+<p>In der Zeitschrift <em>Glitzer</em> werden nur gezeigt:</p>
+<ul>
+<li>Schöne Menschen 🪞</li>
+<li>Reiche Menschen 🤑</li>
+</ul>
+<p>Schönheit und Reichtum seien unabhängig voneinander.</p>
+<div class="fragment">
+<p><strong>Frage:</strong> Don ist nicht schön, taucht aber häufig in der Glitzer auf — was lernen wir über seine finanzielle Situation?</p>
+</div>
+<div class="fragment">
+<p>→ Don muss reich sein.</p>
+</div>
+</section>
+<section id="formal-kollision-als-bedingte-abhängigkeit" class="slide level2">
+<h2>Formal: Kollision als bedingte Abhängigkeit</h2>
+<p>Sei <span class="math inline">\(Z = X + Y\)</span>, wobei <span class="math inline">\(X\)</span> und <span class="math inline">\(Y\)</span> unabhängig sind.</p>
+<ul>
+<li>Wissen Sie nur <span class="math inline">\(X = 3\)</span>: Sie lernen nichts über <span class="math inline">\(Y\)</span></li>
+<li>Wissen Sie zusätzlich <span class="math inline">\(Z = 10\)</span>: Sie wissen sofort <span class="math inline">\(Y = 7\)</span></li>
+</ul>
+<div class="fragment">
+<p>Also sind <span class="math inline">\(X\)</span> und <span class="math inline">\(Y\)</span> abhängig, <strong>gegeben</strong> <span class="math inline">\(Z\)</span>:</p>
+<p><span class="math display">\[X \not\!\perp\!\!\!\perp Y \,|\, Z\]</span></p>
+</div>
+</section>
+<section id="kontrollieren-erzeugt-die-kollisionsverzerrung" class="slide level2">
+<h2>Kontrollieren erzeugt die Kollisionsverzerrung</h2>
+<ul>
+<li><em>Stratifizieren</em>: <code>date</code> in Gruppen aufteilen, dann <code>talent</code>–<code>looks</code> je Gruppe betrachten</li>
+<li><em>Kontrollieren mit Regression</em>: <code>date</code> als zusätzlicher Prädiktor neben <code>looks</code> bzw. <code>talent</code></li>
+</ul>
+<div class="fragment">
+<p><strong>Ohne</strong> Kontrolle von <code>date</code>: <strong>keine</strong> Scheinkorrelation — der Pfad ist blockiert.</p>
+<p><strong>Mit</strong> Kontrolle von <code>date</code>: der Pfad <code>Looks → date → talent</code> öffnet sich — Scheinkorrelation entsteht.</p>
+</div>
+</section>
+<section id="iq-fleiß-und-eignung-fürs-studium" class="slide level2 smaller">
+<h2>IQ, Fleiß und Eignung fürs Studium</h2>
+<p><a href="../1180-kausalatome_files/figure-html/fig-coll3-dag-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="../1180-kausalatome_files/figure-html/fig-coll3-dag-1.png" style="width:40.0%"></a></p>
+<ul>
+<li><code>Eignung</code> = Summe aus Intelligenz (<code>iq</code>) und Fleiß (<code>fleiss</code>), plus etwas Glück</li>
+<li>Nur wer geeignet ist, studiert (<code>studium = 1</code>)</li>
+</ul>
+</section>
+<section id="schlagzeile-fleiß-macht-blöd" class="slide level2 smaller">
+<h2>Schlagzeile “Fleiß macht blöd!”</h2>
+<p><a href="../1180-kausalatome_files/figure-html/fig-eignung-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="../1180-kausalatome_files/figure-html/fig-eignung-1.png" style="width:40.0%"></a></p>
+<ul>
+<li>Analyse <strong>nur</strong> unter Studierenden (<code>studium == 1</code>): negativer Zusammenhang von Fleiß und IQ</li>
+<li>Ursache: Kollisionsverzerrung durch Selektion (nur wer studiert, wird betrachtet)</li>
+</ul>
+</section>
+<section id="definition-stratifizieren" class="slide level2 smaller">
+<h2>Definition: Stratifizieren</h2>
+<div title="Definition: Stratifizieren">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definition: Stratifizieren</strong></p>
+</div>
+<div class="callout-content">
+<p>Durch <strong>Stratifizieren</strong> wird eine Stichprobe in (homogene) Untergruppen unterteilt (sog. <em>Strata</em>).</p>
+</div>
+</div>
+</div>
+</div>
+<p><a href="../1180-kausalatome_files/figure-html/fig-eignung-strat-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img data-src="../1180-kausalatome_files/figure-html/fig-eignung-strat-1.png" style="width:45.0%"></a></p>
+<p><strong>Ohne</strong> Stratifizierung: keine Scheinkorrelation. <strong>Mit</strong> Stratifizierung: Scheinkorrelation.</p>
+</section>
+<section id="kontrollieren-kann-schaden-oder-nützen" class="slide level2">
+<h2>Kontrollieren kann schaden oder nützen</h2>
+<ul>
+<li>Wildes Kontrollieren einer Variablen kann genauso gut schaden wie nützen</li>
+<li><strong>Nur</strong> Kenntnis des DAGs verrät die richtige Entscheidung</li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Hinweis</strong></p>
+</div>
+<div class="callout-content">
+<p>Nimmt man eine Variable als zweiten Prädiktor auf, “kontrolliert” man diese Variable — das Regressionsgewicht des ersten Prädiktors wird um den Einfluss des zweiten “bereinigt”.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="einfluss-von-großeltern-und-eltern-auf-kinder" class="slide level2 smaller">
+<h2>Einfluss von Großeltern und Eltern auf Kinder</h2>
+<p><a href="../1180-kausalatome_files/figure-html/fig-dag-grannies-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img data-src="../1180-kausalatome_files/figure-html/fig-dag-grannies-1.png" style="width:25.0%"></a></p>
+<p>Angenommene Effekte:</p>
+<ul>
+<li>indirekt: <span class="math inline">\(G \rightarrow E \rightarrow K\)</span></li>
+<li>direkt: <span class="math inline">\(E \rightarrow K\)</span></li>
+<li>direkt: <span class="math inline">\(G \rightarrow K\)</span></li>
+</ul>
+<p>Interessiert: der direkte kausale Effekt <span class="math inline">\(G \rightarrow K\)</span>.</p>
+</section>
+<section id="der-gespenster-dag" class="slide level2 smaller">
+<h2>Der Gespenster-DAG 👻</h2>
+<p><a href="../1180-kausalatome_files/figure-html/fig-dag-ghost-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img data-src="../1180-kausalatome_files/figure-html/fig-dag-ghost-1.png" style="width:35.0%"></a></p>
+<ul>
+<li>Es gibt “unheilbare” DAGs, in denen kein unverzerrter Kausaleffekt bestimmbar ist</li>
+<li><code>U</code>: unbeobachteter Einfluss (z. B. Nachbarschaft) auf <code>E</code> und <code>K</code></li>
+<li><code>E</code> ist Kollisionsvariable auf diesem Pfad → Kontrolle von <code>E</code> verzerrt <span class="math inline">\(G \rightarrow K\)</span>, selbst ohne <code>U</code> je zu messen</li>
+</ul>
+<div class="fragment">
+<p>Fazit: Diesen DAG müssen wir verloren geben — zurück an den Schreibtisch, oder mehr Daten sammeln.</p>
+</div>
+</section>
+<section id="definition-hintertür" class="slide level2">
+<h2>Definition: Hintertür</h2>
+<div title="Definition: Hintertür">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definition: Hintertür</strong></p>
+</div>
+<div class="callout-content">
+<p>Eine <strong>Hintertür</strong> ist ein nicht-kausaler Pfad zwischen einer UV und einer AV. Ein Hintertürpfad entsteht, wenn es eine alternative Route über eine oder mehrere Variablen gibt, die UV mit AV verbindet. Dieser Pfad verzerrt die Schätzwerte des kausalen Einflusses, wenn er nicht kontrolliert wird.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="zur-erinnerung-konfundierung" class="slide level2 smaller">
+<h2>Zur Erinnerung: Konfundierung</h2>
+<p><em>Forschungsfrage</em>: Wie groß ist der kausale Einfluss der Schlafzimmerzahl (<code>b</code>) auf den Verkaufspreis (<code>p</code>) eines Hauses?</p>
+<p><a href="../1180-kausalatome_files/figure-html/fig-dag-don1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img data-src="../1180-kausalatome_files/figure-html/fig-dag-don1-1.png" style="width:35.0%"></a></p>
+<p>Zwei Pfade zwischen <code>b</code> und <code>p</code>:</p>
+<ol type="1">
+<li><span class="math inline">\(b \rightarrow p\)</span> (kausal)</li>
+<li><span class="math inline">\(b \leftarrow a \rightarrow p\)</span> (nicht-kausal, über Wohnfläche <code>a</code>)</li>
+</ol>
+</section>
+<section id="gute-experimente-zeigen-den-echten-kausalen-effekt" class="slide level2 smaller">
+<h2>Gute Experimente zeigen den echten kausalen Effekt</h2>
+<p><a href="../1180-kausalatome_files/figure-html/fig-dag-tuer-zu-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img data-src="../1180-kausalatome_files/figure-html/fig-dag-tuer-zu-1.png" style="width:25.0%"></a></p>
+<ul>
+<li>Ist die Hintertür geschlossen (keine Pfeile führen in die UV), ist eine Konfundierung ausgeschlossen</li>
+<li>Ein randomisiertes Experiment entfernt den Pfeil <span class="math inline">\(a \rightarrow b\)</span> und schließt damit den zweiten Pfad</li>
+</ul>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Wichtig</strong></p>
+</div>
+<div class="callout-content">
+<p>Gut gemachte Experimente schließen kausale Hintertüren — das erlaubt korrekte Kausalaussagen.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="hintertür-schließen-auch-ohne-experimente" class="slide level2">
+<h2>Hintertür schließen auch ohne Experimente</h2>
+<ul>
+<li>Konfundierende Pfade blockieren = “die Hintertür schließen” (<em>backdoor criterion</em>)</li>
+<li>Z. B. die Konfundierungsvariable <code>a</code> als weiteren Prädiktor in die Regression aufnehmen</li>
+</ul>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tipp</strong></p>
+</div>
+<div class="callout-content">
+<p>Kontrollieren Sie Konfundierer, um kausale Hintertüren zu schließen.</p>
+</div>
+</div>
+</div>
+<p><span class="math display">\[b \perp\!\!\!\perp p \,|\, a\]</span></p>
+</section>
+<section id="die-vier-atome-der-kausalanalyse" class="slide level2">
+<h2>Die vier Atome der Kausalanalyse</h2>
+<p><a href="../1180-kausalatome_files/figure-html/fig-four-atoms-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img data-src="../1180-kausalatome_files/figure-html/fig-four-atoms-1.png" style="width:70.0%"></a></p>
+<p>Kennen Sie diese vier Grundbausteine, können Sie jedes beliebige Kausalsystem (DAG) entschlüsseln:</p>
+<p>Konfundierung, Mediation, Kollision, Nachfahre</p>
+</section>
+<section id="definition-mediator" class="slide level2 smaller">
+<h2>Definition: Mediator</h2>
+<div title="Definition: Mediator">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definition: Mediator</strong></p>
+</div>
+<div class="callout-content">
+<p>Einen Pfad mit drei Variablen, verbunden über zwei Kanten, wobei die Pfeile von UV zu Mediator und von Mediator zur AV zeigen, nennt man <strong>Mediation</strong>. Der <strong>Mediator</strong> ist die Variable zwischen UV und AV <span class="citation" data-cites="pearl2016">(<a href="#/vielen-dank" role="doc-biblioref" onclick="">Pearl et al., 2016</a>, p.&nbsp;38)</span>.</p>
+</div>
+</div>
+</div>
+</div>
+<p><a href="../1180-kausalatome_files/figure-html/fig-med1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img data-src="../1180-kausalatome_files/figure-html/fig-med1-1.png" style="width:35.0%"></a></p>
+<p><span class="math inline">\(x \rightarrow m \rightarrow y\)</span></p>
+</section>
+<section id="mediator-kontrollieren" class="slide level2 smaller">
+<h2>Mediator kontrollieren?</h2>
+<div class="fragment">
+<p><strong>Frage:</strong> Sollte man den Mediator <code>m</code> kontrollieren, wenn man den Kausaleffekt von <code>x</code> auf <code>y</code> schätzen möchte?</p>
+</div>
+<div class="fragment">
+<p><strong>Nein</strong> — durch Kontrollieren von <code>m</code> wird der Kausalpfad von <code>x</code> zu <code>y</code> geschlossen; es kann keine kausale Assoziation mehr “fließen”.</p>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tipp</strong></p>
+</div>
+<div class="callout-content">
+<p>Kontrollieren Sie den Mediator <em>nicht</em>. Der Pfad über den Mediator ist ein “echter” Kausalpfad, keine Scheinkorrelation.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Wichtig</strong></p>
+</div>
+<div class="callout-content">
+<p>Das Kontrollieren eines Mediators ist ein Fehler, wenn man am gesamten (totalen) Kausaleffekt von UV zu AV interessiert ist.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="partielle-mediation" class="slide level2">
+<h2>Partielle Mediation</h2>
+<p><a href="../1180-kausalatome_files/figure-html/fig-part-med-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img data-src="../1180-kausalatome_files/figure-html/fig-part-med-1.png" style="width:45.0%"></a></p>
+<p>Zwei kausale Pfade von X zu Y: <span class="math inline">\(x \rightarrow m \rightarrow y\)</span> und <span class="math inline">\(x \rightarrow y\)</span></p>
+</section>
+<section id="effekt-begriffe" class="slide level2 smaller">
+<h2>Effekt-Begriffe</h2>
+<div title="Definition: Kausaleffekt">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definition: Kausaleffekt</strong></p>
+</div>
+<div class="callout-content">
+<p>Gibt es eine (von praktisch Null verschiedene) kausale Assoziation der UV auf die AV, spricht man von einem Kausaleffekt.</p>
+</div>
+</div>
+</div>
+</div>
+<div title="Definition: Totaler Effekt">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definition: Totaler Effekt</strong></p>
+</div>
+<div class="callout-content">
+<p>Die Summe der Effekte aller kausalen Pfade von UV zu AV.</p>
+</div>
+</div>
+</div>
+</div>
+<div title="Definition: Indirekter Effekt">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definition: Indirekter Effekt</strong></p>
+</div>
+<div class="callout-content">
+<p>Der kausale Effekt über den Mediatorpfad (von X über M zu Y).</p>
+</div>
+</div>
+</div>
+</div>
+<div title="Definition: Direkter Effekt">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definition: Direkter Effekt</strong></p>
+</div>
+<div class="callout-content">
+<p>Ein Effekt, der nur aus dem Pfad <span class="math inline">\(x \rightarrow y\)</span> besteht, ohne Zwischenglieder.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="definition-nachfahre" class="slide level2 smaller">
+<h2>Definition: Nachfahre</h2>
+<div title="Definition: Nachfahre">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definition: Nachfahre</strong></p>
+</div>
+<div class="callout-content">
+<p>Ein <strong>Nachfahre</strong> (engl. <em>descendant</em>) ist eine Variable, die von einer anderen Variable (kausal) beeinflusst wird.</p>
+</div>
+</div>
+</div>
+</div>
+<p><a href="../1180-kausalatome_files/figure-html/fig-dag-nachfahre-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img data-src="../1180-kausalatome_files/figure-html/fig-dag-nachfahre-1.png" style="width:35.0%"></a></p>
+<p>Kontrolliert man einen Nachfahren <code>d</code>, kontrolliert man teilweise auch dessen Vorfahren <code>m</code> — der Pfad von <code>x</code> nach <code>y</code> öffnet sich teilweise, da <code>m</code> eine Kollisionsvariable ist.</p>
+</section>
+<section id="kochrezept-zur-analyse-von-dags" class="slide level2">
+<h2>Kochrezept zur Analyse von DAGs 👨‍🍳</h2>
+<p>Egal wie kompliziert ein DAG aussieht — er besteht immer aus den vier Atomen.</p>
+<ol type="1">
+<li>Listen Sie alle Pfade von UV (<code>X</code>) zu AV (<code>Y</code>) auf</li>
+<li>Beurteilen Sie für jeden Pfad: geschlossen oder geöffnet?</li>
+<li>Beurteilen Sie für jeden Pfad: Hintertürpfad? (Pfeil führt in die UV)</li>
+<li>Bei offenen Hintertürpfaden: welche Variablen kontrollieren, um sie zu schließen?</li>
+</ol>
+</section>
+<section id="hintertür-ja-oder-nein" class="slide level2">
+<h2>Hintertür: ja oder nein?</h2>
+<p><strong>Fall 1:</strong> <span class="math inline">\(\boxed{X \rightarrow}\)</span></p>
+<p>Pfade, die von der UV <strong>wegführen</strong>: entweder “gute” Kausalpfade oder automatisch geblockte Nicht-Kausal-Pfade → nichts zu tun (Nachkommen der UV nicht kontrollieren!)</p>
+<p><strong>Fall 2:</strong> <span class="math inline">\(\boxed{\rightarrow X}\)</span></p>
+<p>Pfade, die zur UV <strong>hinführen</strong>: immer Nicht-Kausal-Pfade (Hintertüren) → offene Hintertüren schließen</p>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tipp</strong></p>
+</div>
+<div class="callout-content">
+<p>Schließen Sie immer offene Hintertüren, um Verzerrungen der Kausaleffekte zu verhindern.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="beispiel-bsp1" class="slide level2 smaller">
+<h2>Beispiel: <code>bsp1</code></h2>
+<p>UV: <span class="math inline">\(X\)</span>, AV: <span class="math inline">\(Y\)</span>, Kovariaten <span class="math inline">\(A, B, C\)</span>, unbeobachtete Variable <span class="math inline">\(U\)</span></p>
+<p><a href="../1180-kausalatome_files/figure-html/fig-dag-fancy-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img data-src="../1180-kausalatome_files/figure-html/fig-dag-fancy-1.png" style="width:35.0%"></a></p>
+<p>Zwei Hintertürpfade:</p>
+<ol type="1">
+<li><span class="math inline">\(X \leftarrow U \leftarrow A \rightarrow C \rightarrow Y\)</span> — <strong>offen</strong></li>
+<li><span class="math inline">\(X \leftarrow U \rightarrow B \leftarrow C \rightarrow Y\)</span> — geschlossen</li>
+</ol>
+<p>→ Kontrollieren von <span class="math inline">\(A\)</span> oder <span class="math inline">\(C\)</span> schließt die offene Hintertür.</p>
+</section>
+<section id="beispiel-bsp2" class="slide level2 smaller">
+<h2>Beispiel: <code>bsp2</code></h2>
+<p>UV: <span class="math inline">\(W\)</span>, AV: <span class="math inline">\(D\)</span></p>
+<p><a href="../1180-kausalatome_files/figure-html/fig-dag-bsp2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17"><img data-src="../1180-kausalatome_files/figure-html/fig-dag-bsp2-1.png" style="width:40.0%"></a></p>
+<p>Um offene Hintertüren zu schließen, kontrollieren Sie:</p>
+<ul>
+<li>entweder <span class="math inline">\(A\)</span> und <span class="math inline">\(M\)</span></li>
+<li>oder <span class="math inline">\(S\)</span></li>
+</ul>
+</section>
+<section id="implizierte-bedingte-unabhängigkeiten" class="slide level2">
+<h2>Implizierte bedingte Unabhängigkeiten</h2>
+<ul>
+<li>Auch wenn Daten nicht sagen können, welcher DAG richtig ist — wir können lernen, welcher DAG <strong>falsch</strong> ist</li>
+<li>Ein DAG impliziert bestimmte bedingte Unabhängigkeiten zwischen Variablen</li>
+<li>Diese können mit den Daten geprüft werden → Möglichkeit, einen DAG zu verwerfen</li>
+</ul>
+</section>
+<section id="zusammenfassung" class="slide level2 smaller">
+<h2>Zusammenfassung</h2>
+<p>Interpretierbarkeit hängt von der epistemologischen Zielrichtung der Forschungsfrage ab:</p>
+<ul>
+<li><strong>Deskriptiv</strong>: Ergebnisse direkt interpretierbar, aber keine kausale Interpretation zulässig</li>
+<li><strong>Prognostisch</strong>: Modellkoeffizienten spielen keine Rolle, es geht um vorhergesagte Werte <span class="math inline">\(\hat{y}_i\)</span>; Kausalaussagen nicht möglich, aber auch nicht von Interesse</li>
+<li><strong>Kausal</strong>: Modellkoeffizienten nur auf Basis eines Kausalmodells (DAG) oder eines guten Experiments interpretierbar</li>
+</ul>
+<div class="fragment">
+<p>Möglichst viele Prädiktoren ins Modell aufzunehmen ist <strong>falsch</strong>, wenn das Ziel eine Kausalaussage ist. Kenntnis der “kausalen Atome” ist Voraussetzung für Kausalschlüsse in Beobachtungsstudien.</p>
+</div>
+</section>
+<section id="vielen-dank" class="slide level2 smaller scrollable">
+<h2>Vielen Dank!</h2>
+<p>Fragen?</p>
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-pearl2016" class="csl-entry" role="listitem">
+Pearl, J., Glymour, M., &amp; Jewell, N. P. (2016). <em>Causal Inference in Statistics: A Primer</em>. Wiley.
+</div>
+</div>
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="../img/Golem_hex-small.png" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>Start:Bayes! — Die Atome der Kausalität</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Kopiert");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Kopiert");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+    (function() {
+      let previousOnload = window.onload;
+      window.onload = () => {
+        if (previousOnload) {
+          previousOnload();
+        }
+        lightboxQuarto.on('slide_before_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          const href = trigger.getAttribute('href');
+          if (href !== null) {
+            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+            if (imgEl !== null) {
+              const srcAttr = imgEl.getAttribute("src");
+              if (srcAttr && srcAttr.startsWith("data:")) {
+                slideConfig.href = srcAttr;
+              }
+            }
+          } 
+        });
+      
+        lightboxQuarto.on('slide_after_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(slideNode);
+          }
+        });
+      
+      };
+      
+    })();
+              </script>
+    
+
+</body></html>
