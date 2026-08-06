@@ -38,6 +38,8 @@ Nach diesem Kapitel können Sie ...
 Orientiert an @mcelreath2020, Kap. 4.1–4.3.
 :::
 
+# Wie groß sind die !Kung San? {.center footer=false}
+
 ## Die Forschungsfrage
 
 - Volk der !Kung San (Kalahari-Wüste, südliches Afrika)
@@ -48,11 +50,21 @@ Orientiert an @mcelreath2020, Kap. 4.1–4.3.
 Gesucht: der Populationsmittelwert der Körpergröße, $\mu$.
 :::
 
+::: footer
+Wie groß sind die !Kung San?
+:::
+
 ## Die Daten {.smaller}
 
 ![Verteilungen der Variablen im Kung-Datensatz](../0800-gauss_files/figure-html/fig-kung-dens-1.png){width="70%"}
 
 Größe und Gewicht: recht symmetrisch/normalverteilt. Alter: rechtsschief.
+
+::: footer
+Wie groß sind die !Kung San?
+:::
+
+# Unser Gauss-Modell der !Kung {.center footer=false}
 
 ## Zwei Modellparameter
 
@@ -65,11 +77,19 @@ Größe und Gewicht: recht symmetrisch/normalverteilt. Alter: rechtsschief.
 Ein Gauss-Modell nimmt an, dass die Zielvariable normalverteilt ist mit Mittelwert $\mu$ und Streuung $\sigma$ — beide selbst mit Priori-Verteilungen versehen.
 :::
 
+::: footer
+Unser Gauss-Modell der !Kung
+:::
+
 ## Apriori mal Likelihood ist Post
 
 ![Apriori mal Likelihood ist gleich der unstandardisierten Post-Verteilung](../img/apriori_x_lik_is_post.png){width="70%"}
 
 Diesmal berechnet **Stan** die Bayesbox für uns — nicht mehr von Hand.
+
+::: footer
+Unser Gauss-Modell der !Kung
+:::
 
 ## Priori für den Mittelwert, $\mu$
 
@@ -78,6 +98,10 @@ $$\color{blue}{\mu \sim \mathcal{N}(178, 20)} \qquad{\text{Prior}}$$
 - Mittelwert 178 cm, Streuung 20 cm
 - Warum 178? Kein besonderer Grund — dient dazu, den Effekt verschiedener Priori-Werte zu untersuchen
 - In echten Studien: Priori-Wert inhaltlich begründen (oder schwach-informative Standardwerte nutzen)
+
+::: footer
+Unser Gauss-Modell der !Kung
+:::
 
 ## Priori für die Streuung, $\sigma$
 
@@ -91,12 +115,20 @@ $$\color{green}{\sigma \sim \mathcal{E}(1/8)} \qquad{\text{Prior}}$$
 Groß genug für Überraschungen, eng genug gegen unmögliche Werte.
 :::
 
+::: footer
+Unser Gauss-Modell der !Kung
+:::
+
 ## Die Priori-Verteilungen im Bild
 
 ![Prioris des Kung-Modells: Mittelwert (links) und Streuung (rechts)](../0800-gauss_files/figure-html/fig-kung-model-1.png){width="45%"} ![](../0800-gauss_files/figure-html/fig-kung-model-2.png){width="45%"}
 
 ::: {.callout-note title="Hinweis"}
 Dieses Modell hat zwei Parameter, $\mu$ und $\sigma$.
+:::
+
+::: footer
+Unser Gauss-Modell der !Kung
 :::
 
 ## Die Likelihood
@@ -107,6 +139,10 @@ $$\textcolor{orange}{h_i} \sim \mathcal{\textcolor{orange}{N}}(\textcolor{blue}{
 
 - Lies: "Die Körpergröße ist normalverteilt mit Mittelwert $\mu$ und Streuung $\sigma$"
 - Für jede plausible Kombination von $\mu$ und $\sigma$ berechnet Stan die Likelihood
+
+::: footer
+Unser Gauss-Modell der !Kung
+:::
 
 ## Das vollständige Modell
 
@@ -119,6 +155,10 @@ h_i &\sim \mathcal{N}(\mu, \sigma) & \text{Likelihood}  \\
 $$
 
 Das ist unser Modell `m_kung`.
+
+::: footer
+Unser Gauss-Modell der !Kung
+:::
 
 ## Post-Verteilung mit Stan berechnen
 
@@ -134,9 +174,17 @@ m_kung <-
 - `height ~ 1`: Regression **ohne** Prädiktor — nur die Verteilung der AV wird geschätzt
 - `(Intercept)` entspricht dem Mittelwert $\mu$
 
+::: footer
+Unser Gauss-Modell der !Kung
+:::
+
 ## Die Randverteilungen von $\mu$ und $\sigma$
 
 ![Randverteilungen von mu und sigma](../0800-gauss_files/figure-html/fig-kung3-1.png){width="75%"}
+
+::: footer
+Unser Gauss-Modell der !Kung
+:::
 
 ## Die gemeinsame Post-Verteilung {.smaller}
 
@@ -144,11 +192,21 @@ m_kung <-
 
 Für jede Kombination von $\mu$ und $\sigma$: Wie wahrscheinlich ist sie? Hier: $\mu$ und $\sigma$ sind unkorreliert.
 
+::: footer
+Unser Gauss-Modell der !Kung
+:::
+
 ## Zusammenfassung: Modell `m_kung`
 
 - Wir erhalten eine Wahrscheinlichkeitsverteilung für $\mu$ und für $\sigma$ (bzw. eine gemeinsame Verteilung)
 - Trotz vagem Prior: kleine Streuung der Post-Werte — große Stichprobe überstimmt den Prior
 - Aus der Post-Verteilung können wir Stichproben ziehen und Fragen beantworten
+
+::: footer
+Unser Gauss-Modell der !Kung
+:::
+
+# Hallo, Posteriori-Verteilung {.center footer=false}
 
 ## Fragen an die Posteriori-Verteilung
 
@@ -157,6 +215,10 @@ Für jede Kombination von $\mu$ und $\sigma$: Wie wahrscheinlich ist sie? Hier: 
 3. In welchem 90 %-PI liegt $\mu$ vermutlich?
 4. Wie unsicher ist die Schätzung der mittleren Körpergröße?
 5. Was ist der mediane Schätzwert, der "Best Guess"?
+
+::: footer
+Hallo, Posteriori-Verteilung
+:::
 
 ## Antworten: einfache Anteile berechnen
 
@@ -173,6 +235,10 @@ m_kung_post %>%
 Diese Wahrscheinlichkeiten gelten nur, wenn das Modell (die Annahmen) zutrifft.
 :::
 
+::: footer
+Hallo, Posteriori-Verteilung
+:::
+
 ## Parameterschätzung komfortabel
 
 ```r
@@ -183,12 +249,22 @@ parameters(m_kung)
 - 95 %-ETI (Equal-Tailed Interval, synonym zu PI) gibt den Unsicherheitsbereich an
 - Zusatzangaben wie `pd`, `Rhat`, `ESS`: vorerst ignorieren
 
-## Wie tickt `stan_glm()`?
+::: footer
+Hallo, Posteriori-Verteilung
+:::
+
+# Wie tickt `stan_glm()`? {.center footer=false}
+
+## Kerninfos zu `stan_glm()`
 
 - Stan: Software zur Berechnung von Bayes-Modellen; `rstanarm` stellt sie in R bereit
 - `stan_glm()` ist für Regressionsmodelle ausgelegt
 - Verteilung einer einzelnen Variable schätzen = Regression **ohne** Prädiktor: `y ~ 1`
 - `(Intercept)` = Mittelwert
+
+::: footer
+Wie tickt `stan_glm()`?
+:::
 
 ## Ketten und Geschwindigkeit
 
@@ -196,6 +272,10 @@ parameters(m_kung)
 - Stimmen alle Ketten überein → vertrauenswürdiges Ergebnis
 - Weichen sie ab → Fehler oder Problem im Modell
 - `chains = 1` spart Zeit, aber ohne Kontrolle
+
+::: footer
+Wie tickt `stan_glm()`?
+:::
 
 ## Standard-Prioriwerte von `stan_glm()`
 
@@ -208,6 +288,12 @@ Ohne eigene Angabe wählt Stan die Prioris selbst — basierend auf den Stichpro
 
 Das ist strenggenommen nicht "pures Bayes" — die Prioris basieren teils auf den Daten selbst.
 
+::: footer
+Wie tickt `stan_glm()`?
+:::
+
+# Modell `m_kung_neue_prioris`: Standard-Priori-Werte {.center footer=false}
+
 ## Modell mit Standard-Prioris
 
 - `m_kung` (eigene Prioris) vs. `m_kung_neue_prioris` (Standard-Prioris)
@@ -217,9 +303,17 @@ Das ist strenggenommen nicht "pures Bayes" — die Prioris basieren teils auf de
 Bei ausreichend großer Stichprobe fallen moderate Priori-Unterschiede kaum ins Gewicht.
 :::
 
+::: footer
+Modell `m_kung_neue_prioris`: Standard-Priori-Werte
+:::
+
 ## Post-Verteilung des Intercepts
 
 ![Histogramm der Post-Verteilung des Intercepts](../0800-gauss_files/figure-html/unnamed-chunk-8-1.png){width="60%"}
+
+::: footer
+Modell `m_kung_neue_prioris`: Standard-Priori-Werte
+:::
 
 ## Posterior-Prädiktiv-Verteilung
 
@@ -227,13 +321,23 @@ Bei ausreichend großer Stichprobe fallen moderate Priori-Unterschiede kaum ins 
 - Jetzt: Verteilung der **tatsächlichen** Körpergrößen $h_i$ laut Modell
 - Für jede Stichprobe $(\mu, \sigma)$ eine Normalverteilung ziehen → Posterior-Prädiktiv-Verteilung
 
+::: footer
+Modell `m_kung_neue_prioris`: Standard-Priori-Werte
+:::
+
 ## Modellcheck: passt das Modell zu den Daten?
 
 ![Posterior-Prädiktiv-Check](../0800-gauss_files/figure-html/fig-ppcheck-1.png){width="45%"} ![](../0800-gauss_files/figure-html/fig-ppcheck-2.png){width="45%"}
 
 Dunkle Kurve: tatsächliche Daten. Helle Kurven: Simulationen aus der Post-Verteilung. Das Modell bildet die Realität gut ab.
 
-## Fazit
+::: footer
+Modell `m_kung_neue_prioris`: Standard-Priori-Werte
+:::
+
+# Fazit {.center footer=false}
+
+## Was wir gelernt haben
 
 - Posteriori-Verteilung für ein Gauss-Modell berechnet: metrische AV ohne Prädiktoren
 - Zielvariable `height` ~ normalverteilt mit $\mu$ und $\sigma$
@@ -243,6 +347,12 @@ Dunkle Kurve: tatsächliche Daten. Helle Kurven: Simulationen aus der Post-Verte
 Kontinuierliches Lernen ist der Schlüssel zum Erfolg.
 :::
 
+::: footer
+Fazit
+:::
+
+# Vertiefung: Wahl der Priori-Werte {.center footer=false}
+
 ## Vertiefung: Priori-Prädiktiv-Verteilung {.smaller}
 
 - Simuliert Beobachtungen **nur** auf Basis der Prioris (vor Kenntnis der Daten)
@@ -250,6 +360,10 @@ Kontinuierliches Lernen ist der Schlüssel zum Erfolg.
 - Prüft, ob die Priori-Annahmen plausibel sind
 
 ![Priori-Prädiktiv-Verteilung der Körpergröße](../0800-gauss_files/figure-html/Kung-12-1.png){width="55%"}
+
+::: footer
+Vertiefung: Wahl der Priori-Werte
+:::
 
 ## Vage Prioris können in die Irre führen {.smaller}
 
@@ -262,6 +376,10 @@ Kontinuierliches Lernen ist der Schlüssel zum Erfolg.
 Ein Prior sollte weder übergewiss noch beliebig vage sein — Plausibilität zählt.
 :::
 
+::: footer
+Vertiefung: Wahl der Priori-Werte
+:::
+
 ## Zusammenfassung: Priori-Wahl
 
 - Prioris transparent und begründet wählen
@@ -269,6 +387,15 @@ Ein Prior sollte weder übergewiss noch beliebig vage sein — Plausibilität z�
 - Prüfen lässt sich die Priori-Wahl mit der **Priori-Prädiktiv-Verteilung**
 - Bei großer Stichprobe: Einfluss des Priors sinkt ohnehin
 
+::: footer
+Vertiefung: Wahl der Priori-Werte
+:::
+
 ## Vielen Dank! {.center}
 
 Fragen?
+
+::: footer
+Vertiefung: Wahl der Priori-Werte
+:::
+

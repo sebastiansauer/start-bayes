@@ -39,6 +39,8 @@ Nach diesem Kapitel können Sie ...
 
 Begleitliteratur: @mcelreath2020, Kap. 3.1 und 3.2
 
+# Zur Erinnerung: Bayesbox in R berechnen {.center footer=false}
+
 ## Zur Erinnerung: Die Bayesbox
 
 - Die **Bayesbox** ("Gittermethode") berechnet die Posteriori-Verteilung
@@ -49,9 +51,17 @@ Begleitliteratur: @mcelreath2020, Kap. 3.1 und 3.2
 Bei Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten den Likelihoods — das Maximum liegt bei $6/9 = 2/3$.
 :::
 
+::: footer
+Zur Erinnerung: Bayesbox in R berechnen
+:::
+
 ## Die Bayesbox als Grafik
 
 ![Postverteilung für W=6, N=9 — der wahrscheinlichste Wert ist hervorgehoben](../0600-Post_files/figure-html/fig-post1b-1.png){width="70%"}
+
+::: footer
+Zur Erinnerung: Bayesbox in R berechnen
+:::
 
 ## Bayesbox automatisiert
 
@@ -59,6 +69,10 @@ Bei Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten den Like
 - Verfügbar im R-Paket `prada` (`pak::pak("sebastiansauer/prada")`)
 - Aufruf: `bayesbox(hyps = p_grid, priors = 1, liks = L)`
 - Argumente: `hyps` (Parameterwerte), `priors` (Priori-Werte), `liks` (Likelihoods)
+
+::: footer
+Zur Erinnerung: Bayesbox in R berechnen
+:::
 
 ## Grenzen der Bayesbox
 
@@ -71,12 +85,22 @@ Bei Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten den Like
 **Wir brauchen eine andere Lösung.**
 :::
 
+::: footer
+Zur Erinnerung: Bayesbox in R berechnen
+:::
+
+# Mit Stichproben die Post-Verteilung zusammenfassen {.center footer=false}
+
 ## Der Trick: Häufigkeiten statt Wahrscheinlichkeiten
 
 - Komplexere Bayes-Modelle lassen sich nicht mehr exakt ausrechnen
 - Lösung: Wir arbeiten mit **Stichproben (Häufigkeiten)** statt mit exakten Wahrscheinlichkeiten
 - In der Praxis übernehmen das Monte-Carlo-Markov-Ketten-Verfahren (MCMC), z. B. der R-Golem **Stan** (Paket `rstanarm`)
 - Wie MCMC im Detail funktioniert, ist nicht Gegenstand dieses Kurses — wir wenden es einfach an
+
+::: footer
+Mit Stichproben die Post-Verteilung zusammenfassen
+:::
 
 ## Stichproben aus der Post-Verteilung ziehen {.smaller}
 
@@ -92,6 +116,10 @@ samples_6w_9v <- bayesbox_6w_9v %>%
 
 Ab jetzt arbeiten wir überwiegend mit Post-Verteilungen **auf Stichprobenbasis**, weil das für komplexere Modelle nötig wird.
 
+::: footer
+Mit Stichproben die Post-Verteilung zusammenfassen
+:::
+
 ## Stichproben-Bayesbox als Balkendiagramm {.smaller}
 
 ![Stichprobenverteilung auf Basis von Stichproben](../0600-Post_files/figure-html/fig-samples1-1.png){width="45%"}
@@ -99,6 +127,10 @@ Ab jetzt arbeiten wir überwiegend mit Post-Verteilungen **auf Stichprobenbasis*
 - Wasseranteile zwischen ca. 50 % und 70 % sind am wahrscheinlichsten
 - Kleine Anteile (z. B. 25 %) sind nicht ausgeschlossen
 - Die Stichprobenverteilung nähert sich gut an die exakte Bayesbox-Verteilung an
+
+::: footer
+Mit Stichproben die Post-Verteilung zusammenfassen
+:::
 
 ## Feineres Gitter: g = 100 {.smaller}
 
@@ -112,6 +144,10 @@ Ab jetzt arbeiten wir überwiegend mit Post-Verteilungen **auf Stichprobenbasis*
 Mehr Stichproben und mehr Gitterwerte glätten die Stichproben-Post-Verteilung.
 :::
 
+::: footer
+Mit Stichproben die Post-Verteilung zusammenfassen
+:::
+
 ## Eine Million Stichproben {.smaller}
 
 ![Post-Verteilung mit einer Million Stichproben, 100 Parameterwerten](../0600-Post_files/figure-html/fig-post-dk100-1.png){width="40%"}
@@ -119,7 +155,13 @@ Mehr Stichproben und mehr Gitterwerte glätten die Stichproben-Post-Verteilung.
 - Bei symmetrischer Verteilung liegen Modus, Mittelwert (MW) und Median (Md) eng beieinander
 - Je mehr Stichproben, desto glatter die resultierende Verteilung
 
-## Die Post-Verteilung befragen
+::: footer
+Mit Stichproben die Post-Verteilung zusammenfassen
+:::
+
+# Die Post-Verteilung befragen {.center footer=false}
+
+## Zwei Arten von Fragen an die Post
 
 ::: {.callout-important}
 Die Post-Verteilung ist das zentrale Ergebnis einer Bayes-Analyse. Wir können viele nützliche Fragen an sie stellen.
@@ -129,6 +171,10 @@ Zwei Arten von Fragen:
 
 A. Fragen nach **Wahrscheinlichkeiten** (p)
 B. Fragen nach **Parameterwerten** (Quantilen, q)
+
+::: footer
+Die Post-Verteilung befragen
+:::
 
 ## Beispiele für Fragen an die Post-Verteilung {.smaller}
 
@@ -143,12 +189,20 @@ B. Fragen nach **Parameterwerten** (Quantilen, q)
 - Welcher Parameterwert hat die höchste Wahrscheinlichkeit?
 - Wie ungewiss ist das Modell über die Parameterwerte?
 
+::: footer
+Die Post-Verteilung befragen
+:::
+
 ## p vs. q — der Unterschied {.smaller}
 
 ![Unterschied zwischen Fragen nach Wahrscheinlichkeiten (p) und nach Parameterwerten (q)](../0600-Post_files/figure-html/fig-p-vs-q-1.png){width="40%"} ![](../0600-Post_files/figure-html/fig-p-vs-q-2.png){width="40%"}
 
 - **q-Frage:** Welcher Wasseranteil wird mit gegebener Wahrscheinlichkeit *p* nicht überschritten? (gesucht: Parameterwert)
 - **p-Frage:** Wie wahrscheinlich ist ein Wasseranteil von höchstens q? (gesucht: Wahrscheinlichkeit)
+
+::: footer
+Die Post-Verteilung befragen
+:::
 
 ## Fragen nach Wahrscheinlichkeiten (p)
 
@@ -162,6 +216,10 @@ samples_6w_9v %>% count(p_grid < .5)
 ```
 
 Ergebnis: ca. **10 %** Wahrscheinlichkeit für einen Wasseranteil unter 50 %.
+
+::: footer
+Die Post-Verteilung befragen
+:::
 
 ## Weitere p-Fragen
 
@@ -177,6 +235,10 @@ samples_6w_9v %>%
 
 - Ergebnis: sehr unwahrscheinlich, dass der Wasseranteil mindestens 90 % beträgt
 
+::: footer
+Die Post-Verteilung befragen
+:::
+
 ## Modus, Mittelwert, Median der Post
 
 - Modus (häufigster/wahrscheinlichster Wert): `map_estimate()` — **MAP** = Maximum Aposteriori
@@ -184,6 +246,10 @@ samples_6w_9v %>%
 - Median: `median(p_grid)`
 
 Alle drei sind **Punktschätzer** der Post-Verteilung und liegen bei symmetrischen Verteilungen eng beieinander.
+
+::: footer
+Die Post-Verteilung befragen
+:::
 
 ## Fragen nach Parameterwerten (Quantile)
 
@@ -199,6 +265,10 @@ samples_6w_9v %>% summarise(quantil90 = quantile(p_grid, p = .9))
 
 Antwort: Wir können zu 90 % sicher sein, dass der Wasseranteil kleiner als ca. 78 % ist.
 
+::: footer
+Die Post-Verteilung befragen
+:::
+
 ## Das mittlere 90%-Intervall
 
 Frage: *Welches Intervall enthält mit 90 % Wahrscheinlichkeit den Parameterwert?*
@@ -213,6 +283,12 @@ samples_6w_9v %>%
 
 Solche Fragen lassen sich mit **Quantilen** beantworten.
 
+::: footer
+Die Post-Verteilung befragen
+:::
+
+# Visualisierung der Verteilungen {.center footer=false}
+
 ## Definition: Perzentilintervall (PI) {.smaller}
 
 ::: {.callout-note title="Definition: Perzentilintervall (PI)"}
@@ -220,6 +296,10 @@ Intervalle, die die "abzuschneidende" Wahrscheinlichkeitsmasse hälftig auf beid
 :::
 
 ![Perzentilintervall: die mittleren 80 % der Wahrscheinlichkeit](../0600-Post_files/figure-html/fig-eti-hdi-1.png){width="35%"}
+
+::: footer
+Visualisierung der Verteilungen
+:::
 
 ## Schiefe Post-Verteilungen
 
@@ -229,12 +309,20 @@ Beispiel: Globusversuch mit 3 Würfen, 3 Treffern (Wasser)
 - Die resultierende Post-Verteilung ist stark **schief** (rechtslastig, Maximum am Rand bei $p=1$)
 - Gut geeignet, um PI und HDI zu vergleichen
 
+::: footer
+Visualisierung der Verteilungen
+:::
+
 ## PI vs. HDI bei schiefer Verteilung {.smaller}
 
 ![Schiefe Intervalle: Das PI enthält den wahrscheinlichsten Wert nicht, das HDI schon](../0600-Post_files/figure-html/fig-schief-1.png){width="40%"} ![](../0600-Post_files/figure-html/fig-schief-2.png){width="40%"}
 
 - Ein **Perzentilintervall** kann bei schiefen Verteilungen den wahrscheinlichsten Parameterwert ausschließen — das ergibt wenig Sinn
 - Ein **Highest-Density-Intervall (HDI)** ist schmäler und enthält immer den wahrscheinlichsten Wert
+
+::: footer
+Visualisierung der Verteilungen
+:::
 
 ## Definition: Intervalle höchster Dichte (HDI)
 
@@ -245,11 +333,19 @@ Intervalle höchster Dichte (Highest Density Intervals, HDI oder HDPI) sind defi
 - Beim HDI sind die abgeschnittenen Ränder nicht zwangsläufig gleich groß
 - Beim PI ist die Wahrscheinlichkeitsmasse in beiden Rändern gleich groß
 
+::: footer
+Visualisierung der Verteilungen
+:::
+
 ## Punktschätzer bei schiefer Verteilung
 
 ![Punktschätzer (Mittelwert, Median, Modus) bei schiefer Post-Verteilung](../0600-Post_files/figure-html/fig-post-pointestimates-1.png){width="65%"}
 
 Je unsymmetrischer die Verteilung, desto weiter liegen die Punktschätzer auseinander.
+
+::: footer
+Visualisierung der Verteilungen
+:::
 
 ## HDI berechnen
 
@@ -261,12 +357,22 @@ samples_6w_9v %>%
 
 Ergebnis: Das Modell ist sich zu 50 % sicher, dass der Wasseranteil im Bereich von ca. 0.67 bis 0.78 liegt (HDI-basiert).
 
+::: footer
+Visualisierung der Verteilungen
+:::
+
+# Fazit {.center footer=false}
+
 ## Fazit: PI vs. HDI
 
 - Bei **symmetrischer** Posteriori-Verteilung sind PI und HDI ähnlich oder identisch
 - Perzentilintervalle sind in der Praxis verbreiteter
 - **Intervalle höchster Dichte (HDI)** sind bei **schiefen** Post-Verteilungen zu bevorzugen
 - HDI sind die **schmalsten** Intervalle für eine gegebene Wahrscheinlichkeitsmasse
+
+::: footer
+Fazit
+:::
 
 ## Zusammenfassung am Beispiel
 
@@ -286,10 +392,18 @@ samples_6w_9v %>% summarise(p_sd = sd(p_grid), p_iqr = IQR(p_grid), p_mad = mad(
 
 Üblicher als reine Streuungsmaße: ein HDI oder PI für den Parameter angeben.
 
+::: footer
+Fazit
+:::
+
 ## Merksatz zum Abschluss
 
 ::: {.callout-important}
 Der Wasseranteil ist ein Beispiel für einen **Parameter** — eine unbekannte Größe eines Modells. Die Post-Verteilung sagt uns, wie plausibel welche Parameterwerte sind, und erlaubt uns, diese Unsicherheit präzise zu beziffern.
+:::
+
+::: footer
+Fazit
 :::
 
 ## Kernpunkte dieses Kapitels
@@ -300,6 +414,15 @@ Der Wasseranteil ist ein Beispiel für einen **Parameter** — eine unbekannte G
 - **PI** (Perzentilintervall) und **HDI** (Intervall höchster Dichte) fassen die Unsicherheit als Bereich zusammen
 - Bei schiefen Verteilungen ist das HDI vorzuziehen
 
+::: footer
+Fazit
+:::
+
 ## Vielen Dank! {.center}
 
 Fragen?
+
+::: footer
+Fazit
+:::
+

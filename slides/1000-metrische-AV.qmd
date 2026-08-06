@@ -23,6 +23,8 @@ bibliography: ../specifics/bib-local.bib
 csl: ../specifics/apa7.csl
 ---
 
+# Taxonomie von Forschungsfragen {.center footer=false}
+
 ## Lernziele
 
 Nach diesem Kapitel können Sie ...
@@ -32,6 +34,10 @@ Nach diesem Kapitel können Sie ...
 - typische Forschungsfragen mit `stan_glm` auswerten
 
 Orientiert an @mcelreath2020 (Kap. 4.4) sowie @gelman2021 (Kap. 7, 10).
+
+::: footer
+Taxonomie von Forschungsfragen
+:::
 
 ## Nomenklatur
 
@@ -47,6 +53,10 @@ Skalenniveaus der beteiligten Variablen:
 Für jede Forschungsfrage: Beispiel, Modellformel, Kausalgraph, Auswertung.
 :::
 
+::: footer
+Taxonomie von Forschungsfragen
+:::
+
 ## Datensätze
 
 - `kidiq`: IQ von Kindern, Schulabschluss und IQ der Mutter (R-Paket `rstanarm`)
@@ -56,7 +66,11 @@ Für jede Forschungsfrage: Beispiel, Modellformel, Kausalgraph, Auswertung.
 Um Forschungsfragen zu klassifizieren, muss man wissen, welches Skalenniveau AV und UV(s) haben.
 :::
 
-# Fallbeispiel 1: `y ~ b`
+::: footer
+Taxonomie von Forschungsfragen
+:::
+
+# Fallbeispiel 1: `y ~ b` {.center footer=false}
 
 Binäre UV — Schulabschluss der Mutter
 
@@ -68,6 +82,10 @@ Binäre UV — Schulabschluss der Mutter
 
 Modellformel: `kid_score ~ mom_hs`
 
+::: footer
+Fallbeispiel 1: `y ~ b`
+:::
+
 ## Hypothesen
 
 ::: {.callout-note title="Hypothese für ungleiche Mittelwerte"}
@@ -76,6 +94,10 @@ $$H_A: \mu_{x=1} \gt \mu_{x=0}$$
 
 - $H_0: \mu_{x=1} = \mu_{x=0}$
 - ROPE-Hypothese (5 IQ-Punkte als Bagatellgrenze): $H_{ROPE}: \mu_{x=1} > \mu_{x=0} + 5$
+
+::: footer
+Fallbeispiel 1: `y ~ b`
+:::
 
 ## Kausalgraph
 
@@ -86,6 +108,10 @@ flowchart LR
 ```
 
 `y` hat laut Modell zwei Ursachen: `mom_hs` und `u` (unbekannt/sonstige Einflüsse).
+
+::: footer
+Fallbeispiel 1: `y ~ b`
+:::
 
 ## Modell m10.1 {.smaller}
 
@@ -101,6 +127,10 @@ $$\begin{aligned}
 \end{aligned}$$
 :::
 
+::: footer
+Fallbeispiel 1: `y ~ b`
+:::
+
 ## Ergebnis m10.1
 
 `kid_score = 78 + 12*mom_hs + error`
@@ -111,9 +141,17 @@ $$\begin{aligned}
 
 Gruppenmittelwerte unterscheiden sich um ca. 12 Punkte (89.4 vs. 77.6).
 
+::: footer
+Fallbeispiel 1: `y ~ b`
+:::
+
 ## Visualisierung
 
 ![Kinder von Müttern mit Schulabschluss haben im Mittel einen höheren IQ-Wert laut m10.1](../1000-metrische-AV_files/figure-html/fig-momkid-1.png){width="70%"}
+
+::: footer
+Fallbeispiel 1: `y ~ b`
+:::
 
 ## ROPE-Verfahren {.smaller}
 
@@ -122,6 +160,10 @@ Prüfung mit `rope(m10.1, range = c(-5, 5))`: 0 % Überlappung von ROPE und 95 %
 **Fazit:** Praktisch-Null-Hypothese wird verworfen.
 
 ![Der Bereich plausibler Werte liegt komplett außerhalb des ROPE-Bereichs](../1000-metrische-AV_files/figure-html/fig-rope-m101-1.png){width="42%"}
+
+::: footer
+Fallbeispiel 1: `y ~ b`
+:::
 
 ## 95 %-PI und Fazit
 
@@ -133,7 +175,11 @@ Korrelation ungleich Kausation. Ein Kausaleffekt braucht mehr Fundierung als ein
 
 Alternative (frequentistisch): der *t*-Test — führt zu ähnlichem Ergebnis wie `y ~ b`.
 
-# Fallbeispiel 2: `y ~ x + b`
+::: footer
+Fallbeispiel 1: `y ~ b`
+:::
+
+# Fallbeispiel 2: `y ~ x + b` {.center footer=false}
 
 Metrische und binäre UV gemeinsam
 
@@ -145,6 +191,10 @@ Modellformel: `kid_score ~ mom_iq + mom_hs`
 
 Hypothesen: $\beta_{momhs} > 0$ und $\beta_{momiq} > 0$
 
+::: footer
+Fallbeispiel 2: `y ~ x + b`
+:::
+
 ## Kausalgraph
 
 ```{mermaid}
@@ -154,6 +204,10 @@ flowchart LR
   u --> kid_score
 ```
 
+::: footer
+Fallbeispiel 2: `y ~ x + b`
+:::
+
 ## Modell m10.3 {.smaller}
 
 `stan_glm(kid_score ~ mom_iq + mom_hs, data = kidiq)`
@@ -161,6 +215,10 @@ flowchart LR
 `kid_score = 26 + 0.6*mom_iq + 6*mom_hs + error`
 
 ![Effekt von mütterlicher Intelligenz und mütterlichem Schulabschluss](../1000-metrische-AV_files/figure-html/fig-m103-1.png){width="42%"}
+
+::: footer
+Fallbeispiel 2: `y ~ x + b`
+:::
 
 ## Interpretation m10.3
 
@@ -170,7 +228,11 @@ flowchart LR
 
 95 %-ETI schließt für beide UV die Null aus — Nulleffekt wird abgelehnt.
 
-# Fallbeispiel 3: Interaktion
+::: footer
+Fallbeispiel 2: `y ~ x + b`
+:::
+
+# Fallbeispiel 3: Interaktion {.center footer=false}
 
 `y ~ x + b + x:b`
 
@@ -184,6 +246,10 @@ Liegt eine Interaktion vor, unterscheidet sich die Steigung der Geraden zwischen
 
 Modell `m10.4`: `kid_score ~ mom_iq + mom_hs + mom_hs:mom_iq`
 
+::: footer
+Fallbeispiel 3: Interaktion
+:::
+
 ## Modellgleichung {.smaller}
 
 ::: {style="font-size: 0.7em;"}
@@ -192,13 +258,21 @@ $$\text{kid score} = \beta_0 + \beta_1 \cdot \text{mom hs} + \beta_2 \cdot \text
 
 $\beta_3$ = Stärke des Interaktionseffekts (Unterschied der Steigungen).
 
+::: footer
+Fallbeispiel 3: Interaktion
+:::
+
 ## Visualisierung m10.4
 
 ![Modell mit Interaktionseffekt — der Achsenabschnitt ist kaum interpretierbar (unzentrierte Prädiktoren)](../1000-metrische-AV_files/figure-html/fig-m104-1.png){width="65%"}
 
 Alle drei Effekte (IQ, Schulabschluss, Interaktion) schließen die Null aus.
 
-# Fallbeispiel 4: Zentrierung
+::: footer
+Fallbeispiel 3: Interaktion
+:::
+
+# Fallbeispiel 4: Zentrierung {.center footer=false}
 
 `y ~ x_c + b + x_c:b`
 
@@ -210,6 +284,10 @@ Zentrieren (*centering*) bedeutet, die Differenz eines Messwerts zu seinem Mitte
 
 Modell `m10.5`: `kid_score ~ mom_hs + mom_iq_c + mom_hs:mom_iq_c`
 
+::: footer
+Fallbeispiel 4: Zentrierung
+:::
+
 ## Interpretation m10.5 {.smaller}
 
 - *Achsenabschnitt*: mittlerer IQ des Kindes bei Mutter *mittlerer* Intelligenz, *ohne* Abschluss
@@ -218,6 +296,10 @@ Modell `m10.5`: `kid_score ~ mom_hs + mom_iq_c + mom_hs:mom_iq_c`
 - Interaktion: Unterschied im Koeffizienten von `mom_iq_c` zwischen den Gruppen
 
 ![Mit zentrierten Prädiktoren ist der Achsenabschnitt gut interpretierbar](../1000-metrische-AV_files/figure-html/fig-m105-1.png){width="34%"}
+
+::: footer
+Fallbeispiel 4: Zentrierung
+:::
 
 ## Wichtig: Zentrieren ändert nichts an...
 
@@ -231,7 +313,11 @@ Es ändert nur die **Interpretierbarkeit** des Achsenabschnitts.
 Kausalaussagen (z. B. im DAG postuliert) benötigen eine explizite Begründung aus der Literatur — sonst nicht haltbar.
 :::
 
-# Fallbeispiel 5: `y ~ g`
+::: footer
+Fallbeispiel 4: Zentrierung
+:::
+
+# Fallbeispiel 5: `y ~ g` {.center footer=false}
 
 Nominale UV mit mehreren Stufen — Pinguine
 
@@ -247,6 +333,10 @@ flowchart LR
   u --> y
 ```
 
+::: footer
+Fallbeispiel 5: `y ~ g`
+:::
+
 ## Von der Nullhypothese zur besseren Frage
 
 $H_0: \mu_1 = \mu_2 = \ldots = \mu_k$ — dass *alle* Mittelwerte exakt gleich sind, ist unplausibel.
@@ -257,9 +347,17 @@ Bessere Frage:
 
 (Frequentistisches Pendant: *Varianzanalyse*/ANOVA. Bayesianisch: Post-Verteilung.)
 
+::: footer
+Fallbeispiel 5: `y ~ g`
+:::
+
 ## Verteilung des Gewichts
 
 ![Verteilung des Körpergewichts der drei Pinguinarten](../1000-metrische-AV_files/figure-html/fig-penguines1-1.png){width="60%"}
+
+::: footer
+Fallbeispiel 5: `y ~ g`
+:::
 
 ## Modell m10.6 {.smaller}
 
@@ -270,12 +368,22 @@ Bessere Frage:
 
 ![Unterschiede zur Referenzgruppe (95 %-HDI)](../1000-metrische-AV_files/figure-html/fig-m106-params-1.png){width="34%"}
 
+::: footer
+Fallbeispiel 5: `y ~ g`
+:::
+
 ## Interpretation
 
 - `Gentoo`: deutlich schwerer als `Adelie` (Intervall überlappt Null nicht)
 - `Chinstrap`: ähnlich zu `Adelie` (Intervall überlappt deutlich mit Null)
 
 **Fazit:** nicht alle Gruppen unterscheiden sich gleichermaßen — die exakte Nullhypothese wird dennoch verworfen.
+
+::: footer
+Fallbeispiel 5: `y ~ g`
+:::
+
+# Vertiefung: Wechsel der Referenzkategorie {.center footer=false}
 
 ## Vertiefung: Referenzkategorie wechseln
 
@@ -285,7 +393,11 @@ Bessere Frage:
 
 Der Wechsel der Referenzkategorie ändert **nichts Wesentliches** am Modell — nur welche Vergleiche direkt ablesbar sind.
 
-# Fallbeispiel 6: `y ~ x1 + x2`
+::: footer
+Vertiefung: Wechsel der Referenzkategorie
+:::
+
+# Fallbeispiel 6: `y ~ x1 + x2` {.center footer=false}
 
 Zwei metrische UV
 
@@ -299,15 +411,27 @@ Zwei metrische UV
 "Effekt" klingt nach Kausalzusammenhang. Eine Regression allein ist keine hinreichende Begründung für Kausalität.
 :::
 
+::: footer
+Fallbeispiel 6: `y ~ x1 + x2`
+:::
+
 ## Zusammenhänge explorieren
 
 ![Korrelationsmatrix als Heatmap](../1000-metrische-AV_files/figure-html/fig-kidiq-heatmap-1.png){width="55%"}
+
+::: footer
+Fallbeispiel 6: `y ~ x1 + x2`
+:::
 
 ## Univariate vs. multiple Regression {.smaller}
 
 Univariate Modelle: `kid_score ~ mom_iq` (m10.7), `kid_score ~ mom_age` (m10.8)
 
 ![Zwei univariate Regressionen](../1000-metrische-AV_files/figure-html/fig-regr-one-pred-1.png){width="46%"}
+
+::: footer
+Fallbeispiel 6: `y ~ x1 + x2`
+:::
 
 ## Multiples Modell m10.9 {.smaller}
 
@@ -321,7 +445,11 @@ Regressionsgewichte im multiplen Modell unterscheiden sich (potenziell) von den 
 
 `mom_iq` erklärt sichtbar mehr Variation als `mom_age`.
 
-# Fallbeispiel 7: Standardisierung
+::: footer
+Fallbeispiel 6: `y ~ x1 + x2`
+:::
+
+# Fallbeispiel 7: Standardisierung {.center footer=false}
 
 `y ~ x1_z + x2_z` und `y_z ~ x1_z + x2_z`
 
@@ -334,6 +462,10 @@ $$z = \frac{x - \bar{x}}{sd(x)}$$
 Ergebnis: Mittelwert 0, SD 1 — macht Effekte verschiedener Prädiktoren vergleichbar.
 :::
 
+::: footer
+Fallbeispiel 7: Standardisierung
+:::
+
 ## Vorteile der z-Transformation
 
 - Achsenabschnitt leichter interpretierbar (bezieht sich auf mittlere Ausprägung)
@@ -344,6 +476,12 @@ Ergebnis: Mittelwert 0, SD 1 — macht Effekte verschiedener Prädiktoren vergle
 
 In R: `standardize()` aus `easystats` oder `scale()`.
 
+::: footer
+Fallbeispiel 7: Standardisierung
+:::
+
+# `y_z ~ x1_z + x2_z` {.center footer=false}
+
 ## Modell m10.12 (AV und UV standardisiert)
 
 `stan_glm(kid_score_z ~ mom_iq_z + mom_age_z, data = kidiq_z)`
@@ -352,6 +490,10 @@ In R: `standardize()` aus `easystats` oder `scale()`.
 - Koeffizienten: Änderung der AV in SD-Einheiten pro SD-Einheit Änderung der UV
 
 95 %PI `mom_iq_z`: [0.38, 0.51] — `mom_age_z`: [-0.02, 0.12]
+
+::: footer
+`y_z ~ x1_z + x2_z`
+:::
 
 ## Ergebnisdarstellung {.smaller}
 
@@ -363,11 +505,21 @@ In R: `standardize()` aus `easystats` oder `scale()`.
 "Statistischer Effekt" statt "Effekt" betonen — kausale Sprache nur mit Begründung (Theorie/Literatur/Experiment).
 :::
 
+::: footer
+`y_z ~ x1_z + x2_z`
+:::
+
+# Vertiefung {.center footer=false}
+
 ## Vertiefung: Regression = Korrelation bei z-Werten
 
 ::: {.callout-note title="Theorem: Beta-r-Zusammenhang"}
 $$b = r \frac{sd_y}{sd_x}$$
 Sind X und Y z-standardisiert, sind Regressionskoeffizient und Korrelation identisch.
+:::
+
+::: footer
+Vertiefung
 :::
 
 ## Residualanalyse
@@ -378,6 +530,10 @@ Residuum: $e_i = y_i - \hat{y}_i$
 
 ![Residuen zeigen keinen starken Trend — gutes Zeichen für Linearität](../1000-metrische-AV_files/figure-html/fig-kidiqresiduum-1.png){width="55%"}
 
+::: footer
+Vertiefung
+:::
+
 ## Bereinigte Koeffizienten {.smaller}
 
 Multiple Regressionskoeffizienten = Regression der **Residuen** eines Prädiktors (nach Herausrechnen des anderen) auf die AV.
@@ -385,6 +541,10 @@ Multiple Regressionskoeffizienten = Regression der **Residuen** eines Prädiktor
 ![Obere Reihe: Regression der Prädiktoren untereinander. Untere Reihe: Residuen vs. AV](../1000-metrische-AV_files/figure-html/fig-bereinigt-1.png){width="40%"}
 
 `mom_iq`-Residuen sind stark mit der AV assoziiert, `mom_age`-Residuen kaum.
+
+::: footer
+Vertiefung
+:::
 
 ## Bayes vs. Frequentistisch
 
@@ -394,7 +554,13 @@ Multiple Regressionskoeffizienten = Regression der **Residuen** eines Prädiktor
 Numerisch ähnliche Ergebnisse, aber grundverschiedene Interpretation: Bayes-Modelle erlauben Wahrscheinlichkeitsaussagen zu Parametern, frequentistische nicht.
 :::
 
-## Fazit
+::: footer
+Vertiefung
+:::
+
+# Fazit {.center footer=false}
+
+## Zusammenfassung und Ausblick
 
 - Viele Forschungsfragen lassen sich einheitlich als Regression mit metrischer AV behandeln
 - Bausteine: binäre/nominale/metrische UV, Interaktionen, Zentrierung, Standardisierung
@@ -402,3 +568,8 @@ Numerisch ähnliche Ergebnisse, aber grundverschiedene Interpretation: Bayes-Mod
 - Korrelation/Regression $\neq$ Kausation — kausale Aussagen brauchen Begründung
 
 **Ausblick:** Regression mit binärer AV (nächstes Kapitel).
+
+::: footer
+Fazit
+:::
+
