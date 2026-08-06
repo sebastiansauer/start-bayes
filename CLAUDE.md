@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-"Start:Bayes!" is a German-language Quarto book (an introductory statistics/Bayesian-inference textbook) rendered to HTML in `docs/`. Content lives in numbered `.qmd` chapter files at the repo root (e.g. `0200-zielarten.qmd`, `0250-inferenz.qmd`, ... `1200-abschluss.qmd`); the numeric prefix is usually but *not always* the reading order — `book.chapters` in `_quarto.yml` is the actual source of truth (e.g. `1050-Schaetzen-Testen.qmd` is taught before `1000-metrische-AV.qmd`). Always check `_quarto.yml` rather than assuming order from the filename.
+"Start:Bayes!" is a German-language Quarto book (an introductory statistics/Bayesian-inference textbook) rendered to HTML in `docs/`. Content lives in numbered `.qmd` chapter files at the repo root (e.g. `0200-zielarten.qmd`, `0250-inferenz.qmd`, ... `1200-abschluss.qmd`); the numeric prefix is usually but *not always* the reading order — `book.chapters` in `_quarto.yml` is the actual source of truth (e.g. `1050-Schaetzen-Testen.qmd` is taught before `1000-metrische-AV.qmd`). Always check `_quarto.yml` rather than assuming order from the filename. The `.qmd` files starting with four digits are the book's chapters; `index.qmd` is also a chapter (the book's front page/intro).
 
 ## Commands
 

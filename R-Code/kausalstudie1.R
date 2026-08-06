@@ -38,6 +38,7 @@ plot_kausalstudie_a <-
     lineheight = 0.8
   ) +
   scale_y_continuous(labels = scales::percent) +
+  scale_fill_okabeito() +
   labs(
     x = "",
     y = "Anteil",
