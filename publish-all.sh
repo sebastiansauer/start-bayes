@@ -15,6 +15,12 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 echo "==> Buch rendern..."
 quarto render
 
+echo "==> Bilder für Foliendecks nach docs/img/ ergänzen..."
+# quarto render kopiert nach docs/img nur Bilder, die vom Buch referenziert
+# werden. Foliendecks referenzieren teils weitere Bilder aus img/ (z. B. das
+# Logo) - diese ergänzend (additiv, ohne Löschen) nach docs/img/ spiegeln.
+rsync -a img/ docs/img/
+
 echo "==> Foliendecks nach docs/slides/ spiegeln..."
 mkdir -p docs/slides
 rsync -a --delete \
