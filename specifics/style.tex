@@ -28,10 +28,17 @@
 % Beruf + Geschlecht wie "🧑‍🏫") werden dadurch als mehrere nebeneinander
 % stehende Einzelsymbole gesetzt statt als ein fusioniertes Emoji-Glyph --
 % inhaltlich weiterhin eindeutig erkennbar, nur nicht perfekt verschmolzen.
+% Zweite Fallback-Stufe "Noto Sans Symbols2": deckt Zeichen ab, die Noto
+% Color Emoji nicht enthaelt, aber trotzdem im Buchtext vorkommen -- z. B.
+% Wuerfelaugen U+2680-2685 und Check Mark/Ballot X U+2713/U+2717. Das sind
+% keine Farb-Emoji, sondern gewoehnliche Symbol-Glyphen, die in einer
+% reinen Symbol-Schrift stehen; check_emoji_coverage.py (siehe Skill
+% textlayout-ueberarbeitung) hat das per lualatex-Testkompilat verifiziert.
 \directlua{
   luaotfload.add_fallback
     ("emojifallback",
-     { "Noto Color Emoji:mode=harf;" }
+     { "Noto Color Emoji:mode=harf;",
+       "Noto Sans Symbols2:mode=harf;" }
     )
 }
 
