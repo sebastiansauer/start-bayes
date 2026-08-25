@@ -76,21 +76,38 @@ labeltextsize <- 8
 
 
 if (knitr:::is_latex_output()) {
-  
-  # add font for plots in PDF output:
-  
-  showtext::showtext_auto(TRUE)  # use "showtext" automatically
-  
-  sysfonts::font_add("Lato Regular", regular = "/Users/sebastiansaueruser/Library/Fonts/Lato-Regular.ttf")
-  
-  sysfonts::font_add("Lato", regular = "/Users/sebastiansaueruser/Library/Fonts/Lato-Regular.ttf")
-  
-  sysfonts::font_add("Font Awesome", regular = "~/Library/Fonts/fontawesome-webfont.ttf")
-  
-  sysfonts::font_add("Roboto Regular", regular = "/Users/sebastiansaueruser/Library/Fonts/Roboto-Regular.ttf")
-  
 
-  
+  # add font for plots in PDF output:
+
+  showtext::showtext_auto(TRUE)  # use "showtext" automatically
+
+  # Sucht eine Schriftart ueber die systemweite Fontregistrierung (funktioniert
+  # plattformunabhaengig auf macOS/Linux/Windows), statt einen festen Pfad
+  # anzunehmen -- Schriftpfade unterscheiden sich je nach Betriebssystem und
+  # Rechner. Ist die Schrift auf der aktuellen Maschine nicht installiert,
+  # wird registrierung uebersprungen (mit Hinweis), statt mit einem Fehler
+  # abzubrechen.
+  add_system_font <- function(sysfonts_name, family) {
+    hit <- systemfonts::system_fonts()
+    hit <- hit[tolower(hit$family) == tolower(family) &
+                 tolower(hit$style) %in% c("regular", "normal"), ]
+    if (nrow(hit) == 0) {
+      hit <- systemfonts::system_fonts()
+      hit <- hit[tolower(hit$family) == tolower(family), ]
+    }
+    if (nrow(hit) == 0) {
+      message("Schrift '", family, "' nicht gefunden -- ",
+              "ueberspringe font_add() fuer '", sysfonts_name, "'.")
+      return(invisible(NULL))
+    }
+    sysfonts::font_add(sysfonts_name, regular = hit$path[1])
+  }
+
+  add_system_font("Lato Regular", "Lato")
+  add_system_font("Lato", "Lato")
+  add_system_font("Font Awesome", "FontAwesome")
+  add_system_font("Roboto Regular", "Roboto")
+
   ggplot2::theme_set(ggplot2::theme_minimal())
-  
+
   }
