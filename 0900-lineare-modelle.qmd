@@ -262,6 +262,8 @@ Laden wir die !Kung-Daten und visualisieren wir uns den Zusammenhang zwischen *G
 
 
 
+::: {.content-visible when-format="html"}
+
 :::::{#fig-kung-zshg}
 
 
@@ -273,7 +275,7 @@ Laden wir die !Kung-Daten und visualisieren wir uns den Zusammenhang zwischen *G
 ### Mit `ggplot2`
 
 ```{r}
-kung_erwachsen %>% 
+kung_erwachsen %>%
   ggplot(
        aes(x = weight, y = height)) +
   geom_point(alpha = .7) +
@@ -287,16 +289,16 @@ kung_erwachsen %>%
 #| eval: false
 ggscatter(kung_erwachsen,
           x = "weight", y = "height",
-          add = "reg.line") 
+          add = "reg.line")
 ```
 
 ```{r}
 #| echo: false
 ggscatter(kung_erwachsen,
           x = "weight", y = "height",
-          add = "reg.line", 
+          add = "reg.line",
           color = "black",
-          alpha = .7, 
+          alpha = .7,
           add.params = list(color = "blue", se = TRUE))  # color for the regression line
 
 ```
@@ -312,6 +314,27 @@ ggscatter(kung_erwachsen,
 Der Zusammenhang zwischen Gewicht (X) und Größe (Y)
 
 :::::
+
+:::
+
+<!-- PDF/Print: panel-tabset innerhalb eines #fig-Div erzeugt einen LaTeX-Float,
+der wegen des zweiten (redundanten) ggpubr-Tabs zu gross fuer eine Seite wird
+und dadurch verloren geht/springt. Fuer den Druck genuegt eine der beiden
+aequivalenten Darstellungen als normale Abbildung. -->
+
+::: {.content-visible unless-format="html"}
+
+```{r}
+#| echo: false
+#| label: fig-kung-zshg
+#| fig-cap: "Der Zusammenhang zwischen Gewicht (X) und Größe (Y)"
+kung_erwachsen %>%
+  ggplot(aes(x = weight, y = height)) +
+  geom_point(alpha = .7) +
+  geom_smooth(method = "lm")
+```
+
+:::
 
 Wie man sieht in @fig-kung-zshg, gibt es einen deutlichen linearen Zusammenhang zwischen Gewicht und Größe:
 Je schwerer (je höher das Gewicht einer Person), desto größer (desto höher ihr Wert in der Körpergröße).
@@ -928,6 +951,8 @@ auf ein 90%- oder 89%-Intervall auszuweichen, aufgrund der besseren numerischen 
 
 @fig-ungewissheit-kung stellt die Ungewissheit der Post-Verteilung dar, in dem einige Stichproben aus der Post-Verteilung visualisiert werden.
 
+::: {.content-visible when-format="html"}
+
 :::::{#fig-ungewissheit-kung}
 
 :::: {.figure-content}
@@ -939,12 +964,12 @@ auf ein 90%- oder 89%-Intervall auszuweichen, aufgrund der besseren numerischen 
 Die ersten 10 Stichproben:
 
 ```{r Post-Regression-befragen-10, echo = TRUE}
-kung_zentriert %>% 
-  ggplot(aes(x = weight_c, 
+kung_zentriert %>%
+  ggplot(aes(x = weight_c,
              y = height)) +
   geom_point() +
   geom_abline(
-    data = m_kung_starkes_beta1_post %>% 
+    data = m_kung_starkes_beta1_post %>%
       slice_head(n = 10),
     aes(slope = weight_c,
         intercept = `(Intercept)`),
@@ -956,12 +981,12 @@ kung_zentriert %>%
 Die ersten 100 Stichproben:
 
 ```{r Post-Regression-befragen-11-ersten-1000, echo = TRUE}
-kung_zentriert %>% 
-  ggplot(aes(x = weight_c, 
+kung_zentriert %>%
+  ggplot(aes(x = weight_c,
              y = height)) +
   geom_point() +
   geom_abline(
-    data = m_kung_starkes_beta1_post %>% 
+    data = m_kung_starkes_beta1_post %>%
       slice_head(n = 100),
      aes(slope = weight_c,
         intercept = `(Intercept)`),
@@ -974,12 +999,12 @@ kung_zentriert %>%
 Die ersten `1e3` Stichproben:
 
 ```{r Post-Regression-befragen-11-die-ersten-1000, echo = TRUE}
-kung_zentriert %>% 
-  ggplot(aes(x = weight_c, 
+kung_zentriert %>%
+  ggplot(aes(x = weight_c,
              y = height)) +
   geom_point() +
   geom_abline(
-    data = m_kung_starkes_beta1_post %>% 
+    data = m_kung_starkes_beta1_post %>%
       slice_head(n = 1e3),
      aes(slope = weight_c,
         intercept = `(Intercept)`),
@@ -996,6 +1021,51 @@ Die ersten 1000000^[1e6] ... okay, lassen wir es gut sein^[Im Standard beschert 
 
 ::::
 :::::
+
+:::
+
+<!-- PDF/Print: panel-tabset innerhalb eines #fig-Div erzeugt einen zu grossen
+LaTeX-Float (vier Tabs mit je einem vollen Plot). Fuer den Druck stattdessen
+eine 3-Panel-fig-subcap-Abbildung (10/100/1000 Stichproben); der vierte
+("1000000"-Scherz-)Tab hat ohnehin kein Bild. -->
+
+::: {.content-visible unless-format="html"}
+
+```{r}
+#| echo: true
+#| label: fig-ungewissheit-kung
+#| fig-cap: "Ungewissheit der Post-Verteilung, dargestellt anhand von Stichproben aus der Post-Verteilung"
+#| layout-ncol: 3
+#| fig-subcap:
+#|   - "10 Stichproben"
+#|   - "100 Stichproben"
+#|   - "1000 Stichproben"
+kung_zentriert %>%
+  ggplot(aes(x = weight_c, y = height)) +
+  geom_point() +
+  geom_abline(
+    data = m_kung_starkes_beta1_post %>% slice_head(n = 10),
+    aes(slope = weight_c, intercept = `(Intercept)`),
+    alpha = .3)
+
+kung_zentriert %>%
+  ggplot(aes(x = weight_c, y = height)) +
+  geom_point() +
+  geom_abline(
+    data = m_kung_starkes_beta1_post %>% slice_head(n = 100),
+    aes(slope = weight_c, intercept = `(Intercept)`),
+    alpha = .1)
+
+kung_zentriert %>%
+  ggplot(aes(x = weight_c, y = height)) +
+  geom_point() +
+  geom_abline(
+    data = m_kung_starkes_beta1_post %>% slice_head(n = 1e3),
+    aes(slope = weight_c, intercept = `(Intercept)`),
+    alpha = .01)
+```
+
+:::
 
 
 Einfacher ist die Visualisierung mit `estimate_expectation`, s. @fig-m_kung_starkes_beta1-estimate-expectation.
