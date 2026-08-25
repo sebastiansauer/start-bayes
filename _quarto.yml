@@ -100,8 +100,8 @@ book:
         - definitions.qmd
         - theorems.qmd
 
-        - imprint.qmd
-        - data-privacy.qmd
+        #- imprint.qmd
+        #- data-privacy.qmd
 
 bibliography: specifics/bib-local.bib
 csl: specifics/apa7.csl
@@ -145,73 +145,106 @@ knitr:
       knitr. graphics.auto_pdf: true
 
 format:
-  # titlepage-pdf:
-  #   pdf-engine: lualatex
-  #   mainfont: "Lora"
-  #   sansfont: "Lato"
-  #   monofont: "Roboto"  # Roboto Thin
-  #   # RawFeature=fallback=emojifallback aktiviert die in specifics/style.tex
-  #   # registrierte Noto-Color-Emoji-Fallback-Schrift fuer jede der drei
-  #   # Schriften (Emoji im Fließtext, in Ueberschriften/Bookmarks, in
-  #   # Code-/Monospace-Bloecken).
-  #   mainfontoptions:
-  #   - "RawFeature={fallback=emojifallback}"
-  #   sansfontoptions:
-  #   - "RawFeature={fallback=emojifallback}"
-  #   monofontoptions:
-  #   - "RawFeature={fallback=emojifallback}"
-  #   prefer-html: true
-  #   include-in-header:
-  #   - specifics/style.tex
-  #
-  #   documentclass: scrbook
-  #   classoption: ["twoside ", "open=any"]
-  #
-  #   toc: false
-  #   toc-depth: 2
-  #   lang: de-DE
-  #   number-sections: true
-  #   colorlinks: false
-  #   keep-tex: true
-  #   geometry:
-  #     - paperwidth=7in
-  #     - paperheight=10in
-  #   df-print: kable
-  #   fig-align: center
-  #
-  #   mermaid:
-  #     theme: default
-  #   out-width: 75%
-  #   csquotes: true
-  #   fig-format: pdf
-  #   titlepage-include-file:
-  #     - specifics/copyright.tex
-  #     - specifics/dedication.tex
-  #     - specifics/emptypage.tex
-  #   titlepage: classic-lined
-  #   titlepage-theme:
-  #     elements: ["\\titleblock", "\\authorblock", "\\vfill"]
-  #     page-align: "center"
-  #     title-style: "doublelinewide"
-  #     title-fontsize: 30
-  #     title-fontstyle: "uppercase"
-  #     title-space-after: "0.1\\textheight"
-  #     subtitle-fontstyle: ["Large", "textit"]
-  #     author-style: "plain"
-  #     author-sep: "\\hskip1em"
-  #     author-fontstyle: "Large"
-  #     author-space-after: "2\\baselineskip"
-  #     affiliation-style: "numbered-list-with-correspondence"
-  #     affiliation-fontstyle: "large"
-  #     affiliation-space-after: "0pt"
-  #     footer-style: "plain"
-  #     footer-fontstyle: ["large", "textsc"]
-  #     footer-space-after: "0pt"
-  #     logo-size: "0.25\\textheight"
-  #     logo-space-after: "1cm"
-  #   titlepage-footer: |
-  #     Sebastian Sauer\
-  #     Lizenz: MIT\
+  # Format-Key MUSS "titlepage-pdf" heissen (nicht "pdf"), damit die
+  # nmfs-opensci/titlepage-Extension greift: sie ist unter dem Namen
+  # "titlepage" registriert (_extensions/nmfs-opensci/titlepage/_extension.yml)
+  # und kontrahiert ihre Filter/Template-Partials (Halbtitel-, Titel-,
+  # Coverseite, before-body.tex mit den titlepage-include-file-Zwischenseiten)
+  # nur, wenn das Format als "<extension-name>-pdf" angesprochen wird. Ein
+  # gewoehnlicher "pdf:"-Block (wie er vorher hier aktiv war) bekommt diese
+  # Zwischenseiten NICHT, selbst mit identischen titlepage-*-Variablen.
+  titlepage-pdf:
+    code-overflow: wrap
+    pdf-engine: lualatex
+    mainfont: "Lora"
+    sansfont: "Lato"
+    monofont: "Roboto" # Roboto Thin
+    # RawFeature=fallback=emojifallback wuerde die in specifics/style.tex
+    # registrierte Noto-Color-Emoji-Fallback-Schrift fuer jede der drei
+    # Schriften aktivieren (Emoji im Fließtext, in Ueberschriften/Bookmarks,
+    # in Code-/Monospace-Bloecken) -- unter der titlepage-pdf-Extension
+    # (anders als beim gewoehnlichen pdf:-Format) fuehrt das aber zu
+    # "Misplaced '=' in key-value input" beim \setsansfont-Aufruf (die
+    # geschweiften Klammern werden hier LaTeX-escaped statt roh
+    # durchgereicht) -- vorerst auskommentiert, separate Untersuchung noetig,
+    # nicht Teil der Zwischenseiten-Baustelle.
+    # mainfontoptions:
+    # - "RawFeature={fallback=emojifallback}"
+    # sansfontoptions:
+    # - "RawFeature={fallback=emojifallback}"
+    # monofontoptions:
+    # - "RawFeature={fallback=emojifallback}"
+    prefer-html: true
+    include-in-header:
+      - specifics/style.tex
+
+    documentclass: scrbook
+    classoption: ["twoside ", "open=any"]
+
+    toc: false
+    toc-depth: 2
+    lang: de-DE
+    number-sections: true
+    colorlinks: false
+    # Ohne diese beiden Variablen bleiben In-Text-Zitationen ("Gelman et al.
+    # (2021)") und Literaturverzeichnis-Eintraege im PDF reiner Text ohne
+    # Link -- Pandoc/citeproc verpackt sie nur dann in \hyperlink{}/
+    # \hypertarget{}, wenn explizit angefordert (verifiziert: vorher kein
+    # \hyperlink im generierten .tex, nur Klartext "Gelman et al. (2021)").
+    # Die Links selbst bleiben dank "hidelinks" in hypersetup (Pandocs
+    # Standardverhalten bei colorlinks: false, s. pandoc/hypersetup.latex)
+    # unauffaellig/unfarbig ohne Kasten, sind aber klickbar.
+    link-citations: true
+    link-bibliography: true
+    keep-tex: true
+    geometry:
+      - paperwidth=7in
+      - paperheight=10in
+    df-print: kable
+    fig-align: center
+
+    mermaid:
+      theme: default
+    out-width: 75%
+    # Deutsche Anfuehrungszeichen im PDF: gerade "..." werden von Pandoc
+    # dank dieser Variable als \enquote{...} ausgegeben statt als
+    # literale (englische) Unicode-Zeichen; specifics/style.tex laedt
+    # dafuer \usepackage{csquotes}, das anhand der von "lang: de" ueber
+    # babel geladenen Sprache automatisch den deutschen Stil „..." waehlt.
+    csquotes: true
+    fig-format: pdf
+    # Zwischenseiten ganz vorne im PDF (Reihenfolge wie gelistet): Copyright-
+    # seite, Widmung, danach eine Leerseite -- vor der eigentlichen
+    # Titelseite, die die Extension selbst erzeugt (titlepage: classic-lined
+    # unten). Inhalte in specifics/*.tex, projektspezifisch angepasst.
+    titlepage-include-file:
+      - specifics/copyright.tex
+      - specifics/dedication.tex
+      - specifics/emptypage.tex
+    titlepage: classic-lined
+    titlepage-theme:
+      elements: ["\\titleblock", "\\authorblock", "\\vfill"]
+      page-align: "center"
+      title-style: "doublelinewide"
+      title-fontsize: 30
+      title-fontstyle: "uppercase"
+      title-space-after: "0.1\\textheight"
+      subtitle-fontstyle: ["Large", "textit"]
+      author-style: "plain"
+      author-sep: "\\hskip1em"
+      author-fontstyle: "Large"
+      author-space-after: "2\\baselineskip"
+      affiliation-style: "numbered-list-with-correspondence"
+      affiliation-fontstyle: "large"
+      affiliation-space-after: "0pt"
+      footer-style: "plain"
+      footer-fontstyle: ["large", "textsc"]
+      footer-space-after: "0pt"
+      logo-size: "0.25\\textheight"
+      logo-space-after: "1cm"
+    titlepage-footer: |
+      Sebastian Sauer\
+      Lizenz: MIT\
 
   html:
     toc: true
@@ -237,6 +270,10 @@ format:
     include-after-body: specifics/webex.js # r-exams
 
 
+  # pdf: (auskommentiert, ersetzt durch titlepage-pdf oben, s. Kommentar
+  # dort -- ein gewoehnlicher "pdf:"-Block bekommt keine Zwischenseiten
+  # von der titlepage-Extension. Einstellungen hier nur als Fallback-
+  # Referenz stehen gelassen, falls die Extension mal deaktiviert wird.)
   # pdf:
   #   toc: false
   #   toc-depth: 2

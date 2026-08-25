@@ -5,10 +5,37 @@
 %\usepackage{xcolor}
 \usepackage{listings}
 \usepackage{fvextra}
-%\usepackage[german, provide=*]{babel}
+% babel: Beim gewoehnlichen "pdf:"-Format haengt Quarto bei aktivem
+% "lang: de" automatisch \usepackage[...]{babel} mit der richtigen
+% Sprachoption ins Template ein. Die titlepage-pdf-Extension (aktives
+% Format, s. _quarto.yml) ersetzt aber das Template-Partial pandoc.tex
+% komplett und uebernimmt diesen $if(lang)$-Block NICHT mit -- ohne babel
+% hat csquotes (s. u.) keine Sprachinfo und faellt auf den englischen
+% Anfuehrungszeichen-Stil ("...") zurueck statt „..." zu verwenden. Deshalb
+% hier manuell geladen. Bei einem Formatwechsel weg von titlepage-pdf
+% pruefen, ob das zu einer doppelten babel-Ladung fuehrt (dann diese Zeile
+% wieder auskommentieren).
+\usepackage[ngerman]{babel}
+% csquotes wird zusammen mit der Metadaten-Variable "csquotes: true" im
+% titlepage-pdf-Formatblock von _quarto.yml gebraucht: Pandoc gibt
+% Anfuehrungszeichen aus geraden "..." dann als \enquote{...} statt als
+% literale Unicode-Zeichen aus, und csquotes waehlt anhand der von babel
+% geladenen Sprache automatisch den passenden deutschen Stil („...") statt
+% des sonst verwendeten englischen ("..."). Das Paket alleine (ohne die
+% "csquotes: true"-Variable) haette keinen Effekt -- Pandoc muesste sonst
+% weiterhin literale Zeichen statt \enquote{} ausgeben.
 \usepackage{csquotes}
 \usepackage{tocloft}  % more space in TOC
 \usepackage{microtype}
+% soul stellt \st{...} (Durchstreichen) bereit, das Pandoc fuer Markdown
+% ~~...~~ (Strikeout) im LaTeX-Output verwendet. Der normale Pandoc/Quarto-
+% Standardtemplate (latex.common) laedt soul selbst automatisch, wenn ein
+% Dokument Strikeout enthaelt -- die titlepage-pdf-Extension (s. Format-
+% Block "titlepage-pdf" in _quarto.yml) ersetzt aber template-partials wie
+% pandoc.tex komplett und uebernimmt diese Bedingung nicht mit, wodurch
+% \st{...} sonst als "Undefined control sequence" fehlschlaegt. Deshalb
+% hier unconditional geladen (unabhaengig davon, ob ~~...~~ vorkommt).
+\usepackage{soul}
 
 % Farbige Emoji-Darstellung im PDF: Der Buchtext enthaelt literale Unicode-
 % Emoji, auch in Ueberschriften (-> PDF-Bookmarks/hyperref) und in

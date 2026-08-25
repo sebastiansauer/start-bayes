@@ -70,6 +70,55 @@ html[lang="de"] q { quotes: "„" "“" "‚" "‘" }
 quotes: "„" "“" "‚" "‘";
 
 
+/* Mehrteilige Abbildungen mit #| layout-ncol (z. B. Abb. 3.3
+   "fig-betas-ungewiss" in 0250-inferenz.qmd: zwei Teilbilder nebeneinander)
+   haben zwischen den Teilbildern keinen wahrnehmbaren Abstand. Quarto legt
+   zwar standardmäßig margin-right: 20px auf .quarto-layout-cell, aber bei
+   den hier verwendeten Flex-Zellen mit fester flex-basis (50%/33% je
+   Teilbild) reicht das in der Praxis nicht als sichtbarer Spalt. Ein
+   prozentualer gap (bezogen auf die Breite der Zeile) sorgt dafür, dass
+   der Abstand bei jeder Spaltenzahl (2, 3, ...) proportional bleibt statt
+   eines festen Pixelwerts -- gilt projektweit für JEDE Abbildung mit
+   #| layout-ncol, nicht nur für eine einzelne. margin-right auf den
+   einzelnen Zellen wird zurückgesetzt, damit der Abstand nicht doppelt
+   (Margin + Gap) entsteht und nicht als überschüssiger Rand rechts nach
+   der letzten Spalte übrig bleibt. */
+.quarto-layout-row {
+  gap: 5%;
+}
+.quarto-layout-row .quarto-layout-cell {
+  margin-right: 0;
+}
+@media (max-width: 767.98px) {
+  /* Auf schmalen Bildschirmen stapelt Quarto die Teilbilder untereinander
+     (flex-direction: column) -- ein prozentualer Gap bezogen auf die
+     (variable, meist automatische) Höhe ist dort nicht zuverlässig,
+     daher stattdessen ein fester vertikaler Abstand. */
+  .quarto-layout-row {
+    gap: 1em;
+  }
+}
+
+/* Mermaid-Diagramme im Buchtext (alle Kapitel-.qmd, nicht nur Folien):
+   Quartos mermaid-init.js macht ein SVG nur dann responsive (width: 100%),
+   wenn ein data-responsive-Attribut auf dem umgebenden Figure-Div gesetzt
+   ist -- das passiert bei normalem Fließtext nie automatisch (das globale
+   fig-responsive in _quarto.yml betrifft nur Pandoc-Image-Elemente, also
+   ![]()-Bilder, keine Mermaid-Diagramme). Ohne fig-width/fig-height-
+   Chunk-Option lässt Quartos JS das von mermaid.js selbst erzeugte SVG
+   unangetastet stehen, inklusive dessen eigenem inline
+   "style="max-width: ...px"", das auf die native Zeichnungsbreite des
+   Diagramms zeigt -- bei breiten Flowcharts (mehr als die Textspalte)
+   führt das zum seitlichen Überlaufen über den Seitenrand. !important ist
+   nötig, um mermaid.js' eigenes inline max-width zu überschreiben; die
+   Klasse "mermaid-js" wird von Quartos mermaid-init.js an jedes erzeugte
+   SVG projektweit vergeben, die Regel gilt also für alle Mermaid-
+   Diagramme im Buch, nicht nur für ein einzelnes. */
+svg.mermaid-js {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
 /* RevealJS-Foliendecks (slides/): Sicherheitsnetz gegen rechts abgeschnittene
    Formeln. MathJax v2 (HTML-CSS-Output) setzt die Pixelgrößen einmalig beim
    Typesetting per Inline-Style und reagiert NICHT auf nachträgliche
