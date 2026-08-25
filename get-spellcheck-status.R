@@ -13,7 +13,7 @@ pattern_marker <- "<!--\\s*spellcheck:\\s*(\\d{4}-\\d{2}-\\d{2})?\\s*-->"
 
 read_files <- function(path = ".") {
   files <- list.files(path, recursive = FALSE, full.names = FALSE,
-                       pattern = "^(\\d{3,4}.+\\.qmd|index\\.qmd)$")
+                       pattern = "^(\\d{3,4}.+\\.qmd|index\\.qmd|imprint\\.qmd|data-privacy\\.qmd)$")
   sort(files)
 }
 
