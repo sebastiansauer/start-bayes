@@ -6,7 +6,7 @@ title: issues
 
 # PDF
 - in einigen Kapiteln gibt es noch wenige Aufgaben, da sollten aus dem DAtenwerk noch mehr Aufgaben gesucht werden.
-- 
+- Alle Übungsaufgaben ohne Gewichtheber: 🏋 Geben Sie weitere Beispiele an!
 
 
 

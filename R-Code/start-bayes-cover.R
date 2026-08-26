@@ -88,6 +88,18 @@ title_img <- image_blank(1250, title_block_h, color = bg_col) %>%
 canvas <- image_composite(canvas, title_img,
                            offset = paste0("+100+", title_block_y))
 
+## Untertitel (direkt unter dem Titelblock)
+subtitle_h <- 150
+subtitle_y <- title_block_y + title_block_h + 20
+subtitle_img <- image_blank(canvas_w - 300, subtitle_h, color = bg_col) %>%
+  image_annotate("Einführung in die Bayes-Statistik mit R",
+                  size = 78, font = font_fam, weight = 400,
+                  gravity = "center", color = "black") %>%
+  image_background(bg_col, flatten = TRUE)
+canvas <- image_composite(canvas, subtitle_img,
+                           offset = paste0("+150+", subtitle_y))
+
+## Golem-Maskottchen, buendig unter dem Untertitel, zentriert
 ## Golem_hex.png hat einen opaken weissen Hintergrund (kein Alpha) --
 ## erst Weiss transparent stanzen, dann auf bg_col flatten.
 golem_h <- 280
@@ -96,25 +108,16 @@ golem <- image_read("img/Golem_hex.png") %>%
   image_resize(paste0("x", golem_h)) %>%
   image_background(bg_col, flatten = TRUE)
 golem_w <- image_info(golem)$width
-golem_x <- canvas_w - golem_w - 180
-golem_y <- title_block_y + (title_block_h - golem_h) / 2
+golem_x <- (canvas_w - golem_w) / 2
+golem_y <- subtitle_y + subtitle_h
 canvas <- image_composite(canvas, golem,
                            offset = paste0("+", golem_x, "+", golem_y))
-
-## Untertitel (direkt unter dem Titelblock)
-subtitle_img <- image_blank(canvas_w - 300, 150, color = bg_col) %>%
-  image_annotate("Einführung in die Bayes-Statistik mit R",
-                  size = 78, font = font_fam, weight = 400,
-                  gravity = "center", color = "black") %>%
-  image_background(bg_col, flatten = TRUE)
-canvas <- image_composite(canvas, subtitle_img,
-                           offset = paste0("+150+", title_block_y + title_block_h + 20))
 
 ## Zentrale Grafik
 plot_img <- image_read(plot_path) %>%
   image_background(bg_col, flatten = TRUE)
 plot_scaled <- image_resize(plot_img, paste0(canvas_w - 400, "x"))
-plot_y <- 900
+plot_y <- golem_y + golem_h + 60
 canvas <- image_composite(canvas, plot_scaled, offset = paste0("+200+", plot_y))
 
 ## Autor
