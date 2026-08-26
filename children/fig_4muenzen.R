@@ -68,5 +68,12 @@ height_px <- height_inch * dpi
 fig_4muenzen_svg <- export_svg(fig_4muenzen)
 
 # Render SVG to PNG
-rsvg_png(charToRaw(fig_4muenzen_svg), "images/fig_4muenzen.png",
+rsvg_png(charToRaw(fig_4muenzen_svg), "img/fig_4muenzen.png",
          width = width_px, height = height_px)
+
+# rsvg_png() fits the SVG's own (wide/short) aspect ratio into the fixed
+# width_px x height_px box, padding the rest with transparent whitespace.
+# Trim that padding away so the image only contains the actual diagram.
+magick::image_read("img/fig_4muenzen.png") |>
+  magick::image_trim() |>
+  magick::image_write("img/fig_4muenzen.png")
