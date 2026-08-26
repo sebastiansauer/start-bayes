@@ -486,7 +486,11 @@ Wolfie, Post-Nerd, kommt in dieser Geschichte aber nicht vor
 
 ::::
 
+
+
+::: {.content-visible when-format="html"}
 📺 [Don und Angie](https://www.youtube.com/watch?v=LslpcT8aosI)
+:::
 
 
 
@@ -511,15 +515,15 @@ d |>
 
 
 
->   "Finden Sie den Wert meiner Immobilie heraus! Die Immobilie muss viel wert sein!"
-
-🧑 Das ist Don, Immobilienmogul, Auftraggeber.
+Don 🧑:   "Finden Sie den Wert meiner Immobilie heraus! Die Immobilie muss viel wert sein!"
 
 
 
->   Das finde ich heraus. Ich mach das wissenschaftlich.
 
-👩 🔬 Das ist Angie, Data Scientistin.
+
+Angie 👩: "Das finde ich heraus. Ich mach das wissenschaftlich."
+
+
 
 
 
@@ -527,8 +531,7 @@ d |>
 
 
 
->   "Hey Don! Mehr Zimmer, mehr Kohle!"
-👩 🔬
+Angie 👩:   "Hey Don! Mehr Zimmer, mehr Kohle!"
 
 
 Modell 1 (`m1`) modelliert den Hauspreis als Funktion der Zimmerzahl, s. @fig-m1.
@@ -553,13 +556,13 @@ d |>
 
 
 
->   "Jedes Zimmer mehr ist knapp 50 Tausend wert. Dein Haus hat einen Wert von etwa 150 Tausend Dollar, Don."
+Angie 👩: "Jedes Zimmer mehr ist knapp 50 Tausend wert. Dein Haus hat einen Wert von etwa 150 Tausend Dollar, Don."
 
-👩
 
->   Zu wenig! 🤬
 
-🧑
+Don 🧑:  Zu wenig! 🤬
+
+
 
 
 Berechnen wir das Modell `m1`; der Punktschätzer des Parameters `bedroom` steht in @tbl-m1-hdi.
@@ -612,14 +615,14 @@ estimate_prediction(m1, data = dons_house) |> display()
 
 
 
->   "Ich bau eine Mauer! Genial! An die Arbeit, Angie!" 
-🧑
+Don 🧑: "Ich bau eine Mauer! Genial! An die Arbeit, Angie!" 
+
 
 Don hofft, durch Verdopplung der Zimmerzahl den doppelten Verkaufspreis zu erzielen. Ob das klappt?
 
->   "Das ist keine gute Idee, Don."
+Angie 👩: "Das ist keine gute Idee, Don."
 
-👩
+
 
 Berechnen wir die Vorhersagen für Dons neues Haus (mit den durch Mauern halbierten Zimmern), s. @tbl-m1-pred2a.^[Anstelle von `estimate_relation()` kann man auch (einfacher vielleicht) `predict()` verwenden: `predict(m1, newdata = dons_new_house)`. Allerdings gibt `predict()` nur den vorhergesagten Wert aus. `estimate_prediction()` gibt noch zusätzlich das *Vorhersageintervall* aus, berücksichtigt also die (doppelte) Ungewissheit der Vorhersage. Mit anderen Worten: `estimate_prediction` gibt die PPV aus.]
 
@@ -644,8 +647,8 @@ estimate_prediction(m1, dons_new_house) |> display()
 Mit 4 statt 2 Schlafzimmer steigt der Wert auf 250k, laut `m1`, s. @fig-m1.
 
 
->   "Volltreffer! Jetzt verdien ich 100 Tausend mehr! 🤑 Ich bin der Größte!"
-🧑
+Don 🧑:  "Volltreffer! Jetzt verdien ich 100 Tausend mehr! Ich bin der Größte!"
+
 
 
 
@@ -773,16 +776,16 @@ estimate_means(m2, by = "bedrooms", length = 7) |>
 
 
 
->   "Die Zimmer zu halbieren,
+Angie 👩: "Die Zimmer zu halbieren,
 hat den Wert des Hauses *verringert*,
 Don!"
 
-👩
 
 
->   "Verringert!? Weniger Geld?! Oh nein!"
 
-🧑
+Don 🧑: "Verringert!? Weniger Geld?! Oh nein!"
+
+
 
 
 
@@ -794,9 +797,9 @@ Don!"
 
 
 
->   **"Ne-Ga-Tiv!"**
+Angie 👩:   **"Ne-Ga-Tiv!"**
 
-👩
+
 
 
 ```{r}
@@ -805,6 +808,7 @@ Don!"
 #| fig-asp: 0.5
 #| warning: false
 #| results: hide
+#| echo: false
 d_size_group <-
   d |>
   mutate(size_group = case_when(
@@ -883,18 +887,17 @@ Das Hinzufügen von Prädiktoren kann die Gewichte der übrigen Prädiktoren än
 
 
 
->   Aber welche und wie viele Prädiktoren soll ich denn jetzt in mein Modell aufnehmen?! Und welches Modell ist jetzt richtig?!
-
-🧑
-
->   Leider kann die Statistik keine Antwort darauf geben.
-
-👩
+Don 🧑: "Aber welche und wie viele Prädiktoren soll ich denn jetzt in mein Modell aufnehmen?! Und welches Modell ist jetzt richtig?!"
 
 
->   Wozu ist sie dann gut?!
 
-🧑
+Angie 👩: "Leider kann die Statistik keine Antwort darauf geben."
+
+
+
+
+Don 🧑:  "Wozu ist sie dann gut?!"
+
 
 
 :::callout-important
@@ -968,14 +971,14 @@ wenn sie nicht kontrolliert wird [@vanderweele2013]. $\square$
 
 Wenn das Kausalmodell stimmt, dann zeigt `m2` den kausalen Effekt von `livingArea`.
 
->   Was tun wir jetzt bloß?! Oh jeh!
-
-🧑
+Don 🧑:   Was tun wir jetzt bloß?! Oh jeh!
 
 
->   Wir müssen die Konfundierungsvariable kontrollieren.
 
-👩
+
+Angie 👩:   Wir müssen die Konfundierungsvariable kontrollieren.
+
+
 
 
 @fig-km1-controlled zeigt, dass `bedrooms` und `price` *unkorreliert* werden (`d_separated`), wenn man `living area` kontrolliert.
@@ -1139,23 +1142,18 @@ print(km3)
 
 
 
->   "Ich glaube aber an mein Kausalmodell. Mein Kausalmodell ist das größte! Alle anderen Kausalmodelle sind ein Disaster!"
+Don 🧑:   "Ich glaube aber an mein Kausalmodell. Mein Kausalmodell ist das größte! Alle anderen Kausalmodelle sind ein Disaster!"
 
-🧑
+
 
 </br>
 
->   "Don, nach deinem Kausalmodell müssten `bedrooms` und `livingArea` unkorreliert sein. Sind sie aber nicht."
-
-🧑
+Angie 👩:  "Don, nach deinem Kausalmodell müssten `bedrooms` und `livingArea` unkorreliert sein. Sind sie aber nicht. Rechne doch selber die Korrelation aus, Don:
 
 
-Rechne doch selber die Korrelation aus, Don:
+Don 🧑:   "Äh, wie ging das nochmal?"
 
 
->   "Äh, wie ging das nochmal?"
-
-🧑
 
 
 So könntest du das rechnen, Don: `correlation(d, select = c("bedrooms", "livingArea"))`. 
@@ -1169,9 +1167,9 @@ dons_r <- d |>
 Die Korrelation liegt also bei `r  round(cor(d$bedrooms, d$livingArea), 2)`
 
 
->   "Bitte, gerne hab ich dir geholfen, Don."
+Angie 👩:  "Bitte, gerne hab ich dir geholfen, Don."
 
-👩
+
 
 
 
@@ -1217,7 +1215,7 @@ Das ist so ähnlich wie ein Modell,
 das voraussagt,
 dass es morgen irgendeine Temperatur hat zwischen -30 und +30 Grad (nur nicht exakt Null). 
 Trifft diese Temperaturvorhersage ein,
-so werden wir nicht gerade beeindruckt sein. 🥱
+so werden wir nicht gerade beeindruckt sein. 
 :::
 
 Fazit: `km2` passt zu den Daten, aber wir sind nicht gerade beeindruckt vom Modell.
