@@ -799,9 +799,52 @@ Don!"
 👩
 
 
-![Hauspreis stratifizieren](img/hauspreis1.png){#fig-m2-negativ fig-asp=.5}
+```{r}
+#| label: fig-m2-negativ
+#| fig-cap: "Hauspreis stratifizieren"
+#| fig-asp: 0.5
+#| warning: false
+#| results: hide
+d_size_group <-
+  d |>
+  mutate(size_group = case_when(
+    livingArea < quantile(livingArea, prob = .25) ~ 1,
+    livingArea < quantile(livingArea, prob = .5)  ~ 2,
+    livingArea < quantile(livingArea, prob = .75) ~ 3,
+    TRUE ~ 4
+  ))
 
-[Quellcode](https://github.com/sebastiansauer/QM2-Folien/blob/main/Themen/children/Hauspreis-stratifizieren.Rmd)^[<https://github.com/sebastiansauer/QM2-Folien/blob/main/Themen/children/Hauspreis-stratifizieren.Rmd>]
+m2a <- stan_glm(price ~ bedrooms + size_group,
+                data = d_size_group,
+                seed = 42,
+                refresh = 0)
+
+d_m2a <-
+  tibble(
+    size_group = 1:4,
+    intercept = coef(m2a)[1] + size_group * coef(m2a)[3],
+    slope = coef(m2a)[2]
+  )
+
+size_group_labs <-
+  c(`1` = "sehr kleine Häuser (q1)",
+    `2` = "eher kleine Häuser (q2)",
+    `3` = "eher große Häuser (q3)",
+    `4` = "sehr große Häuser (q4)")
+
+d_size_group |>
+  ggplot(aes(x = bedrooms, y = price)) +
+  geom_jitter(alpha = .3) +
+  geom_abline(data = d_m2a,
+              aes(intercept = intercept,
+                  slope = slope),
+              color = "blue",
+              linewidth = 2) +
+  facet_wrap(~ size_group, nrow = 1, labeller = as_labeller(size_group_labs)) +
+  labs(caption = "Facetten zeigen Quartile der Variable 'Wohnfläche'")
+```
+
+Basierend auf [diesem Quellcode](https://github.com/sebastiansauer/QM2-Folien/blob/main/Themen/children/Hauspreis-stratifizieren.Rmd)^[<https://github.com/sebastiansauer/QM2-Folien/blob/main/Themen/children/Hauspreis-stratifizieren.Rmd>]
 
 
 
