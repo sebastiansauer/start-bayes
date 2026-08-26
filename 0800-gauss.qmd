@@ -47,8 +47,6 @@ library(ggExtra)
 library(tidyverse)
 library(easystats)
 #library(plotly)
-
-theme_set(theme_modern())
 ```
 
 ```{r load-libs-non-hidden}
@@ -132,7 +130,7 @@ Wir interessieren uns für die Größe der erwachsenen !Kung,
 also filtern wir die Daten entsprechend und speichern die neue Tabelle als `kung_erwachsen`.
 
 ```{r Kung-5}
-kung_erwachsen <- kung %>% 
+kung_erwachsen <- kung |> 
   filter(age >= 18)
 
 nrow(kung_erwachsen)
@@ -152,13 +150,21 @@ describe_distribution(kung_erwachsen)
 #| label: tbl-kung
 #| tbl-cap: Statistiken der metrischen Variablen im Kung-Datensatz
 
-describe_distribution(kung_erwachsen) %>% 
-  gt() %>% 
-  fmt_number(columns = c(3:last_col()-1)) %>% 
+describe_distribution(kung_erwachsen,
+  centrality = "mean",   # "mean", "median", "MAP", "all"
+  dispersion = TRUE,     # SD / MAD
+  iqr = FALSE,            # Interquartilsabstand
+  range = FALSE,          # Min/Max
+  quartiles = FALSE,     # 25./75. Perzentil
+  ci = NULL              # z.B. 0.95 für Konfidenzintervall
+) |> 
+  gt() |> 
+  fmt_number(columns = c(3:last_col()-1)) |> 
   fmt_integer(columns = last_col())
 ```
 
-Die Verteilungen lassen sich mit `plot_density` (aus `{DataExplorer}`), s. @fig-kung-dens.
+Die Verteilungen lassen sich mit `plot_density` (aus dem R-Paket `{DataExplorer}`) erstellen, 
+s. @fig-kung-dens.
 
 ```{r}
 #| label: fig-kung-dens
@@ -174,9 +180,9 @@ plot_density(kung_erwachsen)
 Wir interessieren uns also für den Mittelwert der Körpergröße einer erwachsenen !Kung-Person, $\mu$.
 Der Einfachheit halber gehen wir davon aus, dass Frauen und Männer im Schnitt gleich groß sind.
 
-![Mensch, [Wikimedia Commons](https://creativecommons.org/licenses/by-sa/3.0)[^0800-gauss-2]](img/human.png){width="5%"}
+![Mensch](img/human.png){width="5%"}[^0800-gauss-2]
 
-[^0800-gauss-2]: Bildquelle: Own alterations and File:SVG_Human_With_All_Organs.svg by Madhero88, CC BY-SA, 3.0
+[^0800-gauss-2]: Bildquelle: Wikimedia, Own alterations and File:SVG_Human_With_All_Organs.svg by Madhero88, CC BY-SA, 3.0
 
 
 
@@ -185,7 +191,7 @@ Der Einfachheit halber gehen wir davon aus, dass Frauen und Männer im Schnitt g
 ```{r p1-p2}
 #| echo: false
 p_nv_kung_prior <-
-  tibble(x = seq(from = 100, to = 250, by = .1)) %>% 
+  tibble(x = seq(from = 100, to = 250, by = .1)) |> 
   ggplot(aes(x = x, y = dnorm(x, mean = 178, sd = 20))) +
   geom_line(color = blue) +
   scale_x_continuous(breaks = seq(from = 100, to = 250, by = 75)) +
@@ -195,7 +201,7 @@ p_nv_kung_prior <-
   scale_y_continuous(breaks = NULL)
 
 p_exp_kung_prior <-
-  tibble(x = seq(0, 50, by = .01)) %>%
+  tibble(x = seq(0, 50, by = .01)) |>
   ggplot(aes(x = x, y = dexp(x, rate = .1))) +
   geom_line(color = green) +
   scale_x_continuous() +
@@ -224,7 +230,7 @@ Stan liefert uns brav eine Stichproben-Post-Verteilung zurück.
 
 🤖 Ich berechne dir die Stichproben-Postverteilung, ganz ohne Bayesbox!
 
-🧑‍🏫 Toll, dann hab ich ja nix zu tun!
+🧑🏫 Toll, dann hab ich ja nix zu tun!
 
 
 ### Apriori-Verteilungen
@@ -399,8 +405,8 @@ Betrachten wir die Post-Verteilungen von $\mu$ und von $\sigma$, s. @fig-kung3.
 #| fig-cap: Die beiden Randverteilungen der Post-Verteilungen, d.h. die Verteilungen für mu und für sigma
 #| fig-asp: 0.5
 
-m_kung_post %>% 
-  pivot_longer(mu:sigma) %>% 
+m_kung_post |> 
+  pivot_longer(mu:sigma) |> 
   ggplot(aes(x = value)) + 
   geom_density(fill = "grey33") +
   scale_y_continuous(NULL, breaks = NULL) +
@@ -432,9 +438,9 @@ Gemeinsame Post-Verteilung von Mittelwert, $\mu$ und Streuung, $\sigma$
 #| label: fig-m_kung_neue_prioris-post-joint
 #| fig-cap: "Die gemeinsame Post-Verteilung von Mittelwert und Streuung von m_kung_neue_prioris"
 
-m_kung_post %>% 
+m_kung_post |> 
   ggplot() +
-  aes(x = mu, y = sigma) %>% 
+  aes(x = mu, y = sigma) |> 
   geom_hex() +
   scale_fill_viridis_c() 
 ```
@@ -449,7 +455,7 @@ m_kung_post %>%
 
 
 p_m_kung_post <- 
-  m_kung_post %>% 
+  m_kung_post |> 
   ggplot() +
   aes(x = mu, y = sigma) +
   geom_point(alpha = .1) 
@@ -457,7 +463,7 @@ p_m_kung_post <-
 p10 <- ggExtra::ggMarginal(p_m_kung_post, type = "density")
 
 p20 <- 
-  m_kung_post %>% 
+  m_kung_post |> 
   ggplot(aes(x = mu)) + 
   geom_histogram()
 
@@ -525,7 +531,7 @@ parameters(m_kung)  # aus Paket `easystats`
 
 ```{r Kung-6}
 #| echo: false
-parameters(m_kung) %>% display()
+parameters(m_kung) |> display()
 
 ci_low <- parameters(m_kung)$CI_low |> round(2)
 ci_high <- parameters(m_kung)$CI_high |> round(2)
@@ -548,17 +554,13 @@ Außerdem sei an @mcelreath2020 und @gelman2021 verwiesen. $\square$
 
 :::: {layout="[ 20, 80 ]"}
 ::: {#first-column}
-![Stan](img/stanlogo.png){width="50%"} 
-
-[Quelle](https://mc-stan.org/)^[<https://mc-stan.org/>]
-
-![Hallo Leute!](img/Golem_hex.png){width="50%"}
+![Hallo Leute, hier ist Stan!](img/Golem_hex.png){width="50%"}
 :::
 
 ::: {#second-column}
 Hier ein paar Kerninfos zu `stan_glm`:
 
--   *Stan* ist eine Software zur Berechnung von Bayesmodellen; das Paket `rstanarm` stellt Stan für uns bereit.
+-   *Stan*)^[<https://mc-stan.org/>] ist eine Software zur Berechnung von Bayesmodellen; das Paket `rstanarm` stellt Stan für uns bereit.
 -   `stan_glm()` ist für die Berechnung von Regressionsmodellen ausgelegt.
 -   Will man nur die Verteilung einer einzelnen Variablen (wie `heights`) schätzen, so hat man ... eine Regression ohne Prädiktor.
 -   Eine Regression ohne Prädiktor schreibt man auf Errisch so: `y ~ 1`. Die `1` steht also für die nicht vorhandene UV; `y` meint die AV (`height`).
@@ -604,8 +606,8 @@ In einer Regression ohne Prädiktoren entspricht der Achsenabschnitt dem Mittelw
 names(m_kung_post) <- 
   c("mu", "sigma")  # den Namen "(Intercept)" durch "mu" ersetzen, ist prägnanter
 
-m_kung_post %>% 
-  count(mu > 155) %>% 
+m_kung_post |> 
+  count(mu > 155) |> 
   mutate(prop = n/sum(n))
 ```
 
@@ -623,8 +625,8 @@ Die Wahrscheinlichkeit ist nicht hoch, aber nicht auszuschließen, dass die Kung
 names(m_kung_post) <- 
   c("mu", "sigma")  # den Namen "(Intercept)" durch "mu" ersetzen, ist prägnanter
 
-m_kung_post %>% 
-  count(mu > 165) %>% 
+m_kung_post |> 
+  count(mu > 165) |> 
   mutate(prop = n/sum(n))
 ```
 
@@ -639,7 +641,7 @@ Oh, diese Hypothese können wir mit an Sicherheit grenzender Wahrscheinlichkeit 
 ### Lösung
 
 ```{r Kung-29, echo = TRUE}
-m_kung_post %>% 
+m_kung_post |> 
   summarise(q95 = quantile(mu, .95))
 ```
 :::
@@ -652,7 +654,7 @@ m_kung_post %>%
 ### Lösung
 
 ```{r Kung-30, echo = TRUE}
-m_kung_post %>% 
+m_kung_post |> 
   eti()
 ```
 
@@ -667,13 +669,13 @@ Ein ETI ist synonym zu PI.
 ### Lösung
 
 ```{r eval = FALSE}
-m_kung %>% 
+m_kung |> 
   parameters()
 ```
 
 ```{r}
 #| echo: false
-m_kung %>% 
+m_kung |> 
   parameters() |> 
   display()
 ```
@@ -683,8 +685,8 @@ Seeing is believing, s. @fig-m_kung-params-intercept.
 ```{r}
 #| fig-cap: "Parameter von m_kung, nur einer: der Intercept"
 #| label: fig-m_kung-params-intercept
-m_kung %>% 
-  parameters() %>% 
+m_kung |> 
+  parameters() |> 
   plot(show_intercept = TRUE)
 ```
 
@@ -818,7 +820,7 @@ so fallen Prioriwerte nicht mehr ins Gewicht, zumindest wenn sie moderat gewähl
 
 Leider liefert der Stan-Golem keinen braven Tibble (Tabelle) zurück.
 
-> 👨‍🏫 Mensch, Stan, streng dich mal ein bisschen an!
+> 👨🏫 Mensch, Stan, streng dich mal ein bisschen an!
 
 > 🤖 Mach's halt selber, wenn du es besser kannst!
 
@@ -908,12 +910,10 @@ Wir haben die Posteriori-Verteilung für ein Gauss-Modell berechnet. Dabei hatte
 Kontinuierliches Lernen ist der Schlüssel zum Erfolg.
 :::
 
-## Vertiefung: Wahl der Priori-Werte
+<!-- ## Vertiefung: Wahl der Priori-Werte
 
 
-::: {.content-visible when-format="html"}
-Dieser Abschnitt ist eine VERTIEFUNG und nicht prüfungsrelevant.
-:::
+
 
 ### Welche Beobachtungen sind auf Basis unseres Modells zu erwarten?
 
@@ -926,26 +926,25 @@ sim <- tibble(sample_mu  =
             sd   = 20),
     sample_sigma = 
       rexp(n, 
-            rate = 0.1)) %>% 
+            rate = 0.1)) |> 
   mutate(height  = 
       rnorm(n, 
             mean = sample_mu, 
             sd   = sample_sigma))
 
 height_sim_sd <- 
-  sd(sim$height) %>% round()
+  sd(sim$height) |> round()
 height_sim_mean <- 
-  mean(sim$height) %>% round()
+  mean(sim$height) |> round()
 
 ```
 
-💭 Was denkt der Golem (`m_kung`) *apriori* von der Größe der !Kung?
-
-🦾 Ziehen wir mal ein paar Stichproben auf Basis des Modells. Voilà:
+Was denkt der Golem (`m_kung`) *apriori* von der Größe der !Kung?
+Ziehen wir mal ein paar Stichproben auf Basis des Modells. Voilà:
 
 ```{r Kung-12}
 p3 <- 
-  sim %>% 
+  sim |> 
   ggplot(aes(x = height)) +
   geom_density(fill = "grey33") +
   scale_x_continuous(
@@ -959,7 +958,7 @@ p3 <-
 p3
 ```
 
-[Quellcode](https://bookdown.org/content/4857/geocentric-models.html#a-gaussian-model-of-height)^[<https://bookdown.org/content/4857/geocentric-models.html#a-gaussian-model-of-height>]
+
 
 ### Priori-Werte prüfen mit der Priori-Prädiktiv-Verteilung
 
@@ -976,13 +975,14 @@ Anteil $h_i > 200$:
 
 ```{r Kung-14, echo = TRUE}
 anteil_großer_kung <- 
-sim %>% 
-  count( height > 200) %>% 
+sim |> 
+  count( height > 200) |> 
   mutate(prop = n/sum(n))
 anteil_großer_kung
 ```
 
-🤔 Sehr große Buschleute? `r round(anteil_großer_kung$prop[2], 2)*100` Prozent sind größer als 2 Meter. Das ist diskutabel, muss aber nicht zwangsläufig ein schlechter Prior sein.
+Sehr große Buschleute? `r round(anteil_großer_kung$prop[2], 2)*100` Prozent sind größer als 2 Meter. 
+Das ist diskutabel, muss aber nicht zwangsläufig ein schlechter Prior sein.
 
 ### Vorhersagen der Priori-Werte
 
@@ -1013,12 +1013,12 @@ set.seed(4)
 # simulate
 sim2 <-
   tibble(sample_mu    = rnorm(n, mean = 178, sd = 100),
-         sample_sigma = rexp(n, rate = .01)) %>% 
+         sample_sigma = rexp(n, rate = .01)) |> 
   mutate(height = rnorm(n, mean = sample_mu, sd = sample_sigma))
 
 # compute the values we'll use to break on our x axis
 breaks <-
-  c(mean(sim2$height) - 3 * sd(sim2$height), 0, mean(sim2$height), mean(sim2$height) + 3 * sd(sim2$height)) %>% 
+  c(mean(sim2$height) - 3 * sd(sim2$height), 0, mean(sim2$height), mean(sim2$height) + 3 * sd(sim2$height)) |> 
     round(digits = 0)
 
 # this is just for aesthetics
@@ -1030,7 +1030,7 @@ text <-
 
 # plot
 p4 <-
-  sim2 %>% 
+  sim2 |> 
   ggplot(aes(x = height)) +
   geom_density(fill = "grey20") +
   geom_vline(xintercept = 0, color = "white") +
@@ -1056,14 +1056,14 @@ d <-
   tibble(x = seq(0,75, by =.01),
          y = dexp(x, rate = .01))
 
-d %>% 
+d |> 
   ggplot(aes(x,y)) +
   geom_line()
 ```
 
 ```{r Kung-17, echo = FALSE, eval = FALSE}
-sim2 %>% 
-  count(height < 0) %>% 
+sim2 |> 
+  count(height < 0) |> 
   mutate(prop = n()/n)
 ```
 
@@ -1071,7 +1071,7 @@ sim2 %>%
 Ein Haufen Riesen 👹 werden bei den !Kung auch erwartet.
 
 🤯 Vage (flache, informationslose, "neutrale", "objektive") Priori-Werte machen oft keinen Sinn, 
-weil sie extreme, unplausible Werte zulassen.
+weil sie extreme, unplausible Werte zulassen. -->
 
 ## Aufgaben
 

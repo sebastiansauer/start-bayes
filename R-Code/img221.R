@@ -19,8 +19,8 @@ d %>%
          p_water = seq(from = 0, to = 1, length.out = sequence_length)) %>%
   group_by(p_water) %>%
   # you can learn more about lagging here: https://www.rdocumentation.org/packages/stats/versions/3.5.1/topics/lag or here: https://dplyr.tidyverse.org/reference/lead-lag.html
-  mutate(lagged_n_trials  = lag(n_trials,  k = 1),
-         lagged_n_success = lag(n_success, k = 1)) %>%
+  mutate(lagged_n_trials  = lag(n_trials,  n = 1),
+         lagged_n_success = lag(n_success, n = 1)) %>%
   ungroup() %>%
   mutate(prior      = ifelse(n_trials == 1, .5,
                              dbinom(x    = lagged_n_success,

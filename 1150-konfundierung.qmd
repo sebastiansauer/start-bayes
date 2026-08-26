@@ -27,8 +27,6 @@ library(easystats)
 library(gt)
 #library(DT)
 library(ggdag)
-
-theme_set(theme_modern())
 ```
 
 
@@ -44,8 +42,10 @@ Sie können ihn entweder über die Webseite herunterladen:
 
 ```{r data-saratoga, echo = TRUE}
 #| eval: false
-SaratogaHouses_path <- "https://vincentarelbundock.github.io/Rdatasets/csv/mosaicData/SaratogaHouses.csv"
-
+SaratogaHouses_path <- paste0(
+  "https://vincentarelbundock.github.io/Rdatasets/",
+  "csv/mosaicData/SaratogaHouses.csv")
+  
 d <- read.csv(SaratogaHouses_path)
 ```
 
@@ -132,7 +132,7 @@ studie_a <-
 "Gesamt",  "273/350 überlebt (78%)", "289/350 überlebt (83%)"
   ) 
 
-studie_a %>% 
+studie_a |> 
   gt()
 ```
 
@@ -224,7 +224,7 @@ studie_b <-
 "Gesamt",  "273/350 überlebt (78%)", "289/350 überlebt (83%)"
   )
 
-studie_b %>% 
+studie_b |> 
   gt()
 ```
 
@@ -540,7 +540,7 @@ Modell 1 (`m1`) modelliert den Hauspreis als Funktion der Zimmerzahl, s. @fig-m1
 #| message: false
 #| label: fig-m1
 #| fig-cap: "Modell m1"
-d %>% 
+d |> 
   ggplot() +
   aes(x = bedrooms, y = price) +
   geom_jitter(alpha = .3) +
@@ -763,7 +763,7 @@ estimate_means(m2, by = "bedrooms", length = 7)
 #| label: fig-m2-preds
 #| fig-asp: 0.3
 #| fig-cap: "Hauspreis als Funktion der Zimmerzahl, laut m2"
-estimate_means(m2, by = "bedrooms", length = 7) %>% 
+estimate_means(m2, by = "bedrooms", length = 7) |> 
   ggplot() +
   aes(x = bedrooms, y = Median) +
   geom_line() +
@@ -897,7 +897,7 @@ Das Kausalmodell `km1` ist in @fig-km1 dargestellt; vgl. @fig-m2-negativ.
 #| fig-cap: "Kausalmodell km1 -- Eine Erklärung (von mehreren) für m1 bzw. die Daten, die m1 zugrunde liegen"
 km1 <- confounder_triangle(x = "bedrooms",
                           y = "price",
-                          z = "living area") %>% 
+                          z = "living area") |> 
   ggdag_dconnected(text = FALSE, use_labels = "label") +
   theme_dag()
 
@@ -944,7 +944,7 @@ Wenn das Kausalmodell stimmt, dann zeigt `m2` den kausalen Effekt von `livingAre
 #| fig-cap: "Durch Kontrolle von living area wird die Assoziation von price und bedrooms aufgehoben."
 confounder_triangle(x = "bedrooms",
                           y = "price",
-                          z = "living area") %>% 
+                          z = "living area") |> 
  ggdag_dconnected(text = FALSE, use_labels = "label", 
                   controlling_for = "z") +
   theme_dag()
@@ -1087,7 +1087,7 @@ So sieht Dons Kausalmodell aus, s. @fig-km3.
 #| fig-cap: "Dons Kausalmodell"
 km3 <- collider_triangle(x = "bedrooms",
                           y = "livingArea",
-                          m = "price") %>% 
+                          m = "price") |> 
   ggdag_dconnected(text = FALSE, use_labels = "label") +
   theme_dag()
 
@@ -1119,7 +1119,7 @@ So könntest du das rechnen, Don: `correlation(d, select = c("bedrooms", "living
 Oder z.B. so:
 
 ```{r}
-dons_r <- d %>% 
+dons_r <- d |> 
   summarise(cor(bedrooms, livingArea))
 ```
 
@@ -1252,7 +1252,7 @@ wären sie längst erkannt, und alle Probleme der Menschheit gelöst.
 #        D ~ A + M + W,
 #        M ~ A + S,
 #        W ~ S,
-#        coords = dag_coords) %>%
+#        coords = dag_coords) |>
 #   gg_simple_dag()
 
 dag_km1 <-
@@ -1322,7 +1322,7 @@ Der "Schoki-DAG" in @fig-schoki-dag zeigt den DAG für das Schokoloaden-Nobelpre
 #| fig-cap: "Macht Schokolade Nobelpreise?"
 confounder_triangle(x = "Schoki",
                           y = "Nobelpreise",
-                          z = "Entwicklungsstand") %>% 
+                          z = "Entwicklungsstand") |> 
   ggdag_dconnected(text = FALSE, use_labels = "label") +
   theme_dag()
 ```
@@ -1420,6 +1420,15 @@ Mediation (und Nachfahre) -- kennen, um gängige Fragen der Kausalinferenz bearb
 
 
 - [Sammlung "kausal"](https://datenwerk.netlify.app/#category=causal)
+
+### Papier-und-Bleistift-Aufgaben
+
+1. [confounder-example](https://sebastiansauer.github.io/datenwerk/posts/confounder-example/index.html)
+2. [adjustieren1a](https://sebastiansauer.github.io/datenwerk/posts/adjustieren1a/adjustieren1a.html)
+
+### Computer-Aufgaben
+
+1. [saratoga-cor1](https://sebastiansauer.github.io/datenwerk/posts/saratoga-cor1/saratoga-cor1.html)
 
 
 ::: {.content-visible when-format="html"}

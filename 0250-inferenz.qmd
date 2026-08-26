@@ -239,10 +239,11 @@ s. @fig-desk-inf.
 ```{mermaid}
 %%| label: fig-desk-inf
 %%| fig-cap: Zusammenhang von Deskriptivstatistik und Inferenzstatistik
+%%| fig-width: 4
 graph LR
     %% 1. Definition der Grundgesamtheit (viele Emojis)
     Population["Grundgesamtheit (Population)
-    👥👤👨‍👩‍👧‍👦🧑‍🤝‍🧑🌍
+    👥👤👨👩👧👦🧑🤝🧑🌍
     (N = groß)"]
     
     %% 2. Definition der Stichprobe (wenige Emojis)
@@ -369,7 +370,7 @@ lm_toni <- lm(y ~ x, data = noten2)
 #|   - "Ungewissheit für die Steigung der Regressionsgeraden: Die Gerade könnte mehr oder weniger steigen."
 
 p_toni_regr_b0 <- 
-  noten2 %>% 
+  noten2 |> 
   ggplot(aes(x, y)) +
   geom_point() +
  geom_abline(slope = coef(lm_toni)[2], 
@@ -388,7 +389,7 @@ p_toni_regr_b0
 
 
 p_toni_regr_b1 <- 
-  noten2 %>% 
+  noten2 |> 
   ggplot(aes(x, y)) +
   geom_point() +
  geom_abline(slope = coef(lm_toni)[2], intercept = coef(lm_toni)[1], color = modelcol, size = 1.5) +
@@ -528,8 +529,8 @@ d1 <- tibble(
 lm1 <-  lm(y1 ~ x, data = d1)
 
 d1 <-
-  d1 %>% 
-  mutate(pred = predict(lm1)) %>% 
+  d1 |> 
+  mutate(pred = predict(lm1)) |> 
   mutate(above_pred = ifelse(y1 > pred, "above", "below"),
          e = resid(lm1),
          e2 = e * 3,
@@ -733,8 +734,8 @@ Der p-Wert wird oft falsch verstanden [@badenes-ribera2016].
 Aber er ist auch nicht leicht zu verstehen, meint Meister Yoda, s. @fig-yoda.
 Hier sind einige *FALSCHE* Interpretationen zum p-Wert laut der Autoren:
 
-- 🙅‍♀ Der p-Wert würde die Wahrscheinlichkeit der Nullhypothese oder der Forschungshypothese angeben. 🙊 FALSCH!
-- 🙅‍♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. 🙊   FALSCH!
+- 🙅♀ Der p-Wert würde die Wahrscheinlichkeit der Nullhypothese oder der Forschungshypothese angeben. 🙊 FALSCH!
+- 🙅♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. 🙊   FALSCH!
 
 
 ![Der p-Wert ist wenig intuitiv, meint Meister Yoda](img/pvalue-yoda.jpg){#fig-yoda width=50%}
@@ -791,8 +792,8 @@ Mit Bezug auf @gelman2021 (S. 57) wird in diesem Buch der Begriff wie folgt defi
 mit Gültigkeit sowohl für Bayes-Statistik als auch für Frequentistische Statistik.
 
 :::{#exr-sun-explodes}
-Im Cartoon 1132 [von xkcd](https://xkcd.com/)^[<https://xkcd.com/>] wird sich über das Nicht-Berücksichtigen von Vorab-Informationen (Prior-Verteilung) lustig gemacht.
-Erklären Sie das Comic!
+Im Comic 1132 [von xkcd](https://xkcd.com/1132/)^[<https://xkcd.com/1132/>] wird sich über das Nicht-Berücksichtigen von Vorab-Informationen (Prior-Verteilung) lustig gemacht.
+Erklären Sie den Comic!
 :::
 
 :::{#def-signifikanz}
@@ -852,6 +853,7 @@ Der Effekt ist groß oder (auch) die Stichprobe ist groß, s. @fig-pwert2.
 ```{mermaid}
 %%| label: fig-pwert2
 %%| fig-cap: "Der p-Wert ist nicht nur eine Funktion der Effektgröße, sondern auch der Stichprobengröße. Große Stichproben werden zwangsläufig signifikant, sofern der Effekt nicht exakt Null ist."
+%%| fig-width: 3
 flowchart LR
 S[Stichprobengröße]
 E[Effektgröße]

@@ -36,8 +36,7 @@ source("funs/binomial_plot.R")
 ```{r r-setup}
 #| echo: false
 #| message: false
-theme_set(theme_minimal())
-scale_colour_discrete <- function(...) 
+scale_colour_discrete <- function(...)
   scale_color_okabeito()
 ```
 
@@ -249,6 +248,7 @@ Sie werfen eine Münze (Sie haben keinen Grund, an ihrer Fairness zu zweifeln). 
 ```{mermaid}
 %%| label: fig-baummuenz1
 %%| fig-cap: Sie werfen eine Münze. Party oder Lernen???
+%%| fig-width: 3
 flowchart LR
  M[Sie werfen die Münze] --> T["T (Treffer) 🥳"]
   M --> N["N (Niete) 📚"]
@@ -406,9 +406,6 @@ s. @fig-disjunkt.
 
 
 
-[Quelle: rither.de](http://www.rither.de/a/mathematik/stochastik/mengentheorie-und-venn-diagramme/)^[<http://www.rither.de/a/mathematik/stochastik/mengentheorie-und-venn-diagramme/>]
-
-
 ::::: {#exm-disjunkt1}
 Das Ereignis $A$ "Gerade Augenzahl beim Würfelwurf", $A=\{2,4,6\}$ und das Ereignis $B$ "Ungerade Augenzahl beim Würfelwurf", $B=\{1,3,5\}$ sind disjunkt, s. @fig-disjunkt1.
 
@@ -544,7 +541,7 @@ Es ist daher unvollständig zu sagen: "Morgen wird es mit einer Wahrscheinlichke
 
 Man müsste Hintergrundinformation (*Evidenz*, $E$) ergänzen, z.B. "gegeben meines Wissens zum Wettermodell X".
 
-Also: Anstelle von $Pr(\text{Regen}) = .7$ besser schreiben: $Pr(\text{Regen|Wettermodell X})$. $\square$
+Also: Anstelle von $Pr(\text{Regen}) = .7$ sollte man besser schreiben: $Pr(\text{Regen|Wettermodell X})$. $\square$
 :::
 
 
@@ -685,8 +682,8 @@ Und hier der Anteil von  `6` im Verlauf unserer Würfe, s. @fig-wuerfel.
 #| fig-asp: 0.5
 #| echo: false
 
-wuerfel_tab %>% 
-  slice_head(n = 1e3) %>% 
+wuerfel_tab |> 
+  slice_head(n = 1e3) |> 
   ggplot() +
   aes(x = id, y = ist_6_cumsum) +
   geom_hline(yintercept = 1/6, color = "grey80", size = 3) +
@@ -859,8 +856,7 @@ Um einen (hohen!) Geldpreis zu gewinnen, muss bei ihrem nächsten Wurf sowohl da
 \begin{align}
 & A = \{2,4,6\} \qquad \hfill \boxed{\color{gray}{1}\; \boxed{\color{black}{2}}\; \color{gray}{3}\; \boxed{\color{black}{4}}\; \color{gray}{5}\; \boxed{\color{black}{6}}\;} \\
 & B = \{5,6\} \qquad \qquad \hfill  \boxed{ \color{gray}{1\; 2\; 3\; 4\;} \boxed{\color{black}{5\; 6}}} \\
-\newline
-\rule{4cm}{0.4pt} \\
+& \rule{8.5cm}{0.4pt} \notag \\
 & A \cap B = \{6\} \qquad \qquad \hfill  \boxed{\color{gray}{1\; 2\; 3\; 4\; 5\;} \color{black}{6}}
 \end{align}
 ::::
@@ -882,7 +878,7 @@ intersect(A, B)
 :::callout-note
 #### Eselsbrücke zur Vereinigungs- und Schnittmenge
 
-Das Zeichen für eine Vereinigung zweier Mengen kann man leicht mit dem Zeichen für einen Schnitt zweier Mengen verwechseln;
+Das Zeichen für eine Vereinigung zweier Mengen "$\cup$" kann man leicht mit dem Zeichen für einen Schnitt zweier Mengen "$\cap$" verwechseln;
 daher folgt hier eine Eselsbrücke, s. @fig-esel.
 
 ![Eselsbrücke für Vereinigungs- und Schnittmenge: In der "Tasse" (Vereinigung) bleibt mehr hängen als in der "Käseglocke".](img/ven_cap_cup.svg){#fig-esel width=55%}

@@ -56,8 +56,6 @@ library(easystats)
 library(gt)
 library(ggpubr)
 library(plotly)
-
-theme_set(theme_modern())
 ```
 
 
@@ -118,8 +116,8 @@ p_grid <- seq(from = 0, to = 1, by = .1)                # <1>
 L <- dbinom(n_success, size = n_trials, prob = p_grid)  # <2>
 
 bayesbox_6w_9v <-                                                    # <3>
-  tibble(p_grid = p_grid,prior  = 1) %>% 
-  mutate(likelihood = L) %>% 
+  tibble(p_grid = p_grid,prior  = 1) |> 
+  mutate(likelihood = L) |> 
   mutate(unstand_post = (likelihood * prior),
          post = unstand_post / sum(unstand_post))
 ```
@@ -150,7 +148,7 @@ ggline(bayesbox_6w_9v , x = "p_grid", y = "post")
 #
 
 p_d <-
-bayesbox_6w_9v  %>%
+bayesbox_6w_9v  |>
   ggplot() +
   aes(x = p_grid, y = post) +
   geom_point(alpha = .5, size = 3) +
@@ -179,7 +177,7 @@ vor allem ist die Post-Verteilung wichtig.
 #
 
 p_d <-
-bayesbox_6w_9v  %>% 
+bayesbox_6w_9v  |> 
   ggplot() +
   aes(x = p_grid, y = post) +
   geom_point(alpha = .5, size = 3) +
@@ -207,8 +205,8 @@ s. @tbl-post1.
 #| echo: false
 #| tbl-cap: Postverteilung mit der Bayesbox berechnet
 #| label: tbl-post1
-bayesbox_6w_9v  %>% 
-  mutate_all(round, 2) %>% 
+bayesbox_6w_9v  |> 
+  mutate_all(round, 2) |> 
   gt::gt()
 ```
 
@@ -294,7 +292,7 @@ Bei einer multiplen Regression mit sagen wir 10 Parametern mit jeweils 100 Auspr
 
 >    🤖 Bitte tue mir das nicht an!
 
->    👨‍🏫 Schon gut, das können wir R nicht zumuten.
+>    👨🏫 Schon gut, das können wir R nicht zumuten.
 > Wir brauchen eine andere Lösung!
 
 
@@ -338,11 +336,11 @@ Erstellen wir uns also eine Tabelle mit Stichprobendaten aus der Posteriori-Vert
 ```{#lst-post-sample .r lst-cap="Wir stellen eine Tabelle mit Stichproben aus der Post-Verteilung"}
 
 samples_6w_9v <-
-  bayesbox_6w_9v %>%  # nimm die Tabelle mit Posteriori-Daten,
+  bayesbox_6w_9v |>  # nimm die Tabelle mit Posteriori-Daten,
   slice_sample(  # Ziehe daraus eine Stichprobe,
     n = 1e4,  # mit insgesamt n=10000 Zeilen,
     weight_by = post,  # Gewichte nach Post-Wskt.,
-    replace = T)  %>%  # Ziehe mit Zurücklegen
+    replace = T)  |>  # Ziehe mit Zurücklegen
   select(p_grid)
 ```
 
@@ -354,11 +352,11 @@ samples_6w_9v <-
 #| echo: false
 
 samples_6w_9v <-
-  bayesbox_6w_9v  %>%  # nimm die Tabelle mit Posteriori-Daten,
+  bayesbox_6w_9v  |>  # nimm die Tabelle mit Posteriori-Daten,
   slice_sample(  # Ziehe daraus eine Stichprobe,
     n = 1e4,  # mit insgesamt n=10000 Zeilen,
     weight_by = post,  # Gewichte nach Post-Wskt.,
-    replace = T)  %>%  # Ziehe mit Zurücklegen
+    replace = T)  |>  # Ziehe mit Zurücklegen
   select(p_grid)
 ```
 
@@ -386,7 +384,7 @@ Hier erstmal die ersten 100 gesampelten Parameterwerte (`p_grid`) aus `samples_6
 
 ```{r QM2-Thema3-Teil1-2}
 #| echo: false
-samples_6w_9v$p_grid[1:100] %>% round(2)
+samples_6w_9v$p_grid[1:100] |> round(2)
 ```
 
 
@@ -464,10 +462,10 @@ bayesbox_g100 <-
   tibble(p_grid = seq(from = 0, 
                       to = 1, 
                       length.out = g+1),  # <4>
-         prior  = 1) %>%   # <5>
+         prior  = 1) |>   # <5>
   mutate(likelihood = dbinom(n_success,   # <6>
                              size = n_trials, 
-                             prob = p_grid)) %>% 
+                             prob = p_grid)) |> 
   mutate(unstand_post = (likelihood * prior),  # <7>
          post = unstand_post / sum(unstand_post))
 ```
@@ -504,7 +502,7 @@ Und daraus ziehen wir uns $n=1000=10^3$ Stichproben:
 
 ```{r QM2-Thema3-Teil1-4}
 samples_g100 <-
-  bayesbox_g100 %>%  # nimmt die Tabelle mit Posteriori-Daten,
+  bayesbox_g100 |>  # nimmt die Tabelle mit Posteriori-Daten,
   slice_sample(  # Ziehe daraus eine Stichprobe,
     n = 1000,  # mit insgesamt n=1000 Elementen,
     weight_by = post,  # Gewichte nach Spalte mit Post-Wskt.,
@@ -526,7 +524,7 @@ Das Modell ist sich nicht sehr sicher, könnte man sagen.
 
 
 p0 <- 
-  bayesbox_g100 %>% 
+  bayesbox_g100 |> 
   ggplot(aes(x = p_grid, y = post)) +
   geom_line(color = "grey40") +
   geom_point() +
@@ -536,8 +534,8 @@ p0 <-
   theme_minimal()
 
 p1 <-
-  samples_g100 %>% 
-  mutate(sample_number = 1:n()) %>% 
+  samples_g100 |> 
+  mutate(sample_number = 1:n()) |> 
   ggplot(aes(y = sample_number, x = p_grid)) +
   geom_point2(alpha = 1/8) +
   scale_x_continuous("Wasseranteil", 
@@ -547,7 +545,7 @@ p1 <-
   theme_minimal()
 
 p2 <-
-samples_g100 %>% 
+samples_g100 |> 
   ggplot(aes(x = p_grid)) +
   geom_histogram(bins = 11) +
   scale_x_continuous("Anteil Wasser (p)", 
@@ -606,18 +604,18 @@ $n=10^6$ Stichproben bei $g=101$ Gitterwerten aus der Posteriori-Verteilung, s. 
 
 set.seed(42)
 bayesbox_g100_samples <- 
-  bayesbox_g100 %>% 
+  bayesbox_g100 |> 
   slice_sample(n = 1e6, weight_by = post, replace = T) 
 
 
 mode_df <- bayestestR::map_estimate(bayesbox_g100_samples$p_grid) 
-mode_rounded <- mode_df$MAP_Estimate %>% round(2)
-mavg <- mean(bayesbox_g100_samples$p_grid) %>% round(2)
-md <- median(bayesbox_g100_samples$p_grid) %>% round(2)
+mode_rounded <- mode_df$MAP_Estimate |> round(2)
+mavg <- mean(bayesbox_g100_samples$p_grid) |> round(2)
+md <- median(bayesbox_g100_samples$p_grid) |> round(2)
 
 
 p_100_samples <-
-  bayesbox_g100_samples %>%   
+  bayesbox_g100_samples |>   
 ggplot(aes(x = p_grid)) +
   geom_histogram(bins = 101) +
   scale_x_continuous("Anteil Wasser (p)", limits = c(0, 1)) +
@@ -742,7 +740,7 @@ von weniger als 50% aussprechen.
 
 ```{r QM2-Thema3-Post-befragen-7}
 #| eval: false
-samples_6w_9v %>%
+samples_6w_9v |>
   count(p_grid < .5) 
 ```
 
@@ -773,7 +771,7 @@ Wir zählen, wie oft der Wasseranteil weniger als 50% beträgt.
 
 
 ```{r}
-samples_6w_9v %>%
+samples_6w_9v |>
   count(p_grid < .5) 
 ```
 :::
@@ -783,8 +781,8 @@ samples_6w_9v %>%
 Natürlich gibt es verschiedene Wege, die gleiche Frage zu beantworten.
 
 ```{r QM2-Thema3-Post-befragen-6}
-bayesbox_6w_9v %>%
-  filter(p_grid < .5) %>%
+bayesbox_6w_9v |>
+  filter(p_grid < .5) |>
   summarise(sum = sum(post))
 ```
 
@@ -808,18 +806,18 @@ Noch eine Forschungsfrage:
 Wir zählen die Stichproben, die diesen Kriterien entsprechen.
 
 ```{r QM2-Thema3-Post-befragen-8}
-samples_6w_9v %>% 
+samples_6w_9v |> 
   count(p_grid > .5 & p_grid < .75)
 ```
 
 >    🤖 Ich würde empfehlen, die Anzahl noch in Anteile umzurechnen.
 > Die kann man dann als Wahrscheinlichkeiten auffassen.
 
->    👨‍🏫 Das wollte ich auch gerade sagen...
+>    👨🏫 Das wollte ich auch gerade sagen...
 
 ```{r QM2-Thema3-Post-befragen-8a}
-samples_6w_9v %>%
-  count(p_grid > .5 & p_grid < .75) %>%
+samples_6w_9v |>
+  count(p_grid > .5 & p_grid < .75) |>
   mutate(Anteil = n / 1e4,
          Prozent = 100 * n / 1e4)  # In Prozent
 ```
@@ -828,8 +826,8 @@ Anstelle von `count()` könnte man, wenn man möchte, auch `filter()` verwenden.
 
 
 ```{r}
-samples_6w_9v %>% 
-  filter(p_grid > .5 & p_grid < .75) %>% 
+samples_6w_9v |> 
+  filter(p_grid > .5 & p_grid < .75) |> 
   summarise(sum     =       n() / 1e4,
             anteil = 100 * n() / 1e4)  # In Prozent
 ```
@@ -851,15 +849,15 @@ Noch ein Beispiel für eine Forschungsfrage:
 
 ```{r QM2-Thema3-Post-befragen-9}
 #| eval: false
-samples_6w_9v %>%
-  count(p_grid >= .9 & p_grid <= 1) %>%
+samples_6w_9v |>
+  count(p_grid >= .9 & p_grid <= 1) |>
   mutate(prop = 100 * n / 1e4)  # prop wie "proportion", Anteil
 ```
 ### Output
 ```{r QM2-Thema3-Post-befragen-9a}
 #| echo: false
-samples_6w_9v %>%
-  count(p_grid >= .9 & p_grid <= 1) %>%
+samples_6w_9v |>
+  count(p_grid >= .9 & p_grid <= 1) |>
   mutate(prop = 100 * n / 1e4)  # prop wie "proportion", Anteil
 ```
 :::
@@ -876,7 +874,7 @@ $\square$
 :::{#exr-wasser50}
 ### Wasseranteil höchstens 50%?
 
->   👩‍🔬 Mit welcher Wahrscheinlichkeit ist der Planet höchstens zur Hälfte mit Wasser bedeckt?
+>   👩🔬 Mit welcher Wahrscheinlichkeit ist der Planet höchstens zur Hälfte mit Wasser bedeckt?
 
 
 
@@ -884,7 +882,7 @@ $\square$
 ::: {.callout-tip appearance="minimal" collapse="true"}
 ### Lösung
 ```{r}
-samples_6w_9v %>% count(p_grid <= .5)
+samples_6w_9v |> count(p_grid <= .5)
 ```
 :::
 :::
@@ -916,7 +914,7 @@ Bei der Gelegenheit könnten wir folgende, ähnliche Fragen stellen:
 ::: {.callout-tip appearance="minimal" collapse="true"}
 ### Lösung
 ```{r}
-samples_6w_9v %>% 
+samples_6w_9v |> 
   summarise(mean(p_grid),
             median(p_grid))
 ```
@@ -940,7 +938,7 @@ Diese Frage können wir mit dem Befehl `quantile` beantworten.
 
 
 ```{r QM2-Thema3-Post-befragen-11}
-samples_6w_9v %>% 
+samples_6w_9v |> 
   summarise(quantil90 = quantile(p_grid, p = .9))
 ```
 
@@ -955,7 +953,7 @@ Es hilft vielleicht, sich die Post-Verteilung noch einmal vor Augen zu führen, 
 <!-- #| fig-cap: Die Post-Verteilung im Globusversuch -->
 <!-- #| fig-asp: .5 -->
 <!-- #| out-width: "50%" -->
-<!-- samples_6w_9v %>%  -->
+<!-- samples_6w_9v |>  -->
 <!--   ggplot(aes(x = p_grid)) + -->
 <!--   geom_bar() -->
 <!-- ``` -->
@@ -968,7 +966,7 @@ Was ist das *mittlere* Intervall, das mit 90% Wahrscheinlichkeit den Parameterwe
 Dafür "schneiden" wir links und rechts die 5% der Stichproben mit den extremsten Werten ab und schauen, bei welchen Parameterwerten wir als Grenzwerte landen:
 
 ```{r QM2-Thema3-Post-befragen-12, echo = TRUE}
-samples_6w_9v %>% 
+samples_6w_9v |> 
   summarise(
     quant_05 = quantile(p_grid, 0.05),
     quant_95 = quantile(p_grid, 0.95))
@@ -1152,13 +1150,13 @@ Erstellen wir uns dazu mal eine Post-Verteilung (3 Treffer, 3 Würfe), s. @lst-d
 #| lst-label: lst-d33
 bayesbox_3w_3v <- 
   tibble(p_grid = seq(0,1, by = .01),
-         prior = 1) %>% 
-  mutate(likelihood = dbinom(3, size = 3, prob = p_grid)) %>% 
-  mutate(unstand_post = likelihood * prior) %>% 
+         prior = 1) |> 
+  mutate(likelihood = dbinom(3, size = 3, prob = p_grid)) |> 
+  mutate(unstand_post = likelihood * prior) |> 
   mutate(post_33  = unstand_post / sum(unstand_post)) 
 
 samples_3w_3v <- 
-  bayesbox_3w_3v %>% 
+  bayesbox_3w_3v |> 
     slice_sample(n = 1e6, 
                  weight_by = post_33, 
                  replace = T)
@@ -1168,10 +1166,10 @@ So sehen die ersten paar Zeilen der Post-Verteilung, `samples_3w_3v`, aus.
 
 ```{r QM2-Thema3-Post-befragen-14}
 #| echo: false
-samples_3w_3v %>% 
-  select(-post_33) %>% 
-  head() %>% 
-  gt() %>% 
+samples_3w_3v |> 
+  select(-post_33) |> 
+  head() |> 
+  gt() |> 
   fmt_number(columns = c(1,3,4), decimals = 2)
 ```
 
@@ -1198,11 +1196,11 @@ qi_50_up <- eti(samples_3w_3v$p_grid, ci = .5)$CI_high
 
 
 p1 <-
-  bayesbox_3w_3v %>% 
+  bayesbox_3w_3v |> 
   ggplot(aes(x = p_grid, y = post_33)) +
   # check out our sweet `qi()` indexing
-  geom_area(data = . %>% 
-              filter(p_grid > qi_50_low &  
+  geom_area(data = bayesbox_3w_3v |>
+              filter(p_grid > qi_50_low &
                     p_grid < qi_50_up),
             fill = "grey75") +
   geom_line() +
@@ -1224,9 +1222,9 @@ hdi_50_up <- 1
 #                                   ci = .5)$CI_high
 
 p2 <-
-  bayesbox_3w_3v %>% 
+  bayesbox_3w_3v |> 
   ggplot(aes(x = p_grid, y = post_33)) +
-  geom_area(data = bayesbox_3w_3v %>% 
+  geom_area(data = bayesbox_3w_3v |> 
               filter(p_grid > hdi_50_low & 
                      p_grid <= hdi_50_up),
             fill = "grey75") +
@@ -1255,8 +1253,8 @@ Die Grenzwerte dieses ETI (oder jedes beliebig breiten) kann man sich z.B. mit d
 
 ```{r}
 #| eval: false
-samples_3w_3v %>% 
-  select(p_grid) %>% 
+samples_3w_3v |> 
+  select(p_grid) |> 
   eti(ci = .5)  # Paket `easystats`
 ```
 :::
@@ -1264,8 +1262,8 @@ samples_3w_3v %>%
 ::: {.column width="50%"}
 ```{r}
 #| echo: false
-samples_3w_3v %>% 
-  select(p_grid) %>% 
+samples_3w_3v |> 
+  select(p_grid) |> 
   eti(ci = .5)  # Paket `easystats`
 ```
 :::
@@ -1319,15 +1317,15 @@ Je unsymmetrischer die Verteilung, desto weiter liegen die Punktschätzer ausein
 #| fig-asp: 0.5
 
 point_estimates <-
-  bind_rows(samples_3w_3v %>% tidybayes::mean_qi(p_grid),
-            samples_3w_3v %>% tidybayes::median_qi(p_grid),
-            samples_3w_3v %>% tidybayes::mode_qi(p_grid)) %>% 
-  select(p_grid, .point) %>% 
+  bind_rows(samples_3w_3v |> tidybayes::mean_qi(p_grid),
+            samples_3w_3v |> tidybayes::median_qi(p_grid),
+            samples_3w_3v |> tidybayes::mode_qi(p_grid)) |> 
+  select(p_grid, .point) |> 
   # these last two columns will help us annotate  
   mutate(x = p_grid + c(-.03, .03, -.03),
          y = c(.005, .012, .02))
 
-bayesbox_3w_3v %>% 
+bayesbox_3w_3v |> 
   ggplot(aes(x = p_grid)) +
   geom_area(aes(y = post_33),
             fill = "grey75") +
@@ -1353,8 +1351,8 @@ Mit dem Befehl `hdi` kann man sich die Grenzwerte eines HDI, z.B. eines 50%-HDI,
 
 ```{r hdi-samples_6w_9v-50}
 #| eval: false
-samples_6w_9v %>% 
-  select(p_grid) %>% 
+samples_6w_9v |> 
+  select(p_grid) |> 
   hdi(ci = .5)  # aus dem Paket `{easystats}`
 ```
 
@@ -1362,8 +1360,8 @@ samples_6w_9v %>%
 #| echo: false
 #| label: tbl-samples_6w_9v-hdi
 #| tbl-cap: "50%-HDI für unser Globusmodell (`samples_6w_9v`)"
-samples_6w_9v %>% 
-  select(p_grid) %>% 
+samples_6w_9v |> 
+  select(p_grid) |> 
   bayestestR::hdi(ci = .5)  # aus dem Paket `{easystats}`
 ```
 
@@ -1399,7 +1397,7 @@ Sagen wir, wir haben 6 Treffer bei 9 Würfen erzielt.
 Welchen mittleren Wasseranteil kann man erwarten?
 
 ```{r QM2-Thema3-Post-befragen-19}
-samples_6w_9v %>% 
+samples_6w_9v |> 
   summarise(
     mean   = mean(p_grid),
     median = median(p_grid))  
@@ -1409,7 +1407,7 @@ samples_6w_9v %>%
 Wie unsicher sind wir in der Schätzung des Wasseranteils?
 
 ```{r QM2-Thema3-Post-befragen-20}
-samples_6w_9v %>% 
+samples_6w_9v |> 
   summarise(
     p_sd   = sd(p_grid),
     p_iqr = IQR(p_grid),

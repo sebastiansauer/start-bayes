@@ -206,6 +206,17 @@ format:
     mermaid:
       theme: default
     out-width: 75%
+    # Ohne fig-pos behandelt LaTeX jede Abbildung mit Caption als frei
+    # platzierbaren Float: Passt sie nicht mehr auf die aktuelle Seite,
+    # wandert nur das Bild auf eine spaetere Seite, waehrend Ueberschrift,
+    # Bildunterschrift-Text und nachfolgender Code/Text an ihrer
+    # urspruenglichen Stelle bleiben -- das erzeugt genau die grossen
+    # Weissraum-Luecken, die im Fliesendiagramm-Abschnitt auffielen.
+    # "H" (aus dem von Pandoc automatisch geladenen float-Paket) verankert
+    # die Abbildung exakt an der Stelle im Text, an der sie im Quelltext
+    # steht -- Kompromiss: gelegentlich ein etwas ungluecklicherer
+    # Seitenumbruch direkt vor der Abbildung, statt springender Bilder.
+    fig-pos: "H"
     # Deutsche Anfuehrungszeichen im PDF: gerade "..." werden von Pandoc
     # dank dieser Variable als \enquote{...} ausgegeben statt als
     # literale (englische) Unicode-Zeichen; specifics/style.tex laedt
@@ -244,7 +255,7 @@ format:
       logo-space-after: "1cm"
     titlepage-footer: |
       Sebastian Sauer\
-      Lizenz: MIT\
+      Lizenz: CC-BY-NC-SA-4.0\
 
   html:
     toc: true

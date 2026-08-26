@@ -1,3 +1,15 @@
+/* Mehrspaltige layout="[...]"-Zeilen (z.B. Text neben QR-Code):
+   Quarto setzt fuer figure-Elemente in Layout-Zellen nur den horizontalen
+   Rand zurueck (margin-inline-start/end), nicht den vertikalen -- der
+   Browser-Default fuer <figure> (margin: 1em 40px) bleibt oben/unten
+   bestehen. Dadurch startet ein Bild in einer Layout-Spalte sichtbar
+   tiefer als der Text in der Nachbarspalte, obwohl beide Spalten
+   (.quarto-layout-row) eigentlich oben ausgerichtet sind. */
+.quarto-layout-cell figure {
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
 .justify {
   text-align: justify !important
 }
@@ -118,6 +130,31 @@ svg.mermaid-js {
   max-width: 100% !important;
   height: auto !important;
 }
+
+/* Einzelne, absichtlich kompakte Mermaid-Diagramme (schmale Flowcharts mit
+   wenig Inhalt) auf ihre gewuenschte Breite begrenzen. Quartos
+   fig-width-Chunk-Option (%%| fig-width: ...) wirkt bei Diagrammen mit
+   Crossref-Label/fig-cap nicht zuverlaessig, weil Quartos mermaid-init.js
+   das data-fig-width-Attribut ueber eine feste Anzahl Eltern-Ebenen sucht,
+   die bei einer als Crossref-Abbildung (mit Bildunterschrift) eingebetteten
+   Mermaid-Grafik nicht mehr stimmt -- das Attribut wird dadurch nie
+   gefunden und das SVG faellt auf volle Spaltenbreite zurueck. Direktes
+   CSS pro Abbildungs-ID ist daher der zuverlaessige Weg; die hoehere
+   Selektor-Spezifitaet (ID + Klasse statt nur Klasse) gewinnt gegenueber
+   der obigen "max-width: 100%"-Regel trotz beidseitigem !important. */
+#fig-modulverlauf svg.mermaid-js { max-width: 400px !important; }
+#fig-goals svg.mermaid-js { max-width: 480px !important; }
+#fig-desk-inf svg.mermaid-js { max-width: 400px !important; }
+#fig-pwert2 svg.mermaid-js { max-width: 300px !important; }
+#fig-zweimuenzen svg.mermaid-js { max-width: 340px !important; }
+#fig-dreimuenzen svg.mermaid-js { max-width: 580px !important; }
+#fig-baum-abh svg.mermaid-js { max-width: 480px !important; }
+#fig-bertie1 svg.mermaid-js { max-width: 530px !important; }
+#fig-tot-wskt svg.mermaid-js { max-width: 530px !important; }
+#fig-baummuenz1 svg.mermaid-js { max-width: 300px !important; }
+#fig-bayes-update svg.mermaid-js { max-width: 300px !important; }
+#fig-tot-wskt2 svg.mermaid-js { max-width: 580px !important; }
+#fig-xy svg.mermaid-js { max-width: 250px !important; }
 
 /* RevealJS-Foliendecks (slides/): Sicherheitsnetz gegen rechts abgeschnittene
    Formeln. MathJax v2 (HTML-CSS-Output) setzt die Pixelgrößen einmalig beim

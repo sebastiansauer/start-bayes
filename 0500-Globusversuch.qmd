@@ -66,12 +66,7 @@ source("funs/plot_binom_likelihood.R")
 
 ```{r}
 #| include: false
-theme_set(theme_modern())
-```
-
-```{r}
-#| include: false
-source("_common.R") 
+source("_common.R")
 ```
 
 ::: {.content-visible when-format="html"}
@@ -307,6 +302,7 @@ das Bayes-Update, s. @fig-bayes-update.
 ```{mermaid}
 %%| fig-cap: Updating mit Bayes
 %%| label: fig-bayes-update
+%%| fig-width: 3
 graph LR
 A[Apriori-Vert.]-->B[Likelihood]-->C[Post-Vert.]-->A
 ```
@@ -450,8 +446,8 @@ kommen aber bei größeren Daten schnell an ihre Grenze.
 
 my_tree <- tidygraph::create_tree(1023, 2, mode = "out")
 
-my_tree %>%
-  mutate(lab = 1:1023) %>% 
+my_tree |>
+  mutate(lab = 1:1023) |> 
   ggraph(circular = TRUE) +
   geom_edge_link() +
   geom_node_label(mapping = aes(label = lab), size = 1) +
@@ -655,9 +651,9 @@ $$Pr(H|D) = \frac{ Pr(H) \cdot Pr(D|H) }{Pr(D)}$${#eq-bayes3}
 ::: {#thm-bayes1}
 
 ### Bayes' Theorem
+
 $$
-Pr(H|D) = \frac{ Pr(H) \cdot Pr(D|H) }{Pr(D)} = \frac{\text{Apriori} \cdot \text{Likelihood}} {\text{Evidenz}}\quad \square
-$$
+Pr(H|D) = \frac{ Pr(H) \cdot Pr(D|H) }{Pr(D)} = \frac{\text{Apriori} \cdot \text{Likelihood}} {\text{Evidenz}}\quad \square$$
 
 :::
 
@@ -705,9 +701,11 @@ d.h. als die totale Wahrscheinlichkeit von $D$, s. @thm-evidenz, vgl. @def-totws
 
 ::: {#thm-evidenz} 
 ### Evidenz
-$$\begin{aligned}
+$$
+\begin{aligned}
 Pr(D) = \sum_{i=1}^n Pr(D|H_i) \cdot Pr(H_i)
-\end{aligned}\quad \square$$
+\end{aligned}\quad \square
+$$
 :::
 
 Die verschiedenen Parameterwerte kann man auch als die verschiedenen Hypothesen $H_i$ auffassen.
@@ -716,9 +714,11 @@ Falls es nur zwei Hypothesen bzw. Parameterwerte gibt, vereinfacht sich @thm-evi
 
 :::{#thm-evidenz2} 
 ### Evidenz bei zwei Hypothesen
-$$\begin{aligned}
+$$
+\begin{aligned}
 Pr(D) = Pr(D|H_1) \cdot Pr(H_1) + Pr(D|H_2) \cdot Pr(H_2)
-\end{aligned}\quad \square$$
+\end{aligned}\quad \square
+$$
 :::
 
 
@@ -753,7 +753,9 @@ Die $Pr_{Post}$ ist proportional zu $Pr_{unPost} = L \times Pr_{Apriori}$.
 Die *unstandardisierte* Post-Wahrscheinlichkeit $Pr_{\text{unPost}}$ ist einfach das Produkt von 
 Likelihood und Priori, s. @eq-unpost.
 
-$$Pr_{\text{unPost}} = L \times \text{Priori}$${#eq-unpost}
+$$
+Pr_{\text{unPost}} = L \times \text{Priori}
+$${#eq-unpost}
 
 
 
@@ -763,7 +765,12 @@ Mathematisch gesprochen beruht diese Gewichtung auf einer einfachen Multiplikati
 
 
 
-![Prior mal Likelihood = Post](img/img241.png){#fig-post3}
+```{r}
+#| echo: false
+#| label: fig-post3
+#| fig-cap: "Prior mal Likelihood = Post"
+source("R-Code/img241.R")
+```
 
 
 Standardisiert man die unstandardisierte Post-Verteilung,
@@ -773,7 +780,9 @@ Dies erreichen wir, indem wir durch die Summe aller Post-Wahrscheinlichkeiten di
 Die Summe der Post-Wahrscheinlichkeiten bezeichnet man (auch) als Evidenz, vgl. Gleichung @eq-post.
 
 
-$$\text{Posteriori} = \frac{\text{Likelihood} \times \text{Priori}}{\text{Evidenz}}$${#eq-post}
+$$
+\text{Posteriori} = \frac{\text{Likelihood} \times \text{Priori}}{\text{Evidenz}}
+$${#eq-post}
 
 
 
@@ -790,7 +799,12 @@ Je nach Ergebnis des Wurfes verändert sich die Wahrscheinlichkeit der Parameter
 kurz gesagt, die Post-Verteilung verändert sich in Abhängigkeit von den Daten.
 
 
-![Unser Golem lernt](img/img221.png){#fig-lernen-golem}
+```{r}
+#| echo: false
+#| label: fig-lernen-golem
+#| fig-cap: "Unser Golem lernt"
+source("R-Code/img221.R")
+```
 
 
 Insofern kann man sagen: Unser Golem (das Modell) lernt. 
@@ -893,9 +907,9 @@ Die Bayesbox (@tbl-globus) zeigt, wie sich die Post-Verteilung berechnet.
 #| label: tbl-globus
 #| tbl-cap: "Die Bayesbox für den Globusversuch, k=6 Treffer, n=9 Versuche, Apriori-Wahrscheinlichkeit Pr(H)=9%, und Wasseranteile p von 0 bis 1"
 #| echo: false
-bayesbox_globusversuch %>% 
-  mutate(id = 1:11) %>% 
-  relocate(id, .before = 1) %>% 
+bayesbox_globusversuch |> 
+  mutate(id = 1:11) |> 
+  relocate(id, .before = 1) |> 
   knitr::kable(digits = 3)
 ```
 
@@ -1048,7 +1062,7 @@ E) Hat eine Hypothese die höchste Likelihood, so hat sie automatisch auch die h
 - Unser Modell bildet die kleine Welt ab; ob es in der großen Welt nützlich ist, steht auf einem anderen Blatt.
 
 ::: callout-tip 
-🏋️ Wenn Sie auf einen Prozentwert für $W$ tippen müssten, welchen würden Sie nehmen, 
+Wenn Sie auf einen Prozentwert für $W$ tippen müssten, welchen würden Sie nehmen, 
 laut dem Modell (und gegeben der Daten)? $\square$
 :::
 
@@ -1085,15 +1099,12 @@ aber ähnlichen Darstellung wie in diesem Kapitel.
 
 Bayes' Theorem kann man sich als Baumdiagramm vor Augen führen,
 @fig-tot-wskt2.
-
 Gesucht sei $Pr(M_1|A)$,
 also: die Wahrscheinlichkeit,
 dass das Teil von Maschine 1 produziert wurde, gegeben, dass es Ausschuss ist.
 Gegeben sind die Wahrscheinlichkeiten, dass Maschine $i$ das Teil produziert hat, $Pr(M_i)$. Außerdem sind die Wahrscheinlichkeiten, dass das Teil Ausschuss ist, $Pr(A|M_i)$, bekannt.
-
 Das Diagramm löst die Aufgabe für uns;
 es zeigt damit die Anwendung von Bayes' Theorem auf.
-
 Um $Pr(M_1|A)$ zu erhalten,
 setzt man die Wahrscheinlichkeit
 des *günstigen* Asts ins Verhältnis zur Wahrscheinlichkeit
@@ -1109,7 +1120,7 @@ Die jeweilige Ausschussquote liegt bei 5, 2, bzw. 4%, s. @fig-tot-wskt2.
 :::
 
 
-
+*Lösung*:
 Der günstige (gesuchte) Ast, $Pr(M1 \cap A)$, ist hier fett gedruckt, s. @fig-tot-wskt2. 
 In @fig-tot-wskt2 zeigen die runden Kästchen am Ende der Pfade die Wahrscheinlichkeiten des jeweiligen Pfades an.
 
@@ -1120,6 +1131,7 @@ In @fig-tot-wskt2 zeigen die runden Kästchen am Ende der Pfade die Wahrscheinli
 ```{mermaid}
 %%| fig-cap: Günstige Pfade
 %%| label: fig-tot-wskt2
+%%| fig-width: 6
 flowchart LR
   A[Start] ==>|0.60|B[M1]
   A --->|0.10|C[M2]

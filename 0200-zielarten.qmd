@@ -19,7 +19,6 @@ library(knitr)
 ```{r r-setup}
 #| echo: false
 #| message: false
-theme_set(theme_minimal())
 #scale_color_okabeito()
 scale_colour_discrete <- function(...) 
   scale_color_okabeito()
@@ -121,6 +120,7 @@ Bei wenig beackerten Wissenschaftsfeldern ist das *Beschreiben* ein sinnvoller e
 ```{mermaid}
 %%| label: fig-goals
 %%| fig-cap: Eine Einteilung zentraler Ziele von statistischen Analysen
+%%| fig-width: 5
 flowchart TD 
   A{Ziele} --> B(Beschreiben)
   A --> C(Vorhersagen)
@@ -261,7 +261,7 @@ ggplot(noten2) +
   theme_large_text()
 
 p_ali_punktschaetzung <- 
-  noten2 %>% 
+  noten2 |> 
   ggplot(aes(x, y)) +
   geom_point() +
   geom_vline(xintercept = mean(noten2$x), linetype = "dashed", color = "grey") +  
@@ -373,7 +373,7 @@ studie_a <-
   ) 
 
 
-studie_a %>% 
+studie_a |> 
   gt()
 ```
 
@@ -476,7 +476,7 @@ studie_b <-
 "Gesamt",  "273/350 überlebt (78%)", "289/350 überlebt (83%)"
   )
 
-studie_b %>% 
+studie_b |> 
   gt()
 ```
 
@@ -664,6 +664,7 @@ s. @fig-xy, die ein Sinnbild von statistischen Modellen wiedergibt.
 
 
 ```{mermaid}
+%%| fig-width: 2.5
 flowchart LR
 X --> Y
 
@@ -734,6 +735,8 @@ Zur Umsetzung von Modellierung in eine konkrete statistische Analyse bietet sich
 ### Regression zum Modellieren
 
 
+
+::::: {.content-visible when-format="html"}
 Einflussreiche Leute schwören auf die Regressionsanalyse (@fig-gandalf).
 
 ![Eine Regression](img/einring.jpg){width="50%" #fig-gandalf fig-align="center"}
@@ -741,8 +744,6 @@ Einflussreiche Leute schwören auf die Regressionsanalyse (@fig-gandalf).
 
 
 
-
-::::: {.content-visible when-format="html"}
 
 @fig-linfun zeigt ein interaktives Beispiel einer linearen Funktion. 
 Sie können Punkte per Klick/Touch hinzufügen.
@@ -769,19 +770,13 @@ Interaktives Beispiel für ein lineares Modell. Fügen Sie Punkte per Klick/Touc
 Probieren Sie [diese App](https://gallery.shinyapps.io/simple_regression/) aus, um
 Regressionskoeffizienten, Steigung (slope) und Achsenabschnitt (Intercept), optimal in den Punkteschwarm zu legen.
 Dabei meint "optimal", die Abweichungen (Residuen, Residualfehler; die roten Balken in der App) zu minimieren.^[<https://gallery.shinyapps.io/simple_regression/>]
-
-
-
-
-
-
-[Hier](https://shinyapps.org/showapp.php?app=https://shiny.psy.lmu.de/felix/lmfit&by=Felix%20Sch%C3%B6nbrodt&title=Find-a-fit!&shorttitle=Find-a-fit!) finden Sie eine App, die Ihnen gestattet, selber Hand an eine Regressionsgerade zu legen.^[<https://shinyapps.org/showapp.php?app=https://shiny.psy.lmu.de/felix/lmfit&by=Felix%20Sch%C3%B6nbrodt&title=Find-a-fit!&shorttitle=Find-a-fit!>]
+Probieren Sie [diese App](https://shinyapps.org/showapp.php?app=https://shiny.psy.lmu.de/felix/lmfit&by=Felix%20Sch%C3%B6nbrodt&title=Find-a-fit!&shorttitle=Find-a-fit!) aus, die Ihnen gestattet, selber Hand an eine Regressionsgerade zu legen.^[<https://shinyapps.org/showapp.php?app=https://shiny.psy.lmu.de/felix/lmfit&by=Felix%20Sch%C3%B6nbrodt&title=Find-a-fit!&shorttitle=Find-a-fit!>]
 
 
 :::: {.content-visible when-format="html"}
 
 :::{#exr-setosa-vis}
-### VERTIEFUNG Regression mit Animationen erklärt
+### VERTIEFUNG: Regression mit Animationen erklärt
 Lesen Sie [diesen Post](https://setosa.io/ev/ordinary-least-squares-regression/)^[<https://setosa.io/ev/ordinary-least-squares-regression/>], 
 der Ihnen mit Hilfe von Bildern und Animationen (okay, und etwas) Text die Grundlagen der Regressionsanalyse erklärt. $\square$
 :::
@@ -795,13 +790,6 @@ Das ist nicht nur einfacher, sondern auch mathematisch schöner.
 Wir werden im Folgenden stets die Regression zum Modellieren verwenden.
 Dann wenden wir die Methoden der Inferenz auf die Kennzahlen der Regression an.
 
-:::: {.content-visible when-format="html"}
-
-:::callout-note
-Regression + Inferenz = 💖
-:::
-::::
-
 
 Alternativ zur Regression könnte man sich in den Wald der statistischen Verfahren begeben, [wie hier von der Uni Münster als Ausschnitt (!) aufgeführt](https://web.archive.org/web/20091029162244/http://www.wiwi.uni-muenster.de/ioeb/en/organisation/pfaff/stat_overview_table.html)^[<https://web.archive.org/web/20091029162244/http://www.wiwi.uni-muenster.de/ioeb/en/organisation/pfaff/stat_overview_table.html>].
 Auf dieser Basis kann man meditieren,
@@ -814,6 +802,12 @@ Muss man aber nicht -- man kann stattdessen die Regression benutzen.
 Es ist meist einfacher und nützlicher, die Regression zu verwenden, anstelle der Vielzahl von anderen Verfahren (die zumeist Spezialfälle der Regression sind). In diesem Kurs werden wir für alle Fragestellungen die Regression verwenden.^[Wie Jonas Kristoffer Lindeløv (<https://lindeloev.github.io/tests-as-linear/>) uns erklärt, sind viele statistische Verfahren, wie der sog. t-Test Spezialfälle der Regression.] $\square$
 :::
 
+:::: {.content-visible when-format="html"}
+
+:::callout-note
+Regression + Inferenz = 💖
+:::
+::::
 
 :::{#fig-regr-oder-wald layout-ncol=2}
 
@@ -867,7 +861,6 @@ $\square$
 
 Anhand von @thm-lm erkennt man auch, warum man von einem *linearen Modell* spricht: 
 Y wird als gewichteter Mittelwert mehrerer Summanden berechnet.
-
 Eine Regressionsgerade ist durch zwei Parameter festgelegt: den Achsenabschnitt, $\beta_0$ und die Steigung, $\beta_1$, s. @fig-regr-rules.
 
 
@@ -935,6 +928,14 @@ Wenn Sie an einer (nicht prüfungsrelevanten) Vertiefung interessiert sind, lese
 ## Aufgaben
 
 Schauen Sie sich die Aufgaben mit dem Tag *inference* auf dem [Datenwerk](https://datenwerk.netlify.app/#category=inference) an.
+
+### Papier-und-Bleistift-Aufgaben
+
+1. [ziele-statistik](https://sebastiansauer.github.io/datenwerk/posts/ziele-statistik/ziele-statistik.html)
+
+### Computer-Aufgaben
+
+1. [mariokart_desk-inf-mod](https://sebastiansauer.github.io/datenwerk/posts/mariokart_desk-inf-mod/index.html)
 
 
 

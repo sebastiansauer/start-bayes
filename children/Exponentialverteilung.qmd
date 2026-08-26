@@ -122,39 +122,45 @@ Unterschiede in Exponentialverteilungen sind rein auf Unterschiede in $\lambda$ 
 
 ```{r gg-exp-fun}
 #| echo: false
-gg_exp <- function(r, max_x = 25, probs = c(0.05, .25, .50, .75, .95)) {
-  
-  d <-
-  tibble(
-    x = seq(0, 5,.1),
-    y = dexp(x, rate = r)
-  )
-  
+gg_exp <- function(r, max_x = NULL, probs = c(0.05, .25, .50, .75, .95)) {
+
+  # X-Achse an das jeweilige lambda anpassen (statt einer für alle
+  # Panels fixen Obergrenze), damit die Perzentil-Labels nicht bei
+  # kleinem lambda (= große Streuung) links zusammengequetscht werden:
+  # 50% Puffer über dem größten angeforderten Quantil.
+  if (is.null(max_x)) {
+    max_x <- qexp(max(probs), rate = r) * 1.5
+  }
+
   d_qs <-
     tibble(
       prob = probs,
-      q = qexp(prob, rate = r) 
+      q = qexp(prob, rate = r)
     )
-  
+
   med_exp <- round(log(2) / r, 2)
-  
-  
-  p <- 
+
+
+  p <-
     ggplot(NULL, aes(c(0, max_x))) +
-    geom_area(stat = "function", 
-              fun = dexp, 
-              fill = "grey", 
+    geom_area(stat = "function",
+              fun = dexp,
+              fill = "grey",
               args = list(rate = r))  +
     labs(title = paste0("Exp(", r, ")"),
          x = "sigma",
          caption = paste0("Median (Md): ", med_exp)) +
     geom_vline(data = d_qs,
              aes(xintercept = q)) +
-    geom_label(data = d_qs,
-             aes(x = q, 
+    geom_label_repel(data = d_qs,
+             aes(x = q,
                  label = prob,
-                 y = prob))
- 
+                 y = prob),
+             size = 5,
+             direction = "x",
+             seed = 42) +
+    theme(plot.caption = element_text(size = 12))
+
 }
 ```
 
@@ -206,6 +212,9 @@ gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8") + theme_modern()
 ```
 
 :::
+
+Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z.B. 0.95 = 95%-Quantil).
+
 ::::
 
 :::
@@ -221,7 +230,7 @@ unleserlich. -->
 ```{r}
 #| echo: false
 #| label: fig-exps
-#| fig-cap: "Exponentialverteilungen für verschiedene Werte von lambda"
+#| fig-cap: "Exponentialverteilungen für verschiedene Werte von lambda. Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z.B. 0.95 = 95%-Quantil)."
 #| layout-ncol: 2
 #| fig-subcap:
 #|   - "lambda = 2"
@@ -282,7 +291,7 @@ d_exp <-
     p50 = qexp(p = .5, rate = lambda),
     p95 = qexp(p = .95, rate = lambda))
 
-d_exp %>% knitr::kable()
+d_exp |> knitr::kable()
 ```
 
 

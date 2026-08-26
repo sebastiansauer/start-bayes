@@ -27,6 +27,15 @@
 \usepackage{csquotes}
 \usepackage{tocloft}  % more space in TOC
 \usepackage{microtype}
+% microtypes Zeichen-Expansion (Streckung/Stauchung einzelner Glyphen zur
+% Verbesserung des Randausgleichs) geht von "normalen" Font-Metriken aus.
+% Mehrteilige ZWJ-Emoji-Sequenzen (z. B. "🤷‍♀️", ueber den weiter unten
+% registrierten Noto-Color-Emoji-Fallback gesetzt) haben degenerierte
+% Glyph-Breiten, die beim Zusammenspiel mit Expansion zu
+% "Infinite glue shrinkage found in a paragraph" fuehren (lualatex bricht
+% den Kompilat dabei komplett ab). Protrusion (Ueberhang von Satzzeichen
+% in den Rand) bleibt aktiv, nur Expansion wird global deaktiviert.
+\microtypesetup{expansion=false}
 % soul stellt \st{...} (Durchstreichen) bereit, das Pandoc fuer Markdown
 % ~~...~~ (Strikeout) im LaTeX-Output verwendet. Der normale Pandoc/Quarto-
 % Standardtemplate (latex.common) laedt soul selbst automatisch, wenn ein
@@ -68,6 +77,24 @@
        "Noto Sans Symbols2:mode=harf;" }
     )
 }
+
+% Fallback tatsaechlich aktivieren: Quartos eigener Weg dafuer
+% (mainfontoptions/sansfontoptions/monofontoptions: "RawFeature={fallback=
+% emojifallback}" in _quarto.yml) schlaegt unter der titlepage-pdf-
+% Extension mit "Misplaced '=' in key-value input" fehl, weil die
+% geschweiften Klammern beim Durchreichen durch die Extension LaTeX-
+% escaped statt roh weitergegeben werden (s. Kommentar oben in _quarto.yml
+% bei mainfontoptions) -- separates, bislang ungeloestes Problem dieser
+% Extension. Umgangen, indem die drei Schriften hier per rohem
+% \setmainfont/\setsansfont/\setmonofont NEU deklariert werden (mit
+% derselben RawFeature-Option, aber ohne den YAML/Escaping-Umweg ueber
+% Quarto) -- das ueberschreibt einfach Quartos eigene, bereits weiter oben
+% im Dokument ausgefuehrte \setmainfont[]{Lora}-artigen Aufrufe. Bei einer
+% Aenderung von mainfont/sansfont/monofont in _quarto.yml muss der
+% jeweilige Schriftname hier manuell nachgezogen werden.
+\setmainfont{Lora}[RawFeature={fallback=emojifallback}]
+\setsansfont{Lato}[RawFeature={fallback=emojifallback}]
+\setmonofont{Roboto}[RawFeature={fallback=emojifallback}]
 
 
 \definecolor{ycol}{RGB}{230,159,0}
@@ -132,5 +159,19 @@
   \@afterheading
 }
 \makeatother
+
+% Nebeneinander platzierte Unterabbildungen (layout-ncol/fig-subcap, s.
+% z.B. "Rope-Werte, m_penguins_species"): Quarto erzeugt fuer jede Spalte
+% eine \minipage mit exakt 1/ncol\linewidth Breite und OHNE Abstand
+% dazwischen (\end{minipage}%\n%\n\begin{minipage}...) -- Quartos "layout"-
+% Attribut fuer eigene Spaltenbreiten wirkt bei fig-subcap-Chunks nicht
+% (nur bei manuell mit ::: {layout=...} gebauten Panels). Da die
+% Unterbildunterschrift ("(a) ...", "(b) ...") die volle Minipage-Breite
+% ausnutzt, stossen z.B. ein Trennstrich am Zeilenende und die naechste
+% "(b)"-Klammer direkt aneinander. Fix: Unterbildunterschriften auf 92%
+% ihrer Minipage-Breite begrenzen, das reserviert symmetrisch Luft an
+% beiden Seiten -- wirkt fuer alle Unterabbildungen im Buch einheitlich.
+\usepackage{subcaption}
+\captionsetup[sub]{width=0.92\linewidth}
 
 

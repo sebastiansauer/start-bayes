@@ -108,6 +108,4 @@ if (knitr:::is_latex_output()) {
   add_system_font("Font Awesome", "FontAwesome")
   add_system_font("Roboto Regular", "Roboto")
 
-  ggplot2::theme_set(ggplot2::theme_minimal())
-
   }

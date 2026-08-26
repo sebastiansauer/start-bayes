@@ -59,8 +59,6 @@ library(plotly)
 library(patchwork)
 library(plotly)
 library(dagitty)
-
-theme_set(theme_modern())
 ```
 
 
@@ -401,7 +399,7 @@ knitr::include_graphics("img/5v5531.jpg")
 Nullhypothesen, $H_0$, sind z.B.: $\rho=0$, $\rho_1 = \rho_2$, $\mu_1 = \mu_2$, $\mu=0$, $\beta_1=0$.
 Nullhypothesen zu testen, ist sehr verbreitet.
 Ein Grund ist, dass in der Frequentistischen Statistik keine andere Art von Hypothesentest (einfach) möglich ist.^[Mittlerweile gibt es neue Frequentistische Ansätze für ein Verfahren ähnlich dem ROPE-Ansatz, der weiter unten vorgestellt wird.]
-Ein anderer Grund ist vermutlich, ... wir haben es schon immer so gemacht. 🤷‍♀️
+Ein anderer Grund ist vermutlich, ... wir haben es schon immer so gemacht. 🤷♀️
 Alternativen zum Testen von Nullhypothesen sind: 
   
 - Posteriori-Intervalle (ETI oder HDI) berichten
@@ -568,11 +566,11 @@ Aber können wir umgekehrt sagen, dass ein Großteil außerhalb liegt? Das erken
 #| echo: false
 #| fig-cap: "Rope und HDI überlappen bei Chinstrap, aber nicht bei Gentoo. Im ersten Fall nehmen wir die Rope-Null-Hypothese an, im zweiten Fall verwerfen wir sie."
 #| fig-subcap: 
-#|   - "Diagramm mit `rope(m_penguins_species) %>% plot()`"
-#|   - "Diagramm mit `parameters(m_penguins_species) %>% plot()`"
+#|   - "Diagramm mit `rope(m_penguins_species) |> plot()`"
+#|   - "Diagramm mit `parameters(m_penguins_species) |> plot()`"
 plot(rope(m_penguins_species)) + scale_fill_okabeito()
 
-parameters(m_penguins_species) %>% 
+parameters(m_penguins_species) |> 
   plot() +
   geom_rect(aes(xmin = 0-80, xmax = 0+80, ymin = -Inf, ymax = Inf), 
               fill = "blue", alpha = 0.2, color = NA)
@@ -619,13 +617,16 @@ plot(rope(m_penguins_species, range = c(-200, 200))) +
 
 
 In der Voreinstellung werden 95%-ETI berichtet, das kann man wie folgt ändern,
-wenn man möchte. 
+wenn man möchte: `rope(m_penguins_species, range = c(-500,500), ci = .89, ci_method = "HDI")`.
 Die ROPE-Grenzen sind in @tbl-rope-species-rope-fine zu sehen.
   
-```{r echo=TRUE}
+```{r rope500}
 #| label: tbl-rope-species-rope-fine
+#| echo: false
 #| tbl-cap: "ROPE-Grenzen für das Modell `m_penguins_species` mit ROPE-Grenzen von 500 g."
-rope(m_penguins_species, range = c(-500,500), ci = .89, ci_method = "HDI")
+rope(m_penguins_species, range = c(-500, 500), ci = .89, ci_method = "HDI") |>
+  dplyr::select(-Effects) |>
+  print_md()
 ```
 
 
@@ -633,7 +634,7 @@ Jetzt wird berichtet, welcher Teil eines 89%-CI^[89 ist die nächst kleinste Pri
 und 95 wird gemeinhin als Grenzwert für Schätzbereiche verwendet. 
 Damit ist 95 hier eine "magic number", ein Defacto-Standard ohne hinreichende Begründung. 
 Um darauf hinzuweisen, benutzen einige Forscherinnen und Forscher mit
--- ähem -- subtilem Humor lieber die 89 als die 95. 🤷‍♂️ ] sich im Rope befindet.
+-- ähem -- subtilem Humor lieber die 89 als die 95. 🤷♂️ ] sich im Rope befindet.
 
 
 
@@ -727,11 +728,11 @@ Die Post-Verteilung von $R^2$ kann man sich wie folgt ausgeben lassen, s. @fig-m
 #| fig.cap: "Die Verteilung von R-Quadrat im Modell m_penguins_species"
 #| label: fig-m106-r2
 m_penguins_species_r2 <-
-  m_penguins_species %>% 
-  r2_posterior() %>% 
+  m_penguins_species |> 
+  r2_posterior() |> 
   as_tibble()
 
-hdi(m_penguins_species_r2) %>%  # Intervallgrenzen der Post-Verteilung von R2
+hdi(m_penguins_species_r2) |>  # Intervallgrenzen der Post-Verteilung von R2
   plot()  # visualisieren
 ```
 
@@ -781,6 +782,8 @@ so dass Sie in Ruhe Ihre offenen Fragen und diejenigen Ihrer Kommilitoninnen und
 3. [rope1](https://datenwerk.netlify.app/posts/rope1/rope1.html)
 3. [rope2](https://datenwerk.netlify.app/posts/rope2/rope2.html)
 3. [rope3](https://datenwerk.netlify.app/posts/rope3/rope3.html)
+4. [rope2a](https://sebastiansauer.github.io/datenwerk/posts/rope2a/index.html)
+5. [penguins-rope](https://sebastiansauer.github.io/datenwerk/posts/penguins-rope/index.html)
 
 
 ::: {.content-visible when-format="html"}

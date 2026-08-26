@@ -28,8 +28,6 @@ library(rstanarm)
 ```{r libs-hidden}
 #| echo: false
 library(dagitty)
-
-theme_set(theme_modern())
 ```
 
 
@@ -51,7 +49,7 @@ Die Folien zu diesem Kapitel finden Sie [hier](slides/1200-abschluss.html).
 
 
 
-Lieblingsfehler im Überblick 🤷:
+Lieblingsfehler im Überblick:
 
 
 1. Quantile und Verteilungsfunktion verwechseln
@@ -62,9 +60,7 @@ Lieblingsfehler im Überblick 🤷:
 
 
 
-### Post-Präd-Verteilung (PPV) und Post-Verteilung verwechseln 🤷
-
-🏎 🏎 Vertiefung: Dieser Abschnitt ist nicht prüfungsrelevant. 🏎️ 🏎
+### Vertiefung: Post-Präd-Verteilung (PPV) und Post-Verteilung verwechseln
 
 Berechnen wir unser Standard-mtcars-Modell: `mpg ~ hp`. 
 
@@ -78,7 +74,7 @@ Die *Post-Verteilung* zeigt Stichproben zu den Parameterwerten, s. @tbl-post-m1.
 ```{r echo = TRUE}
 #| tbl-cap: "Postverteilung in Stichprobenform (m1)"
 #| label: tbl-post-m1
-post_verteilung <- m1 %>% 
+post_verteilung <- m1 |> 
   as_tibble()
 head(post_verteilung)
 ```
@@ -91,10 +87,10 @@ Häufig ist es aber bequemer, z.B. mit `parameters(m1)` Post-Intervalle und Punk
 
 Die *Posterior-Prädiktiv-Verteilung (PPV)* zeigt die Vorhersagen, also keine Parameterwerte, sondern Beobachtungen.
 ```{r echo=FALSE}
-ppv <- posterior_predict(m1) %>% as_tibble()
+ppv <- posterior_predict(m1) |> as_tibble()
 
-ppv %>% 
-  pivot_longer(everything()) %>% 
+ppv |> 
+  pivot_longer(everything()) |> 
   slice_head(n=5)
 ```
 
@@ -103,7 +99,7 @@ ppv %>%
 
 
 
-### Quantile und Verteilungsfunktion verwechseln 🤷
+### Quantile und Verteilungsfunktion verwechseln
 
 
 
@@ -163,7 +159,7 @@ $F(0)=1/2$, die Wahrscheinlichkeit beträgt hier 50%, dass $x$ nicht größer is
 
 
 
-### Interaktion falsch interpretieren 🤷
+### Interaktion falsch interpretieren
 
 
 Berechnen wir ein einfaches Interaktionsmodell: `mpg ~ hp*vs`.
@@ -190,7 +186,7 @@ parameters(m2)
 #| echo: false
 #| label: tbl-m2-params
 #| tbl-cap: "Parameter von m2"
-parameters(m2) %>% display()
+parameters(m2) |> display()
 ```
 
 @tbl-m2-params zeigt die Visualisierung der Parameter von m2.
@@ -233,7 +229,7 @@ Zentrierte Prädiktoren wären hier eine sinnvolle Lösung.
 
 
 
-## Kochrezepte 🍲
+## Kochrezepte
 
 
 
@@ -399,7 +395,7 @@ Z -> E
 }
 '
 
-dag2_raw %>% dagitty() %>% plot()
+dag2_raw |> dagitty() |> plot()
 ```
 
 :::{#def-minadjust}
@@ -467,7 +463,7 @@ E -> D
 }
 '
 
-dag3_raw %>% dagitty() %>% plot()
+dag3_raw |> dagitty() |> plot()
 ```
 
 Minimale Adjustierungsmenge, um den Effekt von E auf D zu identifizieren: {7}, {8}.
@@ -550,7 +546,7 @@ SUS -> HOS
 }
 '
 
-dad_van_kampen_raw %>% dagitty() %>% plot()
+dad_van_kampen_raw |> dagitty() |> plot()
 ```
 
 
@@ -644,11 +640,6 @@ exams2forms(quiz_abschluss_files, n = 1)
 
 
 
-
-## Viel Erfolg bei der Prüfung!
-
-
-🥳🏆🍀🍀🍀 
 
 
 

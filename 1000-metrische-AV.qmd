@@ -59,9 +59,6 @@ library(plotly)
 library(patchwork)
 library(plotly)
 library(dagitty)
-
-theme_set(theme_modern())
-
 ```
 
 
@@ -87,7 +84,10 @@ Sie können den Datensatz `penguins` entweder über den Pfad importieren oder ü
 #| results: "hide"
 #| message: false
 #| eval: false
-penguins_url <- "https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv"
+penguins_url <- paste0(
+  "https://vincentarelbundock.github.io/Rdatasets/",
+  "csv/palmerpenguins/penguins.csv"
+)
 
 penguins <- read.csv(penguins_url)
 ```
@@ -337,7 +337,7 @@ im Mittelwert von `y` zwischen beiden Gruppen (g0 vs. g1) verstehen.
 
 
 
->    👨‍🏫 Hey Stan! Nimm den Datensatz `kidiq`, gruppiere nach `mom_hs` und 
+>    👨🏫 Hey Stan! Nimm den Datensatz `kidiq`, gruppiere nach `mom_hs` und 
 fasse zusammen anhand des Mittelwerts. 
 Die resultierende Zahl soll heißen `kid_score_avg`.  An die Arbeit!
 
@@ -350,8 +350,8 @@ Die resultierende Zahl soll heißen `kid_score_avg`.  An die Arbeit!
 
 ```{r kidqi2-sum}
 #| eval: false
-kidiq %>% 
-  group_by(mom_hs) %>% 
+kidiq |> 
+  group_by(mom_hs) |> 
   summarise(kid_score_avg = 
               mean(kid_score))
 ```
@@ -360,8 +360,8 @@ kidiq %>%
 
 ```{r kidqi2-sum-output}
 #| echo: false
-kidiq %>% 
-  group_by(mom_hs) %>% 
+kidiq |> 
+  group_by(mom_hs) |> 
   summarise(kid_score_avg = 
               mean(kid_score)) |> 
   display()
@@ -379,7 +379,7 @@ auf Basis des Datensatzes `kidiq`.
 
 ```{r}
 #| eval: false
-estimate_relation(m10.1) %>% plot()
+estimate_relation(m10.1) |> plot()
 ```
 
 
@@ -435,10 +435,10 @@ Fazit: Wir verwerfen die Praktisch-Null-Hypothese. Adios!
 #| echo: false
 #| fig-cap: "Der Bereich plausibler Werte (der Post-Verteilung von m10.1) liegt komplett außerhalb des Bereichs zu vernachlässigend kleiner Werte (ROPE-Bereich). Wir verwerfen die Praktisch-Null-Hypothese (ROPE-Hypothese)."
 #| fig-subcap: 
-#|   - "Diagramm mit rope(m10.1) %>% plot()"
-#|   - "Diagramm mit parameters(m10.1) %>% plot()"
-rope(m10.1, range = c(-5, 5)) %>% plot()
-parameters(m10.1) %>% 
+#|   - "Diagramm mit rope(m10.1) |> plot()"
+#|   - "Diagramm mit parameters(m10.1) |> plot()"
+rope(m10.1, range = c(-5, 5)) |> plot()
+parameters(m10.1) |> 
   plot() +
   geom_rect(aes(xmin = 0-2, xmax = 0+2, ymin = -Inf, ymax = Inf), 
               fill = "blue", alpha = 0.2, color = NA)
@@ -478,7 +478,7 @@ Zur Beantwortung der Forschungsfrage betrachten wir die Ergebnisse von `m10.1`.
 
 ```{r m101post-code}
 m10.1_post <-
-  m10.1 %>% 
+  m10.1 |> 
   as_tibble() 
 
 names(m10.1_post) <- c("Achsenabschnitt", "momhs", "sigma")  # schönere Namen
@@ -492,13 +492,12 @@ Hier sind die ersten paar Zeilen, s. @tbl-m101post.
 ```{r m101post-output}
 #| echo: false
 #| label: tbl-m101post
-#| tbl-cap: "m10.1, Postverteilung, ersten paar Zeilen"
-m10.1_post %>% 
- # rename(momhs = mom_hs) %>% 
-  slice_sample(n=5) %>% 
-  gt() %>% 
-  fmt_number(1:3, decimals = 1) %>% 
-  tab_header("Stichprobe aus der Post-Verteilung")
+#| tbl-cap: "m10.1, Stichprobe aus der Post-Verteilung, ersten paar Zeilen"
+m10.1_post |> 
+ # rename(momhs = mom_hs) |> 
+  slice_sample(n=5) |> 
+  gt() |> 
+  fmt_number(1:3, decimals = 1)
 ```
 
 :::
@@ -512,7 +511,7 @@ komfortabler geht es mit `eti(m10.1)`, s. @tbl-m101.
 
 ```{r echo = TRUE}
 pi_mom_hs <-
-  m10.1_post %>%
+  m10.1_post |>
   reframe(pi_95 = quantile(momhs, c(.025, .975)))
 
 pi_mom_hs
@@ -688,7 +687,7 @@ plot(graphLayout(mein_modell))
 
 
 
-Deskriptive Statistiken zum Datensatz sind in Tabelle @tbl-kidiq1 dargestellt.
+Deskriptive Statistiken zum Datensatz sind in @tbl-kidiq1 dargestellt.
 
 
 ```{r Thema6-Teil2-1, echo = TRUE, results="hide"}
@@ -700,8 +699,10 @@ describe_distribution(kidiq)
 #| tbl-cap: "Variablen und ihre Verteilung im Datensatz kidiq"
 #| echo: false
 #| label: tbl-kidiq1
-describe_distribution(kidiq) %>% 
-  display()
+describe_distribution(kidiq) |> 
+  as.data.frame() |>
+  select(-Skewness, -Kurtosis, -n_Missing) |> 
+  knitr::kable() 
 ```
 
 
@@ -716,7 +717,7 @@ Berechnen wir als Erstes folgendes einfaches Modell mit nur einer UV:
 m10.2 <-
   stan_glm(kid_score ~ mom_iq, data = kidiq)
 
-m10.2 %>% 
+m10.2 |> 
   parameters()
 ```
 
@@ -725,8 +726,8 @@ m10.2 %>%
 #| echo: false
 #| tbl-cap: "Parameter des Modells m10.2"
 #| label: tbl-m102
-m10.2 %>% 
-  parameters() %>% 
+m10.2 |> 
+  parameters() |> 
   display()
 ```
 
@@ -746,7 +747,7 @@ Visualisieren wir uns noch das Modell m10.2, s. @fig-kidiqmomiq.
 ```{r Thema6-Teil2-4}
 #| label: fig-kidiqmomiq
 #| fig-cap: "Die Intelligenz eines Kindes als Funktion der Intelligenz der Mutter (m10.2)"
-kidiq %>% 
+kidiq |> 
   ggplot(aes(x = mom_iq, y = kid_score)) +
   geom_point(alpha = .7) +
   geom_abline(slope = coef(m10.2)[2],
@@ -797,7 +798,7 @@ m10.3 <-
 #| label: tbl-m103
 #| echo: false
 
-parameters(m10.3) %>% 
+parameters(m10.3) |> 
   display()
 ```
 
@@ -830,7 +831,7 @@ coef(m10.3)[3]
 #| fig-cap: "Der Effekt von sowohl mütterlicher Intelligenz als auch mütterlichem Schulabschluss."
 
 kidiq2 <-
-  kidiq %>% 
+  kidiq |> 
   mutate(mom_hs = as.factor(mom_hs))
 
 m10.3a <- 
@@ -882,7 +883,7 @@ Die Modellformel zur Forschungsfrage lautet: `y ~ x + b + x:b`.
 Der Einfachheit halber übernehmen wir wieder die Prioris wie vom R-Paket `rstanarm` bereitgestellt.
 
 
-Der DAG zur Modellformel ist in @fig-yxbi dargestellt.
+Der DAG zur Modellformel ist in @fig-yxbi dargestellt (`momiqmom_hs` bezeichnet den Interaktionseffekt der Intelligenz der Mutter mit ihrem Schlulabschluss auf die Intelligenz des Kindes).
 
 
 ```{r out.width = "75%", fig.asp = .5}
@@ -937,8 +938,7 @@ in das Modell aufgenommen wurde.
 #| echo: false
 #| label: tbl-m104
 #| tbl-cap: "Parameter von m10.4"
-parameters(m10.4) %>% 
-  display()
+model_parameters(m10.4) |> print(select = "minimal") 
 ```
 
 Mit `estimate_relation(m10.4) |> plot()` kann man  sich das Modell visualisieren, s. @fig-m104.
@@ -948,8 +948,8 @@ Mit `estimate_relation(m10.4) |> plot()` kann man  sich das Modell visualisieren
 #| echo: false
 #| label: fig-m104
 #| fig-cap: "`m10.4`: Wie `m10.3`, aber mit Interaktionseffekt. Es ist gut zu erkennen, dass der Achsenabschnitt für diese Daten kaum zu interpretieren ist."
-kidiq %>% 
-  mutate(mom_hs = factor(mom_hs)) %>%  
+kidiq |> 
+  mutate(mom_hs = factor(mom_hs)) |>  
   ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
   geom_point2(alpha = .7) +
   geom_abline(slope = coef(m10.4)[2],
@@ -982,7 +982,9 @@ des Koeffizienten für `mom_iq` zwischen Müttern mit bzw. ohne Schulabschluss.
 Für beide Gruppen, `mom_hs=0` und `mom_hs=1`, gilt folgende Regressionsformel, s. @eq-lm4.
 
 
-$$\text{kid score} = \beta_0 + \beta_1 \cdot \text{mom hs} + \beta_2 \cdot \text{mom iq} + \beta_3 \cdot \text{mom hs} \cdot \text{mom iq}$$ {#eq-lm4}
+$$
+\text{kid score} = \beta_0 + \beta_1 \cdot \text{mom hs} + \beta_2 \cdot \text{mom iq} + \beta_3 \cdot \text{mom hs} \cdot \text{mom iq}
+$$ {#eq-lm4}
 
 $\beta_3$ gibt die Stärke des Interaktionseffekts an.
 
@@ -995,7 +997,9 @@ Der Doppelpunkt zwischen `mom_hs` und `mom_iq` steht für den Interaktionseffekt
 Trägt man die Punkteschätzer der Koeffizienten ($\beta_0, \beta_1, \beta_2, \beta_3$) ein, 
 so erhält man @eq-lm4-with-values.
 
-$$\text{kid score} = `r round(coef(m10.4)[1], 1)` + `r round(coef(m10.4)[3], 1)` \cdot \text{mom hs} + `r round(coef(m10.4)[2], 1)`  \cdot \text{mom iq} + `r round(coef(m10.4)[4], 1)` \cdot \text{mom hs} \cdot \text{mom iq}$$ {#eq-lm4-with-values}
+$$
+\text{kid score} = `r round(coef(m10.4)[1], 1)` + `r round(coef(m10.4)[3], 1)` \cdot \text{mom hs} + `r round(coef(m10.4)[2], 1)`  \cdot \text{mom iq} + `r round(coef(m10.4)[4], 1)` \cdot \text{mom hs} \cdot \text{mom iq}
+$$ {#eq-lm4-with-values}
 
 
 
@@ -1061,7 +1065,7 @@ nur metrische Prädiktoren zu zentrieren.
 ```{r Thema6-Teil2-7, echo = TRUE}
 #| results: hide
 kidiq <-
-  kidiq %>% 
+  kidiq |> 
   mutate(mom_iq_c = mom_iq - mean(mom_iq))
 
 m10.5 <- stan_glm(kid_score ~ mom_hs + mom_iq_c + mom_hs:mom_iq_c, 
@@ -1077,8 +1081,8 @@ coef(m10.5)  # nur die Punktschätzer für die Koeffizienten ausgeben
 #| echo: false
 #| label: tbl-m105-point
 #| tbl-cap: "Punktschätzer von m10.5 (zentrierte UV)"
-parameters(m10.5) %>% 
-  select(1,2) %>% 
+parameters(m10.5) |> 
+  select(1,2, 4, 5) |> 
   display()
 ```
 
@@ -1102,8 +1106,8 @@ Mit `estimate_relation(m10.5) |> plot()` kann man  sich das Modell visualisieren
 #| echo: false
 #| label: fig-m105
 #| fig-cap: "m10.5: Mit zentrierten Prädiktoren gibt der Achsenabschnitt den Y-Wert für eine Beobachtung mit mittleren X-Wert an; daher ist der Achsenabschnitt besser zu interpretieren als ohne Zentrierung."
-kidiq %>% 
-  mutate(mom_hs = factor(mom_hs)) %>%  
+kidiq |> 
+  mutate(mom_hs = factor(mom_hs)) |>  
   ggplot(aes(x = mom_iq_c, y = kid_score, color = mom_hs)) +
   geom_point2(alpha = .7) +
   geom_abline(slope = coef(m10.5)[2],
@@ -1164,7 +1168,8 @@ Im Falle symmetrischer Posteriori-Verteilungen (wie hier) kommen beide Arten von
 #| tbl-cap: "Parameter von m10.5 und ETIs"
 #| echo: false
 #| label: tbl-m105
-parameters(m10.5) %>% 
+parameters(m10.5) |>
+  select(1,2,4,5) |>
   display()
 ```
 
@@ -1172,7 +1177,8 @@ parameters(m10.5) %>%
 ```{r Thema6-Teil2-11}
 #| tbl-cap: "Parameter von m10.5 und HDIs"
 #| label: tbl-m105-hdi
-parameters(m10.5, ci_method = "hdi") %>% 
+parameters(m10.5, ci_method = "hdi") |> 
+  select(1,2,4,5) |> 
   display()
 ```
 
@@ -1287,9 +1293,9 @@ Hier ist die Verteilung des Gewichts jeder Spezies im Datensatz, @tbl-penguins.
 
 ```{r}
 #| results: hide
-penguins %>% 
-  select(body_mass_g, species) %>% 
-  group_by(species) %>% 
+penguins |> 
+  select(body_mass_g, species) |> 
+  group_by(species) |> 
   describe_distribution(range = FALSE, iqr = FALSE)
 ```
 
@@ -1297,11 +1303,15 @@ penguins %>%
 #| echo: false
 #| tbl-cap: "Die Verteilung des Körpergewichts pro Spezies der Pinguine"
 #| label: tbl-penguins
-penguins %>% 
-  select(body_mass_g, species) %>% 
-  group_by(species) %>% 
-  describe_distribution(range = FALSE, iqr = FALSE)
+penguins |> 
+  select(body_mass_g, species) |> 
+  group_by(species) |>
+  describe_distribution() |>
+  as.data.frame() |>
+  select(-Skewness, -Kurtosis, -n_Missing, -Variable) |>
+  knitr::kable()
 ```
+
 
 
 
@@ -1344,7 +1354,7 @@ ggviolin(penguins,
 <!-- ```{r} -->
 <!-- #| label: fig-penguines3 -->
 <!-- #| fig-cap: "Verteilung des Körpergewichts dreier Arten von Pinguinen -- Geom Violindot" -->
-<!-- penguins %>%  -->
+<!-- penguins |>  -->
 <!--   ggplot(aes(x = species, y = body_mass_g, fill = species)) + -->
 <!--   geom_violindot(fill_dots = "black") -->
 <!-- ``` -->
@@ -1369,15 +1379,16 @@ m10.6 <- stan_glm(body_mass_g ~ species,
 refresh = 0,  # unterdrückt Ausgabe der Posteriori-Stichproben
                   )
 
-m10.6 %>% parameters()
+m10.6 |> parameters() 
 ```
 
 ```{r}
 #| echo: false
 #| tbl-cap: "Parameter des Modells m10.6; neben dem Achsenabschnitt sind die Effekte der Gruppe Adelie und Chinstrap ausgewiesen"
 #| label: tbl-m106-params
-m10.6 %>% 
-  parameters() %>% 
+m10.6 |> 
+  parameters() |> 
+  select(1,2,4,6) |> 
   display()
 ```
 
@@ -1512,7 +1523,7 @@ Implizit bekommt man die Informationen zu $\sigma$ mitgeteilt durch die Größe 
 `species` ist eine nominale Variable, da passt in R der Typ `factor` (Faktor) am besten. Aktuell ist der Typ noch `character` (Text):
 
 ```{r echo = TRUE}
-penguins <- penguins %>% 
+penguins <- penguins |> 
   mutate(species = factor(species))
 ```
 
@@ -1527,7 +1538,7 @@ Setzen wir `Gentoo` als Referenzkategorie und lassen die restliche Reihenfolge, 
 
 ```{r echo = TRUE}
 library(forcats)
-penguins <- penguins %>% 
+penguins <- penguins |> 
   mutate(species = factor(species),
     species = fct_relevel(species, "Gentoo"))
 ```
@@ -1623,7 +1634,7 @@ bevor man ein (Regressions-)Modell aufstellt, s. @tbl-cor-kidiq.
 
 
 ```{r echo = TRUE, eval = FALSE}
-kidiq %>% 
+kidiq |> 
   correlation(bayesian = TRUE)
 ```
 
@@ -1631,8 +1642,9 @@ kidiq %>%
 #| echo: false
 #| label: tbl-cor-kidiq
 #| tbl-cap: "Korrelation der Variablen im Datensatz `kidiq`"
-kidiq %>% 
-  correlation(bayesian = TRUE) %>% 
+kidiq |> 
+  correlation(bayesian = TRUE) |> 
+  select(1,2,3,5,6) |> 
   display()
 ```
 
@@ -1641,8 +1653,8 @@ kidiq %>%
 
 ```{r}
 #| eval: false
-kidiq %>% 
-  correlation(bayesian = TRUE) %>% 
+kidiq |> 
+  correlation(bayesian = TRUE) |> 
   summary()
 ```
 
@@ -1650,8 +1662,8 @@ kidiq %>%
 #| echo: false
 #| label: tbl-kidiq-corr
 #| tbl-cap: "Die Korrelationen zwischen den Variablen der Tabelle kidiq. Die Sterne geben einen Bereich des p-Werts an (wir ignorieren die Sterne hier)."
-kidiq %>% 
-  correlation() %>% 
+kidiq |> 
+  correlation() |> 
   summary() |> 
   display()
 ```
@@ -1662,9 +1674,9 @@ Nützlich ist auch die Visualisierung der Korrelationstabelle als Heatmap, @fig-
 ```{r echo = TRUE}
 #| label: fig-kidiq-heatmap
 #| fig-cap: "Visualisierung der Korrelationsmatrix als Heatmap"
-kidiq %>% 
-  correlation() %>% 
-  summary() %>% 
+kidiq |> 
+  correlation() |> 
+  summary() |> 
   plot()
 ```
 
@@ -1687,6 +1699,7 @@ m10.8 <- stan_glm(kid_score ~ mom_age, data = kidiq, refresh = 0)
 #| tbl-cap: "Parameter für m10.7"
 #| label: tbl-m107
 parameters(m10.7) |> 
+  select(1,2,4,5) |> 
   print_md()
 ```
 
@@ -1698,6 +1711,7 @@ parameters(m10.7) |>
 #| tbl-cap: "Parameter für m10.8"
 #| label: tbl-m108
 parameters(m10.8) |> 
+  select(1,2,4,5) |> 
   print_md()
 ```
 
@@ -1719,7 +1733,7 @@ In @fig-regr-one-pred ist die univariate Regression mit jeweils einem der beiden
 #| label: fig-regr-one-pred
 #| echo: false
 p1 <- 
-  kidiq %>% 
+  kidiq |> 
   ggplot(aes(x = mom_iq, y = kid_score)) +
   geom_point() +
   geom_abline(intercept = coef(m10.7)[1],
@@ -1727,7 +1741,7 @@ p1 <-
               color = "blue") 
 
 p2 <- 
-kidiq %>% 
+kidiq |> 
   ggplot(aes(x = mom_age, y = kid_score)) +
   geom_point() +
   geom_abline(intercept = coef(m10.8)[1],
@@ -1766,6 +1780,7 @@ parameters(m10.9)
 #| tbl-cap: "Parameter für m10.9"
 #| label: tbl-m109
 parameters(m10.9) |> 
+  select(1,2,4,5) |> 
   print_md()
 ```
 
@@ -1801,7 +1816,7 @@ z <- t(outer(x1_seq, x2_seq,
 
 if (knitr:::is_html_output()) {
 plot_ly(width = 800, height = 500,
-  x=~x1_seq, y=~x2_seq, z=~z,type="surface") %>%
+  x=~x1_seq, y=~x2_seq, z=~z,type="surface") |>
   add_trace(data=kidiq, 
             x=~mom_iq, y=~mom_age, z=~kid_score, 
             mode="markers", 
@@ -1809,7 +1824,7 @@ plot_ly(width = 800, height = 500,
             marker = list(color="#00998a", 
                           opacity=0.7, 
                           size = 1,
-                          symbol=105)) %>% 
+                          symbol=105)) |> 
   layout(scene = list(
     aspectmode = "manual", 
     aspectratio = list(x=1, y=1, z=1),
@@ -1837,10 +1852,10 @@ in der die 3. Dimension durch eine Farbschattierung ersetzt ist.
 #| label: fig-m109-color
 #| fig-cap: "Modell m10.9; die Farbverläufe zeigen der Wert der abhängigen Variablen"
 kidiq <-
-  kidiq %>%
+  kidiq |>
   mutate(pred_m10.9 = predict(m10.9))
 
-grid1 <- expand_grid(mom_iq = x1_seq, mom_age =  x2_seq) %>% 
+grid1 <- expand_grid(mom_iq = x1_seq, mom_age =  x2_seq) |> 
   mutate(pred_m10.9 = predict(m10.9, newdata = data.frame(mom_iq,
                                                               mom_age)))
 
@@ -1907,9 +1922,11 @@ Die Antwort hängt auch von der Streuung bzw. Skalierung der Variablen ab.
 `mom_iq` hat den größeren Koeffizienten und viel Streuung; `mom_age` hat weniger Streuung.
 
 
-Um die Relevanz der Prädiktoren vergleichen zu können, müsste man vielleicht die Veränderung von `kid_score` betrachten, wenn man vom kleinsten zum größten Prädiktorwert geht.
+Um die Relevanz der Prädiktoren vergleichen zu können, müsste man vielleicht die Veränderung von `kid_score` betrachten, 
+wenn man vom kleinsten zum größten Prädiktorwert geht.
 Allerdings sind Extremwerte meist instabil (da sie von einer einzigen Beobachtung bestimmt werden).
-Sinnvoller ist es daher, die Veränderung in der AV zu betrachten, wenn man den Prädiktor von "unterdurchschnittlich" auf "überdurchschnittlich" ändert.
+Sinnvoller ist es daher, die Veränderung in der AV zu betrachten, 
+wenn man den Prädiktor von "unterdurchschnittlich" auf "überdurchschnittlich" ändert.
 Das kann man mit *z-Standardisierung* erreichen.
 
 
@@ -1928,16 +1945,17 @@ Das kann man mit *z-Standardisierung* erreichen.
 
 ```{r kidiq2, echo = TRUE}
 kidiq2 <- 
-  kidiq %>% 
-  mutate(mom_iq_z = ((mom_iq - mean(mom_iq)) / sd(mom_iq)))  %>%  # z-Transformation
+  kidiq |> 
+  mutate(mom_iq_z = ((mom_iq - mean(mom_iq)) / sd(mom_iq)))  |>  # z-Transformation
   select(mom_iq, mom_iq_z) 
 
-kidiq2 %>% 
+kidiq2 |> 
   head()
 ```
 
 
-Der Nutzen von Standardisieren (dieser Art) ist die *bessere Vergleichbarkeit* der Effekte von UV, die (zuvor) verschiedene Mittelwerte und Streuungen hatten^[am nützlichsten ist diese Standardisierung bei normal verteilten Variablen.].
+Der Nutzen von Standardisieren (dieser Art) ist die *bessere Vergleichbarkeit* der Effekte von UV, 
+die (zuvor) verschiedene Mittelwerte und Streuungen hatten^[am nützlichsten ist diese Standardisierung bei normal verteilten Variablen.].
 Die Standardisierung ist ähnlich zur Vergabe von Prozenträngen: "Dieser Messwert gehört zu den Top-3-Prozent".
 Diese Aussage ist bedeutsam für Variablen mit verschiedenem Mittelwert und Streuung.
 So werden vergleichende Aussagen für verschiedene Verteilungen möglich.
@@ -1971,9 +1989,10 @@ kidiq_z <-
 
 ```{r kidiq-stand-print}
 #| label: tbl-kidiq-z
-#| tbl-cap: "z-transformierte Variablen im Datensatz kidiq (erste paar Zeilen)"
+#| tbl-cap: "z-transformierte Variablen im Datensatz kidiq (erste paar Zeilen und Spalten)"
 #| echo: false
 standardize(kidiq, append = TRUE) |> 
+  select(1,2,3,4) |> 
   head() |> 
   display()
 ```
@@ -1986,7 +2005,7 @@ Man kann auch nur einzelne Variablen mit `standardize` standardisieren, indem ma
 
 ```{r}
 #| eval: false
-kidiq %>% 
+kidiq |> 
   standardize(select = c("mom_iq", "mom_age", "kid_score"))
 ```
 
@@ -1997,7 +2016,7 @@ Dazu verwendet man den Befehl `scale()`.
 
 ```{r}
 #| eval: false
-kidiq %>% 
+kidiq |> 
   mutate(mom_iq_z2 = scale(mom_iq),
          mom_age_z2 = scale(mom_age),
          kid_score_z2 = scale(kid_score))
@@ -2007,11 +2026,12 @@ kidiq %>%
 ```{r echo = TRUE}
 #| echo: false
 #| label: tbl-scale-manual
-#| tbl-cap: "Z-Standardisierung ohne Extrapaket"
-kidiq %>% 
+#| tbl-cap: "Z-Standardisierung ohne Extrapaket; ersten paar Spalten und Zeilen"
+kidiq |> 
   mutate(mom_iq_z2 = scale(mom_iq),
          mom_age_z2 = scale(mom_age),
-         kid_score_z2 = scale(kid_score)) %>% 
+         kid_score_z2 = scale(kid_score)) |> 
+  select(mom_iq, mom_iq_z2) |> 
   head()
 ```
 
@@ -2034,7 +2054,9 @@ parameters(m10.10)
 #| tbl-cap: "Parameter von m10.12"
 #| label: tbl-m1010
 
-parameters(m10.10) |> print_md()
+parameters(m10.10) |> 
+  select(1,2,4,5) |> 
+  print_md()
 ```
 
 
@@ -2085,7 +2107,8 @@ parameters(m10.12)
 
 ```{r m10-11-params}
 #| echo: false
-parameters(m10.12) %>% display()
+parameters(m10.12) |> 
+  select(1,2,4,5) |> display()
 ```
 
 
@@ -2229,8 +2252,8 @@ Vergleichen Sie diese Werte mit der Korrelation, s. @tbl-m10.12-corr.^[Ignoriere
 #| label: tbl-m10.12-corr
 #| fig-cap: "Korrelationen der z-transformierten Variablen im Datensatz kidiq"
 
-kidiq_z %>% 
-  select(kid_score, mom_iq, kid_score_z, mom_iq_z) %>% 
+kidiq_z |> 
+  select(kid_score, mom_iq, kid_score_z, mom_iq_z) |> 
   correlation() |> 
   display()
 ```
@@ -2262,7 +2285,7 @@ und tatsächlichem Wert: $e_i = y_i - \hat{y}_i$
 
 ```{r kidiq-def}
 kidiq <-
-  kidiq %>% 
+  kidiq |> 
   mutate(m10.12_pred = predict(m10.12),  # vorhergesagten Werte
          m10.12_resid = resid(m10.12))  # Residuen
 ```
@@ -2272,7 +2295,7 @@ kidiq <-
 ```{r fig.asp = .5}
 #| label: fig-kidiqresiduum
 #| fig-cap: "Die Verteilung der Fehler scheint keinem starken Trend (in Abhängigkeit zum vorhergesagten Wert) zu folgen, was ein gutes Zeichen ist."
-kidiq %>% 
+kidiq |> 
   ggplot(aes(x = m10.12_pred, y = m10.12_resid)) +
   geom_hline(color="white", yintercept = 0, size = 2) +
   geom_hline(color = "grey40", 
@@ -2314,8 +2337,8 @@ Visualisieren wir noch die bereinigten Regressionskoeffizienten, s. @fig-bereini
 
 
 kidiq3 <- 
-  kidiq %>% 
-  standardize(append = TRUE) %>% 
+  kidiq |> 
+  standardize(append = TRUE) |> 
   sample_n(size = 300)
 
 
@@ -2323,8 +2346,8 @@ m10.12a <- stan_glm(mom_age_z ~ mom_iq_z, data = kidiq3, refresh = 0, chains = 1
 m10.12b <- stan_glm(mom_iq_z ~ mom_age_z, data = kidiq3, refresh = 0, chains = 1)
 
 kidiq3 <-
-  kidiq3 %>% 
-  mutate(mom_age_resid = resid(m10.12a)) %>% 
+  kidiq3 |> 
+  mutate(mom_age_resid = resid(m10.12a)) |> 
   mutate(mom_iq_resid = resid(m10.12b))
 
 
@@ -2333,8 +2356,8 @@ m10.12d <- stan_glm(kid_score_z ~ mom_iq_resid, data = kidiq3, refresh = 0, chai
 
 
 kidiq3 <-
-  kidiq3 %>% 
-  mutate(m10.12c_resid = resid(m10.12c)) %>% 
+  kidiq3 |> 
+  mutate(m10.12c_resid = resid(m10.12c)) |> 
   mutate(m10.12d_resid = resid(m10.12d))
 ```
 
@@ -2342,7 +2365,7 @@ kidiq3 <-
 ```{r comp-resid-lm-plot-kidiq3}
 #| echo: false
 m10.12a_plot <-
-  kidiq3 %>% 
+  kidiq3 |> 
   ggplot() +
   aes(x = mom_iq_z, y = mom_age_z) +
   geom_point(alpha = .5) +
@@ -2360,7 +2383,7 @@ m10.12a_plot <-
 
 
 m10.12b_plot <-
-  kidiq3 %>% 
+  kidiq3 |> 
   ggplot() +
   aes(y = mom_iq_z, x = mom_age_z) +
   geom_point(alpha = .5) +
@@ -2378,7 +2401,7 @@ m10.12b_plot <-
 
 
 m10.12c_plot <-
-  kidiq3 %>%
+  kidiq3 |>
   ggplot() +
   aes(x = mom_age_resid, y = kid_score_z) +
   geom_point(alpha = .5) +
@@ -2391,7 +2414,7 @@ m10.12c_plot <-
 
 
 m10.12d_plot <-
-  kidiq3 %>% 
+  kidiq3 |> 
   ggplot() +
   aes(x = mom_iq_resid, y = kid_score_z) +
   geom_point(alpha = .5) +
@@ -2457,15 +2480,15 @@ Schauen wir es uns an.
 #| echo: false
 
 mtcars2 <-
-  mtcars %>% 
+  mtcars |> 
   standardize()
 
 m13a <- stan_glm(disp ~ wt, data = mtcars2, refresh = 0, chains = 1)
 m13b <- stan_glm(wt ~ disp, data = mtcars2, refresh = 0, chains = 1)
 
 mtcars2 <-
-  mtcars %>% 
-  mutate(m13a_resid = resid(m13a)) %>% 
+  mtcars |> 
+  mutate(m13a_resid = resid(m13a)) |> 
   mutate(m13b_resid = resid(m13b))
 
 
@@ -2474,8 +2497,8 @@ m13d <- stan_glm(mpg ~ m13b_resid, data = mtcars2, refresh = 0, chains = 1)
 
 
 mtcars2 <-
-  mtcars2 %>% 
-  mutate(m13c_resid = resid(m13c)) %>% 
+  mtcars2 |> 
+  mutate(m13c_resid = resid(m13c)) |> 
   mutate(m13d_resid = resid(m13d))
 ```
 
@@ -2483,7 +2506,7 @@ mtcars2 <-
 ```{r comp-resid-lm-plot}
 #| echo: false
 m13a_plot <-
-  mtcars2 %>% 
+  mtcars2 |> 
   ggplot() +
   aes(x = wt, y = disp) +
   geom_point(alpha = .5) +
@@ -2499,7 +2522,7 @@ m13a_plot <-
 
 
 m13b_plot <- 
-mtcars2 %>% 
+mtcars2 |> 
   ggplot() +
   aes(y = wt, x = disp) +
   geom_point(alpha = .5) +
@@ -2513,7 +2536,7 @@ mtcars2 %>%
                color = "skyblue3")
 
 m13c_plot <-
-  mtcars2 %>%
+  mtcars2 |>
   ggplot() +
   aes(x = m13a_resid, y = mpg) +
   geom_point(alpha = .5) +
@@ -2525,7 +2548,7 @@ m13c_plot <-
 
 
 m13d_plot <-
-  mtcars2 %>% 
+  mtcars2 |> 
   ggplot() +
   aes(x = m13b_resid, y = mpg) +
   geom_point(alpha = .5) +
@@ -2550,9 +2573,9 @@ plots(m13a_plot, m13b_plot, m13c_plot, m13d_plot, n_rows = 2, tags = "A",
 Wie man sieht liefern `stan_glm()` und `lm` ähnliche Ergebnisse (bei schwach informativen Prioriwerten):
 
 ```{r stan-vs-lm}
-stan_glm(mpg ~ hp + cyl, data = mtcars, refresh = 0) %>% coef()
+stan_glm(mpg ~ hp + cyl, data = mtcars, refresh = 0) |> coef()
 
-lm(mpg ~ hp + cyl, data = mtcars) %>% coef()
+lm(mpg ~ hp + cyl, data = mtcars) |> coef()
 ```
 
 
@@ -2606,7 +2629,7 @@ Dazu nutzen wir den Datensatz `mtcars`, wobei wir die Variablen z-standardisiere
 ```{r echo = TRUE}
 data(mtcars)
 mtcars2 <-
-  mtcars %>% 
+  mtcars |> 
   standardize(append = TRUE)
 ```
 
@@ -2627,7 +2650,7 @@ Ab `mpg_z = `r round(coef(m14),2)`` sagt das Modell `am=1` (manuell) vorher. Gan
 
 
 ```{r}
-mtcars2 %>% 
+mtcars2 |> 
   ggplot(aes(x = mpg_z, y = am)) +
   geom_hline(yintercept = 0.5, color = "white", size = 2) +
   geom_point() +

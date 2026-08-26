@@ -28,8 +28,6 @@ library(gt)
 library(ggdag)
 library(dagitty)  # DAGs zeichnen
 library(ggrepel)  # Labels direkt an Linien/Punkte setzen
-
-theme_set(theme_modern())
 ```
 
 
@@ -43,7 +41,9 @@ Sie können ihn entweder über die Webseite herunterladen:
 
 ```{r data-saratoga, echo = TRUE}
 #| eval: false
-SaratogaHouses_path <- "https://vincentarelbundock.github.io/Rdatasets/csv/mosaicData/SaratogaHouses.csv"
+SaratogaHouses_path <- paste0(
+  "https://vincentarelbundock.github.io/Rdatasets/",
+  "csv/mosaicData/SaratogaHouses.csv")
 
 d <- read.csv(SaratogaHouses_path)
 ```
@@ -85,20 +85,18 @@ Die Folien zu diesem Kapitel finden Sie [hier](slides/1180-kausalatome.html).
 ## Kollision
 
 
+::: {.content-visible when-format="html"}
 
 
 📺 [Kollision](https://www.youtube.com/watch?v=RymOFwVU3PQ)
 
-
+:::
 
 
 
 ### Kein Zusammenhang von Intelligenz und Schönheit (?)
 
 [Gott ist gerecht (?)](https://twitter.com/TheTweetOfGod/status/1462594155176026123)^[<https://twitter.com/TheTweetOfGod/status/1462594155176026123>]
-
-
-
 Zumindest findet sich in folgenden Daten kein Zusammenhang von Intelligenz (`talent`) und Schönheit (`looks`),
 wie @fig-iq-schoen illustriert.
 Für geringe Intelligenzwerte gibt es ein breites Spektrum von Schönheitswerten
@@ -128,7 +126,7 @@ d2 <- tibble(
 
 
 p_coll1 <-
-  d2 %>% 
+  d2 |> 
   ggplot() +
   aes(x  = x,
       y = y) +
@@ -159,9 +157,9 @@ s. @fig-dates-beauty.
 #| echo: false
 #| label: fig-dates-beauty
 #| fig-cap: Ihre Datingpartner sind komischerweise entweder schlau oder schön (aber nicht beides), zumindest in der Tendenz.
-#| out-width: "50%"
+#| out-width: "75%"
 
-d2 <- d2 %>% 
+d2 <- d2 |> 
   mutate(
     status_label = ifelse(status, "Date", "kein Date"),
     symbol = ifelse(status, "✓", "✗")
@@ -169,7 +167,7 @@ d2 <- d2 %>%
 
 
 p_coll2 <- 
-  d2 %>% 
+  d2 |> 
   ggplot(aes(x = x, y = y, color = status_label, label = symbol)) +
   geom_text() +
   scale_color_manual(
@@ -211,7 +209,7 @@ coll1_dag <-
   dagify(date ~ Looks + Talent)
 
 p_coll_dag1 <-
-coll1_dag %>%
+coll1_dag |>
   ggdag(text_size = 4.5) +
   theme_dag()
 
@@ -228,7 +226,7 @@ Eine ähnliche Visualisierung des gleichen Sachverhalts zeigt @fig-coll2-dag.
 p_coll_dag2 <-
   collider_triangle(x = "Looks",
                   y = "Talent",
-                  m = "date") %>% 
+                  m = "date") |> 
   ggdag_dseparated(controlling_for = "m",
                    text = TRUE,
                    use_labels = "label",
@@ -270,7 +268,7 @@ Man kann also zu viele oder falsche Prädiktoren einer Regression hinzufügen, s
 :::
 
 ::: callout-tip
-🙅‍♀️ Kontrollieren Sie keine Kollisionsvariablen. $\square$
+🙅♀️ Kontrollieren Sie keine Kollisionsvariablen. $\square$
 :::
 
 
@@ -357,7 +355,7 @@ p_coll_dag2
 #   dagify(eignung ~ fleiss + iq)
 # 
 # p_coll_dag2 <- 
-# coll2_dag %>% 
+# coll2_dag |> 
 #   ggdag() +
 #   theme_dag()
 # 
@@ -407,7 +405,7 @@ s. @tbl-m-eignung.
 ```{r}
 #| results: hide
 m_eignung <-
-  stan_glm(iq ~ fleiss, data = d_eignung %>%  filter(studium == 1), refresh = 0)
+  stan_glm(iq ~ fleiss, data = d_eignung |>  filter(studium == 1), refresh = 0)
 
 hdi(m_eignung)
 ```
@@ -429,8 +427,8 @@ hdi(m_eignung) |> display()
 #| label: fig-eignung
 #| fig-cap: "Der Zusammenhang von Fleiss und IQ"
 
-d_eignung %>% 
-  filter(studium == 1) %>% 
+d_eignung |> 
+  filter(studium == 1) |> 
   ggplot(aes(x = fleiss, y = iq)) +
   geom_point(alpha = .5) +
   geom_smooth(method = "lm") +
@@ -470,33 +468,33 @@ Nur durch das Stratifizieren (Aufteilen in Subgruppen, Kontrollieren, Adjustiere
 #| echo: false
 #| fig-cap: "Stratifizierung und Scheinkorrelation. A: Keine Stratifizierung und keine Scheinkorrelation. B: Stratifizierung und Scheinkorrelation"
 #| label: fig-eignung-strat
-p1 <- d_eignung %>%
+p1 <- d_eignung |>
  ggplot(aes(x = fleiss, y = iq)) +
   geom_point(alpha = .5) +
   geom_smooth(method = "lm")
 
 d_eignung2 <-
-  d_eignung %>%
+  d_eignung |>
   mutate(studium = factor(studium, labels = c("kein Studium", "Studium")))
 
 # Endpunkte der Regressionsgeraden je Gruppe, um die Labels dort zu platzieren
 label_data <-
-  d_eignung2 %>%
-  group_by(studium) %>%
+  d_eignung2 |>
+  group_by(studium) |>
   group_modify(~ {
     fleiss_max <- max(.x$fleiss)
     tibble(fleiss = fleiss_max,
            iq = predict(lm(iq ~ fleiss, data = .x),
                         newdata = tibble(fleiss = fleiss_max)))
-  }) %>%
+  }) |>
   ungroup()
 
 p2 <-
-d_eignung2 %>%
+d_eignung2 |>
   ggplot(aes(x = fleiss, y = iq, color = studium)) +
   geom_point(alpha = .5) +
   geom_smooth(method = "lm", se = FALSE) +
-  geom_text_repel(data = label_data, aes(label = studium),
+  geom_label_repel(data = label_data, aes(label = studium),
                    fontface = "bold", direction = "y", hjust = 0,
                    nudge_x = .3, segment.color = NA) +
   scale_color_okabeito() +
@@ -515,7 +513,7 @@ plots(p1, p2,
 
 Wildes Kontrollieren einer Variablen -- Aufnehmen in die Regression -- kann genauso gut schaden wie nützen.
 
-*Nur* Kenntnis des DAGs verrät die richtige Entscheidung: ob man eine Variable kontrolliert oder nicht.
+*Nur* Kenntnis des DAGs verrät die richtige Entscheidung: ob man eine Variable kontrollieren muss oder es nicht darf.
 
 
 :::callout-note
@@ -559,7 +557,7 @@ dag_coords <-
 
 dagify(E ~ G,
        K ~ E + G,
-       coords = dag_coords) %>%
+       coords = dag_coords) |>
   ggdag(text_size = 4.5) +
   theme_dag()
 ```
@@ -610,7 +608,7 @@ dag_coords <-
 
 dagify(E ~ G + U,
        K ~ E + G + U,
-       coords = dag_coords) %>% 
+       coords = dag_coords) |> 
   gg_fancy_dag(x = 2.5, y = 1.5, circle = "U")
 ```
 
@@ -686,7 +684,7 @@ dag_coords <-
 
 dagify(p ~ a + b,
        b ~ a,
-       coords = dag_coords) %>%
+       coords = dag_coords) |>
   gg_simple_dag()
 ```
 
@@ -723,7 +721,7 @@ dag_coords <-
          y    = c(1, 0, 0))
 
 dagify(p ~ a + b,
-       coords = dag_coords) %>%
+       coords = dag_coords) |>
   gg_simple_dag()
 ```
 
@@ -780,7 +778,7 @@ so können Sie jedes beliebige Kausalsystem (DAG) entschlüsseln.
 
 ```{r}
 #| echo: false
-p_conf <- confounder_triangle(x = NULL, y = NULL, z = NULL, x_y_associated = FALSE) %>% 
+p_conf <- confounder_triangle(x = NULL, y = NULL, z = NULL, x_y_associated = FALSE) |> 
   gg_simple_dag() +
   labs(title = "Die Konfundierung")
 ```
@@ -788,7 +786,7 @@ p_conf <- confounder_triangle(x = NULL, y = NULL, z = NULL, x_y_associated = FAL
 ```{r}
 #| echo: false
 p_med <- 
-  mediation_triangle(x = NULL, y = NULL, m = NULL, x_y_associated = FALSE) %>% 
+  mediation_triangle(x = NULL, y = NULL, m = NULL, x_y_associated = FALSE) |> 
   gg_simple_dag() +
   labs(title = "Die Mediation")
 ```
@@ -796,7 +794,7 @@ p_med <-
 
 ```{r}
 #| echo: false
-p_coll <- collider_triangle(x = NULL, y = NULL, m = NULL, x_y_associated = FALSE) %>% 
+p_coll <- collider_triangle(x = NULL, y = NULL, m = NULL, x_y_associated = FALSE) |> 
   gg_simple_dag() +
   labs(title = "Die Kollision")
 ```
@@ -820,7 +818,7 @@ dag_desc <-
           }')
 
 p_desc <-
-  dag_desc %>%
+  dag_desc |>
   gg_simple_dag() +
   labs(title ="Der Nachfahre")
 ```
@@ -959,7 +957,7 @@ p_desc
 
 
 
-### Kochrezept zur Analyse von DAGs 👨‍🍳 
+### Kochrezept zur Analyse von DAGs 👨🍳 
 
 Wie kompliziert ein DAG auch aussehen mag, er ist immer aus diesen vier Atomen aufgebaut.
 
@@ -1025,7 +1023,7 @@ dagify(B ~ C + U,
        U ~ A,
        X ~ U,
        Y ~ C + X,
-       coords = dag_coords) %>%
+       coords = dag_coords) |>
   gg_fancy_dag(x = 1, y = 3, circle = "U")
 ```
 
@@ -1064,7 +1062,7 @@ dagify(A ~ S,
        D ~ A + M + W,
        M ~ A + S,
        W ~ S,
-       coords = dag_coords) %>%
+       coords = dag_coords) |>
   gg_simple_dag()
 ```
 
@@ -1169,6 +1167,12 @@ Es gibt viel Literatur zu dem Thema; relevante Suchterme sind z.B. "DAG", "causa
 
 
 - [Sammlung "kausal"](https://datenwerk.netlify.app/#category=causal)
+
+### Papier-und-Bleistift-Aufgaben
+
+1. [kollision-eignung](https://sebastiansauer.github.io/datenwerk/posts/kollision-eignung/kollision-eignung.html)
+2. [hintertuer](https://sebastiansauer.github.io/datenwerk/posts/hintertuer/hintertuer.html)
+3. [tutorium-kausal](https://sebastiansauer.github.io/datenwerk/posts/tutorium-kausal/index.html)
 
 
 ::: {.content-visible when-format="html"}
