@@ -1217,7 +1217,10 @@ d <- tibble::tribble(
                     "Erwartungswert",                                "Mittelwert",
                            "Varianz",                                   "Varianz"
        )
-gt::gt(d)
+knitr::kable(d) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::column_spec(1, width = "5cm") |>
+  kableExtra::column_spec(2, width = "6cm")
 ```
 
 
@@ -1245,7 +1248,7 @@ twodice <- tibble(
 p_twodice <- 
   ggplot(twodice, aes(x = Augensumme, y = p)) + 
   geom_col() +
-  geom_label(aes(y = p, label = round(p, 2), nudge_y = .1)) +
+  geom_label(aes(y = p, label = round(p, 2))) +
   scale_x_continuous(breaks = 1:12)
 ```
 
