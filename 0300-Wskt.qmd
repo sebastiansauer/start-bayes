@@ -1217,7 +1217,10 @@ d <- tibble::tribble(
                     "Erwartungswert",                                "Mittelwert",
                            "Varianz",                                   "Varianz"
        )
-gt::gt(d)
+knitr::kable(d) |>
+  kableExtra::kable_styling(full_width = FALSE) |>
+  kableExtra::column_spec(1, width = "5cm") |>
+  kableExtra::column_spec(2, width = "6cm")
 ```
 
 
@@ -1245,7 +1248,7 @@ twodice <- tibble(
 p_twodice <- 
   ggplot(twodice, aes(x = Augensumme, y = p)) + 
   geom_col() +
-  geom_label(aes(y = p, label = round(p, 2), nudge_y = .1)) +
+  geom_label(aes(y = p, label = round(p, 2))) +
   scale_x_continuous(breaks = 1:12)
 ```
 
@@ -1477,12 +1480,13 @@ Nicht so einfach (?). Hingegen ist die Frage, wie hoch die Wahrscheinlichkeit is
 #| warning: false
 #| out-width: 75%
 
-p_bus1 <- 
-  uniform_Plot(0, 10) + 
+p_bus1 <-
+  uniform_Plot(0, 10) +
   geom_vline(xintercept = .42, color = "#56B4E9FF", size = 1) +
   annotate("label", x = .42, y = .05, hjust = 0, label = "Pr(X=0.42)=?", color="#56B4E9FF") +
   annotate("point", x = .42, y = 0, size = 5, color = "#56B4E9FF", alpha = .7) +
-  annotate("label", x= 5, y = 0.1, label = "f(x) = 1/10", color = "#009E73FF", size = 10)
+  annotate("label", x= 5, y = 0.1, label = "f(x) = 1/10", color = "#009E73FF", size = 10) +
+  ylim(0, 0.13)
 
 p_bus1
 ```
