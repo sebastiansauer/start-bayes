@@ -346,6 +346,9 @@ Im Modellieren im Allgemeinen und in Regressionsmodellen im Besonderen lassen si
 Wenn wir von den Daten der Stichproben auf die Grundgesamtheit schließen,
 können wir nicht sicher sein, ob die Regressionskoeffizienten (Achsenabschnitt, Steigung
 der Regressionsgeraden) exakt richtig sind, s. @fig-betas-ungewiss.
+Wie man in @fig-regr-div sieht, können sich die Koeffizienten des Modells ($\beta_0$, Achsenabschnitt und $\beta_1$, Steigung) unterscheiden.
+Woran liegt das?
+
 
 
 ```{r}
@@ -405,8 +408,6 @@ p_toni_regr_b1
 
 
 
-Wie man in @fig-regr-div sieht, können sich die Koeffizienten des Modells ($\beta_0$, Achsenabschnitt und $\beta_1$, Steigung) unterscheiden.
-Woran liegt das?
 
 :::{#exm-flights}
 ### Stichproben der New Yorker Flüge
@@ -432,6 +433,7 @@ stipro3 <- sample_n(flights, size = 100)
 
 ```{r}
 #| eval: false
+#| echo: false
 library(nycflights13)
 data(flights)
 
@@ -535,18 +537,18 @@ d1 <-
          y2 = pred + e2,
          y3 = pred + e3)
 
-ggplot(d1, aes(x, y1)) + 
+ggplot(d1, aes(x, y1)) +
   geom_point() +
-  geom_smooth(method = "lm", se = TRUE) +
+  geom_abline(intercept = coef(lm1)[1], slope = coef(lm1)[2], color = modelcol, linewidth = 1) +
   #scale_y_continuous(limits = c(-4, 4)) +
   geom_segment(aes(x = x, xend = x,
                    y = pred, yend = y1),
                color = errorcol)
 
 
-ggplot(d1, aes(x, y2)) + 
+ggplot(d1, aes(x, y2)) +
   geom_point() +
-  geom_smooth(method = "lm", se = TRUE) +
+  geom_abline(intercept = coef(lm1)[1], slope = coef(lm1)[2], color = modelcol, linewidth = 1) +
  # scale_y_continuous(limits = c(-4, 4)) +
   geom_segment(aes(x = x, xend = x,
                    y = pred, yend = y2),
@@ -555,9 +557,9 @@ ggplot(d1, aes(x, y2)) +
 
 # lm3 <- lm(y3 ~ x, data = d1)
 
-ggplot(d1, aes(x, y1)) + 
+ggplot(d1, aes(x, y1)) +
   geom_point(aes(y = y3)) +
-  geom_smooth(method = "lm", se = TRUE) +
+  geom_abline(intercept = coef(lm1)[1], slope = coef(lm1)[2], color = modelcol, linewidth = 1) +
  # scale_y_continuous(limits = c(-4, 4)) +
   geom_segment(aes(x = x, xend = x,
                    y = pred, yend = y3),
@@ -779,9 +781,9 @@ und (einseitig) Stellung pro Bayes bezogen. -->
 Im *Frequentismus* spricht man von statistischer Signifikanz, wenn der p-Wert kleiner ist als 5 %: 
 $p<.05$ (oder einen anderen Prozentwert als 5 %, aber meistens wird 5 % hergenommen).
 Man nimmt diesen Befund als Beleg, dass man einen Effekt gefunden hat, 
-die Hypothese eines Nulleffekts (z. B. kein Zusammenhang von X und Y) also verwerfen kann.
-Faktisch entscheidet man sich, die Forschungshypothese weiterhin als "vorläufig gültig" 
-oder zumindest als "nicht widerlegt" zu betrachten.
+die Hypothese eines Nulleffekts (z.B. kein Zusammenhang von X und Y) also verwerfen kann.
+Faktisch verwirft man die Nullhypothese und wertet das Ergebnis als Unterstützung für die Forschungshypothese.
+Wichtig: "Verwerfen" heißt nicht "beweisen" -- auch die Forschungshypothese gilt (wie jede wissenschaftliche Hypothese) nie als endgültig bewiesen, sondern bestenfalls als vorläufig nicht widerlegt.
 
 
 In der *Bayes-Statistik* ist der Begriff der Signifikanz nicht einheitlich definiert. 

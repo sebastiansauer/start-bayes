@@ -217,7 +217,7 @@ Ali lernt ziemlich viel.
 Wie viel Punkte (von 100 möglichen) wird er wohl erzielen?
 Ziehen wir ein einfaches statistisches Modell zur Rate,
 um eine Vorhersage für den "Klausurerfolg" von Ali zu erhalten.
-Wir können vom Modell eine einzelne Zahl (83) als Punkt-Schätzwert bzw. Vorhersagewert erhalten oder einen Schätzbereich (80-86 Punkte). $\square$
+Wir können vom Modell eine einzelne Zahl (83) als Punkt-Schätzwert bzw. Vorhersagewert erhalten oder einen Schätzbereich (62-104 Punkte). $\square$
 :::
 
 Hier ist das Regressionsmodell für Ali (`lm_ali`), s. @lst-ali.
@@ -237,8 +237,8 @@ lm1_b0 <- coef(lm_ali)[1]
 lm1_b2 <- coef(lm_ali)[2]
 
 ali_punkte <- predict(lm_ali, newdata = data.frame(x=42))
-ali_vorhersageintervall <- predict(lm_ali, newdata =  data.frame(x=42), 
-                                    interval = "confidence", level = 0.95)
+ali_vorhersageintervall <- predict(lm_ali, newdata =  data.frame(x=42),
+                                    interval = "prediction", level = 0.95)
 ```
 
 
@@ -246,7 +246,7 @@ ali_vorhersageintervall <- predict(lm_ali, newdata =  data.frame(x=42),
 ```{r fig-noten}
 #| label: fig-vorhersagen
 #| echo: false
-#| fig-cap: "Noten und Lernzeit: Rohdaten (a) und mit Modell (b). Mittelwerte sind mit gestrichelten Linien eingezeichnet. Die Vorhersage für Ali ist farbig markiert. Ali hat 42 Stunden gelernt für die Klausur; das Modell sagt ihm 83 Punkte (von 100) bzw. einen Bereich von 80 bis 86 Punkten voraus."
+#| fig-cap: "Noten und Lernzeit: Rohdaten (a) und mit Modell (b). Mittelwerte sind mit gestrichelten Linien eingezeichnet. Die Vorhersage für Ali ist farbig markiert. Ali hat 42 Stunden gelernt für die Klausur; das Modell sagt ihm 83 Punkte (von 100) bzw. einen Bereich von 62 bis 104 Punkten voraus."
 #| layout-ncol: 2
 #| fig-subcap: 
 #|   - "Regressionsgerade mit Punkt-Vorhersage für Ali"
@@ -308,8 +308,8 @@ p_ali_punktschaetzung +
            ymin = ali_vorhersageintervall[1, "lwr"],
            ymax = ali_vorhersageintervall[1, "upr"],
            color = ycol) +
-  coord_cartesian(xlim = c(32, 52), 
-                  ylim = c(75, 87))
+  coord_cartesian(xlim = c(32, 52),
+                  ylim = c(55, 112))
 ```
 
 
