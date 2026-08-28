@@ -523,7 +523,7 @@ pi_mom_hs
 
 
 Mit 95 % Wahrscheinlichkeit liegt der Unterschied im mittleren IQ-Wert zwischen 
-Kindern von Müttern mit bzw. ohne Schulabschluss im Bereich von 7 bis 14 IQ-Punkten, 
+Kindern von Müttern mit bzw. ohne Schulabschluss im Bereich von 7 bis 16 IQ-Punkten, 
 laut unserem Modell: $95\%PI: [7,16]$.
 Die Hypothese, dass es keinen Unterschied oder einen Unterschied in die andere Richtung geben sollte,
 ist vor diesem Hintergrund als unwahrscheinlich abzulehnen.
@@ -1009,17 +1009,17 @@ Teilen wir die Regressionsformel einmal auf die beiden Gruppen (`mom_hs=0` bzw. 
 `mom_hs=0`:
 
 ```
-kid_score = `r round(coef(m10.4)[1], 1)` + `r round(coef(m10.4)[3], 1)`*0 + `r  round(coef(m10.4)[2], 1)`*mom_iq  - `r round(coef(m10.4)[4], 1)`*0*mom_iq
-          = -10 + 1.1*mom_iq
+kid_score = `r round(coef(m10.4)[1], 1)` + `r round(coef(m10.4)[3], 1)`*0 + `r  round(coef(m10.4)[2], 1)`*mom_iq  + `r round(coef(m10.4)[4], 1)`*0*mom_iq
+          = `r round(coef(m10.4)[1], 1)` + `r round(coef(m10.4)[2], 1)`*mom_iq
 ```
 
-`mom_hs=1`: 
+`mom_hs=1`:
 
 
 
 ```
-kid_score = `r round(coef(m10.4)[1], 1)` + `r round(coef(m10.4)[3], 1)`*mom_hs + `r  round(coef(m10.4)[2], 1)`*mom_iq  - `r round(coef(m10.4)[4], 1)`*mom_hs*mom_iq
-          = -10 + 1.1*mom_iq
+kid_score = `r round(coef(m10.4)[1], 1)` + `r round(coef(m10.4)[3], 1)`*mom_hs + `r  round(coef(m10.4)[2], 1)`*mom_iq  + `r round(coef(m10.4)[4], 1)`*mom_hs*mom_iq
+          = `r round(coef(m10.4)[1] + coef(m10.4)[3], 1)` + `r round(coef(m10.4)[2] + coef(m10.4)[4], 1)`*mom_iq
 ```
 
 
@@ -1403,7 +1403,7 @@ Die fehlende Stufe (`Adelie`, nicht ausgegeben) ist die *Vergleichs- oder Refere
 und ist im Achsenabschnitt ausgedrückt (Intercept).
 Die Koeffizienten für `species` geben jeweils den (vorhergesagten) Unterschied zur Vergleichskategorie wieder.
 Pinguine der Spezies `Adelie` haben laut Modell ein mittleres Gewicht von ca. 3700 g.
-Pinguine der Spezies Gentoo sind laut Modell im Mittel gut 1000 g schwerer als Pinguine der Spezies `Adelie`, etc.
+Pinguine der Spezies Gentoo sind laut Modell im Mittel gut 1300 g schwerer als Pinguine der Spezies `Adelie`, etc.
 
 
 Der Unterschied im mittleren Gewicht von den Gruppen Chinstrap und Gentoo zur Referenzgruppe (Adelie) ist in @fig-m106-params verdeutlicht.
@@ -2646,7 +2646,7 @@ m14 <-
 coef(m14)
 ```
 
-Ab `mpg_z = `r round(coef(m14),2)`` sagt das Modell `am=1` (manuell) vorher. Ganz ok.
+Ab `mpg_z = `r round((0.5 - coef(m14)[1]) / coef(m14)[2], 2)`` sagt das Modell `am=1` (manuell) vorher. Ganz ok.
 
 
 
@@ -2667,7 +2667,7 @@ neg_am <- predict(m14, newdata = tibble(mpg_z = -1.3))
 ```
 
 
-Für kleine Werte von `mpg_z` (<1.3) sagt unser Modell *negative* Werte für `am` voraus. Das macht keinen Sinn: Es gibt keine negativen Werte von `am`, nur 0 und 1.
+Für kleine Werte von `mpg_z` (< -1.3) sagt unser Modell *negative* Werte für `am` voraus. Das macht keinen Sinn: Es gibt keine negativen Werte von `am`, nur 0 und 1.
 Müssen wir mal bei Gelegenheit besser machen.
 
 
