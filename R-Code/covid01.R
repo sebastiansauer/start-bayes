@@ -4,11 +4,11 @@
 
 
 
-dfile <- "/Users/sebastiansaueruser/datasets/Covid/owid-covid-data.csv"
+dfile <- "data/owid-covid-data.csv"
 
 library(lubridate)
 
-d <- read_csv(dfile)
+d <- read_csv(dfile, show_col_types = FALSE)
 
 d2<-
   d %>%
