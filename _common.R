@@ -7,7 +7,7 @@ base_family <- "Lato Regular"
 
 # Define a custom ggplot theme with larger text
 theme_large_text <- function(base_size = 18) {
-  theme_minimal(base_size = base_size) +
+  see::theme_modern(base_size = base_size) +
     theme(
       text = element_text(size = base_size + 4),          # Base text size
       axis.title = element_text(size = base_size + 6),    # Axis title text size
@@ -23,8 +23,8 @@ theme_large_text <- function(base_size = 18) {
 
 ggplot2::theme_set(see::theme_modern())
 
-knitr::opts_chunk$set(tidy = FALSE, 
-                      width = 60, 
+knitr::opts_chunk$set(tidy = FALSE,
+                      width = 60,
                       fig.retina = 2,
                       max.print = 100,
                       fig.dpi = 300,
@@ -32,7 +32,10 @@ knitr::opts_chunk$set(tidy = FALSE,
                       out.width = "70%", # enough room to breath
                       fig.width = 6,     # reasonable size
                       fig.asp = 0.618,   # golden ratio
-                      fig.align = "center" # mostly what I want
+                      fig.align = "center", # mostly what I want
+                      dev = "cairo_pdf" # R's default pdf() device falls back to
+                      # non-embeddable base-14 fonts (Helvetica); cairo_pdf
+                      # embeds the actual fonts so KDP/PDF validators accept them
 )
 
 

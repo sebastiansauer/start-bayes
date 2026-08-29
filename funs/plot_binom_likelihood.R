@@ -18,8 +18,7 @@ plot_binom_likelihood <- function(x, n, p_step = 0.1) {
       subtitle = paste(x, "Treffer bei", n, "Versuchen"),
       x = "p",
       y = "L(p)"
-    ) +
-    theme_minimal(base_size = 14)
+    )
 }
 
 # Beispielaufruf: 6 Erfolge bei 9 Versuchen
