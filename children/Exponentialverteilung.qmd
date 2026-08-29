@@ -149,6 +149,7 @@ gg_exp <- function(r, max_x = NULL, probs = c(0.05, .25, .50, .75, .95)) {
               args = list(rate = r))  +
     labs(title = paste0("Exp(", r, ")"),
          x = "sigma",
+         y = NULL,
          caption = paste0("Median (Md): ", med_exp)) +
     geom_vline(data = d_qs,
              aes(xintercept = q)) +
@@ -159,7 +160,12 @@ gg_exp <- function(r, max_x = NULL, probs = c(0.05, .25, .50, .75, .95)) {
              size = 5,
              direction = "x",
              seed = 42) +
-    theme(plot.caption = element_text(size = 12))
+    scale_y_continuous(breaks = NULL) +
+    theme(plot.caption = element_text(size = 12),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          axis.title.y = element_blank(),
+          plot.margin = margin(2, 4, 2, 4))
 
 }
 ```
@@ -232,6 +238,7 @@ unleserlich. -->
 #| label: fig-exps
 #| fig-cap: "Exponentialverteilungen für verschiedene Werte von lambda. Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z.B. 0.95 = 95%-Quantil)."
 #| layout-ncol: 2
+#| out-width: 100%
 #| fig-subcap:
 #|   - "lambda = 2"
 #|   - "lambda = 1"
