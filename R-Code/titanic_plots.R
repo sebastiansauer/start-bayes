@@ -53,7 +53,7 @@ plottitanic2 <-
   ggplot(aes(x = Embarked)) +
   geom_bar(aes(fill = Survived), position = "fill") +
   theme(legend.position = "bottom") +
-  scale_fill_okabeito() +
+  scale_fill_okabeito(order = c(9, 1)) +
   geom_hline(yintercept = prop_surv, linetype = "dashed", color = "black") +
   annotate(
     "label",
