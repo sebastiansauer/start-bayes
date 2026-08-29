@@ -87,8 +87,12 @@ source("funs/binomial_plot.R")
 #| echo: false
 #| message: false
 #scale_color_okabeito()
-scale_colour_discrete <- function(...) 
-  scale_color_okabeito()
+scale_colour_discrete <- function(...)
+  # order = c(5, 4): Blau/Amber statt Orange/Hellblau, da Letztere im
+  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast) —
+  # betrifft hier ausschließlich Diagramme mit genau zwei Kategorien
+  # (Treffer/Niete bzw. T/N)
+  scale_color_okabeito(order = c(5, 4))
 ```
 
 
@@ -256,7 +260,9 @@ p_urn <-
   geom_text(aes(label = id), y = 1) +
   theme(axis.text = element_blank()) +
   labs(x = "", color = "") +
-  scale_color_okabeito()
+  # order = c(5, 4): Blau/Amber statt Orange/Hellblau, da Letztere im
+  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
+  scale_color_okabeito(order = c(5, 4))
 
 d2 <-
   tibble(id = 1:1e3,
