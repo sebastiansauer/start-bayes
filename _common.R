@@ -7,7 +7,7 @@ base_family <- "Lato Regular"
 
 # Define a custom ggplot theme with larger text
 theme_large_text <- function(base_size = 18) {
-  theme_minimal(base_size = base_size) +
+  see::theme_modern(base_size = base_size) +
     theme(
       text = element_text(size = base_size + 4),          # Base text size
       axis.title = element_text(size = base_size + 6),    # Axis title text size
