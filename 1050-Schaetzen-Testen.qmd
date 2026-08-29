@@ -526,7 +526,9 @@ Den Rope berechnet man mit `rope(model)`, s. @tbl-peng-species-rope.
 #| echo: false
 #| label: tbl-peng-species-rope
 #| tbl-cap: "Der Rope-Bereich für die Stufen der UV (Arten von Pinguinen)"
-rope(m_penguins_species)
+rope(m_penguins_species) |>
+  dplyr::select(-Component, -Effects, -CI) |>
+  print_md()
 ```
 
 Die Faktorstufe `Chinstrap` der UV `species` hat 
@@ -626,8 +628,8 @@ Die ROPE-Grenzen sind in @tbl-rope-species-rope-fine zu sehen.
 #| label: tbl-rope-species-rope-fine
 #| echo: false
 #| tbl-cap: "ROPE-Grenzen für das Modell `m_penguins_species` mit ROPE-Grenzen von 500 g."
-rope(m_penguins_species, range = c(-500, 500), ci = .89, ci_method = "HDI") |> 
-  dplyr::select(-Effects, -Component) |>
+rope(m_penguins_species, range = c(-500, 500), ci = .89, ci_method = "HDI") |>
+  dplyr::select(-Effects, -Component, -CI) |>
   print_md()
 ```
 

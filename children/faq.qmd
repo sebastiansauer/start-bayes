@@ -90,7 +90,9 @@ penguins <- read.csv("https://vincentarelbundock.github.io/Rdatasets/csv/palmerp
 
 m1 <- stan_glm(bill_length_mm ~ year, data = penguins, refresh = 0)
 
-rope(m1)
+rope(m1) |>
+  dplyr::select(-Component, -Effects, -CI) |>
+  print_md()
 ```
 
 Hier ist das Modell *mit* z-Transformation:
@@ -103,7 +105,9 @@ p2 <-
 
 m2 <- stan_glm(bill_length_mm ~ year, data = p2, refresh = 0)
 
-rope(m2)
+rope(m2) |>
+  dplyr::select(-Component, -Effects, -CI) |>
+  print_md()
 ```
 
 
