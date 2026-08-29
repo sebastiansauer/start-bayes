@@ -194,6 +194,12 @@ format:
     prefer-html: true
     include-in-header:
       - specifics/style.tex
+    # Entfernt klickbare Hyperlink-Elemente fuer externe URLs im PDF (KDP
+    # lehnt interaktive Elemente im Druck-Interior ab, s. Kommentar im
+    # Filter selbst und "Schritt 4" in textlayout-ueberarbeitung-Skill).
+    # Nur hier unter titlepage-pdf aktiv -- HTML behaelt klickbare Links.
+    filters:
+      - specifics/strip-external-links-pdf.lua
 
     documentclass: scrbook
     classoption: ["twoside ", "open=any"]
@@ -208,9 +214,11 @@ format:
     # Link -- Pandoc/citeproc verpackt sie nur dann in \hyperlink{}/
     # \hypertarget{}, wenn explizit angefordert (verifiziert: vorher kein
     # \hyperlink im generierten .tex, nur Klartext "Gelman et al. (2021)").
-    # Die Links selbst bleiben dank "hidelinks" in hypersetup (Pandocs
-    # Standardverhalten bei colorlinks: false, s. pandoc/hypersetup.latex)
-    # unauffaellig/unfarbig ohne Kasten, sind aber klickbar.
+    # Interne Zitations-/Literaturverzeichnis-Links bleiben dank "hidelinks"
+    # in hypersetup (Pandocs Standardverhalten bei colorlinks: false, s.
+    # pandoc/hypersetup.latex) unauffaellig/unfarbig ohne Kasten, sind aber
+    # klickbar -- das betrifft nur interne Anker, s. strip-external-links-pdf.lua
+    # oben, das externe http(s)-Links (KDP-Problem) bereits vorher entfernt.
     link-citations: true
     link-bibliography: true
     keep-tex: true
