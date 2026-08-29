@@ -38,7 +38,7 @@ plot_maschine_schrott_ALT <-
     values = c("Schrott" = "red", "ok" = "grey40"),
     labels = c("Ausschuss", "OK")
   ) +
-  theme_minimal() +
+  see::theme_modern() +
   theme(legend.position = "bottom")
 
 
@@ -83,7 +83,7 @@ plot_maschine_schrott <-
   scale_fill_okabeito(
     labels = c("Ausschuss", "OK")
   ) +
-  theme_minimal() +
+  see::theme_modern() +
   theme(legend.position = "bottom")
 
 
