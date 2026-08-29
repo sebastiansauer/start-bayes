@@ -222,9 +222,32 @@ format:
     link-citations: true
     link-bibliography: true
     keep-tex: true
+    # KDP-konforme Randmasse (Amazon Kindle Direct Publishing, Taschenbuch-
+    # Druck): Ohne explizite Werte faellt das geometry-Paket auf 1in
+    # symmetrische Raender zurueck (kein Bundsteg/Gutter-Ausgleich fuer die
+    # Bindung). KDPs Mindestwerte haengen von der Gesamtseitenzahl ab (Stand
+    # aktuelles Rendering: ca. 456 Seiten -> Bracket "301-500 Seiten"):
+    #   - inner (Bundsteg, innen zur Bindung hin): min. 0.625in bei
+    #     301-500 Seiten (0.375in bei 24-150, 0.5in bei 151-300, 0.75in bei
+    #     501-700, 0.875in bei 701-828) -- hier 0.75in als Puffer, falls das
+    #     Buch noch waechst.
+    #   - outer/top/bottom: KDP-Minimum ist 0.25in fuer alle Seitenzahlen,
+    #     hier grosszuegiger gewaehlt, u.a. damit der KOMA-Kopfzeilenbereich
+    #     (Kapitel-/Abschnittstitel + Seitenzahl, Standard-Pagestyle
+    #     "headings" von scrbook) nicht in den Sicherheitsrand hineinragt.
+    # "includehead"/"includefoot" zaehlen Kopf-/Fusszeile zur Seitenhoehe
+    # dazu, statt sie zusaetzlich zum top/bottom-Rand zu addieren --
+    # verhindert, dass die tatsaechliche Textbox groesser wird als geplant.
     geometry:
       - paperwidth=7in
       - paperheight=10in
+      - inner=0.75in
+      - outer=0.5in
+      - top=0.65in
+      - bottom=0.65in
+      - includehead
+      - includefoot
+      - heightrounded
     df-print: kable
     fig-align: center
 
