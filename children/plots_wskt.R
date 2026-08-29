@@ -13,7 +13,6 @@ plot16a <-
            color = "#56B4E9FF", alpha = .5, fill = "#56B4E9FF") +
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
-  theme_minimal()  +
   theme(axis.text = element_text(size = 18)) +
   labs(x = "", y = "")
 
@@ -29,7 +28,6 @@ plot_pr_b <-
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
   annotate("label", x = .5, y = .75, label = "Pr(B) = 50%") +
-  theme_minimal() +
   theme(axis.text = element_text(size = 18)) +
   labs(x = "", y = "")
 
@@ -44,7 +42,6 @@ plot_pr_a <-
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
   annotate("label", x = .75, y = .5, label = "Pr(A) = 50%") +
-  theme_minimal()  +
   theme(axis.text = element_text(size = 18)) +
   labs(x = "", y = "")
 
@@ -66,7 +63,6 @@ plot_pr_ab <-
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
   annotate(geom = "label", x = .75, y = 0.75, label = "A,B", color = "#E69F00FF") +
-  theme_minimal()  +
   theme(axis.text = element_text(size = 18)) +
   labs(x = "", y = "")
 
