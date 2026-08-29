@@ -68,7 +68,7 @@ Lesen Sie dazu folgende Themen:
 
 - [Statistik 1, Kap. "Rahmen"](https://sebastiansauer.github.io/statistik1/010-rahmen)^[<https://sebastiansauer.github.io/statistik1/010-rahmen>]
 - [Statistik 1](https://sebastiansauer.github.io/statistik1/)^[<https://sebastiansauer.github.io/statistik1/>], dort alle Inhalte aller Kapitel zum Thema "Modellieren" bzw. "Regression"
-- [Statistik 1, Abschnitt zur Normalverteilung]()
+- [Statistik 1, Abschnitt zur Normalverteilung](https://sebastiansauer.github.io/statistik1/040-verbildlichen#spezialfall-normalverteilung)^[<https://sebastiansauer.github.io/statistik1/040-verbildlichen#spezialfall-normalverteilung>]
 
 
 
@@ -261,7 +261,6 @@ ggplot(noten2) +
   geom_point() +
   labs(x = "Lernzeit",
        y = "Klausurpunkte") +
-  theme_minimal() +
   theme_large_text()
 
 p_ali_punktschaetzung <- 
@@ -271,8 +270,7 @@ p_ali_punktschaetzung <-
   geom_vline(xintercept = mean(noten2$x), linetype = "dashed", color = "grey") +  
   geom_hline(yintercept = mean(noten2$y), linetype = "dashed", color = "grey") +   
   geom_abline(slope = coef(lm_ali)[2], intercept = coef(lm_ali)[1], color = modelcol, size = 1.5) +
-  theme_minimal() +
-  annotate("label", x = mean(noten2$x), y = -Inf, 
+  annotate("label", x = mean(noten2$x), y = -Inf,
            label = paste0("MW: ", round(mean(noten2$x))), vjust = "bottom") +
   annotate("label", y = mean(noten2$y), x = -Inf, 
            label = paste0("MW: ", round(mean(noten2$y))), hjust = "left")   +
@@ -894,6 +892,7 @@ mtcars$am <- factor(mtcars$am)
 ggplot(mtcars) +
   aes(x = hp, y = mpg) +
   geom_point() +
+  geom_smooth(method = "lm")
   geom_smooth(method = "lm") 
 
 ggplot(mtcars) +

@@ -42,7 +42,9 @@ plot_kausalstudie_a <-
   ) +
   facet_wrap(~Gruppe) +
   scale_y_continuous(labels = scales::percent) +
-  scale_fill_okabeito() +
+  # order = c(5, 4): Blau/Amber statt Orange/Hellblau, da Letztere im
+  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
+  scale_fill_okabeito(order = c(5, 4)) +
   labs(
     x = "",
     y = "Anteil",

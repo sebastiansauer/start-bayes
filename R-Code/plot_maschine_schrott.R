@@ -80,8 +80,11 @@ plot_maschine_schrott <-
     y = "Anteil an der Produktion",
     fill = NULL
   ) +
+  # order = c(5, 4): Blau/Amber statt Orange/Hellblau, da Letztere im
+  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
   scale_fill_okabeito(
-    labels = c("Ausschuss", "OK")
+    labels = c("Ausschuss", "OK"),
+    order = c(5, 4)
   ) +
   see::theme_modern() +
   theme(legend.position = "bottom")

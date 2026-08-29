@@ -82,11 +82,13 @@ canvas <- image_blank(canvas_w, canvas_h, color = bg_col)
 title_block_h <- 500
 title_block_y <- 120
 
-title_img <- image_blank(1250, title_block_h, color = bg_col) %>%
+title_block_w <- 1250
+title_img <- image_blank(title_block_w, title_block_h, color = bg_col) %>%
   image_annotate("Start:Bayes!", size = 190, font = font_fam, weight = 700,
                   gravity = "center", color = "black")
+title_block_x <- (canvas_w - title_block_w) / 2
 canvas <- image_composite(canvas, title_img,
-                           offset = paste0("+100+", title_block_y))
+                           offset = paste0("+", title_block_x, "+", title_block_y))
 
 ## Untertitel (direkt unter dem Titelblock)
 subtitle_h <- 150
