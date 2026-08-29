@@ -16,6 +16,19 @@
 % pruefen, ob das zu einer doppelten babel-Ladung fuehrt (dann diese Zeile
 % wieder auskommentieren).
 \usepackage[ngerman]{babel}
+% ngerman aktiviert babel-Shorthands (z. B. "a, "s, "z fuer Umlaute/ss),
+% urspruenglich gedacht zur Eingabe deutscher Sonderzeichen ohne native
+% Tastaturbelegung. Wir tippen Umlaute/ss aber direkt als Unicode
+% (fontspec/xelatex/lualatex), daher stoeren die Shorthands nur -- z. B.
+% wird in Code-Spans wie `pak::pak("sebastiansauer/prada")` die
+% Zeichenfolge "s faelschlich zu Eszett (ss) expandiert. Deshalb hier
+% deaktivieren. \shorthandoff direkt hier im Preamble reicht nicht, weil
+% babel per \AtBeginDocument beim \begin{document} die Shorthands fuer die
+% Hauptsprache wieder aktiviert (das passiert NACH dem Preamble) -- daher
+% muss unser \shorthandoff ebenfalls per \AtBeginDocument registriert
+% werden, damit es (in Registrierungsreihenfolge) nach babels eigenem Hook
+% laeuft.
+\AtBeginDocument{\shorthandoff{"}}
 % csquotes wird zusammen mit der Metadaten-Variable "csquotes: true" im
 % titlepage-pdf-Formatblock von _quarto.yml gebraucht: Pandoc gibt
 % Anfuehrungszeichen aus geraden "..." dann als \enquote{...} statt als
