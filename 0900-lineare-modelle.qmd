@@ -143,8 +143,11 @@ describe_distribution(kung_erwachsen)
 ```{r Post-Regression-4, echo = FALSE, eval = TRUE}
 #| echo: false
 #| label: tbl-kung1
-#| tbl-cap: "Verteiung der (metrischen) Variablen im !Kung-Datensatz"
-describe_distribution(kung_erwachsen) |> display()
+#| tbl-cap: "Verteilung der (metrischen) Variablen im !Kung-Datensatz"
+describe_distribution(kung_erwachsen) |> 
+  as.data.frame() |>
+  select(-Skewness, -Kurtosis, -n_Missing, -IQR) |>
+  knitr::kable()
 ```
 
 
@@ -167,7 +170,7 @@ library(DataExplorer)
 
 Was man im Rahmen einer EDA stets prüfen sollte, sind fehlende Werte. 
 Gibt es in diesem Datensatz fehlende Werte?
-Nein, s. Abb. @fig-na.
+Nein, s. @fig-na.
 
 ```{r}
 #| fig-cap: Fehlende Werte -- fehlen.
@@ -773,6 +776,7 @@ m_kung_starkes_beta1 |>
 #| tbl-cap: Parameter von m_kung_starkes_beta1
 #| label: tbl-m_kung_starkes_beta1-params
 parameters(m_kung_starkes_beta1) |> 
+  select(1,2,4,5) |> 
   display()
 ```
 
