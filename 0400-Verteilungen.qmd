@@ -263,11 +263,13 @@ d2 <-
          Treffer = sample(0:1, 1e3, replace = TRUE, prob = c(3/5, 2/5)))  |> 
   mutate(Treffer = ifelse(Treffer == 1, "Treffer", "Niete"))
 
-p_urn2 <- 
+p_urn2 <-
   ggplot(d2) +
   aes(color = Treffer) +
   geom_jitter(aes(x = 1, y = 1)) +
-  scale_color_okabeito() +
+  # order = c(5, 4): Blau/Amber statt Orange/Hellblau, da Letztere im
+  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
+  scale_color_okabeito(order = c(5, 4)) +
   theme_void()
 
 p_urn2
