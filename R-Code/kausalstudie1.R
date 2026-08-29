@@ -5,14 +5,21 @@ library(see)
 # Daten vorbereiten: pro Medikamentengruppe x Geschlecht x Status ("überlebt"/"nicht überlebt")
 # Zahlen entsprechen Tabelle 2.1 (tbl-studie-a)
 df <- data.frame(
-  Gruppe = rep(c("Mit Medikament", "Mit Medikament", "Ohne Medikament", "Ohne Medikament"), each = 2),
+  Gruppe = rep(
+    c("Mit Medikament", "Mit Medikament", "Ohne Medikament", "Ohne Medikament"),
+    each = 2
+  ),
   Geschlecht = rep(c("Männer", "Frauen", "Männer", "Frauen"), each = 2),
   Status = rep(c("überlebt", "nicht überlebt"), 4),
   Anzahl = c(
-    81, 87 - 81,     # Männer, mit Medikament: 81/87 überlebt
-    192, 263 - 192,  # Frauen, mit Medikament: 192/263 überlebt
-    234, 270 - 234,  # Männer, ohne Medikament: 234/270 überlebt
-    55, 80 - 55       # Frauen, ohne Medikament: 55/80 überlebt
+    81,
+    87 - 81, # Männer, mit Medikament: 81/87 überlebt
+    192,
+    263 - 192, # Frauen, mit Medikament: 192/263 überlebt
+    234,
+    270 - 234, # Männer, ohne Medikament: 234/270 überlebt
+    55,
+    80 - 55 # Frauen, ohne Medikament: 55/80 überlebt
   )
 )
 
@@ -24,7 +31,14 @@ df$Prozent <- df$Anzahl / df$Summe
 
 df$Label <- ifelse(
   df$Status == "überlebt",
-  paste0(df$Anzahl, "/", df$Summe, "\n(", percent(df$Prozent, accuracy = 1), ")"),
+  paste0(
+    df$Anzahl,
+    "/",
+    df$Summe,
+    "\n(",
+    percent(df$Prozent, accuracy = 1),
+    ")"
+  ),
   ""
 )
 
@@ -50,5 +64,4 @@ plot_kausalstudie_a <-
     y = "Anteil",
     fill = "",
     title = "Überlebensrate nach Geschlecht, mit/ohne Medikament"
-  ) +
-  theme_minimal()
+  )
