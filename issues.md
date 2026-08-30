@@ -9,5 +9,6 @@ title: issues
 - Abb 2.4g
 - plottitanic1-3
 - Ali Vorhersageintervall
+- Kapitel Abschluss - Kontraset in den Diagrammen
 
     
