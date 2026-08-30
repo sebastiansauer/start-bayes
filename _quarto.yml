@@ -157,7 +157,9 @@ knitr:
     fig.align: center
     rows.print: 5
     # comment: "#>"
-    #dev: cairo_pdf
+    # dev: cairo_pdf wird NICHT hier (global) gesetzt, sondern nur unter
+    # format.titlepage-pdf.knitr.opts_chunk (s.u.) -- global wuerde es auch
+    # das HTML-Format treffen, wo cairo_pdf als Grafikgeraet nicht passt.
     R.options:
       knitr. graphics.auto_pdf: true
 
@@ -272,6 +274,20 @@ format:
     # babel geladenen Sprache automatisch den deutschen Stil „..." waehlt.
     csquotes: true
     fig-format: pdf
+    # fig-format: pdf oben setzt intern (via rmarkdown::knitr_options())
+    # knitr::opts_chunk$set(dev = "pdf") -- das ist R's Standard-pdf()-Geraet,
+    # das nur Base-14-Fonts (Helvetica etc.) OHNE Einbettung erzeugt und
+    # deshalb von KDPs PDF-Validator bemaengelt wird. _common.R versucht das
+    # mit dev="cairo_pdf" zu uebersteuern, aber das passiert beim R-Start
+    # (ueber .Rprofile), also VOR diesem fig-format-Schritt, der spaeter beim
+    # Dokument-Setup laeuft und cairo_pdf wieder mit "pdf" ueberschreibt.
+    # Dieser knitr.opts_chunk-Block hier wird von Quarto per merge_lists()
+    # NACH dem fig-format-Schritt eingemischt und gewinnt bei Namenskollision,
+    # daher wirkt er tatsaechlich. Nur hier (format-scoped), nicht global in
+    # knitr.opts_chunk oben, damit das HTML-Format cairo_pdf nicht abbekommt.
+    knitr:
+      opts_chunk:
+        dev: cairo_pdf
     # Zwischenseiten ganz vorne im PDF (Reihenfolge wie gelistet): Copyright-
     # seite, Widmung, danach eine Leerseite -- vor der eigentlichen
     # Titelseite, die die Extension selbst erzeugt (titlepage: classic-lined
