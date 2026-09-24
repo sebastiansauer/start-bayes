@@ -33,9 +33,36 @@ knitr::opts_chunk$set(tidy = FALSE,
                       fig.width = 6,     # reasonable size
                       fig.asp = 0.618,   # golden ratio
                       fig.align = "center", # mostly what I want
-                      dev = "cairo_pdf" # R's default pdf() device falls back to
-                      # non-embeddable base-14 fonts (Helvetica); cairo_pdf
-                      # embeds the actual fonts so KDP/PDF validators accept them
+                      # Bewusst KEIN "dev ="-Eintrag hier: _quarto.yml setzt
+                      # dev = cairo_pdf bereits selbst, aber nur format-scoped
+                      # unter format.titlepage-pdf.knitr.opts_chunk (s. dortiger
+                      # Kommentar) -- dieser YAML-Block wird beim
+                      # Dokument-Setup NACH dem R-Start eingemischt und gewinnt
+                      # daher zuverlaessig fuer den PDF-Export. Ein "dev ="-Wert
+                      # hier in _common.R laeuft dagegen schon beim R-Start (via
+                      # .Rprofile) und wird fuers PDF-Format wirkungslos wieder
+                      # ueberschrieben -- fuers HTML-Format gibt es aber keinen
+                      # solchen Override, sodass ein hier gesetztes
+                      # dev = "cairo_pdf" ungehindert durchschlaegt: Abbildungen
+                      # werden dann als PDF erzeugt, die Quarto per <embed>
+                      # statt <img> einbettet -- der Browser zeigt dann seine
+                      # eigene PDF-Viewer-Leiste samt Scrollbalken um jede
+                      # Abbildung an. Deshalb bleibt dev hier auf dem
+                      # knitr-Standard (png fuers HTML), das PDF-Format regelt
+                      # sich ueber _quarto.yml selbst.
+                      cache.extra = knitr::is_latex_output()
+                      # Rendert "quarto render" (ohne --to) beide Formate in
+                      # einem Lauf, teilen sich HTML- und PDF-Pass denselben
+                      # knitr-Cache pro Chunk-Code-Hash -- "dev" ist dabei
+                      # KEIN Teil dieses Hashes (es ist ein globaler
+                      # opts_chunk-Default, kein chunk-lokal gesetzter Wert),
+                      # weshalb ohne dieses cache.extra der zuerst laufende
+                      # Format-Pass seine Abbildungen in den Cache schreibt
+                      # und der zweite Pass sie unveraendert (im falschen
+                      # Grafikformat) uebernimmt, statt fuer sein eigenes
+                      # Format neu zu rendern. cache.extra nimmt den
+                      # PDF/HTML-Status explizit mit in den Hash auf und
+                      # erzwingt so pro Format einen eigenen Cache-Eintrag.
 )
 
 

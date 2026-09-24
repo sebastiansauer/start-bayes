@@ -8,8 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-- Render the whole book: `quarto render` (equivalent to `render.R`, which calls `quarto::quarto_render(execute = TRUE, cache = TRUE)`)
-- Render a single chapter: `quarto render 0250-inferenz.qmd`
+- Render the whole book: `Rscript render.R` (NOT the bare CLI `quarto render` — the book defines two formats, `html` and `titlepage-pdf`, in `_quarto.yml`; a single combined `quarto render` executes each chapter's R code only once and shares the result across both formats, so the format that's listed first, `titlepage-pdf`, wins the `knitr::is_latex_output()` check even while HTML is being produced — figures then get embedded as `<embed>`-PDFs in the HTML instead of `<img>`-PNGs, showing up as a black PDF-viewer frame with a scrollbar around every figure. `render.R` avoids this by calling `quarto::quarto_render()` twice, once per `output_format`, each a separate R execution.)
+- Render a single chapter to HTML only (safe, single-format): `quarto render 0250-inferenz.qmd --to html`
 - Regenerate the definitions list (`definitions.qmd`) from `:::{#def-...}` shortcodes across all `NNNN-*.qmd` files: `Rscript get-defs.R`
 - Regenerate the theorems list (`theorems.qmd`) from `:::{#thm-...}` shortcodes: `Rscript get-thms.R`
 - R dependencies are managed with `renv` (see `renv.lock`); `.Rprofile` sources `_common.R` on session start, which sets global knitr/ggplot options, custom color constants, and the plotting theme used across chapters.
