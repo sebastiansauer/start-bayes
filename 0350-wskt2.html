@@ -4,7 +4,7 @@
 <meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="keywords" content="Statistik, Bayes, Wahrscheinlichkeit, Inferenz, R, Kausalität">
-<meta name="description" content="Einführung in die Bayes-Statistik mit R">
+<meta name="description" content="Start:Bayes! ist die erste deutschsprachige Einführung in die Bayes-Statistik, die anwendungsnah, mit modernen Werkzeugen (R) und mit mehr Lockerheit als oft üblich vermittelt wird. Statt p-Werten steht eine Idee im Zentrum, die näher am gesunden Menschenverstand ist: Wir starten mit einer Annahme, sammeln Daten und aktualisieren unser Wissen entsprechend. Das Buch richtet sich an alle, die Bayes-Modelle nicht nur verstehen, sondern selbst berechnen und interpretieren wollen. Der Aufbau folgt der Logik der Sache: von Wahrscheinlichkeit und Verteilungen über den Kern der Bayes-Statistik am Beispiel des Globus-Versuchs bis zu linearen Modellen und Kausalität.">
 <title>5&nbsp; Rechnen mit Wahrscheinlichkeit – Start:Bayes!</title>
 <style>
 /* Default styles provided by pandoc.
@@ -569,6 +569,39 @@ window.Quarto = {
   <li><a href="#bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle" id="toc-bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle" class="nav-link" data-scroll-target="#bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle"><span class="header-section-number">5.4.2</span> Bedingte Wahrscheinlichkeit als Filtern einer Tabelle</a></li>
   </ul>
 </li>
+  <li>
+<a href="#stochastische-un-abh%C3%A4ngigkeit" id="toc-stochastische-un-abhängigkeit" class="nav-link" data-scroll-target="#stochastische-un-abh%C3%A4ngigkeit"><span class="header-section-number">5.5</span> Stochastische (Un-)Abhängigkeit</a>
+  <ul class="collapse">
+<li><a href="#warum-ist-das-wichtig" id="toc-warum-ist-das-wichtig" class="nav-link" data-scroll-target="#warum-ist-das-wichtig"><span class="header-section-number">5.5.1</span> Warum ist das wichtig?</a></li>
+  <li><a href="#unabh%C3%A4ngigkeit" id="toc-unabhängigkeit" class="nav-link" data-scroll-target="#unabh%C3%A4ngigkeit"><span class="header-section-number">5.5.2</span> Unabhängigkeit</a></li>
+  <li><a href="#stochastische-abh%C3%A4ngigkeit" id="toc-stochastische-abhängigkeit" class="nav-link" data-scroll-target="#stochastische-abh%C3%A4ngigkeit"><span class="header-section-number">5.5.3</span> Stochastische Abhängigkeit</a></li>
+  <li><a href="#unabh%C3%A4ngigkeit-ist-symmetrisch" id="toc-unabhängigkeit-ist-symmetrisch" class="nav-link" data-scroll-target="#unabh%C3%A4ngigkeit-ist-symmetrisch"><span class="header-section-number">5.5.4</span> Unabhängigkeit ist symmetrisch</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz" id="toc-wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz" class="nav-link" data-scroll-target="#wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz"><span class="header-section-number">5.6</span> Wahrscheinlichkeit gemeinsamer Ereignisse: Multiplikationssatz</a>
+  <ul class="collapse">
+<li><a href="#gemeinsame-wahrscheinlichkeit-unabh%C3%A4ngiger-ereignisse" id="toc-gemeinsame-wahrscheinlichkeit-unabhängiger-ereignisse" class="nav-link" data-scroll-target="#gemeinsame-wahrscheinlichkeit-unabh%C3%A4ngiger-ereignisse"><span class="header-section-number">5.6.1</span> Gemeinsame Wahrscheinlichkeit unabhängiger Ereignisse</a></li>
+  <li><a href="#gemeinsame-wahrscheinlichkeit-allgemeiner-ereignisse" id="toc-gemeinsame-wahrscheinlichkeit-allgemeiner-ereignisse" class="nav-link" data-scroll-target="#gemeinsame-wahrscheinlichkeit-allgemeiner-ereignisse"><span class="header-section-number">5.6.2</span> Gemeinsame Wahrscheinlichkeit allgemeiner Ereignisse</a></li>
+  <li><a href="#kettenregel" id="toc-kettenregel" class="nav-link" data-scroll-target="#kettenregel"><span class="header-section-number">5.6.3</span> Kettenregel</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#totale-wahrscheinlichkeit" id="toc-totale-wahrscheinlichkeit" class="nav-link" data-scroll-target="#totale-wahrscheinlichkeit"><span class="header-section-number">5.7</span> Totale Wahrscheinlichkeit</a>
+  <ul class="collapse">
+<li><a href="#baumsammlung" id="toc-baumsammlung" class="nav-link" data-scroll-target="#baumsammlung"><span class="header-section-number">5.7.1</span> Baumsammlung</a></li>
+  </ul>
+</li>
+  <li><a href="#vertiefung" id="toc-vertiefung" class="nav-link" data-scroll-target="#vertiefung"><span class="header-section-number">5.8</span> Vertiefung</a></li>
+  <li>
+<a href="#aufgaben" id="toc-aufgaben" class="nav-link" data-scroll-target="#aufgaben"><span class="header-section-number">5.9</span> Aufgaben</a>
+  <ul class="collapse">
+<li><a href="#paper-pencil-aufgaben" id="toc-paper-pencil-aufgaben" class="nav-link" data-scroll-target="#paper-pencil-aufgaben"><span class="header-section-number">5.9.1</span> Paper-Pencil-Aufgaben</a></li>
+  <li><a href="#aufgaben-f%C3%BCr-die-man-einen-computer-braucht" id="toc-aufgaben-für-die-man-einen-computer-braucht" class="nav-link" data-scroll-target="#aufgaben-f%C3%BCr-die-man-einen-computer-braucht"><span class="header-section-number">5.9.2</span> Aufgaben, für die man einen Computer braucht</a></li>
+  <li><a href="#quiz-aufgaben" id="toc-quiz-aufgaben" class="nav-link" data-scroll-target="#quiz-aufgaben"><span class="header-section-number">5.9.3</span> Quiz-Aufgaben</a></li>
+  </ul>
+</li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><span class="header-section-number">5.10</span> —</a></li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/0350-wskt2.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -698,7 +731,7 @@ Abbildung&nbsp;5.2: Der allgemeine Additionssatz gibt die Wahrscheinlichkeit, da
 <div id="exm-klausur-bed-wskt" class="theorem example">
 <p><span class="theorem-title"><strong>Beispiel 5.4 (Lernen und Klausur bestehen)</strong></span> In einem Psychologie-Studiengang sind die Studis verdonnert, zwei Statistik-Module (<span class="math inline">\(S1, S2\)</span>) zu belegen. Die meisten bestehen (<span class="math inline">\(B\)</span>), einige leider nicht (<span class="math inline">\(N\)</span>), s. <a href="#tbl-klausur2" class="quarto-xref">Tabelle&nbsp;<span>5.1</span></a>.</p>
 <p>Ereignis <span class="math inline">\(S_1B\)</span> sei “Klausur Statistik 1 bestanden”. Ereignis <span class="math inline">\(S_2B\)</span> ist analog für “Klausur Statistik 2”.</p>
-<p>Wir suchen die Wahrscheinlichkeit des Ereignisses <em>A</em>, d.h. mindestens eine der beiden Klausuren zu bestehen: <span class="math inline">\(Pr(A) = Pr(S_1B \cup S_2B)\)</span>.</p>
+<p>Wir suchen die Wahrscheinlichkeit des Ereignisses <em>A</em>, d. h. mindestens eine der beiden Klausuren zu bestehen: <span class="math inline">\(Pr(A) = Pr(S_1B \cup S_2B)\)</span>.</p>
 <div class="cell" data-layout-align="center">
 <div id="tbl-klausur2" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
 <figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-klausur2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1193,16 +1226,16 @@ Pr(A) &amp;= Pr(S_1B \cup S_2B) \\
 &amp;= Pr(S_1B) + Pr(S_2B) - Pr(S_1B \cap S_2B)  \\
 &amp;= (90 + 94 - 85) / 100 = 99 / 100\\
 \end{align}\]</span></p>
-<p>Die Wahrscheinlichkeit, mindestens eine der beiden Klausuren zu bestehen, liegt bei 99%.</p>
+<p>Die Wahrscheinlichkeit, mindestens eine der beiden Klausuren zu bestehen, liegt bei 99 %.</p>
 <div id="exr-keine-klausur-bestanden" class="theorem exercise">
 <p><span class="theorem-title"><strong>Übungsaufgabe 5.1 (Peer Instruction: Keine Klausur bestanden)</strong></span> Wie hoch ist die Wahrscheinlichkeit, keine der beiden Klausuren zu bestehen?</p>
 <ol type="A">
-<li>1%</li>
-<li>5%</li>
-<li>6%</li>
-<li>9%</li>
-<li>10%</li>
-<li>16% <span class="math inline">\(\square\)</span>
+<li>1 %</li>
+<li>5 %</li>
+<li>6 %</li>
+<li>9 %</li>
+<li>10 %</li>
+<li>16 % <span class="math inline">\(\square\)</span>
 </li>
 </ol>
 </div>
@@ -1234,7 +1267,7 @@ Pr(A) &amp;= Pr(S_1B \cup S_2B) \\
 <div class="cell-output-display">
 <div id="fig-pr-a" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-pr-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0350-wskt2_files/figure-html/fig-pr-a-1.png" class="lightbox" data-gallery="fig-schema-p" title="Abbildung&nbsp;5.3&nbsp;(a): Unbedingte Wahrscheinlichkeit für Ereignis A: 50%=1/2"><img src="0350-wskt2_files/figure-html/fig-pr-a-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" data-ref-parent="fig-schema-p"></a>
+<a href="0350-wskt2_files/figure-html/fig-pr-a-1.pdf" class="lightbox" data-gallery="fig-schema-p" title="Abbildung&nbsp;5.3&nbsp;(a): Unbedingte Wahrscheinlichkeit für Ereignis A: 50%=1/2"><embed src="0350-wskt2_files/figure-html/fig-pr-a-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:50.0%" data-ref-parent="fig-schema-p"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pr-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Unbedingte Wahrscheinlichkeit für Ereignis A: 50%=1/2
@@ -1248,7 +1281,7 @@ Pr(A) &amp;= Pr(S_1B \cup S_2B) \\
 <div class="cell-output-display">
 <div id="fig-pr-b" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-pr-b-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0350-wskt2_files/figure-html/fig-pr-b-1.png" class="lightbox" data-gallery="fig-schema-p" title="Abbildung&nbsp;5.3&nbsp;(b): Unbedingte Wahrscheinlichkeit für Ereignis B: 50%=1/2"><img src="0350-wskt2_files/figure-html/fig-pr-b-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" data-ref-parent="fig-schema-p"></a>
+<a href="0350-wskt2_files/figure-html/fig-pr-b-1.pdf" class="lightbox" data-gallery="fig-schema-p" title="Abbildung&nbsp;5.3&nbsp;(b): Unbedingte Wahrscheinlichkeit für Ereignis B: 50%=1/2"><embed src="0350-wskt2_files/figure-html/fig-pr-b-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:50.0%" data-ref-parent="fig-schema-p"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pr-b-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Unbedingte Wahrscheinlichkeit für Ereignis B: 50%=1/2
@@ -1262,7 +1295,7 @@ Pr(A) &amp;= Pr(S_1B \cup S_2B) \\
 <div class="cell-output-display">
 <div id="fig-b-geg-a" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-b-geg-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0350-wskt2_files/figure-html/fig-b-geg-a-1.png" class="lightbox" data-gallery="fig-schema-p" title="Abbildung&nbsp;5.3&nbsp;(c): Wahrscheinlichkeit für Ereignis B gegeben A, Pr(B|A)=1/2"><img src="0350-wskt2_files/figure-html/fig-b-geg-a-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" data-ref-parent="fig-schema-p"></a>
+<a href="0350-wskt2_files/figure-html/fig-b-geg-a-1.pdf" class="lightbox" data-gallery="fig-schema-p" title="Abbildung&nbsp;5.3&nbsp;(c): Wahrscheinlichkeit für Ereignis B gegeben A, Pr(B|A)=1/2"><embed src="0350-wskt2_files/figure-html/fig-b-geg-a-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:50.0%" data-ref-parent="fig-schema-p"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-b-geg-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (c) Wahrscheinlichkeit für Ereignis B gegeben A, <span class="math inline">\(Pr(B|A)=1/2\)</span>
@@ -1277,7 +1310,7 @@ Pr(A) &amp;= Pr(S_1B \cup S_2B) \\
 <div class="cell-output-display">
 <div id="fig-ab" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-ab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0350-wskt2_files/figure-html/fig-ab-1.png" class="lightbox" data-gallery="fig-schema-p" title="Abbildung&nbsp;5.3&nbsp;(d): Wahrscheinlichkeit für das gemeinsame Eintreten von A und B: Pr(AB)=1/4"><img src="0350-wskt2_files/figure-html/fig-ab-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" data-ref-parent="fig-schema-p"></a>
+<a href="0350-wskt2_files/figure-html/fig-ab-1.pdf" class="lightbox" data-gallery="fig-schema-p" title="Abbildung&nbsp;5.3&nbsp;(d): Wahrscheinlichkeit für das gemeinsame Eintreten von A und B: Pr(AB)=1/4"><embed src="0350-wskt2_files/figure-html/fig-ab-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:50.0%" data-ref-parent="fig-schema-p"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-ab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (d) Wahrscheinlichkeit für das gemeinsame Eintreten von A und B: <span class="math inline">\(Pr(AB)=1/4\)</span>
@@ -1300,13 +1333,13 @@ Abbildung&nbsp;5.3: Illustration von unbedingter, gemeinsamer und bedingter Wahr
 <p><span class="theorem-title"><strong>Beispiel 5.6 (Von Päpsten und Männern)</strong></span> Man(n) beachte, dass die Wahrscheinlichkeit, Papst <span class="math inline">\(P\)</span> zu sein, wenn man Mann <span class="math inline">\(M\)</span> ist <em>etwas anderes</em> ist, als die Wahrscheinlichkeit, Mann zu sein, wenn man Papst ist: <span class="math inline">\(Pr(P|M) \ne Pr(M|P)\)</span>. Das hört sich erst verwirrend an, aber wenn man darüber nachdenkt, wird es plausibel. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-hirn-grütze" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.7</strong></span> Gustav Groß-Gütz verkauft eine Tinktur<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>, die schlau machen soll, “Gützis Gehirn Grütze”.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> Gustav trinkt die Grütze und sagt schlaue Dinge. Was schließen wir daraus? Sei <span class="math inline">\(H\)</span> (wie <em>H</em>ypothese) “Gützis Grütze macht schlau”; sei <span class="math inline">\(D\)</span> (wie <em>D</em>aten) die Beobachtung, dass Gustav schlaue Dinge gesagt hat. Ohne exakte Zahlen zu suchen, wie hoch ist wohl <span class="math inline">\(Pr(D|H)\)</span>? In Worten: “Wie wahrscheinlich ist es, schlaue Dinge gesagt zu haben, wenn die Grütze wirklich schlau macht?”. Vermutlich ist diese Wahrscheinlichkeit sehr hoch. Aber wie hoch ist wohl <span class="math inline">\(Pr(H|D)\)</span>? In Worten: “Wie wahrscheinlich ist es, dass die Grütze wirklich schlau macht, gegeben, dass wir gesehen haben, dass jemand etwas schlaues gesagt hat, nachdem er besagte Grütze getrunken hat?” Skeptische Geister werden der Meinung sein, <span class="math inline">\(Pr(H|D)\)</span> ist gering. Das Beispiel zeigt u.a. <span class="math inline">\(Pr(H|D) \ne Pr(D|H).\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 5.7</strong></span> Gustav Groß-Gütz verkauft eine Tinktur<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>, die schlau machen soll, “Gützis Gehirn Grütze”.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> Gustav trinkt die Grütze und sagt schlaue Dinge. Was schließen wir daraus? Sei <span class="math inline">\(H\)</span> (wie <em>H</em>ypothese) “Gützis Grütze macht schlau”; sei <span class="math inline">\(D\)</span> (wie <em>D</em>aten) die Beobachtung, dass Gustav schlaue Dinge gesagt hat. Ohne exakte Zahlen zu suchen, wie hoch ist wohl <span class="math inline">\(Pr(D|H)\)</span>? In Worten: “Wie wahrscheinlich ist es, schlaue Dinge gesagt zu haben, wenn die Grütze wirklich schlau macht?”. Vermutlich ist diese Wahrscheinlichkeit sehr hoch. Aber wie hoch ist wohl <span class="math inline">\(Pr(H|D)\)</span>? In Worten: “Wie wahrscheinlich ist es, dass die Grütze wirklich schlau macht, gegeben, dass wir gesehen haben, dass jemand etwas schlaues gesagt hat, nachdem er besagte Grütze getrunken hat?” Skeptische Geister werden der Meinung sein, <span class="math inline">\(Pr(H|D)\)</span> ist gering. Das Beispiel zeigt u. a. <span class="math inline">\(Pr(H|D) \ne Pr(D|H).\square\)</span></p>
 </div>
-</section><section id="bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle" class="level3" data-number="5.4.2"><h3 data-number="5.4.2" class="anchored">
+</section><section id="bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle" class="level3" data-number="5.4.2"><h3 data-number="5.4.2" class="anchored" data-anchor-id="bedingte-wahrscheinlichkeit-als-filtern-einer-tabelle">
 <span class="header-section-number">5.4.2</span> Bedingte Wahrscheinlichkeit als Filtern einer Tabelle</h3>
 <div id="exm-kalt-regen-filter" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.22</strong></span> &nbsp;</p>
-<p>Betrachten wir <a href="#tbl-kalt-regen-filter" class="quarto-xref">Tabelle&nbsp;<span>5.2</span></a>. Dort sind vier Tage aufgelistet, mit jeweils Regen (oder kein Regen) bzw. an denen es kalt ist (oder nicht). Filtern wir z.B. die Tabelle so, dass nur kalte Tage übrig bleiben, dann gibt der Anteil der Zeilen, die “Regen” anzeigen, die bedingte Wahrscheinlichkeit <span class="math inline">\(Pr(\text{Regen}|\text{kalt})\)</span> an.</p>
+<p><span class="theorem-title"><strong>Beispiel 5.8</strong></span> &nbsp;</p>
+<p>Betrachten wir <a href="#tbl-kalt-regen-filter" class="quarto-xref">Tabelle&nbsp;<span>5.2</span></a>. Dort sind vier Tage aufgelistet, mit jeweils Regen (oder kein Regen) bzw. an denen es kalt ist (oder nicht). Filtern wir z. B. die Tabelle so, dass nur kalte Tage übrig bleiben, dann gibt der Anteil der Zeilen, die “Regen” anzeigen, die bedingte Wahrscheinlichkeit <span class="math inline">\(Pr(\text{Regen}|\text{kalt})\)</span> an.</p>
 <div class="cell" data-layout-align="center">
 <div id="tbl-kalt-regen-filter" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
 <figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-kalt-regen-filter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1318,6 +1351,7 @@ Tabelle&nbsp;5.2: Die Tabelle zeigt vier Tage, an denen es jeweils kalt ist (ode
 </div>
 </div>
 </figure>
+</div>
 </div>
 </div>
 <p>Das Berechnen einer bedingten Wahrscheinlichkeit, <span class="math inline">\(Pr(A|B)\)</span>, ist vergleichbar zum Filtern einer Tabelle, s. <a href="#tbl-bed-wskt" class="quarto-xref">Tabelle&nbsp;<span>5.3</span></a>.</p>
@@ -1378,7 +1412,7 @@ Tabelle&nbsp;5.3: Eine bedingte Wahrscheinlichkeit kann man als gefilterte Tabel
 <p><span class="math display">\[Pr(B|A) = \frac{Pr(B \cap A)}{Pr(A)} \quad \square\]</span></p>
 </div>
 <div id="exm-klausur-bed-wskt2" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.8 (Lernen und Klausur bestehen)</strong></span> Sie bereiten sich gerade auf die Klausur bei Prof.&nbsp;Süß vor. Das heißt: Sie überlegen, ob Sie sich auf die Klausur vorbereiten sollten. Vielleicht lohnt es sich ja gar nicht? Vielleicht ist die Wahrscheinlichkeit zu bestehen, wenn man nicht gelernt hat, sehr groß? Aber da Sie nun mal auf Fakten stehen, haben Sie sich nach einiger Recherche folgende Zahlen besorgen können, s. <a href="#tbl-klausur-lernen" class="quarto-xref">Tabelle&nbsp;<span>5.4</span></a>. In der Tabelle sind die Daten von 100 Studis ausgewiesen. Ein Teil hat sich vorbereitet, ordentlich gelernt, nennen wir sie die “<em>L</em>erner”. Ein anderer Teil hat nicht gelernt, <span class="math inline">\(NL\)</span> bzw. <span class="math inline">\(\neg L\)</span>. Ein Teil hat bestanden, <span class="math inline">\(B\)</span>, ein Teil nicht <span class="math inline">\(NB\)</span> oder <span class="math inline">\(\neg B\)</span>.</p>
+<p><span class="theorem-title"><strong>Beispiel 5.9 (Lernen und Klausur bestehen)</strong></span> Sie bereiten sich gerade auf die Klausur bei Prof.&nbsp;Süß vor. Das heißt: Sie überlegen, ob Sie sich auf die Klausur vorbereiten sollten. Vielleicht lohnt es sich ja gar nicht? Vielleicht ist die Wahrscheinlichkeit zu bestehen, wenn man nicht gelernt hat, sehr groß? Aber da Sie nun mal auf Fakten stehen, haben Sie sich nach einiger Recherche folgende Zahlen besorgen können, s. <a href="#tbl-klausur-lernen" class="quarto-xref">Tabelle&nbsp;<span>5.4</span></a>. In der Tabelle sind die Daten von 100 Studis ausgewiesen. Ein Teil hat sich vorbereitet, ordentlich gelernt, nennen wir sie die “<em>L</em>erner”. Ein anderer Teil hat nicht gelernt, <span class="math inline">\(NL\)</span> bzw. <span class="math inline">\(\neg L\)</span>. Ein Teil hat bestanden, <span class="math inline">\(B\)</span>, ein Teil nicht <span class="math inline">\(NB\)</span> oder <span class="math inline">\(\neg B\)</span>.</p>
 <p>Wir suchen die Wahrscheinlichkeit, zu bestehen, wenn man nicht gelernt hat: <span class="math inline">\(Pr(B |\neg L)\)</span>.</p>
 <div class="cell" data-layout-align="center">
 <div id="tbl-klausur-lernen" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
@@ -1423,12 +1457,12 @@ Tabelle&nbsp;5.4: Daten von 100 Studis; L: Lerner, B: Bestanden, N: Negation/Nic
 Pr(B |\neg L) &amp;= \frac{Pr(B \cap \neg L)}{Pr(\neg L)} \\
 &amp;=\frac{1/100}{15/100} = 1/15 \\
 \end{align}\]</span></p>
-<p>Die Wahrscheinlichkeit, zu bestehen, wenn man nicht gelernt hat, liegt bei 1 von 15, also ca. 7%.<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> <span class="math inline">\(\square\)</span></p>
+<p>Die Wahrscheinlichkeit, zu bestehen, wenn man nicht gelernt hat, liegt bei 1 von 15, also ca. 7 %.<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-kalt-regen" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.9 (Kalt wenn Regen)</strong></span> Die Wahrscheinlichkeit, dass es kalt ist, wenn es regnet (gegeben, dass es regnet), ist gleich der Wahrscheinlichkeit, dass es gleichzeitig kalt ist und regnet, geteilt durch die Wahrscheinlichkeit, dass es regnet. <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 5.10 (Kalt wenn Regen)</strong></span> Die Wahrscheinlichkeit, dass es kalt ist, wenn es regnet (gegeben, dass es regnet), ist gleich der Wahrscheinlichkeit, dass es gleichzeitig kalt ist und regnet, geteilt durch die Wahrscheinlichkeit, dass es regnet. <span class="math inline">\(\square\)</span></p>
 </div>
-<section id="stochastische-un-abhängigkeit" class="level2" data-number="5.5"><h2 data-number="5.5" class="anchored" data-anchor-id="stochastische-un-abhängigkeit">
+</section></section><section id="stochastische-un-abhängigkeit" class="level2" data-number="5.5"><h2 data-number="5.5" class="anchored" data-anchor-id="stochastische-un-abhängigkeit">
 <span class="header-section-number">5.5</span> Stochastische (Un-)Abhängigkeit</h2>
 <section id="warum-ist-das-wichtig" class="level3" data-number="5.5.1"><h3 data-number="5.5.1" class="anchored" data-anchor-id="warum-ist-das-wichtig">
 <span class="header-section-number">5.5.1</span> Warum ist das wichtig?</h3>
@@ -1436,7 +1470,7 @@ Pr(B |\neg L) &amp;= \frac{Pr(B \cap \neg L)}{Pr(\neg L)} \\
 </section><section id="unabhängigkeit" class="level3" data-number="5.5.2"><h3 data-number="5.5.2" class="anchored" data-anchor-id="unabhängigkeit">
 <span class="header-section-number">5.5.2</span> Unabhängigkeit</h3>
 <div id="exm-indep-intro" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.10 (Unabhängigkeit)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Beispiel 5.11 (Unabhängigkeit)</strong></span> &nbsp;</p>
 <ul>
 <li>Regentanz und Regen sind unabhängig.</li>
 <li>“Es regnet in Berlin” und “In Tokio fällt eine Münze auf Kopf”</li>
@@ -1462,10 +1496,10 @@ Pr(B |\neg L) &amp;= \frac{Pr(B \cap \neg L)}{Pr(\neg L)} \\
 </div>
 <p>In Worten: Die Wahrscheinlichkeit, dass <em>A</em> und <em>B</em> beide der Fall sind, ist gleich dem Produkt ihrer jeweiligen Wahrscheinlichkeiten.</p>
 <div id="exm-indep1" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.11 (Augenfarbe und Statistikliebe)</strong></span> Ich vermute, dass die Ereignisse <span class="math inline">\(A\)</span>, “Augenfarbe ist blau”, und <span class="math inline">\(B\)</span>, “Ich liebe Statistik”, voneinander unabhängig sind. <span class="math inline">\(\square\)</span><a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a></p>
+<p><span class="theorem-title"><strong>Beispiel 5.12 (Augenfarbe und Statistikliebe)</strong></span> Ich vermute, dass die Ereignisse <span class="math inline">\(A\)</span>, “Augenfarbe ist blau”, und <span class="math inline">\(B\)</span>, “Ich liebe Statistik”, voneinander unabhängig sind. <span class="math inline">\(\square\)</span><a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a></p>
 </div>
 <div id="exm-titanic" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.12 (Überleben auf der Titanic)</strong></span> S. <a href="#fig-abh" class="quarto-xref">Abbildung&nbsp;<span>5.4</span></a>, links: Überleben (Ü) auf der Titanic ist offenbar <em>abhängig</em> von der Passagierklasse (<span class="math inline">\(K_1, K_2, K_3\)</span>). In <a href="#fig-abh" class="quarto-xref">Abbildung&nbsp;<span>5.4</span></a>, links gilt also <span class="math inline">\(Pr(Ü|K_1) \ne Pr(Ü|K_2) \ne Pr(Ü|K_3) \ne Pr(Ü)\)</span>.</p>
+<p><span class="theorem-title"><strong>Beispiel 5.13 (Überleben auf der Titanic)</strong></span> S. <a href="#fig-abh" class="quarto-xref">Abbildung&nbsp;<span>5.4</span></a>, links: Überleben (Ü) auf der Titanic ist offenbar <em>abhängig</em> von der Passagierklasse (<span class="math inline">\(K_1, K_2, K_3\)</span>). In <a href="#fig-abh" class="quarto-xref">Abbildung&nbsp;<span>5.4</span></a>, links gilt also <span class="math inline">\(Pr(Ü|K_1) \ne Pr(Ü|K_2) \ne Pr(Ü|K_3) \ne Pr(Ü)\)</span>.</p>
 <p>Auf der anderen Seite: Das Ereignis <em>Überleben</em> (Ü) auf der Titanic ist <em>un</em>abhängig vom Ereignis <em>Alter ist eine Primzahl</em> (P), s. <a href="#fig-abh" class="quarto-xref">Abbildung&nbsp;<span>5.4</span></a>, rechts. Also: <span class="math inline">\(Pr(Ü|P) = Pr(Ü|\neg P) = Pr(Ü)\)</span>, vgl. <a href="#tbl-titanic-prime" class="quarto-xref">Tabelle&nbsp;<span>5.5</span></a>.</p>
 <div class="cell" data-layout-align="center">
 <div id="tbl-titanic-prime" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
@@ -1500,7 +1534,7 @@ Tabelle&nbsp;5.5: Kontingenztabelle (Häufigkeiten) für ‘Überleben auf der T
   font-weight: normal;
   font-style: normal;
   background-color: #FFFFFF;
-  width: auto;
+  width: 50%;
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #A8A8A8;
@@ -1970,7 +2004,7 @@ Tabelle&nbsp;5.5: Kontingenztabelle (Häufigkeiten) für ‘Überleben auf der T
 <div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-abh" style="flex-basis: 50.0%;justify-content: center;">
 <div id="fig-abh-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-abh-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0350-wskt2_files/figure-html/fig-abh-1.png" class="lightbox" data-gallery="fig-abh" title="Abbildung&nbsp;5.4&nbsp;(a): Überleben und Passagierklasse sind abhängig"><img src="0350-wskt2_files/figure-html/fig-abh-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-ref-parent="fig-abh"></a>
+<a href="0350-wskt2_files/figure-html/fig-abh-1.pdf" class="lightbox" data-gallery="fig-abh" title="Abbildung&nbsp;5.4&nbsp;(a): Überleben und Passagierklasse sind abhängig"><embed src="0350-wskt2_files/figure-html/fig-abh-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:100.0%" data-ref-parent="fig-abh"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-abh-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Überleben und Passagierklasse sind abhängig
@@ -1980,7 +2014,7 @@ Tabelle&nbsp;5.5: Kontingenztabelle (Häufigkeiten) für ‘Überleben auf der T
 <div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-abh" style="flex-basis: 50.0%;justify-content: center;">
 <div id="fig-abh-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-abh-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0350-wskt2_files/figure-html/fig-abh-2.png" class="lightbox" data-gallery="fig-abh" title="Abbildung&nbsp;5.4&nbsp;(b): Überleben und ‘Geburtstag ist eine Primzahl’ sind nicht abhängig"><img src="0350-wskt2_files/figure-html/fig-abh-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" data-ref-parent="fig-abh"></a>
+<a href="0350-wskt2_files/figure-html/fig-abh-2.pdf" class="lightbox" data-gallery="fig-abh" title="Abbildung&nbsp;5.4&nbsp;(b): Überleben und ‘Geburtstag ist eine Primzahl’ sind nicht abhängig"><embed src="0350-wskt2_files/figure-html/fig-abh-2.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:100.0%" data-ref-parent="fig-abh"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-abh-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Überleben und ‘Geburtstag ist eine Primzahl’ sind nicht abhängig
@@ -1999,26 +2033,43 @@ Abbildung&nbsp;5.4: Abhängigkeit und Unabhängigkeit zweier Ereignisse
 <div id="thm-abh" class="theorem">
 <p><span class="theorem-title"><strong>Theorem 5.6 (Stochastische Abhängigkeit)</strong></span> <span class="math display">\[Pr(A|B) \ne Pr(A) \ne Pr(A|\neg B) \quad \square\]</span></p>
 <p>In Worten: Ändert sich die Wahrscheinlichkeit von <em>A</em>, wenn <em>B</em> der Fall ist, so sind <em>A</em> und <em>B</em> voneinander (stochastisch) abhängig.</p>
-<p><a href="#thm-abh" class="quarto-xref">Theorem&nbsp;<span>5.6</span></a> gilt natürlich in dieser Form für alle anderen Variablen ebenso, s. z.B. <a href="#thm-abh2" class="quarto-xref">Theorem&nbsp;<span>5.7</span></a>. <span class="math inline">\(\square\)</span></p>
+<p><a href="#thm-abh" class="quarto-xref">Theorem&nbsp;<span>5.6</span></a> gilt natürlich in dieser Form für alle anderen Variablen ebenso, s. z. B. <a href="#thm-abh2" class="quarto-xref">Theorem&nbsp;<span>5.7</span></a>. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="thm-abh2" class="theorem">
 <p><span class="theorem-title"><strong>Theorem 5.7 (Stochastische Abhängigkeit 2)</strong></span> <span class="math display">\[Pr(B|A) \ne Pr(B) \ne Pr(B|\neg A) \quad \square\]</span></p>
 </div>
 <div id="exm-abh-lernen" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.13</strong></span> Die Ereignisse “<em>L</em>ernen” und “<em>K</em>lausur bestehen” seien voneinander abhängig. Unsere Einschätzung zur Wahrscheinlichkeit von <em>K</em> ändert sich, wenn wir wissen, dass <em>L</em> vorliegt. Genauso wird sich unsere Einschätzung zur Wahrscheinlichkeit von <em>K</em> ändern, wenn wir wissen, dass <em>L</em> nicht vorliegt. <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 5.14</strong></span> Die Ereignisse “<em>L</em>ernen” und “<em>K</em>lausur bestehen” seien voneinander abhängig. Unsere Einschätzung zur Wahrscheinlichkeit von <em>K</em> ändert sich, wenn wir wissen, dass <em>L</em> vorliegt. Genauso wird sich unsere Einschätzung zur Wahrscheinlichkeit von <em>K</em> ändern, wenn wir wissen, dass <em>L</em> nicht vorliegt. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-covid" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.14 (Zusammenhang von Covidsterblichkeit und Impfquote)</strong></span> Sind die Ereignisse <em>Tod durch Covid (T)</em> bzw. <em>Impfquote</em> (<span class="math inline">\(I\)</span>) und <em>Land</em><a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> (<span class="math inline">\(B\)</span>) voneinander abhängig (s. <a href="#fig-covid1" class="quarto-xref">Abbildung&nbsp;<span>5.5</span></a>)?</p>
+<p><span class="theorem-title"><strong>Beispiel 5.15 (Zusammenhang von Covidsterblichkeit und Impfquote)</strong></span> Sind die Ereignisse <em>Tod durch Covid (T)</em> bzw. <em>Impfquote</em> (<span class="math inline">\(I\)</span>) und <em>Land</em><a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> (<span class="math inline">\(B\)</span>) voneinander abhängig (s. <a href="#fig-covid1" class="quarto-xref">Abbildung&nbsp;<span>5.5</span></a>)?</p>
 <div id="fig-covid1" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-covid1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p>Impfquote und Sterblichkeit sind voneinander abhängig (bezogen auf Covid, auf Basis vorliegender Daten)</p>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-covid1" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-covid1-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-covid1-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0350-wskt2_files/figure-html/fig-covid1-1.pdf" class="lightbox" data-gallery="fig-covid1" title="Abbildung&nbsp;5.5&nbsp;(a): Impfquote und Land sind voneinander abhängig"><embed src="0350-wskt2_files/figure-html/fig-covid1-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%" data-ref-parent="fig-covid1"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-covid1-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Impfquote und Land sind voneinander abhängig
+</figcaption></figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-covid1" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-covid1-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-covid1-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0350-wskt2_files/figure-html/fig-covid1-2.pdf" class="lightbox" data-gallery="fig-covid1" title="Abbildung&nbsp;5.5&nbsp;(b): Anteil Corona-Tote und Land sind voneinander abhängig"><embed src="0350-wskt2_files/figure-html/fig-covid1-2.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%" data-ref-parent="fig-covid1"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-covid1-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Anteil Corona-Tote und Land sind voneinander abhängig
+</figcaption></figure>
 </div>
 </div>
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-covid1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Abbildung&nbsp;5.5
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-covid1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Abbildung&nbsp;5.5: Impfquote und Sterblichkeit sind voneinander abhängig (bezogen auf Covid, auf Basis vorliegender Daten)
 </figcaption></figure>
 </div>
 <p>Ja, die beiden Ereignisse sind abhängig, da in beiden Diagrammen gilt: <span class="math inline">\(Pr(A|B) \ne Pr(A) \ne Pr(A|\neg B)\)</span>. <span class="math inline">\(\square\)</span><a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a></p>
@@ -2045,24 +2096,13 @@ Abbildung&nbsp;5.5
 </section></section><section id="wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz" class="level2" data-number="5.6"><h2 data-number="5.6" class="anchored" data-anchor-id="wahrscheinlichkeit-gemeinsamer-ereignisse-multiplikationssatz">
 <span class="header-section-number">5.6</span> Wahrscheinlichkeit gemeinsamer Ereignisse: Multiplikationssatz</h2>
 <p>Gegeben seien die Ereignisse <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span>. Der Multiplikationssatz wird verwendet, wenn wir an der Wahrscheinlichkeit interessiert sind, dass <em>beide Ereignisse</em> <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> der Fall sind; man spricht auch von der <em>gemeinsamen Wahrscheinlichkeit</em>. <a href="#fig-ab" class="quarto-xref">Abbildung&nbsp;<span>5.3 (d)</span></a> verdeutlicht dies für zwei unabhängige Ereignisse. Man schreibt “A und B” als <span class="math inline">\(A \cap B\)</span> (lies “A geschnitten B” oder “A <em>und</em> B”) oder kurz <span class="math inline">\(AB\)</span>, um anzuzeigen, dass sowohl <span class="math inline">\(A\)</span> als auch <span class="math inline">\(B\)</span> eingetreten sind.</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="0350-wskt2_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Beide Ereignisse A und B sind eingetreten"><img src="0350-wskt2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" alt="Beide Ereignisse A und B sind eingetreten"></a></p>
-</figure>
-</div>
-<figcaption>Beide Ereignisse A und B sind eingetreten</figcaption></figure>
-</div>
-</div>
-</div>
 <div id="exm-kalt-regen-mult" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.15 (Wieder kalt und Regen)</strong></span> Es ist eine Sache, zu fragen, wie wahrscheinlich es ist, dass es <em>k</em>alt ist (bei <em>K</em>älte), wenn es <em>r</em>egnet (bei <em>R</em>egen): <span class="math inline">\(Pr(K|R)\)</span>. Anders gesagt: “Wie groß ist die Wahrscheinlichkeit für Kälte, gegeben dass es regnet?” Eine andere Sache ist es, nach der Wahrscheinlichkeit zu fragen, dass es gleichzeitig kalt ist und regnet, dass also beide Ereignisse (kalt und Regen) eintreten: <span class="math inline">\(Pr(K \cap R), Pr(KR)\)</span>. <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 5.16 (Wieder kalt und Regen)</strong></span> Es ist eine Sache, zu fragen, wie wahrscheinlich es ist, dass es <em>k</em>alt ist (bei <em>K</em>älte), wenn es <em>r</em>egnet (bei <em>R</em>egen): <span class="math inline">\(Pr(K|R)\)</span>. Anders gesagt: “Wie groß ist die Wahrscheinlichkeit für Kälte, gegeben dass es regnet?” Eine andere Sache ist es, nach der Wahrscheinlichkeit zu fragen, dass es gleichzeitig kalt ist und regnet, dass also beide Ereignisse (kalt und Regen) eintreten: <span class="math inline">\(Pr(K \cap R), Pr(KR)\)</span>. <span class="math inline">\(\square\)</span></p>
 </div>
 <section id="gemeinsame-wahrscheinlichkeit-unabhängiger-ereignisse" class="level3" data-number="5.6.1"><h3 data-number="5.6.1" class="anchored" data-anchor-id="gemeinsame-wahrscheinlichkeit-unabhängiger-ereignisse">
 <span class="header-section-number">5.6.1</span> Gemeinsame Wahrscheinlichkeit unabhängiger Ereignisse</h3>
 <div id="exm-indep2" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.16</strong></span> Wir führen das Zufallsexperiment “Wurf einer fairen Münze” zwei Mal aus (<a href="#fig-zweimuenzen" class="quarto-xref">Abbildung&nbsp;<span>5.6</span></a>). Wie groß ist die Wahrscheinlichkeit, 2 Mal <em>K</em>opf zu werfen? Dabei vereinbaren wir, dass “Kopf” als “Treffer” zählt (und “Zahl” als “Niete”). <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 5.17</strong></span> Wir führen das Zufallsexperiment “Wurf einer fairen Münze” zwei Mal aus (<a href="#fig-zweimuenzen" class="quarto-xref">Abbildung&nbsp;<span>5.6</span></a>). Wie groß ist die Wahrscheinlichkeit, 2 Mal <em>K</em>opf zu werfen? Dabei vereinbaren wir, dass “Kopf” als “Treffer” zählt (und “Zahl” als “Niete”). <span class="math inline">\(\square\)</span></p>
 </div>
 <div class="cell" data-fig-width="3.5" data-layout-align="center">
 <div class="cell-output-display">
@@ -2592,7 +2632,7 @@ Tabelle&nbsp;5.6: Wahrscheinlichkeiten der Ereignisse im zweimaligen Münzwurf
 </div>
 <p>Mit <a href="https://www.geogebra.org/m/gzxz57ak">dieser App</a><a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> können Sie das Baumdiagramm für den zweifachen Münzwurf näher erkunden.</p>
 <p>Wir führen das Zufallsexperiment “Wurf einer fairen Münze” drei Mal aus (<a href="#fig-dreimuenzen" class="quarto-xref">Abbildung&nbsp;<span>5.7</span></a>). Dabei vereinbaren wir wieder, dass “Kopf” (K) als “Treffer” gilt und “Zahl” (Z) als “Niete”.</p>
-<div class="cell" data-fig-width="6" data-layout-align="center">
+<div class="cell" data-fig-width="4.5" data-layout-align="center">
 <div class="cell-output-display">
 <div id="fig-dreimuenzen" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-dreimuenzen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -2626,7 +2666,7 @@ Abbildung&nbsp;5.7: Wir werfen drei faire Münzen: Das dreifach wiederholte bin�
 </div>
 </div>
 <p>Beim Wurf von “fairen” Münzen gehen wir davon aus, dass Kenntnis des Ergebnisses des 1. Wurfes unsere Einschätzung des Ergebnisses des 2. Wurfes nicht verändert etc. Anders gesagt: Wir gehen von (stochastischer) Unabhängigkeit aus.</p>
-<p>Für z.B. das Ereignis <span class="math inline">\(A=\{ZZZ\}\)</span> gilt: <span class="math inline">\(Pr(A) = 1/2 \cdot 1/2 \cdot 1/2 = (1/2)^3\)</span>. Da jeder Endknoten (jedes Blatt) gleichwahrscheinlich ist, ist die Wahrscheinlichkeit jedes Endknotens gleich.</p>
+<p>Für z. B. das Ereignis <span class="math inline">\(A=\{ZZZ\}\)</span> gilt: <span class="math inline">\(Pr(A) = 1/2 \cdot 1/2 \cdot 1/2 = (1/2)^3\)</span>. Da jeder Endknoten (jedes Blatt) gleichwahrscheinlich ist, ist die Wahrscheinlichkeit jedes Endknotens gleich.</p>
 <p>Allgemeiner gilt: Für ein Zufallsexperiment, das aus <span class="math inline">\(k\)</span> Wiederholungen besteht und in jeder Wiederholung die Wahrscheinlichkeit <span class="math inline">\(Pr(X)=p\)</span> ist, so ist die Wahrscheinlichkeit für einen Endknoten <span class="math inline">\(Pr(X^k)=p^k\)</span>.</p>
 <div class="cell" data-layout-align="center">
 <div id="tbl-baum3" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
@@ -3124,12 +3164,12 @@ Tabelle&nbsp;5.7: Ausgewählte Wahrscheinlichkeiten von Ereignissen im dreifache
 <span class="header-section-number">5.6.2</span> Gemeinsame Wahrscheinlichkeit allgemeiner Ereignisse</h3>
 <p>Ein Baumdiagramm bietet sich zur Visualisierung allgemeiner abhängiger Ereignisse an, s. <a href="#fig-baum-abh" class="quarto-xref">Abbildung&nbsp;<span>5.8</span></a>.</p>
 <div id="exm-urne1" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.17</strong></span> In einer Urne befinden sich fünf Kugeln, von denen vier rot sind und eine blau ist.</p>
+<p><span class="theorem-title"><strong>Beispiel 5.18</strong></span> In einer Urne befinden sich fünf Kugeln, von denen vier rot sind und eine blau ist.</p>
 <p>Hier ist unsere Urne:</p>
 <p><span class="math display">\[\boxed{\color{red}{R, R, R, R}, \color{blue}\mathcal{B}}\]</span></p>
 <p>Wie groß ist die Wahrscheinlichkeit, dass bei zwei Ziehungen ohne Zurücklegen (<em>ZOZ</em>) <em>zwei rote Kugeln</em> gezogen werden <span class="citation" data-cites="bourier2011">(<a href="references.html#ref-bourier2011" role="doc-biblioref">Bourier, 2011, S. 47</a>)</span>? Ereignis A: “Kugel im 1. Zug hat die Farbe Rot”. Ereignis B: “Kugel im 2. Zug hat die Farbe Rot”.</p>
 <p>Und jetzt ziehen wir. Hier ist das Baumdiagramm, s. <a href="#fig-baum-abh" class="quarto-xref">Abbildung&nbsp;<span>5.8</span></a>.</p>
-<div class="cell" data-fig-width="5" data-layout-align="center">
+<div class="cell" data-fig-width="4.5" data-layout-align="center">
 <div class="cell-output-display">
 <div id="fig-baum-abh" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-baum-abh-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -3166,23 +3206,23 @@ Abbildung&nbsp;5.8: Baumdiagramm für ein zweistufiges Zufallsereignis, wobei de
 </div>
 <p>Allgemein ist die Wahrscheinlichkeit, dass zwei Ereignisse <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> gemeinsam eintreten, gleich dem Produkt der Wahrscheinlichkeit von <span class="math inline">\(B\)</span> und der bedingten Wahrscheinlichkeit von <span class="math inline">\(A\)</span> gegeben <span class="math inline">\(B\)</span>, s. <a href="#thm-gem-wskt-abh" class="quarto-xref">Theorem&nbsp;<span>5.10</span></a>. Im Fall von Unabhängigkeit vereinfacht sich die Formel zu der in <a href="#thm-multtheorem" class="quarto-xref">Theorem&nbsp;<span>5.9</span></a>.</p>
 <div id="exm-kaltregen" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.18 (Nochmal kalt und Regen)</strong></span> Von <span class="citation" data-cites="mcelreath2020">McElreath (<a href="references.html#ref-mcelreath2020" role="doc-biblioref">2020</a>)</span> stammt diese Verdeutlichung der gemeinsamen Wahrscheinlichkeit. Was ist die Wahrscheinlichkeit für das gemeinsame Auftreten von <em>kalt ❄ und Regen ⛈️</em>? Die Wahrscheinlichkeit für kalt und Regen ist die Wahrscheinlichkeit von <em>Regen</em> ⛈, wenn’s <em>kalt</em> ❄ ist mal die Wahrscheinlichkeit von <em>Kälte</em> ❄.</p>
+<p><span class="theorem-title"><strong>Beispiel 5.19 (Nochmal kalt und Regen)</strong></span> Von <span class="citation" data-cites="mcelreath2020">McElreath (<a href="references.html#ref-mcelreath2020" role="doc-biblioref">2020</a>)</span> stammt diese Verdeutlichung der gemeinsamen Wahrscheinlichkeit. Was ist die Wahrscheinlichkeit für das gemeinsame Auftreten von <em>kalt ❄ und Regen ⛈️</em>? Die Wahrscheinlichkeit für kalt und Regen ist die Wahrscheinlichkeit von <em>Regen</em> ⛈, wenn’s <em>kalt</em> ❄ ist mal die Wahrscheinlichkeit von <em>Kälte</em> ❄.</p>
 <p>Ebenfalls gilt: Die Wahrscheinlichkeit für kalt und Regen ist die Wahrscheinlichkeit von <em>Kälte</em> ❄, wenn’s <em>regnet</em> ⛈️ mal die Wahrscheinlichkeit von <em>Regen</em> ⛈️.</p>
 <p>Das Gesagte als Emoji-Gleichung ist in <a href="#eq-kalt-regen-emoji" class="quarto-xref">Gleichung&nbsp;<span>5.2</span></a> dargestellt.</p>
-<p><span id="eq-kalt-regen-emoji"><span class="math display">\[Pr(❄️ \text{ und } ⛈️) = P(❄️) \cdot P(⛈️ |❄️ )  =  P(❄️) \cdot P(❄️ |⛈️ ) \tag{5.2}\]</span></span></p>
+<p><span id="eq-kalt-regen-emoji"><span class="math display">\[Pr(\text{❄️} \text{ und } \text{⛈️}) = P(\text{❄️}) \cdot P(\text{⛈️} |\text{❄️} )  =  P(\text{❄️}) \cdot P(\text{❄️} |\text{⛈️} ) \tag{5.2}\]</span></span></p>
 <p>Man kann die “Gleichung drehen”<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a>, s. <a href="#eq-kalt-regen-emoji2" class="quarto-xref">Gleichung&nbsp;<span>5.3</span></a>.</p>
-<p><span id="eq-kalt-regen-emoji2"><span class="math display">\[Pr(❄️ \text{ und } ⛈️) = P(⛈️ \text{ und } ❄️) \tag{5.3}\]</span></span> <span class="math inline">\(\square\)</span></p>
+<p><span id="eq-kalt-regen-emoji2"><span class="math display">\[Pr(\text{❄️} \text{ und } \text{⛈️}) = P(\text{⛈️} \text{ und } \text{❄️}) \tag{5.3}\]</span></span> <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-bertie-botts" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.19 (Bertie Botts Bohnen jeder Geschmacksrichtung)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Beispiel 5.20 (Bertie Botts Bohnen jeder Geschmacksrichtung)</strong></span> &nbsp;</p>
 <blockquote class="blockquote">
 <p>Sei bloß vorsichtig mit denen. Wenn sie sagen jede Geschmacksrichtung, dann meinen sie es auch – Du kriegst zwar alle gewöhnlichen wie Schokolade und Pfefferminz und Erdbeere, aber auch Spinat und Leber und Kutteln. George meint, er habe mal eine mit Popelgeschmack gehabt.“</p>
 </blockquote>
 <p>— Ron Weasley zu Harry Potter<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a></p>
-<p>In einem Beutel liegen <span class="math inline">\(n=20\)</span> <em>Bertie Botts Bohnen jeder Geschmacksrichtung</em>. Uns wurde verraten, dass fast alle gut schmecken, also z.B. nach Schokolade, Pfefferminz oder Marmelade. Leider gibt es aber auch <span class="math inline">\(x=2\)</span> furchtbar scheußliche Bohnen (Ohrenschmalz-Geschmacksrichtung oder Schlimmeres). Sie haben sich nun bereit erklärt, <span class="math inline">\(k=2\)</span> Bohnen zu ziehen. Und zu essen, und zwar direkt und sofort! Also, jetzt heißt es tapfer sein. Ziehen und runter damit!</p>
+<p>In einem Beutel liegen <span class="math inline">\(n=20\)</span> <em>Bertie Botts Bohnen jeder Geschmacksrichtung</em>. Uns wurde verraten, dass fast alle gut schmecken, also z. B. nach Schokolade, Pfefferminz oder Marmelade. Leider gibt es aber auch <span class="math inline">\(x=2\)</span> furchtbar scheußliche Bohnen (Ohrenschmalz-Geschmacksrichtung oder Schlimmeres). Sie haben sich nun bereit erklärt, <span class="math inline">\(k=2\)</span> Bohnen zu ziehen. Und zu essen, und zwar direkt und sofort! Also, jetzt heißt es tapfer sein. Ziehen und runter damit!</p>
 <p>Wie groß ist die Wahrscheinlichkeit, <em>genau eine</em> scheußliche Bohne zu erwischen?</p>
-<p>Es gibt 2 Pfade für 1 Treffer bei 2 Wiederholungen (Züge aus dem Beutel), s. <a href="#fig-bertie1" class="quarto-xref">Abbildung&nbsp;<span>5.9</span></a>: Man kann im ersten Zug eine scheußliche Bohne erwischen, aber nicht im zweiten Zug. Oder man kann im zweiten Zug Pech haben (aber nicht im ersten). Die Summe der Wahrscheinlichkeiten beider Pfade ist die Wahrscheinlichkeit für genau <em>eine</em> scheußliche Bohne, das sind 19%.</p>
-<div class="cell" data-fig-width="5.5" data-layout-align="center">
+<p>Es gibt 2 Pfade für 1 Treffer bei 2 Wiederholungen (Züge aus dem Beutel), s. <a href="#fig-bertie1" class="quarto-xref">Abbildung&nbsp;<span>5.9</span></a>: Man kann im ersten Zug eine scheußliche Bohne erwischen, aber nicht im zweiten Zug. Oder man kann im zweiten Zug Pech haben (aber nicht im ersten). Die Summe der Wahrscheinlichkeiten beider Pfade ist die Wahrscheinlichkeit für genau <em>eine</em> scheußliche Bohne, das sind 19 %.</p>
+<div class="cell" data-fig-width="4.5" data-layout-align="center">
 <div class="cell-output-display">
 <div id="fig-bertie1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-bertie1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -3235,21 +3275,22 @@ Abbildung&nbsp;5.9: Baumdiagramm für ein ein zweistufiges Zufallsereignis: Bert
 <p><span class="theorem-title"><strong>Übungsaufgabe 5.4 (Baumdiagramm sucht Problem)</strong></span> Überlegen Sie sich eine Problemstellung (Aufgabenstellung), die mit <a href="https://www.geogebra.org/m/WVKur4yM">dieser Baumdiagramm-App</a> gelöst werden kann. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exr-multsatz" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 5.5 (Peer Instruction: Dreifacher Münzwurf)</strong></span> Fünf Studierende unterhalten sich, wie man einen dreifachen Münzwurf mit dem Ergebnis von drei Treffern verstehen kann. Welcher Studierende liegt <em>falsch</em>? Gehen Sie von einer fairen Münze aus und Unabhängigkeit der Würfe.</p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 5.5 (Peer Instruction: Dreifacher Münzwurf)</strong></span> Fünf Studierende unterhalten sich, wie man einen dreifachen Münzwurf mit dem Ergebnis von <span class="math inline">\(X=3\)</span> Treffern verstehen kann. Welche Aussage ist richtig bzw. passt am besten? Gehen Sie von einer fairen Münze aus und Unabhängigkeit der Würfe.</p>
 <ol type="A">
-<li>Wirft man die Münze drei Mal, so gibt es 4 verschiedene Ergebnisse (0 bis 3 Treffer), die alle gleich wahrscheinlich sind. Aber nur ein Ergebnis ist gesucht, nämlich 3 von 3 Treffern. Also ist die Wahrscheinlichkeit 1/6, ca. 17%.</li>
-<li>Man kann einfach einen Computer fragen, z.B. R mit <code>dbinom(x = 3, size = 3, prob = 1/2)</code>, da kommt ungefähr 12% raus.</li>
-<li>Wirft man die Münze drei Mal, so gibt es 8 Ergebnisse, die alle gleich wahrscheinlich sind. Aber nur ein Ergebnis ist gesucht, nämlich 3 von 3 Treffern. Also ist die Wahrscheinlichkeit 1/8, ca. 12,5%.</li>
-<li>Wer rechnen kann, ist klar im Vorteil <span class="math inline">\(\left( \frac{1}{2} \right)^3 = \left( \frac{1}{2^3} \right) = \left( \frac{1}{8} \right)\)</span>
+<li>Wirft man die Münze drei Mal, so gibt es 4 verschiedene Ergebnisse (0 bis 3 Treffer), die alle gleich wahrscheinlich sind. Aber nur ein Ergebnis ist gesucht, nämlich 3 von 3 Treffern. Also ist die Wahrscheinlichkeit 1/4, 25 %.</li>
+<li>Man kann einfach einen Computer fragen, z. B. R mit <code>dbinom(x = 3, size = 3, prob = 1/2)</code>, da kommt ungefähr 10 % raus.</li>
+<li>Wirft man die Münze drei Mal, so gibt es 8 Ergebnisse, die alle gleich wahrscheinlich sind. Aber nur ein Ergebnis ist gesucht, nämlich 3 von 3 Treffern. Also ist die Wahrscheinlichkeit 1/8, ca. 12,5 %.</li>
+<li>Einfach die Zahlen in die Formel eintragen: <span class="math inline">\(\left(\frac{1}{2}\right)^3 = \left(\frac{1}{2^3}\right) = \left(\frac{1}{8}\right)\)</span>
 </li>
+<li>Wirft man die Münze drei Mal, so sind die Würfe nicht wirklich unabhängig: Nach zwei Treffern in Folge wird ein dritter Treffer unwahrscheinlicher, weil sich die Serie “ausgleichen” muss. Deshalb ist die Wahrscheinlichkeit für drei Treffer in Folge kleiner als <span class="math inline">\((1/2)^3\)</span>, nämlich nur ca. 6 %.</li>
 </ol>
 </div>
 </section></section><section id="totale-wahrscheinlichkeit" class="level2" data-number="5.7"><h2 data-number="5.7" class="anchored" data-anchor-id="totale-wahrscheinlichkeit">
 <span class="header-section-number">5.7</span> Totale Wahrscheinlichkeit</h2>
 <div id="exm-bourier-s56" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.20 (Gesamter Ausschussanteil)</strong></span> Die folgende Aufgabe bezieht sich auf <span class="citation" data-cites="bourier2011">Bourier (<a href="references.html#ref-bourier2011" role="doc-biblioref">2011</a>)</span>, S. 56. Drei Maschinen (<span class="math inline">\(M_1, M_2, M_3\)</span>) produzieren einen Artikel. Die Maschinen haben einen Anteil an der Produktion von 60, 10 bzw. 30% und eine Ausschussquote von 5, 2 bzw. 4%. Sei <span class="math inline">\(M\)</span> das Ereignis, dass ein Artikel von Maschine <span class="math inline">\(M\)</span> stammt, und <span class="math inline">\(S\)</span> (Schrott) das Ereignis, dass ein Artikel Ausschuss (Schrott) ist. Gesucht ist der Ausschussanteil insgesamt (über alle drei Maschinen). Anders gesagt: Wie hoch ist die Wahrscheinlichkeit <span class="math inline">\(Pr(S')\)</span>, dass ein zufällig gezogener Artikel Ausschuss ist? <a href="#fig-tot-wskt" class="quarto-xref">Abbildung&nbsp;<span>5.10</span></a> zeigt das Baumdiagramm für die Aufgabe. <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 5.21 (Gesamter Ausschussanteil)</strong></span> Die folgende Aufgabe bezieht sich auf <span class="citation" data-cites="bourier2011">Bourier (<a href="references.html#ref-bourier2011" role="doc-biblioref">2011</a>)</span>, S. 56. Drei Maschinen (<span class="math inline">\(M_1, M_2, M_3\)</span>) produzieren einen Artikel. Die Maschinen haben einen Anteil an der Produktion von 60, 10 bzw. 30 % und eine Ausschussquote von 5, 2 bzw. 4 %. Sei <span class="math inline">\(M\)</span> das Ereignis, dass ein Artikel von Maschine <span class="math inline">\(M\)</span> stammt, und <span class="math inline">\(S\)</span> (Schrott) das Ereignis, dass ein Artikel Ausschuss (Schrott) ist. Gesucht ist der Ausschussanteil insgesamt (über alle drei Maschinen). Anders gesagt: Wie hoch ist die Wahrscheinlichkeit <span class="math inline">\(Pr(S')\)</span>, dass ein zufällig gezogener Artikel Ausschuss ist? <a href="#fig-tot-wskt" class="quarto-xref">Abbildung&nbsp;<span>5.10</span></a> zeigt das Baumdiagramm für die Aufgabe. <span class="math inline">\(\square\)</span></p>
 </div>
-<div class="cell" data-fig-width="5.5" data-layout-align="center">
+<div class="cell" data-fig-width="4.5" data-layout-align="center">
 <div class="cell-output-display">
 <div id="fig-tot-wskt" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-tot-wskt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -3278,7 +3319,7 @@ Abbildung&nbsp;5.10: Totale Wahrscheinlichkeit
 <div class="cell-output-display">
 <div id="fig-ausschuss" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-ausschuss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0350-wskt2_files/figure-html/fig-ausschuss-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss"><img src="0350-wskt2_files/figure-html/fig-ausschuss-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+<a href="0350-wskt2_files/figure-html/fig-ausschuss-1.pdf" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss"><embed src="0350-wskt2_files/figure-html/fig-ausschuss-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ausschuss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
@@ -3304,10 +3345,10 @@ Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
 </div>
 <p>In Worten: Die totale Wahrscheinlichkeit ist die Summe der gewichteten Teil-Wahrscheinlichkeiten.</p>
 <div id="exm-totwskt1" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 5.21</strong></span> In <a href="#fig-tot-wskt" class="quarto-xref">Abbildung&nbsp;<span>5.10</span></a> (<a href="#exm-bourier-s56" class="quarto-xref">Beispiel&nbsp;<span>5.20</span></a>) gilt <span class="math inline">\(Pr(S') = 0.6 \cdot 0.05 + 0.1 \cdot 0.02 + 0.3 \cdot 0.04 = 0.03 + 0.002 + 0.012 = 0.04.\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 5.22</strong></span> In <a href="#fig-tot-wskt" class="quarto-xref">Abbildung&nbsp;<span>5.10</span></a> (<a href="#exm-bourier-s56" class="quarto-xref">Beispiel&nbsp;<span>5.21</span></a>) gilt <span class="math inline">\(Pr(S') = 0.6 \cdot 0.05 + 0.1 \cdot 0.02 + 0.3 \cdot 0.04 = 0.03 + 0.002 + 0.012 = 0.044.\square\)</span></p>
 </div>
 <div id="exr-bertie-botts2" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 5.6 (Bertie Botts Bohnen jeder Geschmacksrichtung, Teil 2)</strong></span> Es ist die gleiche Aufgabe wie <a href="#exm-bertie-botts" class="quarto-xref">Beispiel&nbsp;<span>5.19</span></a>, aber jetzt lautet die Frage: Wie groß ist die Wahrscheinlichkeit, <em>mindestens eine</em> scheußliche Bohne bei 3 Zügen zu erwischen?<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 5.6 (Bertie Botts Bohnen jeder Geschmacksrichtung, Teil 2)</strong></span> Es ist die gleiche Aufgabe wie <a href="#exm-bertie-botts" class="quarto-xref">Beispiel&nbsp;<span>5.20</span></a>, aber jetzt lautet die Frage: Wie groß ist die Wahrscheinlichkeit, <em>mindestens eine</em> scheußliche Bohne bei 3 Zügen zu erwischen?<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> <span class="math inline">\(\square\)</span></p>
 </div>
 <section id="baumsammlung" class="level3" data-number="5.7.1"><h3 data-number="5.7.1" class="anchored" data-anchor-id="baumsammlung">
 <span class="header-section-number">5.7.1</span> Baumsammlung</h3>
@@ -3366,8 +3407,8 @@ Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Zwei Ereignisse <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> (nicht notwendigerweise disjunkt) haben <span class="math inline">\(Pr(A)=0{,}4\)</span>, <span class="math inline">\(Pr(B)=0{,}3\)</span> und <span class="math inline">\(Pr(A \cap B)=0{,}1\)</span>. Wie groß ist <span class="math inline">\(Pr(A \cup B)\)</span>?</p>
-<div id="webex-cb2861cf0ae8b295af74badf2f000aed" class="webex-radiogroup" data-answer="OFIeCRoBT1YcUTg=">
-<label><input type="radio" autocomplete="off" name="cb2861cf0ae8b295af74badf2f000aed"><span><span class="math inline">\(Pr(A \cup B) = 0{,}4 + 0{,}3 = 0{,}7\)</span></span></label><label><input type="radio" autocomplete="off" name="cb2861cf0ae8b295af74badf2f000aed"><span><span class="math inline">\(Pr(A \cup B) = 0{,}4 + 0{,}3 - 0{,}1 = 0{,}6\)</span></span></label><label><input type="radio" autocomplete="off" name="cb2861cf0ae8b295af74badf2f000aed"><span><span class="math inline">\(Pr(A \cup B) = 0{,}4 \cdot 0{,}3 = 0{,}12\)</span></span></label><label><input type="radio" autocomplete="off" name="cb2861cf0ae8b295af74badf2f000aed"><span><span class="math inline">\(Pr(A \cup B) = 0{,}1\)</span></span></label><label><input type="radio" autocomplete="off" name="cb2861cf0ae8b295af74badf2f000aed"><span><span class="math inline">\(Pr(A \cup B) = 0{,}4 + 0{,}3 - 2 \cdot 0{,}1 = 0{,}5\)</span></span></label>
+<div id="webex-55ccaba39afb1002fc9a88b009e64a88" class="webex-radiogroup" data-answer="bgVPUk1STQMVUTs=">
+<label><input type="radio" autocomplete="off" name="55ccaba39afb1002fc9a88b009e64a88"><span><span class="math inline">\(Pr(A \cup B) = 0{,}4 + 0{,}3 = 0{,}7\)</span></span></label><label><input type="radio" autocomplete="off" name="55ccaba39afb1002fc9a88b009e64a88"><span><span class="math inline">\(Pr(A \cup B) = 0{,}4 + 0{,}3 - 0{,}1 = 0{,}6\)</span></span></label><label><input type="radio" autocomplete="off" name="55ccaba39afb1002fc9a88b009e64a88"><span><span class="math inline">\(Pr(A \cup B) = 0{,}4 \cdot 0{,}3 = 0{,}12\)</span></span></label><label><input type="radio" autocomplete="off" name="55ccaba39afb1002fc9a88b009e64a88"><span><span class="math inline">\(Pr(A \cup B) = 0{,}1\)</span></span></label><label><input type="radio" autocomplete="off" name="55ccaba39afb1002fc9a88b009e64a88"><span><span class="math inline">\(Pr(A \cup B) = 0{,}4 + 0{,}3 - 2 \cdot 0{,}1 = 0{,}5\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -3389,8 +3430,8 @@ Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Wann darf man bei der Berechnung von <span class="math inline">\(Pr(A \cup B)\)</span> die vereinfachte Formel <span class="math inline">\(Pr(A \cup B) = Pr(A) + Pr(B)\)</span> (ohne Abzug des Schnitts) verwenden?</p>
-<div id="webex-d4c5660b6908d094724a3e1b71183461" class="webex-radiogroup" data-answer="PwRPBRoGHFIaCG0=">
-<label><input type="radio" autocomplete="off" name="d4c5660b6908d094724a3e1b71183461"><span>Nur wenn <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> stochastisch unabhängig sind.</span></label><label><input type="radio" autocomplete="off" name="d4c5660b6908d094724a3e1b71183461"><span>Immer, unabhängig von der Beziehung zwischen <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span>.</span></label><label><input type="radio" autocomplete="off" name="d4c5660b6908d094724a3e1b71183461"><span>Nur wenn <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> ein vollständiges Ereignissystem bilden.</span></label><label><input type="radio" autocomplete="off" name="d4c5660b6908d094724a3e1b71183461"><span>Nur wenn <span class="math inline">\(Pr(A) = Pr(B)\)</span> gilt.</span></label><label><input type="radio" autocomplete="off" name="d4c5660b6908d094724a3e1b71183461"><span>Nur wenn <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> disjunkt sind, also <span class="math inline">\(A \cap B = \emptyset\)</span> gilt.</span></label>
+<div id="webex-c23df987235a050f703a4f1732eddf12" class="webex-radiogroup" data-answer="OAIfVEoJFAceAmg=">
+<label><input type="radio" autocomplete="off" name="c23df987235a050f703a4f1732eddf12"><span>Nur wenn <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> stochastisch unabhängig sind.</span></label><label><input type="radio" autocomplete="off" name="c23df987235a050f703a4f1732eddf12"><span>Immer, unabhängig von der Beziehung zwischen <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span>.</span></label><label><input type="radio" autocomplete="off" name="c23df987235a050f703a4f1732eddf12"><span>Nur wenn <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> ein vollständiges Ereignissystem bilden.</span></label><label><input type="radio" autocomplete="off" name="c23df987235a050f703a4f1732eddf12"><span>Nur wenn <span class="math inline">\(Pr(A) = Pr(B)\)</span> gilt.</span></label><label><input type="radio" autocomplete="off" name="c23df987235a050f703a4f1732eddf12"><span>Nur wenn <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> disjunkt sind, also <span class="math inline">\(A \cap B = \emptyset\)</span> gilt.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -3443,8 +3484,8 @@ Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
 </table>
 </div>
 <p>Wie hoch ist <span class="math inline">\(Pr(B \mid NL)\)</span>, die Wahrscheinlichkeit zu bestehen, gegeben dass <em>nicht</em> gelernt wurde?</p>
-<div id="webex-c69efeef6b4d9617de88281aaf7ee626" class="webex-radiogroup" data-answer="OAYVVUpUSVYaUmk=">
-<label><input type="radio" autocomplete="off" name="c69efeef6b4d9617de88281aaf7ee626"><span><span class="math inline">\(Pr(B \mid NL) = 70/80 = 0{,}875\)</span></span></label><label><input type="radio" autocomplete="off" name="c69efeef6b4d9617de88281aaf7ee626"><span><span class="math inline">\(Pr(B \mid NL) = 76/100 = 0{,}76\)</span></span></label><label><input type="radio" autocomplete="off" name="c69efeef6b4d9617de88281aaf7ee626"><span><span class="math inline">\(Pr(B \mid NL) = 6/20 = 0{,}3\)</span></span></label><label><input type="radio" autocomplete="off" name="c69efeef6b4d9617de88281aaf7ee626"><span><span class="math inline">\(Pr(B \mid NL) = 20/6 \approx 3{,}33\)</span></span></label><label><input type="radio" autocomplete="off" name="c69efeef6b4d9617de88281aaf7ee626"><span><span class="math inline">\(Pr(B \mid NL) = 6/100 = 0{,}06\)</span></span></label>
+<div id="webex-9e7ed4090aacde731af061dfc6923a94" class="webex-radiogroup" data-answer="YlUbVUgFHAkcUTw=">
+<label><input type="radio" autocomplete="off" name="9e7ed4090aacde731af061dfc6923a94"><span><span class="math inline">\(Pr(B \mid NL) = 70/80 = 0{,}875\)</span></span></label><label><input type="radio" autocomplete="off" name="9e7ed4090aacde731af061dfc6923a94"><span><span class="math inline">\(Pr(B \mid NL) = 76/100 = 0{,}76\)</span></span></label><label><input type="radio" autocomplete="off" name="9e7ed4090aacde731af061dfc6923a94"><span><span class="math inline">\(Pr(B \mid NL) = 6/20 = 0{,}3\)</span></span></label><label><input type="radio" autocomplete="off" name="9e7ed4090aacde731af061dfc6923a94"><span><span class="math inline">\(Pr(B \mid NL) = 20/6 \approx 3{,}33\)</span></span></label><label><input type="radio" autocomplete="off" name="9e7ed4090aacde731af061dfc6923a94"><span><span class="math inline">\(Pr(B \mid NL) = 6/100 = 0{,}06\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -3466,8 +3507,8 @@ Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p><span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> seien disjunkt (<span class="math inline">\(A \cap B = \emptyset\)</span>) und beide mit positiver Wahrscheinlichkeit, <span class="math inline">\(Pr(A) &gt; 0\)</span> und <span class="math inline">\(Pr(B) &gt; 0\)</span>. Sind <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> (stochastisch) unabhängig?</p>
-<div id="webex-94012eed610dff6bb163675209b535af" class="webex-radiogroup" data-answer="YgQcAR5USVQaAW0=">
-<label><input type="radio" autocomplete="off" name="94012eed610dff6bb163675209b535af"><span>Nein, weil Unabhängigkeit nur für metrische Zufallsvariablen definiert ist, nicht für Ereignisse.</span></label><label><input type="radio" autocomplete="off" name="94012eed610dff6bb163675209b535af"><span>Das lässt sich ohne Kenntnis der genauen Werte von <span class="math inline">\(Pr(A)\)</span> und <span class="math inline">\(Pr(B)\)</span> nicht entscheiden.</span></label><label><input type="radio" autocomplete="off" name="94012eed610dff6bb163675209b535af"><span>Nein: Da <span class="math inline">\(A \cap B = \emptyset\)</span>, ist <span class="math inline">\(Pr(A \cap B) = 0\)</span>, aber <span class="math inline">\(Pr(A) \cdot Pr(B) &gt; 0\)</span>; für Unabhängigkeit müsste jedoch <span class="math inline">\(Pr(A \cap B) = Pr(A) \cdot Pr(B)\)</span> gelten. Disjunkte Ereignisse mit positiver Wahrscheinlichkeit sind daher nie unabhängig – im Gegenteil, sie sind maximal abhängig: Tritt <span class="math inline">\(A\)</span> ein, kann <span class="math inline">\(B\)</span> unmöglich eintreten.</span></label><label><input type="radio" autocomplete="off" name="94012eed610dff6bb163675209b535af"><span>Ja, disjunkte Ereignisse sind immer unabhängig, da sie sich nicht überschneiden.</span></label><label><input type="radio" autocomplete="off" name="94012eed610dff6bb163675209b535af"><span>Ja, weil Disjunktheit und Unabhängigkeit stets dasselbe bedeuten.</span></label>
+<div id="webex-f0497e6c2f419616a7e4f721f1f01dab" class="webex-radiogroup" data-answer="PQAYCRtUGlMeVmk=">
+<label><input type="radio" autocomplete="off" name="f0497e6c2f419616a7e4f721f1f01dab"><span>Nein, weil Unabhängigkeit nur für metrische Zufallsvariablen definiert ist, nicht für Ereignisse.</span></label><label><input type="radio" autocomplete="off" name="f0497e6c2f419616a7e4f721f1f01dab"><span>Das lässt sich ohne Kenntnis der genauen Werte von <span class="math inline">\(Pr(A)\)</span> und <span class="math inline">\(Pr(B)\)</span> nicht entscheiden.</span></label><label><input type="radio" autocomplete="off" name="f0497e6c2f419616a7e4f721f1f01dab"><span>Nein: Da <span class="math inline">\(A \cap B = \emptyset\)</span>, ist <span class="math inline">\(Pr(A \cap B) = 0\)</span>, aber <span class="math inline">\(Pr(A) \cdot Pr(B) &gt; 0\)</span>; für Unabhängigkeit müsste jedoch <span class="math inline">\(Pr(A \cap B) = Pr(A) \cdot Pr(B)\)</span> gelten. Disjunkte Ereignisse mit positiver Wahrscheinlichkeit sind daher nie unabhängig – im Gegenteil, sie sind maximal abhängig: Tritt <span class="math inline">\(A\)</span> ein, kann <span class="math inline">\(B\)</span> unmöglich eintreten.</span></label><label><input type="radio" autocomplete="off" name="f0497e6c2f419616a7e4f721f1f01dab"><span>Ja, disjunkte Ereignisse sind immer unabhängig, da sie sich nicht überschneiden.</span></label><label><input type="radio" autocomplete="off" name="f0497e6c2f419616a7e4f721f1f01dab"><span>Ja, weil Disjunktheit und Unabhängigkeit stets dasselbe bedeuten.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -3489,8 +3530,8 @@ Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Eine Urne enthält 6 Kugeln, davon 4 rote und 2 blaue. Es werden nacheinander 2 Kugeln <em>ohne Zurücklegen</em> (ZOZ) gezogen. Wie hoch ist die Wahrscheinlichkeit, dass <em>beide</em> gezogenen Kugeln rot sind?</p>
-<div id="webex-c5f4632da69da2accb4d73060a569318" class="webex-radiogroup" data-answer="OAVKBBoDHlRNB2Q=">
-<label><input type="radio" autocomplete="off" name="c5f4632da69da2accb4d73060a569318"><span><span class="math inline">\(Pr(R_1 \cap R_2) = \dfrac{4}{6} + \dfrac{3}{5} \approx 1{,}27\)</span></span></label><label><input type="radio" autocomplete="off" name="c5f4632da69da2accb4d73060a569318"><span><span class="math inline">\(Pr(R_1 \cap R_2) = \dfrac{4}{6} \cdot \dfrac{4}{6} \approx 0{,}44\)</span></span></label><label><input type="radio" autocomplete="off" name="c5f4632da69da2accb4d73060a569318"><span><span class="math inline">\(Pr(R_1 \cap R_2) = \dfrac{4}{6} \cdot \dfrac{4}{5} \approx 0{,}53\)</span></span></label><label><input type="radio" autocomplete="off" name="c5f4632da69da2accb4d73060a569318"><span><span class="math inline">\(Pr(R_1 \cap R_2) = \dfrac{4}{6} \cdot \dfrac{3}{6} \approx 0{,}33\)</span></span></label><label><input type="radio" autocomplete="off" name="c5f4632da69da2accb4d73060a569318"><span><span class="math inline">\(Pr(R_1 \cap R_2) = \dfrac{4}{6} \cdot \dfrac{3}{5} = 0{,}4\)</span></span></label>
+<div id="webex-1fc15192bd7e975d8323895abadcb501" class="webex-radiogroup" data-answer="alZPARkBFQJOVWo=">
+<label><input type="radio" autocomplete="off" name="1fc15192bd7e975d8323895abadcb501"><span><span class="math inline">\(Pr(R_1 \cap R_2) = \dfrac{4}{6} + \dfrac{3}{5} \approx 1{,}27\)</span></span></label><label><input type="radio" autocomplete="off" name="1fc15192bd7e975d8323895abadcb501"><span><span class="math inline">\(Pr(R_1 \cap R_2) = \dfrac{4}{6} \cdot \dfrac{4}{6} \approx 0{,}44\)</span></span></label><label><input type="radio" autocomplete="off" name="1fc15192bd7e975d8323895abadcb501"><span><span class="math inline">\(Pr(R_1 \cap R_2) = \dfrac{4}{6} \cdot \dfrac{4}{5} \approx 0{,}53\)</span></span></label><label><input type="radio" autocomplete="off" name="1fc15192bd7e975d8323895abadcb501"><span><span class="math inline">\(Pr(R_1 \cap R_2) = \dfrac{4}{6} \cdot \dfrac{3}{6} \approx 0{,}33\)</span></span></label><label><input type="radio" autocomplete="off" name="1fc15192bd7e975d8323895abadcb501"><span><span class="math inline">\(Pr(R_1 \cap R_2) = \dfrac{4}{6} \cdot \dfrac{3}{5} = 0{,}4\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -3512,8 +3553,8 @@ Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Gegeben seien <span class="math inline">\(Pr(A) = 0{,}5\)</span>, <span class="math inline">\(Pr(B) = 0{,}4\)</span> und <span class="math inline">\(Pr(A \mid B) = 0{,}3\)</span>. Wie hoch ist <span class="math inline">\(Pr(B \mid A)\)</span>?</p>
-<div id="webex-4ae7c937d1b7e69d41494a6d777c8153" class="webex-radiogroup" data-answer="b1FJB08IHwdIAT8=">
-<label><input type="radio" autocomplete="off" name="4ae7c937d1b7e69d41494a6d777c8153"><span><span class="math inline">\(Pr(B \mid A) = Pr(B) = 0{,}4\)</span></span></label><label><input type="radio" autocomplete="off" name="4ae7c937d1b7e69d41494a6d777c8153"><span><span class="math inline">\(Pr(B \mid A) = Pr(A) \cdot Pr(B) = 0{,}5 \cdot 0{,}4 = 0{,}2\)</span></span></label><label><input type="radio" autocomplete="off" name="4ae7c937d1b7e69d41494a6d777c8153"><span><span class="math inline">\(Pr(B \mid A) = \dfrac{Pr(B) \cdot Pr(A \mid B)}{Pr(A)} = \dfrac{0{,}4 \cdot 0{,}3}{0{,}5} = \dfrac{0{,}12}{0{,}5} = 0{,}24\)</span></span></label><label><input type="radio" autocomplete="off" name="4ae7c937d1b7e69d41494a6d777c8153"><span><span class="math inline">\(Pr(B \mid A) = Pr(A \mid B) = 0{,}3\)</span></span></label><label><input type="radio" autocomplete="off" name="4ae7c937d1b7e69d41494a6d777c8153"><span><span class="math inline">\(Pr(B \mid A) = Pr(A \cap B) = 0{,}12\)</span></span></label>
+<div id="webex-4001057cbec1a68734317edc600630a8" class="webex-radiogroup" data-answer="bwAcARwEG1NOVT4=">
+<label><input type="radio" autocomplete="off" name="4001057cbec1a68734317edc600630a8"><span><span class="math inline">\(Pr(B \mid A) = Pr(B) = 0{,}4\)</span></span></label><label><input type="radio" autocomplete="off" name="4001057cbec1a68734317edc600630a8"><span><span class="math inline">\(Pr(B \mid A) = Pr(A) \cdot Pr(B) = 0{,}5 \cdot 0{,}4 = 0{,}2\)</span></span></label><label><input type="radio" autocomplete="off" name="4001057cbec1a68734317edc600630a8"><span><span class="math inline">\(Pr(B \mid A) = \dfrac{Pr(B) \cdot Pr(A \mid B)}{Pr(A)} = \dfrac{0{,}4 \cdot 0{,}3}{0{,}5} = \dfrac{0{,}12}{0{,}5} = 0{,}24\)</span></span></label><label><input type="radio" autocomplete="off" name="4001057cbec1a68734317edc600630a8"><span><span class="math inline">\(Pr(B \mid A) = Pr(A \mid B) = 0{,}3\)</span></span></label><label><input type="radio" autocomplete="off" name="4001057cbec1a68734317edc600630a8"><span><span class="math inline">\(Pr(B \mid A) = Pr(A \cap B) = 0{,}12\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -3534,17 +3575,17 @@ Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
 </div>
 <div class="webex-question">
 <div class="webex-check webex-box">
-<p>Drei Maschinen <span class="math inline">\(M_1, M_2, M_3\)</span> produzieren einen Artikel, mit Produktionsanteilen von 50%, 30% bzw. 20% und Ausschussquoten von 4%, 8% bzw. 1%. Wie hoch ist die <em>totale</em> Ausschusswahrscheinlichkeit <span class="math inline">\(Pr(S)\)</span> über alle drei Maschinen hinweg?</p>
-<div id="webex-513cd6fdb6fdbedb00b8e685f4037eda" class="webex-radiogroup" data-answer="bgEfU0gGSlROBzs=">
-<label><input type="radio" autocomplete="off" name="513cd6fdb6fdbedb00b8e685f4037eda"><span><span class="math inline">\(Pr(S) = 0{,}5 \cdot 0{,}04 \cdot 0{,}3 \cdot 0{,}08 \cdot 0{,}2 \cdot 0{,}01 \approx 0{,}00000096\)</span></span></label><label><input type="radio" autocomplete="off" name="513cd6fdb6fdbedb00b8e685f4037eda"><span><span class="math inline">\(Pr(S) = 0{,}04 + 0{,}08 + 0{,}01 = 0{,}13\)</span></span></label><label><input type="radio" autocomplete="off" name="513cd6fdb6fdbedb00b8e685f4037eda"><span><span class="math inline">\(Pr(S) = \dfrac{0{,}04 + 0{,}08 + 0{,}01}{3} \approx 0{,}0433\)</span></span></label><label><input type="radio" autocomplete="off" name="513cd6fdb6fdbedb00b8e685f4037eda"><span><span class="math inline">\(Pr(S) = \max(0{,}04,\, 0{,}08,\, 0{,}01) = 0{,}08\)</span></span></label><label><input type="radio" autocomplete="off" name="513cd6fdb6fdbedb00b8e685f4037eda"><span><span class="math inline">\(Pr(S) = 0{,}5 \cdot 0{,}04 + 0{,}3 \cdot 0{,}08 + 0{,}2 \cdot 0{,}01 = 0{,}046\)</span></span></label>
+<p>Drei Maschinen <span class="math inline">\(M_1, M_2, M_3\)</span> produzieren einen Artikel, mit Produktionsanteilen von 50 %, 30 % bzw. 20 % und Ausschussquoten von 4 %, 8 % bzw. 1 %. Wie hoch ist die <em>totale</em> Ausschusswahrscheinlichkeit <span class="math inline">\(Pr(S)\)</span> über alle drei Maschinen hinweg?</p>
+<div id="webex-a16266daed5c6535a6dbf52fd390bbc1" class="webex-radiogroup" data-answer="OgEaAhoGSFFJVWg=">
+<label><input type="radio" autocomplete="off" name="a16266daed5c6535a6dbf52fd390bbc1"><span><span class="math inline">\(Pr(S) = 0{,}5 \cdot 0{,}04 \cdot 0{,}3 \cdot 0{,}08 \cdot 0{,}2 \cdot 0{,}01 \approx 0{,}00000096\)</span></span></label><label><input type="radio" autocomplete="off" name="a16266daed5c6535a6dbf52fd390bbc1"><span><span class="math inline">\(Pr(S) = 0{,}04 + 0{,}08 + 0{,}01 = 0{,}13\)</span></span></label><label><input type="radio" autocomplete="off" name="a16266daed5c6535a6dbf52fd390bbc1"><span><span class="math inline">\(Pr(S) = \dfrac{0{,}04 + 0{,}08 + 0{,}01}{3} \approx 0{,}0433\)</span></span></label><label><input type="radio" autocomplete="off" name="a16266daed5c6535a6dbf52fd390bbc1"><span><span class="math inline">\(Pr(S) = \max(0{,}04,\, 0{,}08,\, 0{,}01) = 0{,}08\)</span></span></label><label><input type="radio" autocomplete="off" name="a16266daed5c6535a6dbf52fd390bbc1"><span><span class="math inline">\(Pr(S) = 0{,}5 \cdot 0{,}04 + 0{,}3 \cdot 0{,}08 + 0{,}2 \cdot 0{,}01 = 0{,}046\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
 <p>Nach dem Satz der totalen Wahrscheinlichkeit gilt, wenn <span class="math inline">\(M_1, M_2, M_3\)</span> ein vollständiges Ereignissystem bilden (jeder Artikel stammt von genau einer Maschine): <span class="math inline">\(Pr(S) = \sum_{i=1}^{3} Pr(M_i) \cdot Pr(S \mid M_i)\)</span>. Man gewichtet also jede Ausschussquote mit dem jeweiligen Produktionsanteil und summiert die drei Produkte: <span class="math inline">\(Pr(S) = 0{,}5 \cdot 0{,}04 + 0{,}3 \cdot 0{,}08 + 0{,}2 \cdot 0{,}01 = 0{,}02 + 0{,}024 + 0{,}002 = 0{,}046\)</span>. Die erste Antwortoption ist korrekt.</p>
 <p>Warum die Distraktoren falsch sind:</p>
 <ul>
-<li><p>Die zweite Option bildet den <em>unge</em>wichteten arithmetischen Mittelwert der drei Ausschussquoten und ignoriert dabei, dass die Maschinen <em>unterschiedlich</em> viel produzieren. Da <span class="math inline">\(M_1\)</span> mit 50% deutlich mehr produziert als <span class="math inline">\(M_3\)</span> mit 20%, muss der Beitrag jeder Maschine entsprechend ihrem Produktionsanteil gewichtet werden – nicht einfach gleich behandelt werden.</p></li>
-<li><p>Die dritte Option summiert die drei Ausschussquoten direkt, ohne sie überhaupt mit den Produktionsanteilen zu gewichten – das ergibt zudem einen unplausibel hohen Wert (13%), der über jeder Einzelquote liegt, obwohl eine totale (gemittelte) Quote nie größer als die größte Einzelquote sein kann.</p></li>
+<li><p>Die zweite Option bildet den <em>unge</em>wichteten arithmetischen Mittelwert der drei Ausschussquoten und ignoriert dabei, dass die Maschinen <em>unterschiedlich</em> viel produzieren. Da <span class="math inline">\(M_1\)</span> mit 50 % deutlich mehr produziert als <span class="math inline">\(M_3\)</span> mit 20 %, muss der Beitrag jeder Maschine entsprechend ihrem Produktionsanteil gewichtet werden – nicht einfach gleich behandelt werden.</p></li>
+<li><p>Die dritte Option summiert die drei Ausschussquoten direkt, ohne sie überhaupt mit den Produktionsanteilen zu gewichten – das ergibt zudem einen unplausibel hohen Wert (13 %), der über jeder Einzelquote liegt, obwohl eine totale (gemittelte) Quote nie größer als die größte Einzelquote sein kann.</p></li>
 <li><p>Die vierte Option wählt einfach die höchste Einzel-Ausschussquote (die von <span class="math inline">\(M_2\)</span>) aus und ignoriert dabei vollständig die Produktionsanteile sowie die Beiträge der anderen beiden Maschinen.</p></li>
 <li><p>Die fünfte Option multipliziert alle sechs Werte miteinander – das entspricht keiner sinnvollen Formel der Wahrscheinlichkeitsrechnung für dieses Problem und liefert eine verschwindend kleine, nicht plausible Zahl.</p></li>
 <li><p>Falsch</p></li>
@@ -3558,8 +3599,8 @@ Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Eine faire Münze wird dreimal geworfen. Wie hoch ist die Wahrscheinlichkeit für <em>genau zwei</em> Treffer (Kopf)?</p>
-<div id="webex-415c7fea5a36f0e33d92ae9077fd2ee9" class="webex-radiogroup" data-answer="bwEZUhtWSVEZUW4=">
-<label><input type="radio" autocomplete="off" name="415c7fea5a36f0e33d92ae9077fd2ee9"><span><span class="math inline">\(3 \cdot \dfrac{1}{2} = 1{,}5\)</span></span></label><label><input type="radio" autocomplete="off" name="415c7fea5a36f0e33d92ae9077fd2ee9"><span><span class="math inline">\(3 \cdot \left(\frac{1}{2}\right)^3 = \dfrac{3}{8} = 0{,}375\)</span></span></label><label><input type="radio" autocomplete="off" name="415c7fea5a36f0e33d92ae9077fd2ee9"><span><span class="math inline">\(4 \cdot \left(\frac{1}{2}\right)^3 = \dfrac{4}{8} = 0{,}5\)</span></span></label><label><input type="radio" autocomplete="off" name="415c7fea5a36f0e33d92ae9077fd2ee9"><span><span class="math inline">\(1 \cdot \left(\frac{1}{2}\right)^3 = \dfrac{1}{8} = 0{,}125\)</span></span></label><label><input type="radio" autocomplete="off" name="415c7fea5a36f0e33d92ae9077fd2ee9"><span><span class="math inline">\(6 \cdot \left(\frac{1}{2}\right)^3 = \dfrac{6}{8} = 0{,}75\)</span></span></label>
+<div id="webex-a2f88eef7e8a3a0b4560510d36500719" class="webex-radiogroup" data-answer="OgJKCRRVSVYbVWU=">
+<label><input type="radio" autocomplete="off" name="a2f88eef7e8a3a0b4560510d36500719"><span><span class="math inline">\(3 \cdot \dfrac{1}{2} = 1{,}5\)</span></span></label><label><input type="radio" autocomplete="off" name="a2f88eef7e8a3a0b4560510d36500719"><span><span class="math inline">\(3 \cdot \left(\frac{1}{2}\right)^3 = \dfrac{3}{8} = 0{,}375\)</span></span></label><label><input type="radio" autocomplete="off" name="a2f88eef7e8a3a0b4560510d36500719"><span><span class="math inline">\(4 \cdot \left(\frac{1}{2}\right)^3 = \dfrac{4}{8} = 0{,}5\)</span></span></label><label><input type="radio" autocomplete="off" name="a2f88eef7e8a3a0b4560510d36500719"><span><span class="math inline">\(1 \cdot \left(\frac{1}{2}\right)^3 = \dfrac{1}{8} = 0{,}125\)</span></span></label><label><input type="radio" autocomplete="off" name="a2f88eef7e8a3a0b4560510d36500719"><span><span class="math inline">\(6 \cdot \left(\frac{1}{2}\right)^3 = \dfrac{6}{8} = 0{,}75\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -3581,8 +3622,8 @@ Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Im Kapitel wird betont: “Stochastische Unabhängigkeit impliziert nicht kausale Unabhängigkeit” <span class="citation" data-cites="henze2019">(<a href="references.html#ref-henze2019" role="doc-biblioref">Henze, 2019</a>)</span>. Welche der folgenden Interpretationen dieser Aussage ist korrekt?</p>
-<div id="webex-86e6198b812c797135bb1b2ce7dddc1c" class="webex-radiogroup" data-answer="YwZJBx0JFFIUAW8=">
-<label><input type="radio" autocomplete="off" name="86e6198b812c797135bb1b2ce7dddc1c"><span>Kausale Unabhängigkeit ist lediglich ein anderer Name für stochastische Unabhängigkeit bei besonders großen Stichproben.</span></label><label><input type="radio" autocomplete="off" name="86e6198b812c797135bb1b2ce7dddc1c"><span>Auch wenn zwei Ereignisse stochastisch unabhängig sind (<span class="math inline">\(Pr(A\mid B)=Pr(A)\)</span>), kann trotzdem eine kausale Beziehung zwischen ihnen bestehen – etwa wenn sich zwei gegenläufige kausale Wirkungspfade in ihrem Effekt gerade gegenseitig aufheben, sodass in den beobachteten Häufigkeiten keine statistische Abhängigkeit mehr sichtbar ist.</span></label><label><input type="radio" autocomplete="off" name="86e6198b812c797135bb1b2ce7dddc1c"><span>Wenn zwei Ereignisse stochastisch abhängig sind, muss zwingend eines das andere kausal verursachen.</span></label><label><input type="radio" autocomplete="off" name="86e6198b812c797135bb1b2ce7dddc1c"><span>Die Aussage bedeutet, dass man für kausale Fragestellungen grundsätzlich eine größere Stichprobe braucht als für rein stochastische Fragestellungen.</span></label><label><input type="radio" autocomplete="off" name="86e6198b812c797135bb1b2ce7dddc1c"><span>Stochastische Unabhängigkeit und kausale Unabhängigkeit sind zwei Namen für exakt denselben Sachverhalt.</span></label>
+<div id="webex-4d5892f78fabc1e74ff179be5f0049f3" class="webex-radiogroup" data-answer="b1QZCRUCSgcUVjw=">
+<label><input type="radio" autocomplete="off" name="4d5892f78fabc1e74ff179be5f0049f3"><span>Kausale Unabhängigkeit ist lediglich ein anderer Name für stochastische Unabhängigkeit bei besonders großen Stichproben.</span></label><label><input type="radio" autocomplete="off" name="4d5892f78fabc1e74ff179be5f0049f3"><span>Auch wenn zwei Ereignisse stochastisch unabhängig sind (<span class="math inline">\(Pr(A\mid B)=Pr(A)\)</span>), kann trotzdem eine kausale Beziehung zwischen ihnen bestehen – etwa wenn sich zwei gegenläufige kausale Wirkungspfade in ihrem Effekt gerade gegenseitig aufheben, sodass in den beobachteten Häufigkeiten keine statistische Abhängigkeit mehr sichtbar ist.</span></label><label><input type="radio" autocomplete="off" name="4d5892f78fabc1e74ff179be5f0049f3"><span>Wenn zwei Ereignisse stochastisch abhängig sind, muss zwingend eines das andere kausal verursachen.</span></label><label><input type="radio" autocomplete="off" name="4d5892f78fabc1e74ff179be5f0049f3"><span>Die Aussage bedeutet, dass man für kausale Fragestellungen grundsätzlich eine größere Stichprobe braucht als für rein stochastische Fragestellungen.</span></label><label><input type="radio" autocomplete="off" name="4d5892f78fabc1e74ff179be5f0049f3"><span>Stochastische Unabhängigkeit und kausale Unabhängigkeit sind zwei Namen für exakt denselben Sachverhalt.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -3591,7 +3632,7 @@ Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
 <ul>
 <li><p>Die zweite Option widerspricht direkt der zitierten Aussage aus dem Kapitel: Gerade weil stochastische Unabhängigkeit <em>nicht</em> automatisch kausale Unabhängigkeit bedeutet, handelt es sich um zwei unterschiedliche Konzepte, nicht um Synonyme.</p></li>
 <li><p>Die dritte Option begeht den klassischen “Korrelation-impliziert-Kausalität”-Fehlschluss: Stochastische <em>Abhängigkeit</em> (Korrelation) kann auch durch eine gemeinsame Ursache (Confounder) oder durch Zufall entstehen, ohne dass eines der Ereignisse das andere ursächlich bewirkt.</p></li>
-<li><p>Kausale Unabhängigkeit hat nichts mit der Stichprobengröße zu tun – sie betrifft die zugrundeliegende Wirkungsstruktur (z.B. dargestellt in einem Kausaldiagramm), die unabhängig davon existiert, wie viele Daten man erhoben hat.</p></li>
+<li><p>Kausale Unabhängigkeit hat nichts mit der Stichprobengröße zu tun – sie betrifft die zugrundeliegende Wirkungsstruktur (z. B. dargestellt in einem Kausaldiagramm), die unabhängig davon existiert, wie viele Daten man erhoben hat.</p></li>
 <li><p>Auch die fünfte Option erfindet einen Zusammenhang zur Stichprobengröße, der im Kapitel an keiner Stelle hergestellt wird; der Unterschied zwischen stochastischer und kausaler (Un-)Abhängigkeit ist konzeptueller, nicht stichprobenbedingter Natur.</p></li>
 <li><p>Falsch</p></li>
 <li><p>Wahr</p></li>
@@ -3604,8 +3645,8 @@ Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>In einem Modul müssen zwei Teilklausuren (<span class="math inline">\(S_1\)</span>, <span class="math inline">\(S_2\)</span>) abgelegt werden. Es gilt <span class="math inline">\(Pr(S_1B) = 0{,}85\)</span> (Klausur 1 bestanden), <span class="math inline">\(Pr(S_2B) = 0{,}80\)</span> und <span class="math inline">\(Pr(S_1B \cap S_2B) = 0{,}75\)</span> (beide bestanden). Wie hoch ist die Wahrscheinlichkeit, <em>mindestens eine</em> der beiden Klausuren zu bestehen?</p>
-<div id="webex-5a00f109fdeaf0cd61030abb92311fb3" class="webex-radiogroup" data-answer="blEcAUoBHAlKVDg=">
-<label><input type="radio" autocomplete="off" name="5a00f109fdeaf0cd61030abb92311fb3"><span><span class="math inline">\(Pr(S_1B \cup S_2B) = 0{,}85 + 0{,}80 = 1{,}65\)</span></span></label><label><input type="radio" autocomplete="off" name="5a00f109fdeaf0cd61030abb92311fb3"><span><span class="math inline">\(Pr(S_1B \cup S_2B) = 0{,}85 + 0{,}80 - 0{,}75 = 0{,}90\)</span></span></label><label><input type="radio" autocomplete="off" name="5a00f109fdeaf0cd61030abb92311fb3"><span><span class="math inline">\(Pr(S_1B \cup S_2B) = 0{,}85 + 0{,}80 - 2 \cdot 0{,}75 = 0{,}15\)</span></span></label><label><input type="radio" autocomplete="off" name="5a00f109fdeaf0cd61030abb92311fb3"><span><span class="math inline">\(Pr(S_1B \cup S_2B) = 0{,}85 \cdot 0{,}80 = 0{,}68\)</span></span></label><label><input type="radio" autocomplete="off" name="5a00f109fdeaf0cd61030abb92311fb3"><span><span class="math inline">\(Pr(S_1B \cup S_2B) = 0{,}75\)</span></span></label>
+<div id="webex-d8caf5f752812c7d489eade35c0e1026" class="webex-radiogroup" data-answer="PwhPUEoFSgcZAmU=">
+<label><input type="radio" autocomplete="off" name="d8caf5f752812c7d489eade35c0e1026"><span><span class="math inline">\(Pr(S_1B \cup S_2B) = 0{,}85 + 0{,}80 = 1{,}65\)</span></span></label><label><input type="radio" autocomplete="off" name="d8caf5f752812c7d489eade35c0e1026"><span><span class="math inline">\(Pr(S_1B \cup S_2B) = 0{,}85 + 0{,}80 - 0{,}75 = 0{,}90\)</span></span></label><label><input type="radio" autocomplete="off" name="d8caf5f752812c7d489eade35c0e1026"><span><span class="math inline">\(Pr(S_1B \cup S_2B) = 0{,}85 + 0{,}80 - 2 \cdot 0{,}75 = 0{,}15\)</span></span></label><label><input type="radio" autocomplete="off" name="d8caf5f752812c7d489eade35c0e1026"><span><span class="math inline">\(Pr(S_1B \cup S_2B) = 0{,}85 \cdot 0{,}80 = 0{,}68\)</span></span></label><label><input type="radio" autocomplete="off" name="d8caf5f752812c7d489eade35c0e1026"><span><span class="math inline">\(Pr(S_1B \cup S_2B) = 0{,}75\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -3627,11 +3668,9 @@ Abbildung&nbsp;5.11: Anteile von Produktion und Ausschuss
 </div>
 </section></section><section id="section" class="level2" data-number="5.10"><h2 data-number="5.10" class="anchored" data-anchor-id="section">
 <span class="header-section-number">5.10</span> —</h2>
-<p><a href="img/outro-03.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="img/outro-03.jpg" class="img-fluid" style="width:100.0%"></a></p>
+<p><a href="img/outro-03.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="img/outro-03.jpg" class="img-fluid" style="width:100.0%"></a></p>
 
 
-</section>
-</div>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
 <div id="ref-bourier2011" class="csl-entry" role="listitem">
 Bourier, G. (2011). <em>Wahrscheinlichkeitsrechnung und schließende Statistik: praxisorientierte Einführung mit Aufgaben und Lösungen</em> (7., aktualisierte Aufl). Gabler.
@@ -3649,7 +3688,7 @@ McElreath, R. (2020). <em>Statistical Rethinking: A <span>Bayesian</span> Course
 Mittag, H.-J., &amp; Schüller, K. (2020). <em>Statistik: Eine Einführung mit interaktiven Elementen</em>. Springer Berlin Heidelberg. <a href="https://doi.org/10.1007/978-3-662-61912-4">https://doi.org/10.1007/978-3-662-61912-4</a>
 </div>
 </div>
-</section></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
 <ol>
 <li id="fn1"><p><a href="https://fantp20.bib-bvb.de/TouchPoint/singleHit.do?methodToCall=showHit&amp;curPos=3&amp;identifier=2_SOLR_SERVER_1157422278" class="uri">https://fantp20.bib-bvb.de/TouchPoint/singleHit.do?methodToCall=showHit&amp;curPos=3&amp;identifier=2_SOLR_SERVER_1157422278</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p><a href="https://moodle.hs-ansbach.de/mod/resource/view.php?id=136047" class="uri">https://moodle.hs-ansbach.de/mod/resource/view.php?id=136047</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>

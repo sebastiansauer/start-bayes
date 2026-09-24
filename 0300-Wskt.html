@@ -4,7 +4,7 @@
 <meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="keywords" content="Statistik, Bayes, Wahrscheinlichkeit, Inferenz, R, Kausalität">
-<meta name="description" content="Einführung in die Bayes-Statistik mit R">
+<meta name="description" content="Start:Bayes! ist die erste deutschsprachige Einführung in die Bayes-Statistik, die anwendungsnah, mit modernen Werkzeugen (R) und mit mehr Lockerheit als oft üblich vermittelt wird. Statt p-Werten steht eine Idee im Zentrum, die näher am gesunden Menschenverstand ist: Wir starten mit einer Annahme, sammeln Daten und aktualisieren unser Wissen entsprechend. Das Buch richtet sich an alle, die Bayes-Modelle nicht nur verstehen, sondern selbst berechnen und interpretieren wollen. Der Aufbau folgt der Logik der Sache: von Wahrscheinlichkeit und Verteilungen über den Kern der Bayes-Statistik am Beispiel des Globus-Versuchs bis zu linearen Modellen und Kausalität.">
 <title>4&nbsp; Hallo, Wahrscheinlichkeit – Start:Bayes!</title>
 <style>
 /* Default styles provided by pandoc.
@@ -132,6 +132,7 @@ div.csl-indent {
   }
 }</script><meta name="mermaid-theme" content="neutral">
 <script src="site_libs/quarto-diagram/mermaid.min.js"></script><script src="site_libs/quarto-diagram/mermaid-init.js"></script><link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script><link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
@@ -713,7 +714,7 @@ Hinweis
 <li>
 <em>Kartenziehen</em>: Das Ziehen einer Karte aus einem gut gemischten Kartendeck ist ein weiteres Beispiel.</li>
 <li>
-<em>Glücksrad</em>: Das Drehen eines Glücksrads mit verschiedenen Feldern (z.B. Farben oder Zahlen). Welches Feld am Ende stehenbleibt, ist zufällig. <span class="math inline">\(\square\)</span>
+<em>Glücksrad</em>: Das Drehen eines Glücksrads mit verschiedenen Feldern (z. B. Farben oder Zahlen). Welches Feld am Ende stehenbleibt, ist zufällig. <span class="math inline">\(\square\)</span>
 </li>
 </ul>
 </div>
@@ -742,7 +743,7 @@ Vorsicht
 <p><span class="theorem-title"><strong>Definition 4.2 (Ergebnisraum)</strong></span> Die möglichen Ergebnisse eines Zufallsvorgangs fasst man als Menge mit dem Namen <em>Ergebnisraum</em> zusammen. Man verwendet den griechischen Buchstaben <span class="math inline">\(\Omega\)</span> für diese Menge. Die Elemente <span class="math inline">\(\omega\)</span> (kleines Omega) von <span class="math inline">\(\Omega\)</span> nennt man <em>Ergebnisse</em>. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-grundraum" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.3</strong></span> Beobachtet man beim Würfelwurf (s. <a href="#fig-wuerfel" class="quarto-xref">Abbildung&nbsp;<span>4.10</span></a>) die oben liegende Augenzahl, so ist</p>
+<p><span class="theorem-title"><strong>Beispiel 4.3</strong></span> Beobachtet man beim Würfelwurf (s. <a href="#fig-wuerfel" class="quarto-xref">Abbildung&nbsp;<span>4.1</span></a>) die oben liegende Augenzahl, so ist</p>
 <p><span class="math display">\[\Omega = \{ 1,2,3,4,5,6 \} = \{⚀, ⚁, ⚂, ⚃, ⚄, ⚅\}\]</span></p>
 <p>ein natürlicher Grundraum <span class="citation" data-cites="henze2019">(<a href="references.html#ref-henze2019" role="doc-biblioref">Henze, 2019</a>)</span>. <span class="math inline">\(\square\)</span></p>
 </div>
@@ -937,7 +938,7 @@ Abbildung&nbsp;4.7: Beispiel für disjunkte Ereignisse
 </section></section><section id="was-ist-wahrscheinlichkeit" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="was-ist-wahrscheinlichkeit">
 <span class="header-section-number">4.3</span> Was ist Wahrscheinlichkeit?</h2>
 <p>Die “klassische” Logik der Wissenschaft beruht auf Schlüssen (Syllogismen) wie diesem: “Alle Schwäne sind weiß.” <span class="math inline">\(\rightarrow\)</span> “Dies ist ein Schwan.” <span class="math inline">\(\rightarrow\)</span> “Dieser Schwan ist weiß.”</p>
-<p>Mit dem Konzept von Wahrscheinlichkeit können wir jetzt auch folgende Logik anwenden: “Die meisten Schwäne sind weiß.” <span class="math inline">\(\rightarrow\)</span> “Dies ist ein Schwan.” <span class="math inline">\(\rightarrow\)</span> “Dieser Schwan ist wahrscheinlich weiß.” Das ist ein großer Fortschritt, der die Denkweise der Wissenschaft gut widerspiegelt und dafür eine logisch-mathematische Grundlage bereitstellt, s. <a href="#fig-prob-logic" class="quarto-xref">Abbildung&nbsp;<span>4.8</span></a>. Die Wahrscheinlichkeitsrechnung ist die typische Methode, um Ungewissheit zu präzisieren, d.h. zu quantifizieren.</p>
+<p>Mit dem Konzept von Wahrscheinlichkeit können wir jetzt auch folgende Logik anwenden: “Die meisten Schwäne sind weiß.” <span class="math inline">\(\rightarrow\)</span> “Dies ist ein Schwan.” <span class="math inline">\(\rightarrow\)</span> “Dieser Schwan ist wahrscheinlich weiß.” Das ist ein großer Fortschritt, der die Denkweise der Wissenschaft gut widerspiegelt und dafür eine logisch-mathematische Grundlage bereitstellt, s. <a href="#fig-prob-logic" class="quarto-xref">Abbildung&nbsp;<span>4.8</span></a>. Die Wahrscheinlichkeitsrechnung ist die typische Methode, um Ungewissheit zu präzisieren, d. h. zu quantifizieren.</p>
 <section id="formallogische-definition" class="level3" data-number="4.3.1"><h3 data-number="4.3.1" class="anchored" data-anchor-id="formallogische-definition">
 <span class="header-section-number">4.3.1</span> Formallogische Definition</h3>
 <section id="wahrscheinlichkeit-als-erweiterung-der-logik" class="level4" data-number="4.3.1.1"><h4 data-number="4.3.1.1" class="anchored" data-anchor-id="wahrscheinlichkeit-als-erweiterung-der-logik">
@@ -954,7 +955,7 @@ Abbildung&nbsp;4.7: Beispiel für disjunkte Ereignisse
 Abbildung&nbsp;4.8: Wahrscheinlichkeit als Erweiterung der Logik
 </figcaption></figure>
 </div>
-<p>Nach dieser “Wahrscheinlichkeitslogik” kann man ein Ereignis, von dessen Eintreten man “wenig überzeugt” ist, z.B. mit 0.2 quantifizieren. Hingegen einem Ereignis, von man “recht sicher” ist, mit 0.8 quantifizieren, s. <a href="#fig-prob-logic2" class="quarto-xref">Abbildung&nbsp;<span>4.9</span></a>.</p>
+<p>Nach dieser “Wahrscheinlichkeitslogik” kann man ein Ereignis, von dessen Eintreten man “wenig überzeugt” ist, z. B. mit 0.2 quantifizieren. Hingegen einem Ereignis, von man “recht sicher” ist, mit 0.8 quantifizieren, s. <a href="#fig-prob-logic2" class="quarto-xref">Abbildung&nbsp;<span>4.9</span></a>.</p>
 <div id="fig-prob-logic2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-prob-logic2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="img/prob-logic2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Abbildung&nbsp;4.9: Ein Ereignis von dessen Eintreten man gering bzw. stark überzeugt ist"><img src="img/prob-logic2.png" class="img-fluid figure-img"></a>
@@ -965,18 +966,18 @@ Abbildung&nbsp;4.9: Ein Ereignis von dessen Eintreten man gering bzw. stark übe
 </div>
 </section><section id="wahrscheinlichkeit-als-ungewissheit" class="level4" data-number="4.3.1.2"><h4 data-number="4.3.1.2" class="anchored" data-anchor-id="wahrscheinlichkeit-als-ungewissheit">
 <span class="header-section-number">4.3.1.2</span> Wahrscheinlichkeit als Ungewissheit</h4>
-<p>Wahrscheinlichkeit existiert nicht in dem Sinne, wie ein Stein oder ein Mensch existiert. Wahrscheinlichkeit ist stattdessen eine Art von Wissen. Daher ist es (nach <span class="citation" data-cites="jaynes2003">Jaynes &amp; Bretthorst (<a href="references.html#ref-jaynes2003" role="doc-biblioref">2003</a>)</span>) falsch, zu sagen: “Die Wahrscheinlichkeit für Zahl bei dieser Münze ist 50%.” Richtig wäre für einen unbedarften Spieler: “Ich habe keinen Grund, nicht an der Fairness der Münze zu glauben, also gehe ich von 50% Wahrscheinlichkeit für Zahl aus.” Der Betrüger, der diese Münze in der Hand hat, geht allerdings von einer Wahrscheinlichkeit von 75% für Zahl aus (er kennt die Münze besser als Sie).</p>
+<p>Wahrscheinlichkeit existiert nicht in dem Sinne, wie ein Stein oder ein Mensch existiert. Wahrscheinlichkeit ist stattdessen eine Art von Wissen. Daher ist es (nach <span class="citation" data-cites="jaynes2003">Jaynes &amp; Bretthorst (<a href="references.html#ref-jaynes2003" role="doc-biblioref">2003</a>)</span>) falsch, zu sagen: “Die Wahrscheinlichkeit für Zahl bei dieser Münze ist 50 %.” Richtig wäre für einen unbedarften Spieler: “Ich habe keinen Grund, nicht an der Fairness der Münze zu glauben, also gehe ich von 50 % Wahrscheinlichkeit für Zahl aus.” Der Betrüger, der diese Münze in der Hand hat, geht allerdings von einer Wahrscheinlichkeit von 75 % für Zahl aus (er kennt die Münze besser als Sie).</p>
 <p>Das Beispiel zeigt: Wahrscheinlichkeit ist kein Ding der Welt, sondern ein Wissenszustand.</p>
-<p>Formaler ausgedrückt: Sei <span class="math inline">\(Pr\)</span> die Wahrscheinlichkeit, die das Ereignis <span class="math inline">\(Z\)</span> (Zahl) angibt, <em>gegeben</em> meiner Annahme, dass die Münze fair ist (<span class="math inline">\(F\)</span>); sie hat also eine Wahrscheinlichkeit von 50% (1/2 = .5) für <span class="math inline">\(Z\)</span>. Dann kann man kurz schreiben:</p>
+<p>Formaler ausgedrückt: Sei <span class="math inline">\(Pr\)</span> die Wahrscheinlichkeit, die das Ereignis <span class="math inline">\(Z\)</span> (Zahl) angibt, <em>gegeben</em> meiner Annahme, dass die Münze fair ist (<span class="math inline">\(F\)</span>); sie hat also eine Wahrscheinlichkeit von 50 % (1/2 = .5) für <span class="math inline">\(Z\)</span>. Dann kann man kurz schreiben:</p>
 <p><span class="math display">\[Pr(Z|F) = 0.5\]</span> Gegeben des Wissens des Betrügers <span class="math inline">\(B\)</span> wäre die Wahrscheinlichkeit für <span class="math inline">\(Z\)</span> anders:</p>
 <p><span class="math display">\[Pr(Z|B) = 0.75\]</span></p>
-<p>In Worten: “Die Wahrscheinlichkeit von Zahl (<span class="math inline">\(Z\)</span>) gegeben das Wissen des Betrügers über die Münze (<span class="math inline">\(B\)</span>) liegt bei 75%.”</p>
+<p>In Worten: “Die Wahrscheinlichkeit von Zahl (<span class="math inline">\(Z\)</span>) gegeben das Wissen des Betrügers über die Münze (<span class="math inline">\(B\)</span>) liegt bei 75 %.”</p>
 </section><section id="wahrscheinlichkeit-ist-bedingt-auf-ein-hintergrundwissen" class="level4" data-number="4.3.1.3"><h4 data-number="4.3.1.3" class="anchored" data-anchor-id="wahrscheinlichkeit-ist-bedingt-auf-ein-hintergrundwissen">
 <span class="header-section-number">4.3.1.3</span> Wahrscheinlichkeit ist bedingt auf ein Hintergrundwissen</h4>
 <p>Das Beispiel zeigt auch, dass die Wahrscheinlichkeit eines Ereignisses (wie <span class="math inline">\(Z\)</span>) von Hintergrundinformationen (Annahmen, Daten, Evidenz, …) abhängt. Ohne zu sagen, auf welche Hintergrundinformationen wir uns beziehen (die des unbedarften Spielers oder die des Betrügers), ist es sinnvoll, eine Wahrscheinlichkeit anzugeben. Daher ist <span class="math inline">\(Pr(Z) = 0.5\)</span> unvollständig. Allerdings wird die Hintergrundinformation oft weggelassen, wenn es klar ist, welche Hintergrundinformation vorliegt. So wird häufig vorausgesetzt, dass eine Münze fair ist.</p>
 <div id="exm-bedingt" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.15 (Morgen regnet’s)</strong></span> Es ist daher unvollständig zu sagen: “Morgen wird es mit einer Wahrscheinlichkeit von 70% regnen.”</p>
-<p>Man müsste Hintergrundinformation (<em>Evidenz</em>, <span class="math inline">\(E\)</span>) ergänzen, z.B. “gegeben meines Wissens zum Wettermodell X”.</p>
+<p><span class="theorem-title"><strong>Beispiel 4.15 (Morgen regnet’s)</strong></span> Es ist daher unvollständig zu sagen: “Morgen wird es mit einer Wahrscheinlichkeit von 70 % regnen.”</p>
+<p>Man müsste Hintergrundinformation (<em>Evidenz</em>, <span class="math inline">\(E\)</span>) ergänzen, z. B. “gegeben meines Wissens zum Wettermodell X”.</p>
 <p>Also: Anstelle von <span class="math inline">\(Pr(\text{Regen}) = .7\)</span> sollte man besser schreiben: <span class="math inline">\(Pr(\text{Regen|Wettermodell X})\)</span>. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-bedingt2" class="theorem example">
@@ -992,7 +993,7 @@ Hinweis
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Sagt jemand: “Die Wahrscheinlichkeit von A ist x%”, frag immer: “gegeben welcher Annahmen, welcher Evidenz?”</p>
+<p>Sagt jemand: “Die Wahrscheinlichkeit von A ist x %”, frag immer: “gegeben welcher Annahmen, welcher Evidenz?”</p>
 </div>
 </div>
 <div id="def-indifferenzprinzip" class="theorem definition">
@@ -1022,14 +1023,14 @@ Hinweis
 <span class="header-section-number">4.3.2</span> Frequentistische Definition</h3>
 <p>In Ermangelung einer Theorie zum Verhalten eines (uns) unbekannten Zufallsvorgangs und unter der Vermutung, dass die Elementarereignisse nicht gleichwahrscheinlich sind, bleibt uns ein einfacher (aber aufwändiger und manchmal unmöglicher) Weg, um die Wahrscheinlichkeit eines Ereignisses zu bestimmen: Ausprobieren.</p>
 <p>Angenommen, ein Statistik-Dozent, bekannt für seine Vorliebe zum Glücksspiel und mit scheinbar endlosen Glückssträhnen (er wirft andauernd eine 6), hat seinen Lieblingswürfel versehentlich liegen gelassen. Das ist <em>die</em> Gelegenheit! Sie greifen sich den Würfel, und … Ja, was jetzt? Nach kurzer Überlegung kommen Sie zum Entschluss, den Würfel einem “Praxistest” zu unterziehen: Sie werfen ihn 1000 Mal (Puh!) und zählen den Anteil der <code>6</code>. Falls der Würfel fair ist, müsste gelten <span class="math inline">\(Pr(A=6)=1/6\approx .17\)</span>. Schauen wir mal!</p>
-<p>Und hier der Anteil von <code>6</code> im Verlauf unserer Würfe, s. <a href="#fig-wuerfel" class="quarto-xref">Abbildung&nbsp;<span>4.10</span></a>.</p>
+<p>Und hier der Anteil von <code>6</code> im Verlauf unserer Würfe, s. <a href="#fig-wuerfel-lln" class="quarto-xref">Abbildung&nbsp;<span>4.10</span></a>.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-wuerfel" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-wuerfel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0300-Wskt_files/figure-html/fig-wuerfel-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Abbildung&nbsp;4.10: Das Gesetz der großen Zahl am Beispiel der Stabilisierung des Trefferanteils beim wiederholten Würfelwurf"><img src="0300-Wskt_files/figure-html/fig-wuerfel-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+<div id="fig-wuerfel-lln" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-wuerfel-lln-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="0300-Wskt_files/figure-html/fig-wuerfel-lln-1.pdf" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Abbildung&nbsp;4.10: Das Gesetz der großen Zahl am Beispiel der Stabilisierung des Trefferanteils beim wiederholten Würfelwurf"><embed src="0300-Wskt_files/figure-html/fig-wuerfel-lln-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%"></a>
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wuerfel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wuerfel-lln-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.10: Das Gesetz der großen Zahl am Beispiel der Stabilisierung des Trefferanteils beim wiederholten Würfelwurf
 </figcaption></figure>
 </div>
@@ -1043,7 +1044,7 @@ Abbildung&nbsp;4.10: Das Gesetz der großen Zahl am Beispiel der Stabilisierung 
 <li>
 <em>Nichtnegativität</em>: Die Wahrscheinlichkeit eines Ereignisses kann nicht negativ sein.</li>
 <li>
-<em>Normierung</em>: Das sichere Ereignis hat die Wahrscheinlichkeit 1 bzw. 100%: <span class="math inline">\(Pr(\Omega)=1\)</span>; das unmögliche Ereignis hat die Wahrscheinlichkeit 0: <span class="math inline">\(Pr(\emptyset)=0\)</span>.</li>
+<em>Normierung</em>: Das sichere Ereignis hat die Wahrscheinlichkeit 1 bzw. 100 %: <span class="math inline">\(Pr(\Omega)=1\)</span>; das unmögliche Ereignis hat die Wahrscheinlichkeit 0: <span class="math inline">\(Pr(\emptyset)=0\)</span>.</li>
 <li>
 <em>Additivität</em>. Sind <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> disjunkt, dann ist die Wahrscheinlichkeit, dass mindestens eines der beiden Ereignisse eintritt (<span class="math inline">\(A\cup B\)</span>) gleich der Summe der beiden Einzelwahrscheinlichkeiten von <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span>.</li>
 </ol>
@@ -1054,7 +1055,7 @@ Abbildung&nbsp;4.10: Das Gesetz der großen Zahl am Beispiel der Stabilisierung 
 <li>Der Schmockulator ist in einem der beiden Zustände.</li>
 <li>Der Schmockulator ist vermutlich im Zustand alpha.</li>
 <li>Der Schmockulator ist möglicherweise im Zustand alpha.</li>
-<li>Der Schmockulator ist mit einer Wahrscheinlichkeit von 50% im Zustand alpha.</li>
+<li>Der Schmockulator ist mit einer Wahrscheinlichkeit von 50 % im Zustand alpha.</li>
 <li>Keine der genannten. <span class="math inline">\(\square\)</span>
 </li>
 </ol>
@@ -1070,7 +1071,7 @@ Abbildung&nbsp;4.10: Das Gesetz der großen Zahl am Beispiel der Stabilisierung 
 <span class="header-section-number">4.4.1</span> Überblick</h3>
 <p>Wir gehen von Grundraum <span class="math inline">\(\Omega\)</span> aus, mit dem Ereignis <span class="math inline">\(A\)</span> als echte Teilmenge von <span class="math inline">\(\Omega\)</span>: <span class="math inline">\(A \subset \Omega\)</span>.</p>
 <p>Da wir Ereignisse als Mengen auffassen, verwenden wir im Folgenden die beiden Begriffe synonym.</p>
-<p>Dabei nutzen wir u.a. Venn-Diagramme. Venn-Diagramme eigenen sich, um typische Operationen (Relationen) auf Mengen zu visualisieren. Die folgenden Venn-Diagramme stammen von <a href="https://en.wikipedia.org/wiki/Venn_diagram">Wikipedia (En)</a><a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a>.</p>
+<p>Dabei nutzen wir u.a. Venn-Diagramme. Venn-Diagramme eigenen sich, um typische Operationen (Relationen) auf Mengen zu visualisieren. Die folgenden Venn-Diagramme stammen von <a href="https://en.wikipedia.org/wiki/Venn_diagram">Wikipedia</a><a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1109,7 +1110,7 @@ A = \{1,2\} \qquad \boxed{\boxed{1\; 2}\; \color{gray}{ 3\; 4\; 5\; 6}} \\
 B = \{2,3\} \qquad  \boxed{1\; \boxed{2\; 3}\; \color{gray}{ 4\; 5\; 6}} \\
 \newline
 \rule{4cm}{0.4pt} \\
-A \cup B = \{1,2,3\} \qquad \boxed{\boxed{1\; 2\; 3}\; \color{gray}{4\; 5\; \boxed{6}}}
+A \cup B = \{1,2,3\} \qquad \boxed{\boxed{1\; 2\; 3}\; \color{gray}{4\; 5\; 6}}
 \end{align}\]</span></p>
 </div>
 </div>
@@ -1147,10 +1148,10 @@ Abbildung&nbsp;4.13: <span class="math inline">\(A \cap B\)</span>: Schnitt zwei
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-mengen-schnitt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="figure-content">
 <p><span class="math display">\[\begin{align}
-&amp; A = \{2,4,6\} \qquad \hfill \boxed{\color{gray}{1}\; \boxed{\color{black}{2}}\; \color{gray}{3}\; \boxed{\color{black}{4}}\; \color{gray}{5}\; \boxed{\color{black}{6}}\;} \\
-&amp; B = \{5,6\} \qquad \qquad \hfill  \boxed{ \color{gray}{1\; 2\; 3\; 4\;} \boxed{\color{black}{5\; 6}}} \\
-&amp; \rule{8.5cm}{0.4pt} \notag \\
-&amp; A \cap B = \{6\} \qquad \qquad \hfill  \boxed{\color{gray}{1\; 2\; 3\; 4\; 5\;} \color{black}{6}}
+A = \{2,4,6\} \qquad \hfill \boxed{\color{gray}{1}\; \boxed{\color{black}{2}}\; \color{gray}{3}\; \boxed{\color{black}{4}}\; \color{gray}{5}\; \boxed{\color{black}{6}}\;} \\
+B = \{5,6\} \qquad \qquad \hfill  \boxed{ \color{gray}{1\; 2\; 3\; 4\;} \boxed{\color{black}{5\; 6}}} \\
+\rule{8.5cm}{0.4pt} \\
+A \cap B = \{6\} \qquad \qquad \hfill  \boxed{\color{gray}{1\; 2\; 3\; 4\; 5\;} \color{black}{6}}
 \end{align}\]</span></p>
 </div>
 </div>
@@ -1299,7 +1300,7 @@ Vorsicht
 <section id="grundlagen" class="level3" data-number="4.5.1"><h3 data-number="4.5.1" class="anchored" data-anchor-id="grundlagen">
 <span class="header-section-number">4.5.1</span> Grundlagen</h3>
 <div id="exm-thesis" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.25</strong></span> Schorsch sucht eine Betreuerin für seine Abschlussarbeit. An die ideale Betreuerin setzt er 4 Kriterien an: a) klare, schriftliche fixierte Rahmenbedingungen, b) viel Erfahrung, c) guten Ruf und d) interessante Forschungsinteressen. Je mehr dieser 4 Kriterien erfüllt sind, desto besser. Schorsch geht davon aus, dass die 4 Kriterien voneinander unabhängig sind (ob eines erfüllt ist oder nicht, ändert nichts an der Wahrscheinlichkeit, dass ein anderes Kriterium erfüllt ist). Schorsch interessiert sich also für die <em>Anzahl</em> der erfüllten Kriterien, also eine Zahl von 0 bis 4. Er schätzt die Wahrscheinlichkeit für einen “Treffer” in jedem seiner 4 Kriterien auf 50%. Viel Glück, Schorsch! Sein Zufallsexperiment hat 16 Ausgänge (Knoten 16 bis 31), s. <a href="#fig-4muenzen" class="quarto-xref">Abbildung&nbsp;<span>4.20</span></a> und <a href="#tbl-schorsch-zufall" class="quarto-xref">Tabelle&nbsp;<span>4.1</span></a>. Ganz schön komplex. Eigentlich würden ihm ja eine Darstellung mit 5 Ergebnissen, also der “Gutachter-Score” von 0 bis 4 ja reichen. Wie können wir die Sache übersichtlicher für Schorsch machen? <a href="#fig-4muenzen" class="quarto-xref">Abbildung&nbsp;<span>4.20</span></a> ist ein Versuch. <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 4.25</strong></span> Schorsch sucht eine Betreuerin für seine Abschlussarbeit. An die ideale Betreuerin setzt er 4 Kriterien an: a) klare, schriftliche fixierte Rahmenbedingungen, b) viel Erfahrung, c) guten Ruf und d) interessante Forschungsinteressen. Je mehr dieser 4 Kriterien erfüllt sind, desto besser. Schorsch geht davon aus, dass die 4 Kriterien voneinander unabhängig sind (ob eines erfüllt ist oder nicht, ändert nichts an der Wahrscheinlichkeit, dass ein anderes Kriterium erfüllt ist). Schorsch interessiert sich also für die <em>Anzahl</em> der erfüllten Kriterien, also eine Zahl von 0 bis 4. Er schätzt die Wahrscheinlichkeit für einen “Treffer” in jedem seiner 4 Kriterien auf 50 %. Viel Glück, Schorsch! Sein Zufallsexperiment hat 16 Ausgänge (Knoten 16 bis 31), s. <a href="#fig-4muenzen" class="quarto-xref">Abbildung&nbsp;<span>4.20</span></a> und <a href="#tbl-schorsch-zufall" class="quarto-xref">Tabelle&nbsp;<span>4.1</span></a>. Ganz schön komplex. Eigentlich würden ihm ja eine Darstellung mit 5 Ergebnissen, also der “Gutachter-Score” von 0 bis 4 ja reichen. Wie können wir die Sache übersichtlicher für Schorsch machen? <a href="#fig-4muenzen" class="quarto-xref">Abbildung&nbsp;<span>4.20</span></a> ist ein Versuch. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="fig-4muenzen" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-4muenzen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1312,7 +1313,7 @@ Abbildung&nbsp;4.20: Ein Baumdiagramm mit 16 Ausgängen, analog zur 4 Münzwürf
 <div class="cell" data-layout-align="center">
 <div id="tbl-schorsch-zufall" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
 <figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-schorsch-zufall-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tabelle&nbsp;4.1: Schorschs Zufallsexperiment, Auszug der Elementarereignisse (EE)
+Tabelle&nbsp;4.1: Schorschs Zufallsexperiment, Auszug der 16 Elementarereignisse (EE)
 </figcaption><div aria-describedby="tbl-schorsch-zufall-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
 <div id="uyrtnbavvn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -1797,18 +1798,6 @@ Tabelle&nbsp;4.1: Schorschs Zufallsexperiment, Auszug der Elementarereignisse (E
 <td class="gt_row gt_left" headers="Trefferzahl">1</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="i">5</td>
-<td class="gt_row gt_left" headers="Elementarereignis">TNNN</td>
-<td class="gt_row gt_left" headers="Pr(EE)">1/16</td>
-<td class="gt_row gt_left" headers="Trefferzahl">1</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="i">6</td>
-<td class="gt_row gt_left" headers="Elementarereignis">NNTT</td>
-<td class="gt_row gt_left" headers="Pr(EE)">1/16</td>
-<td class="gt_row gt_left" headers="Trefferzahl">2</td>
-</tr>
-<tr class="odd">
 <td class="gt_row gt_left" headers="i">…</td>
 <td class="gt_row gt_left" headers="Elementarereignis">…</td>
 <td class="gt_row gt_left" headers="Pr(EE)">…</td>
@@ -1830,8 +1819,7 @@ Tabelle&nbsp;4.1: Schorschs Zufallsexperiment, Auszug der Elementarereignisse (E
 <div id="exm-lotto" class="theorem example">
 <p><span class="theorem-title"><strong>Beispiel 4.26 (Lotto)</strong></span> Ein Lottospiel hat ca. 14 Millionen Elementarereignisse. Die Zufallsvariable “Anzahl der Treffer” hat nur 7 Realisationen: 0, 1, …, 6. <span class="math inline">\(\square\)</span></p>
 </div>
-<p>Es hat sich eingebürgert, Zufallszahlen mit <span class="math inline">\(X\)</span> zu bezeichnen (oder anderen Buchstaben weit hinten aus dem Alphabet).</p>
-<p>Man schreibt für eine Zufallsvariable kurz: <span class="math inline">\(X: \Omega \rightarrow \mathbb{R}\)</span>. “X ist eine Zufallsvariable, die jedem Elementarereignis <span class="math inline">\(\omega\)</span> eine reelle Zahl zuordnet.” Um die Vorschrift der Zuordnung genauer zu bestimmen, kann man folgende Kurzschreibweise nutzen:</p>
+<p>Es hat sich eingebürgert, Zufallszahlen mit <span class="math inline">\(X\)</span> zu bezeichnen (oder anderen Buchstaben weit hinten aus dem Alphabet). Man schreibt für eine Zufallsvariable kurz: <span class="math inline">\(X: \Omega \rightarrow \mathbb{R}\)</span>. “X ist eine Zufallsvariable, die jedem Elementarereignis <span class="math inline">\(\omega\)</span> eine reelle Zahl zuordnet.” Um die Vorschrift der Zuordnung genauer zu bestimmen, kann man folgende Kurzschreibweise nutzen:</p>
 <p><span class="math inline">\({\displaystyle X(\omega )={\begin{cases}1,&amp;{\text{wenn }}\omega ={\text{Kopf}},\\[6pt]0,&amp;{\text{wenn }}\omega ={\text{Zahl}}.\end{cases}}}\)</span></p>
 <p><a href="#fig-zv" class="quarto-xref">Abbildung&nbsp;<span>4.21</span></a> stellt diese Abbildung dar.</p>
 <div id="fig-zv" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -1855,7 +1843,7 @@ Abbildung&nbsp;4.21: Eine Zufallsvariable ist eine Zuordnung der Ereignisse zu e
 <div class="cell-output-display">
 <div id="fig-zuv-disk" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-zuv-disk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0300-Wskt_files/figure-html/fig-zuv-disk-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16" title="Abbildung&nbsp;4.22: Sinnbild einer diskreten Zufallsvariablen X für Schorschs Suche nach einer Betreuerin seiner Abschlussarbeit. X gibt den Score der Gutachterin wider."><img src="0300-Wskt_files/figure-html/fig-zuv-disk-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+<a href="0300-Wskt_files/figure-html/fig-zuv-disk-1.pdf" class="lightbox" data-gallery="quarto-lightbox-gallery-16" title="Abbildung&nbsp;4.22: Sinnbild einer diskreten Zufallsvariablen X für Schorschs Suche nach einer Betreuerin seiner Abschlussarbeit. X gibt den Score der Gutachterin wider."><embed src="0300-Wskt_files/figure-html/fig-zuv-disk-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zuv-disk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.22: Sinnbild einer diskreten Zufallsvariablen X für Schorschs Suche nach einer Betreuerin seiner Abschlussarbeit. X gibt den Score der Gutachterin wider.
@@ -1902,7 +1890,7 @@ Abbildung&nbsp;4.24: Augensumme des zweifachen Würfelwurfs; für jede Realisati
 <p><span class="theorem-title"><strong>Definition 4.17 (Diskrete Wahrscheinlichkeitsverteilung)</strong></span> Eine <em>diskrete</em> Wahrscheinlichkeitsverteilung der (diskreten) Zufallsvariablen <span class="math inline">\(X\)</span> ordnet jeder der <span class="math inline">\(k\)</span> Ausprägungen <span class="math inline">\(X=x\)</span> eine Wahrscheinlichkeit <span class="math inline">\(p\)</span> zu. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-babies" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 4.30 (Wahrscheinlichkeit des Geschlechts bei der Geburt)</strong></span> So hat die Variable <em>Geschlecht eines Babys</em> die beiden Ausprägungen <em>Mädchen</em> und <em>Junge</em> mit den Wahrscheinlichkeiten <span class="math inline">\(p_M = 51.2\%\)</span> bzw. <span class="math inline">\(p_J = 48.8\%\)</span>, laut einer Studie <span class="citation" data-cites="gelman2021">(<a href="references.html#ref-gelman2021" role="doc-biblioref">Gelman et al., 2021</a>)</span>. <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Beispiel 4.30 (Wahrscheinlichkeit des Geschlechts bei der Geburt)</strong></span> So hat die Variable <em>Geschlecht eines Babys</em> die beiden Ausprägungen <em>Mädchen</em> und <em>Junge</em> mit den Wahrscheinlichkeiten <span class="math inline">\(p_M = 48.8\%\)</span> bzw. <span class="math inline">\(p_J = 51.2\%\)</span>, laut einer Studie <span class="citation" data-cites="gelman2021">(<a href="references.html#ref-gelman2021" role="doc-biblioref">Gelman et al., 2021</a>)</span>. <span class="math inline">\(\square\)</span></p>
 </div>
 <p>Zwischen der deskriptiven Statistik und der Wahrscheinlichkeitstheorie bestehen enge Parallelen, <a href="#tbl-wkeit-desk" class="quarto-xref">Tabelle&nbsp;<span>4.2</span></a> stellt einige zentrale Konzepte gegenüber. Bei einer guten Stichprobe kann man die Kennwerte der deskriptiven Statistik als Schätzwerte für die zugrundeliegende Wahrscheinlichkeit verwenden.</p>
 <div class="cell" data-layout-align="center">
@@ -1911,488 +1899,38 @@ Abbildung&nbsp;4.24: Augensumme des zweifachen Würfelwurfs; für jede Realisati
 Tabelle&nbsp;4.2: Gegenüberstellung von Wahrscheinlichkeitstheorie und deskriptiver Statistik
 </figcaption><div aria-describedby="tbl-wkeit-desk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="gowfltkjqy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#gowfltkjqy table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#gowfltkjqy thead, #gowfltkjqy tbody, #gowfltkjqy tfoot, #gowfltkjqy tr, #gowfltkjqy td, #gowfltkjqy th {
-  border-style: none;
-}
-
-#gowfltkjqy p {
-  margin: 0;
-  padding: 0;
-}
-
-#gowfltkjqy .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#gowfltkjqy .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#gowfltkjqy .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#gowfltkjqy .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#gowfltkjqy .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#gowfltkjqy .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#gowfltkjqy .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#gowfltkjqy .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#gowfltkjqy .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#gowfltkjqy .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#gowfltkjqy .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#gowfltkjqy .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#gowfltkjqy .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#gowfltkjqy .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#gowfltkjqy .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#gowfltkjqy .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#gowfltkjqy .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#gowfltkjqy .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#gowfltkjqy .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#gowfltkjqy .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#gowfltkjqy .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#gowfltkjqy .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#gowfltkjqy .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#gowfltkjqy .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#gowfltkjqy .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#gowfltkjqy .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#gowfltkjqy .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#gowfltkjqy .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#gowfltkjqy .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#gowfltkjqy .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#gowfltkjqy .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#gowfltkjqy .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#gowfltkjqy .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#gowfltkjqy .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#gowfltkjqy .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#gowfltkjqy .gt_left {
-  text-align: left;
-}
-
-#gowfltkjqy .gt_center {
-  text-align: center;
-}
-
-#gowfltkjqy .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#gowfltkjqy .gt_font_normal {
-  font-weight: normal;
-}
-
-#gowfltkjqy .gt_font_bold {
-  font-weight: bold;
-}
-
-#gowfltkjqy .gt_font_italic {
-  font-style: italic;
-}
-
-#gowfltkjqy .gt_super {
-  font-size: 65%;
-}
-
-#gowfltkjqy .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#gowfltkjqy .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#gowfltkjqy .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#gowfltkjqy .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#gowfltkjqy .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#gowfltkjqy .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#gowfltkjqy .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#gowfltkjqy .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#gowfltkjqy div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-<table class="gt_table cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
-<thead><tr class="gt_col_headings header">
-<th id="Wahrscheinlichkeitstheorie" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Wahrscheinlichkeitstheorie</th>
-<th id="Deskriptive-Statistik" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Deskriptive Statistik</th>
+<table class="table cell caption-top table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Wahrscheinlichkeitstheorie</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Deskriptive Statistik</th>
 </tr></thead>
-<tbody class="gt_table_body">
+<tbody>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Wahrscheinlichkeitstheorie">Zufallsvariable</td>
-<td class="gt_row gt_left" headers="Deskriptive Statistik">Merkmal</td>
+<td style="text-align: left; width: 5cm;">Zufallsvariable</td>
+<td style="text-align: left; width: 6cm;">Merkmal</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Wahrscheinlichkeitstheorie">Wahrscheinlichkeit</td>
-<td class="gt_row gt_left" headers="Deskriptive Statistik">relative Häufigkeit, Anteil</td>
+<td style="text-align: left; width: 5cm;">Wahrscheinlichkeit</td>
+<td style="text-align: left; width: 6cm;">relative Häufigkeit, Anteil</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Wahrscheinlichkeitstheorie">Wahrscheinlichkeitsverteilung</td>
-<td class="gt_row gt_left" headers="Deskriptive Statistik">einfache relative Häufigkeitsverteilung</td>
+<td style="text-align: left; width: 5cm;">Wahrscheinlichkeitsverteilung</td>
+<td style="text-align: left; width: 6cm;">einfache relative Häufigkeitsverteilung</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Wahrscheinlichkeitstheorie">Verteilungsfunktion</td>
-<td class="gt_row gt_left" headers="Deskriptive Statistik">kumulierte relative Häufigkeitsverteilung</td>
+<td style="text-align: left; width: 5cm;">Verteilungsfunktion</td>
+<td style="text-align: left; width: 6cm;">kumulierte relative Häufigkeitsverteilung</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Wahrscheinlichkeitstheorie">Erwartungswert</td>
-<td class="gt_row gt_left" headers="Deskriptive Statistik">Mittelwert</td>
+<td style="text-align: left; width: 5cm;">Erwartungswert</td>
+<td style="text-align: left; width: 6cm;">Mittelwert</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Wahrscheinlichkeitstheorie">Varianz</td>
-<td class="gt_row gt_left" headers="Deskriptive Statistik">Varianz</td>
+<td style="text-align: left; width: 5cm;">Varianz</td>
+<td style="text-align: left; width: 6cm;">Varianz</td>
 </tr>
 </tbody>
 </table>
-</div>
 </div>
 </div>
 </figure>
@@ -2405,7 +1943,7 @@ Tabelle&nbsp;4.2: Gegenüberstellung von Wahrscheinlichkeitstheorie und deskript
 <div class="cell-output-display">
 <div id="fig-2dice-prob" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-2dice-prob-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0300-Wskt_files/figure-html/fig-2dice-prob-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19" title="Abbildung&nbsp;4.25: Wahrscheinlichkeitsverteilung der Zufallsvariable “Augenzahl im zweifachen Würfelwurf”"><img src="0300-Wskt_files/figure-html/fig-2dice-prob-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+<a href="0300-Wskt_files/figure-html/fig-2dice-prob-1.pdf" class="lightbox" data-gallery="quarto-lightbox-gallery-19" title="Abbildung&nbsp;4.25: Wahrscheinlichkeitsverteilung der Zufallsvariable “Augenzahl im zweifachen Würfelwurf”"><embed src="0300-Wskt_files/figure-html/fig-2dice-prob-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-2dice-prob-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.25: Wahrscheinlichkeitsverteilung der Zufallsvariable “Augenzahl im zweifachen Würfelwurf”
@@ -2418,7 +1956,7 @@ Abbildung&nbsp;4.25: Wahrscheinlichkeitsverteilung der Zufallsvariable “Augenz
 <div class="cell-output-display">
 <div id="fig-2dice-sim" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-2dice-sim-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0300-Wskt_files/figure-html/fig-2dice-sim-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20" title="Abbildung&nbsp;4.26: (relative und absolute) Häufigkeiten des zweifachen Würfelwurfs, 1000 Mal wiederholt"><img src="0300-Wskt_files/figure-html/fig-2dice-sim-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+<a href="0300-Wskt_files/figure-html/fig-2dice-sim-1.pdf" class="lightbox" data-gallery="quarto-lightbox-gallery-20" title="Abbildung&nbsp;4.26: (relative und absolute) Häufigkeiten des zweifachen Würfelwurfs, 1000 Mal wiederholt"><embed src="0300-Wskt_files/figure-html/fig-2dice-sim-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-2dice-sim-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.26: (relative und absolute) Häufigkeiten des zweifachen Würfelwurfs, 1000 Mal wiederholt
@@ -2445,7 +1983,7 @@ Abbildung&nbsp;4.26: (relative und absolute) Häufigkeiten des zweifachen Würfe
 <div class="cell-output-display">
 <div id="fig-kum-h-vert" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-kum-h-vert-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0300-Wskt_files/figure-html/fig-kum-h-vert-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-21" title="Abbildung&nbsp;4.27: Verteilungsfunktion F(X \le x_i) für die Zufallsvariable “Augenzahl im zweifachen Würfelwurf”"><img src="0300-Wskt_files/figure-html/fig-kum-h-vert-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+<a href="0300-Wskt_files/figure-html/fig-kum-h-vert-1.pdf" class="lightbox" data-gallery="quarto-lightbox-gallery-21" title="Abbildung&nbsp;4.27: Verteilungsfunktion F(X \le x_i) für die Zufallsvariable “Augenzahl im zweifachen Würfelwurf”"><embed src="0300-Wskt_files/figure-html/fig-kum-h-vert-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-kum-h-vert-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.27: Verteilungsfunktion <span class="math inline">\(F(X \le x_i)\)</span> für die Zufallsvariable “Augenzahl im zweifachen Würfelwurf”
@@ -2458,7 +1996,7 @@ Abbildung&nbsp;4.27: Verteilungsfunktion <span class="math inline">\(F(X \le x_i
 <div class="cell-output-display">
 <div id="fig-kum-h-vert-emp" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-kum-h-vert-emp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0300-Wskt_files/figure-html/fig-kum-h-vert-emp-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22" title="Abbildung&nbsp;4.28: Empirische Verteilungsfunktion (kumulierte Häufigkeitsverteilung) F(X \le x_i) von 1000 zweifachen Münzwürfen"><img src="0300-Wskt_files/figure-html/fig-kum-h-vert-emp-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+<a href="0300-Wskt_files/figure-html/fig-kum-h-vert-emp-1.pdf" class="lightbox" data-gallery="quarto-lightbox-gallery-22" title="Abbildung&nbsp;4.28: Empirische Verteilungsfunktion (kumulierte Häufigkeitsverteilung) F(X \le x_i) von 1000 zweifachen Münzwürfen"><embed src="0300-Wskt_files/figure-html/fig-kum-h-vert-emp-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-kum-h-vert-emp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.28: Empirische Verteilungsfunktion (kumulierte Häufigkeitsverteilung) <span class="math inline">\(F(X \le x_i)\)</span> von 1000 zweifachen Münzwürfen
@@ -2478,7 +2016,7 @@ Abbildung&nbsp;4.28: Empirische Verteilungsfunktion (kumulierte Häufigkeitsvert
 <div class="cell-output-display">
 <div id="fig-zv-stetig-groesse" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-zv-stetig-groesse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0300-Wskt_files/figure-html/fig-zv-stetig-groesse-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-23" title="Abbildung&nbsp;4.29: Sinnbild für eine stetige Zufallsvariable X “Körpergröße”"><img src="0300-Wskt_files/figure-html/fig-zv-stetig-groesse-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+<a href="0300-Wskt_files/figure-html/fig-zv-stetig-groesse-1.pdf" class="lightbox" data-gallery="quarto-lightbox-gallery-23" title="Abbildung&nbsp;4.29: Sinnbild für eine stetige Zufallsvariable X “Körpergröße”"><embed src="0300-Wskt_files/figure-html/fig-zv-stetig-groesse-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zv-stetig-groesse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.29: Sinnbild für eine stetige Zufallsvariable X “Körpergröße”
@@ -2502,7 +2040,7 @@ Abbildung&nbsp;4.29: Sinnbild für eine stetige Zufallsvariable X “Körpergrö
 <div id="exr-bus-42" class="theorem exercise">
 <p><span class="theorem-title"><strong>Übungsaufgabe 4.8 (Warten auf den Bus, 42 Sekunden)</strong></span> Sie stehen an der Bushaltestelle und warten auf den Bus. Langweilig. Da kommt Ihnen ein Gedanken in den Sinn: Wie hoch ist wohl die Wahrscheinlichkeit, dass Sie <em>exakt</em> 42 Sekunden auf den Bus warten müssen, s. <a href="#fig-p42" class="quarto-xref">Abbildung&nbsp;<span>4.31</span></a>? Weiterhin überlegen Sie, dass davon auszugehen ist, dass jede Wartezeit zwischen 0 und 10 Minuten gleich wahrscheinlich ist. Spätestens nach 10 Minuten kommt der Bus, so ist die Taktung (extrem zuverlässig). Exakt heißt <em>exakt</em>, also nicht 42.1s, nicht 42.01s, nicht 42.001s, etc. bis zur x-ten Dezimale. <span class="math inline">\(\square\)</span></p>
 </div>
-<p>Nicht so einfach (?). Hingegen ist die Frage, wie hoch die Wahrscheinlichkeit ist, zwischen 0 und 5 Minuten auf den Bus zu warten (<span class="math inline">\(0&lt;x&lt;5\)</span>), einfach: Sie beträgt 50%, wie man in <a href="#fig-bus" class="quarto-xref">Abbildung&nbsp;<span>4.30</span></a> gut sehen kann.</p>
+<p>Nicht so einfach (?). Hingegen ist die Frage, wie hoch die Wahrscheinlichkeit ist, zwischen 0 und 5 Minuten auf den Bus zu warten (<span class="math inline">\(0&lt;x&lt;5\)</span>), einfach: Sie beträgt 50 %, wie man in <a href="#fig-bus" class="quarto-xref">Abbildung&nbsp;<span>4.30</span></a> gut sehen kann.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div id="fig-bus" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -2518,7 +2056,7 @@ Abbildung&nbsp;4.30: Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minu
 <div class="cell-output-display">
 <div id="fig-p42" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-p42-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0300-Wskt_files/figure-html/fig-p42-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-25" title="Abbildung&nbsp;4.31: Wie groß ist die Wahrscheinlichkeit, genau 42 Sekunden auf den Bus zu warten? Hm."><img src="0300-Wskt_files/figure-html/fig-p42-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></a>
+<a href="0300-Wskt_files/figure-html/fig-p42-1.pdf" class="lightbox" data-gallery="quarto-lightbox-gallery-25" title="Abbildung&nbsp;4.31: Wie groß ist die Wahrscheinlichkeit, genau 42 Sekunden auf den Bus zu warten? Hm."><embed src="0300-Wskt_files/figure-html/fig-p42-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:100.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-p42-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.31: Wie groß ist die Wahrscheinlichkeit, genau 42 Sekunden auf den Bus zu warten? Hm.
@@ -2560,7 +2098,7 @@ Abbildung&nbsp;4.32: Die Wahrscheinlichkeit, dass eine Zufallsvariable einen Wer
 <div class="cell-output-display">
 <div id="fig-F-Bus" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-F-Bus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0300-Wskt_files/figure-html/fig-F-Bus-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-27" title="Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”"><img src="0300-Wskt_files/figure-html/fig-F-Bus-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+<a href="0300-Wskt_files/figure-html/fig-F-Bus-1.pdf" class="lightbox" data-gallery="quarto-lightbox-gallery-27" title="Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”"><embed src="0300-Wskt_files/figure-html/fig-F-Bus-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-F-Bus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
@@ -2575,8 +2113,8 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <ol type="A">
 <li>Die Wahrscheinlichkeit, genau 5 Minuten zu warten, ist am höchsten.</li>
 <li>Die Wahrscheinlichkeit, genau 10 Minuten zu warten, ist Null.</li>
-<li>Mit 100% Wahrscheinlichkeit beträgt die Wartezeit zwischen 0 und 10 Minuten.</li>
-<li>Die Wahrscheinlichkeit, höchstens 1 Minute zu warten, beträgt 10%. <span class="math inline">\(\square\)</span>
+<li>Mit 100 % Wahrscheinlichkeit beträgt die Wartezeit zwischen 0 und 10 Minuten.</li>
+<li>Die Wahrscheinlichkeit, höchstens 1 Minute zu warten, beträgt 10 %. <span class="math inline">\(\square\)</span>
 </li>
 </ol>
 </div>
@@ -2606,9 +2144,9 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="cell" data-layout-align="center">
 <div class="webex-question">
 <div class="webex-check webex-box">
-<p>Beim <em>zweifachen</em> Würfelwurf wird das Ergebnis als geordnetes Paar erfasst, z.B. <span class="math inline">\((3,5)\)</span> (erster Würfel zeigt 3, zweiter zeigt 5). Wie groß ist die Mächtigkeit <span class="math inline">\(|\Omega|\)</span> des zugehörigen Ergebnisraums, und wie viele mögliche Realisationen hat die Zufallsvariable <span class="math inline">\(S\)</span> = “Augensumme” (Summe beider Würfel)?</p>
-<div id="webex-9d62c956cc9c9733b2d59efd308ff24a" class="webex-radiogroup" data-answer="YlQaA08JGQZPU2Q=">
-<label><input type="radio" autocomplete="off" name="9d62c956cc9c9733b2d59efd308ff24a"><span><span class="math inline">\(|\Omega| = 11\)</span>; <span class="math inline">\(S\)</span> hat ebenfalls 11 mögliche Realisationen.</span></label><label><input type="radio" autocomplete="off" name="9d62c956cc9c9733b2d59efd308ff24a"><span><span class="math inline">\(|\Omega| = 36\)</span>; <span class="math inline">\(S\)</span> hat 11 mögliche Realisationen (2 bis 12).</span></label><label><input type="radio" autocomplete="off" name="9d62c956cc9c9733b2d59efd308ff24a"><span><span class="math inline">\(|\Omega| = 12\)</span>; <span class="math inline">\(S\)</span> hat 12 mögliche Realisationen.</span></label><label><input type="radio" autocomplete="off" name="9d62c956cc9c9733b2d59efd308ff24a"><span><span class="math inline">\(|\Omega| = 6\)</span>; <span class="math inline">\(S\)</span> hat 11 mögliche Realisationen.</span></label><label><input type="radio" autocomplete="off" name="9d62c956cc9c9733b2d59efd308ff24a"><span><span class="math inline">\(|\Omega| = 36\)</span>; <span class="math inline">\(S\)</span> hat 36 mögliche Realisationen.</span></label>
+<p>Beim <em>zweifachen</em> Würfelwurf wird das Ergebnis als geordnetes Paar erfasst, z. B. <span class="math inline">\((3,5)\)</span> (erster Würfel zeigt 3, zweiter zeigt 5). Wie groß ist die Mächtigkeit <span class="math inline">\(|\Omega|\)</span> des zugehörigen Ergebnisraums, und wie viele mögliche Realisationen hat die Zufallsvariable <span class="math inline">\(S\)</span> = “Augensumme” (Summe beider Würfel)?</p>
+<div id="webex-eccbb3224333d15e92bfcae5003f0f1c" class="webex-radiogroup" data-answer="PlNPUk4CHgIYA24=">
+<label><input type="radio" autocomplete="off" name="eccbb3224333d15e92bfcae5003f0f1c"><span><span class="math inline">\(|\Omega| = 11\)</span>; <span class="math inline">\(S\)</span> hat ebenfalls 11 mögliche Realisationen.</span></label><label><input type="radio" autocomplete="off" name="eccbb3224333d15e92bfcae5003f0f1c"><span><span class="math inline">\(|\Omega| = 36\)</span>; <span class="math inline">\(S\)</span> hat 36 mögliche Realisationen.</span></label><label><input type="radio" autocomplete="off" name="eccbb3224333d15e92bfcae5003f0f1c"><span><span class="math inline">\(|\Omega| = 36\)</span>; <span class="math inline">\(S\)</span> hat 11 mögliche Realisationen (2 bis 12).</span></label><label><input type="radio" autocomplete="off" name="eccbb3224333d15e92bfcae5003f0f1c"><span><span class="math inline">\(|\Omega| = 12\)</span>; <span class="math inline">\(S\)</span> hat 12 mögliche Realisationen.</span></label><label><input type="radio" autocomplete="off" name="eccbb3224333d15e92bfcae5003f0f1c"><span><span class="math inline">\(|\Omega| = 6\)</span>; <span class="math inline">\(S\)</span> hat 11 mögliche Realisationen.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2616,12 +2154,12 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <p>Warum die Distraktoren falsch sind:</p>
 <ul>
 <li><p>Die zweite Option verwechselt die Mächtigkeit des <em>Ergebnisraums</em> <span class="math inline">\(|\Omega|\)</span> (36 Elementarereignisse, je ein Zahlenpaar) mit der Anzahl der <em>Realisationen der Zufallsvariable</em> <span class="math inline">\(S\)</span> (11 mögliche Summenwerte). Das sind zwei verschiedene Zahlen, die hier zufällig beide “11” bzw. “36” nahelegen, aber nicht gleichgesetzt werden dürfen.</p></li>
-<li><p>Die dritte Option nimmt fälschlich an, dass jede der 36 Kombinationen zu einer <em>eigenen</em> Augensumme führt; tatsächlich führen aber mehrere Kombinationen zur gleichen Summe (z.B. <span class="math inline">\((1,3)\)</span>, <span class="math inline">\((2,2)\)</span> und <span class="math inline">\((3,1)\)</span> ergeben alle <span class="math inline">\(S=4\)</span>), daher hat <span class="math inline">\(S\)</span> deutlich weniger als 36 Realisationen.</p></li>
+<li><p>Die dritte Option nimmt fälschlich an, dass jede der 36 Kombinationen zu einer <em>eigenen</em> Augensumme führt; tatsächlich führen aber mehrere Kombinationen zur gleichen Summe (z. B. <span class="math inline">\((1,3)\)</span>, <span class="math inline">\((2,2)\)</span> und <span class="math inline">\((3,1)\)</span> ergeben alle <span class="math inline">\(S=4\)</span>), daher hat <span class="math inline">\(S\)</span> deutlich weniger als 36 Realisationen.</p></li>
 <li><p>Die vierte Option (12 und 12) übersieht, dass es zwar 12 mögliche “Randwerte” für einen einzelnen Würfel (2 mal 6) geben könnte, tatsächlich aber die Summe von 2 bis 12 reicht, was <strong>11</strong> (nicht 12) verschiedene Werte sind (<span class="math inline">\(12-2+1=11\)</span>).</p></li>
 <li><p>Die fünfte Option verwechselt die Mächtigkeit des Ergebnisraums mit der Anzahl der Seiten <em>eines einzelnen</em> Würfels (6); beim <em>zweifachen</em> Wurf müssen aber beide Würfel gemeinsam betrachtet werden, was <span class="math inline">\(6 \times 6 = 36\)</span> Kombinationen ergibt.</p></li>
 <li><p>Falsch</p></li>
-<li><p>Wahr</p></li>
 <li><p>Falsch</p></li>
+<li><p>Wahr</p></li>
 <li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
 </ul>
@@ -2630,8 +2168,8 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Beim einfachen Würfelwurf gilt <span class="math inline">\(\Omega = \{1,2,3,4,5,6\}\)</span>. Welche der folgenden Zerlegungen in zwei Ereignisse <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> bildet ein <em>vollständiges Ereignissystem</em>?</p>
-<div id="webex-75f0f0cabdda4f4722ca1a51216f19d4" class="webex-radiogroup" data-answer="bAVKAEoBT1FOVDk=">
-<label><input type="radio" autocomplete="off" name="75f0f0cabdda4f4722ca1a51216f19d4"><span><span class="math inline">\(A = \{1,2,3,4,5,6\}\)</span>, <span class="math inline">\(B = \{1,2,3\}\)</span></span></label><label><input type="radio" autocomplete="off" name="75f0f0cabdda4f4722ca1a51216f19d4"><span><span class="math inline">\(A = \{1,2,3,4\}\)</span>, <span class="math inline">\(B = \{4,5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="75f0f0cabdda4f4722ca1a51216f19d4"><span><span class="math inline">\(A = \{1,2,3\}\)</span>, <span class="math inline">\(B = \{4,5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="75f0f0cabdda4f4722ca1a51216f19d4"><span><span class="math inline">\(A = \{2,4,6\}\)</span>, <span class="math inline">\(B = \{2,4,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="75f0f0cabdda4f4722ca1a51216f19d4"><span><span class="math inline">\(A = \{1,2,3\}\)</span>, <span class="math inline">\(B = \{4,5\}\)</span></span></label>
+<div id="webex-0f0424d663cef52d68013360b142d50f" class="webex-radiogroup" data-answer="a1YcBB4FSAYaAz4=">
+<label><input type="radio" autocomplete="off" name="0f0424d663cef52d68013360b142d50f"><span><span class="math inline">\(A = \{2,4,6\}\)</span>, <span class="math inline">\(B = \{2,4,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="0f0424d663cef52d68013360b142d50f"><span><span class="math inline">\(A = \{1,2,3\}\)</span>, <span class="math inline">\(B = \{4,5\}\)</span></span></label><label><input type="radio" autocomplete="off" name="0f0424d663cef52d68013360b142d50f"><span><span class="math inline">\(A = \{1,2,3\}\)</span>, <span class="math inline">\(B = \{4,5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="0f0424d663cef52d68013360b142d50f"><span><span class="math inline">\(A = \{1,2,3,4\}\)</span>, <span class="math inline">\(B = \{4,5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="0f0424d663cef52d68013360b142d50f"><span><span class="math inline">\(A = \{1,2,3,4,5,6\}\)</span>, <span class="math inline">\(B = \{1,2,3\}\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2653,8 +2191,8 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Beim einfachen Würfelwurf betrachten wir die Ereignisse <span class="math inline">\(A\)</span> = “gerade Augenzahl” (<span class="math inline">\(A=\{2,4,6\}\)</span>) und <span class="math inline">\(C\)</span> = “Augenzahl mindestens 5” (<span class="math inline">\(C=\{5,6\}\)</span>). Sind <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> disjunkt?</p>
-<div id="webex-057e424c488c8b15bad2f7129308279f" class="webex-radiogroup" data-answer="awUbVBgCGFMYCGU=">
-<label><input type="radio" autocomplete="off" name="057e424c488c8b15bad2f7129308279f"><span>Diese Frage lässt sich nicht beantworten, ohne die Wahrscheinlichkeiten von <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> zu kennen.</span></label><label><input type="radio" autocomplete="off" name="057e424c488c8b15bad2f7129308279f"><span>Nein, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind nicht disjunkt, da <span class="math inline">\(A \cap C = \{6\} \neq \emptyset\)</span>.</span></label><label><input type="radio" autocomplete="off" name="057e424c488c8b15bad2f7129308279f"><span>Ja, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind disjunkt, da <span class="math inline">\(A \cap C = \emptyset\)</span>.</span></label><label><input type="radio" autocomplete="off" name="057e424c488c8b15bad2f7129308279f"><span>Nein, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind nicht disjunkt, weil <span class="math inline">\(A \cup C \neq \Omega\)</span> gilt.</span></label><label><input type="radio" autocomplete="off" name="057e424c488c8b15bad2f7129308279f"><span>Ja, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind disjunkt, weil es sich um zwei unterschiedlich definierte Ereignisse handelt.</span></label>
+<div id="webex-293764b5f667304b2901f4ab8c8cab2e" class="webex-radiogroup" data-answer="aQkfBxoFTgVKBms=">
+<label><input type="radio" autocomplete="off" name="293764b5f667304b2901f4ab8c8cab2e"><span>Nein, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind nicht disjunkt, weil <span class="math inline">\(A \cup C \neq \Omega\)</span> gilt.</span></label><label><input type="radio" autocomplete="off" name="293764b5f667304b2901f4ab8c8cab2e"><span>Ja, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind disjunkt, da <span class="math inline">\(A \cap C = \emptyset\)</span>.</span></label><label><input type="radio" autocomplete="off" name="293764b5f667304b2901f4ab8c8cab2e"><span>Nein, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind nicht disjunkt, da <span class="math inline">\(A \cap C = \{6\} \neq \emptyset\)</span>.</span></label><label><input type="radio" autocomplete="off" name="293764b5f667304b2901f4ab8c8cab2e"><span>Diese Frage lässt sich nicht beantworten, ohne die Wahrscheinlichkeiten von <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> zu kennen.</span></label><label><input type="radio" autocomplete="off" name="293764b5f667304b2901f4ab8c8cab2e"><span>Ja, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind disjunkt, weil es sich um zwei unterschiedlich definierte Ereignisse handelt.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2666,8 +2204,8 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <li><p>Die vierte Option zieht das falsche Kriterium heran: Ob <span class="math inline">\(A \cup C = \Omega\)</span> gilt (Vollständigkeit der Zerlegung) ist eine andere Frage als die nach der Disjunktheit (<span class="math inline">\(A \cap C = \emptyset\)</span>). Beide Eigenschaften sind unabhängig voneinander zu prüfen.</p></li>
 <li><p>Die fünfte Option ist falsch, weil Disjunktheit eine rein mengentheoretische Eigenschaft ist (überschneiden sich die Mengen der Elementarereignisse oder nicht?) und keine Kenntnis von Wahrscheinlichkeiten erfordert.</p></li>
 <li><p>Falsch</p></li>
-<li><p>Wahr</p></li>
 <li><p>Falsch</p></li>
+<li><p>Wahr</p></li>
 <li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
 </ul>
@@ -2676,8 +2214,8 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Seien <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> zwei disjunkte Ereignisse. Welche der folgenden Zuordnungen von Wahrscheinlichkeiten zu <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span> und <span class="math inline">\(A \cup B\)</span> ist mit <em>allen drei</em> Kolmogorov-Axiomen (Nichtnegativität, Normierung, Additivität) vereinbar?</p>
-<div id="webex-474a1cd35eba055d6c8dd6e43c3b4f98" class="webex-radiogroup" data-answer="bwcYUR1TSAIZVT8=">
-<label><input type="radio" autocomplete="off" name="474a1cd35eba055d6c8dd6e43c3b4f98"><span><span class="math inline">\(Pr(A) = -0{,}2\)</span>, <span class="math inline">\(Pr(B) = 0{,}5\)</span>, <span class="math inline">\(Pr(A \cup B) = 0{,}3\)</span></span></label><label><input type="radio" autocomplete="off" name="474a1cd35eba055d6c8dd6e43c3b4f98"><span><span class="math inline">\(Pr(A) = 0{,}3\)</span>, <span class="math inline">\(Pr(B) = 0{,}4\)</span>, <span class="math inline">\(Pr(A \cup B) = 0{,}5\)</span></span></label><label><input type="radio" autocomplete="off" name="474a1cd35eba055d6c8dd6e43c3b4f98"><span><span class="math inline">\(Pr(\Omega) = 0{,}9\)</span>, <span class="math inline">\(Pr(A) = 0{,}3\)</span>, <span class="math inline">\(Pr(B) = 0{,}4\)</span></span></label><label><input type="radio" autocomplete="off" name="474a1cd35eba055d6c8dd6e43c3b4f98"><span><span class="math inline">\(Pr(A) = 0{,}3\)</span>, <span class="math inline">\(Pr(B) = 0{,}4\)</span>, <span class="math inline">\(Pr(A \cup B) = 0{,}7\)</span></span></label><label><input type="radio" autocomplete="off" name="474a1cd35eba055d6c8dd6e43c3b4f98"><span><span class="math inline">\(Pr(A) = 0{,}6\)</span>, <span class="math inline">\(Pr(B) = 0{,}6\)</span>, <span class="math inline">\(Pr(A \cup B) = 1{,}2\)</span></span></label>
+<div id="webex-d6ffcb9cab7f92fb246a9fdd08549172" class="webex-radiogroup" data-answer="PwZKV09SFVNNUmo=">
+<label><input type="radio" autocomplete="off" name="d6ffcb9cab7f92fb246a9fdd08549172"><span><span class="math inline">\(Pr(\Omega) = 0{,}9\)</span>, <span class="math inline">\(Pr(A) = 0{,}3\)</span>, <span class="math inline">\(Pr(B) = 0{,}4\)</span></span></label><label><input type="radio" autocomplete="off" name="d6ffcb9cab7f92fb246a9fdd08549172"><span><span class="math inline">\(Pr(A) = 0{,}3\)</span>, <span class="math inline">\(Pr(B) = 0{,}4\)</span>, <span class="math inline">\(Pr(A \cup B) = 0{,}7\)</span></span></label><label><input type="radio" autocomplete="off" name="d6ffcb9cab7f92fb246a9fdd08549172"><span><span class="math inline">\(Pr(A) = 0{,}3\)</span>, <span class="math inline">\(Pr(B) = 0{,}4\)</span>, <span class="math inline">\(Pr(A \cup B) = 0{,}5\)</span></span></label><label><input type="radio" autocomplete="off" name="d6ffcb9cab7f92fb246a9fdd08549172"><span><span class="math inline">\(Pr(A) = 0{,}6\)</span>, <span class="math inline">\(Pr(B) = 0{,}6\)</span>, <span class="math inline">\(Pr(A \cup B) = 1{,}2\)</span></span></label><label><input type="radio" autocomplete="off" name="d6ffcb9cab7f92fb246a9fdd08549172"><span><span class="math inline">\(Pr(A) = -0{,}2\)</span>, <span class="math inline">\(Pr(B) = 0{,}5\)</span>, <span class="math inline">\(Pr(A \cup B) = 0{,}3\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2689,9 +2227,9 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <li><p>Bei der vierten Option ergibt sich zwar additiv <span class="math inline">\(0{,}6+0{,}6=1{,}2\)</span>, doch eine Wahrscheinlichkeit von <span class="math inline">\(1{,}2\)</span> überschreitet den zulässigen Maximalwert von <span class="math inline">\(1\)</span> (das sichere Ereignis <span class="math inline">\(\Omega\)</span> hat höchstens Wahrscheinlichkeit 1) – das <em>Normierungsaxiom</em> ist verletzt.</p></li>
 <li><p>Die fünfte Option gibt <span class="math inline">\(Pr(\Omega) = 0{,}9\)</span> an; nach dem Normierungsaxiom muss aber <span class="math inline">\(Pr(\Omega) = 1\)</span> gelten (das sichere Ereignis hat immer Wahrscheinlichkeit 1) – auch hier ist das <em>Normierungsaxiom</em> verletzt.</p></li>
 <li><p>Falsch</p></li>
-<li><p>Falsch</p></li>
-<li><p>Falsch</p></li>
 <li><p>Wahr</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
 </ul>
 </div>
@@ -2699,8 +2237,8 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Ein Glücksspielautomat hat eine unbekannte Gewinnwahrscheinlichkeit; man hat <em>keinen</em> Grund anzunehmen, dass Gewinn und Verlust gleich wahrscheinlich sind (der Automat könnte so programmiert sein, dass er seltener gewinnt als verliert). Welche Vorgehensweise zur Schätzung der Gewinnwahrscheinlichkeit ist hier angemessen?</p>
-<div id="webex-f80fc51121b80affaa9f9c46810daba8" class="webex-radiogroup" data-answer="PQgcVk8FHQEeAD8=">
-<label><input type="radio" autocomplete="off" name="f80fc51121b80affaa9f9c46810daba8"><span>Laplace-Formel: <span class="math inline">\(Pr(\text{Gewinn}) = \dfrac{\text{Anzahl Gewinn-Symbole}}{\text{Anzahl aller möglichen Symbolkombinationen}}\)</span>, unabhängig davon, wie oft tatsächlich gespielt wurde.</span></label><label><input type="radio" autocomplete="off" name="f80fc51121b80affaa9f9c46810daba8"><span>Indifferenzprinzip: Da man nichts Genaues über die Gewinnwahrscheinlichkeit weiß, geht man automatisch davon aus, dass Gewinn und Verlust gleich wahrscheinlich sind, also <span class="math inline">\(Pr(\text{Gewinn})=0{,}5\)</span>.</span></label><label><input type="radio" autocomplete="off" name="f80fc51121b80affaa9f9c46810daba8"><span>Die Kolmogorov-Axiome direkt anwenden, um die exakte Gewinnwahrscheinlichkeit ganz ohne Datenerhebung zu berechnen.</span></label><label><input type="radio" autocomplete="off" name="f80fc51121b80affaa9f9c46810daba8"><span>Man kann grundsätzlich keine Wahrscheinlichkeit angeben, da der innere Mechanismus des Automaten unbekannt ist.</span></label><label><input type="radio" autocomplete="off" name="f80fc51121b80affaa9f9c46810daba8"><span>Frequentistischer Ansatz: Das Spiel (gedanklich oder tatsächlich) sehr oft wiederholen bzw. Daten aus vielen Spielen sammeln und den relativen Anteil der Gewinne als Schätzwert für die Wahrscheinlichkeit verwenden.</span></label>
+<div id="webex-091219a217fcb50a6b3f6ddea13b00c5" class="webex-radiogroup" data-answer="awkdAh0JTQMdBzs=">
+<label><input type="radio" autocomplete="off" name="091219a217fcb50a6b3f6ddea13b00c5"><span>Laplace-Formel: <span class="math inline">\(Pr(\text{Gewinn}) = \dfrac{\text{Anzahl Gewinn-Symbole}}{\text{Anzahl aller möglichen Symbolkombinationen}}\)</span>, unabhängig davon, wie oft tatsächlich gespielt wurde.</span></label><label><input type="radio" autocomplete="off" name="091219a217fcb50a6b3f6ddea13b00c5"><span>Indifferenzprinzip: Da man nichts Genaues über die Gewinnwahrscheinlichkeit weiß, geht man automatisch davon aus, dass Gewinn und Verlust gleich wahrscheinlich sind, also <span class="math inline">\(Pr(\text{Gewinn})=0{,}5\)</span>.</span></label><label><input type="radio" autocomplete="off" name="091219a217fcb50a6b3f6ddea13b00c5"><span>Die Kolmogorov-Axiome direkt anwenden, um die exakte Gewinnwahrscheinlichkeit ganz ohne Datenerhebung zu berechnen.</span></label><label><input type="radio" autocomplete="off" name="091219a217fcb50a6b3f6ddea13b00c5"><span>Frequentistischer Ansatz: Das Spiel (gedanklich oder tatsächlich) sehr oft wiederholen bzw. Daten aus vielen Spielen sammeln und den relativen Anteil der Gewinne als Schätzwert für die Wahrscheinlichkeit verwenden.</span></label><label><input type="radio" autocomplete="off" name="091219a217fcb50a6b3f6ddea13b00c5"><span>Man kann grundsätzlich keine Wahrscheinlichkeit angeben, da der innere Mechanismus des Automaten unbekannt ist.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2714,16 +2252,16 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
-<li><p>Falsch</p></li>
 <li><p>Wahr</p></li>
+<li><p>Falsch</p></li>
 </ul>
 </div>
 </div>
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Ein unbedarfter Spieler geht von <span class="math inline">\(Pr(Z\mid F) = 0{,}5\)</span> aus (Wahrscheinlichkeit für “Zahl”, gegeben seiner Annahme <span class="math inline">\(F\)</span>, dass die Münze fair ist). Ein Betrüger, der die Münze präpariert hat, geht von <span class="math inline">\(Pr(Z\mid B) = 0{,}75\)</span> aus (gegeben seines Wissens <span class="math inline">\(B\)</span> über die Präparation). Welche Aussage beschreibt am besten, warum dies <em>kein</em> Widerspruch ist?</p>
-<div id="webex-dd87abab76f9e6ada0247543bdfa2435" class="webex-radiogroup" data-answer="P1QUB01TTVIbBjs=">
-<label><input type="radio" autocomplete="off" name="dd87abab76f9e6ada0247543bdfa2435"><span>Genau eine der beiden Personen muss sich irren, da eine Münze objektiv nur eine einzige “wahre” Wahrscheinlichkeit für Zahl haben kann.</span></label><label><input type="radio" autocomplete="off" name="dd87abab76f9e6ada0247543bdfa2435"><span>Wahrscheinlichkeit ist in diesem Beispiel gar nicht sinnvoll definierbar, da die Münze entweder wirklich fair ist oder nicht – ein Drittes gibt es nicht.</span></label><label><input type="radio" autocomplete="off" name="dd87abab76f9e6ada0247543bdfa2435"><span>Wahrscheinlichkeit ist kein objektives Merkmal des Ereignisses selbst, sondern abhängig vom jeweiligen Hintergrundwissen; <span class="math inline">\(Pr(Z\mid F)=0{,}5\)</span> und <span class="math inline">\(Pr(Z\mid B)=0{,}75\)</span> können daher gleichzeitig korrekt sein, bezogen auf das jeweilige Wissen.</span></label><label><input type="radio" autocomplete="off" name="dd87abab76f9e6ada0247543bdfa2435"><span>Die Wahrscheinlichkeit hängt hier ausschließlich davon ab, wie oft die Münze bisher geworfen wurde, nicht vom Wissen der beteiligten Personen.</span></label><label><input type="radio" autocomplete="off" name="dd87abab76f9e6ada0247543bdfa2435"><span>Da die beiden angegebenen Werte unterschiedlich sind, verstößt mindestens eine der beiden Aussagen gegen das Normierungsaxiom von Kolmogorov.</span></label>
+<div id="webex-093fbcbe30c26be1bc2b8ff7090dbb1f" class="webex-radiogroup" data-answer="awkfVk5TTlUfAT4=">
+<label><input type="radio" autocomplete="off" name="093fbcbe30c26be1bc2b8ff7090dbb1f"><span>Die Wahrscheinlichkeit hängt hier ausschließlich davon ab, wie oft die Münze bisher geworfen wurde, nicht vom Wissen der beteiligten Personen.</span></label><label><input type="radio" autocomplete="off" name="093fbcbe30c26be1bc2b8ff7090dbb1f"><span>Genau eine der beiden Personen muss sich irren, da eine Münze objektiv nur eine einzige “wahre” Wahrscheinlichkeit für Zahl haben kann.</span></label><label><input type="radio" autocomplete="off" name="093fbcbe30c26be1bc2b8ff7090dbb1f"><span>Wahrscheinlichkeit ist in diesem Beispiel gar nicht sinnvoll definierbar, da die Münze entweder wirklich fair ist oder nicht – ein Drittes gibt es nicht.</span></label><label><input type="radio" autocomplete="off" name="093fbcbe30c26be1bc2b8ff7090dbb1f"><span>Da die beiden angegebenen Werte unterschiedlich sind, verstößt mindestens eine der beiden Aussagen gegen das Normierungsaxiom von Kolmogorov.</span></label><label><input type="radio" autocomplete="off" name="093fbcbe30c26be1bc2b8ff7090dbb1f"><span>Wahrscheinlichkeit ist kein objektives Merkmal des Ereignisses selbst, sondern abhängig vom jeweiligen Hintergrundwissen; <span class="math inline">\(Pr(Z\mid F)=0{,}5\)</span> und <span class="math inline">\(Pr(Z\mid B)=0{,}75\)</span> können daher gleichzeitig korrekt sein, bezogen auf das jeweilige Wissen.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2736,17 +2274,17 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <li><p>Die fünfte Option übersieht, dass gerade die <em>Ungewissheit</em> über den wahren Zustand der Münze (fair oder präpariert) der Grund ist, überhaupt eine Wahrscheinlichkeit anzugeben – Wahrscheinlichkeit ist genau das Werkzeug, mit dem man mit einer solchen Ungewissheit umgeht, nicht ein Hindernis, das ihre Anwendung ausschließt.</p></li>
 <li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
 <li><p>Wahr</p></li>
-<li><p>Falsch</p></li>
-<li><p>Falsch</p></li>
 </ul>
 </div>
 </div>
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Die Wartezeit <span class="math inline">\(X\)</span> auf einen Bus sei gleichverteilt zwischen 0 und 10 Minuten, mit konstanter Wahrscheinlichkeitsdichte <span class="math inline">\(f(x) = 1/10\)</span> für <span class="math inline">\(0 &lt; x &lt; 10\)</span>. Welche der folgenden Aussagen zur stetigen Zufallsvariable <span class="math inline">\(X\)</span> ist korrekt?</p>
-<div id="webex-5a0d2c2892c6513ff7f319ac22152201" class="webex-radiogroup" data-answer="blEcVB5THggVAz4=">
-<label><input type="radio" autocomplete="off" name="5a0d2c2892c6513ff7f319ac22152201"><span>Da <span class="math inline">\(X\)</span> stetig ist, lässt sich für <span class="math inline">\(X\)</span> grundsätzlich keine sinnvolle Wahrscheinlichkeitsaussage treffen.</span></label><label><input type="radio" autocomplete="off" name="5a0d2c2892c6513ff7f319ac22152201"><span>Da <span class="math inline">\(Pr(X=3) = 0\)</span> ist, muss auch die Wahrscheinlichkeitsdichte <span class="math inline">\(f(3) = 0\)</span> sein.</span></label><label><input type="radio" autocomplete="off" name="5a0d2c2892c6513ff7f319ac22152201"><span><span class="math inline">\(Pr(0 &lt; X &lt; 5) = 0\)</span>, da alle einzelnen Punktwahrscheinlichkeiten in diesem Intervall Null sind.</span></label><label><input type="radio" autocomplete="off" name="5a0d2c2892c6513ff7f319ac22152201"><span><span class="math inline">\(Pr(X=3) = f(3) = 0{,}1\)</span>.</span></label><label><input type="radio" autocomplete="off" name="5a0d2c2892c6513ff7f319ac22152201"><span><span class="math inline">\(Pr(X=3) = 0\)</span>, obwohl die Wahrscheinlichkeitsdichte an der Stelle <span class="math inline">\(x=3\)</span> den positiven Wert <span class="math inline">\(f(3) = 0{,}1\)</span> hat.</span></label>
+<div id="webex-3f668bac2182de63a629b194e44145e9" class="webex-radiogroup" data-answer="aFYaBhRTTVMeAWU=">
+<label><input type="radio" autocomplete="off" name="3f668bac2182de63a629b194e44145e9"><span>Da <span class="math inline">\(Pr(X=3) = 0\)</span> ist, muss auch die Wahrscheinlichkeitsdichte <span class="math inline">\(f(3) = 0\)</span> sein.</span></label><label><input type="radio" autocomplete="off" name="3f668bac2182de63a629b194e44145e9"><span><span class="math inline">\(Pr(0 &lt; X &lt; 5) = 0\)</span>, da alle einzelnen Punktwahrscheinlichkeiten in diesem Intervall Null sind.</span></label><label><input type="radio" autocomplete="off" name="3f668bac2182de63a629b194e44145e9"><span><span class="math inline">\(Pr(X=3) = 0\)</span>, obwohl die Wahrscheinlichkeitsdichte an der Stelle <span class="math inline">\(x=3\)</span> den positiven Wert <span class="math inline">\(f(3) = 0{,}1\)</span> hat.</span></label><label><input type="radio" autocomplete="off" name="3f668bac2182de63a629b194e44145e9"><span><span class="math inline">\(Pr(X=3) = f(3) = 0{,}1\)</span>.</span></label><label><input type="radio" autocomplete="off" name="3f668bac2182de63a629b194e44145e9"><span>Da <span class="math inline">\(X\)</span> stetig ist, lässt sich für <span class="math inline">\(X\)</span> grundsätzlich keine sinnvolle Wahrscheinlichkeitsaussage treffen.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2755,21 +2293,21 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <ul>
 <li><p>Die zweite Option verwechselt <em>Wahrscheinlichkeit eines Punktes</em> (<span class="math inline">\(Pr(X=3)=0\)</span>) mit der <em>Dichte an diesem Punkt</em> (<span class="math inline">\(f(3)\)</span>). Beide Konzepte sind unterschiedlich: Die Dichte kann an praktisch jeder Stelle positiv sein, obwohl die Punktwahrscheinlichkeit überall Null ist – genau das ist die Besonderheit stetiger Zufallsvariablen.</p></li>
 <li><p>Die dritte Option setzt Dichte und Wahrscheinlichkeit gleich (<span class="math inline">\(Pr(X=3)=f(3)\)</span>); das ist nur für Intervalle (über Integration/Fläche) sinnvoll anwendbar, nicht für einzelne Punkte, deren Wahrscheinlichkeit stets Null ist.</p></li>
-<li><p>Die vierte Option ist falsch, weil für stetige Zufallsvariablen sehr wohl sinnvolle Wahrscheinlichkeitsaussagen möglich sind – allerdings nur für <em>Intervalle</em> (z.B. <span class="math inline">\(Pr(0&lt;X&lt;5)\)</span>), nicht für einzelne Punkte.</p></li>
-<li><p>Die fünfte Option begeht einen Fehlschluss: Aus der Tatsache, dass jeder <em>einzelne</em> Punkt im Intervall die Wahrscheinlichkeit Null hat, folgt <em>nicht</em>, dass auch das gesamte <em>Intervall</em> die Wahrscheinlichkeit Null hat. Tatsächlich ist <span class="math inline">\(Pr(0&lt;X&lt;5) = 5 \cdot f(x) = 5 \cdot 0{,}1 = 0{,}5\)</span> (50 %), wie im Kapitel am Busbeispiel gezeigt.</p></li>
-<li><p>Falsch</p></li>
-<li><p>Falsch</p></li>
+<li><p>Die vierte Option ist falsch, weil für stetige Zufallsvariablen sehr wohl sinnvolle Wahrscheinlichkeitsaussagen möglich sind – allerdings nur für <em>Intervalle</em> (z. B. <span class="math inline">\(Pr(0&lt;X&lt;5)\)</span>), nicht für einzelne Punkte.</p></li>
+<li><p>Die fünfte Option begeht einen Fehlschluss: Aus der Tatsache, dass jeder <em>einzelne</em> Punkt im Intervall die Wahrscheinlichkeit Null hat, folgt <em>nicht</em>, dass auch das gesamte <em>Intervall</em> die Wahrscheinlichkeit Null hat. Tatsächlich ist <span class="math inline">\(Pr(0&lt;X&lt;5) = 5 \cdot f(x) = 5 \cdot 0{,}1 = 0{,}5\)</span> (50 %), wie im Kapitel am Busbeispiel gezeigt.</p></li>
 <li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
 <li><p>Wahr</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
 </ul>
 </div>
 </div>
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Beim einfachen Würfelwurf sei <span class="math inline">\(A = \{1,2,3,4\}\)</span> (“kleine Zahlen”) und <span class="math inline">\(B = \{3,4,5,6\}\)</span> (“große Zahlen”). Was ergibt sich für die logischen Differenzen <span class="math inline">\(A \setminus B\)</span> und <span class="math inline">\(B \setminus A\)</span>?</p>
-<div id="webex-c6aa11612899ae3dd2bc2f1d10851595" class="webex-radiogroup" data-answer="OAZNUR0BGgEeCWQ=">
-<label><input type="radio" autocomplete="off" name="c6aa11612899ae3dd2bc2f1d10851595"><span><span class="math inline">\(A \setminus B = B \setminus A = \emptyset\)</span>, da sich <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> überschneiden</span></label><label><input type="radio" autocomplete="off" name="c6aa11612899ae3dd2bc2f1d10851595"><span><span class="math inline">\(A \setminus B = \{1,2,3,4\}\)</span> und <span class="math inline">\(B \setminus A = \{3,4,5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="c6aa11612899ae3dd2bc2f1d10851595"><span><span class="math inline">\(A \setminus B = \{5,6\}\)</span> und <span class="math inline">\(B \setminus A = \{1,2\}\)</span></span></label><label><input type="radio" autocomplete="off" name="c6aa11612899ae3dd2bc2f1d10851595"><span><span class="math inline">\(A \setminus B = B \setminus A = \{3,4\}\)</span></span></label><label><input type="radio" autocomplete="off" name="c6aa11612899ae3dd2bc2f1d10851595"><span><span class="math inline">\(A \setminus B = \{1,2\}\)</span> und <span class="math inline">\(B \setminus A = \{5,6\}\)</span></span></label>
+<div id="webex-4b173a558c779c899825f4050b553c2c" class="webex-radiogroup" data-answer="b1IdBx9RGQUUUmo=">
+<label><input type="radio" autocomplete="off" name="4b173a558c779c899825f4050b553c2c"><span><span class="math inline">\(A \setminus B = \{1,2,3,4\}\)</span> und <span class="math inline">\(B \setminus A = \{3,4,5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="4b173a558c779c899825f4050b553c2c"><span><span class="math inline">\(A \setminus B = \{5,6\}\)</span> und <span class="math inline">\(B \setminus A = \{1,2\}\)</span></span></label><label><input type="radio" autocomplete="off" name="4b173a558c779c899825f4050b553c2c"><span><span class="math inline">\(A \setminus B = B \setminus A = \emptyset\)</span>, da sich <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> überschneiden</span></label><label><input type="radio" autocomplete="off" name="4b173a558c779c899825f4050b553c2c"><span><span class="math inline">\(A \setminus B = B \setminus A = \{3,4\}\)</span></span></label><label><input type="radio" autocomplete="off" name="4b173a558c779c899825f4050b553c2c"><span><span class="math inline">\(A \setminus B = \{1,2\}\)</span> und <span class="math inline">\(B \setminus A = \{5,6\}\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2779,7 +2317,7 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <li><p>Die zweite Option vertauscht die beiden Ergebnisse (<span class="math inline">\(A \setminus B\)</span> und <span class="math inline">\(B \setminus A\)</span>); das ist ein klassischer Fehler, wenn man die Reihenfolge im Ausdruck <span class="math inline">\(X \setminus Y\)</span> nicht beachtet (“<span class="math inline">\(X\)</span> <em>minus</em> <span class="math inline">\(Y\)</span>”, nicht umgekehrt).</p></li>
 <li><p>Die dritte Option verwechselt die logische Differenz mit der <em>Schnittmenge</em>: <span class="math inline">\(A \cap B = \{3,4\}\)</span> ist tatsächlich die Menge der gemeinsamen Elemente – aber genau diese werden bei der Differenzbildung <em>entfernt</em>, nicht als Ergebnis ausgegeben.</p></li>
 <li><p>Die vierte Option “vergisst” die eigentliche Subtraktion und gibt schlicht die Ausgangsmengen <span class="math inline">\(A\)</span> bzw. <span class="math inline">\(B\)</span> unverändert zurück, ohne die gemeinsamen Elemente zu entfernen.</p></li>
-<li><p>Die fünfte Option nimmt fälschlich an, dass eine Überschneidung zweier Mengen automatisch zu leeren Differenzen führt. Das wäre nur dann der Fall, wenn eine Menge vollständig in der anderen enthalten wäre (z.B. <span class="math inline">\(A \subseteq B\)</span>); hier haben <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> aber jeweils Elemente, die exklusiv nur in einer der beiden Mengen liegen (<span class="math inline">\(1,2\)</span> nur in <span class="math inline">\(A\)</span>; <span class="math inline">\(5,6\)</span> nur in <span class="math inline">\(B\)</span>).</p></li>
+<li><p>Die fünfte Option nimmt fälschlich an, dass eine Überschneidung zweier Mengen automatisch zu leeren Differenzen führt. Das wäre nur dann der Fall, wenn eine Menge vollständig in der anderen enthalten wäre (z. B. <span class="math inline">\(A \subseteq B\)</span>); hier haben <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> aber jeweils Elemente, die exklusiv nur in einer der beiden Mengen liegen (<span class="math inline">\(1,2\)</span> nur in <span class="math inline">\(A\)</span>; <span class="math inline">\(5,6\)</span> nur in <span class="math inline">\(B\)</span>).</p></li>
 <li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
@@ -2791,8 +2329,8 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Eine Münze wird dreimal geworfen (K = Kopf, Z = Zahl). Der Ergebnisraum ist <span class="math inline">\(\Omega = \{KKK, KKZ, KZK, KZZ, ZKK, ZKZ, ZZK, ZZZ\}\)</span>, also <span class="math inline">\(|\Omega| = 8\)</span>. Welches der folgenden Ereignisse ist ein <em>Elementarereignis</em>?</p>
-<div id="webex-c30e0eba58be002b3e42faec49df4ab7" class="webex-radiogroup" data-answer="OAMcVRxVTlAZCD8=">
-<label><input type="radio" autocomplete="off" name="c30e0eba58be002b3e42faec49df4ab7"><span><span class="math inline">\(D\)</span> = “höchstens zweimal Kopf” (alle Ausgänge außer <span class="math inline">\(KKK\)</span>)</span></label><label><input type="radio" autocomplete="off" name="c30e0eba58be002b3e42faec49df4ab7"><span><span class="math inline">\(E = \Omega\)</span> (das sichere Ereignis)</span></label><label><input type="radio" autocomplete="off" name="c30e0eba58be002b3e42faec49df4ab7"><span><span class="math inline">\(C\)</span> = “mindestens einmal Kopf” (alle Ausgänge außer <span class="math inline">\(ZZZ\)</span>)</span></label><label><input type="radio" autocomplete="off" name="c30e0eba58be002b3e42faec49df4ab7"><span><span class="math inline">\(A = \{KKZ\}\)</span></span></label><label><input type="radio" autocomplete="off" name="c30e0eba58be002b3e42faec49df4ab7"><span><span class="math inline">\(B\)</span> = “genau einmal Kopf” <span class="math inline">\(= \{KZZ, ZKZ, ZZK\}\)</span></span></label>
+<div id="webex-5601e985713f4a3ae969a3f46340849f" class="webex-radiogroup" data-answer="bgYcAUkJFAUbAG4=">
+<label><input type="radio" autocomplete="off" name="5601e985713f4a3ae969a3f46340849f"><span><span class="math inline">\(E = \Omega\)</span> (das sichere Ereignis)</span></label><label><input type="radio" autocomplete="off" name="5601e985713f4a3ae969a3f46340849f"><span><span class="math inline">\(D\)</span> = “höchstens zweimal Kopf” (alle Ausgänge außer <span class="math inline">\(KKK\)</span>)</span></label><label><input type="radio" autocomplete="off" name="5601e985713f4a3ae969a3f46340849f"><span><span class="math inline">\(B\)</span> = “genau einmal Kopf” <span class="math inline">\(= \{KZZ, ZKZ, ZZK\}\)</span></span></label><label><input type="radio" autocomplete="off" name="5601e985713f4a3ae969a3f46340849f"><span><span class="math inline">\(C\)</span> = “mindestens einmal Kopf” (alle Ausgänge außer <span class="math inline">\(ZZZ\)</span>)</span></label><label><input type="radio" autocomplete="off" name="5601e985713f4a3ae969a3f46340849f"><span><span class="math inline">\(A = \{KKZ\}\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2806,16 +2344,16 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
-<li><p>Wahr</p></li>
 <li><p>Falsch</p></li>
+<li><p>Wahr</p></li>
 </ul>
 </div>
 </div>
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Sei <span class="math inline">\(X\)</span> die Augenzahl beim einfachen Wurf eines fairen Würfels (<span class="math inline">\(X \in \{1,2,3,4,5,6\}\)</span>, jede Zahl mit Wahrscheinlichkeit <span class="math inline">\(1/6\)</span>). Wie groß ist der Wert der Verteilungsfunktion <span class="math inline">\(F(4)\)</span>?</p>
-<div id="webex-558211e12be88c785236ef4979209c63" class="webex-radiogroup" data-answer="bgUUAx0BSQEeUjg=">
-<label><input type="radio" autocomplete="off" name="558211e12be88c785236ef4979209c63"><span><span class="math inline">\(F(4) = 4\)</span></span></label><label><input type="radio" autocomplete="off" name="558211e12be88c785236ef4979209c63"><span><span class="math inline">\(F(4) = Pr(X \le 4) = 4/6 = 2/3 \approx 0{,}67\)</span></span></label><label><input type="radio" autocomplete="off" name="558211e12be88c785236ef4979209c63"><span><span class="math inline">\(F(4)\)</span> lässt sich nicht berechnen, ohne die tatsächliche Verteilung des Würfels empirisch zu bestimmen.</span></label><label><input type="radio" autocomplete="off" name="558211e12be88c785236ef4979209c63"><span><span class="math inline">\(F(4) = Pr(X = 4) = 1/6 \approx 0{,}17\)</span></span></label><label><input type="radio" autocomplete="off" name="558211e12be88c785236ef4979209c63"><span><span class="math inline">\(F(4) = Pr(X \ge 4) = 3/6 = 0{,}5\)</span></span></label>
+<div id="webex-5d649fb40225ea3deff43227c07af058" class="webex-radiogroup" data-answer="blQaBBVWTgUcAm8=">
+<label><input type="radio" autocomplete="off" name="5d649fb40225ea3deff43227c07af058"><span><span class="math inline">\(F(4) = 4\)</span></span></label><label><input type="radio" autocomplete="off" name="5d649fb40225ea3deff43227c07af058"><span><span class="math inline">\(F(4)\)</span> lässt sich nicht berechnen, ohne die tatsächliche Verteilung des Würfels empirisch zu bestimmen.</span></label><label><input type="radio" autocomplete="off" name="5d649fb40225ea3deff43227c07af058"><span><span class="math inline">\(F(4) = Pr(X \ge 4) = 3/6 = 0{,}5\)</span></span></label><label><input type="radio" autocomplete="off" name="5d649fb40225ea3deff43227c07af058"><span><span class="math inline">\(F(4) = Pr(X \le 4) = 4/6 = 2/3 \approx 0{,}67\)</span></span></label><label><input type="radio" autocomplete="off" name="5d649fb40225ea3deff43227c07af058"><span><span class="math inline">\(F(4) = Pr(X = 4) = 1/6 \approx 0{,}17\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2827,9 +2365,9 @@ Abbildung&nbsp;4.33: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <li><p>Die vierte Option verwechselt den <em>Realisationswert</em> <span class="math inline">\(x=4\)</span> selbst mit der zugehörigen <em>Wahrscheinlichkeit</em> <span class="math inline">\(F(4)\)</span> – eine Wahrscheinlichkeit muss aber stets zwischen 0 und 1 liegen, niemals einen Wert wie <span class="math inline">\(4\)</span> annehmen.</p></li>
 <li><p>Die fünfte Option ist unnötig: Da es sich laut Aufgabenstellung um einen <em>fairen</em> Würfel handelt (ein Laplace-Experiment mit gleichwahrscheinlichen Elementarereignissen), lässt sich <span class="math inline">\(F(4)\)</span> direkt theoretisch berechnen, ohne eine empirische Datenerhebung durchführen zu müssen.</p></li>
 <li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
+<li><p>Falsch</p></li>
 <li><p>Wahr</p></li>
-<li><p>Falsch</p></li>
-<li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
 </ul>
 </div>

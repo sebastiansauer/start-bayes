@@ -4,7 +4,7 @@
 <meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="keywords" content="Statistik, Bayes, Wahrscheinlichkeit, Inferenz, R, Kausalität">
-<meta name="description" content="Einführung in die Bayes-Statistik mit R">
+<meta name="description" content="Start:Bayes! ist die erste deutschsprachige Einführung in die Bayes-Statistik, die anwendungsnah, mit modernen Werkzeugen (R) und mit mehr Lockerheit als oft üblich vermittelt wird. Statt p-Werten steht eine Idee im Zentrum, die näher am gesunden Menschenverstand ist: Wir starten mit einer Annahme, sammeln Daten und aktualisieren unser Wissen entsprechend. Das Buch richtet sich an alle, die Bayes-Modelle nicht nur verstehen, sondern selbst berechnen und interpretieren wollen. Der Aufbau folgt der Logik der Sache: von Wahrscheinlichkeit und Verteilungen über den Kern der Bayes-Statistik am Beispiel des Globus-Versuchs bis zu linearen Modellen und Kausalität.">
 <title>3&nbsp; Populationsinferenz – Start:Bayes!</title>
 <style>
 /* Default styles provided by pandoc.
@@ -618,10 +618,10 @@ window.Quarto = {
 <p>Bereiten Sie sich im Eigenstudium auf dieses Kapitel vor. Lesen Sie dazu folgende Themen:</p>
 <ul>
 <li>
-<a href="https://statistik1.netlify.app/010-rahmen">Statistik 1, Kap. “Rahmen”</a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>
+<a href="https://sebastiansauer.github.io/statistik1/010-rahmen">Statistik 1, Kap. “Rahmen”</a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>
 </li>
 <li>
-<a href="https://statistik1.netlify.app/070-zusammenhaenge">Statistik 1, Kap. “Punktmodelle 2”</a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, insbesondere zu Regressionskoeffizienten</li>
+<a href="https://sebastiansauer.github.io/statistik1/070-zusammenhaenge">Statistik 1, Kap. “Punktmodelle 2”</a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, insbesondere zu Regressionskoeffizienten</li>
 </ul>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -647,11 +647,10 @@ Hinweis
 <p>Populationsinferenz ist das Schließen von der Stichprobe auf die Grundgesamtheit.</p>
 <p>Statistische Populationsinferenz – oft kurz als <em>Inferenz</em> bezeichnet – hat zum Ziel, vom Teil aufs Ganze zu schließen, bzw. vom Konkreten auf das Abstrakte. In der Datenanalyse heißt das: Was sagt mein Datensatz, der auf einer Stichprobe beruht, über die zugrundeliegende Grundgesamtheit aus?</p>
 <div id="exr-stipro" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 3.1</strong></span> Typischerweise untersuchen Sie im Rahmen einer statistischen Analyse eine <em>Stichprobe</em>, wie z.B. Ihr Freundeskreis, der leichtsinnig genug war, auf Ihre WhatsApp-Nachricht “Tolle Studie zum Geheimnis des Glücks!!!” zu klicken. Ihr Freundeskreis ist ein <em>Teil</em> der Menschen (z.B. aus Deutschland), also eine Stichprobe. Schauen wir uns den Unterschied zwischen Stichprobe und Population näher an. <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.1</strong></span> Typischerweise untersuchen Sie im Rahmen einer statistischen Analyse eine <em>Stichprobe</em>, wie z. B. Ihr Freundeskreis, der leichtsinnig genug war, auf Ihre WhatsApp-Nachricht “Tolle Studie zum Geheimnis des Glücks!!!” zu klicken. Ihr Freundeskreis ist ein <em>Teil</em> der Menschen (z. B. aus Deutschland), also eine Stichprobe. Schauen wir uns den Unterschied zwischen Stichprobe und Population näher an. <span class="math inline">\(\square\)</span></p>
 </div>
 <p>Nehmen wir an, wir möchten herausfinden, wie groß der Anteil der R-Fans in der Grundgesamtheit (synonym: Population) aller Studierenden ist. Den Anteil der R-Fans bezeichnen wir der Einfachheit halber hier mit <code>A</code><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
-<p>Das <em>Grundproblem der Inferenzstatistik</em> ist, dass wir an Aussagen zur Grundgesamtheit interessiert sind, aber nur eine Stichprobe, also einen Ausschnitt oder eine Teilmenge der Grundgesamtheit (synonym: Population) vorliegen haben.</p>
-<p>Wir müssen also den Anteil der R-Fans <em>in der Population</em> auf Basis des Anteils <em>in der Stichprobe</em> schließen: Wir verallgemeinern oder generalisieren von der Stichprobe auf die Grundgesamtheit, s. Abb. <a href="#fig-pop-sample" class="quarto-xref">Abbildung&nbsp;<span>3.1</span></a>.</p>
+<p>Das <em>Grundproblem der Inferenzstatistik</em> ist, dass wir an Aussagen zur Grundgesamtheit interessiert sind, aber nur eine Stichprobe, also einen Ausschnitt oder eine Teilmenge der Grundgesamtheit (synonym: Population) vorliegen haben. Wir müssen also den Anteil der R-Fans <em>in der Population</em> auf Basis des Anteils <em>in der Stichprobe</em> schließen: Wir verallgemeinern oder generalisieren von der Stichprobe auf die Grundgesamtheit, s. Abb. <a href="#fig-pop-sample" class="quarto-xref">Abbildung&nbsp;<span>3.1</span></a>.</p>
 <div id="fig-pop-sample" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pop-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
@@ -673,7 +672,7 @@ Hinweis
 Abbildung&nbsp;3.1: Population vs.&nbsp;Stichprobe. Die Stichprobe entnimmt einen <em>Teil</em> der Daten der Population. Autor: Karsten Lübke. Lizenz: OER.
 </figcaption></figure>
 </div>
-<p>Häufig ist das praktische Vorgehen recht simpel: Ah, in unserer Stichprobe sind 42% R-Fans!<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Man schreibt: <span class="math inline">\(p = 0.42\)</span> (<code>p</code> wie <code>proportion</code>, engl. für “Anteil”). Die Stichprobe sei repräsentativ für die Grundgesamtheit aller Studierenden. Messerscharf schließen wir: In der Grundgesamtheit ist der Anteil der R-Fans auch 42%, <span class="math inline">\(\pi=0.42\)</span>.</p>
+<p>Häufig ist das praktische Vorgehen recht simpel: Ah, in unserer Stichprobe sind 42 % R-Fans!<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Man schreibt: <span class="math inline">\(p = 0.42\)</span> (<code>p</code> wie <code>proportion</code>, engl. für “Anteil”). Die Stichprobe sei repräsentativ für die Grundgesamtheit aller Studierenden. Messerscharf schließen wir: In der Grundgesamtheit ist der Anteil der R-Fans auch 42 %, <span class="math inline">\(\pi=0.42\)</span>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -691,7 +690,7 @@ Hinweis
 <p><span class="theorem-title"><strong>Definition 3.1 ((Populations-)Inferenzstatistik)</strong></span> <em>Populations-Inferenzstatistik</em> – meist kurz als <em>Inferenzstatistik</em> bezeichnet – ist ein Verfahren zum Schließen von Statistiken (eine Kennzahl einer Stichprobe) auf <em>Parameter</em> (eine Kennzahl einer Grundgesamtheit). Inferenz bedeutet Schließen bzw. Schlussfolgern: auf Basis von vorliegenden Wissen wird neues Wissen generiert. Inferenzstatistik ist ein Verfahren, das mathematische Modelle (oft aus der Stochastik) verwendet, um ausgehend von einer bestimmten Datenlage auf allgemeine Aussagen zu schließen. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exr-inf" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 3.2</strong></span> 🏋️️ Heute Nacht vor dem Schlafen wiederholen Sie die Definition. Üben Sie jetzt schon mal. <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.2</strong></span> Heute Nacht vor dem Schlafen wiederholen Sie die Definition. Üben Sie jetzt schon mal. <span class="math inline">\(\square\)</span></p>
 </div>
 <p>Für jede beliebige Statistik (Kennzahl von Stichprobendaten) kann man die Methoden der Populationsinferenz verwenden, um den zugehörigen Kennwert (Parameter) der Population zu bestimmen, s. Tabelle <a href="#tbl-kennwerte" class="quarto-xref">Tabelle&nbsp;<span>3.1</span></a>. Da man die Parameter der Population so gut wie nie sicher kennt (schließlich hat man meist nur Auszüge, Teile der Population, also Stichproben), muss man sich mit <em>Schätzwerten</em> begnügen.</p>
 <div class="cell" data-layout-align="center">
@@ -752,7 +751,7 @@ Tabelle&nbsp;3.1: Bezeichnungen für Kennwerte
 </div>
 <p>Für Statistiken (Daten einer Stichprobe) verwendet man <em>lateinische</em> Buchstaben; für Parameter (Population) verwendet man <em>griechische</em> Buchstaben.</p>
 <div id="exr-greek" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 3.3</strong></span> 🏋️ Geben Sie die griechischen Buchstaben für typische Statistiken an. Ohne auf die Tabelle zu schauen.😜 <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.3</strong></span> Geben Sie die griechischen Buchstaben für typische Statistiken an. Ohne auf die Tabelle zu schauen.😜 <span class="math inline">\(\square\)</span></p>
 </div>
 <p>Meist begnügt man sich beim Analysieren von Daten nicht mit Aussagen für eine Stichprobe, sondern will auf eine Grundgesamtheit verallgemeinern.</p>
 <p>Leider sind die Parameter einer Grundgesamtheit zumeist unbekannt, daher muss man sich mit <em>Schätzungen</em> begnügen. Schätzwerte werden mit einem “Dach” über dem Kennwert gekennzeichnet, s. letzte Spalte in <a href="#tbl-kennwerte" class="quarto-xref">Tabelle&nbsp;<span>3.1</span></a>.</p>
@@ -829,24 +828,24 @@ Wichtig
 <p>Nichts Genaues weiß man nicht: Schließt man von einem Teil auf das Ganze, so geschieht das unter Unsicherheit. Man spricht von <em>Ungewissheit</em>, da man sich auf die <em>Unsicherheit des Wissens</em> über die Genauigkeit des Schließens bezieht.</p>
 </div>
 </div>
-<p>Schließt man etwa, dass in einer Grundgesamtheit der Anteil der R-Fans bei 42% liegt, so geschieht das unter Unsicherheit; es ist ungewiss. Man ist sich nicht sicher, dass es wirklich 42% in der Population sind – und nicht etwa etwas mehr oder etwas weniger. Schließlich hat man <em>nicht</em> die ganze Population gesehen bzw. vermessen. <em>Sicher</em> ist man sich hingegen für die Stichprobe (Messfehler einmal ausgeblendet). Zur Bemessung der Unsicherheit (Ungewissheit) bedient man sich der Wahrscheinlichkeitsrechnung (wo immer möglich). Die Wahrscheinlichkeitstheorie bzw. -rechnung wird daher auch als die Mathematik des Zufalls bezeichnet.</p>
+<p>Schließt man etwa, dass in einer Grundgesamtheit der Anteil der R-Fans bei 42 % liegt, so geschieht das unter Unsicherheit; es ist ungewiss. Man ist sich nicht sicher, dass es wirklich 42 % in der Population sind – und nicht etwa etwas mehr oder etwas weniger. Schließlich hat man <em>nicht</em> die ganze Population gesehen bzw. vermessen. <em>Sicher</em> ist man sich hingegen für die Stichprobe (Messfehler einmal ausgeblendet). Zur Bemessung der Unsicherheit (Ungewissheit) bedient man sich der Wahrscheinlichkeitsrechnung (wo immer möglich). Die Wahrscheinlichkeitstheorie bzw. -rechnung wird daher auch als die Mathematik des Zufalls bezeichnet.</p>
 <div id="def-zufall" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 3.3 (Zufälliges Ereignis)</strong></span> Unter einem zufälligen (engl. random) Ereignis verstehen wir ein Ereignis, das nicht (komplett) vorherzusehen ist, wie etwa die Augenzahl Ihres nächsten Würfelwurfs. Zufällig bedeutet nicht (zwangsläufig), dass das Ereignis keine Ursachen besitzt. So gehorchen die Bewegungen eines Würfels den Gesetzen der Physik, nur sind uns diese oder die genauen Randbedingungen nicht (ausreichend) bekannt. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exr-muenz" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 3.4</strong></span> 🏋 Welche physikalischen Randbedingungen wirken wohl auf einen Münzwurf ein? <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.4</strong></span> Welche physikalischen Randbedingungen wirken wohl auf einen Münzwurf ein? <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-muenz" class="theorem example">
 <p><span class="theorem-title"><strong>Beispiel 3.2 (Beispiele zur Quantifizierung von Ungewissheit)</strong></span> Aussagen mit Unsicherheit können unterschiedlich präzise formuliert sein.</p>
 <ul>
-<li><p>Morgen regnet’s <span class="math inline">\(\Leftrightarrow\)</span> Morgen wird es hier mehr als 0 mm Niederschlag geben (<span class="math inline">\(p=97\%\)</span>).</p></li>
-<li><p>Methode <span class="math inline">\(A\)</span> ist besser als Methode <span class="math inline">\(B\)</span> <span class="math inline">\(\Leftrightarrow\)</span> Mit einer Wahrscheinlichkeit von 57% ist der Mittelwert von <span class="math inline">\(Y\)</span> für Methode <span class="math inline">\(A\)</span> höher als für Methode <span class="math inline">\(B\)</span>.</p></li>
-<li><p>Die Maschine fällt demnächst aus <span class="math inline">\(\Leftrightarrow\)</span> Mit einer Wahrscheinlichkeit von 97% wird die Maschine in den nächsten 1-3 Tagen ausfallen, laut unserem Modell.</p></li>
-<li><p>Die Investition lohnt sich <span class="math inline">\(\Leftrightarrow\)</span> Die Investition hat einen Erwartungswert von 42 Euro; mit 90% Wahrscheinlichkeit wird der Gewinn zwischen -10000 und 100 Euro.</p></li>
+<li><p>Morgen regnet’s <span class="math inline">\(\Leftrightarrow\)</span> Morgen wird es hier mehr als 0 mm Niederschlag geben (<span class="math inline">\(p=97\%\)</span>).</p></li>
+<li><p>Methode <span class="math inline">\(A\)</span> ist besser als Methode <span class="math inline">\(B\)</span> <span class="math inline">\(\Leftrightarrow\)</span> Mit einer Wahrscheinlichkeit von 57 % ist der Mittelwert von <span class="math inline">\(Y\)</span> für Methode <span class="math inline">\(A\)</span> höher als für Methode <span class="math inline">\(B\)</span>.</p></li>
+<li><p>Die Maschine fällt demnächst aus <span class="math inline">\(\Leftrightarrow\)</span> Mit einer Wahrscheinlichkeit von 97 % wird die Maschine in den nächsten 1-3 Tagen ausfallen, laut unserem Modell.</p></li>
+<li><p>Die Investition lohnt sich <span class="math inline">\(\Leftrightarrow\)</span> Die Investition hat einen Erwartungswert von 42 Euro; mit 90 % Wahrscheinlichkeit wird der Gewinn zwischen -10000 und 100 Euro.</p></li>
 </ul>
 </div>
 <div id="exr-ungewiss" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 3.5</strong></span> 🏋 Geben Sie weitere Beispiele an!</p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.5</strong></span> Geben Sie weitere Beispiele an!</p>
 </div>
 </section><section id="zwei-arten-von-ungewissheit" class="level3" data-number="3.3.2"><h3 data-number="3.3.2" class="anchored" data-anchor-id="zwei-arten-von-ungewissheit">
 <span class="header-section-number">3.3.2</span> Zwei Arten von Ungewissheit</h3>
@@ -857,7 +856,7 @@ Wichtig
 </ol>
 <section id="betas-ungewissheit-zur-regressionsgeraden" class="level4" data-number="3.3.2.1"><h4 data-number="3.3.2.1" class="anchored" data-anchor-id="betas-ungewissheit-zur-regressionsgeraden">
 <span class="header-section-number">3.3.2.1</span> Betas: Ungewissheit zur Regressionsgeraden</h4>
-<p>Wenn wir von den Daten der Stichproben auf die Grundgesamtheit schließen, können wir nicht sicher sein, ob die Regressionskoeffizienten (Achsenabschnitt, Steigung der Regressionsgeraden) exakt richtig sind, s. <a href="#fig-betas-ungewiss" class="quarto-xref">Abbildung&nbsp;<span>3.3</span></a>.</p>
+<p>Wenn wir von den Daten der Stichproben auf die Grundgesamtheit schließen, können wir nicht sicher sein, ob die Regressionskoeffizienten (Achsenabschnitt, Steigung der Regressionsgeraden) exakt richtig sind, s. <a href="#fig-betas-ungewiss" class="quarto-xref">Abbildung&nbsp;<span>3.3</span></a>. Wie man in <a href="#fig-regr-div" class="quarto-xref">Abbildung&nbsp;<span>3.4</span></a> sieht, können sich die Koeffizienten des Modells (<span class="math inline">\(\beta_0\)</span>, Achsenabschnitt und <span class="math inline">\(\beta_1\)</span>, Steigung) unterscheiden. Woran liegt das?</p>
 <div class="cell" data-layout-align="center">
 <div id="lst-toni2" class="r cell-code listing quarto-float quarto-figure quarto-figure-left anchored">
 <figure class="quarto-float quarto-float-lst figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-toni2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -875,7 +874,7 @@ Listing&nbsp;3.1: Regressionsmodell für Klausurerfolg als Funktion der Lernzeit
 <div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-betas-ungewiss" style="flex-basis: 50.0%;justify-content: center;">
 <div id="fig-betas-ungewiss-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-betas-ungewiss-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0250-inferenz_files/figure-html/fig-betas-ungewiss-1.png" class="lightbox" data-gallery="fig-betas-ungewiss" title="Abbildung&nbsp;3.3&nbsp;(a): Ungewissheit für den Achsenabschnitt: Die Gerade könnte ‘höher’ oder ‘niedriger’ aufgehängt sein."><img src="0250-inferenz_files/figure-html/fig-betas-ungewiss-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-betas-ungewiss"></a>
+<a href="0250-inferenz_files/figure-html/fig-betas-ungewiss-1.pdf" class="lightbox" data-gallery="fig-betas-ungewiss" title="Abbildung&nbsp;3.3&nbsp;(a): Ungewissheit für den Achsenabschnitt: Die Gerade könnte ‘höher’ oder ‘niedriger’ aufgehängt sein."><embed src="0250-inferenz_files/figure-html/fig-betas-ungewiss-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%" data-ref-parent="fig-betas-ungewiss"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-betas-ungewiss-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Ungewissheit für den Achsenabschnitt: Die Gerade könnte ‘höher’ oder ‘niedriger’ aufgehängt sein.
@@ -885,7 +884,7 @@ Listing&nbsp;3.1: Regressionsmodell für Klausurerfolg als Funktion der Lernzeit
 <div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-betas-ungewiss" style="flex-basis: 50.0%;justify-content: center;">
 <div id="fig-betas-ungewiss-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-betas-ungewiss-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0250-inferenz_files/figure-html/fig-betas-ungewiss-2.png" class="lightbox" data-gallery="fig-betas-ungewiss" title="Abbildung&nbsp;3.3&nbsp;(b): Ungewissheit für die Steigung der Regressionsgeraden: Die Gerade könnte mehr oder weniger steigen."><img src="0250-inferenz_files/figure-html/fig-betas-ungewiss-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-betas-ungewiss"></a>
+<a href="0250-inferenz_files/figure-html/fig-betas-ungewiss-2.pdf" class="lightbox" data-gallery="fig-betas-ungewiss" title="Abbildung&nbsp;3.3&nbsp;(b): Ungewissheit für die Steigung der Regressionsgeraden: Die Gerade könnte mehr oder weniger steigen."><embed src="0250-inferenz_files/figure-html/fig-betas-ungewiss-2.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%" data-ref-parent="fig-betas-ungewiss"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-betas-ungewiss-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Ungewissheit für die Steigung der Regressionsgeraden: Die Gerade könnte mehr oder weniger steigen.
@@ -898,17 +897,8 @@ Listing&nbsp;3.1: Regressionsmodell für Klausurerfolg als Funktion der Lernzeit
 Abbildung&nbsp;3.3: Wir könnten nicht sicher sein, dass der Achsenabschnitt und die Geradensteigung unseres Modells exakt richtig sind. Diese Werte könnten auch etwas größer oder kleiner sein.
 </figcaption></figure>
 </div>
-<p>Wie man in <a href="#fig-regr-div" class="quarto-xref">Abbildung&nbsp;<span>3.4</span></a> sieht, können sich die Koeffizienten des Modells (<span class="math inline">\(\beta_0\)</span>, Achsenabschnitt und <span class="math inline">\(\beta_1\)</span>, Steigung) unterscheiden. Woran liegt das?</p>
 <div id="exm-flights" class="theorem example">
-<p><span class="theorem-title"><strong>Beispiel 3.3 (Stichproben der New Yorker Flüge)</strong></span> Nehmen wir an, wir ziehen ein paar Zufallstichproben aus der Menge (Population) aller Flüge, die in New York im Jahre 2013 gestartet sind. In jeder Stichprobe berechnen wir eine Regression zwischen Flugzeit und Verspätung des Flugs am Ankunftsort. Sicherlich werden sich die Stichproben in ihren Kennwerten, z.B. in den Koeffizienten der genannten Regression, unterscheiden. <span class="math inline">\(\square\)</span></p>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/nycflights13">nycflights13</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">flights</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">stipro1</span> <span class="op">&lt;-</span> <span class="fu">sample_n</span><span class="op">(</span><span class="va">flights</span>, size <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="va">stipro2</span> <span class="op">&lt;-</span> <span class="fu">sample_n</span><span class="op">(</span><span class="va">flights</span>, size <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="va">stipro3</span> <span class="op">&lt;-</span> <span class="fu">sample_n</span><span class="op">(</span><span class="va">flights</span>, size <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<p><span class="theorem-title"><strong>Beispiel 3.3 (Stichproben der New Yorker Flüge)</strong></span> Nehmen wir an, wir ziehen ein paar Zufallstichproben aus der Menge (Population) aller Flüge, die in New York im Jahre 2013 gestartet sind. In jeder Stichprobe berechnen wir eine Regression zwischen Flugzeit und Verspätung des Flugs am Ankunftsort. Sicherlich werden sich die Stichproben in ihren Kennwerten, z. B. in den Koeffizienten der genannten Regression, unterscheiden. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="fig-regr-div" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-regr-div-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -916,7 +906,7 @@ Abbildung&nbsp;3.3: Wir könnten nicht sicher sein, dass der Achsenabschnitt und
 <div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-div" style="flex-basis: 33.3%;justify-content: center;">
 <div id="fig-regr-div-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-regr-div-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0250-inferenz_files/figure-html/fig-regr-div-1.png" class="lightbox" data-gallery="fig-regr-div" title="Abbildung&nbsp;3.4&nbsp;(a): Stichprobe 1"><img src="0250-inferenz_files/figure-html/fig-regr-div-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-regr-div"></a>
+<a href="0250-inferenz_files/figure-html/fig-regr-div-1.pdf" class="lightbox" data-gallery="fig-regr-div" title="Abbildung&nbsp;3.4&nbsp;(a): Stichprobe 1"><embed src="0250-inferenz_files/figure-html/fig-regr-div-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%" data-ref-parent="fig-regr-div"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-div-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Stichprobe 1
@@ -926,7 +916,7 @@ Abbildung&nbsp;3.3: Wir könnten nicht sicher sein, dass der Achsenabschnitt und
 <div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-div" style="flex-basis: 33.3%;justify-content: center;">
 <div id="fig-regr-div-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-regr-div-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0250-inferenz_files/figure-html/fig-regr-div-2.png" class="lightbox" data-gallery="fig-regr-div" title="Abbildung&nbsp;3.4&nbsp;(b): Stichprobe 2"><img src="0250-inferenz_files/figure-html/fig-regr-div-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-regr-div"></a>
+<a href="0250-inferenz_files/figure-html/fig-regr-div-2.pdf" class="lightbox" data-gallery="fig-regr-div" title="Abbildung&nbsp;3.4&nbsp;(b): Stichprobe 2"><embed src="0250-inferenz_files/figure-html/fig-regr-div-2.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%" data-ref-parent="fig-regr-div"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-div-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Stichprobe 2
@@ -936,7 +926,7 @@ Abbildung&nbsp;3.3: Wir könnten nicht sicher sein, dass der Achsenabschnitt und
 <div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-regr-div" style="flex-basis: 33.3%;justify-content: center;">
 <div id="fig-regr-div-3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-regr-div-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0250-inferenz_files/figure-html/fig-regr-div-3.png" class="lightbox" data-gallery="fig-regr-div" title="Abbildung&nbsp;3.4&nbsp;(c): Stichprobe 3"><img src="0250-inferenz_files/figure-html/fig-regr-div-3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-regr-div"></a>
+<a href="0250-inferenz_files/figure-html/fig-regr-div-3.pdf" class="lightbox" data-gallery="fig-regr-div" title="Abbildung&nbsp;3.4&nbsp;(c): Stichprobe 3"><embed src="0250-inferenz_files/figure-html/fig-regr-div-3.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%" data-ref-parent="fig-regr-div"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-regr-div-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (c) Stichprobe 3
@@ -976,7 +966,7 @@ Wichtig
 <div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-resid-var" style="flex-basis: 33.3%;justify-content: center;">
 <div id="fig-resid-var-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-resid-var-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0250-inferenz_files/figure-html/fig-resid-var-1.png" class="lightbox" data-gallery="fig-resid-var" title="Abbildung&nbsp;3.5&nbsp;(a): Geringer Vorhersagefehler (hohe Vorhersagegüte): Die vertikalen Balken sind kurz."><img src="0250-inferenz_files/figure-html/fig-resid-var-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-resid-var"></a>
+<a href="0250-inferenz_files/figure-html/fig-resid-var-1.pdf" class="lightbox" data-gallery="fig-resid-var" title="Abbildung&nbsp;3.5&nbsp;(a): Geringer Vorhersagefehler (hohe Vorhersagegüte): Die vertikalen Balken sind kurz."><embed src="0250-inferenz_files/figure-html/fig-resid-var-1.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%" data-ref-parent="fig-resid-var"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-resid-var-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Geringer Vorhersagefehler (hohe Vorhersagegüte): Die vertikalen Balken sind kurz.
@@ -986,7 +976,7 @@ Wichtig
 <div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-resid-var" style="flex-basis: 33.3%;justify-content: center;">
 <div id="fig-resid-var-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-resid-var-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0250-inferenz_files/figure-html/fig-resid-var-2.png" class="lightbox" data-gallery="fig-resid-var" title="Abbildung&nbsp;3.5&nbsp;(b): Hoher Vorhersagefehler: Die vertikalen Balken sind lang."><img src="0250-inferenz_files/figure-html/fig-resid-var-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-resid-var"></a>
+<a href="0250-inferenz_files/figure-html/fig-resid-var-2.pdf" class="lightbox" data-gallery="fig-resid-var" title="Abbildung&nbsp;3.5&nbsp;(b): Hoher Vorhersagefehler: Die vertikalen Balken sind lang."><embed src="0250-inferenz_files/figure-html/fig-resid-var-2.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%" data-ref-parent="fig-resid-var"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-resid-var-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Hoher Vorhersagefehler: Die vertikalen Balken sind lang.
@@ -996,7 +986,7 @@ Wichtig
 <div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-resid-var" style="flex-basis: 33.3%;justify-content: center;">
 <div id="fig-resid-var-3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure"><div aria-describedby="fig-resid-var-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0250-inferenz_files/figure-html/fig-resid-var-3.png" class="lightbox" data-gallery="fig-resid-var" title="Abbildung&nbsp;3.5&nbsp;(c): auch hoher Vorhersagefehler"><img src="0250-inferenz_files/figure-html/fig-resid-var-3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" data-ref-parent="fig-resid-var"></a>
+<a href="0250-inferenz_files/figure-html/fig-resid-var-3.pdf" class="lightbox" data-gallery="fig-resid-var" title="Abbildung&nbsp;3.5&nbsp;(c): auch hoher Vorhersagefehler"><embed src="0250-inferenz_files/figure-html/fig-resid-var-3.pdf" class="img-fluid quarto-figure quarto-figure-center" style="width:75.0%" data-ref-parent="fig-resid-var"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-resid-var-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (c) auch hoher Vorhersagefehler
@@ -1011,7 +1001,7 @@ Abbildung&nbsp;3.5: Regressionsanalyse mit <em>gleicher</em> Regressionsgerade, 
 </div>
 </section></section><section id="ich-weiß-was-ich-nicht-weiß-ungewissheit-angeben" class="level3" data-number="3.3.3"><h3 data-number="3.3.3" class="anchored" data-anchor-id="ich-weiß-was-ich-nicht-weiß-ungewissheit-angeben">
 <span class="header-section-number">3.3.3</span> Ich weiß, was ich nicht weiß: Ungewissheit angeben</h3>
-<p>Streng genommen ist eine Inferenz ohne Angabe der Ungewissheit (Genauigkeit der Schätzung) wertlos. Angenommen, jemand sagt, dass sie den Anteil der R-Fans (in der Population) auf 42% schätzt, lässt aber offen wie <em>sicher</em> (präzise) die Schätzung (der Modellparameter) ist. Wir wissen also nicht, ob z.B. 2% oder 82% noch erwartbar sind. Oder ob man im Gegenteil mit hoher Sicherheit sagen kann, die Schätzung schließt sogar 41% oder 43% aus.</p>
+<p>Streng genommen ist eine Inferenz ohne Angabe der Ungewissheit (Genauigkeit der Schätzung) wertlos. Angenommen, jemand sagt, dass sie den Anteil der R-Fans (in der Population) auf 42 % schätzt, lässt aber offen wie <em>sicher</em> (präzise) die Schätzung (der Modellparameter) ist. Wir wissen also nicht, ob z. B. 2 % oder 82 % noch erwartbar sind. Oder ob man im Gegenteil mit hoher Sicherheit sagen kann, die Schätzung schließt sogar 41 % oder 43 % aus.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1036,7 +1026,8 @@ Wichtig
 <p>Wir haben gesehen, dass wir die Werte der Parameter nur mit Ungewissheit angeben können (s. <a href="#fig-betas-ungewiss" class="quarto-xref">Abbildung&nbsp;<span>3.3</span></a> und <a href="#fig-resid-var" class="quarto-xref">Abbildung&nbsp;<span>3.5</span></a>). Um dieser Ungewissheit Rechnung zu tragen, gibt man nicht nur einen einzelnen Wert an, einen <em>Punktschätzer</em>, sondern man gibt einen <em>Schätzbereich</em> auf Basis der Daten an, s. <a href="#tbl-toni-params" class="quarto-xref">Tabelle&nbsp;<span>3.2</span></a>.</p>
 <p>Man spricht anstatt von Schätzbereich auch von einem <em>Konfidenzintervall</em>.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">model_parameters</span><span class="op">(</span><span class="va">lm_toni</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">model_parameters</span><span class="op">(</span><span class="va">lm_toni</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">5</span>,<span class="fl">6</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">print_md</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="tbl-toni-params" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
 <figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-toni-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1044,30 +1035,22 @@ Tabelle&nbsp;3.2: Punktschätzer und Schätzbereiche für die Modellkoeffiziente
 </figcaption><div aria-describedby="tbl-toni-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
 <table class="cell caption-top table table-sm table-striped small">
+<caption>Fixed Effects</caption>
 <thead><tr class="header">
 <th style="text-align: left;">Parameter</th>
 <th style="text-align: center;">Coefficient</th>
-<th style="text-align: center;">SE</th>
-<th style="text-align: center;">95% CI</th>
-<th style="text-align: center;">t(98)</th>
-<th style="text-align: center;">p</th>
+<th style="text-align: center;">CI</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">(Intercept)</td>
 <td style="text-align: center;">46.19</td>
-<td style="text-align: center;">5.14</td>
 <td style="text-align: center;">(35.99, 56.39)</td>
-<td style="text-align: center;">8.98</td>
-<td style="text-align: center;">&lt; .001</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">x</td>
 <td style="text-align: center;">0.88</td>
-<td style="text-align: center;">0.10</td>
 <td style="text-align: center;">(0.68, 1.08)</td>
-<td style="text-align: center;">8.92</td>
-<td style="text-align: center;">&lt; .001</td>
 </tr>
 </tbody>
 </table>
@@ -1076,13 +1059,13 @@ Tabelle&nbsp;3.2: Punktschätzer und Schätzbereiche für die Modellkoeffiziente
 </figure>
 </div>
 </div>
-<p>Unser Modell gibt den 95%-Schätzbereich für den Achsenabschnitt an, ca. von 36 bis 56 Klausurpunkten. Die Steigung wird geschätzt auf ca. 0.7 bis 1.1 Klausurpunkte pro Stunde Lernzeit.</p>
+<p>Unser Modell gibt den 95 %-Schätzbereich für den Achsenabschnitt an, ca. von 36 bis 56 Klausurpunkten. Die Steigung wird geschätzt auf ca. 0.7 bis 1.1 Klausurpunkte pro Stunde Lernzeit.</p>
 <div id="def-konfintervall" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 3.5 (Konfidenzintervall)</strong></span> Ein Konfidenzintervall (confidence interval, CI) ist ein Oberbegriff für Schätzbereiche für Parameter wie Regressionskoeffizienten. Die Grenzen eines Konfidenzintervalls markieren die Grenzen eines Bereichs plausibler Werte für einen Parameter. <span class="math inline">\(\square\)</span></p>
 </div>
-<p>Es gibt verschiedene Arten, Konfidenzintervalle zu berechnen; wir sprechen in späteren Kapiteln dazu ausführlicher. Ein Konfidenzintervall wird häufig mit 90% oder 95% Genauigkeit angegeben. Im Kontext der Bayes-Analyse – auf der dieser Kurs aufbaut – ist ein Konfidenzintervall einfach zu interpretieren. Sagen wir, wir finden, dass in einem Modell ein 95%-Konfidenzintervall für den Anteil der R-Fans angegeben wird, das sich von 40 bis 44 Prozent erstreckt. Dieser Befund lässt sich so interpretieren:</p>
+<p>Es gibt verschiedene Arten, Konfidenzintervalle zu berechnen; wir sprechen in späteren Kapiteln dazu ausführlicher. Ein Konfidenzintervall wird häufig mit 90 % oder 95 % Genauigkeit angegeben. Im Kontext der Bayes-Analyse – auf der dieser Kurs aufbaut – ist ein Konfidenzintervall einfach zu interpretieren. Sagen wir, wir finden, dass in einem Modell ein 95 %-Konfidenzintervall für den Anteil der R-Fans angegeben wird, das sich von 40 bis 44 Prozent erstreckt. Dieser Befund lässt sich so interpretieren:</p>
 <blockquote class="blockquote">
-<p>“Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95% im Bereich von 40 bis 44 Prozentpunkten.”</p>
+<p>“Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95 % im Bereich von 40 bis 44 Prozentpunkten.”</p>
 </blockquote>
 <div id="exr-ungewisskorr" class="theorem exercise">
 <p><span class="theorem-title"><strong>Übungsaufgabe 3.6</strong></span> Geben Sie Beispiele für Konfidenzintervalle an.</p>
@@ -1136,17 +1119,17 @@ Abbildung&nbsp;3.6
 </blockquote>
 <p>Noch einfacher:</p>
 <ul>
-<li><p>Man nimmt an, dass es keinen Effekt gibt (z.B. kein Zusammenhang zwischen den untersuchten Variablen)</p></li>
+<li><p>Man nimmt an, dass es keinen Effekt gibt (z. B. kein Zusammenhang zwischen den untersuchten Variablen)</p></li>
 <li><p>Dann fragt man: Wie überraschend wären meine Daten unter dieser Annahme?</p></li>
 <li><p>Der p-Wert gibt genau diese Überraschungs-Wahrscheinlichkeit an.</p></li>
 </ul>
 <!-- Kurz gesagt: $p := Pr(T'  \ge T| H_0)$. --><div id="exr-p" class="theorem exercise">
-<p><span class="theorem-title"><strong>Übungsaufgabe 3.7</strong></span> 🏋 Recherchieren Sie eine Definition des <em>p</em>-Werts und lesen Sie sie einem Freund. Beobachten sie die Reaktionen auf Ihre Erklärung. <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Übungsaufgabe 3.7</strong></span> Recherchieren Sie eine Definition des <em>p</em>-Werts und lesen Sie sie einem Freund. Beobachten sie die Reaktionen auf Ihre Erklärung. <span class="math inline">\(\square\)</span></p>
 </div>
 <p>Der p-Wert wird oft falsch verstanden <span class="citation" data-cites="badenes-ribera2016">(<a href="references.html#ref-badenes-ribera2016" role="doc-biblioref">Badenes-Ribera et al., 2016</a>)</span>. Aber er ist auch nicht leicht zu verstehen, meint Meister Yoda, s. <a href="#fig-yoda" class="quarto-xref">Abbildung&nbsp;<span>3.7</span></a>. Hier sind einige <em>FALSCHE</em> Interpretationen zum p-Wert laut der Autoren:</p>
 <ul>
-<li>🙅♀ Der p-Wert würde die Wahrscheinlichkeit der Nullhypothese oder der Forschungshypothese angeben. 🙊 FALSCH!</li>
-<li>🙅♀ Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. 🙊 FALSCH!</li>
+<li>Der p-Wert würde die Wahrscheinlichkeit der Nullhypothese oder der Forschungshypothese angeben. 🙊 FALSCH!</li>
+<li>Der p-Wert würde ein inhaltlich bedeutsames, praktisch signifikantes Ergebnis anzeigen. 🙊 FALSCH!</li>
 </ul>
 <div id="fig-yoda" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-yoda-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1175,14 +1158,14 @@ Wichtig
 <p>Die Posteriori-Verteilung beantwortet uns die Frage: “Wie wahrscheinlich ist die Forschungshypothese (oder Varianten von ihr), jetzt, nachdem wir die Daten kennen, auf Basis unseres Modells?”</p>
 <p>In der Bayes-Statistik sind Aussagen folgender Art erlaubt:</p>
 <blockquote class="blockquote">
-<p>Mit einer Wahrscheinlichkeit von 95% ist der neue Webshop besser als der alte. Mit einer Wahrscheinlichkeit von 89% liegt die Wirksamkeit des neuen Medikaments zwischen 0.1 und 0.4.</p>
+<p>Mit einer Wahrscheinlichkeit von 95 % ist der neue Webshop besser als der alte. Mit einer Wahrscheinlichkeit von 89 % liegt die Wirksamkeit des neuen Medikaments zwischen 0.1 und 0.4.</p>
 </blockquote>
 <!-- 
 [In diesem Post](https://sebastiansauer.github.io/data_se/2022/01/27/warum-bayes/) wird für Bayes geworben 
 und (einseitig) Stellung pro Bayes bezogen. -->
 </section><section id="statistische-signifikanz" class="level3" data-number="3.4.3"><h3 data-number="3.4.3" class="anchored" data-anchor-id="statistische-signifikanz">
 <span class="header-section-number">3.4.3</span> Statistische Signifikanz</h3>
-<p>Im <em>Frequentismus</em> spricht man von statistischer Signifikanz, wenn der p-Wert kleiner ist als 5%: <span class="math inline">\(p&lt;.05\)</span> (oder einen anderen Prozentwert als 5%, aber meistens wird 5% hergenommen). Man nimmt diesen Befund als Beleg, dass man einen Effekt gefunden hat, die Hypothese eines Nulleffekts (z.B. kein Zusammenhang von X und Y) also verwerfen kann. Faktisch entscheidet man sich, die Forschungshypothese weiterhin als “vorläufig gültig” oder zumindest als “nicht widerlegt” zu betrachten.</p>
+<p>Im <em>Frequentismus</em> spricht man von statistischer Signifikanz, wenn der p-Wert kleiner ist als 5 %: <span class="math inline">\(p&lt;.05\)</span> (oder einen anderen Prozentwert als 5 %, aber meistens wird 5 % hergenommen). Man nimmt diesen Befund als Beleg, dass man einen Effekt gefunden hat, die Hypothese eines Nulleffekts (z.B. kein Zusammenhang von X und Y) also verwerfen kann. Faktisch verwirft man die Nullhypothese und wertet das Ergebnis als Unterstützung für die Forschungshypothese. Wichtig: “Verwerfen” heißt nicht “beweisen” – auch die Forschungshypothese gilt (wie jede wissenschaftliche Hypothese) nie als endgültig bewiesen, sondern bestenfalls als vorläufig nicht widerlegt.</p>
 <p>In der <em>Bayes-Statistik</em> ist der Begriff der Signifikanz nicht einheitlich definiert. Mit Bezug auf <span class="citation" data-cites="gelman2021">Gelman et al. (<a href="references.html#ref-gelman2021" role="doc-biblioref">2021</a>)</span> (S. 57) wird in diesem Buch der Begriff wie folgt definiert – mit Gültigkeit sowohl für Bayes-Statistik als auch für Frequentistische Statistik.</p>
 <div id="exr-sun-explodes" class="theorem exercise">
 <p><span class="theorem-title"><strong>Übungsaufgabe 3.8</strong></span> Im Comic 1132 <a href="https://xkcd.com/1132/">von xkcd</a><a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> wird sich über das Nicht-Berücksichtigen von Vorab-Informationen (Prior-Verteilung) lustig gemacht. Erklären Sie den Comic!</p>
@@ -1190,19 +1173,19 @@ und (einseitig) Stellung pro Bayes bezogen. -->
 <div id="def-signifikanz" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 3.6 (Statistische Signifikanz im Frequentismus und im Bayesismus)</strong></span> Ist der Wert Null nicht im Schätzbereich enthalten, so liegt ein statistisch signifikantes Ergebnis vor. <span class="math inline">\(\square\)</span></p>
 </div>
-<p>Oft werden 95%-Konfidenzintervalle verwendet, obwohl das nur eine Konvention ist. Die Signifikanzaussage bezieht sich immer auf einen Schätzbereich bestimmter Größe, z.B. 95% (und des Modells inklusive Daten).</p>
+<p>Oft werden 95 %-Konfidenzintervalle verwendet, obwohl das nur eine Konvention ist. Die Signifikanzaussage bezieht sich immer auf einen Schätzbereich bestimmter Größe, z. B. 95 % (und des Modells inklusive Daten).</p>
 <p>Liegt ein statistisch signifikantes Ergebnis vor, so <em>verwirft</em> man die <em>Nullhypothese</em> und akzeptiert die <em>Alternativhypothese</em> (synonym: Effekthypothese).</p>
 <div id="def-nullhyp" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 3.7 (Exakte Nullhypothese)</strong></span> Die exakte Nullhypothese (meist kurz nur als Nullhypothese bezeichnet), <span class="math inline">\(H_0\)</span>, besagt, dass <em>kein</em> (null) Effekt (keine Abweichung vom Referenzwert, kein Unterschied zwischen Gruppen, kein Zusammenhang zwischen UV und AV, Veränderung vor vs.&nbsp;nach der Intervention, …) vorliegt. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="def-alternativhyp" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3.8 (Alternativhypothese (Effekthypothese))</strong></span> Eine Hypothese, die besagt, dass es einen (substanziellen) Effekt gibt. Das kann z.B. ein Unterschied zwischen den untersuchten Gruppen sein oder ein Zusammenhang zwischen den untersuchten Variablen. Logisch betrachtet ist die Alternativhypothese meist das Gegenteil der Nullhypothese. <span class="math inline">\(\square\)</span></p>
+<p><span class="theorem-title"><strong>Definition 3.8 (Alternativhypothese (Effekthypothese))</strong></span> Eine Hypothese, die besagt, dass es einen (substanziellen) Effekt gibt. Das kann z. B. ein Unterschied zwischen den untersuchten Gruppen sein oder ein Zusammenhang zwischen den untersuchten Variablen. Logisch betrachtet ist die Alternativhypothese meist das Gegenteil der Nullhypothese. <span class="math inline">\(\square\)</span></p>
 </div>
 <div id="exm-effekt" class="theorem example">
 <p><span class="theorem-title"><strong>Beispiel 3.4 (Beispiele für Effekthypothesen)</strong></span> &nbsp;</p>
 <ul>
 <li>Die Trefferquote der Münze ist <span class="math inline">\(\pi = .7\)</span> (Kopf), weicht also um 0.2 von 0.5, dem Wert laut Nullhypothese, ab.</li>
-<li>Der Unterschied im mittleren Gewicht zwischen den Gruppen beträgt ca. 500-600 g.</li>
+<li>Der Unterschied im mittleren Gewicht zwischen den Gruppen beträgt ca. 500-600 g.</li>
 <li>Der Korrelationskoeffizient <span class="math inline">\(\rho\)</span> liegt bei ca. .5 bis .7, ist also nicht Null.</li>
 <li>Der standardisierte Regressionskoeffizient <span class="math inline">\(\beta\)</span> liegt bei ca. .1 bis .2, ist also nicht Null.</li>
 <li>Der Unterschied in Gestimmtheit vor vs.&nbsp;nach der Induktion von Einsamkeit liegt bei <span class="math inline">\(X_d = .3\)</span>, ist also nicht Null. <span class="math inline">\(\square\)</span>
@@ -1219,7 +1202,7 @@ und (einseitig) Stellung pro Bayes bezogen. -->
 <li>
 <span class="math inline">\(H_0: \rho = 0\)</span> (Es besteht kein linearer Zusammenhang zwischen zwei Variablen)</li>
 <li>
-<span class="math inline">\(H_0: \pi = 0.5\)</span> (Die Wahrscheinlichkeit für “Erfolg” beträgt 50%; die Münze ist “fair”)</li>
+<span class="math inline">\(H_0: \pi = 0.5\)</span> (Die Wahrscheinlichkeit für “Erfolg” beträgt 50 %; die Münze ist “fair”)</li>
 <li>
 <span class="math inline">\(H_0: \mu_1 = \mu_2 = \mu_3 = \mu_4\)</span> (Alle Gruppenmittelwerte sind gleich; bei ANOVA)</li>
 <li>
@@ -1265,10 +1248,10 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 <div id="exr-pwert" class="theorem exercise">
 <p><span class="theorem-title"><strong>Übungsaufgabe 3.10 (Peer Instruction: p-Wert)</strong></span> Der p-Wert ist der zentrale Kennwert der frequentistischen Statistik. Aber er wird immer wieder missverstanden. Welche Aussage zum p-Wert ist korrekt?</p>
 <ol type="A">
-<li>Ein p-Wert von 0,04 bedeutet, dass die Nullhypothese mit 96 % Wahrscheinlichkeit falsch ist.</li>
+<li>Ein p-Wert von 0,04 bedeutet, dass die Nullhypothese mit 96 % Wahrscheinlichkeit falsch ist.</li>
 <li>Ein p-Wert größer als 0,05 beweist, dass die Nullhypothese wahr ist.</li>
 <li>Ein kleiner p-Wert bedeutet, dass ein großer Effekt vorliegt.</li>
-<li>Ein p-Wert von 0,01 bedeutet, dass sich bei Wiederholung der Studie mit 99% wieder ein signifikantes Ergebnis finden wird.</li>
+<li>Ein p-Wert von 0,01 bedeutet, dass sich bei Wiederholung der Studie mit 99 % wieder ein signifikantes Ergebnis finden wird.</li>
 <li>Keine der oben genannten. <span class="math inline">\(\square\)</span>
 </li>
 </ol>
@@ -1309,8 +1292,8 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Wie ist <em>Populationsinferenz</em> (Inferenzstatistik, schließende Statistik) korrekt definiert, und wie unterscheidet sie sich von der Deskriptivstatistik?</p>
-<div id="webex-846ffbf9d50f3acd4d476c4ee89ee97f" class="webex-radiogroup" data-answer="YwQaVkpSSghIBW0=">
-<label><input type="radio" autocomplete="off" name="846ffbf9d50f3acd4d476c4ee89ee97f"><span>Populationsinferenz und Deskriptivstatistik bezeichnen exakt denselben Vorgang, nur mit unterschiedlichem Namen.</span></label><label><input type="radio" autocomplete="off" name="846ffbf9d50f3acd4d476c4ee89ee97f"><span>Populationsinferenz ist nur dann anwendbar, wenn die gesamte Population (nicht nur eine Stichprobe) vermessen wurde.</span></label><label><input type="radio" autocomplete="off" name="846ffbf9d50f3acd4d476c4ee89ee97f"><span>Populationsinferenz bezeichnet ausschließlich das Ziehen einer Zufallsstichprobe aus einer Population, nicht die anschließende Verallgemeinerung.</span></label><label><input type="radio" autocomplete="off" name="846ffbf9d50f3acd4d476c4ee89ee97f"><span>Populationsinferenz verallgemeinert von den Daten einer begrenzten Stichprobe auf eine zugrundeliegende Grundgesamtheit (Population); Deskriptivstatistik fasst hingegen nur die Stichprobe selbst zu Kennzahlen zusammen, ohne über sie hinauszugehen.</span></label><label><input type="radio" autocomplete="off" name="846ffbf9d50f3acd4d476c4ee89ee97f"><span>Deskriptivstatistik verallgemeinert von der Stichprobe auf die Population, Populationsinferenz beschränkt sich hingegen auf die reine Beschreibung der Stichprobe.</span></label>
+<div id="webex-087be646ab4f7a9361833fdda78e9763" class="webex-radiogroup" data-answer="awgbUkkGGAdNUmk=">
+<label><input type="radio" autocomplete="off" name="087be646ab4f7a9361833fdda78e9763"><span>Populationsinferenz und Deskriptivstatistik bezeichnen exakt denselben Vorgang, nur mit unterschiedlichem Namen.</span></label><label><input type="radio" autocomplete="off" name="087be646ab4f7a9361833fdda78e9763"><span>Populationsinferenz ist nur dann anwendbar, wenn die gesamte Population (nicht nur eine Stichprobe) vermessen wurde.</span></label><label><input type="radio" autocomplete="off" name="087be646ab4f7a9361833fdda78e9763"><span>Populationsinferenz bezeichnet ausschließlich das Ziehen einer Zufallsstichprobe aus einer Population, nicht die anschließende Verallgemeinerung.</span></label><label><input type="radio" autocomplete="off" name="087be646ab4f7a9361833fdda78e9763"><span>Populationsinferenz verallgemeinert von den Daten einer begrenzten Stichprobe auf eine zugrundeliegende Grundgesamtheit (Population); Deskriptivstatistik fasst hingegen nur die Stichprobe selbst zu Kennzahlen zusammen, ohne über sie hinauszugehen.</span></label><label><input type="radio" autocomplete="off" name="087be646ab4f7a9361833fdda78e9763"><span>Deskriptivstatistik verallgemeinert von der Stichprobe auf die Population, Populationsinferenz beschränkt sich hingegen auf die reine Beschreibung der Stichprobe.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -1331,13 +1314,13 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 </div>
 <div class="webex-question">
 <div class="webex-check webex-box">
-<p>Schließt man aus einer Stichprobe, dass der Anteil der R-Fans in einer Population bei 42% liegt, so ist dieser Schluss zwangsläufig mit <em>Ungewissheit</em> behaftet. Warum ist das so?</p>
-<div id="webex-1252a38a868a3913b6ad271637dc8f70" class="webex-radiogroup" data-answer="agIZAk0CFFEUBmU=">
-<label><input type="radio" autocomplete="off" name="1252a38a868a3913b6ad271637dc8f70"><span>Ungewissheit lässt sich durch geschicktes Runden der berechneten Prozentzahl vollständig vermeiden.</span></label><label><input type="radio" autocomplete="off" name="1252a38a868a3913b6ad271637dc8f70"><span>Ungewissheit entsteht nur bei sehr kleinen Stichproben; ab einer Stichprobengröße von <span class="math inline">\(n=100\)</span> verschwindet sie vollständig.</span></label><label><input type="radio" autocomplete="off" name="1252a38a868a3913b6ad271637dc8f70"><span>Weil man nicht die gesamte Population, sondern nur einen (begrenzten) Teil davon – die Stichprobe – kennt; aus diesem begrenzten Wissen resultiert notwendig Unsicherheit darüber, ob der wahre Populationswert exakt dem Stichprobenwert entspricht.</span></label><label><input type="radio" autocomplete="off" name="1252a38a868a3913b6ad271637dc8f70"><span>Weil Stichproben grundsätzlich fehlerhaft erhoben werden und Messfehler die einzige Ursache von Ungewissheit sind.</span></label><label><input type="radio" autocomplete="off" name="1252a38a868a3913b6ad271637dc8f70"><span>Für die Stichprobe selbst besteht ebenso viel Ungewissheit wie für die Population, da man auch die Stichprobenwerte nicht exakt kennt.</span></label>
+<p>Schließt man aus einer Stichprobe, dass der Anteil der R-Fans in einer Population bei 42 % liegt, so ist dieser Schluss zwangsläufig mit <em>Ungewissheit</em> behaftet. Warum ist das so?</p>
+<div id="webex-175a356070aca6f73f5ae5746d3b5236" class="webex-radiogroup" data-answer="agcZUR8EGgAbADw=">
+<label><input type="radio" autocomplete="off" name="175a356070aca6f73f5ae5746d3b5236"><span>Ungewissheit lässt sich durch geschicktes Runden der berechneten Prozentzahl vollständig vermeiden.</span></label><label><input type="radio" autocomplete="off" name="175a356070aca6f73f5ae5746d3b5236"><span>Ungewissheit entsteht nur bei sehr kleinen Stichproben; ab einer Stichprobengröße von <span class="math inline">\(n=100\)</span> verschwindet sie vollständig.</span></label><label><input type="radio" autocomplete="off" name="175a356070aca6f73f5ae5746d3b5236"><span>Weil man nicht die gesamte Population, sondern nur einen (begrenzten) Teil davon – die Stichprobe – kennt; aus diesem begrenzten Wissen resultiert notwendig Unsicherheit darüber, ob der wahre Populationswert exakt dem Stichprobenwert entspricht.</span></label><label><input type="radio" autocomplete="off" name="175a356070aca6f73f5ae5746d3b5236"><span>Weil Stichproben grundsätzlich fehlerhaft erhoben werden und Messfehler die einzige Ursache von Ungewissheit sind.</span></label><label><input type="radio" autocomplete="off" name="175a356070aca6f73f5ae5746d3b5236"><span>Für die Stichprobe selbst besteht ebenso viel Ungewissheit wie für die Population, da man auch die Stichprobenwerte nicht exakt kennt.</span></label>
 </div>
 </div>
 <div class="webex-solution">
-<p>Der Grund für die Ungewissheit liegt darin, dass man (von Messfehlern abgesehen) zwar <em>sicher</em> über die Stichprobe Bescheid weiß, aber eben <em>nicht</em> die gesamte Population gesehen bzw. vermessen hat. Aus diesem notwendig unvollständigen Wissen über die Population resultiert die Ungewissheit, ob der wahre Populationsanteil wirklich genau 42% beträgt oder etwas mehr bzw. weniger. Die erste Option ist korrekt.</p>
+<p>Der Grund für die Ungewissheit liegt darin, dass man (von Messfehlern abgesehen) zwar <em>sicher</em> über die Stichprobe Bescheid weiß, aber eben <em>nicht</em> die gesamte Population gesehen bzw. vermessen hat. Aus diesem notwendig unvollständigen Wissen über die Population resultiert die Ungewissheit, ob der wahre Populationsanteil wirklich genau 42 % beträgt oder etwas mehr bzw. weniger. Die erste Option ist korrekt.</p>
 <p>Warum die Distraktoren falsch sind:</p>
 <ul>
 <li><p>Die zweite Option ist zu eng gefasst: Messfehler blendet das Kapitel explizit aus (“Messfehler einmal ausgeblendet”) – die eigentliche Ursache der Ungewissheit ist die <em>Stichprobenziehung</em> selbst (dass man nur einen Teil, nicht die ganze Population kennt), nicht (nur) Messungenauigkeit.</p></li>
@@ -1362,12 +1345,12 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 <strong>Modell B</strong> hat ein <em>breites</em> Konfidenzintervall für <span class="math inline">\(\beta_1\)</span>, aber die Datenpunkte liegen sehr nah an der Regressionsgeraden (großes <span class="math inline">\(R^2\)</span>, kleines <span class="math inline">\(\sigma\)</span>).</li>
 </ul>
 <p>Welche Aussage zu den zwei Arten der Ungewissheit (Ungewissheit zur Regressionsgeraden vs.&nbsp;Ungewissheit zur Vorhersagegenauigkeit) trifft zu?</p>
-<div id="webex-bd3683e6698203b3f8bba8a3327f454d" class="webex-radiogroup" data-answer="OVUfBhQDSQYaCWU=">
-<label><input type="radio" autocomplete="off" name="bd3683e6698203b3f8bba8a3327f454d"><span>Modell A hat eine geringe Ungewissheit bzgl. der Lage der Regressionsgeraden (<span class="math inline">\(\beta\)</span>), aber eine hohe Ungewissheit bzgl. der Vorhersagegenauigkeit einzelner Werte (<span class="math inline">\(\sigma\)</span>); bei Modell B ist es umgekehrt.</span></label><label><input type="radio" autocomplete="off" name="bd3683e6698203b3f8bba8a3327f454d"><span><span class="math inline">\(R^2\)</span> und <span class="math inline">\(\sigma\)</span> sind zwei völlig unabhängige, unverwandte Kennwerte ohne inhaltlichen Zusammenhang.</span></label><label><input type="radio" autocomplete="off" name="bd3683e6698203b3f8bba8a3327f454d"><span>Beide Modelle weisen bzgl. <span class="math inline">\(\beta\)</span> und <span class="math inline">\(\sigma\)</span> die gleiche Ungewissheit auf, da Konfidenzintervall-Breite und Streuung der Residuen dasselbe messen.</span></label><label><input type="radio" autocomplete="off" name="bd3683e6698203b3f8bba8a3327f454d"><span>Modell A hat sowohl bzgl. <span class="math inline">\(\beta\)</span> als auch bzgl. <span class="math inline">\(\sigma\)</span> eine höhere Ungewissheit als Modell B.</span></label><label><input type="radio" autocomplete="off" name="bd3683e6698203b3f8bba8a3327f454d"><span>Die Breite des Konfidenzintervalls für <span class="math inline">\(\beta_1\)</span> hängt ausschließlich von <span class="math inline">\(\sigma\)</span> ab, die Stichprobengröße spielt dabei keine Rolle.</span></label>
+<div id="webex-899c7c803fb75e8d116abbd038af073e" class="webex-radiogroup" data-answer="YwgVUxtTFAAfVj8=">
+<label><input type="radio" autocomplete="off" name="899c7c803fb75e8d116abbd038af073e"><span>Modell A hat eine geringe Ungewissheit bzgl. der Lage der Regressionsgeraden (<span class="math inline">\(\beta\)</span>), aber eine hohe Ungewissheit bzgl. der Vorhersagegenauigkeit einzelner Werte (<span class="math inline">\(\sigma\)</span>); bei Modell B ist es umgekehrt.</span></label><label><input type="radio" autocomplete="off" name="899c7c803fb75e8d116abbd038af073e"><span><span class="math inline">\(R^2\)</span> und <span class="math inline">\(\sigma\)</span> sind zwei völlig unabhängige, unverwandte Kennwerte ohne inhaltlichen Zusammenhang.</span></label><label><input type="radio" autocomplete="off" name="899c7c803fb75e8d116abbd038af073e"><span>Beide Modelle weisen bzgl. <span class="math inline">\(\beta\)</span> und <span class="math inline">\(\sigma\)</span> die gleiche Ungewissheit auf, da Konfidenzintervall-Breite und Streuung der Residuen dasselbe messen.</span></label><label><input type="radio" autocomplete="off" name="899c7c803fb75e8d116abbd038af073e"><span>Modell A hat sowohl bzgl. <span class="math inline">\(\beta\)</span> als auch bzgl. <span class="math inline">\(\sigma\)</span> eine höhere Ungewissheit als Modell B.</span></label><label><input type="radio" autocomplete="off" name="899c7c803fb75e8d116abbd038af073e"><span>Die Breite des Konfidenzintervalls für <span class="math inline">\(\beta_1\)</span> hängt ausschließlich von <span class="math inline">\(\sigma\)</span> ab, die Stichprobengröße spielt dabei keine Rolle.</span></label>
 </div>
 </div>
 <div class="webex-solution">
-<p>Das Kapitel unterscheidet zwei Arten von Ungewissheit im Regressionsmodell: (1) Ungewissheit zu den <em>Regressionsgewichten</em> (<span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span>; ausgedrückt z.B. über die Breite ihrer Konfidenzintervalle) und (2) Ungewissheit zur <em>Vorhersagegenauigkeit</em> (ausgedrückt über <span class="math inline">\(\sigma\)</span> bzw. <span class="math inline">\(R^2\)</span>). Diese beiden Ungewissheiten sind grundsätzlich unabhängig voneinander: Ein Modell kann die Lage der Regressionsgeraden sehr genau kennen (enges Konfidenzintervall für <span class="math inline">\(\beta\)</span>), aber trotzdem einzelne Werte nur ungenau vorhersagen (großes <span class="math inline">\(\sigma\)</span>) – und umgekehrt. Genau das ist bei Modell A (enges <span class="math inline">\(\beta\)</span>-KI, aber großes <span class="math inline">\(\sigma\)</span>) und Modell B (breites <span class="math inline">\(\beta\)</span>-KI, aber kleines <span class="math inline">\(\sigma\)</span>) der Fall. Die erste Antwortoption beschreibt das korrekt.</p>
+<p>Das Kapitel unterscheidet zwei Arten von Ungewissheit im Regressionsmodell: (1) Ungewissheit zu den <em>Regressionsgewichten</em> (<span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span>; ausgedrückt z. B. über die Breite ihrer Konfidenzintervalle) und (2) Ungewissheit zur <em>Vorhersagegenauigkeit</em> (ausgedrückt über <span class="math inline">\(\sigma\)</span> bzw. <span class="math inline">\(R^2\)</span>). Diese beiden Ungewissheiten sind grundsätzlich unabhängig voneinander: Ein Modell kann die Lage der Regressionsgeraden sehr genau kennen (enges Konfidenzintervall für <span class="math inline">\(\beta\)</span>), aber trotzdem einzelne Werte nur ungenau vorhersagen (großes <span class="math inline">\(\sigma\)</span>) – und umgekehrt. Genau das ist bei Modell A (enges <span class="math inline">\(\beta\)</span>-KI, aber großes <span class="math inline">\(\sigma\)</span>) und Modell B (breites <span class="math inline">\(\beta\)</span>-KI, aber kleines <span class="math inline">\(\sigma\)</span>) der Fall. Die erste Antwortoption beschreibt das korrekt.</p>
 <p>Warum die Distraktoren falsch sind:</p>
 <ul>
 <li><p>Konfidenzintervall-Breite (Ungewissheit über <span class="math inline">\(\beta\)</span>) und Residualstreuung (Ungewissheit über <span class="math inline">\(\sigma\)</span>) messen <em>unterschiedliche</em> Dinge; sie können unabhängig voneinander groß oder klein sein, wie das Beispiel zeigt. Die zweite Option unterstellt fälschlich, beide seien identisch.</p></li>
@@ -1384,16 +1367,16 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 </div>
 <div class="webex-question">
 <div class="webex-check webex-box">
-<p>Das Kapitel nennt als Beispiel ein 95%-Konfidenzintervall für den Anteil der R-Fans, das sich von 40 bis 44 Prozent erstreckt. Im Rahmen der <em>Bayes</em>-Analyse lässt sich das laut Kapitel so interpretieren: “Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95% im Bereich von 40 bis 44 Prozentpunkten.” Für ein <em>frequentistisches</em> Konfidenzintervall ist eine solche Aussage hingegen nicht zulässig. Was besagt ein frequentistisches Konfidenzintervall laut Kapitel stattdessen?</p>
-<div id="webex-04084d91cafafd6299c1c373a4adc999" class="webex-radiogroup" data-answer="awQcCBhUFQFPUDs=">
-<label><input type="radio" autocomplete="off" name="04084d91cafafd6299c1c373a4adc999"><span>Es gibt die Wahrscheinlichkeit an, dass die Nullhypothese (kein R-Fan-Anteil) zutrifft.</span></label><label><input type="radio" autocomplete="off" name="04084d91cafafd6299c1c373a4adc999"><span>Es ist nur dann interpretierbar, wenn zusätzlich eine Priori-Verteilung für den Anteil der R-Fans angegeben wird.</span></label><label><input type="radio" autocomplete="off" name="04084d91cafafd6299c1c373a4adc999"><span>Es unterscheidet sich vom Bayes-Schätzbereich nur durch eine andere Formel zur Berechnung der Intervallgrenzen, nicht in der Bedeutung.</span></label><label><input type="radio" autocomplete="off" name="04084d91cafafd6299c1c373a4adc999"><span>Es sagt aus, dass der wahre Wert mit 95% Wahrscheinlichkeit im Intervall 40 bis 44 Prozent liegt – genau wie im Bayes-Fall.</span></label><label><input type="radio" autocomplete="off" name="04084d91cafafd6299c1c373a4adc999"><span>Es macht keine Aussage zur Wahrscheinlichkeit, dass der wahre Populationswert im berichteten Intervall liegt, sondern beschreibt das Ergebnis einer (gedanklich) sehr häufig wiederholten Stichprobenziehung.</span></label>
+<p>Das Kapitel nennt als Beispiel ein 95 %-Konfidenzintervall für den Anteil der R-Fans, das sich von 40 bis 44 Prozent erstreckt. Im Rahmen der <em>Bayes</em>-Analyse lässt sich das laut Kapitel so interpretieren: “Laut Modell liegt der gesuchte Anteil der R-Fans mit einer Wahrscheinlichkeit von 95 % im Bereich von 40 bis 44 Prozentpunkten.” Für ein <em>frequentistisches</em> Konfidenzintervall ist eine solche Aussage hingegen nicht zulässig. Was besagt ein frequentistisches Konfidenzintervall laut Kapitel stattdessen?</p>
+<div id="webex-8953bed2d232dd262d628759cbd78361" class="webex-radiogroup" data-answer="YwkZA05VSAJIA24=">
+<label><input type="radio" autocomplete="off" name="8953bed2d232dd262d628759cbd78361"><span>Es gibt die Wahrscheinlichkeit an, dass die Nullhypothese (kein R-Fan-Anteil) zutrifft.</span></label><label><input type="radio" autocomplete="off" name="8953bed2d232dd262d628759cbd78361"><span>Es ist nur dann interpretierbar, wenn zusätzlich eine Priori-Verteilung für den Anteil der R-Fans angegeben wird.</span></label><label><input type="radio" autocomplete="off" name="8953bed2d232dd262d628759cbd78361"><span>Es unterscheidet sich vom Bayes-Schätzbereich nur durch eine andere Formel zur Berechnung der Intervallgrenzen, nicht in der Bedeutung.</span></label><label><input type="radio" autocomplete="off" name="8953bed2d232dd262d628759cbd78361"><span>Es sagt aus, dass der wahre Wert mit 95 % Wahrscheinlichkeit im Intervall 40 bis 44 Prozent liegt – genau wie im Bayes-Fall.</span></label><label><input type="radio" autocomplete="off" name="8953bed2d232dd262d628759cbd78361"><span>Es macht keine Aussage zur Wahrscheinlichkeit, dass der wahre Populationswert im berichteten Intervall liegt, sondern beschreibt das Ergebnis einer (gedanklich) sehr häufig wiederholten Stichprobenziehung.</span></label>
 </div>
 </div>
 <div class="webex-solution">
 <p>Das Kapitel stellt dazu explizit fest: “Ein frequentistisches Konfidenzintervall macht keine Aussage zur Wahrscheinlichkeit eines Werts in der Population (eines Parameters). Stattdessen wird eine Aussage über das Ergebnis einer sehr häufig wiederholten Stichprobenziehung berichtet. Ob ein bestimmtes (unseres, Ihres) den wahren Wert enthält, bzw. mit welcher Wahrscheinlichkeit es den wahren Wert enthält, darüber macht das frequentistische Konfidenzintervall keine Aussagen.” Die erste Antwortoption gibt das korrekt wieder.</p>
 <p>Warum die Distraktoren falsch sind:</p>
 <ul>
-<li><p>Die zweite Option überträgt die im Kapitel explizit nur für die <em>Bayes</em>-Statistik erlaubte Interpretation (“Wahrscheinlichkeit von 95%, dass der Parameter im Intervall liegt”) unzulässig auf das frequentistische Konfidenzintervall – genau das schließt das Kapitel aus.</p></li>
+<li><p>Die zweite Option überträgt die im Kapitel explizit nur für die <em>Bayes</em>-Statistik erlaubte Interpretation (“Wahrscheinlichkeit von 95 %, dass der Parameter im Intervall liegt”) unzulässig auf das frequentistische Konfidenzintervall – genau das schließt das Kapitel aus.</p></li>
 <li><p>Die dritte Option verwechselt das Konfidenzintervall mit einer Aussage zur Nullhypothese; das Kapitel stellt eine Beziehung zwischen Konfidenzintervall und Nullhypothese über den Begriff der statistischen Signifikanz her (Nullwert im Intervall enthalten oder nicht), nicht über eine direkte Wahrscheinlichkeitsangabe für die Nullhypothese.</p></li>
 <li><p>Die vierte Option erfindet eine im Kapitel nicht genannte Zusatzbedingung; eine Priori-Verteilung ist gerade das Kennzeichen der <em>Bayes</em>-Inferenz, nicht Voraussetzung für die Interpretation eines frequentistischen Konfidenzintervalls.</p></li>
 <li><p>Die fünfte Option ignoriert den zentralen, im Kapitel betonten <em>konzeptuellen</em> Unterschied (Wahrscheinlichkeitsaussage über den Parameter erlaubt vs.&nbsp;nicht erlaubt) und reduziert ihn fälschlich auf eine bloße Rechenformel.</p></li>
@@ -1408,8 +1391,8 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>In einer Studie wird ein Zusammenhang zwischen zwei Variablen untersucht; berichtet wird ein p-Wert von <span class="math inline">\(p = 0{,}03\)</span>. Welche Interpretation dieses p-Werts ist zutreffend?</p>
-<div id="webex-aa46b74b189399c8245355a126464635" class="webex-radiogroup" data-answer="OlEYBk4HGFIdCWQ=">
-<label><input type="radio" autocomplete="off" name="aa46b74b189399c8245355a126464635"><span>Die Wahrscheinlichkeit, dass <span class="math inline">\(H_0\)</span> (kein Zusammenhang) zutrifft, beträgt 3 %.</span></label><label><input type="radio" autocomplete="off" name="aa46b74b189399c8245355a126464635"><span>Die Wahrscheinlichkeit, dass die Forschungshypothese (ein Zusammenhang besteht) zutrifft, beträgt 97 %.</span></label><label><input type="radio" autocomplete="off" name="aa46b74b189399c8245355a126464635"><span>Der gefundene Zusammenhang ist mit 97%iger Sicherheit auch praktisch bedeutsam.</span></label><label><input type="radio" autocomplete="off" name="aa46b74b189399c8245355a126464635"><span>Bei einer exakten Wiederholung der Studie würde man mit 97%iger Wahrscheinlichkeit erneut ein statistisch signifikantes Ergebnis erhalten.</span></label><label><input type="radio" autocomplete="off" name="aa46b74b189399c8245355a126464635"><span>Unter der Annahme, dass in der Population <em>kein</em> Zusammenhang besteht (<span class="math inline">\(H_0\)</span>), wäre ein mindestens so extremes Ergebnis wie das beobachtete mit einer Wahrscheinlichkeit von 3 % zu erwarten, wenn man die Studie (unter gleichen Bedingungen) gedanklich unendlich oft wiederholen würde.</span></label>
+<div id="webex-a023da4940a81768505f30946d4b7774" class="webex-radiogroup" data-answer="OgAeA0hRGAkYATw=">
+<label><input type="radio" autocomplete="off" name="a023da4940a81768505f30946d4b7774"><span>Die Wahrscheinlichkeit, dass <span class="math inline">\(H_0\)</span> (kein Zusammenhang) zutrifft, beträgt 3 %.</span></label><label><input type="radio" autocomplete="off" name="a023da4940a81768505f30946d4b7774"><span>Die Wahrscheinlichkeit, dass die Forschungshypothese (ein Zusammenhang besteht) zutrifft, beträgt 97 %.</span></label><label><input type="radio" autocomplete="off" name="a023da4940a81768505f30946d4b7774"><span>Der gefundene Zusammenhang ist mit 97%iger Sicherheit auch praktisch bedeutsam.</span></label><label><input type="radio" autocomplete="off" name="a023da4940a81768505f30946d4b7774"><span>Bei einer exakten Wiederholung der Studie würde man mit 97%iger Wahrscheinlichkeit erneut ein statistisch signifikantes Ergebnis erhalten.</span></label><label><input type="radio" autocomplete="off" name="a023da4940a81768505f30946d4b7774"><span>Unter der Annahme, dass in der Population <em>kein</em> Zusammenhang besteht (<span class="math inline">\(H_0\)</span>), wäre ein mindestens so extremes Ergebnis wie das beobachtete mit einer Wahrscheinlichkeit von 3 % zu erwarten, wenn man die Studie (unter gleichen Bedingungen) gedanklich unendlich oft wiederholen würde.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -1417,7 +1400,7 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 <p>Warum die Distraktoren falsch sind:</p>
 <ul>
 <li><p>Die zweite Option verwechselt den p-Wert mit der Wahrscheinlichkeit von <span class="math inline">\(H_0\)</span> selbst (<span class="math inline">\(Pr(H_0 | \text{Daten})\)</span>). Der p-Wert ist aber <span class="math inline">\(Pr(\text{Daten (oder extremer)} | H_0)\)</span> – eine bedingte Wahrscheinlichkeit in die <em>andere</em> Richtung. Das ist eine der im Kapitel explizit genannten typischen Fehlinterpretationen.</p></li>
-<li><p>Die dritte Option begeht denselben Fehler in Bezug auf die Forschungshypothese: Der p-Wert sagt nichts über die Wahrscheinlichkeit der Alternativhypothese aus; zudem ergänzen sich “<span class="math inline">\(Pr(H_0)\)</span>” und “<span class="math inline">\(Pr(\text{Forschungshypothese})\)</span>” nicht einfach zu 100 %, wie hier unterstellt.</p></li>
+<li><p>Die dritte Option begeht denselben Fehler in Bezug auf die Forschungshypothese: Der p-Wert sagt nichts über die Wahrscheinlichkeit der Alternativhypothese aus; zudem ergänzen sich “<span class="math inline">\(Pr(H_0)\)</span>” und “<span class="math inline">\(Pr(\text{Forschungshypothese})\)</span>” nicht einfach zu 100 %, wie hier unterstellt.</p></li>
 <li><p>Die vierte Option verwechselt <em>statistische</em> Signifikanz mit <em>praktischer</em> Bedeutsamkeit (Effektgröße). Ein kleiner p-Wert sagt nichts über die Größe oder praktische Relevanz eines Effekts aus – das Kapitel warnt ausdrücklich vor dieser Verwechslung.</p></li>
 <li><p>Die fünfte Option begeht den “Replikations-Fehlschluss”: Der p-Wert einer einzelnen Studie sagt nichts darüber aus, wie wahrscheinlich ein erneut signifikantes Ergebnis bei Replikation ist; diese Wahrscheinlichkeit hängt von der (unbekannten) tatsächlichen Effektgröße, der Power der Studie und weiteren Faktoren ab, nicht einfach vom Komplement des p-Werts.</p></li>
 <li><p>Falsch</p></li>
@@ -1431,8 +1414,8 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Nach der im Kapitel verwendeten Definition (angelehnt an Gelman) gilt ein Ergebnis als statistisch signifikant, wenn der Nullwert <em>nicht</em> im Schätzbereich (Konfidenzintervall) enthalten ist. Welche der folgenden Aussagen zur statistischen Signifikanz im Frequentismus ist korrekt?</p>
-<div id="webex-6cd00fc508aa379e828edeb91c581506" class="webex-radiogroup" data-answer="bVNIABxWTwUcCTw=">
-<label><input type="radio" autocomplete="off" name="6cd00fc508aa379e828edeb91c581506"><span>Statistische Signifikanz hängt ausschließlich von der Stichprobengröße ab; die Effektgröße ist dabei irrelevant.</span></label><label><input type="radio" autocomplete="off" name="6cd00fc508aa379e828edeb91c581506"><span>Ein nicht signifikantes Ergebnis bei kleiner Stichprobe ist der Beweis dafür, dass in der Population kein Effekt existiert.</span></label><label><input type="radio" autocomplete="off" name="6cd00fc508aa379e828edeb91c581506"><span>Ein statistisch signifikantes Ergebnis bedeutet automatisch, dass der gefundene Effekt auch praktisch bedeutsam ist.</span></label><label><input type="radio" autocomplete="off" name="6cd00fc508aa379e828edeb91c581506"><span>Statistische Signifikanz hängt ausschließlich von der Effektgröße ab; die Stichprobengröße spielt dabei keine Rolle.</span></label><label><input type="radio" autocomplete="off" name="6cd00fc508aa379e828edeb91c581506"><span>Ein statistisch signifikantes Ergebnis kann sowohl durch einen großen Effekt als auch durch eine große Stichprobe zustande kommen; bei ausreichend großer Stichprobe wird (fast) jeder von Null verschiedene Effekt irgendwann signifikant.</span></label>
+<div id="webex-22a88507db8de93cdded81afcaaa92c2" class="webex-radiogroup" data-answer="aQJNCBQFHAdIU2U=">
+<label><input type="radio" autocomplete="off" name="22a88507db8de93cdded81afcaaa92c2"><span>Statistische Signifikanz hängt ausschließlich von der Stichprobengröße ab; die Effektgröße ist dabei irrelevant.</span></label><label><input type="radio" autocomplete="off" name="22a88507db8de93cdded81afcaaa92c2"><span>Ein nicht signifikantes Ergebnis bei kleiner Stichprobe ist der Beweis dafür, dass in der Population kein Effekt existiert.</span></label><label><input type="radio" autocomplete="off" name="22a88507db8de93cdded81afcaaa92c2"><span>Ein statistisch signifikantes Ergebnis bedeutet automatisch, dass der gefundene Effekt auch praktisch bedeutsam ist.</span></label><label><input type="radio" autocomplete="off" name="22a88507db8de93cdded81afcaaa92c2"><span>Statistische Signifikanz hängt ausschließlich von der Effektgröße ab; die Stichprobengröße spielt dabei keine Rolle.</span></label><label><input type="radio" autocomplete="off" name="22a88507db8de93cdded81afcaaa92c2"><span>Ein statistisch signifikantes Ergebnis kann sowohl durch einen großen Effekt als auch durch eine große Stichprobe zustande kommen; bei ausreichend großer Stichprobe wird (fast) jeder von Null verschiedene Effekt irgendwann signifikant.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -1454,17 +1437,17 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Das Kapitel verwendet (mit Bezug auf Gelman) eine bestimmte Definition von <em>statistischer Signifikanz</em>, die explizit sowohl für die frequentistische als auch für die Bayes-Statistik gültig sein soll. Wie lautet diese Definition?</p>
-<div id="webex-7447dbdc334bd0977ab7a8a3b2be881a" class="webex-radiogroup" data-answer="bAQYB0hSSFIfA2k=">
-<label><input type="radio" autocomplete="off" name="7447dbdc334bd0977ab7a8a3b2be881a"><span>Ein Ergebnis ist statistisch signifikant, wenn der Effekt größer als 50% der Streuung der AV ist.</span></label><label><input type="radio" autocomplete="off" name="7447dbdc334bd0977ab7a8a3b2be881a"><span>Ein Ergebnis ist statistisch signifikant, wenn der p-Wert exakt Null beträgt.</span></label><label><input type="radio" autocomplete="off" name="7447dbdc334bd0977ab7a8a3b2be881a"><span>Statistisch signifikant ist ein Ergebnis genau dann, wenn es auf einer Stichprobe von mindestens <span class="math inline">\(n=1000\)</span> beruht.</span></label><label><input type="radio" autocomplete="off" name="7447dbdc334bd0977ab7a8a3b2be881a"><span>Ein Ergebnis gilt als statistisch signifikant, wenn der Wert Null <em>nicht</em> im Schätzbereich (Konfidenzintervall bzw. Post-Intervall) für den betreffenden Parameter enthalten ist.</span></label><label><input type="radio" autocomplete="off" name="7447dbdc334bd0977ab7a8a3b2be881a"><span>Statistische Signifikanz ist ausschließlich für die frequentistische Statistik definierbar, für die Bayes-Statistik gibt es keine entsprechende Definition.</span></label>
+<div id="webex-4a3b24a986b08c84730f45a8ef1b2c90" class="webex-radiogroup" data-answer="b1EfUh4ETQgUBj8=">
+<label><input type="radio" autocomplete="off" name="4a3b24a986b08c84730f45a8ef1b2c90"><span>Ein Ergebnis ist statistisch signifikant, wenn der Effekt größer als 50 % der Streuung der AV ist.</span></label><label><input type="radio" autocomplete="off" name="4a3b24a986b08c84730f45a8ef1b2c90"><span>Ein Ergebnis ist statistisch signifikant, wenn der p-Wert exakt Null beträgt.</span></label><label><input type="radio" autocomplete="off" name="4a3b24a986b08c84730f45a8ef1b2c90"><span>Statistisch signifikant ist ein Ergebnis genau dann, wenn es auf einer Stichprobe von mindestens <span class="math inline">\(n=1000\)</span> beruht.</span></label><label><input type="radio" autocomplete="off" name="4a3b24a986b08c84730f45a8ef1b2c90"><span>Ein Ergebnis gilt als statistisch signifikant, wenn der Wert Null <em>nicht</em> im Schätzbereich (Konfidenzintervall bzw. Post-Intervall) für den betreffenden Parameter enthalten ist.</span></label><label><input type="radio" autocomplete="off" name="4a3b24a986b08c84730f45a8ef1b2c90"><span>Statistische Signifikanz ist ausschließlich für die frequentistische Statistik definierbar, für die Bayes-Statistik gibt es keine entsprechende Definition.</span></label>
 </div>
 </div>
 <div class="webex-solution">
-<p>Die im Kapitel verwendete (an Gelman angelehnte) Definition lautet: “Ist der Wert Null nicht im Schätzbereich enthalten, so liegt ein statistisch signifikantes Ergebnis vor.” Diese Definition ist bewusst so formuliert, dass sie sowohl auf frequentistische Konfidenzintervalle als auch auf Bayes’sche Post-Intervalle (z.B. ein 95%-PI oder HDI) anwendbar ist – sie bezieht sich rein auf die Lage des Schätzbereichs relativ zu Null, unabhängig vom statistischen Paradigma. Die erste Option ist korrekt.</p>
+<p>Die im Kapitel verwendete (an Gelman angelehnte) Definition lautet: “Ist der Wert Null nicht im Schätzbereich enthalten, so liegt ein statistisch signifikantes Ergebnis vor.” Diese Definition ist bewusst so formuliert, dass sie sowohl auf frequentistische Konfidenzintervalle als auch auf Bayes’sche Post-Intervalle (z. B. ein 95 %-PI oder HDI) anwendbar ist – sie bezieht sich rein auf die Lage des Schätzbereichs relativ zu Null, unabhängig vom statistischen Paradigma. Die erste Option ist korrekt.</p>
 <p>Warum die Distraktoren falsch sind:</p>
 <ul>
 <li><p>Die zweite Option verwechselt Signifikanz mit einer (in der Praxis ohnehin so gut wie nie auftretenden) exakten Nullwahrscheinlichkeit des p-Werts – die tatsächliche Definition bezieht sich auf die Lage von Null relativ zum Schätzbereich, nicht auf einen bestimmten p-Wert.</p></li>
 <li><p>Die dritte Option widerspricht dem zentralen Anliegen des Kapitels: Die Definition wird ausdrücklich so gewählt, dass sie <em>auch</em> für die Bayes-Statistik gilt, nicht nur für den Frequentismus.</p></li>
-<li><p>Die vierte Option erfindet ein im Kapitel nicht genanntes, willkürliches Kriterium (50% der Streuung der AV) – die tatsächliche Definition bezieht sich allein darauf, ob Null im Schätzbereich liegt.</p></li>
+<li><p>Die vierte Option erfindet ein im Kapitel nicht genanntes, willkürliches Kriterium (50 % der Streuung der AV) – die tatsächliche Definition bezieht sich allein darauf, ob Null im Schätzbereich liegt.</p></li>
 <li><p>Die fünfte Option nennt eine im Kapitel nicht erwähnte feste Mindeststichprobengröße als Kriterium für Signifikanz – die Definition ist unabhängig von einer konkreten Stichprobengröße formuliert (auch wenn die Stichprobengröße die <em>Breite</em> des Schätzbereichs beeinflusst).</p></li>
 <li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
@@ -1477,8 +1460,8 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Welche der folgenden Aussagen beschreibt einen im Kapitel dargestellten, zutreffenden Unterschied zwischen frequentistischer und Bayes-Inferenz?</p>
-<div id="webex-b2826338d351b1358c4c54b8b4a54245" class="webex-radiogroup" data-answer="OQMUAhoDHwhIA2g=">
-<label><input type="radio" autocomplete="off" name="b2826338d351b1358c4c54b8b4a54245"><span>In der Bayes-Inferenz fließt Vorwissen (Priori-Wissen) explizit in die Analyse ein, und es sind Wahrscheinlichkeitsaussagen über Hypothesen möglich; im Frequentismus ist beides nicht vorgesehen.</span></label><label><input type="radio" autocomplete="off" name="b2826338d351b1358c4c54b8b4a54245"><span>In beiden Ansätzen sind direkte Wahrscheinlichkeitsaussagen über Hypothesen oder Parameter möglich; sie unterscheiden sich nur in der Berechnungsmethode.</span></label><label><input type="radio" autocomplete="off" name="b2826338d351b1358c4c54b8b4a54245"><span>Der Frequentismus berücksichtigt explizit Vorwissen über den untersuchten Sachverhalt, die Bayes-Inferenz hingegen nicht.</span></label><label><input type="radio" autocomplete="off" name="b2826338d351b1358c4c54b8b4a54245"><span>Beide Ansätze kommen bei denselben Daten immer zu identischen inhaltlichen Schlussfolgerungen, da sie auf denselben Rohdaten beruhen.</span></label><label><input type="radio" autocomplete="off" name="b2826338d351b1358c4c54b8b4a54245"><span>Die Bayes-Inferenz definiert Wahrscheinlichkeit stets über relative Häufigkeiten bei (gedanklich) unendlicher Wiederholung, der Frequentismus über subjektives Vorwissen.</span></label>
+<div id="webex-e2edfa347c94f78bfd821a49af9e77c0" class="webex-radiogroup" data-answer="PgNJVEpRHwQbU2Q=">
+<label><input type="radio" autocomplete="off" name="e2edfa347c94f78bfd821a49af9e77c0"><span>In der Bayes-Inferenz fließt Vorwissen (Priori-Wissen) explizit in die Analyse ein, und es sind Wahrscheinlichkeitsaussagen über Hypothesen möglich; im Frequentismus ist beides nicht vorgesehen.</span></label><label><input type="radio" autocomplete="off" name="e2edfa347c94f78bfd821a49af9e77c0"><span>In beiden Ansätzen sind direkte Wahrscheinlichkeitsaussagen über Hypothesen oder Parameter möglich; sie unterscheiden sich nur in der Berechnungsmethode.</span></label><label><input type="radio" autocomplete="off" name="e2edfa347c94f78bfd821a49af9e77c0"><span>Der Frequentismus berücksichtigt explizit Vorwissen über den untersuchten Sachverhalt, die Bayes-Inferenz hingegen nicht.</span></label><label><input type="radio" autocomplete="off" name="e2edfa347c94f78bfd821a49af9e77c0"><span>Beide Ansätze kommen bei denselben Daten immer zu identischen inhaltlichen Schlussfolgerungen, da sie auf denselben Rohdaten beruhen.</span></label><label><input type="radio" autocomplete="off" name="e2edfa347c94f78bfd821a49af9e77c0"><span>Die Bayes-Inferenz definiert Wahrscheinlichkeit stets über relative Häufigkeiten bei (gedanklich) unendlicher Wiederholung, der Frequentismus über subjektives Vorwissen.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -1488,7 +1471,7 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 <li><p>Die zweite Option kehrt den Sachverhalt genau um: Es ist die Bayes-Inferenz, die Vorwissen explizit berücksichtigt (über die Priori-Verteilung), nicht der Frequentismus.</p></li>
 <li><p>Die dritte Option ist falsch, weil gerade dieser Punkt – ob Wahrscheinlichkeitsaussagen über Hypothesen/Parameter erlaubt sind – der entscheidende konzeptuelle (nicht nur rechnerische) Unterschied zwischen beiden Ansätzen ist.</p></li>
 <li><p>Die vierte Option vertauscht die Definitionen: Der <em>Frequentismus</em> definiert Wahrscheinlichkeit über relative Häufigkeiten bei (gedanklich) unendlicher Wiederholung; die Bayes-Statistik lässt daneben auch subjektives Vorwissen (Priori) als Wahrscheinlichkeit zu.</p></li>
-<li><p>Die fünfte Option ist falsch, da beide Ansätze – je nach gewähltem Modell bzw. Prior – durchaus zu unterschiedlichen Schlussfolgerungen (z.B. unterschiedlichen Interpretationen von Signifikanz oder Unsicherheit) gelangen können, auch bei identischen Rohdaten.</p></li>
+<li><p>Die fünfte Option ist falsch, da beide Ansätze – je nach gewähltem Modell bzw. Prior – durchaus zu unterschiedlichen Schlussfolgerungen (z. B. unterschiedlichen Interpretationen von Signifikanz oder Unsicherheit) gelangen können, auch bei identischen Rohdaten.</p></li>
 <li><p>Wahr</p></li>
 <li><p>Falsch</p></li>
 <li><p>Falsch</p></li>
@@ -1500,8 +1483,8 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Eine Forscherin möchte prüfen, ob in der Population ein linearer Zusammenhang zwischen Schlafdauer und Konzentrationsfähigkeit besteht. Wie lautet die dazu passende Nullhypothese?</p>
-<div id="webex-dca425ac9a6281041e67e5199224aa97" class="webex-radiogroup" data-answer="P1NNBR4FTVMVUWs=">
-<label><input type="radio" autocomplete="off" name="dca425ac9a6281041e67e5199224aa97"><span><span class="math inline">\(H_0: r = 0\)</span> (Es besteht kein linearer Zusammenhang in der Stichprobe.)</span></label><label><input type="radio" autocomplete="off" name="dca425ac9a6281041e67e5199224aa97"><span><span class="math inline">\(H_0: \rho = 0\)</span> (Es besteht kein linearer Zusammenhang zwischen Schlafdauer und Konzentrationsfähigkeit in der Population.)</span></label><label><input type="radio" autocomplete="off" name="dca425ac9a6281041e67e5199224aa97"><span><span class="math inline">\(H_1: \rho \neq 0\)</span> (Es besteht ein linearer Zusammenhang in der Population.)</span></label><label><input type="radio" autocomplete="off" name="dca425ac9a6281041e67e5199224aa97"><span><span class="math inline">\(H_0: \mu_1 = \mu_2\)</span> (Es gibt keinen Unterschied zwischen zwei Gruppenmittelwerten.)</span></label><label><input type="radio" autocomplete="off" name="dca425ac9a6281041e67e5199224aa97"><span><span class="math inline">\(H_0: \rho = 1\)</span> (Es besteht ein perfekter linearer Zusammenhang in der Population.)</span></label>
+<div id="webex-03e3329d20021a3729e4ffe4a698c014" class="webex-radiogroup" data-answer="awNJAh8CFVQeAG0=">
+<label><input type="radio" autocomplete="off" name="03e3329d20021a3729e4ffe4a698c014"><span><span class="math inline">\(H_0: r = 0\)</span> (Es besteht kein linearer Zusammenhang in der Stichprobe.)</span></label><label><input type="radio" autocomplete="off" name="03e3329d20021a3729e4ffe4a698c014"><span><span class="math inline">\(H_0: \rho = 0\)</span> (Es besteht kein linearer Zusammenhang zwischen Schlafdauer und Konzentrationsfähigkeit in der Population.)</span></label><label><input type="radio" autocomplete="off" name="03e3329d20021a3729e4ffe4a698c014"><span><span class="math inline">\(H_1: \rho \neq 0\)</span> (Es besteht ein linearer Zusammenhang in der Population.)</span></label><label><input type="radio" autocomplete="off" name="03e3329d20021a3729e4ffe4a698c014"><span><span class="math inline">\(H_0: \mu_1 = \mu_2\)</span> (Es gibt keinen Unterschied zwischen zwei Gruppenmittelwerten.)</span></label><label><input type="radio" autocomplete="off" name="03e3329d20021a3729e4ffe4a698c014"><span><span class="math inline">\(H_0: \rho = 1\)</span> (Es besteht ein perfekter linearer Zusammenhang in der Population.)</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -1511,7 +1494,7 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 <li><p><span class="math inline">\(H_0: \rho = 1\)</span> würde einen <em>perfekten</em> Zusammenhang als Nullhypothese festlegen – das Gegenteil der eigentlichen Fragestellung (kein Zusammenhang) und zudem unüblich als Referenzwert.</p></li>
 <li><p><span class="math inline">\(H_0: r = 0\)</span> verwendet den lateinischen Buchstaben <span class="math inline">\(r\)</span>, der die Korrelation in der <em>Stichprobe</em> (eine Statistik) bezeichnet. Hypothesen beziehen sich aber per Definition auf <em>Parameter</em> der Population, wofür griechische Buchstaben (hier <span class="math inline">\(\rho\)</span>) verwendet werden – diese Verwechslung von Statistik und Parameter ist ein klassischer Fehler.</p></li>
 <li><p>Die vierte Option ist als <em>Alternativhypothese</em> (<span class="math inline">\(H_1\)</span>) formuliert (es besteht ein Zusammenhang) und beantwortet damit nicht die Frage nach der <em>Nullhypothese</em>; zudem ist die Benennung (<span class="math inline">\(H_1\)</span> statt <span class="math inline">\(H_0\)</span>) hier explizit falsch zugeordnet.</p></li>
-<li><p><span class="math inline">\(H_0: \mu_1 = \mu_2\)</span> bezieht sich auf einen Mittelwertsvergleich zwischen zwei Gruppen und ist die passende Nullhypothese für einen Gruppenvergleich (z.B. t-Test), nicht für einen Zusammenhang zwischen zwei metrischen Variablen wie Schlafdauer und Konzentrationsfähigkeit.</p></li>
+<li><p><span class="math inline">\(H_0: \mu_1 = \mu_2\)</span> bezieht sich auf einen Mittelwertsvergleich zwischen zwei Gruppen und ist die passende Nullhypothese für einen Gruppenvergleich (z. B. t-Test), nicht für einen Zusammenhang zwischen zwei metrischen Variablen wie Schlafdauer und Konzentrationsfähigkeit.</p></li>
 <li><p>Falsch</p></li>
 <li><p>Wahr</p></li>
 <li><p>Falsch</p></li>
@@ -1523,8 +1506,8 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Was ist laut Kapitel eine <em>Alternativhypothese</em> (Effekthypothese), und welche der folgenden Aussagen ist ein Beispiel dafür?</p>
-<div id="webex-b7f9d7ae24e3541c808f3320e40c8f29" class="webex-radiogroup" data-answer="OQdKCUgHTVUeBTg=">
-<label><input type="radio" autocomplete="off" name="b7f9d7ae24e3541c808f3320e40c8f29"><span>Eine Alternativhypothese kann niemals mit einem Konfidenzintervall in Verbindung gebracht werden.</span></label><label><input type="radio" autocomplete="off" name="b7f9d7ae24e3541c808f3320e40c8f29"><span>“Die Trefferquote der Münze beträgt <span class="math inline">\(\pi=0{,}5\)</span>” ist ein typisches Beispiel für eine Alternativhypothese.</span></label><label><input type="radio" autocomplete="off" name="b7f9d7ae24e3541c808f3320e40c8f29"><span>Eine Alternativhypothese bezieht sich immer nur auf Stichprobenkennwerte, niemals auf Populationsparameter.</span></label><label><input type="radio" autocomplete="off" name="b7f9d7ae24e3541c808f3320e40c8f29"><span>Eine Alternativhypothese behauptet stets, dass <em>kein</em> Effekt vorliegt – sie ist damit identisch mit der Nullhypothese.</span></label><label><input type="radio" autocomplete="off" name="b7f9d7ae24e3541c808f3320e40c8f29"><span>Eine Hypothese, die einen (substanziellen) Effekt behauptet, z.B. einen Unterschied zwischen Gruppen oder einen Zusammenhang zwischen Variablen – logisch betrachtet meist das Gegenteil der Nullhypothese; Beispiel: “Der Korrelationskoeffizient <span class="math inline">\(\rho\)</span> liegt bei ca. 0,5 bis 0,7, ist also nicht Null.”</span></label>
+<div id="webex-38f6e0466a1fbe89da38daa1b2b8a200" class="webex-radiogroup" data-answer="aAhKBkkAGAYaUGw=">
+<label><input type="radio" autocomplete="off" name="38f6e0466a1fbe89da38daa1b2b8a200"><span>Eine Alternativhypothese kann niemals mit einem Konfidenzintervall in Verbindung gebracht werden.</span></label><label><input type="radio" autocomplete="off" name="38f6e0466a1fbe89da38daa1b2b8a200"><span>“Die Trefferquote der Münze beträgt <span class="math inline">\(\pi=0{,}5\)</span>” ist ein typisches Beispiel für eine Alternativhypothese.</span></label><label><input type="radio" autocomplete="off" name="38f6e0466a1fbe89da38daa1b2b8a200"><span>Eine Alternativhypothese bezieht sich immer nur auf Stichprobenkennwerte, niemals auf Populationsparameter.</span></label><label><input type="radio" autocomplete="off" name="38f6e0466a1fbe89da38daa1b2b8a200"><span>Eine Alternativhypothese behauptet stets, dass <em>kein</em> Effekt vorliegt – sie ist damit identisch mit der Nullhypothese.</span></label><label><input type="radio" autocomplete="off" name="38f6e0466a1fbe89da38daa1b2b8a200"><span>Eine Hypothese, die einen (substanziellen) Effekt behauptet, z. B. einen Unterschied zwischen Gruppen oder einen Zusammenhang zwischen Variablen – logisch betrachtet meist das Gegenteil der Nullhypothese; Beispiel: “Der Korrelationskoeffizient <span class="math inline">\(\rho\)</span> liegt bei ca. 0,5 bis 0,7, ist also nicht Null.”</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -1532,7 +1515,7 @@ Abbildung&nbsp;3.8: Der p-Wert ist nicht nur eine Funktion der Effektgröße, so
 <p>Warum die Distraktoren falsch sind:</p>
 <ul>
 <li><p>Die zweite Option verwechselt Alternativ- und Nullhypothese: Die <em>Nullhypothese</em> behauptet keinen (null) Effekt, die <em>Alternativhypothese</em> behauptet gerade das Gegenteil – einen vorhandenen Effekt.</p></li>
-<li><p>Die dritte Option ist falsch: Wie auch die Nullhypothese bezieht sich die Alternativhypothese auf <em>Populationsparameter</em> (z.B. <span class="math inline">\(\rho\)</span>, <span class="math inline">\(\mu_1-\mu_2\)</span>, <span class="math inline">\(\beta_1\)</span>), nicht auf reine Stichprobenkennwerte.</p></li>
+<li><p>Die dritte Option ist falsch: Wie auch die Nullhypothese bezieht sich die Alternativhypothese auf <em>Populationsparameter</em> (z. B. <span class="math inline">\(\rho\)</span>, <span class="math inline">\(\mu_1-\mu_2\)</span>, <span class="math inline">\(\beta_1\)</span>), nicht auf reine Stichprobenkennwerte.</p></li>
 <li><p>Die vierte Option beschreibt gerade eine typische <em>Nullhypothese</em> (die Münze sei fair, <span class="math inline">\(\pi=0{,}5\)</span> als Referenzwert ohne Effekt), nicht eine Alternativhypothese.</p></li>
 <li><p>Die fünfte Option ist falsch: Im Kapitel wird gezeigt, dass Schätzbereiche (Konfidenzintervalle) implizit Hypothesentests erlauben – liegt der Nullwert nicht im Konfidenzintervall, spricht das für die Alternativhypothese (einen vorhandenen Effekt).</p></li>
 <li><p>Falsch</p></li>
@@ -1565,8 +1548,8 @@ Wasserstein, R. L., &amp; Lazar, N. A. (2016). The <span>ASA</span>’s <span>St
 </div>
 </section></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
 <ol>
-<li id="fn1"><p><a href="https://statistik1.netlify.app/010-rahmen" class="uri">https://statistik1.netlify.app/010-rahmen</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p><a href="https://statistik1.netlify.app/070-zusammenhaenge" class="uri">https://statistik1.netlify.app/070-zusammenhaenge</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p><a href="https://sebastiansauer.github.io/statistik1/010-rahmen" class="uri">https://sebastiansauer.github.io/statistik1/010-rahmen</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p><a href="https://sebastiansauer.github.io/statistik1/070-zusammenhaenge" class="uri">https://sebastiansauer.github.io/statistik1/070-zusammenhaenge</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p><del>Meistens</del> Manchmal darf man bei der Statistik nicht nach einem tieferen Sinn suchen. Ist Statistik eine Art moderne Kunst?<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>Manch einer hätte mit mehr gerechnet; andere mit weniger…<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p><span class="math inline">\(\sigma\)</span>, das griechische <em>s</em> für Streuung (um die Regressionsgerade herum), manchmal wird auch e wie <em>error</em> verwendet<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
