@@ -29,12 +29,14 @@ d %>%
          likelihood = dbinom(x    = n_success,
                              size = n_trials,
                              prob = p_water),
-         strip      = str_c("n = ", n_trials)) %>%
+         strip      = str_c("n = ", n_trials, " (", str_to_upper(toss), ")")) %>%
   # the next three lines allow us to normalize the prior and the likelihood,
   # putting them both in a probability metric
   group_by(n_trials) %>%
   mutate(prior      = prior      / sum(prior),
          likelihood = likelihood / sum(likelihood)) %>%
+  ungroup() %>%
+  mutate(strip = fct_reorder(strip, n_trials)) %>%
 
   # plot!
   ggplot(aes(x = p_water)) +
