@@ -39,9 +39,12 @@ d %>%
   mutate(strip = fct_reorder(strip, n_trials)) %>%
 
   # plot!
+  # order = c(5, 4): Blau/Amber statt Schwarz/Schwarz, da Farbe (redundant zum
+  # Linientyp) die Priori-/Posteriori-Linien über 9 Panels leichter unterscheidbar
+  # macht und im Graustufendruck weiterhin guten Kontrast hat
   ggplot(aes(x = p_water)) +
-  geom_line(aes(y = prior), linetype = 2) +
-  geom_line(aes(y = likelihood)) +
+  geom_line(aes(y = prior), linetype = 2, color = "#F5C710") +
+  geom_line(aes(y = likelihood), color = "#0072B2") +
   scale_x_continuous("Anteil Wasser", breaks = c(0, .5, 1)) +
   scale_y_continuous("Plausibilität", breaks = NULL) +
   theme(panel.grid = element_blank()) +
