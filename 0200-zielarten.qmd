@@ -890,14 +890,35 @@ ggplot(mtcars) +
   geom_point() +
   geom_smooth(method = "lm")
 
+# Statt ggplot-Standard-Legende (ausserhalb des Diagramms) steht die
+# Zuordnung Farbe/Gruppe direkt an den Linienenden, in den buchweit
+# verwendeten Standardfarben Dunkelblau/Orange.
+am_colors <- c("0" = blue, "1" = orange)
+
+am_labels <-
+  mtcars %>%
+  group_by(am) %>%
+  group_modify(~{
+    fit <- lm(mpg ~ hp, data = .x)
+    hp_max <- max(.x$hp)
+    tibble(hp = hp_max, mpg = predict(fit, newdata = tibble(hp = hp_max)))
+  }) %>%
+  ungroup() %>%
+  mutate(label = paste0("am = ", am))
+
 ggplot(mtcars) +
   aes(x = hp, y = mpg, color = am) +
   geom_point() +
   geom_smooth(method = "lm") +
-  # order = c(5, 4): Blau/Amber statt Orange/Hellblau, da Letztere im
-  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_color_okabeito(order = c(5, 4)) +
-  theme(legend.position = c(0.9, .90))
+  geom_text(
+    data = am_labels,
+    aes(x = hp, y = mpg, label = label),
+    hjust = 0, nudge_x = 5, fontface = "bold", size = 5,
+    show.legend = FALSE
+  ) +
+  scale_color_manual(values = am_colors, guide = "none") +
+  coord_cartesian(clip = "off") +
+  theme(plot.margin = margin(5.5, 44, 5.5, 5.5))
 ```
 
 :::{#exr-regr-koeff-zielart}
