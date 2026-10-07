@@ -318,7 +318,7 @@ Sebastian Sauer
 <ul>
 <li>Komplexere Bayes-Modelle lassen sich nicht mehr exakt ausrechnen</li>
 <li>Lösung: Wir arbeiten mit <strong>Stichproben (Häufigkeiten)</strong> statt mit exakten Wahrscheinlichkeiten</li>
-<li>In der Praxis übernehmen das Monte-Carlo-Markov-Ketten-Verfahren (MCMC), z. B. der R-Golem <strong>Stan</strong> (Paket <code>rstanarm</code>)</li>
+<li>In der Praxis übernehmen das Monte-Carlo-Markov-Ketten-Verfahren (MCMC), z. B. der R-Golem <strong>Stan</strong> (Paket <code>rstanarm</code>)</li>
 <li>Wie MCMC im Detail funktioniert, ist nicht Gegenstand dieses Kurses — wir wenden es einfach an</li>
 </ul>
 <div class="footer">
@@ -349,8 +349,8 @@ Sebastian Sauer
 </figure>
 </div>
 <ul>
-<li>Wasseranteile zwischen ca. 50 % und 70 % sind am wahrscheinlichsten</li>
-<li>Kleine Anteile (z. B. 25 %) sind nicht ausgeschlossen</li>
+<li>Wasseranteile zwischen ca. 50 % und 70 % sind am wahrscheinlichsten</li>
+<li>Kleine Anteile (z. B. 25 %) sind nicht ausgeschlossen</li>
 <li>Die Stichprobenverteilung nähert sich gut an die exakte Bayesbox-Verteilung an</li>
 </ul>
 <div class="footer">
@@ -367,7 +367,7 @@ Sebastian Sauer
 </div>
 <ul>
 <li>Exakte Post-Verteilung (Linie) und Stichproben-Post-Verteilung (Histogramm) stimmen gut überein</li>
-<li>Zentrale Tendenz: ca. 70 % Wasseranteil ist der “typische” Wert</li>
+<li>Zentrale Tendenz: ca. 70 % Wasseranteil ist der “typische” Wert</li>
 <li>Das Modell zeigt deutliche Streuung — es ist sich nicht sehr sicher</li>
 </ul>
 <div class="callout callout-note callout-titled callout-style-default">
@@ -438,7 +438,7 @@ Sebastian Sauer
 </ul>
 <p><strong>B. Nach Parameterwerten (Quantilen, q):</strong></p>
 <ul>
-<li>Welcher Wert wird mit 95 % Wahrscheinlichkeit nicht überschritten?</li>
+<li>Welcher Wert wird mit 95 % Wahrscheinlichkeit nicht überschritten?</li>
 <li>Welcher Parameterwert hat die höchste Wahrscheinlichkeit?</li>
 <li>Wie ungewiss ist das Modell über die Parameterwerte?</li>
 </ul>
@@ -459,13 +459,13 @@ Sebastian Sauer
 </section>
 <section id="fragen-nach-wahrscheinlichkeiten-p" class="slide level2">
 <h2>Fragen nach Wahrscheinlichkeiten (p)</h2>
-<p>Forschungsfrage: <em>Wie groß ist die Wahrscheinlichkeit, dass der Wasseranteil unter 50 % liegt?</em></p>
+<p>Forschungsfrage: <em>Wie groß ist die Wahrscheinlichkeit, dass der Wasseranteil unter 50 % liegt?</em></p>
 <ul>
 <li>Wir zählen, wie viele Stichproben die Bedingung erfüllen</li>
 <li>Und teilen durch die Gesamtzahl der Stichproben</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>samples_6w_9v <span class="sc">%&gt;%</span> <span class="fu">count</span>(p_grid <span class="sc">&lt;</span> .<span class="dv">5</span>)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Ergebnis: ca. <strong>10 %</strong> Wahrscheinlichkeit für einen Wasseranteil unter 50 %.</p>
+<p>Ergebnis: ca. <strong>10 %</strong> Wahrscheinlichkeit für einen Wasseranteil unter 50 %.</p>
 <div class="footer">
 <p>Die Post-Verteilung befragen</p>
 </div>
@@ -478,7 +478,7 @@ Sebastian Sauer
 <span id="cb3-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">Anteil =</span> n <span class="sc">/</span> <span class="fl">1e4</span>, <span class="at">Prozent =</span> <span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="fl">1e4</span>)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 <p><em>Wie wahrscheinlich liegt der Wasseranteil zwischen 0.9 und 1?</em></p>
 <ul>
-<li>Ergebnis: sehr unwahrscheinlich, dass der Wasseranteil mindestens 90 % beträgt</li>
+<li>Ergebnis: sehr unwahrscheinlich, dass der Wasseranteil mindestens 90 % beträgt</li>
 </ul>
 <div class="footer">
 <p>Die Post-Verteilung befragen</p>
@@ -511,18 +511,18 @@ Sebastian Sauer
 </div>
 </div>
 </div>
-<p>Frage: <em>Welcher Parameterwert wird mit 90 % Wahrscheinlichkeit nicht überschritten?</em></p>
+<p>Frage: <em>Welcher Parameterwert wird mit 90 % Wahrscheinlichkeit nicht überschritten?</em></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>samples_6w_9v <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">quantil90 =</span> <span class="fu">quantile</span>(p_grid, <span class="at">p =</span> .<span class="dv">9</span>))</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Antwort: Wir können zu 90 % sicher sein, dass der Wasseranteil kleiner als ca. 78 % ist.</p>
+<p>Antwort: Wir können zu 90 % sicher sein, dass der Wasseranteil kleiner als ca. 78 % ist.</p>
 <div class="footer">
 <p>Die Post-Verteilung befragen</p>
 </div>
 </section>
-<section id="das-mittlere-90-intervall" class="slide level2">
-<h2>Das mittlere 90%-Intervall</h2>
-<p>Frage: <em>Welches Intervall enthält mit 90 % Wahrscheinlichkeit den Parameterwert?</em></p>
+<section id="das-mittlere-90--intervall" class="slide level2">
+<h2>Das mittlere 90 %-Intervall</h2>
+<p>Frage: <em>Welches Intervall enthält mit 90 % Wahrscheinlichkeit den Parameterwert?</em></p>
 <ul>
-<li>Links und rechts je 5 % der extremsten Stichproben abschneiden</li>
+<li>Links und rechts je 5 % der extremsten Stichproben abschneiden</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>samples_6w_9v <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href=""></a>  <span class="fu">summarise</span>(<span class="at">quant_05 =</span> <span class="fu">quantile</span>(p_grid, <span class="fl">0.05</span>),</span>
@@ -630,7 +630,7 @@ Sebastian Sauer
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>samples_6w_9v <span class="sc">%&gt;%</span></span>
 <span id="cb6-2"><a href=""></a>  <span class="fu">select</span>(p_grid) <span class="sc">%&gt;%</span></span>
 <span id="cb6-3"><a href=""></a>  <span class="fu">hdi</span>(<span class="at">ci =</span> .<span class="dv">5</span>)  <span class="co"># aus dem Paket easystats</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Ergebnis: Das Modell ist sich zu 50 % sicher, dass der Wasseranteil im Bereich von ca. 0.67 bis 0.78 liegt (HDI-basiert).</p>
+<p>Ergebnis: Das Modell ist sich zu 50 % sicher, dass der Wasseranteil im Bereich von ca. 0.67 bis 0.78 liegt (HDI-basiert).</p>
 <div class="footer">
 <p>Visualisierung der Verteilungen</p>
 </div>
