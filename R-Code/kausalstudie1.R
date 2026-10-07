@@ -56,9 +56,10 @@ plot_kausalstudie_a <-
   ) +
   facet_wrap(~Gruppe) +
   scale_y_continuous(labels = scales::percent) +
-  # order = c(5, 4): Blau/Amber statt Orange/Hellblau, da Letztere im
-  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_fill_okabeito(order = c(5, 4)) +
+  # order = c(9, 1): Schwarz/Orange statt Standardkombination -- binäre
+  # überlebt/nicht-überlebt-Semantik wie bei den Titanic-Diagrammen
+  # (R-Code/titanic_plots.R), daher bewusst Orange statt Amber/Gelb
+  scale_fill_okabeito(order = c(9, 1)) +
   labs(
     x = "",
     y = "Anteil",
