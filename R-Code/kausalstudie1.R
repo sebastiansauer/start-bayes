@@ -56,10 +56,7 @@ plot_kausalstudie_a <-
   ) +
   facet_wrap(~Gruppe) +
   scale_y_continuous(labels = scales::percent) +
-  # order = c(9, 1): Schwarz/Orange statt Standardkombination -- binäre
-  # überlebt/nicht-überlebt-Semantik wie bei den Titanic-Diagrammen
-  # (R-Code/titanic_plots.R), daher bewusst Orange statt Amber/Gelb
-  scale_fill_okabeito(order = c(9, 1)) +
+  scale_fill_okabeito(order = c(5, 4)) +
   labs(
     x = "",
     y = "Anteil",
