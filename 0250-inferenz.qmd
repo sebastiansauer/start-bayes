@@ -353,9 +353,9 @@ Woran liegt das?
 
 ```{r}
 #| lst-label: lst-toni2
-#| lst-cap: Regressionsmodell für Klausurerfolg als Funktion der Lernzeit (`lm_toni`)
+#| lst-cap: Regressionsmodell für Klausurerfolg als Funktion der Lernzeit (`lm_ali`)
 noten2 <- read.csv("data/noten2.csv")
-lm_toni <- lm(y ~ x, data = noten2)
+lm_ali <- lm(y ~ x, data = noten2)
 ```
 
 
@@ -373,14 +373,14 @@ p_toni_regr_b0 <-
   noten2 |> 
   ggplot(aes(x, y)) +
   geom_point() +
- geom_abline(slope = coef(lm_toni)[2], 
-             intercept = coef(lm_toni)[1], color = modelcol, size = 1.5) +
+ geom_abline(slope = coef(lm_ali)[2], 
+             intercept = coef(lm_ali)[1], color = modelcol, size = 1.5) +
    scale_x_continuous(breaks = c(20, 40, 60, 80, 100)) +
   labs(x = "Lernzeit",
        y = "Klausurpunkte") +
-   geom_abline(slope = coef(lm_toni)[2], intercept = coef(lm_toni)[1] + 5, 
+   geom_abline(slope = coef(lm_ali)[2], intercept = coef(lm_ali)[1] + 5, 
                color = "grey60", size = 1, linetype = "dashed") +
-   geom_abline(slope = coef(lm_toni)[2], intercept = coef(lm_toni)[1] - 5, 
+   geom_abline(slope = coef(lm_ali)[2], intercept = coef(lm_ali)[1] - 5, 
                color = "grey60", size = 1, linetype = "dashed") 
 
 p_toni_regr_b0
@@ -391,13 +391,13 @@ p_toni_regr_b1 <-
   noten2 |> 
   ggplot(aes(x, y)) +
   geom_point() +
- geom_abline(slope = coef(lm_toni)[2], intercept = coef(lm_toni)[1], color = modelcol, size = 1.5) +
+ geom_abline(slope = coef(lm_ali)[2], intercept = coef(lm_ali)[1], color = modelcol, size = 1.5) +
    scale_x_continuous(breaks = c(20, 40, 60, 80, 100)) +
   labs(x = "Lernzeit",
        y = "Klausurpunkte") +
-   geom_abline(slope = coef(lm_toni)[2] + 0.1, intercept = coef(lm_toni)[1], 
+   geom_abline(slope = coef(lm_ali)[2] + 0.1, intercept = coef(lm_ali)[1], 
                color = "grey60", size = 1, linetype = "dashed") +
-   geom_abline(slope = coef(lm_toni)[2] - 0.1, intercept = coef(lm_toni)[1], 
+   geom_abline(slope = coef(lm_ali)[2] - 0.1, intercept = coef(lm_ali)[1], 
                color = "grey60", size = 1, linetype = "dashed") 
 
 p_toni_regr_b1
@@ -606,8 +606,8 @@ Man spricht anstatt von Schätzbereich auch von einem *Konfidenzintervall*.^[Tat
 
 ```{r}
 #| label: tbl-toni-params
-#| tbl-cap: Punktschätzer und Schätzbereiche für die Modellkoeffizienten von `lm_toni`
-model_parameters(lm_toni) |>
+#| tbl-cap: Punktschätzer und Schätzbereiche für die Modellkoeffizienten von `lm_ali`
+model_parameters(lm_ali) |>
   select(1,2,5,6) |>
   print_md()
 ```
@@ -701,10 +701,11 @@ Es gibt zwei Hauptarten von Inferenzstatistik: Frequentistische Inferenz und Bay
 
 Der zentrale Kennwert der frequentistischen Inferenz (synonym: Frequentismus) ist der *p-Wert*.
 
-Der *p*-Wert ist so definiert, vgl. @wasserstein2016: 
+:::{#def-p-wert}
+### p-Wert
 
->   Wie hoch ist die Wahrscheinlichkeit eines empirischen Befunds (oder noch extremere Werte), vorausgesetzt die Nullhypothese $H_0$ gilt und man wiederholt den Versuch unendlich oft (mit gleichen Bedingungen, aber zufällig verschieden und auf Basis unseres Modells)?
-
+Der *p*-Wert ist die Wahrscheinlichkeit eines empirischen Befunds (oder noch extremerer Werte), vorausgesetzt die Nullhypothese $H_0$ gilt und man wiederholt den Versuch unendlich oft (mit gleichen Bedingungen, aber zufällig verschieden und auf Basis unseres Modells), vgl. @wasserstein2016. $\square$
+:::
 
 Einfacher gesagt:
 
