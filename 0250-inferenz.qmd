@@ -915,6 +915,75 @@ E) Keine der oben genannten. $\square$
 :::
 
 
+## Live-Experiment im Hörsaal: Das Hellseher-Experiment
+
+Dieses Experiment eignet sich für eine Vorlesungssitzung (ca. 25 Minuten) und
+macht an einem einzigen, selbst erlebten Beispiel sichtbar, wie trügerisch
+ein auf den ersten Blick beeindruckendes Ergebnis sein kann -- ein
+Vorgeschmack auf Fragen, die im Kapitel "Schätzen vs. Testen" systematisch
+behandelt werden (p-Wert, Hypothesentest, Bayes- vs. Frequentisten-Sicht).
+Der Clou: Wir *wissen* bereits, dass niemand hellsehen kann -- so lässt sich
+direkt prüfen, was ein auffälliges Ergebnis tatsächlich bedeutet und was
+nicht.
+
+### Ablauf
+
+**Phase 1 -- Experiment (ca. 5 Min.)**
+
+Je zwei Studierende bilden ein Paar. Person A wirft verdeckt 10-mal eine
+Münze (oder nutzt eine Zufalls-App), Person B rät jeweils "Kopf" oder
+"Zahl". B notiert die Anzahl Treffer. Dann Rollentausch.
+
+Ansage: "Wer 8 oder mehr Treffer hat, gilt als hellseherisch begabt."
+Unter der Annahme, dass geraten wird (Trefferwahrscheinlichkeit $Pr(Z) =
+0.5$ je Wurf), gilt $Pr(X \ge 8) = 56/1024 \approx 0.055$ -- also fast
+genau die in der Praxis oft verwendete 5-%-Schwelle.
+
+**Phase 2 -- Auswertung (ca. 5 Min.)**
+
+Per Handzeichen eine Häufigkeitstabelle an der Tafel erstellen (0 bis 10
+Treffer). Dann mit der erwarteten Verteilung vergleichen:
+
+```{r eval=FALSE}
+treffer <- 0:10
+erwartet <- dbinom(treffer, size = 10, prob = 0.5) * 80  # bei 80 Studierenden
+round(erwartet, 1)
+sum(dbinom(8:10, 10, 0.5))  # Anteil mit >= 8 Treffern: 0.055
+```
+
+::: {.callout-tip appearance="minimal"}
+Kein R zur Hand? Wie beim `union()`-Beispiel weiter oben läuft auch dieser
+Code direkt im Browser über [webR](https://webr.r-wasm.org/latest/)^[<https://webr.r-wasm.org/latest/>].
+:::
+
+
+Bei 80 Studierenden erwartet man ca. 4 "Hellseher". Die bitten wir nach
+vorne.
+
+**Phase 3 -- Diskussion, Think-Pair-Share (ca. 15 Min.)**
+
+1. Anna hat 9 Treffer ($Pr(X \ge 9) \approx 0.011$). Wie wahrscheinlich ist es, dass Anna hellsehen kann?
+2. Angenommen, nur die "Hellseher" schreiben einen Artikel über ihr Ergebnis. Was steht dann in der Fachliteratur über Hellsehen?
+3. Die Hellseher raten jetzt noch einmal 10 Würfe. Prognose: Wie viele schaffen wieder $\ge 8$ Treffer? (Dann tatsächlich durchführen.)
+4. Eine andere Studie mit 10.000 Rateversuchen findet 51 % Treffer. Ist das ein bedeutsamer Befund? Für wen könnte 1 Prozentpunkt mehr Treffer doch relevant sein?
+5. Zwei Statistiker:innen -- eine Bayesianerin, ein Frequentist -- diskutieren Annas Ergebnis. Worin unterscheiden sich ihre Schlüsse?
+
+::: {.callout-tip appearance="minimal" collapse="true"}
+### Lösungshinweise
+
+1. **Die Kernfrage.** Ein auffälliges Ergebnis sagt zunächst nur etwas darüber aus, wie wahrscheinlich *solche Daten* wären, *falls* niemand hellsehen kann -- nicht darüber, wie wahrscheinlich es ist, dass Anna hellsehen *kann*. Hier wissen wir: Die Annahme "niemand kann hellsehen" ist mit an Sicherheit grenzender Wahrscheinlichkeit wahr, obwohl Annas Ergebnis auf den ersten Blick auffällig wirkt ($Pr(X \ge 9) \approx 0.011$).
+2. **Publication Bias.** Die Literatur bestünde nur aus "Erfolgen". Bei vielen Tests ist ein paar Mal ein auffälliges Ergebnis zu erwarten, auch wenn kein Effekt existiert.
+3. **Replikations-Fehlschluss.** Die Wahrscheinlichkeit für erneut $\ge 8$ Treffer ist wieder 5,5 % -- nicht etwa nahe 100 %. Vermutlich "verliert" fast jeder Hellseher seine Gabe beim zweiten Versuch. Das ist Regression zur Mitte.
+4. **Statistische vs. praktische Bedeutsamkeit.** Bei großem $n$ fällt auch ein kleiner Effekt auf. Ob 51 % relevant sind, hängt vom Kontext ab: für die Alltagspsychologie eher nicht, für ein Casino oder einen Sportwetten-Anbieter mit entsprechend hohem Einsatzvolumen durchaus.
+5. **Vorwissen.** Eine Bayesianerin bezieht die (sehr geringe) Vorab-Plausibilität von Hellsehen explizit mit ein, weshalb ihr Fazit zu Annas Fähigkeit auch nach dem auffälligen Ergebnis skeptisch bleibt. Ein rein frequentistisches Vorgehen, das nur auf die Auffälligkeit der Daten schaut, ignoriert dieses Vorwissen. $\square$
+:::
+
+Funktioniert das Experiment auch in kleinen Gruppen? Bei unter 40
+Teilnehmenden gibt es eventuell keinen einzigen "Hellseher" -- dann hilft
+eine Simulation in R als Ersatz (`rbinom(80, 10, 0.5)`), die allerdings
+weniger eindrücklich ist als ein echter Treffer im eigenen Hörsaal.
+
+
 ## Aufgaben
 
 Schauen Sie sich die Aufgaben mit dem Tag *inference* auf dem [Datenwerk](https://datenwerk.netlify.app/#category=inference)^[<https://datenwerk.netlify.app/#category=inference>] an.
