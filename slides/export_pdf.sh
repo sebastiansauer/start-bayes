@@ -15,6 +15,11 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 SLIDES_DIR="slides"
 PORT=8743
+# WICHTIG: Webroot ist das Projekt-Root, nicht slides/. Die Folien referenzieren
+# Bilder (img/..., <kapitel>_files/figure-html/...) ueber relative "../"-Pfade,
+# die ausserhalb von slides/ liegen -- ein auf slides/ beschraenkter Webserver
+# blockt solche "../"-Traversal-Requests (404), wodurch die per decktape
+# erzeugten PDFs keine Bilder enthalten.
 
 decks=(
   0200-zielarten
@@ -33,7 +38,7 @@ decks=(
   1200-abschluss
 )
 
-npx --yes http-server "$SLIDES_DIR" -p "$PORT" -s &
+npx --yes http-server . -p "$PORT" -s &
 SERVER_PID=$!
 trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
 
@@ -44,5 +49,5 @@ for deck in "${decks[@]}"; do
   # --chrome-arg=--no-sandbox: das gebuendelte Puppeteer-Chromium startet in
   # dieser Umgebung sonst mit "No usable sandbox!" (FATAL) ab.
   npx --yes decktape --chrome-arg=--no-sandbox reveal \
-    "http://localhost:${PORT}/${deck}.html" "${SLIDES_DIR}/${deck}.pdf"
+    "http://localhost:${PORT}/${SLIDES_DIR}/${deck}.html" "${SLIDES_DIR}/${deck}.pdf"
 done
