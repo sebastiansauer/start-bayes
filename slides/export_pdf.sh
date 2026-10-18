@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
-# Erzeugt aus jedem gerenderten HTML-Foliensatz in docs/slides/ ein PDF
-# (docs/slides/<kapitel>.pdf) via decktape. Manuell auszufuehren, sobald
-# sich ein Foliensatz inhaltlich geaendert hat (nicht Teil von render.R).
+# Erzeugt aus jedem gerenderten HTML-Foliensatz in slides/ ein PDF
+# (slides/<kapitel>.pdf) via decktape. Manuell auszufuehren, sobald sich ein
+# Foliensatz inhaltlich geaendert hat (nicht Teil von render.R).
 #
-# Voraussetzung: docs/slides/*.html ist aktuell (vorher ggf. in slides/
-# "quarto render" laufen lassen).
+# WICHTIG: Die PDFs muessen in slides/ (neben den .qmd/.html-Quellen)
+# liegen, nicht in docs/slides/ -- publish-all.sh spiegelt slides/ per
+# "rsync --delete" nach docs/slides/ und wuerde dort direkt abgelegte
+# PDFs beim naechsten Publish-Lauf wieder loeschen.
+#
+# Voraussetzung: slides/*.html ist aktuell (vorher ggf. "quarto render"
+# in slides/ laufen lassen).
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-SLIDES_DIR="docs/slides"
+SLIDES_DIR="slides"
 PORT=8743
 
 decks=(
