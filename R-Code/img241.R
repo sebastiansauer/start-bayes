@@ -30,7 +30,7 @@ p1 <-
   d %>%
   filter(row == "flat") %>%
   ggplot(aes(x = probability, y = value)) +
-  geom_line() +
+  geom_line(color = "#0072B2") +
   scale_x_continuous(NULL, breaks = NULL) +
   scale_y_continuous(NULL, breaks = NULL) +
   theme(panel.grid = element_blank()) +
@@ -40,7 +40,7 @@ p2 <-
   d %>%
   filter(row == "stepped") %>%
   ggplot(aes(x = probability, y = value)) +
-  geom_line() +
+  geom_line(color = "#0072B2") +
   scale_x_continuous(NULL, breaks = NULL) +
   scale_y_continuous(NULL, breaks = NULL) +
   theme(
@@ -54,7 +54,7 @@ p3 <-
   d %>%
   filter(row == "Laplace") %>%
   ggplot(aes(x = probability, y = value)) +
-  geom_line() +
+  geom_line(color = "#0072B2") +
   scale_x_continuous(NULL, breaks = c(0, .5, 1)) +
   scale_y_continuous(NULL, breaks = NULL) +
   theme(

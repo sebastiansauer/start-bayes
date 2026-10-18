@@ -130,7 +130,7 @@ p_coll1 <-
   ggplot() +
   aes(x  = x,
       y = y) +
-  geom_point() +
+  geom_point(color = dunkelgrau) +
  # scale_color_manual(values = c("grey80", "black")) +
   labs(x = "Schönheit",
        y = "Schlauheit") +
@@ -170,7 +170,7 @@ p_coll2 <-
   ggplot(aes(x = x, y = y, color = status_label, label = symbol)) +
   geom_text() +
   scale_color_manual(
-    values = c("kein Date" = "grey80", "Date" = "black"),
+    values = c("kein Date" = "#E69F00", "Date" = "#0072B2"),
     guide = guide_legend(override.aes = list(label = c("✓", "✗")))) +
   labs(
     x = "Schönheit",
@@ -425,11 +425,11 @@ hdi(m_eignung) |> display()
 #| label: fig-eignung
 #| fig-cap: "Der Zusammenhang von Fleiss und IQ"
 
-d_eignung |> 
-  filter(studium == 1) |> 
+d_eignung |>
+  filter(studium == 1) |>
   ggplot(aes(x = fleiss, y = iq)) +
-  geom_point(alpha = .5) +
-  geom_smooth(method = "lm") +
+  geom_point(alpha = .5, color = dunkelgrau) +
+  geom_smooth(method = "lm", color = "#0072B2") +
   labs(title = "Negativer Zusammenhang von Fleiss und IQ bei Studentis",
        subtitle = "Macht Fleiss blöd?")
 ```
@@ -468,8 +468,8 @@ Nur durch das Stratifizieren (Aufteilen in Subgruppen, Kontrollieren, Adjustiere
 #| label: fig-eignung-strat
 p1 <- d_eignung |>
  ggplot(aes(x = fleiss, y = iq)) +
-  geom_point(alpha = .5) +
-  geom_smooth(method = "lm")
+  geom_point(alpha = .5, color = dunkelgrau) +
+  geom_smooth(method = "lm", color = "#0072B2")
 
 d_eignung2 <-
   d_eignung |>

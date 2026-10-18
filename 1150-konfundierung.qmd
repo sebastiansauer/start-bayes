@@ -546,11 +546,12 @@ Modell 1 (`m1`) modelliert den Hauspreis als Funktion der Zimmerzahl, s. @fig-m1
 #| message: false
 #| label: fig-m1
 #| fig-cap: "Modell m1"
-d |> 
+d |>
   ggplot() +
   aes(x = bedrooms, y = price) +
-  geom_jitter(alpha = .3) +
-  geom_smooth(method = "lm")
+  geom_jitter(alpha = .3, color = dunkelgrau) +
+  geom_smooth(method = "lm", color = "#0072B2") +
+  labs(x = "Anzahl Zimmer", y = "Hauspreis (USD)")
 ```
 
 
@@ -768,11 +769,12 @@ estimate_means(m2, by = "bedrooms", length = 7)
 #| label: fig-m2-preds
 #| fig-asp: 0.3
 #| fig-cap: "Hauspreis als Funktion der Zimmerzahl, laut m2"
-estimate_means(m2, by = "bedrooms", length = 7) |> 
+estimate_means(m2, by = "bedrooms", length = 7) |>
   ggplot() +
   aes(x = bedrooms, y = Median) +
-  geom_line() +
-  geom_point(alpha = .7) 
+  geom_line(color = "#0072B2") +
+  geom_point(alpha = .7, color = "#0072B2") +
+  labs(x = "Anzahl Zimmer", y = "Hauspreis (USD)")
 ```
 
 
@@ -841,14 +843,15 @@ size_group_labs <-
 
 d_size_group |>
   ggplot(aes(x = bedrooms, y = price)) +
-  geom_jitter(alpha = .3) +
+  geom_jitter(alpha = .3, color = dunkelgrau) +
   geom_abline(data = d_m2a,
               aes(intercept = intercept,
                   slope = slope),
-              color = "blue",
+              color = "#0072B2",
               linewidth = 2) +
   facet_wrap(~ size_group, nrow = 1, labeller = as_labeller(size_group_labs)) +
-  labs(caption = "Facetten zeigen Quartile der Variable 'Wohnfläche'")
+  labs(x = "Anzahl Zimmer", y = "Hauspreis (USD)",
+       caption = "Facetten zeigen Quartile der Variable 'Wohnfläche'")
 ```
 
 Basierend auf [diesem Quellcode](https://github.com/sebastiansauer/QM2-Folien/blob/main/Themen/children/Hauspreis-stratifizieren.Rmd)^[<https://github.com/sebastiansauer/QM2-Folien/blob/main/Themen/children/Hauspreis-stratifizieren.Rmd>]

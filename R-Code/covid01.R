@@ -35,9 +35,11 @@ plot_covid1 <-
   d2 %>%
   ggplot(aes(x = Land,
              y = people_fully_vaccinated_per_hundred)) +
-  geom_col() +
+  geom_col(fill = mittelgrau) +
   labs(title = "Anteil komplett geimpfter Personen",
-       subtitle = "2021-09-23")
+       subtitle = "2021-09-23",
+       x = "Land",
+       y = "Vollständig Geimpfte (je 100 Einwohner)")
 
 
 
@@ -46,8 +48,10 @@ plot_covid2 <-
   d2 %>%
   ggplot(aes(x = Land,
              y = total_deaths_per_million)) +
-  geom_col()+
+  geom_col(fill = mittelgrau) +
   labs(title = "Corona-Tote pro Million",
-       subtitle = "2021-09-23")
+       subtitle = "2021-09-23",
+       x = "Land",
+       y = "Corona-Tote (je Million Einwohner)")
 
 

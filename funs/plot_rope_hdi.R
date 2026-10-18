@@ -12,8 +12,8 @@ rope_hdi_panel <- function(tag, decision, mu, sigma, hdi_lo, hdi_hi,
   ggplot2::ggplot(d, ggplot2::aes(x, y)) +
     ggplot2::geom_vline(xintercept = c(rope_lo, rope_hi),
                          color = "#D55E00", linewidth = 0.9) +
-    ggplot2::geom_area(fill = "#56B4E9", alpha = 0.6) +
-    ggplot2::geom_line(color = "#56B4E9", linewidth = 0.8) +
+    ggplot2::geom_area(fill = "#0072B2", alpha = 0.3) +
+    ggplot2::geom_line(color = "#0072B2", linewidth = 0.8) +
     ggplot2::annotate("segment",
                        x = hdi_lo, xend = hdi_hi,
                        y = -0.04 * y_max, yend = -0.04 * y_max,
@@ -32,7 +32,7 @@ rope_hdi_panel <- function(tag, decision, mu, sigma, hdi_lo, hdi_hi,
     ggplot2::labs(title = paste0(tag, ")  ", decision),
                   x = "Parameterwert", y = NULL) +
     ggplot2::scale_y_continuous(limits = c(-0.2 * y_max, y_max * 1.15)) +
-    ggplot2::theme_minimal(base_size = 11) +
+    theme_med(plot_medium()) +
     ggplot2::theme(
       plot.title = ggplot2::element_text(size = 10, face = "italic"),
       axis.text.y = ggplot2::element_blank(),

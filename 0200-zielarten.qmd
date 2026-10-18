@@ -254,18 +254,18 @@ ali_vorhersageintervall <- predict(lm_ali, newdata =  data.frame(x=42),
 p_ali_streudiagramm <-
 ggplot(noten2) +
   aes(x, y) +
-  geom_point() +
-  labs(x = "Lernzeit",
-       y = "Klausurpunkte") +
+  geom_point(color = dunkelgrau) +
+  labs(x = "Lernzeit (Stunden)",
+       y = "Klausurpunkte (von 100)") +
   theme_large_text()
 
 p_ali_punktschaetzung <- 
-  noten2 |> 
+  noten2 |>
   ggplot(aes(x, y)) +
-  geom_point() +
-  geom_vline(xintercept = mean(noten2$x), linetype = "dashed", color = "grey") +  
-  geom_hline(yintercept = mean(noten2$y), linetype = "dashed", color = "grey") +   
-  geom_abline(slope = coef(lm_ali)[2], intercept = coef(lm_ali)[1], color = modelcol, size = 1.5) +
+  geom_point(color = dunkelgrau) +
+  geom_vline(xintercept = mean(noten2$x), linetype = "dashed", color = dunkelgrau) +
+  geom_hline(yintercept = mean(noten2$y), linetype = "dashed", color = dunkelgrau) +
+  geom_abline(slope = coef(lm_ali)[2], intercept = coef(lm_ali)[1], color = beta1col, size = 1.5) +
   annotate("label", x = mean(noten2$x), y = -Inf,
            label = paste0("MW: ", round(mean(noten2$x))), vjust = "bottom") +
   annotate("label", y = mean(noten2$y), x = -Inf, 
@@ -273,8 +273,8 @@ p_ali_punktschaetzung <-
   annotate("point", x = 42, y = ali_punkte, color = ycol,
            alpha = .7, size = 3) +
   scale_x_continuous(breaks = c(20, 40, 60, 80, 100)) +
-  labs(x = "Lernzeit",
-       y = "Klausurpunkte") +
+  labs(x = "Lernzeit (Stunden)",
+       y = "Klausurpunkte (von 100)") +
   theme_large_text() +
   geom_label_repel(data = data.frame(x = 42, y = ali_punkte), label = "Ali",
        force = 20,
@@ -888,13 +888,13 @@ mtcars$am <- factor(mtcars$am)
 
 ggplot(mtcars) +
   aes(x = hp, y = mpg) +
-  geom_point() +
-  geom_smooth(method = "lm")
+  geom_point(color = dunkelgrau) +
+  geom_smooth(method = "lm", color = blue, fill = mittelgrau)
 
 # Statt ggplot-Standard-Legende (ausserhalb des Diagramms) steht die
 # Zuordnung Farbe/Gruppe direkt an den Linienenden, in den buchweit
 # verwendeten Standardfarben Dunkelblau/Orange.
-am_colors <- c("0" = blue, "1" = orange)
+am_colors <- c("0" = orange, "1" = blue)
 
 am_labels <-
   mtcars %>%

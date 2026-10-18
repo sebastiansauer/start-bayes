@@ -35,9 +35,9 @@ plottitanic1 <-
   ggplot(aes(x = Pclass)) +
   geom_bar(aes(fill = Survived), position = "fill") +
   theme(legend.position = "bottom") +
-  scale_fill_okabeito(order = c(1, 2)) +
+  scale_fill_okabeito(order = c(1, 5)) +
   labs(y = "Anteil Überlebende", x = "Passagierklasse") +
-  geom_hline(yintercept = prop_surv, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = prop_surv, linetype = "dashed", color = "#4D4D4D") +
   annotate(
     "label",
     x = Inf,
@@ -53,8 +53,8 @@ plottitanic2 <-
   ggplot(aes(x = Embarked)) +
   geom_bar(aes(fill = Survived), position = "fill") +
   theme(legend.position = "bottom") +
-  scale_fill_okabeito(order = c(1, 2)) +
-  geom_hline(yintercept = prop_surv, linetype = "dashed", color = "black") +
+  scale_fill_okabeito(order = c(1, 5)) +
+  geom_hline(yintercept = prop_surv, linetype = "dashed", color = "#4D4D4D") +
   annotate(
     "label",
     x = Inf,
@@ -70,9 +70,9 @@ plottitanic3 <-
   geom_bar(aes(fill = Survived), position = "fill") +
   theme(legend.position = "bottom") +
   scale_x_discrete(labels = c("Nicht Prim", "Prim")) +
-  scale_fill_okabeito(order = c(1, 2)) +
+  scale_fill_okabeito(order = c(1, 5)) +
   labs(y = "Anteil Überlebende", x = "Geburtsdatum ist Primzahl") +
-  geom_hline(yintercept = prop_surv, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = prop_surv, linetype = "dashed", color = "#4D4D4D") +
   annotate(
     "label",
     x = Inf,

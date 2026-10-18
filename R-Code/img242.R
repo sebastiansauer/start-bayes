@@ -11,8 +11,8 @@ d <-
 p1 <-
   d %>%
   ggplot(aes(x = p_grid, y = posterior)) +
-  geom_point() +
-  geom_line() +
+  geom_point(color = "#4D4D4D") +
+  geom_line(color = "#0072B2") +
   labs(
     subtitle = "20 Parameterwerte",
     x = "pi",
@@ -31,8 +31,8 @@ p2 <-
   mutate(unstd_posterior = likelihood * prior) %>%
   mutate(posterior = unstd_posterior / sum(unstd_posterior)) %>%
   ggplot(aes(x = p_grid, y = posterior)) +
-  geom_point() +
-  geom_line() +
+  geom_point(color = "#4D4D4D") +
+  geom_line(color = "#0072B2") +
   labs(subtitle = "10 Parameterwerte", x = "pi", y = "") +
   theme(panel.grid = element_blank()) +
   scale_x_continuous(
@@ -50,8 +50,8 @@ p3 <-
   mutate(posterior = unstd_posterior / sum(unstd_posterior)) %>%
 
   ggplot(aes(x = p_grid, y = posterior)) +
-  geom_point() +
-  geom_line() +
+  geom_point(color = "#4D4D4D") +
+  geom_line(color = "#0072B2") +
   labs(subtitle = "5 Parameterwerte", x = "pi", y = "") +
   theme(panel.grid = element_blank()) +
   scale_x_continuous(
@@ -69,7 +69,7 @@ p4 <-
 
   ggplot(aes(x = p_grid, y = posterior)) +
   #  geom_point() +
-  geom_line() +
+  geom_line(color = "#0072B2") +
   labs(subtitle = "Unendlich viele Parameterwerte", x = "pi", y = "") +
   theme(panel.grid = element_blank()) +
   scale_x_continuous(

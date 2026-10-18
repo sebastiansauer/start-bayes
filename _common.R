@@ -5,23 +5,45 @@ base_size <- 18
 base_family <- "Lato Regular"
 
 
-# Define a custom ggplot theme with larger text
-theme_large_text <- function(base_size = 18) {
-  see::theme_modern(base_size = base_size) +
-    theme(
-      text = element_text(size = base_size + 4),          # Base text size
-      axis.title = element_text(size = base_size + 6),    # Axis title text size
-      axis.text = element_text(size = base_size + 4),     # Axis tick text size
-      plot.title = element_text(size = base_size + 10, face = "bold"), # Plot title size
-      plot.subtitle = element_text(size = base_size + 8), # Subtitle text size
-      legend.text = element_text(size = base_size + 4),   # Legend text size
-      legend.title = element_text(size = base_size + 6)   # Legend title text size
-    )
+# Grossschrift-Variante (z.B. fuer Abbildungen mit viel Text): nutzt das
+# Folien-Preset von theme_med() (base_size 19), siehe .claude/skills/ggplot-diagramme.
+theme_large_text <- function() {
+  theme_med("folien")
 }
 
 
 
-ggplot2::theme_set(see::theme_modern())
+# ggplot-Diagramme-Skill: zentrales Theme + Mediumerkennung (HTML/PDF/Folien),
+# siehe .claude/skills/ggplot-diagramme. Ersetzt das bisherige see::theme_modern().
+theme_med <- function(medium = c("html", "pdf", "folien"),
+                       grid = c("both", "h", "v", "none")) {
+  medium <- match.arg(medium)
+  grid <- match.arg(grid)
+  bs <- switch(medium, html = 13, pdf = 10.5, folien = 19)
+  lw <- if (medium == "folien") 0.6 else 0.4
+  gl <- ggplot2::element_line(color = "#D9D9D9", linewidth = lw)
+  off <- ggplot2::element_blank()
+
+  ggplot2::theme_minimal(base_size = bs) +
+    ggplot2::theme(
+      plot.title.position = "plot",
+      plot.title = ggplot2::element_text(face = "bold"),
+      panel.grid.minor = off,
+      panel.grid.major.x = if (grid %in% c("both", "v")) gl else off,
+      panel.grid.major.y = if (grid %in% c("both", "h")) gl else off,
+      axis.line = off,
+      axis.ticks = off,
+      legend.position = "bottom"
+    )
+}
+
+# Medium erkennen: PDF-Lauf -> "pdf", sonst Option "plot_medium" (Default "html").
+# Fuer Folien im jeweiligen Setup-Chunk: options(plot_medium = "folien")
+plot_medium <- function() {
+  if (knitr::is_latex_output()) "pdf" else getOption("plot_medium", "html")
+}
+
+ggplot2::theme_set(theme_med(plot_medium()))
 
 knitr::opts_chunk$set(tidy = FALSE,
                       width = 60,
@@ -94,10 +116,26 @@ blue <- "#0072B2FF"
 orange <- "#E69F00FF"
 green <- errorcol
 
+# ggplot-Diagramme-Skill: feste Farbwerte fuer 1/2 Gruppen, Punkte, Flaechen,
+# Gitter -- siehe .claude/skills/ggplot-diagramme.
+dunkelgrau <- "#4D4D4D"   # Punkte bei 1 Gruppe
+mittelgrau <- "#999999"   # Fuellung bei 1 Gruppe
+gitterfarbe <- "#D9D9D9"  # Gitterlinien
 
+# Linien-/Text-Farbfolgen ab 3 Gruppen (Reihenfolge: Orange, Blau, ...)
+okabe_linie <- c("#E69F00", "#0072B2", "#009E73", "#56B4E9", "#D55E00", "#CC79A7")
+okabe_text  <- c("#B36B00", "#0072B2", "#007A59", "#2B7FB0", "#D55E00", "#A5527F")
 
+# Fuegt Linien- und Textfarbe als Spalten hinzu (Reihenfolge = Faktorstufen),
+# fuer Linien, die direkt am Linienende beschriftet werden (ggrepel), statt
+# ueber eine Legende.
+add_farben <- function(d, gruppe) {
+  g <- as.integer(factor(d[[deparse(substitute(gruppe))]]))
+  d$farbe_linie <- okabe_linie[g]
+  d$farbe_text  <- okabe_text[g]
+  d
+}
 
-#ggplot2::theme_set(see::theme_modern(axis.title.size = 18))
 
 labeltextsize <- 8
 

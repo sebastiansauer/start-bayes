@@ -35,10 +35,9 @@ plot_maschine_schrott_ALT <-
     y = "Anteil"
   ) +
   scale_fill_manual(
-    values = c("Schrott" = "red", "ok" = "grey40"),
+    values = c("Schrott" = "#E69F00", "ok" = "#0072B2"),
     labels = c("Ausschuss", "OK")
   ) +
-  see::theme_modern() +
   theme(legend.position = "bottom")
 
 
@@ -82,9 +81,8 @@ plot_maschine_schrott <-
   ) +
   scale_fill_okabeito(
     labels = c("Ausschuss", "OK"),
-    order = c(1, 2)
+    order = c(1, 5)
   ) +
-  see::theme_modern() +
   theme(legend.position = "bottom")
 
 

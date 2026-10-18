@@ -1301,9 +1301,10 @@ twodice <- tibble(
 
 p_twodice <-
   ggplot(twodice, aes(x = Augensumme, y = p)) +
-  geom_col() +
+  geom_col(fill = mittelgrau) +
   geom_label(aes(y = p, label = round(p, 2)), vjust = 0) +
-  scale_x_continuous(breaks = 1:12)
+  scale_x_continuous(breaks = 1:12) +
+  labs(x = "Augensumme", y = "Wahrscheinlichkeit")
 ```
 
 
@@ -1338,9 +1339,10 @@ results_count <-
 p_sim2dice <-
   ggplot(results_count) +
   aes(x = Augensumme, y = n) +
-  geom_col() +
+  geom_col(fill = mittelgrau) +
   geom_label(aes(y = n, label = round(prop, 2))) +
-  scale_x_continuous(breaks = 1:12)
+  scale_x_continuous(breaks = 1:12) +
+  labs(x = "Augensumme", y = "Häufigkeit")
 ```
 
 
@@ -1460,12 +1462,12 @@ $F(x) = \sum_{x_i \le x} Pr(X=x_i).$
 ```{r}
 #| echo: false
 p_F <- 
-  ggplot(twodice, aes(x = Augensumme, y = p_cum)) + 
-  geom_col() +
-  geom_line() +
-  geom_label(aes(label = round(p_cum, 2))) + 
+  ggplot(twodice, aes(x = Augensumme, y = p_cum)) +
+  geom_col(fill = mittelgrau) +
+  geom_line(color = blue) +
+  geom_label(aes(label = round(p_cum, 2))) +
   scale_x_continuous(breaks = 1:12) +
-  labs(y = "Verteilungsfunktion F")
+  labs(x = "Augensumme", y = "Verteilungsfunktion F")
 
 
 y_lab <- "empirische Verteilungsfunktion F emp."
@@ -1473,10 +1475,10 @@ y_lab <- "empirische Verteilungsfunktion F emp."
 p_F_emp <-
   ggplot(results_count) +
   aes(x = Augensumme, y = prop_cum) +
-  geom_col() +
-  geom_line() +
+  geom_col(fill = mittelgrau) +
+  geom_line(color = blue) +
   geom_label(aes(y = prop_cum, label = round(prop_cum, 2))) +
-  labs(y = y_lab) +
+  labs(x = "Augensumme", y = y_lab) +
   scale_x_continuous(breaks = 2:12)
 ```
 

@@ -150,15 +150,15 @@ p_d <-
 bayesbox_6w_9v  |>
   ggplot() +
   aes(x = p_grid, y = post) +
-  geom_point(alpha = .5, size = 3) +
-  geom_line() +
+  geom_point(alpha = .5, size = 3, color = "#4D4D4D") +
+  geom_line(color = "#0072B2") +
   scale_y_continuous("Posterior-Wahrscheinlichkeit",
                      breaks = NULL) +
   annotate("point", x = .7,
-           y = .2668, 
-           color = "red", 
+           y = .2668,
+           color = "#E69F00",
            alpha = .7,
-           size = 5) 
+           size = 5)
   
 p_d
 ```
@@ -178,8 +178,8 @@ p_d <-
 bayesbox_6w_9v  |> 
   ggplot() +
   aes(x = p_grid, y = post) +
-  geom_point(alpha = .5, size = 3) +
-  geom_line() +
+  geom_point(alpha = .5, size = 3, color = "#4D4D4D") +
+  geom_line(color = "#0072B2") +
   scale_y_continuous("Posterior-Wahrscheinlichkeit",
                      breaks = NULL) +
   labs(x = "Anteil Wasser (p)")
@@ -526,8 +526,8 @@ Das Modell ist sich nicht sehr sicher, könnte man sagen.
 p0 <- 
   bayesbox_g100 |> 
   ggplot(aes(x = p_grid, y = post)) +
-  geom_line(color = "grey40") +
-  geom_point() +
+  geom_line(color = "#0072B2") +
+  geom_point(color = "#4D4D4D") +
   labs(title = "Post-Verteilung \nexakt",
   y = "Wahrscheinlichkeit",
   x = "Wasseranteil")
@@ -619,11 +619,11 @@ ggplot(aes(x = p_grid)) +
   labs(y = "Wahrscheinlichkeit",
        caption = paste0("Modus: ", mode_rounded, "; MW: ", mavg, "; Md: ", md)) +
   geom_vline(xintercept = c(mode_rounded), color = "#E69F00FF")  +
-  geom_vline(xintercept = c(mavg), color = "#56B4E9FF")  +
+  geom_vline(xintercept = c(mavg), color = "#0072B2FF")  +
   geom_vline(xintercept = c(md), color = "#009E73FF")  +
   annotate("label", x = mode_rounded, y = 0,
     label = glue::glue("Modus: {mode_rounded}"), fill = "#E69F00FF") +
-  annotate("label", x = mavg, y = 10000, label = glue::glue("MW: {mavg}"), fill = "#56B4E9FF") +
+  annotate("label", x = mavg, y = 10000, label = glue::glue("MW: {mavg}"), fill = "#0072B2FF") +
   annotate("label", x = md, y = 20000, label = glue::glue("Median: {md}"), fill = "#009E73FF")
 
 p_100_samples
@@ -1202,13 +1202,13 @@ p1 <-
   geom_area(data = bayesbox_3w_3v |>
               filter(p_grid > qi_50_low &
                     p_grid < qi_50_up),
-            fill = "grey75") +
-  geom_line() +
+            fill = "#999999") +
+  geom_line(color = "#0072B2") +
   scale_x_continuous(breaks = seq(from = 0, to = 1, by = .1)) +
   labs(y = "Wahrscheinlichkeit",
     x = "Wasseranteil") +
   annotate("point", x = 1, y = max(bayesbox_3w_3v$post_33),
-           color = "red", size = 3) 
+           color = "#E69F00", size = 3)
 
 
 
@@ -1223,15 +1223,15 @@ hdi_50_up <- 1
 p2 <-
   bayesbox_3w_3v |> 
   ggplot(aes(x = p_grid, y = post_33)) +
-  geom_area(data = bayesbox_3w_3v |> 
-              filter(p_grid > hdi_50_low & 
+  geom_area(data = bayesbox_3w_3v |>
+              filter(p_grid > hdi_50_low &
                      p_grid <= hdi_50_up),
-            fill = "grey75") +
-  geom_line()  +
+            fill = "#999999") +
+  geom_line(color = "#0072B2")  +
   labs(y = "Wahrscheinlichkeit",
     x = "Wasseranteil") +
   annotate("point", x = 1, y = max(bayesbox_3w_3v$post_33),
-           color = "red", size = 3) 
+           color = "#E69F00", size = 3)
 
 
 p1
@@ -1326,9 +1326,9 @@ point_estimates <-
 bayesbox_3w_3v |> 
   ggplot(aes(x = p_grid)) +
   geom_area(aes(y = post_33),
-            fill = "grey75") +
+            fill = "#999999") +
   annotate("point", x = 1, y = max(bayesbox_3w_3v$post_33),
-           color = "red", size = 3) +
+           color = "#E69F00", size = 3) +
   geom_vline(xintercept = point_estimates$p_grid) +
   geom_text(data = point_estimates,
             aes(x = x, y = y, label = paste0(.point, " = ", round(x, 2))),

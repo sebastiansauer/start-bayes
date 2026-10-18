@@ -4,7 +4,7 @@ binomial_plot <- function(n, p){
     tibble(Wahrscheinlichkeit = .,
            Treffer = seq(0,n)) %>% 
     ggplot(aes(x = Treffer, y = Wahrscheinlichkeit)) +
-    geom_col() +
+    geom_col(fill = mittelgrau) +
     #   geom_segment(aes(xend = Treffer, yend = 0)) + 
     #  geom_point(color = "red", size = 5, alpha = .5) +
     scale_x_continuous(breaks = 0:n) +
