@@ -744,13 +744,17 @@ A) Der Schmockulator ist sicher im Zustand alpha.
 B) Der Schmockulator ist in einem der beiden Zustände.
 C) Der Schmockulator ist vermutlich im Zustand alpha.
 D) Der Schmockulator ist möglicherweise im Zustand alpha.
-E) Der Schmockulator ist mit einer Wahrscheinlichkeit von 50 % im Zustand alpha.
+E) Der Schmockulator ist mit einer Wahrscheinlichkeit von 50 % im Zustand alpha, unter der Annahme, dass wir keinen Grund haben, einen der beiden Zustände zu bevorzugen.
 F) Keine der genannten. $\square$
 :::
 
 
 
 
+::: {.callout-note collapse="true"}
+
+Richtig ist: E)
+:::
 
 
 
@@ -1130,7 +1134,32 @@ ${\displaystyle X(\omega )={\begin{cases}1,&{\text{wenn }}\omega ={\text{Kopf}},
 
 
 
-![Eine Zufallsvariable ist eine Zuordnung der Ereignisse zu einer reellen Zahl (nach einer bestimmten Regel)](img/zv_plot.png){#fig-zv width=33%}
+```{mermaid}
+%%| label: fig-zv
+%%| fig-cap: Eine Zufallsvariable ist eine Zuordnung der Ereignisse zu einer reellen Zahl (nach einer bestimmten Regel)
+flowchart LR
+  subgraph O["Ereignisraum Ω"]
+    TT
+    TN
+    NT
+    NN
+  end
+  subgraph W["Werte von X"]
+    zwei["2"]
+    eins["1"]
+    null["0"]
+  end
+
+  TT --> zwei
+  TN --> eins
+  NT --> eins
+  NN --> null
+
+  classDef ereignis fill:#a8d4e0,stroke:#333,stroke-width:1px;
+  classDef wert fill:#f5f0b8,stroke:#333,stroke-width:1px;
+  class TT,TN,NT,NN ereignis;
+  class zwei,eins,null wert;
+```
 
 
 
@@ -1351,6 +1380,58 @@ p_sim2dice
 Die Wahrscheinlichkeitsverteilung für $X$ "Augensumme im zweifachen Würfelwurf" ist in @fig-2dice-prob visualisiert. $\square$ 
 :::
 
+
+
+
+::::: {.content-visible when-format="html"}
+
+::::{exr-zehnfacher-muenzwurf}
+### Live-Experiment - Hellseher gesucht
+
+**Phase 1 -- Experiment (5 Min.)**
+
+Je zwei Studierende bilden ein Paar. Person A wirft verdeckt 10-mal eine Münze (oder nutzt eine Zufalls-App), Person B rät jeweils “Kopf” oder “Zahl”. B notiert die Anzahl Treffer. Dann Rollentausch.
+
+Ansage: “Wer 8 oder mehr Treffer hat, gilt als hellseherisch begabt.” Unter $H_0: \pi = 0{,}5$ gilt $Pr(X \ge 8) = 56/1024 \approx 0{,}055$ -- also fast genau die übliche 5-%-Schwelle.
+
+**Phase 2 -- Auswertung (5 Min.)**
+
+Tragen Sie Ihre Ergebnisse in [dieses Formular](https://forms.gle/9vj3yVbhNFuiFzWW7) ein.
+
+
+Bei 80 Studierenden erwartet man ca. 4 “Hellseher”. Die bitten wir nach vorne.
+
+**Phase 3 -- Diskussion, Think-Pair-Share (15 Min.)**
+
+1. Anna hat 9 Treffer ($p \approx 0{,}011$). Wie wahrscheinlich ist es, dass Anna hellsehen kann?
+2. Angenommen, nur die “Hellseher” schreiben einen Artikel über ihr Ergebnis. Was steht dann in der Fachliteratur über Hellsehen?
+3. Die Hellseher raten jetzt noch einmal 10 Würfe. Prognose: Wie viele schaffen wieder $\ge 8$? (Dann tatsächlich durchführen.)
+4. Eine andere Studie mit 10.000 Rateversuchen findet 51 % Treffer, $p \approx 0{,}02$. Ist das ein bedeutsamer Befund? Für wen könnte 1 Prozentpunkt mehr Treffer doch relevant sein?
+5. Ein Bayesianer und ein Frequentist diskutieren Annas Ergebnis. Worin unterscheiden sich ihre Schlüsse? (Bezug: xkcd 1132)
+
+
+
+
+::: {.callout-tip appearance="minimal" collapse="true"}
+### Lösungshinweise
+
+1. **Die Kernfrage.** Ein auffälliges Ergebnis sagt zunächst nur etwas darüber aus, wie wahrscheinlich *solche Daten* wären, *falls* niemand hellsehen kann -- nicht darüber, wie wahrscheinlich es ist, dass Anna hellsehen *kann*. Hier wissen wir: Die Annahme "niemand kann hellsehen" ist mit an Sicherheit grenzender Wahrscheinlichkeit wahr, obwohl Annas Ergebnis auf den ersten Blick auffällig wirkt ($Pr(X \ge 9) \approx 0.011$).
+2. **Publication Bias.** Die Literatur bestünde nur aus "Erfolgen". Bei vielen Tests ist ein paar Mal ein auffälliges Ergebnis zu erwarten, auch wenn kein Effekt existiert.
+3. **Replikations-Fehlschluss.** Die Wahrscheinlichkeit für erneut $\ge 8$ Treffer ist wieder 5,5 % -- nicht etwa nahe 100 %. Vermutlich "verliert" fast jeder Hellseher seine Gabe beim zweiten Versuch. Das ist Regression zur Mitte.
+4. **Statistische vs. praktische Bedeutsamkeit.** Bei großem $n$ fällt auch ein kleiner Effekt auf. Ob 51 % relevant sind, hängt vom Kontext ab: für die Alltagspsychologie eher nicht, für ein Casino oder einen Sportwetten-Anbieter mit entsprechend hohem Einsatzvolumen durchaus.
+5. **Vorwissen.** Eine Bayesianerin bezieht die (sehr geringe) Vorab-Plausibilität von Hellsehen explizit mit ein, weshalb ihr Fazit zu Annas Fähigkeit auch nach dem auffälligen Ergebnis skeptisch bleibt. Ein rein frequentistisches Vorgehen, das nur auf die Auffälligkeit der Daten schaut, ignoriert dieses Vorwissen. $\square$
+:::
+
+
+
+::::
+:::::
+
+
+<!-- Funktioniert das Experiment auch in kleinen Gruppen? Bei unter 40
+Teilnehmenden gibt es eventuell keinen einzigen "Hellseher" -- dann hilft
+eine Simulation in R als Ersatz (`rbinom(80, 10, 0.5)`), die allerdings
+weniger eindrücklich ist als ein echter Treffer im eigenen Hörsaal. -->
 
 
 
