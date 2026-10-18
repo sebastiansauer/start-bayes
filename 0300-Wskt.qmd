@@ -1572,12 +1572,28 @@ Nicht so einfach (?). Hingegen ist die Frage, wie hoch die Wahrscheinlichkeit is
 
 ::: {.column width="50%"}
 
-::: {.content-visible when-format="html"}
-![Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minuten auf den Bus zu warten? 50 Prozent!](img/p_bus2.png){#fig-bus}
-:::
-::: {.content-visible unless-format="html"}
-![Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minuten auf den Bus zu warten? 50 Prozent!](img/p_bus2.png){#fig-bus width="60%"}
-:::
+```{r}
+#| echo: false
+#| fig-cap: "Wie groß ist die Wahrscheinlichkeit, zwischen 0 und 5 Minuten auf den Bus zu warten? 50 Prozent!"
+#| label: fig-bus
+#| warning: false
+#| out-width: !expr if (knitr::is_latex_output()) "60%" else "100%"
+
+df_bus <- data.frame(x = seq(0, 10, length.out = 500))
+df_bus$y <- dunif(df_bus$x, min = 0, max = 10)
+
+df_bus_links <- subset(df_bus, x <= 5)
+df_bus_rechts <- subset(df_bus, x >= 5)
+
+ggplot(df_bus, aes(x, y)) +
+  geom_area(data = df_bus_links, fill = "#E69F00FF", alpha = .75) +
+  geom_area(data = df_bus_rechts, fill = "#0072B2FF", alpha = .75) +
+  stat_function(fun = dunif, args = list(min = 0, max = 10), color = "#009E73FF") +
+  annotate("label", x = 2.5, y = .05, label = "Pr(0<X<5)=50%") +
+  annotate("label", x = 7.5, y = 0.1, label = "f(x) = 1/10", color = "#009E73FF", size = 10) +
+  ylim(0, 0.13) +
+  labs(x = "X", y = "Dichte")
+```
 
 :::
 
