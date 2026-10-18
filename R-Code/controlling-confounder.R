@@ -29,7 +29,7 @@ p_konf2 <-
   ggplot(aes(x = x, y = y, color = group)) +
   geom_point() +
   geom_smooth(method = "lm") +
-  scale_color_okabeito(order = c(5, 4)) +
+  scale_color_okabeito(order = c(1, 2)) +
   theme(legend.position = c(0.8, 0.2))
 
 

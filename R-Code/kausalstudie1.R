@@ -56,7 +56,7 @@ plot_kausalstudie_a <-
   ) +
   facet_wrap(~Gruppe) +
   scale_y_continuous(labels = scales::percent) +
-  scale_fill_okabeito(order = c(5, 4)) +
+  scale_fill_okabeito(order = c(1, 2)) +
   labs(
     x = "",
     y = "Anteil",
