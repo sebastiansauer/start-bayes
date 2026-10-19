@@ -33,7 +33,11 @@ decks=(
   1200-abschluss
 )
 
-npx --yes http-server "$SLIDES_DIR" -p "$PORT" -s &
+# Server-Wurzel ist das Repo-Wurzelverzeichnis, NICHT slides/: Die Decks
+# referenzieren Bilder relativ per "../img/..." bzw. "../<kapitel>_files/...".
+# Mit slides/ als Wurzel waeren diese Pfade nicht erreichbar (404), und die
+# PDFs enthielten keine Bilder.
+npx --yes http-server . -p "$PORT" -s &
 SERVER_PID=$!
 trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
 
@@ -44,5 +48,5 @@ for deck in "${decks[@]}"; do
   # --chrome-arg=--no-sandbox: das gebuendelte Puppeteer-Chromium startet in
   # dieser Umgebung sonst mit "No usable sandbox!" (FATAL) ab.
   npx --yes decktape --chrome-arg=--no-sandbox reveal \
-    "http://localhost:${PORT}/${deck}.html" "${SLIDES_DIR}/${deck}.pdf"
+    "http://localhost:${PORT}/${SLIDES_DIR}/${deck}.html" "${SLIDES_DIR}/${deck}.pdf"
 done
