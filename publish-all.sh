@@ -4,13 +4,25 @@
 #
 # Ablauf:
 #   1. Buch rendern (Rscript render.R) -> docs/
-#   2. Foliendecks (slides/*.html + slides/site_libs) nach docs/slides/
-#      spiegeln (nur die fertigen Ausgaben, keine Quelltexte/Cache)
-#   3. docs/ 1:1 auf gh-pages veröffentlichen, ohne erneut zu rendern
-#      (--no-render), da Schritt 1+2 den Stand bereits hergestellt haben.
+#   2. Folien: Mermaid-Diagramme (nur geaenderte), alle Decks als HTML,
+#      danach alle Decks als PDF (decktape). Reihenfolge wichtig: Die Decks
+#      verweisen auf Abbildungen aus <kapitel>_files/, die Schritt 1 erzeugt.
+#   3. img/ und die fertigen Foliendecks (slides/*.html, *.pdf, site_libs,
+#      mermaid/*.png) nach docs/ spiegeln (keine Quelltexte/Skripte)
+#   4. Pruefen, dass jedes Bild, auf das ein Deck verweist, in docs/ liegt
+#      -- sonst Abbruch VOR dem Veroeffentlichen
+#   5. docs/ 1:1 auf gh-pages veröffentlichen, ohne erneut zu rendern
+#      (--no-render), da Schritt 1-3 den Stand bereits hergestellt haben.
+#
+# Option --skip-slide-pdfs: Schritt 2 ohne PDF-Export (spart einige
+# Minuten, wenn sich an den Folien nichts geaendert hat; die vorhandenen
+# slides/*.pdf werden dann unveraendert veroeffentlicht).
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
+
+skip_slide_pdfs=false
+[[ "${1:-}" == "--skip-slide-pdfs" ]] && skip_slide_pdfs=true
 
 echo "==> Buch rendern..."
 # NICHT "quarto render" (bare CLI): Das Buch definiert zwei Formate
@@ -22,6 +34,19 @@ echo "==> Buch rendern..."
 # werden als PDF statt PNG erzeugt und landen im HTML als <embed>-PDF statt
 # <img>. render.R vermeidet das durch zwei getrennte quarto_render()-Aufrufe.
 Rscript render.R
+
+echo "==> Folien: Mermaid-Diagramme rendern (nur geänderte)..."
+slides/render_mermaid.sh
+
+echo "==> Folien: Decks als HTML rendern..."
+(cd slides && quarto render)
+
+if $skip_slide_pdfs; then
+  echo "==> Folien: PDF-Export übersprungen (--skip-slide-pdfs)"
+else
+  echo "==> Folien: Decks als PDF exportieren..."
+  slides/export_pdf.sh
+fi
 
 echo "==> Bilder für Foliendecks nach docs/img/ ergänzen..."
 # quarto render kopiert nach docs/img nur Bilder, die vom Buch referenziert
@@ -37,7 +62,12 @@ rsync -a --delete \
   --exclude='.gitignore' \
   --exclude='*.qmd' \
   --exclude='*.mmd' \
+  --exclude='*.sh' \
+  --exclude='*.py' \
   slides/ docs/slides/
+
+echo "==> Prüfen, ob alle Folien-Bilder in docs/ liegen..."
+python3 slides/check_slide_assets.py
 
 echo "==> Veröffentlichen auf gh-pages..."
 quarto publish gh-pages --no-render --no-prompt

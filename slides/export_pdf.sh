@@ -37,11 +37,23 @@ decks=(
 # referenzieren Bilder relativ per "../img/..." bzw. "../<kapitel>_files/...".
 # Mit slides/ als Wurzel waeren diese Pfade nicht erreichbar (404), und die
 # PDFs enthielten keine Bilder.
-npx --yes http-server . -p "$PORT" -s &
+# setsid: eigene Prozessgruppe, damit der trap den eigentlichen http-server
+# (Kindprozess von npx) mit beendet -- "kill $SERVER_PID" allein traefe nur
+# npx und liesse einen verwaisten Server auf dem Port zurueck.
+setsid npx --yes http-server . -p "$PORT" -s &
 SERVER_PID=$!
-trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+trap 'kill -- -"$SERVER_PID" 2>/dev/null || true' EXIT
 
 sleep 2
+
+# Laeuft auf dem Port schon ein anderer Server (z. B. Rest eines frueheren
+# Laufs), beendet sich unserer sofort -- dann wuerde decktape still von einem
+# womoeglich falschen Verzeichnis lesen. Daher abbrechen.
+if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+  echo "FEHLER: Webserver auf Port $PORT konnte nicht starten (Port belegt?)." >&2
+  echo "Belegenden Prozess anzeigen: ss -ltnp | grep $PORT" >&2
+  exit 1
+fi
 
 for deck in "${decks[@]}"; do
   echo "=== $deck ==="
