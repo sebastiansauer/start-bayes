@@ -1,0 +1,70 @@
+{
+  "category": "charts",
+  "duration_s": 10,
+  "fps": 30,
+  "canvas": { "w": 1080, "h": 1080, "aspect": "1:1" },
+  "style": "Ruhig, einladend, lehrbuchhaft-klar. Flaches Design, viel Weißraum, eine Kurve als Hauptmotiv. Keine Stock-Fotos, keine Live-Action. Referenz: Statistical-Rethinking-Globusversuch (McElreath) / Start:Bayes!-Lehrbuch.",
+  "palette": ["#0072B2", "#E69F00", "#009E73", "#D9D9D9", "#4D4D4D", "#FFFFFF"],
+  "font": "Inter",
+  "beats": [1.0, 2.0, 3.5, 5.0, 6.5, 8.5],
+  "export": "mp4",
+
+  "asset_needs": [],
+
+  "block": "data-chart",
+  "customize": {
+    "note": "data-chart liefert die Referenz fuer gestaffeltes Reveal + stroke-dashoffset Line-Draw-On; die Kern-Animation (Beta-Dichtekurve morpht zwischen 4 Zustaenden) ist eine Luecke und wird handgebaut: SVG-Path pro Zustand, GSAP morphSVG/attr-Tween zwischen Pfaden, getrieben vom geseekten Timeline-Clock.",
+    "palette_override": true,
+    "headline_sequence": [
+      { "t": 0.0, "text": "Bayes-Statistik", "sub": "einfach erklärt" },
+      { "t": 1.0, "text": "Annahme", "sub": "Prior: alles ist (noch) gleich wahrscheinlich" },
+      { "t": 3.5, "text": "+ Daten", "sub": "Globus-Würfe: Wasser (W) oder Land (L)" },
+      { "t": 6.5, "text": "= bessere Antwort", "sub": "Posterior: unsere aktualisierte Schätzung" },
+      { "t": 8.5, "text": "Start:Bayes!", "sub": "Annahme. Daten. Aktualisierung." }
+    ]
+  },
+
+  "content": {
+    "type": "line",
+    "headline": "Annahme + Daten = bessere Antwort",
+    "axes": false,
+    "labels": ["Anteil Wasser p"],
+    "data": [
+      {
+        "n": 0,
+        "tosses_so_far": [],
+        "alpha": 1,
+        "beta": 1,
+        "label": "Vorher: keine Ahnung",
+        "t_window": [0.0, 2.0]
+      },
+      {
+        "n": 3,
+        "tosses_so_far": ["W", "L", "W"],
+        "alpha": 3,
+        "beta": 2,
+        "label": "3 Würfe gesehen",
+        "t_window": [2.0, 3.5]
+      },
+      {
+        "n": 6,
+        "tosses_so_far": ["W", "L", "W", "W", "L", "W"],
+        "alpha": 5,
+        "beta": 3,
+        "label": "6 Würfe gesehen",
+        "t_window": [3.5, 5.0]
+      },
+      {
+        "n": 9,
+        "tosses_so_far": ["W", "L", "W", "W", "L", "W", "L", "W", "W"],
+        "alpha": 7,
+        "beta": 4,
+        "label": "9 Würfe gesehen — Posterior",
+        "t_window": [5.0, 8.5]
+      }
+    ],
+    "true_value_marker": { "p": 0.7, "label": "wahrer Anteil (~Erde)" }
+  },
+
+  "shot_brief": "Eine Dichtekurve (anfangs flach = 'keine Ahnung') liegt über einem schlichten 1:1-Grid. Oben läuft eine schmale Leiste, in der nacheinander kleine W/L-Chips einfliegen (Globus-Würfe: Wasser/Land). Mit jedem Schub neuer Chips morpht die Kurve live (SVG-Path-Tween) in eine neue, zunehmend schmalere und höhere Form und wandert in Richtung des wahren Werts — sichtbares Lernen aus Daten in Echtzeit. Kurze, wechselnde Kicker-Zeilen oben ('Annahme' → '+ Daten' → '= bessere Antwort') tragen die Kernbotschaft des Buchvorworts. Schluss: eingefrorene, scharfe Posterior-Kurve mit Marker bei der finalen Schätzung, Buchtitel 'Start:Bayes!' als ruhiger Abspann-Stempel. Ein Hauptmotiv (die morphende Kurve), eine Botschaft, kein Voice-over."
+}

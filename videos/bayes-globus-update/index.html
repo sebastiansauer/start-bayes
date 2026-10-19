@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1080" />
+    <title>Start:Bayes! — Globus-Update</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --blue: #0072b2;
+        --orange: #e69f00;
+        --green: #009e73;
+        --grid: #d9d9d9;
+        --dark: #4d4d4d;
+        --bg: #ffffff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background: var(--bg);
+        font-family: "Inter", system-ui, sans-serif;
+        overflow: hidden;
+      }
+      #stage {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: var(--bg);
+        overflow: hidden;
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+      }
+      #scene {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        padding: 84px 96px 70px;
+        gap: 22px;
+      }
+
+      /* ---------- headline / kicker ---------- */
+      .headline-wrap {
+        position: relative;
+        width: 100%;
+        height: 148px;
+        flex: 0 0 auto;
+      }
+      .headline-state {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 10px;
+        opacity: 0;
+      }
+      .headline-state .kicker {
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--dark);
+        padding-bottom: 6px;
+        border-bottom: 4px solid var(--orange);
+      }
+      .headline-state h1 {
+        font-size: 60px;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        color: var(--dark);
+        line-height: 1.05;
+      }
+      .headline-state .sub {
+        font-size: 25px;
+        font-weight: 500;
+        color: var(--dark);
+        opacity: 0.78;
+      }
+
+      /* ---------- toss strip ---------- */
+      .toss-row {
+        position: relative;
+        width: 100%;
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+      }
+      .toss-label {
+        font-size: 21px;
+        font-weight: 600;
+        color: var(--dark);
+        opacity: 0.6;
+        white-space: nowrap;
+      }
+      .chip-strip {
+        display: flex;
+        gap: 12px;
+      }
+      .chip {
+        width: 54px;
+        height: 54px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: 800;
+        color: #ffffff;
+        opacity: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      }
+      .chip.w {
+        background: var(--blue);
+      }
+      .chip.l {
+        background: var(--orange);
+        color: #1a1a1a;
+      }
+
+      .status-label {
+        position: relative;
+        width: 100%;
+        height: 32px;
+        flex: 0 0 auto;
+      }
+      .status-state {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-align: center;
+        font-size: 23px;
+        font-weight: 700;
+        color: var(--dark);
+        opacity: 0;
+      }
+      .status-state .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--green);
+        display: inline-block;
+      }
+
+      /* ---------- chart ---------- */
+      .chart-wrap {
+        position: relative;
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: 860px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+      .chart-svg {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+      }
+      .axis-label {
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--dark);
+        opacity: 0.75;
+        letter-spacing: 0.01em;
+      }
+      .tick-label {
+        font-size: 20px;
+        font-weight: 600;
+        fill: var(--dark);
+        opacity: 0.55;
+      }
+      .marker-label {
+        font-size: 20px;
+        font-weight: 700;
+        fill: var(--green);
+        opacity: 0;
+      }
+
+      /* ---------- final stamp ---------- */
+      .stamp-wrap {
+        position: relative;
+        width: 100%;
+        height: 72px;
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .stamp {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 34px;
+        border: 2px solid var(--dark);
+        border-radius: 999px;
+        opacity: 0;
+      }
+      .stamp .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--blue);
+      }
+      .stamp span.txt {
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--dark);
+        letter-spacing: -0.01em;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-gnla"
+      id="stage"
+      data-composition-id="bayes-globus-update"
+      data-start="0"
+      data-duration="10"
+      data-fps="30"
+      data-width="1080"
+      data-height="1080"
+    >
+      <div data-hf-id="hf-zcwz" id="scene" class="clip" data-start="0" data-duration="10">
+        <!-- Headline / kicker sequence -->
+        <div data-hf-id="hf-c5ll" class="headline-wrap" data-layout-allow-overlap="true">
+          <div data-hf-id="hf-v3sj" class="headline-state" id="head-0">
+            <div data-hf-id="hf-xxh2" class="kicker">Bayes-Statistik</div>
+            <h1 data-hf-id="hf-c8aa">einfach erklärt</h1>
+          </div>
+          <div data-hf-id="hf-r5oi" class="headline-state" id="head-1">
+            <div data-hf-id="hf-z7al" class="kicker">Annahme</div>
+            <h1 data-hf-id="hf-chqs">Prior: alles ist (noch) gleich wahrscheinlich</h1>
+          </div>
+          <div data-hf-id="hf-n7kh" class="headline-state" id="head-2">
+            <div data-hf-id="hf-052e" class="kicker">+ Daten</div>
+            <h1 data-hf-id="hf-c1zm">Globus-Würfe: Wasser (W) oder Land (L)</h1>
+          </div>
+          <div data-hf-id="hf-mfwo" class="headline-state" id="head-3">
+            <div data-hf-id="hf-9j94" class="kicker">= bessere Antwort</div>
+            <h1 data-hf-id="hf-b2oy">Posterior: unsere aktualisierte Schätzung</h1>
+          </div>
+          <div data-hf-id="hf-ihsn" class="headline-state" id="head-4">
+            <div data-hf-id="hf-z36e" class="kicker">Start:Bayes!</div>
+            <h1 data-hf-id="hf-0cek">Annahme. Daten. Aktualisierung.</h1>
+          </div>
+        </div>
+
+        <!-- Toss chip strip -->
+        <div data-hf-id="hf-9gn2" class="toss-row">
+          <div data-hf-id="hf-xa3l" class="toss-label">Globus&#8209;Würfe:</div>
+          <div data-hf-id="hf-nk0i" class="chip-strip" id="chip-strip">
+            <div data-hf-id="hf-sfgk" class="chip w" id="chip-1">W</div>
+            <div data-hf-id="hf-p01l" class="chip l" id="chip-2">L</div>
+            <div data-hf-id="hf-2jpm" class="chip w" id="chip-3">W</div>
+            <div data-hf-id="hf-y29n" class="chip w" id="chip-4">W</div>
+            <div data-hf-id="hf-olyc" class="chip l" id="chip-5">L</div>
+            <div data-hf-id="hf-mleh" class="chip w" id="chip-6">W</div>
+            <div data-hf-id="hf-rm9u" class="chip l" id="chip-7">L</div>
+            <div data-hf-id="hf-6oi7" class="chip w" id="chip-8">W</div>
+            <div data-hf-id="hf-aezw" class="chip w" id="chip-9">W</div>
+          </div>
+        </div>
+
+        <!-- Status label (n = ... beschreibung) -->
+        <div data-hf-id="hf-2tnn" class="status-label" data-layout-allow-overlap="true">
+          <div data-hf-id="hf-vlw8" class="status-state" id="status-0"><span data-hf-id="hf-i0ip" class="status-dot"></span>Vorher: keine Ahnung</div>
+          <div data-hf-id="hf-b7aw" class="status-state" id="status-1"><span data-hf-id="hf-5et1" class="status-dot"></span>3 Würfe gesehen</div>
+          <div data-hf-id="hf-q22m" class="status-state" id="status-2"><span data-hf-id="hf-anp8" class="status-dot"></span>6 Würfe gesehen</div>
+          <div data-hf-id="hf-whfp" class="status-state" id="status-3"><span data-hf-id="hf-a9e7" class="status-dot"></span>9 Würfe gesehen — Posterior</div>
+        </div>
+
+        <!-- Density chart -->
+        <div data-hf-id="hf-36xh" class="chart-wrap">
+          <svg data-hf-id="hf-huku" class="chart-svg" id="chart-svg" viewBox="0 0 840 400" preserveAspectRatio="xMidYMid meet">
+            <line data-hf-id="hf-b63b" x1="0" y1="360" x2="840" y2="360" stroke="#d9d9d9" stroke-width="2" />
+            <line data-hf-id="hf-8ta9"
+              id="marker-line"
+              x1="588"
+              y1="360"
+              x2="588"
+              y2="30"
+              stroke="#009e73"
+              stroke-width="3"
+              stroke-dasharray="6 6"
+              opacity="0"
+            />
+            <text data-hf-id="hf-jfvk" id="marker-label" class="marker-label" x="588" y="20" text-anchor="middle">wahrer Anteil (~Erde)</text>
+            <path data-hf-id="hf-ry6q" id="curve-fill" fill="#0072b2" opacity="0.16" d="" />
+            <path data-hf-id="hf-ppam" id="curve-line" fill="none" stroke="#0072b2" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" d="" />
+            <text data-hf-id="hf-pnsi" class="tick-label" x="0" y="386" text-anchor="start">0</text>
+            <text data-hf-id="hf-4d4w" class="tick-label" x="840" y="386" text-anchor="end">1</text>
+          </svg>
+          <div data-hf-id="hf-nw64" class="axis-label">Anteil Wasser p</div>
+        </div>
+
+        <!-- Final calm stamp -->
+        <div data-hf-id="hf-01lq" class="stamp-wrap">
+          <div data-hf-id="hf-852c" class="stamp" id="stamp">
+            <div data-hf-id="hf-lu65" class="dot"></div>
+            <span data-hf-id="hf-aemd" class="txt">Start:Bayes! — das Lehrbuch</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        // ---------- Beta(alpha,beta) density → baked SVG path data ----------
+        // Deterministic pure math (no Math.random / Date.now): computed once at
+        // script-eval time from fixed integer alpha/beta pairs taken from shot-plan.json.
+        function fact(n) {
+          var r = 1;
+          for (var i = 2; i <= n; i++) r *= i;
+          return r;
+        }
+        function betaPdf(x, a, b) {
+          var B = (fact(a - 1) * fact(b - 1)) / fact(a + b - 1);
+          return Math.pow(x, a - 1) * Math.pow(1 - x, b - 1) / B;
+        }
+
+        var N = 61; // identical point count for all 4 states → direct attr:{d} tweening works
+        var states = [
+          { a: 1, b: 1 }, // n=0  Beta(1,1)  flat prior
+          { a: 3, b: 2 }, // n=3
+          { a: 5, b: 3 }, // n=6
+          { a: 7, b: 4 }, // n=9 final posterior
+        ];
+
+        var W = 840,
+          H = 400,
+          baseY = 360,
+          topPad = 20,
+          plotH = baseY - topPad,
+          headroom = 0.85;
+
+        var pdfArrays = states.map(function (s) {
+          var arr = [];
+          for (var i = 0; i < N; i++) {
+            var x = i / (N - 1);
+            arr.push(betaPdf(x, s.a, s.b));
+          }
+          return arr;
+        });
+
+        var globalMax = 0;
+        pdfArrays.forEach(function (arr) {
+          arr.forEach(function (v) {
+            if (v > globalMax) globalMax = v;
+          });
+        });
+
+        function xAt(i) {
+          return ((i / (N - 1)) * W).toFixed(2);
+        }
+        function yAt(v) {
+          return (baseY - (v / globalMax) * plotH * headroom).toFixed(2);
+        }
+
+        var linePaths = pdfArrays.map(function (arr) {
+          var d = "M " + xAt(0) + " " + yAt(arr[0]);
+          for (var i = 1; i < N; i++) {
+            d += " L " + xAt(i) + " " + yAt(arr[i]);
+          }
+          return d;
+        });
+
+        var fillPaths = pdfArrays.map(function (arr) {
+          var d = "M " + xAt(0) + " " + baseY + " L " + xAt(0) + " " + yAt(arr[0]);
+          for (var i = 1; i < N; i++) {
+            d += " L " + xAt(i) + " " + yAt(arr[i]);
+          }
+          d += " L " + xAt(N - 1) + " " + baseY + " Z";
+          return d;
+        });
+
+        // ---------- initial static state (hero frame = flat prior, t=0) ----------
+        var curveLine = document.getElementById("curve-line");
+        var curveFill = document.getElementById("curve-fill");
+        curveLine.setAttribute("d", linePaths[0]);
+        curveFill.setAttribute("d", fillPaths[0]);
+
+        // ---------- timeline ----------
+        var tl = gsap.timeline({ paused: true });
+
+        // headline / kicker crossfades (opacity-gated, explicit fromTo both ends)
+        var headlineTimes = [0.0, 1.0, 3.5, 6.5, 8.5];
+        var headIds = ["#head-0", "#head-1", "#head-2", "#head-3", "#head-4"];
+        headIds.forEach(function (sel, idx) {
+          var start = headlineTimes[idx];
+          var end = idx < headIds.length - 1 ? headlineTimes[idx + 1] : 10.0;
+          // first entrance offset slightly off t=0 (motion principle); later states crossfade
+          // back-to-back with the previous state's exit so there is no dead/blank gap.
+          var fadeInStart = idx === 0 ? 0.15 : start - 0.12;
+          var fadeOutDur = 0.3;
+          tl.fromTo(
+            sel,
+            { autoAlpha: 0, y: 14 },
+            { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out", immediateRender: false },
+            fadeInStart
+          );
+          tl.fromTo(
+            sel,
+            { autoAlpha: 1 },
+            { autoAlpha: 0, duration: fadeOutDur, ease: "power1.in", immediateRender: false },
+            end - fadeOutDur
+          );
+        });
+
+        // status label crossfades (describes n so far), tied to t_window starts
+        var statusTimes = [0.0, 2.0, 3.5, 5.0];
+        var statusIds = ["#status-0", "#status-1", "#status-2", "#status-3"];
+        statusIds.forEach(function (sel, idx) {
+          var start = statusTimes[idx];
+          var end = idx < statusIds.length - 1 ? statusTimes[idx + 1] : 10.0;
+          tl.fromTo(
+            sel,
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.4, ease: "sine.out", immediateRender: false },
+            start + 0.05
+          );
+          tl.fromTo(
+            sel,
+            { autoAlpha: 1 },
+            { autoAlpha: 0, duration: 0.3, ease: "power1.in", immediateRender: false },
+            end - 0.3
+          );
+        });
+
+        // toss chips fly in, three per data update, in sync with each curve morph
+        var chipTimes = [2.0, 2.3, 2.6, 3.5, 3.8, 4.1, 5.0, 5.3, 5.6];
+        chipTimes.forEach(function (t, idx) {
+          var sel = "#chip-" + (idx + 1);
+          tl.fromTo(
+            sel,
+            { autoAlpha: 0, y: -18, scale: 0.5 },
+            { autoAlpha: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.8)", immediateRender: false },
+            t
+          );
+        });
+
+        // curve morph: direct attr:{d} tweening between baked path strings
+        // (same N=61 point / command structure in every state → smooth interpolation)
+        tl.fromTo(
+          "#curve-line",
+          { attr: { d: linePaths[0] } },
+          { attr: { d: linePaths[1] }, duration: 1.2, ease: "power2.inOut" },
+          2.0
+        );
+        tl.fromTo(
+          "#curve-fill",
+          { attr: { d: fillPaths[0] } },
+          { attr: { d: fillPaths[1] }, duration: 1.2, ease: "power2.inOut" },
+          2.0
+        );
+
+        tl.fromTo(
+          "#curve-line",
+          { attr: { d: linePaths[1] } },
+          { attr: { d: linePaths[2] }, duration: 1.2, ease: "sine.inOut", immediateRender: false },
+          3.5
+        );
+        tl.fromTo(
+          "#curve-fill",
+          { attr: { d: fillPaths[1] } },
+          { attr: { d: fillPaths[2] }, duration: 1.2, ease: "sine.inOut", immediateRender: false },
+          3.5
+        );
+
+        tl.fromTo(
+          "#curve-line",
+          { attr: { d: linePaths[2] } },
+          { attr: { d: linePaths[3] }, duration: 1.3, ease: "circ.inOut", immediateRender: false },
+          5.0
+        );
+        tl.fromTo(
+          "#curve-fill",
+          { attr: { d: fillPaths[2] } },
+          { attr: { d: fillPaths[3] }, duration: 1.3, ease: "circ.inOut", immediateRender: false },
+          5.0
+        );
+
+        // true-value marker settles in once the posterior has formed (p = 0.7)
+        tl.fromTo("#marker-line", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.out" }, 6.5);
+        tl.fromTo(
+          "#marker-label",
+          { opacity: 0, y: 6 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "sine.out" },
+          6.6
+        );
+
+        // final calm stamp
+        tl.fromTo(
+          "#stamp",
+          { autoAlpha: 0, y: 16, scale: 0.92 },
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.6, ease: "back.out(1.4)" },
+          8.5
+        );
+
+        window.__timelines["bayes-globus-update"] = tl;
+        tl.seek(0);
+      })();
+    </script>
+  </body>
+</html>
