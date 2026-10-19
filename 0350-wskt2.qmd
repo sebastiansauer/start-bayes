@@ -66,11 +66,6 @@ Lesen Sie zur Begleitung dieses Kapitels @bourier2011, Kap. 2-4.
 
 
 
-Der Stoff dieses Kapitels deckt sich (weitgehend) mit @bourier2011, Kap. 2-4. 
-Weitere Übungsaufgaben finden Sie im dazugehörigen Übungsbuch, @bourier2022.
-In Ihrer [Hochschul-Bibliothek kann das Buch als Ebook verfügbar](https://fantp20.bib-bvb.de/TouchPoint/singleHit.do?methodToCall=showHit&curPos=3&identifier=2_SOLR_SERVER_1157422278)^[<https://fantp20.bib-bvb.de/TouchPoint/singleHit.do?methodToCall=showHit&curPos=3&identifier=2_SOLR_SERVER_1157422278>] sein. 
-Prüfen Sie, ob Ihr Dozent Ihnen weitere Hilfen im [geschützten Bereich (Moodle)](https://moodle.hs-ansbach.de/mod/resource/view.php?id=136047)^[<https://moodle.hs-ansbach.de/mod/resource/view.php?id=136047>] eingestellt hat.
-
 
 
 ::: {.callout-note}
@@ -509,10 +504,10 @@ $Pr(A) = 2/4; Pr(B) = 2/4;$
 $Pr(A \cap B) = 1/4; Pr(A|B) = 1/2$
 
 
-@eq-bed-wskt-box versinnbildlicht die Berechnung von $Pr(A|B)= 1/2$ als Bruch:
+@thm-bed-wskt-box versinnbildlicht die Berechnung von $Pr(A|B)= 1/2$ als Bruch:
 Das Verhältnis der Flächen von Zähler und Nenner ist 1 zu 2.
 
-$$\frac{\boxed{\rule{1em}{1em}}}{\boxed{\rule{2em}{1em}}}$${#eq-bed-wskt-box}
+$$\frac{\boxed{\rule{1em}{1em}}}{\boxed{\rule{2em}{1em}}}$${#thm-bed-wskt-box}
 
 
 Die Wahrscheinlichkeit für $A$, wenn $B$ schon eingetreten ist,
@@ -1087,9 +1082,9 @@ Hier ist unsere Urne:
 $$\boxed{\color{red}{R, R, R, R}, \color{blue}\mathcal{B}}$$
 
 Wie groß ist die Wahrscheinlichkeit, dass bei zwei Ziehungen ohne Zurücklegen (*ZOZ*) *zwei rote Kugeln* gezogen werden [@bourier2011, S. 47]?
-Ereignis A:
-"Kugel im 1. Zug hat die Farbe Rot".
-Ereignis B:
+Ereignis R1:
+"Kugel im1. Zug hat die Farbe Rot".
+Ereignis R2:
 "Kugel im 2. Zug hat die Farbe Rot".
 
 Und jetzt ziehen wir.
@@ -1102,16 +1097,20 @@ Hier ist das Baumdiagramm, s. @fig-baum-abh.
 %%| fig-width: 4.5
 %%{init: {'themeVariables': {'fontSize': '14px'}, 'flowchart': {'diagramPadding': 10, 'nodeSpacing': 20, 'rankSpacing': 30}}}%%
 flowchart LR
-  A[Start] -->|4/5|B[Zug 1 - A]
-  A -->|1/5|C[Zug 1 - nA]
-  B -->|3/4|D[Zug 2 - B]
-  B -->|1/4|E[Zug 2 -  nB]
-  D --- H[Fazit: AB - 4/5*3/4 = 12/20]
-  E --- I[Fazit: AnB - 4/5*1/4 = 4/20]
-  C -->|4/4|F[Zug 2 - B]
-  C -->|0/4|G[Zug 2 - nB]
-  F --- J[Fazit: nAB - 1/5*4/4 = 4/20]
-  G --- K[Fazit: nAnB - 1/5*0/4 = 0/20]
+  A[Start] -->|4/5|B[R1]
+  A -->|1/5|C[nR1]
+  B -->|3/4|D[R2]
+  B -->|1/4|E[nR2]
+  D --- H["$$\Pr(\text{R1R2}) = \frac{4}{5} \cdot \frac{3}{4} = \frac{12}{20}$$"]
+  E --- I["$$\Pr(\text{R1nR2}) = \frac{4}{5} \cdot \frac{1}{4} = \frac{4}{20}$$"]
+  C -->|4/4|F[R2]
+  C -->|0/4|G[nR2]
+  F --- J["$$\Pr(\text{nR1R2}) = \frac{1}{5} \cdot \frac{4}{4} = \frac{4}{20}$$"]
+  G --- K["$$\Pr(\text{nR1nR2}) = \frac{1}{5} \cdot \frac{0}{4} = \frac{0}{20}$$"]
+  classDef rot color:#CC0000
+  classDef blau color:#0050C8
+  class B,D,F rot
+  class C,E,G blau
   
   
 ```
@@ -1156,14 +1155,14 @@ Ebenfalls gilt:
 Die Wahrscheinlichkeit für kalt und Regen ist die Wahrscheinlichkeit von *Kälte* ❄, 
 wenn's *regnet* ⛈️ mal die Wahrscheinlichkeit von *Regen* ⛈️.
 
-Das Gesagte als Emoji-Gleichung ist in @eq-kalt-regen-emoji dargestellt.
+Das Gesagte als Emoji-Gleichung ist in @thm-kalt-regen-emoji dargestellt.
 
-$$Pr(\text{❄️} \text{ und } \text{⛈️}) = P(\text{❄️}) \cdot P(\text{⛈️} |\text{❄️} )  =  P(\text{❄️}) \cdot P(\text{❄️} |\text{⛈️} )$${#eq-kalt-regen-emoji}
+$$Pr(\text{❄️} \text{ und } \text{⛈️}) = P(\text{❄️}) \cdot P(\text{⛈️} |\text{❄️} )  =  P(\text{⛈️}) \cdot P(\text{❄️} | \text{⛈️} )$${#thm-kalt-regen-emoji}
 
 
-Man kann  die "Gleichung drehen"^[Der Multiplikationssatz ist symmetrisch], s. @eq-kalt-regen-emoji2. 
+Beachte: $Pr(AB) = Pr(BA)$, das nennt man *Symmetrie-Eigenschaft*, s. @thm-kalt-regen-emoji2. 
 
-$$Pr(\text{❄️} \text{ und } \text{⛈️}) = P(\text{⛈️} \text{ und } \text{❄️})$${#eq-kalt-regen-emoji2} $\square$
+$$Pr(\text{❄️} \text{ und } \text{⛈️}) = P(\text{⛈️} \text{ und } \text{❄️})$${#thm-kalt-regen-emoji2} $\square$
 :::
 
 
@@ -1413,10 +1412,30 @@ $`r Pr_nicht_keine_Bohne`$.] $\square$
 
 
 
-### Baumsammlung
+
+
+
+
+
+
+## Vertiefung
+
+Der Stoff dieses Kapitels deckt sich (weitgehend) mit @bourier2011, Kap. 2-4. 
+Weitere Übungsaufgaben finden Sie im dazugehörigen Übungsbuch, @bourier2022.
+In Ihrer [Hochschul-Bibliothek kann das Buch als Ebook verfügbar](https://fantp20.bib-bvb.de/TouchPoint/singleHit.do?methodToCall=showHit&curPos=3&identifier=2_SOLR_SERVER_1157422278)^[<https://fantp20.bib-bvb.de/TouchPoint/singleHit.do?methodToCall=showHit&curPos=3&identifier=2_SOLR_SERVER_1157422278>] sein. 
+
+Bei @henze2019 findet sich eine anspruchsvollere Einführung in das Rechnen mit Wahrscheinlichkeit;
+dieses Kapitel behandelt einen Teil des Stoffes der Kapitel 2 und 3 von @henze2019.
+Mit [dieser App, die ein zweistufiges Baumdiagramm zeigt](https://www.geogebra.org/m/n4xrk4x5)^[<https://www.geogebra.org/m/n4xrk4x5>], können Sie das Verhalten von verschiedenen Arten von Wahrscheinlichkeiten weiter untersuchen.
+[Diese App lässt dich herausfinden, ob man wirklich krank ist, wenn der Arzt es behauptet.](https://www.geogebra.org/m/tkdfxa8f)^[<https://www.geogebra.org/m/tkdfxa8f>]
+Das [Video zu Bayes von 3b1b](https://youtu.be/HZGCoVF3YvM) verdeutlicht das Vorgehen der Bayes-Methode auf einfache und anschauliche Weise.
+@mittag2020 stellen in Kap. 11 die Grundlagen der Wahrscheinlichkeitstheorie vor.
+Ähnliche Darstellungen finden sich in einer großen Zahl an Lehrbüchern.
+
+
 
 Baumdiagramme sind ein hilfreiches Werkzeug für wiederholte Zufallsexperimente.
-Daher ist hier eine "Baumsammlung"^[Wald?] zusammengestellt.
+Daher ist hier eine "Baumsammlung"^[Wald?] zusammengestellt:
 
 - Sie werfen 1 Münze, @fig-baummuenz1.
 - Sie werfen 2 Münzen, @fig-zweimuenzen.
@@ -1428,23 +1447,6 @@ Daher ist hier eine "Baumsammlung"^[Wald?] zusammengestellt.
 
 
 
-
-
-
-
-
-
-## Vertiefung
-
-
-
-Bei @henze2019 findet sich eine anspruchsvollere Einführung in das Rechnen mit Wahrscheinlichkeit;
-dieses Kapitel behandelt einen Teil des Stoffes der Kapitel 2 und 3 von @henze2019.
-Mit [dieser App, die ein zweistufiges Baumdiagramm zeigt](https://www.geogebra.org/m/n4xrk4x5)^[<https://www.geogebra.org/m/n4xrk4x5>], können Sie das Verhalten von verschiedenen Arten von Wahrscheinlichkeiten weiter untersuchen.
-[Diese App lässt dich herausfinden, ob man wirklich krank ist, wenn der Arzt es behauptet.](https://www.geogebra.org/m/tkdfxa8f)^[<https://www.geogebra.org/m/tkdfxa8f>]
-Das [Video zu Bayes von 3b1b](https://youtu.be/HZGCoVF3YvM) verdeutlicht das Vorgehen der Bayes-Methode auf einfache und anschauliche Weise.
-@mittag2020 stellen in Kap. 11 die Grundlagen der Wahrscheinlichkeitstheorie vor.
-Ähnliche Darstellungen finden sich in einer großen Zahl an Lehrbüchern.
 
 
 ## Aufgaben
