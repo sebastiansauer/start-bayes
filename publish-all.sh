@@ -36,6 +36,7 @@ rsync -a --delete \
   --exclude='.quarto' \
   --exclude='.gitignore' \
   --exclude='*.qmd' \
+  --exclude='*.mmd' \
   slides/ docs/slides/
 
 echo "==> Veröffentlichen auf gh-pages..."
