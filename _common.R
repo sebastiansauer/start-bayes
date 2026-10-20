@@ -88,6 +88,38 @@ knitr::opts_chunk$set(tidy = FALSE,
 )
 
 
+# Cache-Schutz fuer Abbildungen: knitr erneuert einen gecachten Chunk nur,
+# wenn sich SEIN Code aendert -- nicht, wenn sich eine per source()
+# eingebundene Hilfsdatei oder das Theme hier in _common.R aendert. Folge war
+# z. B., dass Abbildungen nach einer Umstellung von Farben/Theme weiter im
+# alten Stil aus dem Cache kamen. Daher geht fuer Abbildungs-Chunks ein Hash
+# ueber alle Hilfsdateien in den Cache-Schluessel (cache.extra) ein: Aendert
+# sich eine davon, werden alle Abbildungen neu gezeichnet. Chunks ohne
+# Abbildung (z. B. Modellschaetzung mit stan_glm) bleiben unberuehrt, damit
+# nicht jede Stil-Aenderung alle Modelle neu rechnen laesst.
+helper_files_hash <- local({
+  files <- c(Sys.glob(c("funs/*.R", "R-Code/*.R", "children/*.R")), "_common.R")
+  paste(unname(tools::md5sum(sort(files))), collapse = "")
+})
+
+knitr::opts_hooks$set(label = function(options) {
+  code <- paste(options$code, collapse = "\n")
+  is_fig_chunk <-
+    grepl("^fig-", options$label) ||
+    !is.null(options$fig.cap) ||
+    grepl(paste0("\\bgg[a-zA-Z0-9_.]*\\s*\\(",      # ggplot(), gg_exp(), ggdag() ...
+                 "|plot[_a-zA-Z0-9]*\\s*\\(",        # plot(), plot_rope_hdi() ...
+                 "|[a-zA-Z0-9]_?plot\\b|plot_[a-zA-Z0-9_]+",  # uniform_plot, plot_maschine_schrott
+                 "|pp_check|\\bgeom_|\\blabs\\(",
+                 "|(?m)^\\s*p[0-9a-z_]*\\s*$"),      # gespeicherter Plot, z. B. "p3"
+          code, perl = TRUE)
+  if (is_fig_chunk) {
+    options$cache.extra <- list(options$cache.extra, helper_files_hash)
+  }
+  options
+})
+
+
 options(
   dplyr.print_min = 6,
   dplyr.print_max = 6,

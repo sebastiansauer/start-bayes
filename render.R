@@ -33,6 +33,23 @@
 # formatspezifische site_libs-Synchronisation). Rendert man zuletzt html,
 # bringt dieser letzte Aufruf alle fuer HTML noetigen Assets wieder zurueck
 # -- der publizierte Stand in docs/site_libs/ ist dann korrekt fuer HTML.
+
+# Freeze-Schutz: _quarto.yml setzt "freeze: auto" -- beim Projekt-Render
+# fuehrt Quarto den R-Code eines Kapitels nur aus, wenn sich dessen .qmd
+# geaendert hat, sonst kommen Ergebnisse UND Abbildungen aus _freeze/.
+# Aenderungen an Hilfsdateien (funs/, R-Code/, children/*.R, _common.R)
+# kaeme dann weder beim knitr-Cache-Schutz in _common.R an, noch wuerden
+# Abbildungen neu gezeichnet. Daher: Hat sich der Hash dieser Dateien seit
+# dem letzten erfolgreichen Render geaendert, _freeze/ verwerfen. Teure
+# Modell-Chunks kommen danach weiter aus dem knitr-Cache (*_cache/).
+if (!exists("helper_files_hash")) source("_common.R")
+freeze_stamp <- "_freeze/.helper-files-hash"
+old_hash <- if (file.exists(freeze_stamp)) readLines(freeze_stamp) else ""
+if (!identical(old_hash, helper_files_hash)) {
+  message("Hilfsdateien geaendert -> _freeze/ wird verworfen, alle Kapitel werden ausgefuehrt.")
+  unlink("_freeze", recursive = TRUE)
+}
+
 status_pdf <- system2(
   "quarto",
   c("render", "--to", "titlepage-pdf"),
@@ -49,3 +66,7 @@ status_html <- system2(
   stdout = "", stderr = ""
 )
 if (status_html != 0) stop("quarto render --to html ist fehlgeschlagen")
+
+# Erst nach erfolgreichem Render festhalten, auf welchem Stand _freeze/ ist.
+dir.create("_freeze", showWarnings = FALSE)
+writeLines(helper_files_hash, freeze_stamp)
