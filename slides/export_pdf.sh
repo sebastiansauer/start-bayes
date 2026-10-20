@@ -55,8 +55,10 @@ if ! kill -0 "$SERVER_PID" 2>/dev/null; then
   exit 1
 fi
 
+i=0
 for deck in "${decks[@]}"; do
-  echo "=== $deck ==="
+  i=$((i + 1))
+  echo "=== [$i/${#decks[@]}] $deck ==="
   # --chrome-arg=--no-sandbox: das gebuendelte Puppeteer-Chromium startet in
   # dieser Umgebung sonst mit "No usable sandbox!" (FATAL) ab.
   npx --yes decktape --chrome-arg=--no-sandbox reveal \
