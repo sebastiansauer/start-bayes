@@ -1,0 +1,47 @@
+Netlify -> GitHub Pages umleiten
+================================
+
+Das Buch wird seit 2026 nur noch auf GitHub Pages veroeffentlicht
+(https://sebastiansauer.github.io/start-bayes/, via publish-all.sh).
+Die alte Kopie auf https://start-bayes.netlify.app wird nicht mehr
+aktualisiert. Dieser Ordner ersetzt sie durch dauerhafte Weiterleitungen
+(301), damit alte Links und Lesezeichen auf der aktuellen Fassung landen.
+
+Inhalt
+------
+_redirects          Weiterleitungsregeln (pro Buchseite und Foliendeck,
+                    plus Sammelregel fuer alles Uebrige). Automatisch
+                    erzeugt -- nicht von Hand bearbeiten.
+index.html          Fallback-Seite "ist umgezogen", falls Weiterleitungen
+                    einmal nicht greifen.
+make_redirects.py   Erzeugt _redirects neu aus docs/ (nach einem Render).
+                    Nur noetig, wenn Kapitel oder Foliendecks dazukommen
+                    oder umbenannt werden; danach erneut deployen.
+
+Einmalig deployen (eine der drei Varianten)
+-------------------------------------------
+A) Per Drag-and-drop (einfachste Variante):
+   app.netlify.com -> Site "start-bayes" -> Deploys -> den Ordner
+   netlify-redirect/ auf das Feld "Drag and drop your site output folder
+   here" ziehen.
+   Achtung: Ist die Site mit einem Git-Repository verknuepft
+   (Site configuration -> Build & deploy -> "Linked repository"), kann der
+   naechste automatische Build das wieder ueberschreiben -- dann Variante B.
+
+B) Per Git-Verknuepfung (wenn die Site mit diesem Repo verknuepft ist):
+   Site configuration -> Build & deploy -> Build settings:
+     Base directory:    netlify-redirect
+     Build command:     (leer)
+     Publish directory: netlify-redirect
+     Branch:            main
+   Speichern, dann Deploys -> "Trigger deploy". Spaetere Pushes auf main
+   deployen den Ordner automatisch.
+
+C) Per Kommandozeile:
+   npx netlify-cli login
+   npx netlify-cli deploy --prod --dir netlify-redirect --site start-bayes
+
+Pruefen
+-------
+curl -sI https://start-bayes.netlify.app/0400-verteilungen
+  -> erwartet: HTTP 301, location: https://sebastiansauer.github.io/start-bayes/0400-Verteilungen.html
