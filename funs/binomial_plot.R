@@ -8,5 +8,5 @@ binomial_plot <- function(n, p){
     #   geom_segment(aes(xend = Treffer, yend = 0)) + 
     #  geom_point(color = "red", size = 5, alpha = .5) +
     scale_x_continuous(breaks = 0:n) +
-    geom_label(aes(label = round(Wahrscheinlichkeit, 2)))
+    geom_label(aes(label = sprintf("%.2f", Wahrscheinlichkeit)))
 }
