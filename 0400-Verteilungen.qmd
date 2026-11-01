@@ -491,9 +491,9 @@ Da stellt sich also die Frage:
 Wen wählen Sie aus?
 
 
-1. Anton  
-2. Berta 
-3. Carla 
+1. Anton
+2. Berta
+3. Carla
 4. Dario
 
 
@@ -501,8 +501,6 @@ Wen wählen Sie aus?
 Für den 1. freien Platz stehen alle 4 Freunde zur Auswahl.
 Für den 2. freien Platz stehen noch 3 Freunde zur Auswahl.
 Das sind 12 Möglichkeiten.
-
-
 @fig-freunde-auswahl zeigt als Baumdiagramm Ihre Auswahl-Möglichkeiten.
 Das Diagramm zeigt auch, welche Möglichkeiten Sie hätten,
 wenn Sie alle 4 Freunde auswählen könnten. 
@@ -800,7 +798,7 @@ NNTT.
 
 $\tbinom{4}{2} = \frac{4!}{2! \cdot (4-2)!} \overset{\text{kürzen}}= \frac{2\cdot 3}{1}=6$ 
 
-Es sind also 6 Möglichkeiten. 
+Es sind also 6 Möglichkeiten: AB, AC, AD, BC, BD, DC. $\square$
 :::
 
 
@@ -822,9 +820,10 @@ $\square$
 
 
 :::{#exm-2aus5}
-Hier sind die 10 Kombinationen, um aus 5 Losen genau 2 Treffer und 3 Nieten zu ziehen:
+Wie viele Kombinationen gibt es, um aus 5 Losen (Lose A, B, ..., E) genau 2 Treffer und 3 Nieten zu ziehen?
+Es sind diese 10: 
 
-TTNNN, TNTNN, TNNTN, TNNNT, NTTNN, NTNTN, NTNNT, NNTTN, NNTNT, NNNTT 
+AB, AC, AD, AE, BC, BD, BE, CD, CE, DE. Anders ausgedrückt: TTNNN, TNTNN, TNNTN, TNNNT, NTTNN, NTNTN, NTNNT, NNTTN, NNTNT, NNNTT (wobei wieder "T" für Treffer und "N" für Niete steht). 
 
 ```{r}
 choose(5, 2)
@@ -874,15 +873,15 @@ dabei ist die Reihenfolge der Ziehung nicht berücksichtigt. $\square$
 
 
 
-### Pumpstation-Beispiel zur Binomialverteilung
+### Lüfter-Beispiel zur Binomialverteilung
 
-In einer Pumpstation arbeiten 7 Motoren, die wir als identisch annehmen.
-Mit einer Wahrscheinlichkeit von 5 % fällt ein Motor aus und ist für den Rest des Tages nicht einsatzbereit.
-Der Betrieb kann aufrecht erhalten werden, solange mindestens 5 Motoren arbeiten.
-Wie groß ist die Wahrscheinlichkeit, dass die Pumpstation aus dem Betrieb fällt?
+Das Kühlsystem eines Serverschranks besteht aus 7 Lüftern, die wir als identisch annehmen.
+Mit einer Wahrscheinlichkeit von 5 % fällt ein Lüfter aus und ist für den Rest des Tages nicht einsatzbereit.
+Der Betrieb kann aufrecht erhalten werden, solange mindestens 5 Lüfter arbeiten.
+Wie groß ist die Wahrscheinlichkeit, dass das Kühlsystem ausfällt?
 
 $Pr(X=k)$ (oder kurz:
-$Pr(k)$) gibt die Wahrscheinlichkeit (Wahrscheinlichkeitsfunktion) an für das Ereignis, dass *k* Motoren arbeiten.
+$Pr(k)$) gibt die Wahrscheinlichkeit (Wahrscheinlichkeitsfunktion) an für das Ereignis, dass *k* Lüfter arbeiten.
 
 Lassen wir R mal $Pr(X=5)$ ausrechnen.
 
@@ -893,20 +892,20 @@ dbinom(x = 5, size = 7, prob = .95)
 
 
 Es gilt also $Pr(X=5) \approx .04$.
-Die Wahrscheinlichkeit, dass (nur) 5 Motoren an einem beliebigen Tag laufen, ist demnach relativ gering -- wobei "gering" subjektiv ist, die Betreiberfirma findet diese Wahrscheinlichkeit,
-dass 2 Motoren ausfallen, wohl viel zu hoch.
-Die Wahrscheinlichkeit, dass $k=0 \ldots 7$ Motoren laufen, ist in @fig-motoren dargestellt.
+Die Wahrscheinlichkeit, dass (nur) 5 Lüfter an einem beliebigen Tag laufen, ist demnach relativ gering -- wobei "gering" subjektiv ist, der Betreiber des Rechenzentrums findet diese Wahrscheinlichkeit,
+dass 2 Lüfter ausfallen, wohl viel zu hoch.
+Die Wahrscheinlichkeit, dass $k=0 \ldots 7$ Lüfter laufen, ist in @fig-luefter dargestellt.
 
 
 `dbinom()` steht für die Wahrscheinlichkeits*d*ichte (im diskreten Fall, wie hier, Wahrscheinlichkeitsfunktion genannt) und `binom` für die Binomialverteilung.
-`x` gibt die Anzahl der Treffer an (das gesuchte Ereignis, hier 5 Motoren arbeiten);
-`size` gibt die Stichprobengröße an (hier 7 Motoren).
+`x` gibt die Anzahl der Treffer an (das gesuchte Ereignis, hier 5 Lüfter arbeiten);
+`size` gibt die Stichprobengröße an (hier 7 Lüfter).
 
 Damit gilt:
 
 $Pr(X\ge 5) = Pr(X=5) + Pr(X=6) + Pr(X=7)$
 
-Berechnen wir zunächst die Wahrscheinlichkeit, dass 5,6 oder 7 Motoren laufen mit Hilfe der Binomialverteilung. 
+Berechnen wir zunächst die Wahrscheinlichkeit, dass 5, 6 oder 7 Lüfter laufen mit Hilfe der Binomialverteilung. 
 
 
 ```{r}
@@ -933,11 +932,11 @@ p_mind_5
 
 
 Die Wahrscheinlichkeit, dass mind.
-5 Motoren arbeiten, beträgt also
+5 Lüfter arbeiten, beträgt also
 `r round(p_mind_5, 4)`.
 Das komplementäre Ereignis zu diesem Ereignis ist, 
 dass *nicht* mind.
-5 Motoren arbeiten,
+5 Lüfter arbeiten,
 also *höchstens 4* und es daher zu einem Ausfall kommt.
 Es gilt also $Pr(\bar{X}) = 1- Pr(X)$.
 
@@ -947,25 +946,25 @@ p_weniger_als_4 <- 1 - p_mind_5
 p_weniger_als_4
 ```
 
-Das sind also `r round(p_weniger_als_4, 4)*100`% Wahrscheinlichkeit, dass die Pumpstation ausfällt.
+Das sind also `r round(p_weniger_als_4, 4)*100`% Wahrscheinlichkeit, dass das Kühlsystem ausfällt.
 
 
 ```{r}
 #| echo: false
-#| fig-cap: "Wahrscheinlichkeit, dass genau k = 0..7 Motoren laufen"
-#| label: fig-motoren
+#| fig-cap: "Wahrscheinlichkeit, dass genau k = 0..7 Lüfter laufen"
+#| label: fig-luefter
 
 font_size <- 6
 
 ps <- dbinom(x = 0:7, size = 7, prob = .95)
 
 ps_df <-
-  tibble(Motorenzahl = 0:7,
+  tibble(Lüfterzahl = 0:7,
          Pr = ps,
          Pr_log = log(ps, base = 2))
 
 ps_df |> 
-  ggplot(aes(x = Motorenzahl, y = Pr)) +
+  ggplot(aes(x = Lüfterzahl, y = Pr)) +
   geom_col(fill = mittelgrau) +
   scale_x_continuous(breaks = 0:7) +
   geom_label(aes(label = round(Pr, 3)), size = font_size) +
@@ -986,8 +985,8 @@ In R kann man die Funktion `pbinom()` nutzen (*p* für (kumulierte) Wahrscheinli
 pbinom(q = 4, size = 7, prob = .95)
 ```
 
-`q = 4` steht für $X \le 4$, also für höchstens 4 Treffer (arbeitende Motoren);
-`size = 7` meint die Stichprobengröße, hier 7 Motoren;
+`q = 4` steht für $X \le 4$, also für höchstens 4 Treffer (arbeitende Lüfter);
+`size = 7` meint die Stichprobengröße, hier 7 Lüfter;
 `prob` gibt die Trefferwahrscheinlichkeit an.
 $\square$
 
