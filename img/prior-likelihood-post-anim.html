@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prior mal Likelihood = Post</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #fff; overflow: hidden; color: #1B2733;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 720px; transform-origin: 0 0; cursor: pointer; }
+  #stage > * { position: absolute; }
+  .line { left: 90px; top: 24px; margin: 0; font: 400 72px/1.1 Georgia, "Times New Roman", serif; letter-spacing: -.01em; }
+  .sub { left: 90px; top: 124px; margin: 0; font-size: 34px; font-weight: 500; color: #5a646e; }
+  .hd { width: 540px; text-align: center; top: 236px; font: 400 48px/1 Georgia, "Times New Roman", serif; }
+  .pn { top: 300px; width: 540px; height: 360px; border-radius: 24px; background: #f3f4f5; }
+  .pn svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .op { width: 60px; text-align: center; top: 440px; font: 400 64px/1 Georgia, serif; color: #5a646e; }
+  .tk { position: absolute; transform: translateX(-50%); top: 316px; font-size: 26px; font-weight: 500; color: #6b747d; }
+  .axis { stroke: #a5abb1; stroke-width: 3; fill: none; }
+  .curve { fill: none; stroke: #2878B5; stroke-width: 8; stroke-linejoin: round; stroke-dasharray: 1 1; }
+  .guide { stroke: #E8903A; stroke-width: 3; stroke-dasharray: 10 10; }
+  .scan { stroke: #E8903A; stroke-width: 3; } .dot { fill: #E8903A; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script>
+(function () {
+  var W = 540, G = 60, L = 90, STEP = 4.4, NAMES = ['Prior', 'Likelihood', 'Posterior'];
+  var SC = [
+    { t: 'Flacher Prior: Die Daten entscheiden', s: 'Alle Werte sind vorab gleich plausibel, daher gleicht der Posterior der Likelihood.', f: function () { return 0.5; }, g: false },
+    { t: 'Stufe bei 0,5: Der Prior schneidet ab', s: 'Werte unter 0,5 schließt der Prior aus, dort ist der Posterior null.', f: function (x) { return x < 0.5 ? 0 : 0.95; }, g: true },
+    { t: 'Spitze bei 0,5: Der Prior zieht mit', s: 'Der Posterior liegt zwischen Prior und Likelihood, nach links verschoben.', f: function (x) { return Math.exp(-4 * Math.abs(x - 0.5)); }, g: true }
+  ];
+  var c01 = function (v) { return Math.max(0, Math.min(1, v)); };
+  var seg = function (t, a, b) { return c01((t - a) / (b - a)); };
+  var eio = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+  var lk = function (x) { return Math.pow(x, 6) * Math.pow(1 - x, 3) / 0.003251; };
+  var X = function (x) { return 30 + x * 480; }, Y = function (v) { return 300 - v * 250; };
+  var xs = [];
+  for (var i = 0; i <= 200; i++) { xs.push(i / 200); if (i === 100) xs.splice(xs.length - 1, 0, 0.5 - 1e-6); }
+
+  var st = document.getElementById('stage');
+  var h = '<h2 class="line"></h2><p class="sub"></p>';
+  for (var k = 0; k < 3; k++) {
+    h += '<div class="hd" style="left:' + (L + k * (W + G)) + 'px">' + NAMES[k] + '</div>';
+    h += '<div class="pn" style="left:' + (L + k * (W + G)) + 'px"><svg viewBox="0 0 540 360">' +
+      '<path class="axis" d="M30 300 H510 M30 300 V308 M270 300 V308 M510 300 V308"/>' +
+      '<line class="guide" x1="270" y1="40" x2="270" y2="300"/><path class="curve" pathLength="1"/>' +
+      '<line class="scan" x1="0" y1="30" x2="0" y2="300"/><circle class="dot" r="10"/></svg>' +
+      '<span class="tk" style="left:30px">0,0</span><span class="tk" style="left:270px">0,5</span><span class="tk" style="left:510px">1,0</span></div>';
+    if (k < 2) h += '<div class="op" style="left:' + (L + W + k * (W + G)) + 'px">' + (k ? '=' : '×') + '</div>';
+  }
+  st.innerHTML = h;
+  var q = function (s) { return st.querySelectorAll(s); };
+  var hd = q('.hd'), pn = q('.pn'), cs = q('.curve'), ss = q('.scan'), ds = q('.dot'), gs = q('.guide'), os = q('.op');
+  var line = q('.line')[0], sub = q('.sub')[0];
+
+  var cur = -1, fn;
+  function load(n) {
+    cur = n;
+    var f = SC[n].f, pm = 0;
+    xs.forEach(function (x) { pm = Math.max(pm, f(x) * lk(x)); });
+    fn = [f, lk, function (x) { return f(x) * lk(x) / pm; }];
+    for (var i = 0; i < 3; i++) {
+      cs[i].setAttribute('d', 'M' + xs.map(function (x) { return X(x).toFixed(1) + ' ' + Y(fn[i](x)).toFixed(1); }).join(' L'));
+      gs[i].style.display = SC[n].g ? '' : 'none';
+    }
+    line.textContent = SC[n].t; sub.textContent = SC[n].s;
+  }
+
+  function draw(T) {
+    var n = Math.min(SC.length - 1, Math.floor(T / STEP)), t = T - n * STEP;
+    if (n !== cur) load(n);
+    var out = 1 - seg(t, STEP - 0.4, STEP);
+    st.style.opacity = out;
+    line.style.opacity = c01(seg(t, 0, 0.5));
+    line.style.transform = 'translateX(' + (1 - c01(seg(t, 0, 0.5))) * 26 + 'px)';
+    sub.style.opacity = seg(t, 0.4, 0.9);
+    var pri = eio(seg(t, 0.7, 1.4)), lik = eio(seg(t, 1.3, 2.1)), post = eio(seg(t, 2.2, 3.6)), op = seg(t, 1.4, 2.1), hdp = seg(t, 0, 0.9);
+    var al = c01(Math.min(post / 0.05, (1 - post) / 0.05));
+    for (var i = 0; i < 3; i++) {
+      var a = c01((hdp - i * 0.2) / 0.6), p = [pri, lik, post][i];
+      hd[i].style.opacity = a; pn[i].style.opacity = a;
+      cs[i].style.opacity = p > 0 ? 1 : 0; cs[i].style.strokeDashoffset = 1 - p;
+      ss[i].setAttribute('transform', 'translate(' + X(post) + ' 0)'); ss[i].style.opacity = al * 0.8;
+      ds[i].setAttribute('transform', 'translate(' + X(post) + ' ' + Y(fn[i](post)) + ')'); ds[i].style.opacity = al;
+      gs[i].style.opacity = c01(pri * 2);
+    }
+    os[0].style.opacity = c01(op * 2); os[1].style.opacity = c01(op * 2 - 1);
+  }
+
+  function fit() { st.style.transform = 'scale(' + window.innerWidth / 1920 + ')'; }
+  window.addEventListener('resize', fit); fit();
+
+  var total = STEP * SC.length, t0 = null, still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var m = /[#&]t=([\d.]+)/.exec(location.hash);
+  if (m) { draw(+m[1]); return; }
+  if (still) { draw(total - 0.5); return; }
+  function frame(now) {
+    if (t0 === null) t0 = now;
+    draw(((now - t0) / 1000) % total);
+    requestAnimationFrame(frame);
+  }
+  st.addEventListener('click', function () { t0 = null; });
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
