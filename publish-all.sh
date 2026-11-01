@@ -17,12 +17,28 @@
 # Option --skip-slide-pdfs: Schritt 2 ohne PDF-Export (spart einige
 # Minuten, wenn sich an den Folien nichts geaendert hat; die vorhandenen
 # slides/*.pdf werden dann unveraendert veroeffentlicht).
+#
+# Option --verbose: komplette Ausgabe von R/Quarto/decktape anzeigen.
+# Ohne diese Option zeigt das Skript nur das Wesentliche (Kapitel-Fortschritt
+# "[n/N] datei.qmd", "Output created", Warnungen und Fehler, jeweils mit
+# Zeitstempel). Die vollstaendige Ausgabe landet immer in der Logdatei
+# (Pfad steht am Anfang der Ausgabe), z. B. zum Nachlesen von Warnungen.
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 skip_slide_pdfs=false
-[[ "${1:-}" == "--skip-slide-pdfs" ]] && skip_slide_pdfs=true
+verbose=false
+for arg in "$@"; do
+  case "$arg" in
+    --skip-slide-pdfs) skip_slide_pdfs=true ;;
+    --verbose) verbose=true ;;
+    *) echo "Unbekannte Option: $arg (erlaubt: --skip-slide-pdfs, --verbose)" >&2; exit 2 ;;
+  esac
+done
+
+logfile="${TMPDIR:-/tmp}/publish-all-$(date +%Y%m%d-%H%M%S).log"
+echo "Vollstaendiges Log: $logfile"
 
 # --- Fortschrittsanzeige ---------------------------------------------------
 # Jeder Schritt meldet sich als "[n/N] Text" mit der bisher verstrichenen
@@ -47,6 +63,29 @@ step() {
     "$c_on" "$current_step" "$TOTAL_STEPS" "$current_label" "$c_off" "$(elapsed)"
 }
 
+# Filtert die Ausgabe der Teilschritte auf das Wesentliche (siehe --verbose).
+# Quarto faerbt seine Ausgabe ein; die Escape-Sequenzen werden vor dem
+# Abgleich entfernt. Gezeigt werden: Kapitel-Fortschritt "[ 3/20] x.qmd",
+# "Output created", Warnungen/Fehler von Quarto, R und knitr.
+show_progress() {
+  if $verbose; then cat; return; fi
+  local line clean
+  local re='^[[:space:]]*(\[[[:space:]]*[0-9]+/[0-9]+\]|Output created|WARN|Warning|Warnmeld|ERROR|Error|Fehler|Quitting from|Execution halted|Unable to|unable to)'
+  while IFS= read -r line; do
+    clean=$(printf '%s' "$line" | sed -E $'s/\x1b\\[[0-9;]*[A-Za-z]//g; s/\r//g')
+    if [[ "$clean" =~ $re ]]; then
+      printf '    [%s] %s\n' "$(elapsed)" "$clean"
+    fi
+  done
+}
+
+# Fuehrt einen Befehl aus: komplette Ausgabe ins Log, gefilterte Ausgabe auf
+# den Bildschirm. Der Exit-Code des Befehls bleibt erhalten (pipefail).
+run() {
+  printf '\n$ %s\n' "$*" >> "$logfile"
+  "$@" 2>&1 | tee -a "$logfile" | show_progress
+}
+
 on_exit() {
   local rc=$?
   if [[ $rc -eq 0 ]]; then
@@ -68,19 +107,19 @@ step "Buch rendern (PDF, dann HTML)"
 # auch waehrend der HTML-Ausgabe faelschlich TRUE liefert. Folge: Abbildungen
 # werden als PDF statt PNG erzeugt und landen im HTML als <embed>-PDF statt
 # <img>. render.R vermeidet das durch zwei getrennte quarto_render()-Aufrufe.
-Rscript render.R
+run Rscript render.R
 
 step "Folien: Mermaid-Diagramme rendern (nur geänderte)"
-slides/render_mermaid.sh
+run slides/render_mermaid.sh
 
 step "Folien: Decks als HTML rendern"
-(cd slides && quarto render)
+run bash -c 'cd slides && quarto render'
 
 if $skip_slide_pdfs; then
   step "Folien: PDF-Export übersprungen (--skip-slide-pdfs)"
 else
   step "Folien: Decks als PDF exportieren"
-  slides/export_pdf.sh
+  run slides/export_pdf.sh
 fi
 
 step "Bilder für Foliendecks nach docs/img/ ergänzen"
@@ -105,5 +144,5 @@ step "Prüfen, ob alle Folien-Bilder in docs/ liegen"
 python3 slides/check_slide_assets.py
 
 step "Veröffentlichen auf gh-pages"
-quarto publish gh-pages --no-render --no-prompt
+run quarto publish gh-pages --no-render --no-prompt
 
