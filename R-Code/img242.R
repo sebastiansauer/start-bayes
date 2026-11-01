@@ -38,9 +38,8 @@ p2 <-
   scale_x_continuous(
     breaks = d$p_grid, # show tick marks at all grid points
     labels = function(x) ifelse(x %in% c(0, 0.5, 1), x, "") # label only 0, .5, 1
-  )  +
+  ) +
   scale_y_continuous(breaks = NULL, labels = NULL)
-  
 
 
 p3 <-
@@ -57,7 +56,7 @@ p3 <-
   scale_x_continuous(
     breaks = d$p_grid, # show tick marks at all grid points
     labels = function(x) ifelse(x %in% c(0, 0.5, 1), x, "") # label only 0, .5, 1
-  )  +
+  ) +
   scale_y_continuous(breaks = NULL, labels = NULL)
 
 
@@ -75,12 +74,15 @@ p4 <-
   scale_x_continuous(
     breaks = d$p_grid, # show tick marks at all grid points
     labels = function(x) ifelse(x %in% c(0, 0.5, 1), x, "") # label only 0, .5, 1
-  )  +
+  ) +
   scale_y_continuous(breaks = NULL, labels = NULL)
 
 
-plot242 <- p4 + p2 + p3 + p1 + plot_layout(ncol = 2) +
+plot242 <- p4 +
+  p2 +
+  p3 +
+  p1 +
+  plot_layout(ncol = 2) +
   plot_annotation(
-    title = "Posterior-Verteilung bei unterschiedlicher Gitterfeinheit",
-    subtitle = "6 Erfolge bei 9 Versuchen, uniforme Prior-Verteilung"
+    caption = "Posterior-Verteilung bei unterschiedlicher Gitterfeinheit; 6 Erfolge bei 9 Versuchen, uniforme Prior-Verteilung"
   )
