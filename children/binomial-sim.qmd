@@ -17,7 +17,7 @@ die orangenen Punkte zeigen die theoretische Binomialverteilung.
 //| echo: false
 {
   const maxReps = 10000;
-  const wrap = html`<div class="binom-sim" style="max-width: 680px; --label-width: 230px;"></div>`;
+  const wrap = html`<div class="binom-sim" style="max-width: 680px;"></div>`;
 
   const pIn = Inputs.range([0, 1], {step: 0.05, value: 0.5, label: "p (Trefferwahrscheinlichkeit)"});
   const nIn = Inputs.range([1, 20], {step: 1, value: 10, label: "n (Anzahl Münzen)"});
@@ -31,7 +31,11 @@ die orangenen Punkte zeigen die theoretische Binomialverteilung.
     <span style="color:#E69F00;">&#9679;</span> Theorie (Binomialverteilung)
   </div>`;
   const buttons = html`<div style="display:flex; gap:0.5em; align-items:center;">${b1}${bRun}${bReset}${info}</div>`;
-  for (const el of [pIn, nIn]) el.style.marginBottom = "0.6em";
+  for (const el of [pIn, nIn]) {
+    el.style.setProperty("--label-width", "260px");
+    el.style.marginBottom = "0.8em";
+    el.querySelector("label").style.cssText += "width:260px; min-width:260px; padding-right:1em; box-sizing:border-box;";
+  }
   wrap.append(pIn, nIn, buttons, plotDiv, legend);
 
   let counts, reps, timer = null;
