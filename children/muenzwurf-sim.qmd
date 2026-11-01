@@ -1,0 +1,108 @@
+```{=html}
+<div id="ms-root" class="ms">
+<style>
+.ms { --ms-orange:#E69F00; --ms-blue:#0072B2; --ms-line:color-mix(in srgb, currentColor 35%, transparent); margin:1.2em 0; max-width:760px; }
+.ms-ctrl { display:grid; grid-template-columns:auto 1fr 3.5em; gap:.4em .8em; align-items:center; margin-bottom:.8em; }
+.ms-ctrl input[type=range] { width:100%; accent-color:var(--ms-blue); }
+.ms-ctrl output { font-variant-numeric:tabular-nums; text-align:right; }
+.ms-btns { display:flex; flex-wrap:wrap; gap:.5em; margin:.4em 0 .8em; }
+.ms-btns button { border:2px solid var(--ms-blue); background:transparent; color:inherit; border-radius:6px; padding:.3em .8em; cursor:pointer; font:inherit; }
+.ms-btns button.ms-main { background:var(--ms-blue); color:#fff; }
+.ms-btns button:hover { filter:brightness(1.15); }
+.ms-top { display:flex; align-items:center; gap:1em; margin-bottom:.6em; min-height:84px; }
+.ms-coin, .ms-mini { border-radius:50%; box-sizing:border-box; display:flex; align-items:center; justify-content:center; font-weight:700; border:3px solid currentColor; background:var(--ms-orange); color:#1B2430; flex:none; }
+.ms-coin { width:76px; height:76px; font-size:15px; }
+.ms-coin.tail, .ms-mini.tail { background:var(--bs-body-bg, #fff); }
+.ms-coin.flip { animation:ms-flip .7s ease-out; }
+@keyframes ms-flip { from { transform:rotateX(0) } to { transform:rotateX(1080deg) } }
+.ms-row { display:flex; flex-wrap:wrap; gap:3px; }
+.ms-mini { width:20px; height:20px; border-width:2px; }
+.ms-stats { font-variant-numeric:tabular-nums; margin:.4em 0; }
+.ms svg { width:100%; height:auto; display:block; }
+.ms svg text { fill:currentColor; font-size:13px; }
+</style>
+<div class="ms-ctrl">
+  <label for="ms-p">Trefferwahrscheinlichkeit <em>p</em> (Zahl)</label><input id="ms-p" type="range" min="0" max="1" step="0.05" value="0.5"><output id="ms-pv">0,5</output>
+  <label for="ms-n">Würfe pro Experiment <em>n</em></label><input id="ms-n" type="range" min="1" max="50" step="1" value="10"><output id="ms-nv">10</output>
+</div>
+<div class="ms-btns">
+  <button type="button" class="ms-main" id="ms-b1">n-mal werfen</button>
+  <button type="button" id="ms-b100">100 Experimente</button>
+  <button type="button" id="ms-b0">Zurücksetzen</button>
+</div>
+<div class="ms-top"><div class="ms-coin" id="ms-coin">Zahl</div><div class="ms-row" id="ms-row"></div></div>
+<svg id="ms-svg" viewBox="0 0 720 300" role="img" aria-label="Häufigkeiten der Trefferzahl k im Vergleich zur Binomialverteilung"></svg>
+<div class="ms-stats" id="ms-stats"></div>
+<div style="font-size:.9em"><span style="color:var(--ms-blue)">&#9632;</span> simulierter Anteil der Experimente mit <em>k</em> Treffern &nbsp; <span style="color:var(--ms-orange)">&#9679;</span> theoretisch (Binomialverteilung)</div>
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const de = (x, d) => x.toLocaleString('de-DE', { minimumFractionDigits: d, maximumFractionDigits: d });
+  let counts = [], exps = 0, sumK = 0;
+  const P = () => +$('ms-p').value, N = () => +$('ms-n').value;
+  function pmf(n, p) {
+    const out = [];
+    for (let k = 0; k <= n; k++) {
+      if (p === 0) { out.push(k === 0 ? 1 : 0); continue; }
+      if (p === 1) { out.push(k === n ? 1 : 0); continue; }
+      let lc = 0;
+      for (let i = 1; i <= k; i++) lc += Math.log((n - k + i) / i);
+      out.push(Math.exp(lc + k * Math.log(p) + (n - k) * Math.log(1 - p)));
+    }
+    return out;
+  }
+  function throwOnce(n, p) {
+    const r = []; let k = 0;
+    for (let i = 0; i < n; i++) { const z = Math.random() < p; r.push(z); if (z) k++; }
+    return { r, k };
+  }
+  function addExperiment(n, p) {
+    const e = throwOnce(n, p);
+    counts[e.k] = (counts[e.k] || 0) + 1; exps++; sumK += e.k;
+    return e;
+  }
+  function showCoin(z, animate) {
+    const c = $('ms-coin');
+    c.textContent = z ? 'Zahl' : 'Kopf';
+    c.classList.toggle('tail', !z);
+    c.classList.remove('flip');
+    if (animate) { void c.offsetWidth; c.classList.add('flip'); }
+  }
+  function showRow(r) {
+    $('ms-row').innerHTML = r.map(z => '<span class="ms-mini' + (z ? '' : ' tail') + '"></span>').join('');
+  }
+  function draw() {
+    const n = N(), p = P(), th = pmf(n, p);
+    const obs = th.map((_, k) => exps ? (counts[k] || 0) / exps : 0);
+    const ymax = Math.max(...th, ...obs, 0.05) * 1.12;
+    const L = 56, R = 12, T = 12, B = 44, W = 720, H = 300, iw = W - L - R, ih = H - T - B;
+    const bw = iw / (n + 1), X = k => L + bw * (k + .5), Y = v => T + ih * (1 - v / ymax);
+    let s = '<line x1="' + L + '" y1="' + (T + ih) + '" x2="' + (W - R) + '" y2="' + (T + ih) + '" stroke="currentColor" stroke-opacity=".5"/>';
+    const yt = ymax > .5 ? .2 : ymax > .25 ? .1 : .05;
+    for (let v = 0; v <= ymax; v += yt) {
+      s += '<line x1="' + L + '" y1="' + Y(v) + '" x2="' + (W - R) + '" y2="' + Y(v) + '" stroke="currentColor" stroke-opacity=".12"/>' +
+           '<text x="' + (L - 8) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + de(v, 2) + '</text>';
+    }
+    const step = Math.ceil((n + 1) / 12);
+    for (let k = 0; k <= n; k++) {
+      if (obs[k] > 0) s += '<rect x="' + (X(k) - bw * .38) + '" y="' + Y(obs[k]) + '" width="' + bw * .76 + '" height="' + (T + ih - Y(obs[k])) + '" fill="#0072B2" fill-opacity=".8"/>';
+      if (k % step === 0) s += '<text x="' + X(k) + '" y="' + (T + ih + 18) + '" text-anchor="middle">' + k + '</text>';
+    }
+    for (let k = 0; k <= n; k++) s += '<circle cx="' + X(k) + '" cy="' + Y(th[k]) + '" r="' + Math.max(2.5, Math.min(6, bw * .3)) + '" fill="#E69F00" stroke="currentColor" stroke-width="1.2"/>';
+    s += '<text x="' + (L + iw / 2) + '" y="' + (H - 6) + '" text-anchor="middle">Trefferzahl k (Anzahl Zahl bei n Würfen)</text>' +
+         '<text transform="translate(14 ' + (T + ih / 2) + ') rotate(-90)" text-anchor="middle">Anteil</text>';
+    $('ms-svg').innerHTML = s;
+    $('ms-stats').innerHTML = 'Experimente: <b>' + exps + '</b> &nbsp;|&nbsp; Mittelwert von <em>k</em>: <b>' + (exps ? de(sumK / exps, 2) : '–') +
+      '</b> &nbsp;|&nbsp; erwartet <em>n</em>·<em>p</em>: <b>' + de(n * p, 2) + '</b>';
+  }
+  function reset() { counts = []; exps = 0; sumK = 0; $('ms-row').innerHTML = ''; showCoin(true, false); draw(); }
+  $('ms-p').oninput = () => { $('ms-pv').textContent = de(P(), 2).replace(/,?0$/, ''); reset(); };
+  $('ms-n').oninput = () => { $('ms-nv').textContent = N(); reset(); };
+  $('ms-b1').onclick = () => { const e = addExperiment(N(), P()); showRow(e.r); showCoin(e.r[e.r.length - 1], true); draw(); };
+  $('ms-b100').onclick = () => { let e; for (let i = 0; i < 100; i++) e = addExperiment(N(), P()); showRow(e.r); showCoin(e.r[e.r.length - 1], true); draw(); };
+  $('ms-b0').onclick = reset;
+  reset();
+})();
+</script>
+</div>
+```
