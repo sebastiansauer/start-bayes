@@ -15,10 +15,10 @@ p1 <-
   geom_line(color = "#0072B2") +
   labs(
     subtitle = "20 Parameterwerte",
-    x = "pi",
+    x = "\u03c0",
     y = ""
   ) +
-  theme(panel.grid = element_blank()) +
+  theme(panel.grid = element_blank(), panel.grid.major.x = element_blank(), panel.grid.minor = element_blank()) +
   scale_x_continuous(
     breaks = d$p_grid, # show tick marks at all grid points
     labels = function(x) ifelse(x %in% c(0, 0.5, 1), x, "") # label only 0, .5, 1
@@ -33,8 +33,8 @@ p2 <-
   ggplot(aes(x = p_grid, y = posterior)) +
   geom_point(color = "#4D4D4D") +
   geom_line(color = "#0072B2") +
-  labs(subtitle = "10 Parameterwerte", x = "pi", y = "") +
-  theme(panel.grid = element_blank()) +
+  labs(subtitle = "10 Parameterwerte", x = "\u03c0", y = "") +
+  theme(panel.grid = element_blank(), panel.grid.major.x = element_blank(), panel.grid.minor = element_blank()) +
   scale_x_continuous(
     breaks = d$p_grid, # show tick marks at all grid points
     labels = function(x) ifelse(x %in% c(0, 0.5, 1), x, "") # label only 0, .5, 1
@@ -51,8 +51,8 @@ p3 <-
   ggplot(aes(x = p_grid, y = posterior)) +
   geom_point(color = "#4D4D4D") +
   geom_line(color = "#0072B2") +
-  labs(subtitle = "5 Parameterwerte", x = "pi", y = "") +
-  theme(panel.grid = element_blank()) +
+  labs(subtitle = "5 Parameterwerte", x = "\u03c0", y = "") +
+  theme(panel.grid = element_blank(), panel.grid.major.x = element_blank(), panel.grid.minor = element_blank()) +
   scale_x_continuous(
     breaks = d$p_grid, # show tick marks at all grid points
     labels = function(x) ifelse(x %in% c(0, 0.5, 1), x, "") # label only 0, .5, 1
@@ -69,8 +69,8 @@ p4 <-
   ggplot(aes(x = p_grid, y = posterior)) +
   #  geom_point() +
   geom_line(color = "#0072B2") +
-  labs(subtitle = "Unendlich viele Parameterwerte", x = "pi", y = "") +
-  theme(panel.grid = element_blank()) +
+  labs(subtitle = "Unendlich viele Parameterwerte", x = "\u03c0", y = "") +
+  theme(panel.grid = element_blank(), panel.grid.major.x = element_blank(), panel.grid.minor = element_blank()) +
   scale_x_continuous(
     breaks = d$p_grid, # show tick marks at all grid points
     labels = function(x) ifelse(x %in% c(0, 0.5, 1), x, "") # label only 0, .5, 1
@@ -78,10 +78,10 @@ p4 <-
   scale_y_continuous(breaks = NULL, labels = NULL)
 
 
-plot242 <- p4 +
+plot242 <- p3 +
   p2 +
-  p3 +
   p1 +
+  p4 +
   plot_layout(ncol = 2) +
   plot_annotation(
     caption = "Posterior-Verteilung bei unterschiedlicher Gitterfeinheit; 6 Erfolge bei 9 Versuchen, uniforme Prior-Verteilung"
