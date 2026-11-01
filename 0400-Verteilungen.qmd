@@ -208,7 +208,7 @@ Für eine binomialverteilte Zufallsvariable $X$ schreibt man kurz wie in @thm-bi
 
 ::: {#thm-binvert}
 
-### Notation für eine binomialverteilte Zufallsvariable
+### Notation für eine binomialverteilte Zufallsvariable $X$
 
 $$X \sim \text{Bin}(n, p) \quad \square$$
 :::
@@ -296,12 +296,13 @@ dbinom(x = <Anzahl der Treffer>,
 :::{#exm-bin1}
 **Drei Lose gekauft, davon zwei Treffer?**
 
-Wie groß ist die Wahrscheinlichkeit $p$ bei $n=3$ Zügen $k=2$ Treffer zu erzielen (und $n-k=1$ Niete)? 
+Wie groß ist die Wahrscheinlichkeit beim Ziehen von $n=3$ Losen $k=2$ Treffer zu erzielen (und $n-k=1$ Niete),
+also $A^{\prime} = Pr(X=k|n,p)? 
 (Nennen wir dieses gesuchte Ereignis der Kürze halber $A^{\prime}$).
 Die Trefferwahrscheinlichkeit ist (bei jedem Zug) $p=2/5$ und die 
-Nietenwahrscheinlichkeit $1-p=3/5 \quad \square$, s. @fig-sort3.
+Nietenwahrscheinlichkeit $1-p=3/5, s. @fig-sort3.
 @fig-dreimuenzen zeigt den entsprechenden Baum;
-@tbl-3lose2treffer zeigt die Ergebnisse dieses Zufallsexperiments.
+@tbl-3lose2treffer zeigt die Ergebnisse dieses Zufallsexperiments. \quad \square$
 :::
 
 
@@ -337,16 +338,16 @@ p_urn2
 | Pfad (Ereignis) | Anzahl Treffer | Wahrscheinlichkeit                                                       |
 | --------------- | -------------- | ------------------------------------------------------------------------ |
 | TTT             | 3              | $p^3 = \left(\tfrac{2}{5}\right)^3 = \tfrac{8}{125} \approx 0.064$       |
-| TTN             | 2              | $p^2 q = \tfrac{4}{25}\cdot\tfrac{3}{5} = \tfrac{12}{125} \approx 0.096$ |
-| TNT             | 2              | $p^2 q = \tfrac{12}{125} \approx 0.096$                                  |
-| NTT             | 2              | $p^2 q = \tfrac{12}{125} \approx 0.096$                                  |
+| TTN (AB)        | 2              | $p^2 q = \tfrac{4}{25}\cdot\tfrac{3}{5} = \tfrac{12}{125} \approx 0.096$ |
+| TNT (AC)        | 2              | $p^2 q = \tfrac{12}{125} \approx 0.096$                                  |
+| NTT (BC)        | 2              | $p^2 q = \tfrac{12}{125} \approx 0.096$                                  |
 | TNN             | 1              | $p q^2 = \tfrac{2}{5}\cdot\tfrac{9}{25} = \tfrac{18}{125} \approx 0.144$ |
 | NTN             | 1              | $p q^2 = \tfrac{18}{125} \approx 0.144$                                  |
 | NNT             | 1              | $p q^2 = \tfrac{18}{125} \approx 0.144$                                  |
 | NNN             | 0              | $q^3 = \left(\tfrac{3}{5}\right)^3 = \tfrac{27}{125} \approx 0.216$      |
 
 :
-Alle acht Ergebnisse des Zufallsexperiment (binär, 3-fach wiederholt) mit ihren Wahrscheinlichkeiten im Überblick {#tbl-3lose2treffer}
+Alle acht Ergebnisse des Zufallsexperiment (binär, 3-fach wiederholt) mit ihren Wahrscheinlichkeiten im Überblick; es gibt drei Möglichkeiten für 2 Treffer bei 3 Würfen: AB, AC, BC {#tbl-3lose2treffer}
 
 
 
@@ -365,19 +366,14 @@ Treffer;
 N:
 Niete), s. @fig-dreimuenzen:
 
-1. TTN
-2. TNT
-3. NTT.
+1. AB (TTN) - die ersten beiden Lose sind Treffer
+2. AC (TNT) - das erste und das dritte Los sind Treffer 
+3. BC (NTT) - das zweite und das dritte Los sind Treffer
 
 
 
 
-Wir haben also die Möglichkeiten (2 Treffer und 1 Niete zu erhalten)
-
-- *ohne Beachtung der Reihenfolge* und
-- *ohne Zurücklegen* (der Möglichkeiten)
-
-gezählt.
+Wir haben die Möglichkeiten *ohne Beachtung der Reihenfolge* gezählt: Ob wir AB oder BA ziehen ist uns egal. Denn ob wir erst das Los 2 ziehen und danach Los 1 oder umgekehrt, spielt keine Rolle. Wir haben *ohne Zurücklegen* gezählt: Kein Los konnte doppelt gezogen werden.
 
 
 
@@ -386,7 +382,8 @@ gezählt.
 
 
 Schneller geht es, wenn man rechnet. 
-Wir könnten auch R auffordern, die Anzahl der günstigen Pfade zu berechnen, s. @thm-binkoeff mit `choose(3,2)`, was die Antwort `3` liefert.
+Wir könnten auch R auffordern, die Anzahl der günstigen Pfade zu berechnen, 
+s. @thm-binkoeff mit `choose(3,2)`, was die Antwort `3` liefert (eben `AB`, `AC` und `BC`).
 
 
 
@@ -417,7 +414,8 @@ p_a_strich
 Die Wahrscheinlichkeit, bei 3 Zügen 2 Treffer zu erzielen, 
 beträgt also ca. 29 %.
 
-Dabei steht $k$ für die Anzahl der günstigen Pfade und $Pr(A)$ für die Wahrscheinlichkeit eines günstigen Pfades 
+Dabei steht $k$ für die Anzahl der günstigen Pfade und $Pr(A)$ für die Wahrscheinlichkeit 
+eines günstigen Pfades 
 (d. h. 2 Treffer und 1 Nieten) und alle Pfade haben die gleiche Wahrscheinlichkeit.
 
 
@@ -473,7 +471,7 @@ $$\tbinom{n}{k}= \frac{n!}{k!\cdot (n-k)!} \quad \square$$
 
 Lies:
 "Wähle aus $n$ möglichen Ereignissen (Pfade im Baum) $k$ günstige
-Ereignisse (Pfade) oder kürzer "k aus n" bzw. "n über k". $\square$
+Ereignisse (Pfade) oder kürzer 'k aus n' bzw. 'n über k'"". $\square$
 :::
 
 Um den Binomialkoeffizient zu berechnen, 
