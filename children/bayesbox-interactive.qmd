@@ -1,0 +1,111 @@
+Probieren Sie die Bayesbox selbst aus:
+Ändern Sie die Daten, die Feinheit des Gitters und die Apriori-Verteilung
+und beobachten Sie, wie sich die Post-Verteilung verändert.
+Die Startwerte entsprechen @lst-gitter1.
+
+```{ojs}
+//| echo: false
+viewof bb_n = Inputs.range([1, 30], {label: "Versuche n", step: 1, value: 9})
+viewof bb_k = Inputs.range([0, bb_n], {label: "Treffer k", step: 1, value: Math.min(6, bb_n)})
+viewof bb_g = Inputs.range([3, 101], {label: "Gitterwerte", step: 1, value: 11})
+viewof bb_prior = Inputs.radio(
+  ["Gleichverteilt", "Eher fair", "Eher viel Wasser", "Nur Extreme"],
+  {label: "Apriori", value: "Gleichverteilt"}
+)
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+bb_fmt = (x, d = 3) => x.toLocaleString("de-DE", {minimumFractionDigits: d, maximumFractionDigits: d})
+
+// Binomial-Likelihood Pr(k | n, p), numerisch stabil über Logarithmen
+bb_dbinom = (k, n, p) => {
+  if (p === 0) return k === 0 ? 1 : 0;
+  if (p === 1) return k === n ? 1 : 0;
+  let lc = 0;
+  for (let i = 1; i <= k; i++) lc += Math.log((n - k + i) / i);
+  return Math.exp(lc + k * Math.log(p) + (n - k) * Math.log(1 - p));
+}
+
+// unnormalisierte Apriori-Gewichte; nur das Verhältnis zählt
+bb_gewicht = (p) => {
+  switch (bb_prior) {
+    case "Gleichverteilt":     return 1;
+    case "Eher fair":          return Math.pow(p, 9) * Math.pow(1 - p, 9);  // Beta(10, 10)
+    case "Eher viel Wasser":   return Math.pow(p, 6) * Math.pow(1 - p, 2);  // Beta(7, 3)
+    case "Nur Extreme":        return (p === 0 || p === 1) ? 1 : 0;
+  }
+}
+
+bb_box = {
+  const p = d3.range(bb_g).map(i => i / (bb_g - 1));
+  const w = p.map(bb_gewicht);
+  const sw = d3.sum(w);
+  const lik = p.map(x => bb_dbinom(bb_k, bb_n, x));
+  const unstd = p.map((x, i) => (w[i] / sw) * lik[i]);
+  const evidenz = d3.sum(unstd);
+  return {
+    evidenz,
+    zeilen: p.map((x, i) => ({
+      p: x,
+      Apriori: w[i] / sw,
+      Likelihood: lik[i],
+      unstd_Post: unstd[i],
+      Post: evidenz > 0 ? unstd[i] / evidenz : NaN
+    }))
+  };
+}
+```
+
+```{ojs}
+//| echo: false
+bb_zeilen = bb_box.zeilen
+bb_lik_norm = {
+  const s = d3.sum(bb_zeilen, d => d.Likelihood);
+  return bb_zeilen.map(d => ({p: d.p, wert: d.Likelihood / s}));
+}
+
+html`<p><b>Evidenz</b> (Summe der unstandardisierten Post-Werte): ${bb_fmt(bb_box.evidenz, 4)}
+${bb_box.evidenz === 0 ? html`<br><i>Evidenz = 0: Der Apriori-Wert ist genau dort 0, wo die Likelihood nicht 0 ist.
+Die Post-Verteilung ist nicht definiert -- ein Apriori von 0 lässt sich durch keine Daten revidieren.</i>` : ""}</p>`
+```
+
+```{ojs}
+//| echo: false
+Plot.plot({
+  width,
+  height: 360,
+  marginLeft: 55,
+  x: {label: "Wasseranteil p", domain: [0, 1]},
+  y: {label: "Wahrscheinlichkeit (Summe je Kurve = 1)", grid: true},
+  color: {
+    domain: ["Post", "Apriori", "Likelihood (normiert)"],
+    range: ["#0072B2", "#E69F00", "#009E73"],
+    legend: true
+  },
+  marks: [
+    Plot.ruleY([0]),
+    Plot.line(bb_lik_norm, {x: "p", y: "wert", stroke: () => "Likelihood (normiert)", strokeWidth: 1.5, strokeDasharray: "4,3"}),
+    Plot.line(bb_zeilen, {x: "p", y: "Apriori", stroke: () => "Apriori", strokeWidth: 1.5, strokeDasharray: "4,3"}),
+    Plot.line(bb_zeilen.filter(d => !isNaN(d.Post)), {x: "p", y: "Post", stroke: () => "Post", strokeWidth: 2.5}),
+    Plot.dot(bb_zeilen.filter(d => !isNaN(d.Post)), {x: "p", y: "Post", fill: () => "Post", r: bb_g > 41 ? 1.5 : 3.5})
+  ]
+})
+```
+
+```{ojs}
+//| echo: false
+Inputs.table(bb_zeilen, {
+  columns: ["p", "Apriori", "Likelihood", "unstd_Post", "Post"],
+  format: {
+    p: x => bb_fmt(x, 3),
+    Apriori: x => bb_fmt(x, 3),
+    Likelihood: x => bb_fmt(x, 3),
+    unstd_Post: x => bb_fmt(x, 4),
+    Post: x => isNaN(x) ? "n.d." : bb_fmt(x, 3)
+  },
+  height: 260,
+  layout: "auto"
+})
+```
