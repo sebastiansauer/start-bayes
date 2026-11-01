@@ -617,14 +617,14 @@ ggplot(aes(x = p_grid)) +
   geom_histogram(bins = 101) +
   scale_x_continuous("Anteil Wasser (p)", limits = c(0, 1)) +
   labs(y = "Wahrscheinlichkeit",
-       caption = paste0("Modus: ", mode_rounded, "; MW: ", mavg, "; Md: ", md)) +
+       caption = paste0("Modus: ", sprintf("%.2f", mode_rounded), "; MW: ", sprintf("%.2f", mavg), "; Md: ", sprintf("%.2f", md))) +
   geom_vline(xintercept = c(mode_rounded), color = "#E69F00FF")  +
   geom_vline(xintercept = c(mavg), color = "#0072B2FF")  +
   geom_vline(xintercept = c(md), color = "#009E73FF")  +
   annotate("label", x = mode_rounded, y = 0,
-    label = glue::glue("Modus: {mode_rounded}"), fill = "#E69F00FF") +
-  annotate("label", x = mavg, y = 10000, label = glue::glue("MW: {mavg}"), fill = "#0072B2FF") +
-  annotate("label", x = md, y = 20000, label = glue::glue("Median: {md}"), fill = "#009E73FF")
+    label = glue::glue("Modus: {sprintf('%.2f', mode_rounded)}"), fill = "#E69F00FF") +
+  annotate("label", x = mavg, y = 10000, label = glue::glue("MW: {sprintf('%.2f', mavg)}"), fill = "#0072B2FF") +
+  annotate("label", x = md, y = 20000, label = glue::glue("Median: {sprintf('%.2f', md)}"), fill = "#009E73FF")
 
 p_100_samples
 ```
@@ -1331,7 +1331,7 @@ bayesbox_3w_3v |>
            color = "#E69F00", size = 3) +
   geom_vline(xintercept = point_estimates$p_grid) +
   geom_text(data = point_estimates,
-            aes(x = x, y = y, label = paste0(.point, " = ", round(x, 2))),
+            aes(x = x, y = y, label = paste0(.point, " = ", sprintf("%.2f", x))),
             angle = 90,
             hjust = 0) +
   labs(x = "Anteil Wasser (p)",

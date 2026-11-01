@@ -918,7 +918,7 @@ p_6
 p_7
 ```
 
-Das sind `r round(p_5, 2)`, `r round(p_6, 2)`, `r round(p_7, 2)`.
+Das sind `r sprintf("%.2f", p_5)`, `r sprintf("%.2f", p_6)`, `r sprintf("%.2f", p_7)`.
 Die gesuchte Wahrscheinlichkeit, `p_mind_5`,
 ist die Summe der drei Einzelwahrscheinlichkeiten.
 
@@ -933,7 +933,7 @@ p_mind_5
 
 Die Wahrscheinlichkeit, dass mind.
 5 Lüfter arbeiten, beträgt also ca.
-`r round(p_mind_5, 4)`.
+`r sprintf("%.4f", p_mind_5)`.
 Das komplementäre Ereignis zu diesem Ereignis ist, 
 dass *nicht* mind.
 5 Lüfter arbeiten,
@@ -946,7 +946,7 @@ p_weniger_als_4 <- 1 - p_mind_5
 p_weniger_als_4
 ```
 
-Das sind also `r round(p_weniger_als_4, 4)*100`% Wahrscheinlichkeit, dass das Kühlsystem ausfällt.
+Das sind also `r sprintf("%.2f", p_weniger_als_4 * 100)`% Wahrscheinlichkeit, dass das Kühlsystem ausfällt.
 
 
 ```{r}
@@ -967,7 +967,7 @@ ps_df |>
   ggplot(aes(x = Lüfterzahl, y = Pr)) +
   geom_col(fill = mittelgrau) +
   scale_x_continuous(breaks = 0:7) +
-  geom_label(aes(label = round(Pr, 3)), size = font_size) +
+  geom_label(aes(label = sprintf("%.3f", Pr)), size = font_size) +
   labs(y = "Wahrscheinlichkeit")
 
 ```
@@ -1204,8 +1204,7 @@ gg_exp <- function(r, max_x = NULL, probs = c(0.05, .25, .50, .75, .95)) {
       q = qexp(prob, rate = r)
     )
 
-  med_exp <- round(log(2) / r, 2)
-
+  med_exp <- sprintf("%.2f", log(2) / r)
 
   p <-
     ggplot(NULL, aes(c(0, max_x))) +
@@ -1221,7 +1220,7 @@ gg_exp <- function(r, max_x = NULL, probs = c(0.05, .25, .50, .75, .95)) {
              aes(xintercept = q)) +
     geom_label_repel(data = d_qs,
              aes(x = q,
-                 label = prob,
+                 label = sprintf("%.2f", prob),
                  y = prob),
              size = 5,
              direction = "x",
