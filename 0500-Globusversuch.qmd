@@ -1118,6 +1118,132 @@ Kurz: Der Globusversuch ist ein Muster für zweiwertige Zufallsversuche. Und sol
 ## Vertiefung
 
 
+### Wie Posteriori-Wahrscheinlichkeiten konvergieren {#sec-post-konvergenz}
+
+Fünf Personen bilden sich eine Meinung zu einer Hypothese $H$,
+etwa: "Das Medikament wirkt".
+Jede Person startet mit einer anderen Vorannahme (Apriori-Wahrscheinlichkeit $Pr(H)$).
+Dann beobachten alle fünf dieselbe Serie von Ereignissen $E$,
+die für $H$ sprechen, zum Beispiel wiederholt positive Studienergebnisse.
+Was passiert mit ihren Überzeugungen, je mehr Evidenz sich anhäuft?
+
+Das lässt sich mit Bayes' Theorem exakt beantworten,
+und zwar am elegantesten in der *Odds-Form*:
+
+$$Odds(H|E) = Odds(H) \cdot LR^n$$
+
+Dabei ist $Odds(H) = \frac{Pr(H)}{1-Pr(H)}$ die Chance (Odds) der Hypothese,
+$LR$ die *Likelihood-Ratio* (Beweiskraft) eines einzelnen Ereignisses
+und $n$ die Anzahl der Ereignisse.
+Jedes weitere für $H$ sprechende Ereignis multipliziert die Odds mit derselben $LR$.
+Aus den Odds erhält man die Posteriori-Wahrscheinlichkeit zurück:
+
+$$Pr(H|E) = \frac{Odds(H|E)}{1 + Odds(H|E)}$$
+
+Die fünf Beobachter unterscheiden sich nur in ihrem Startpunkt:
+
+| Typ            | Apriori $Pr(H)$ | Beschreibung                            |
+|----------------|-----------------|-----------------------------------------|
+| Ausschließer   | 0               | hält $H$ für absolut unmöglich          |
+| Skeptiker      | 0.001           | hält $H$ für extrem unwahrscheinlich    |
+| Kritiker       | 0.10            | ist eher dagegen                        |
+| Unentschiedene | 0.50            | hat keine Präferenz                     |
+| Zustimmer      | 0.90            | ist von Anfang an überzeugt             |
+
+: Die fünf Beobachter {#tbl-beobachter}
+
+::: {.content-visible when-format="html"}
+
+Mit dem ersten Regler stellen Sie die Anzahl der Ereignisse ein,
+mit dem zweiten die Beweiskraft ($LR$) pro Ereignis;
+der Knopf spielt die Anhäufung der Evidenz als Animation ab.
+Über die Auswahlkästchen blenden Sie einzelne Beobachter ein oder aus.
+
+```{ojs}
+//| echo: false
+typen = [
+  {label: "Ausschließer",   prior: 0,     farbe: "#2a78d6"},
+  {label: "Skeptiker",      prior: 0.001, farbe: "#1baf7a"},
+  {label: "Kritiker",       prior: 0.10,  farbe: "#eb6834"},
+  {label: "Unentschiedene", prior: 0.50,  farbe: "#eda100"},
+  {label: "Zustimmer",      prior: 0.90,  farbe: "#e87ba4"}
+]
+
+emax = 100
+
+viewof n_ereignisse = Inputs.range([0, emax], {label: "Anzahl Ereignisse E", step: 1, value: 20})
+viewof lr = Inputs.range([1.01, 2], {label: "Beweiskraft je Ereignis (LR)", step: 0.01, value: 1.15})
+
+viewof abspielen = Inputs.button("Abspielen")
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+// Animation: n_ereignisse hochzählen
+{
+  abspielen;
+  if (abspielen === 0) return;
+  const el = viewof n_ereignisse;
+  el.value = 0;
+  el.dispatchEvent(new Event("input", {bubbles: true}));
+  const id = setInterval(() => {
+    if (el.value >= emax) { clearInterval(id); return; }
+    el.value = +el.value + 1;
+    el.dispatchEvent(new Event("input", {bubbles: true}));
+  }, 80);
+  invalidation.then(() => clearInterval(id));
+}
+```
+
+```{ojs}
+//| echo: false
+verlauf = typen.flatMap(t => d3.range(0, emax + 1).map(n => {
+  const odds = t.prior / (1 - t.prior) * Math.pow(lr, n);
+  return {label: t.label, n, p: odds / (1 + odds)};
+}))
+
+viewof sichtbar = Inputs.checkbox(typen.map(t => t.label), {value: typen.map(t => t.label), label: "Beobachter"})
+
+Plot.plot({
+  width,
+  height: 380,
+  marginLeft: 50,
+  x: {label: "Anzahl Ereignisse E", domain: [0, emax]},
+  y: {label: "Pr(H | E)", domain: [0, 1]},
+  color: {domain: typen.map(t => t.label), range: typen.map(t => t.farbe), legend: true},
+  marks: [
+    Plot.ruleY([0]),
+    Plot.line(verlauf.filter(d => sichtbar.includes(d.label)), {x: "n", y: "p", stroke: "label", strokeWidth: 2}),
+    Plot.ruleX([n_ereignisse], {stroke: "grey", strokeDasharray: "4,3"}),
+    Plot.dot(verlauf.filter(d => d.n === n_ereignisse && sichtbar.includes(d.label)),
+             {x: "n", y: "p", fill: "label", r: 5}),
+    Plot.text(verlauf.filter(d => d.n === n_ereignisse && sichtbar.includes(d.label)),
+              {x: "n", y: "p", text: d => d.p.toFixed(3), dy: -10, dx: n_ereignisse > 85 ? -22 : 22})
+  ]
+})
+```
+
+Was zeigt das Diagramm?
+
+- Der *Ausschließer* (Apriori 0) verharrt bei $Pr(H)=0$, egal wie viel Evidenz hinzukommt:
+  Aus $Odds(H)=0$ folgt $0 \cdot LR^n = 0$.
+  Das ist *Cromwells Regel*: Wer eine Möglichkeit von vornherein auf exakt null setzt,
+  kann sie durch keine noch so große Datenmenge mehr revidieren.
+  Ein Apriori von exakt 0 (oder 1) ist eine unwiderrufliche Aussage -- das ist keine Schwäche der Formel, sondern ihre Konsequenz.
+- Alle anderen vier Beobachter -- selbst der *Skeptiker* mit Apriori 0.001 -- konvergieren gegen $Pr(H)=1$,
+  sofern die Evidenz konsistent für $H$ spricht. Sie brauchen nur unterschiedlich lange.
+  Das liegt am exponentiellen Wachstum der Odds: Ein kleines Apriori wird schneller aufgeholt, als die Intuition vermuten lässt.
+- Ein größeres $LR$ beschleunigt die Konvergenz aller beweglichen Kurven; die Reihenfolge bleibt gleich, da die Aprioris sich nicht ändern.
+
+Ein Apriori ist also ein Startpunkt, keine Festlegung -- außer man erklärt es per Definition dazu (Pr = 0 oder Pr = 1).
+Für jeden anderen Startwert gilt: Genug konsistente Evidenz gleicht fast jede Ausgangsüberzeugung aus.
+
+Die Idee für dieses Diagramm stammt von Karsten Lübke.
+
+:::
+
+
 ### Bayes-Video von 3b1b
 
 Das ["Bayes-Paradox-Video" von 3b1b](https://youtu.be/lG4VkPoG3ko) in YouTube präsentiert eine gut verständliche Darstellung des Bayes-Theorems aus einer zwar nicht gleichen,
