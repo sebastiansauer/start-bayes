@@ -870,17 +870,89 @@ Abbildung&nbsp;6.3: Virtueller Münzwurf: Simulierte Trefferzahlen im Vergleich 
 </div>
 </div>
 <p>Stellen wir uns ein Kistchen<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> mit sehr vielen<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> Losen vor, darunter 2/5 <em>T</em>reffer (Gewinn) und 3/5 <em>N</em>ieten, s. Abb. <a href="#fig-urne" class="quarto-xref">Abbildung&nbsp;<span>6.4</span></a>. Der Versuch läuft so ab: Wir ziehen ein Los, schauen ob es ein Treffer ist oder nicht, legen es zurück und ziehen erneut. Da <em>sehr</em> viele Lose im Kästchen liegen, ist es praktisch egal, ob wir das Los wieder zurücklegen. Die Wahrscheinlichkeit für einen Treffer ändert sich (so gut wie) nicht. Jetzt ziehen wir z. B. drei Lose. Wie groß ist die Wahrscheinlichkeit, davon 2 Treffer zu erzielen (egal in welcher Reihenfolge)?</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-urne" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-urne" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-urne-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0400-Verteilungen_files/figure-html/fig-urne-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Abbildung&nbsp;6.4: Ein Kästchen mit Losen, davon 2/5 Treffer und 3/5 Nieten"><img src="0400-Verteilungen_files/figure-html/fig-urne-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+<div class="urne-anim" style="max-width: 680px; margin: 0 auto;">
+  <canvas style="width: 100%; aspect-ratio: 10 / 3; display: block;" role="img" aria-label="Ein Kästchen mit 1000 Losen, davon 40 % Treffer und 60 % Nieten; die Lose bewegen sich langsam durcheinander"></canvas><div style="text-align: center; font-size: 0.9em;">
+    <span style="color:#E69F00;">●</span> Treffer &nbsp;
+    <span style="color:#0072B2;">●</span> Niete
+  </div>
+</div>
+<script>
+(function () {
+  const root = document.currentScript.previousElementSibling;
+  const cv = root.querySelector("canvas");
+  const ctx = cv.getContext("2d");
+  const N = 1000, R = 3.2;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const pts = Array.from({length: N}, (_, i) => ({
+    x: Math.random(), y: Math.random(),
+    vx: 0, vy: 0, hit: i < 0.4 * N
+  }));
+  let W, H, running = false, last = 0;
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(128,128,128,0.25)";
+    ctx.strokeStyle = "rgba(128,128,128,0.6)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(1, 1, W - 2, H - 2, 8);
+    ctx.fill(); ctx.stroke();
+    const m = R + 6;
+    for (const grp of [false, true]) {
+      ctx.fillStyle = grp ? "#E69F00" : "#0072B2";
+      ctx.beginPath();
+      for (const p of pts) {
+        if (p.hit !== grp) continue;
+        const x = m + p.x * (W - 2 * m), y = m + p.y * (H - 2 * m);
+        ctx.moveTo(x + R, y);
+        ctx.arc(x, y, R, 0, 2 * Math.PI);
+      }
+      ctx.fill();
+    }
+  }
+
+  function step(t) {
+    if (!running) return;
+    const dt = Math.min((t - last) / 1000, 0.1); last = t;
+    for (const p of pts) {
+      // langsames Wabern: zufälliger Antrieb mit Dämpfung
+      p.vx += (Math.random() - 0.5) * 0.12 * dt * 60 * 0.05;
+      p.vy += (Math.random() - 0.5) * 0.12 * dt * 60 * 0.05 * 3;
+      p.vx *= 0.98; p.vy *= 0.98;
+      p.x += p.vx * dt; p.y += p.vy * dt;
+      if (p.x < 0) { p.x = 0; p.vx = Math.abs(p.vx); }
+      if (p.x > 1) { p.x = 1; p.vx = -Math.abs(p.vx); }
+      if (p.y < 0) { p.y = 0; p.vy = Math.abs(p.vy); }
+      if (p.y > 1) { p.y = 1; p.vy = -Math.abs(p.vy); }
+    }
+    draw();
+    requestAnimationFrame(step);
+  }
+
+  new ResizeObserver(resize).observe(cv);
+  resize();
+  if (reduce) return;
+  new IntersectionObserver(es => {
+    const vis = es[0].isIntersecting;
+    if (vis && !running) { running = true; last = performance.now(); requestAnimationFrame(step); }
+    else if (!vis) running = false;
+  }).observe(cv);
+})();
+</script>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-urne-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;6.4: Ein Kästchen mit Losen, davon 2/5 Treffer und 3/5 Nieten
 </figcaption></figure>
-</div>
-</div>
 </div>
 <p>Praktischerweise ist die Binomialverteilung in R eingebaut, hier ist Pseudocode für Ihre Anwendung, s. <a href="#lst-binomial" class="quarto-xref">Listing&nbsp;<span>6.1</span></a>.</p>
 <div class="cell" data-layout-align="center">
@@ -921,87 +993,92 @@ Listing&nbsp;6.1: R-Pseudocode für die Binomialverteilung
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;span style="color:#E69F00;"&gt;&amp;#9679;&lt;/span&gt; Theorie (Binomialverteilung)</span></span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/div&gt;`</span><span class="op">;</span></span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> buttons <span class="op">=</span> <span class="fu">html</span><span class="vs">`&lt;div style="display:flex; gap:0.5em; align-items:center;"&gt;</span><span class="sc">${</span>b1<span class="sc">}${</span>bRun<span class="sc">}${</span>bReset<span class="sc">}${</span>info<span class="sc">}</span><span class="vs">&lt;/div&gt;`</span><span class="op">;</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  wrap<span class="op">.</span><span class="fu">append</span>(pIn<span class="op">,</span> nIn<span class="op">,</span> buttons<span class="op">,</span> plotDiv<span class="op">,</span> legend)<span class="op">;</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> counts<span class="op">,</span> reps<span class="op">,</span> timer <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> pmf <span class="op">=</span> (n<span class="op">,</span> p) <span class="kw">=&gt;</span> {</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> out <span class="op">=</span> []<span class="op">;</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> k <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> k <span class="op">&lt;=</span> n<span class="op">;</span> k<span class="op">++</span>) {</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> c <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> k<span class="op">;</span> i<span class="op">++</span>) c <span class="op">=</span> c <span class="op">*</span> (n <span class="op">-</span> k <span class="op">+</span> i) <span class="op">/</span> i<span class="op">;</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>      out<span class="op">.</span><span class="fu">push</span>(c <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span>(p<span class="op">,</span> k) <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span>(<span class="dv">1</span> <span class="op">-</span> p<span class="op">,</span> n <span class="op">-</span> k))<span class="op">;</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> out<span class="op">;</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> draw <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> n <span class="op">=</span> nIn<span class="op">.</span><span class="at">value</span><span class="op">,</span> p <span class="op">=</span> pIn<span class="op">.</span><span class="at">value</span><span class="op">;</span></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> theo <span class="op">=</span> <span class="fu">pmf</span>(n<span class="op">,</span> p)<span class="op">;</span></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> data <span class="op">=</span> counts<span class="op">.</span><span class="fu">map</span>((c<span class="op">,</span> k) <span class="kw">=&gt;</span> ({k<span class="op">,</span> <span class="dt">emp</span><span class="op">:</span> reps <span class="op">?</span> c <span class="op">/</span> reps <span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">theo</span><span class="op">:</span> theo[k]}))<span class="op">;</span></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> ymax <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="op">...</span>theo) <span class="op">*</span> <span class="fl">1.3</span><span class="op">,</span> <span class="op">...</span>data<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">emp</span> <span class="op">*</span> <span class="fl">1.05</span>)<span class="op">,</span> <span class="fl">0.1</span>)<span class="op">;</span></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> plot <span class="op">=</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>      <span class="dt">width</span><span class="op">:</span> <span class="dv">680</span><span class="op">,</span></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>      <span class="dt">height</span><span class="op">:</span> <span class="dv">340</span><span class="op">,</span></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>      <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">maxWidth</span><span class="op">:</span> <span class="st">"100%"</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="st">"auto"</span>}<span class="op">,</span></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Anzahl Treffer"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> d3<span class="op">.</span><span class="fu">range</span>(n <span class="op">+</span> <span class="dv">1</span>)<span class="op">,</span> <span class="dt">tickFormat</span><span class="op">:</span> d <span class="kw">=&gt;</span> d}<span class="op">,</span></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Relative Häufigkeit / Wahrscheinlichkeit"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> ymax]<span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>      <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">barY</span>(data<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"k"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"emp"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"#0072B2"</span>})<span class="op">,</span></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">dot</span>(data<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"k"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"theo"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"#E69F00"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#E69F00"</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>})<span class="op">,</span></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">ruleY</span>([<span class="dv">0</span>])</span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>      ]</span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>    plotDiv<span class="op">.</span><span class="fu">replaceChildren</span>(plot)<span class="op">;</span></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    info<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> <span class="vs">`Wiederholungen: </span><span class="sc">${</span>reps<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="st">"de-DE"</span>)<span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> stop <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (timer) <span class="fu">cancelAnimationFrame</span>(timer)<span class="op">;</span></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    timer <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>    bRun<span class="op">.</span><span class="fu">querySelector</span>(<span class="st">"button"</span>)<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> <span class="st">"Start"</span><span class="op">;</span></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> reset <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>()<span class="op">;</span></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>    counts <span class="op">=</span> <span class="kw">new</span> <span class="bu">Array</span>(nIn<span class="op">.</span><span class="at">value</span> <span class="op">+</span> <span class="dv">1</span>)<span class="op">.</span><span class="fu">fill</span>(<span class="dv">0</span>)<span class="op">;</span></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>    reps <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>    <span class="fu">draw</span>()<span class="op">;</span></span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> throwOnce <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> n <span class="op">=</span> nIn<span class="op">.</span><span class="at">value</span><span class="op">,</span> p <span class="op">=</span> pIn<span class="op">.</span><span class="at">value</span><span class="op">;</span></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> k <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++</span>) <span class="cf">if</span> (<span class="bu">Math</span><span class="op">.</span><span class="fu">random</span>() <span class="op">&lt;</span> p) k<span class="op">++;</span></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>    counts[k]<span class="op">++;</span></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>    reps<span class="op">++;</span></span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> step <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> perFrame <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="dv">1</span><span class="op">,</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>(<span class="dv">100</span><span class="op">,</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span>(reps <span class="op">/</span> <span class="dv">20</span>)))<span class="op">;</span></span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> perFrame <span class="op">&amp;&amp;</span> reps <span class="op">&lt;</span> maxReps<span class="op">;</span> i<span class="op">++</span>) <span class="fu">throwOnce</span>()<span class="op">;</span></span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>    <span class="fu">draw</span>()<span class="op">;</span></span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (reps <span class="op">&gt;=</span> maxReps) <span class="fu">stop</span>()<span class="op">;</span></span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> timer <span class="op">=</span> <span class="fu">requestAnimationFrame</span>(step)<span class="op">;</span></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>  pIn<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">"input"</span><span class="op">,</span> reset)<span class="op">;</span></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>  nIn<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">"input"</span><span class="op">,</span> reset)<span class="op">;</span></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>  bReset<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">"input"</span><span class="op">,</span> reset)<span class="op">;</span></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>  b1<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">"input"</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (reps <span class="op">&lt;</span> maxReps) { <span class="fu">throwOnce</span>()<span class="op">;</span> <span class="fu">draw</span>()<span class="op">;</span> }</span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>  bRun<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">"input"</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (timer) { <span class="fu">stop</span>()<span class="op">;</span> <span class="cf">return</span><span class="op">;</span> }</span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (reps <span class="op">&gt;=</span> maxReps) <span class="fu">reset</span>()<span class="op">;</span></span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>    bRun<span class="op">.</span><span class="fu">querySelector</span>(<span class="st">"button"</span>)<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> <span class="st">"Pause"</span><span class="op">;</span></span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>    timer <span class="op">=</span> <span class="fu">requestAnimationFrame</span>(step)<span class="op">;</span></span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>  invalidation<span class="op">.</span><span class="fu">then</span>(stop)<span class="op">;</span></span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reset</span>()<span class="op">;</span></span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> wrap<span class="op">;</span></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> el <span class="kw">of</span> [pIn<span class="op">,</span> nIn]) {</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    el<span class="op">.</span><span class="at">style</span><span class="op">.</span><span class="fu">setProperty</span>(<span class="st">"--label-width"</span><span class="op">,</span> <span class="st">"260px"</span>)<span class="op">;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    el<span class="op">.</span><span class="at">style</span><span class="op">.</span><span class="at">marginBottom</span> <span class="op">=</span> <span class="st">"0.8em"</span><span class="op">;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    el<span class="op">.</span><span class="fu">querySelector</span>(<span class="st">"label"</span>)<span class="op">.</span><span class="at">style</span><span class="op">.</span><span class="at">cssText</span> <span class="op">+=</span> <span class="st">"width:260px; min-width:260px; padding-right:1em; box-sizing:border-box;"</span><span class="op">;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  wrap<span class="op">.</span><span class="fu">append</span>(pIn<span class="op">,</span> nIn<span class="op">,</span> buttons<span class="op">,</span> plotDiv<span class="op">,</span> legend)<span class="op">;</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> counts<span class="op">,</span> reps<span class="op">,</span> timer <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> pmf <span class="op">=</span> (n<span class="op">,</span> p) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> out <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> k <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> k <span class="op">&lt;=</span> n<span class="op">;</span> k<span class="op">++</span>) {</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> c <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> k<span class="op">;</span> i<span class="op">++</span>) c <span class="op">=</span> c <span class="op">*</span> (n <span class="op">-</span> k <span class="op">+</span> i) <span class="op">/</span> i<span class="op">;</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>      out<span class="op">.</span><span class="fu">push</span>(c <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span>(p<span class="op">,</span> k) <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span>(<span class="dv">1</span> <span class="op">-</span> p<span class="op">,</span> n <span class="op">-</span> k))<span class="op">;</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> out<span class="op">;</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> draw <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> n <span class="op">=</span> nIn<span class="op">.</span><span class="at">value</span><span class="op">,</span> p <span class="op">=</span> pIn<span class="op">.</span><span class="at">value</span><span class="op">;</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> theo <span class="op">=</span> <span class="fu">pmf</span>(n<span class="op">,</span> p)<span class="op">;</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> data <span class="op">=</span> counts<span class="op">.</span><span class="fu">map</span>((c<span class="op">,</span> k) <span class="kw">=&gt;</span> ({k<span class="op">,</span> <span class="dt">emp</span><span class="op">:</span> reps <span class="op">?</span> c <span class="op">/</span> reps <span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">theo</span><span class="op">:</span> theo[k]}))<span class="op">;</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> ymax <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="op">...</span>theo) <span class="op">*</span> <span class="fl">1.3</span><span class="op">,</span> <span class="op">...</span>data<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">emp</span> <span class="op">*</span> <span class="fl">1.05</span>)<span class="op">,</span> <span class="fl">0.1</span>)<span class="op">;</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> plot <span class="op">=</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>      <span class="dt">width</span><span class="op">:</span> <span class="dv">680</span><span class="op">,</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>      <span class="dt">height</span><span class="op">:</span> <span class="dv">340</span><span class="op">,</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>      <span class="dt">style</span><span class="op">:</span> {<span class="dt">background</span><span class="op">:</span> <span class="st">"transparent"</span><span class="op">,</span> <span class="dt">maxWidth</span><span class="op">:</span> <span class="st">"100%"</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="st">"auto"</span>}<span class="op">,</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Anzahl Treffer"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> d3<span class="op">.</span><span class="fu">range</span>(n <span class="op">+</span> <span class="dv">1</span>)<span class="op">,</span> <span class="dt">tickFormat</span><span class="op">:</span> d <span class="kw">=&gt;</span> d}<span class="op">,</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Relative Häufigkeit / Wahrscheinlichkeit"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> ymax]<span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>      <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">barY</span>(data<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"k"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"emp"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"#0072B2"</span>})<span class="op">,</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">dot</span>(data<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"k"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"theo"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"#E69F00"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#E69F00"</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">5</span>})<span class="op">,</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">ruleY</span>([<span class="dv">0</span>])</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>      ]</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    plotDiv<span class="op">.</span><span class="fu">replaceChildren</span>(plot)<span class="op">;</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    info<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> <span class="vs">`Wiederholungen: </span><span class="sc">${</span>reps<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="st">"de-DE"</span>)<span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> stop <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (timer) <span class="fu">cancelAnimationFrame</span>(timer)<span class="op">;</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    timer <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>    bRun<span class="op">.</span><span class="fu">querySelector</span>(<span class="st">"button"</span>)<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> <span class="st">"Start"</span><span class="op">;</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> reset <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>()<span class="op">;</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>    counts <span class="op">=</span> <span class="kw">new</span> <span class="bu">Array</span>(nIn<span class="op">.</span><span class="at">value</span> <span class="op">+</span> <span class="dv">1</span>)<span class="op">.</span><span class="fu">fill</span>(<span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>    reps <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>    <span class="fu">draw</span>()<span class="op">;</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> throwOnce <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> n <span class="op">=</span> nIn<span class="op">.</span><span class="at">value</span><span class="op">,</span> p <span class="op">=</span> pIn<span class="op">.</span><span class="at">value</span><span class="op">;</span></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> k <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++</span>) <span class="cf">if</span> (<span class="bu">Math</span><span class="op">.</span><span class="fu">random</span>() <span class="op">&lt;</span> p) k<span class="op">++;</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>    counts[k]<span class="op">++;</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>    reps<span class="op">++;</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> step <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> perFrame <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="dv">1</span><span class="op">,</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>(<span class="dv">100</span><span class="op">,</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span>(reps <span class="op">/</span> <span class="dv">20</span>)))<span class="op">;</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> perFrame <span class="op">&amp;&amp;</span> reps <span class="op">&lt;</span> maxReps<span class="op">;</span> i<span class="op">++</span>) <span class="fu">throwOnce</span>()<span class="op">;</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>    <span class="fu">draw</span>()<span class="op">;</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (reps <span class="op">&gt;=</span> maxReps) <span class="fu">stop</span>()<span class="op">;</span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> timer <span class="op">=</span> <span class="fu">requestAnimationFrame</span>(step)<span class="op">;</span></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>  pIn<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">"input"</span><span class="op">,</span> reset)<span class="op">;</span></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>  nIn<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">"input"</span><span class="op">,</span> reset)<span class="op">;</span></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>  bReset<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">"input"</span><span class="op">,</span> reset)<span class="op">;</span></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>  b1<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">"input"</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (reps <span class="op">&lt;</span> maxReps) { <span class="fu">throwOnce</span>()<span class="op">;</span> <span class="fu">draw</span>()<span class="op">;</span> }</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>  bRun<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">"input"</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (timer) { <span class="fu">stop</span>()<span class="op">;</span> <span class="cf">return</span><span class="op">;</span> }</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (reps <span class="op">&gt;=</span> maxReps) <span class="fu">reset</span>()<span class="op">;</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>    bRun<span class="op">.</span><span class="fu">querySelector</span>(<span class="st">"button"</span>)<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> <span class="st">"Pause"</span><span class="op">;</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>    timer <span class="op">=</span> <span class="fu">requestAnimationFrame</span>(step)<span class="op">;</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>  invalidation<span class="op">.</span><span class="fu">then</span>(stop)<span class="op">;</span></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reset</span>()<span class="op">;</span></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> wrap<span class="op">;</span></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-1" data-nodetype="expression">
 
@@ -1016,7 +1093,7 @@ Listing&nbsp;6.1: R-Pseudocode für die Binomialverteilung
 </div>
 <div id="fig-sort3" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Drei Lose A, B und C, jedes ist entweder Treffer (T) oder Niete (N)">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-sort3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="img/lose-abc.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Abbildung&nbsp;6.5: Wie viele Möglichkeiten gibt es, 3 Lose (A, B, C) zu sortieren, von denen 2 Treffer sind und 1 Niete? Jedes Los kann Treffer (T) oder Niete (N) sein."><img src="img/lose-abc.png" class="img-fluid figure-img" style="width:90.0%" alt="Drei Lose A, B und C, jedes ist entweder Treffer (T) oder Niete (N)"></a>
+<a href="img/lose-abc.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Abbildung&nbsp;6.5: Wie viele Möglichkeiten gibt es, 3 Lose (A, B, C) zu sortieren, von denen 2 Treffer sind und 1 Niete? Jedes Los kann Treffer (T) oder Niete (N) sein."><img src="img/lose-abc.png" class="img-fluid figure-img" style="width:90.0%" alt="Drei Lose A, B und C, jedes ist entweder Treffer (T) oder Niete (N)"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sort3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;6.5: Wie viele Möglichkeiten gibt es, 3 Lose (A, B, C) zu sortieren, von denen 2 Treffer sind und 1 Niete? Jedes Los kann Treffer (T) oder Niete (N) sein.
@@ -1477,7 +1554,7 @@ Abbildung&nbsp;6.7: Verschiedene Binomialverteilungen
 <div class="cell-output-display">
 <div id="fig-luefter" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-luefter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0400-Verteilungen_files/figure-html/fig-luefter-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Abbildung&nbsp;6.8: Wahrscheinlichkeit, dass genau k = 0..7 Lüfter laufen"><img src="0400-Verteilungen_files/figure-html/fig-luefter-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+<a href="0400-Verteilungen_files/figure-html/fig-luefter-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Abbildung&nbsp;6.8: Wahrscheinlichkeit, dass genau k = 0..7 Lüfter laufen"><img src="0400-Verteilungen_files/figure-html/fig-luefter-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-luefter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;6.8: Wahrscheinlichkeit, dass genau k = 0..7 Lüfter laufen
@@ -1512,7 +1589,7 @@ Abbildung&nbsp;6.8: Wahrscheinlichkeit, dass genau k = 0..7 Lüfter laufen
 <div class="cell-output-display">
 <div id="fig-halbe-nv" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-halbe-nv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0400-Verteilungen_files/figure-html/fig-halbe-nv-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Abbildung&nbsp;6.9: Die halbe Normalverteilung"><img src="0400-Verteilungen_files/figure-html/fig-halbe-nv-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+<a href="0400-Verteilungen_files/figure-html/fig-halbe-nv-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Abbildung&nbsp;6.9: Die halbe Normalverteilung"><img src="0400-Verteilungen_files/figure-html/fig-halbe-nv-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-halbe-nv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;6.9: Die halbe Normalverteilung
@@ -1546,7 +1623,7 @@ Abbildung&nbsp;6.9: Die halbe Normalverteilung
 <div class="cell-output-display">
 <div id="fig-exp-hnv" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-exp-hnv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="0400-Verteilungen_files/figure-html/fig-exp-hnv-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Abbildung&nbsp;6.10: Exponentialverteilung (blau, Rate = 1) vs.&nbsp;halbe Normalverteilung (sd = 1)"><img src="0400-Verteilungen_files/figure-html/fig-exp-hnv-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
+<a href="0400-Verteilungen_files/figure-html/fig-exp-hnv-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Abbildung&nbsp;6.10: Exponentialverteilung (blau, Rate = 1) vs.&nbsp;halbe Normalverteilung (sd = 1)"><img src="0400-Verteilungen_files/figure-html/fig-exp-hnv-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-exp-hnv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Abbildung&nbsp;6.10: Exponentialverteilung (blau, Rate = 1) vs.&nbsp;halbe Normalverteilung (sd = 1)
@@ -1583,7 +1660,7 @@ Abbildung&nbsp;6.10: Exponentialverteilung (blau, Rate = 1) vs.&nbsp;halbe Norma
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="0400-Verteilungen_files/figure-html/unnamed-chunk-20-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Abbildung&nbsp;6.11: Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z. B. 0.95 = 95 %-Quantil)."><img src="0400-Verteilungen_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a></p>
+<figure class="figure"><p><a href="0400-Verteilungen_files/figure-html/unnamed-chunk-21-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Abbildung&nbsp;6.11: Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z. B. 0.95 = 95 %-Quantil)."><img src="0400-Verteilungen_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a></p>
 </figure>
 </div>
 </div>
@@ -1593,7 +1670,7 @@ Abbildung&nbsp;6.10: Exponentialverteilung (blau, Rate = 1) vs.&nbsp;halbe Norma
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="0400-Verteilungen_files/figure-html/unnamed-chunk-21-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Abbildung&nbsp;6.11: Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z. B. 0.95 = 95 %-Quantil)."><img src="0400-Verteilungen_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a></p>
+<figure class="figure"><p><a href="0400-Verteilungen_files/figure-html/exp-lambda1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Abbildung&nbsp;6.11: Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z. B. 0.95 = 95 %-Quantil)."><img src="0400-Verteilungen_files/figure-html/exp-lambda1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a></p>
 </figure>
 </div>
 </div>
@@ -1603,7 +1680,7 @@ Abbildung&nbsp;6.10: Exponentialverteilung (blau, Rate = 1) vs.&nbsp;halbe Norma
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="0400-Verteilungen_files/figure-html/unnamed-chunk-22-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Abbildung&nbsp;6.11: Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z. B. 0.95 = 95 %-Quantil)."><img src="0400-Verteilungen_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a></p>
+<figure class="figure"><p><a href="0400-Verteilungen_files/figure-html/unnamed-chunk-22-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Abbildung&nbsp;6.11: Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z. B. 0.95 = 95 %-Quantil)."><img src="0400-Verteilungen_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a></p>
 </figure>
 </div>
 </div>
@@ -1613,7 +1690,7 @@ Abbildung&nbsp;6.10: Exponentialverteilung (blau, Rate = 1) vs.&nbsp;halbe Norma
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="0400-Verteilungen_files/figure-html/unnamed-chunk-23-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Abbildung&nbsp;6.11: Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z. B. 0.95 = 95 %-Quantil)."><img src="0400-Verteilungen_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a></p>
+<figure class="figure"><p><a href="0400-Verteilungen_files/figure-html/unnamed-chunk-23-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Abbildung&nbsp;6.11: Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z. B. 0.95 = 95 %-Quantil)."><img src="0400-Verteilungen_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a></p>
 </figure>
 </div>
 </div>
@@ -1623,7 +1700,7 @@ Abbildung&nbsp;6.10: Exponentialverteilung (blau, Rate = 1) vs.&nbsp;halbe Norma
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="0400-Verteilungen_files/figure-html/unnamed-chunk-24-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15" title="Abbildung&nbsp;6.11: Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z. B. 0.95 = 95 %-Quantil)."><img src="0400-Verteilungen_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a></p>
+<figure class="figure"><p><a href="0400-Verteilungen_files/figure-html/unnamed-chunk-24-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Abbildung&nbsp;6.11: Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z. B. 0.95 = 95 %-Quantil)."><img src="0400-Verteilungen_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></a></p>
 </figure>
 </div>
 </div>
@@ -2037,7 +2114,7 @@ Tabelle&nbsp;6.2: Median-Werte von Exponentialverteilungen mit verschiedenen Wer
 </div>
 </section></section><section id="section" class="level2" data-number="6.9"><h2 data-number="6.9" class="anchored" data-anchor-id="section">
 <span class="header-section-number">6.9</span> —</h2>
-<p><a href="img/outro-04.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img src="img/outro-04.jpg" class="img-fluid" style="width:100.0%"></a></p>
+<p><a href="img/outro-04.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img src="img/outro-04.jpg" class="img-fluid" style="width:100.0%"></a></p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
@@ -2654,7 +2731,7 @@ window.onload = function() {
 }
 
 </script><script type="ojs-module-contents">
-eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6IntcbiAgY29uc3QgbWF4UmVwcyA9IDEwMDAwO1xuICBjb25zdCB3cmFwID0gaHRtbGA8ZGl2IGNsYXNzPVwiYmlub20tc2ltXCIgc3R5bGU9XCJtYXgtd2lkdGg6IDY4MHB4O1wiPjwvZGl2PmA7XG5cbiAgY29uc3QgcEluID0gSW5wdXRzLnJhbmdlKFswLCAxXSwge3N0ZXA6IDAuMDUsIHZhbHVlOiAwLjUsIGxhYmVsOiBcInAgKFRyZWZmZXJ3YWhyc2NoZWlubGljaGtlaXQpXCJ9KTtcbiAgY29uc3QgbkluID0gSW5wdXRzLnJhbmdlKFsxLCAyMF0sIHtzdGVwOiAxLCB2YWx1ZTogMTAsIGxhYmVsOiBcIm4gKEFuemFobCBNw7xuemVuKVwifSk7XG4gIGNvbnN0IGIxID0gSW5wdXRzLmJ1dHRvbihcIjHDl1wiKTtcbiAgY29uc3QgYlJ1biA9IElucHV0cy5idXR0b24oXCJTdGFydFwiKTtcbiAgY29uc3QgYlJlc2V0ID0gSW5wdXRzLmJ1dHRvbihcIlp1csO8Y2tzZXR6ZW5cIik7XG4gIGNvbnN0IGluZm8gPSBodG1sYDxzcGFuIHN0eWxlPVwibWFyZ2luLWxlZnQ6IDFlbTtcIj48L3NwYW4+YDtcbiAgY29uc3QgcGxvdERpdiA9IGh0bWxgPGRpdj48L2Rpdj5gO1xuICBjb25zdCBsZWdlbmQgPSBodG1sYDxkaXYgc3R5bGU9XCJmb250LXNpemU6IDAuOWVtO1wiPlxuICAgIDxzcGFuIHN0eWxlPVwiY29sb3I6IzAwNzJCMjtcIj4mIzk2MzI7PC9zcGFuPiBTaW11bGF0aW9uICZuYnNwO1xuICAgIDxzcGFuIHN0eWxlPVwiY29sb3I6I0U2OUYwMDtcIj4mIzk2Nzk7PC9zcGFuPiBUaGVvcmllIChCaW5vbWlhbHZlcnRlaWx1bmcpXG4gIDwvZGl2PmA7XG4gIGNvbnN0IGJ1dHRvbnMgPSBodG1sYDxkaXYgc3R5bGU9XCJkaXNwbGF5OmZsZXg7IGdhcDowLjVlbTsgYWxpZ24taXRlbXM6Y2VudGVyO1wiPiR7YjF9JHtiUnVufSR7YlJlc2V0fSR7aW5mb308L2Rpdj5gO1xuICB3cmFwLmFwcGVuZChwSW4sIG5JbiwgYnV0dG9ucywgcGxvdERpdiwgbGVnZW5kKTtcblxuICBsZXQgY291bnRzLCByZXBzLCB0aW1lciA9IG51bGw7XG5cbiAgY29uc3QgcG1mID0gKG4sIHApID0+IHtcbiAgICBjb25zdCBvdXQgPSBbXTtcbiAgICBmb3IgKGxldCBrID0gMDsgayA8PSBuOyBrKyspIHtcbiAgICAgIGxldCBjID0gMTtcbiAgICAgIGZvciAobGV0IGkgPSAxOyBpIDw9IGs7IGkrKykgYyA9IGMgKiAobiAtIGsgKyBpKSAvIGk7XG4gICAgICBvdXQucHVzaChjICogTWF0aC5wb3cocCwgaykgKiBNYXRoLnBvdygxIC0gcCwgbiAtIGspKTtcbiAgICB9XG4gICAgcmV0dXJuIG91dDtcbiAgfTtcblxuICBjb25zdCBkcmF3ID0gKCkgPT4ge1xuICAgIGNvbnN0IG4gPSBuSW4udmFsdWUsIHAgPSBwSW4udmFsdWU7XG4gICAgY29uc3QgdGhlbyA9IHBtZihuLCBwKTtcbiAgICBjb25zdCBkYXRhID0gY291bnRzLm1hcCgoYywgaykgPT4gKHtrLCBlbXA6IHJlcHMgPyBjIC8gcmVwcyA6IDAsIHRoZW86IHRoZW9ba119KSk7XG4gICAgY29uc3QgeW1heCA9IE1hdGgubWF4KE1hdGgubWF4KC4uLnRoZW8pICogMS4zLCAuLi5kYXRhLm1hcChkID0+IGQuZW1wICogMS4wNSksIDAuMSk7XG4gICAgY29uc3QgcGxvdCA9IFBsb3QucGxvdCh7XG4gICAgICB3aWR0aDogNjgwLFxuICAgICAgaGVpZ2h0OiAzNDAsXG4gICAgICBzdHlsZToge2JhY2tncm91bmQ6IFwidHJhbnNwYXJlbnRcIiwgbWF4V2lkdGg6IFwiMTAwJVwiLCBoZWlnaHQ6IFwiYXV0b1wifSxcbiAgICAgIHg6IHtsYWJlbDogXCJBbnphaGwgVHJlZmZlclwiLCBkb21haW46IGQzLnJhbmdlKG4gKyAxKSwgdGlja0Zvcm1hdDogZCA9PiBkfSxcbiAgICAgIHk6IHtsYWJlbDogXCJSZWxhdGl2ZSBIw6R1Zmlna2VpdCAvIFdhaHJzY2hlaW5saWNoa2VpdFwiLCBkb21haW46IFswLCB5bWF4XSwgZ3JpZDogdHJ1ZX0sXG4gICAgICBtYXJrczogW1xuICAgICAgICBQbG90LmJhclkoZGF0YSwge3g6IFwia1wiLCB5OiBcImVtcFwiLCBmaWxsOiBcIiMwMDcyQjJcIn0pLFxuICAgICAgICBQbG90LmRvdChkYXRhLCB7eDogXCJrXCIsIHk6IFwidGhlb1wiLCBmaWxsOiBcIiNFNjlGMDBcIiwgc3Ryb2tlOiBcIiNFNjlGMDBcIiwgcjogNX0pLFxuICAgICAgICBQbG90LnJ1bGVZKFswXSlcbiAgICAgIF1cbiAgICB9KTtcbiAgICBwbG90RGl2LnJlcGxhY2VDaGlsZHJlbihwbG90KTtcbiAgICBpbmZvLnRleHRDb250ZW50ID0gYFdpZWRlcmhvbHVuZ2VuOiAke3JlcHMudG9Mb2NhbGVTdHJpbmcoXCJkZS1ERVwiKX1gO1xuICB9O1xuXG4gIGNvbnN0IHN0b3AgPSAoKSA9PiB7XG4gICAgaWYgKHRpbWVyKSBjYW5jZWxBbmltYXRpb25GcmFtZSh0aW1lcik7XG4gICAgdGltZXIgPSBudWxsO1xuICAgIGJSdW4ucXVlcnlTZWxlY3RvcihcImJ1dHRvblwiKS50ZXh0Q29udGVudCA9IFwiU3RhcnRcIjtcbiAgfTtcblxuICBjb25zdCByZXNldCA9ICgpID0+IHtcbiAgICBzdG9wKCk7XG4gICAgY291bnRzID0gbmV3IEFycmF5KG5Jbi52YWx1ZSArIDEpLmZpbGwoMCk7XG4gICAgcmVwcyA9IDA7XG4gICAgZHJhdygpO1xuICB9O1xuXG4gIGNvbnN0IHRocm93T25jZSA9ICgpID0+IHtcbiAgICBjb25zdCBuID0gbkluLnZhbHVlLCBwID0gcEluLnZhbHVlO1xuICAgIGxldCBrID0gMDtcbiAgICBmb3IgKGxldCBpID0gMDsgaSA8IG47IGkrKykgaWYgKE1hdGgucmFuZG9tKCkgPCBwKSBrKys7XG4gICAgY291bnRzW2tdKys7XG4gICAgcmVwcysrO1xuICB9O1xuXG4gIGNvbnN0IHN0ZXAgPSAoKSA9PiB7XG4gICAgY29uc3QgcGVyRnJhbWUgPSBNYXRoLm1heCgxLCBNYXRoLm1pbigxMDAsIE1hdGguZmxvb3IocmVwcyAvIDIwKSkpO1xuICAgIGZvciAobGV0IGkgPSAwOyBpIDwgcGVyRnJhbWUgJiYgcmVwcyA8IG1heFJlcHM7IGkrKykgdGhyb3dPbmNlKCk7XG4gICAgZHJhdygpO1xuICAgIGlmIChyZXBzID49IG1heFJlcHMpIHN0b3AoKTtcbiAgICBlbHNlIHRpbWVyID0gcmVxdWVzdEFuaW1hdGlvbkZyYW1lKHN0ZXApO1xuICB9O1xuXG4gIHBJbi5hZGRFdmVudExpc3RlbmVyKFwiaW5wdXRcIiwgcmVzZXQpO1xuICBuSW4uYWRkRXZlbnRMaXN0ZW5lcihcImlucHV0XCIsIHJlc2V0KTtcbiAgYlJlc2V0LmFkZEV2ZW50TGlzdGVuZXIoXCJpbnB1dFwiLCByZXNldCk7XG4gIGIxLmFkZEV2ZW50TGlzdGVuZXIoXCJpbnB1dFwiLCAoKSA9PiB7XG4gICAgaWYgKHJlcHMgPCBtYXhSZXBzKSB7IHRocm93T25jZSgpOyBkcmF3KCk7IH1cbiAgfSk7XG4gIGJSdW4uYWRkRXZlbnRMaXN0ZW5lcihcImlucHV0XCIsICgpID0+IHtcbiAgICBpZiAodGltZXIpIHsgc3RvcCgpOyByZXR1cm47IH1cbiAgICBpZiAocmVwcyA+PSBtYXhSZXBzKSByZXNldCgpO1xuICAgIGJSdW4ucXVlcnlTZWxlY3RvcihcImJ1dHRvblwiKS50ZXh0Q29udGVudCA9IFwiUGF1c2VcIjtcbiAgICB0aW1lciA9IHJlcXVlc3RBbmltYXRpb25GcmFtZShzdGVwKTtcbiAgfSk7XG5cbiAgaW52YWxpZGF0aW9uLnRoZW4oc3RvcCk7XG4gIHJlc2V0KCk7XG4gIHJldHVybiB3cmFwO1xufVxuIn1dfQ==
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6IntcbiAgY29uc3QgbWF4UmVwcyA9IDEwMDAwO1xuICBjb25zdCB3cmFwID0gaHRtbGA8ZGl2IGNsYXNzPVwiYmlub20tc2ltXCIgc3R5bGU9XCJtYXgtd2lkdGg6IDY4MHB4O1wiPjwvZGl2PmA7XG5cbiAgY29uc3QgcEluID0gSW5wdXRzLnJhbmdlKFswLCAxXSwge3N0ZXA6IDAuMDUsIHZhbHVlOiAwLjUsIGxhYmVsOiBcInAgKFRyZWZmZXJ3YWhyc2NoZWlubGljaGtlaXQpXCJ9KTtcbiAgY29uc3QgbkluID0gSW5wdXRzLnJhbmdlKFsxLCAyMF0sIHtzdGVwOiAxLCB2YWx1ZTogMTAsIGxhYmVsOiBcIm4gKEFuemFobCBNw7xuemVuKVwifSk7XG4gIGNvbnN0IGIxID0gSW5wdXRzLmJ1dHRvbihcIjHDl1wiKTtcbiAgY29uc3QgYlJ1biA9IElucHV0cy5idXR0b24oXCJTdGFydFwiKTtcbiAgY29uc3QgYlJlc2V0ID0gSW5wdXRzLmJ1dHRvbihcIlp1csO8Y2tzZXR6ZW5cIik7XG4gIGNvbnN0IGluZm8gPSBodG1sYDxzcGFuIHN0eWxlPVwibWFyZ2luLWxlZnQ6IDFlbTtcIj48L3NwYW4+YDtcbiAgY29uc3QgcGxvdERpdiA9IGh0bWxgPGRpdj48L2Rpdj5gO1xuICBjb25zdCBsZWdlbmQgPSBodG1sYDxkaXYgc3R5bGU9XCJmb250LXNpemU6IDAuOWVtO1wiPlxuICAgIDxzcGFuIHN0eWxlPVwiY29sb3I6IzAwNzJCMjtcIj4mIzk2MzI7PC9zcGFuPiBTaW11bGF0aW9uICZuYnNwO1xuICAgIDxzcGFuIHN0eWxlPVwiY29sb3I6I0U2OUYwMDtcIj4mIzk2Nzk7PC9zcGFuPiBUaGVvcmllIChCaW5vbWlhbHZlcnRlaWx1bmcpXG4gIDwvZGl2PmA7XG4gIGNvbnN0IGJ1dHRvbnMgPSBodG1sYDxkaXYgc3R5bGU9XCJkaXNwbGF5OmZsZXg7IGdhcDowLjVlbTsgYWxpZ24taXRlbXM6Y2VudGVyO1wiPiR7YjF9JHtiUnVufSR7YlJlc2V0fSR7aW5mb308L2Rpdj5gO1xuICBmb3IgKGNvbnN0IGVsIG9mIFtwSW4sIG5Jbl0pIHtcbiAgICBlbC5zdHlsZS5zZXRQcm9wZXJ0eShcIi0tbGFiZWwtd2lkdGhcIiwgXCIyNjBweFwiKTtcbiAgICBlbC5zdHlsZS5tYXJnaW5Cb3R0b20gPSBcIjAuOGVtXCI7XG4gICAgZWwucXVlcnlTZWxlY3RvcihcImxhYmVsXCIpLnN0eWxlLmNzc1RleHQgKz0gXCJ3aWR0aDoyNjBweDsgbWluLXdpZHRoOjI2MHB4OyBwYWRkaW5nLXJpZ2h0OjFlbTsgYm94LXNpemluZzpib3JkZXItYm94O1wiO1xuICB9XG4gIHdyYXAuYXBwZW5kKHBJbiwgbkluLCBidXR0b25zLCBwbG90RGl2LCBsZWdlbmQpO1xuXG4gIGxldCBjb3VudHMsIHJlcHMsIHRpbWVyID0gbnVsbDtcblxuICBjb25zdCBwbWYgPSAobiwgcCkgPT4ge1xuICAgIGNvbnN0IG91dCA9IFtdO1xuICAgIGZvciAobGV0IGsgPSAwOyBrIDw9IG47IGsrKykge1xuICAgICAgbGV0IGMgPSAxO1xuICAgICAgZm9yIChsZXQgaSA9IDE7IGkgPD0gazsgaSsrKSBjID0gYyAqIChuIC0gayArIGkpIC8gaTtcbiAgICAgIG91dC5wdXNoKGMgKiBNYXRoLnBvdyhwLCBrKSAqIE1hdGgucG93KDEgLSBwLCBuIC0gaykpO1xuICAgIH1cbiAgICByZXR1cm4gb3V0O1xuICB9O1xuXG4gIGNvbnN0IGRyYXcgPSAoKSA9PiB7XG4gICAgY29uc3QgbiA9IG5Jbi52YWx1ZSwgcCA9IHBJbi52YWx1ZTtcbiAgICBjb25zdCB0aGVvID0gcG1mKG4sIHApO1xuICAgIGNvbnN0IGRhdGEgPSBjb3VudHMubWFwKChjLCBrKSA9PiAoe2ssIGVtcDogcmVwcyA/IGMgLyByZXBzIDogMCwgdGhlbzogdGhlb1trXX0pKTtcbiAgICBjb25zdCB5bWF4ID0gTWF0aC5tYXgoTWF0aC5tYXgoLi4udGhlbykgKiAxLjMsIC4uLmRhdGEubWFwKGQgPT4gZC5lbXAgKiAxLjA1KSwgMC4xKTtcbiAgICBjb25zdCBwbG90ID0gUGxvdC5wbG90KHtcbiAgICAgIHdpZHRoOiA2ODAsXG4gICAgICBoZWlnaHQ6IDM0MCxcbiAgICAgIHN0eWxlOiB7YmFja2dyb3VuZDogXCJ0cmFuc3BhcmVudFwiLCBtYXhXaWR0aDogXCIxMDAlXCIsIGhlaWdodDogXCJhdXRvXCJ9LFxuICAgICAgeDoge2xhYmVsOiBcIkFuemFobCBUcmVmZmVyXCIsIGRvbWFpbjogZDMucmFuZ2UobiArIDEpLCB0aWNrRm9ybWF0OiBkID0+IGR9LFxuICAgICAgeToge2xhYmVsOiBcIlJlbGF0aXZlIEjDpHVmaWdrZWl0IC8gV2FocnNjaGVpbmxpY2hrZWl0XCIsIGRvbWFpbjogWzAsIHltYXhdLCBncmlkOiB0cnVlfSxcbiAgICAgIG1hcmtzOiBbXG4gICAgICAgIFBsb3QuYmFyWShkYXRhLCB7eDogXCJrXCIsIHk6IFwiZW1wXCIsIGZpbGw6IFwiIzAwNzJCMlwifSksXG4gICAgICAgIFBsb3QuZG90KGRhdGEsIHt4OiBcImtcIiwgeTogXCJ0aGVvXCIsIGZpbGw6IFwiI0U2OUYwMFwiLCBzdHJva2U6IFwiI0U2OUYwMFwiLCByOiA1fSksXG4gICAgICAgIFBsb3QucnVsZVkoWzBdKVxuICAgICAgXVxuICAgIH0pO1xuICAgIHBsb3REaXYucmVwbGFjZUNoaWxkcmVuKHBsb3QpO1xuICAgIGluZm8udGV4dENvbnRlbnQgPSBgV2llZGVyaG9sdW5nZW46ICR7cmVwcy50b0xvY2FsZVN0cmluZyhcImRlLURFXCIpfWA7XG4gIH07XG5cbiAgY29uc3Qgc3RvcCA9ICgpID0+IHtcbiAgICBpZiAodGltZXIpIGNhbmNlbEFuaW1hdGlvbkZyYW1lKHRpbWVyKTtcbiAgICB0aW1lciA9IG51bGw7XG4gICAgYlJ1bi5xdWVyeVNlbGVjdG9yKFwiYnV0dG9uXCIpLnRleHRDb250ZW50ID0gXCJTdGFydFwiO1xuICB9O1xuXG4gIGNvbnN0IHJlc2V0ID0gKCkgPT4ge1xuICAgIHN0b3AoKTtcbiAgICBjb3VudHMgPSBuZXcgQXJyYXkobkluLnZhbHVlICsgMSkuZmlsbCgwKTtcbiAgICByZXBzID0gMDtcbiAgICBkcmF3KCk7XG4gIH07XG5cbiAgY29uc3QgdGhyb3dPbmNlID0gKCkgPT4ge1xuICAgIGNvbnN0IG4gPSBuSW4udmFsdWUsIHAgPSBwSW4udmFsdWU7XG4gICAgbGV0IGsgPSAwO1xuICAgIGZvciAobGV0IGkgPSAwOyBpIDwgbjsgaSsrKSBpZiAoTWF0aC5yYW5kb20oKSA8IHApIGsrKztcbiAgICBjb3VudHNba10rKztcbiAgICByZXBzKys7XG4gIH07XG5cbiAgY29uc3Qgc3RlcCA9ICgpID0+IHtcbiAgICBjb25zdCBwZXJGcmFtZSA9IE1hdGgubWF4KDEsIE1hdGgubWluKDEwMCwgTWF0aC5mbG9vcihyZXBzIC8gMjApKSk7XG4gICAgZm9yIChsZXQgaSA9IDA7IGkgPCBwZXJGcmFtZSAmJiByZXBzIDwgbWF4UmVwczsgaSsrKSB0aHJvd09uY2UoKTtcbiAgICBkcmF3KCk7XG4gICAgaWYgKHJlcHMgPj0gbWF4UmVwcykgc3RvcCgpO1xuICAgIGVsc2UgdGltZXIgPSByZXF1ZXN0QW5pbWF0aW9uRnJhbWUoc3RlcCk7XG4gIH07XG5cbiAgcEluLmFkZEV2ZW50TGlzdGVuZXIoXCJpbnB1dFwiLCByZXNldCk7XG4gIG5Jbi5hZGRFdmVudExpc3RlbmVyKFwiaW5wdXRcIiwgcmVzZXQpO1xuICBiUmVzZXQuYWRkRXZlbnRMaXN0ZW5lcihcImlucHV0XCIsIHJlc2V0KTtcbiAgYjEuYWRkRXZlbnRMaXN0ZW5lcihcImlucHV0XCIsICgpID0+IHtcbiAgICBpZiAocmVwcyA8IG1heFJlcHMpIHsgdGhyb3dPbmNlKCk7IGRyYXcoKTsgfVxuICB9KTtcbiAgYlJ1bi5hZGRFdmVudExpc3RlbmVyKFwiaW5wdXRcIiwgKCkgPT4ge1xuICAgIGlmICh0aW1lcikgeyBzdG9wKCk7IHJldHVybjsgfVxuICAgIGlmIChyZXBzID49IG1heFJlcHMpIHJlc2V0KCk7XG4gICAgYlJ1bi5xdWVyeVNlbGVjdG9yKFwiYnV0dG9uXCIpLnRleHRDb250ZW50ID0gXCJQYXVzZVwiO1xuICAgIHRpbWVyID0gcmVxdWVzdEFuaW1hdGlvbkZyYW1lKHN0ZXApO1xuICB9KTtcblxuICBpbnZhbGlkYXRpb24udGhlbihzdG9wKTtcbiAgcmVzZXQoKTtcbiAgcmV0dXJuIHdyYXA7XG59XG4ifV19
 </script><script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
 window._ojs.paths.runtimeToDoc = "../..";
