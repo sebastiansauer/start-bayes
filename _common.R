@@ -111,6 +111,7 @@ knitr::opts_hooks$set(label = function(options) {
                  "|plot[_a-zA-Z0-9]*\\s*\\(",        # plot(), plot_rope_hdi() ...
                  "|[a-zA-Z0-9]_?plot\\b|plot_[a-zA-Z0-9_]+",  # uniform_plot, plot_maschine_schrott
                  "|pp_check|\\bgeom_|\\blabs\\(",
+                "|source\\(\\s*[\"'](\\./)?(R-Code|funs|children)/",  # eingelesene Plot-Skripte
                  "|(?m)^\\s*p[0-9a-z_]*\\s*$"),      # gespeicherter Plot, z. B. "p3"
           code, perl = TRUE)
   if (is_fig_chunk) {
