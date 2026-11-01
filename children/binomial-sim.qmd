@@ -1,0 +1,117 @@
+::: {.content-visible when-format="html"}
+
+:::{#exr-binom-sim}
+**Münzen werfen, Binomialverteilung wachsen sehen**
+
+Stellen Sie die Trefferwahrscheinlichkeit $p$ und die Anzahl der Münzen $n$ ein, die gleichzeitig geworfen werden.
+Ein Klick auf "1×" führt das Experiment einmal aus: Es zählt, wie viele der $n$ Münzen "Treffer" zeigen.
+"Start" wiederholt das Experiment immer wieder, und die Balken (relative Häufigkeit der Treffer-Anzahlen) wachsen;
+die orangenen Punkte zeigen die theoretische Binomialverteilung.
+
+1. Stellen Sie $n=4$ und $p=0.5$ ein. Wie sieht die Verteilung aus?
+2. Was ändert sich bei $p=0.9$?
+3. Was passiert mit den Balken, wenn die Zahl der Wiederholungen wächst?
+:::
+
+```{ojs}
+//| echo: false
+{
+  const maxReps = 10000;
+  const wrap = html`<div class="binom-sim" style="max-width: 680px;"></div>`;
+
+  const pIn = Inputs.range([0, 1], {step: 0.05, value: 0.5, label: "p (Trefferwahrscheinlichkeit)"});
+  const nIn = Inputs.range([1, 20], {step: 1, value: 10, label: "n (Anzahl Münzen)"});
+  const b1 = Inputs.button("1×");
+  const bRun = Inputs.button("Start");
+  const bReset = Inputs.button("Zurücksetzen");
+  const info = html`<span style="margin-left: 1em;"></span>`;
+  const plotDiv = html`<div></div>`;
+  const legend = html`<div style="font-size: 0.9em;">
+    <span style="color:#0072B2;">&#9632;</span> Simulation &nbsp;
+    <span style="color:#E69F00;">&#9679;</span> Theorie (Binomialverteilung)
+  </div>`;
+  const buttons = html`<div style="display:flex; gap:0.5em; align-items:center;">${b1}${bRun}${bReset}${info}</div>`;
+  wrap.append(pIn, nIn, buttons, plotDiv, legend);
+
+  let counts, reps, timer = null;
+
+  const pmf = (n, p) => {
+    const out = [];
+    for (let k = 0; k <= n; k++) {
+      let c = 1;
+      for (let i = 1; i <= k; i++) c = c * (n - k + i) / i;
+      out.push(c * Math.pow(p, k) * Math.pow(1 - p, n - k));
+    }
+    return out;
+  };
+
+  const draw = () => {
+    const n = nIn.value, p = pIn.value;
+    const theo = pmf(n, p);
+    const data = counts.map((c, k) => ({k, emp: reps ? c / reps : 0, theo: theo[k]}));
+    const ymax = Math.max(Math.max(...theo) * 1.3, ...data.map(d => d.emp * 1.05), 0.1);
+    const plot = Plot.plot({
+      width: 680,
+      height: 340,
+      style: {background: "transparent", maxWidth: "100%", height: "auto"},
+      x: {label: "Anzahl Treffer", domain: d3.range(n + 1), tickFormat: d => d},
+      y: {label: "Relative Häufigkeit / Wahrscheinlichkeit", domain: [0, ymax], grid: true},
+      marks: [
+        Plot.barY(data, {x: "k", y: "emp", fill: "#0072B2"}),
+        Plot.dot(data, {x: "k", y: "theo", fill: "#E69F00", stroke: "#E69F00", r: 5}),
+        Plot.ruleY([0])
+      ]
+    });
+    plotDiv.replaceChildren(plot);
+    info.textContent = `Wiederholungen: ${reps.toLocaleString("de-DE")}`;
+  };
+
+  const stop = () => {
+    if (timer) cancelAnimationFrame(timer);
+    timer = null;
+    bRun.querySelector("button").textContent = "Start";
+  };
+
+  const reset = () => {
+    stop();
+    counts = new Array(nIn.value + 1).fill(0);
+    reps = 0;
+    draw();
+  };
+
+  const throwOnce = () => {
+    const n = nIn.value, p = pIn.value;
+    let k = 0;
+    for (let i = 0; i < n; i++) if (Math.random() < p) k++;
+    counts[k]++;
+    reps++;
+  };
+
+  const step = () => {
+    const perFrame = Math.max(1, Math.min(100, Math.floor(reps / 20)));
+    for (let i = 0; i < perFrame && reps < maxReps; i++) throwOnce();
+    draw();
+    if (reps >= maxReps) stop();
+    else timer = requestAnimationFrame(step);
+  };
+
+  pIn.addEventListener("input", reset);
+  nIn.addEventListener("input", reset);
+  bReset.addEventListener("input", reset);
+  b1.addEventListener("input", () => {
+    if (reps < maxReps) { throwOnce(); draw(); }
+  });
+  bRun.addEventListener("input", () => {
+    if (timer) { stop(); return; }
+    if (reps >= maxReps) reset();
+    bRun.querySelector("button").textContent = "Pause";
+    timer = requestAnimationFrame(step);
+  });
+
+  invalidation.then(stop);
+  reset();
+  return wrap;
+}
+```
+
+:::
