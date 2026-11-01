@@ -263,9 +263,94 @@ davon 2 Treffer zu erzielen (egal in welcher Reihenfolge)?
 
 
 
+::: {#fig-urne}
+
+::: {.content-visible when-format="html"}
+```{=html}
+<div class="urne-anim" style="max-width: 680px; margin: 0 auto;">
+  <canvas style="width: 100%; aspect-ratio: 10 / 3; display: block;" role="img"
+    aria-label="Ein Kästchen mit 1000 Losen, davon 40 % Treffer und 60 % Nieten; die Lose bewegen sich langsam durcheinander"></canvas>
+  <div style="text-align: center; font-size: 0.9em;">
+    <span style="color:#E69F00;">&#9679;</span> Treffer &nbsp;
+    <span style="color:#0072B2;">&#9679;</span> Niete
+  </div>
+</div>
+<script>
+(function () {
+  const root = document.currentScript.previousElementSibling;
+  const cv = root.querySelector("canvas");
+  const ctx = cv.getContext("2d");
+  const N = 1000, R = 3.2;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const pts = Array.from({length: N}, (_, i) => ({
+    x: Math.random(), y: Math.random(),
+    vx: 0, vy: 0, hit: i < 0.4 * N
+  }));
+  let W, H, running = false, last = 0;
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(128,128,128,0.25)";
+    ctx.strokeStyle = "rgba(128,128,128,0.6)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(1, 1, W - 2, H - 2, 8);
+    ctx.fill(); ctx.stroke();
+    const m = R + 6;
+    for (const grp of [false, true]) {
+      ctx.fillStyle = grp ? "#E69F00" : "#0072B2";
+      ctx.beginPath();
+      for (const p of pts) {
+        if (p.hit !== grp) continue;
+        const x = m + p.x * (W - 2 * m), y = m + p.y * (H - 2 * m);
+        ctx.moveTo(x + R, y);
+        ctx.arc(x, y, R, 0, 2 * Math.PI);
+      }
+      ctx.fill();
+    }
+  }
+
+  function step(t) {
+    if (!running) return;
+    const dt = Math.min((t - last) / 1000, 0.1); last = t;
+    for (const p of pts) {
+      // langsames Wabern: zufälliger Antrieb mit Dämpfung
+      p.vx += (Math.random() - 0.5) * 0.12 * dt * 60 * 0.05;
+      p.vy += (Math.random() - 0.5) * 0.12 * dt * 60 * 0.05 * 3;
+      p.vx *= 0.98; p.vy *= 0.98;
+      p.x += p.vx * dt; p.y += p.vy * dt;
+      if (p.x < 0) { p.x = 0; p.vx = Math.abs(p.vx); }
+      if (p.x > 1) { p.x = 1; p.vx = -Math.abs(p.vx); }
+      if (p.y < 0) { p.y = 0; p.vy = Math.abs(p.vy); }
+      if (p.y > 1) { p.y = 1; p.vy = -Math.abs(p.vy); }
+    }
+    draw();
+    requestAnimationFrame(step);
+  }
+
+  new ResizeObserver(resize).observe(cv);
+  resize();
+  if (reduce) return;
+  new IntersectionObserver(es => {
+    const vis = es[0].isIntersecting;
+    if (vis && !running) { running = true; last = performance.now(); requestAnimationFrame(step); }
+    else if (!vis) running = false;
+  }).observe(cv);
+})();
+</script>
+```
+:::
+
+::: {.content-visible unless-format="html"}
 ```{r echo = FALSE}
-#| fig-cap: Ein Kästchen mit Losen, davon 2/5 Treffer und 3/5 Nieten
-#| label: fig-urne
 #| fig-asp: 0.3
 #| echo: false  
 
@@ -298,8 +383,11 @@ p_urn2 <-
   theme(legend.position = "bottom")
 
 p_urn2
-  
 ```
+:::
+
+Ein Kästchen mit Losen, davon 2/5 Treffer und 3/5 Nieten
+:::
 
 
 
