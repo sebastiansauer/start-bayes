@@ -1220,16 +1220,13 @@ ggplot(data.frame(x=c(0:4), y = 0), aes(x,y)) +
 
 
 
-:::{#exm-zweiwuerfel}
-Der zweifache Würfelwurf ist ein typisches Lehrbuchbeispiel für eine diskrete Zufallsvariable.
-^[da einfach und deutlich]
-Hier ist $S$^[S wie Summe] die Augen*s*umme des zweifachen Würfelwurfs 
-und $S$ ist eine Zahl zwischen 2 und 12.
+::: {#exm-fuenfmuenzen}
+Der fünffache Münzwurf ist ein typisches Lehrbuchbeispiel für eine diskrete Zufallsvariable.
+Hier ist $X$ die *Anzahl* "Kopf" in fünf Würfen einer fairen Münze 
+und $X$ ist eine ganze Zahl zwischen 0 und 5.
 Für jede Realisation $X=x$ kann man die Wahrscheinlichkeit berechnen, 
-@fig-zweiwuerfel-vert versinnbildlicht die Wahrscheinlichkeit für jede Realisation von $X$. $\square$
+@fig-5coins-prob zeigt die Wahrscheinlichkeit für jede Realisation von $X$. $\square$
 :::
-
-![Augensumme des zweifachen Würfelwurfs; für jede Realisation von S ist die zugehörige Wahrscheinlichkeit dargestellt. Bildquelle: Tim Stellmach, Wikipedia, PD](img/Dice_Distribution_(bar).svg.png){#fig-zweiwuerfel-vert width=50%}
 
 
 
@@ -1284,27 +1281,20 @@ knitr::kable(d) |>
 #| echo: false
 #| message: false
 #| warning: false
-dice_outcomes <- expand.grid(Die1 = 1:6, Die2 = 1:6)
+k <- 0:5
+p_k <- dbinom(k, size = 5, prob = 0.5)
 
-# Calculate the sum of the two dice for each outcome
-dice_outcomes$Sum <- dice_outcomes$Die1 + dice_outcomes$Die2
-
-# Calculate the probability of each sum using the table function
-sum_counts <- table(dice_outcomes$Sum)
-total_outcomes <- sum(sum_counts)
-probabilities <- sum_counts / total_outcomes
-
-twodice <- tibble(
-  Augensumme = 2:12,
-  p = probabilities) |> 
+fivecoins <- tibble(
+  Anzahl_Kopf = k,
+  p = p_k) |> 
   mutate(p_cum = cumsum(p))
 
-p_twodice <-
-  ggplot(twodice, aes(x = Augensumme, y = p)) +
+p_fivecoins <-
+  ggplot(fivecoins, aes(x = Anzahl_Kopf, y = p)) +
   geom_col(fill = mittelgrau) +
   geom_label(aes(y = p, label = sprintf("%.2f", p)), vjust = 0) +
-  scale_x_continuous(breaks = 1:12) +
-  labs(x = "Augensumme", y = "Wahrscheinlichkeit")
+  scale_x_continuous(breaks = 0:5) +
+  labs(x = "Anzahl Kopf", y = "Wahrscheinlichkeit")
 ```
 
 
@@ -1315,34 +1305,26 @@ p_twodice <-
 #| message: false
 #| warning: false
 #| 
-num_trials <- 1000  # You can change this to the desired number of trials
+num_trials <- 1000  # Anzahl Wiederholungen des fünffachen Münzwurfs
 
-# Simulate repeated throws of two dice
-results <- replicate(num_trials, {
-  die1 <- sample(1:6, 1, replace = TRUE)  # Simulate the first die
-  die2 <- sample(1:6, 1, replace = TRUE)  # Simulate the second die
-  c(Die1 = die1, Die2 = die2)  # Return the results as a vector
-}) |> 
-  t() |> 
-  as_tibble() |> 
-  mutate(Augensumme  = Die1 + Die2)
-
-# Display
+set.seed(42)
+results <- tibble(Anzahl_Kopf = rbinom(num_trials, size = 5, prob = 0.5))
 
 results_count <-
   results |> 
-  count(Augensumme) |> 
+  count(Anzahl_Kopf) |> 
+  complete(Anzahl_Kopf = 0:5, fill = list(n = 0)) |> 
   mutate(prop = n/num_trials) |> 
   mutate(n_cum = cumsum(n),
          prop_cum = cumsum(prop))
 
-p_sim2dice <-
+p_sim5coins <-
   ggplot(results_count) +
-  aes(x = Augensumme, y = n) +
+  aes(x = Anzahl_Kopf, y = n) +
   geom_col(fill = mittelgrau) +
   geom_label(aes(y = n, label = sprintf("%.2f", prop))) +
-  scale_x_continuous(breaks = 1:12) +
-  labs(x = "Augensumme", y = "Häufigkeit")
+  scale_x_continuous(breaks = 0:5) +
+  labs(x = "Anzahl Kopf", y = "Häufigkeit")
 ```
 
 
@@ -1350,7 +1332,7 @@ p_sim2dice <-
 
 
 Eine *Verteilung* zeigt, welche Ausprägungen eine Variable aufweist und wie häufig bzw. wahrscheinlich diese sind. 
-Einfach gesprochen veranschaulicht ein Balken- oder Histogramm eine Verteilung. Man unterscheidet Häufigkeitsverteilungen (s. Abb. @fig-2dice-sim) von Wahrscheinlichkeitsverteilungen (Abb. @fig-2dice-prob).
+Einfach gesprochen veranschaulicht ein Balken- oder Histogramm eine Verteilung. Man unterscheidet Häufigkeitsverteilungen (s. Abb. @fig-5coins-sim) von Wahrscheinlichkeitsverteilungen (Abb. @fig-5coins-prob).
 
 
 
@@ -1360,9 +1342,9 @@ Einfach gesprochen veranschaulicht ein Balken- oder Histogramm eine Verteilung. 
 ::: {.column width="50%"}
 ```{r}
 #| echo: false
-#| fig-cap: Wahrscheinlichkeitsverteilung der Zufallsvariable "Augenzahl im zweifachen Würfelwurf"
-#| label: fig-2dice-prob
-p_twodice
+#| fig-cap: Wahrscheinlichkeitsverteilung der Zufallsvariable "Anzahl Kopf im fünffachen Münzwurf"
+#| label: fig-5coins-prob
+p_fivecoins
 ```
 
 :::
@@ -1370,9 +1352,9 @@ p_twodice
 ::: {.column width="50%"}
 ```{r}
 #| echo: false
-#| fig-cap: (relative und absolute) Häufigkeiten des zweifachen Würfelwurfs, 1000 Mal wiederholt
-#| label: fig-2dice-sim
-p_sim2dice
+#| fig-cap: (relative und absolute) Häufigkeiten der Anzahl Kopf im fünffachen Münzwurf, 1000 Mal wiederholt
+#| label: fig-5coins-sim
+p_sim5coins
 ```
 :::
 
@@ -1381,7 +1363,7 @@ p_sim2dice
 
 
 :::{#exm-w-fun}
-Die Wahrscheinlichkeitsverteilung für $X$ "Augensumme im zweifachen Würfelwurf" ist in @fig-2dice-prob visualisiert. $\square$ 
+Die Wahrscheinlichkeitsverteilung für $X$ "Anzahl Kopf im fünffachen Münzwurf" ist in @fig-5coins-prob visualisiert. $\square$ 
 :::
 
 
@@ -1462,24 +1444,24 @@ $F(x) = \sum_{x_i \le x} Pr(X=x_i).$
 ```{r}
 #| echo: false
 p_F <- 
-  ggplot(twodice, aes(x = Augensumme, y = p_cum)) +
+  ggplot(fivecoins, aes(x = Anzahl_Kopf, y = p_cum)) +
   geom_col(fill = mittelgrau) +
   geom_line(color = blue) +
   geom_label(aes(label = sprintf("%.2f", p_cum))) +
-  scale_x_continuous(breaks = 1:12) +
-  labs(x = "Augensumme", y = "Verteilungsfunktion F")
+  scale_x_continuous(breaks = 0:5) +
+  labs(x = "Anzahl Kopf", y = "Verteilungsfunktion F")
 
 
 y_lab <- "empirische Verteilungsfunktion F emp."
 
 p_F_emp <-
   ggplot(results_count) +
-  aes(x = Augensumme, y = prop_cum) +
+  aes(x = Anzahl_Kopf, y = prop_cum) +
   geom_col(fill = mittelgrau) +
   geom_line(color = blue) +
   geom_label(aes(y = prop_cum, label = sprintf("%.2f", prop_cum))) +
-  labs(x = "Augensumme", y = y_lab) +
-  scale_x_continuous(breaks = 2:12)
+  labs(x = "Anzahl Kopf", y = y_lab) +
+  scale_x_continuous(breaks = 0:5)
 ```
 
 
@@ -1492,7 +1474,7 @@ Was die kumulierte Häufigkeitsverteilung für Häufigkeiten ist, ist die Vertei
 ::: {.column width="50%"}
 ```{r}
 #| echo: false
-#| fig-cap: Verteilungsfunktion $F(X \le x_i)$ für die Zufallsvariable "Augenzahl im zweifachen Würfelwurf"
+#| fig-cap: Verteilungsfunktion $F(X \le x_i)$ für die Zufallsvariable "Anzahl Kopf im fünffachen Münzwurf"
 #| label: fig-kum-h-vert
 p_F
 ```
@@ -1502,7 +1484,7 @@ p_F
 ::: {.column width="50%"}
 ```{r}
 #| echo: false
-#| fig-cap: Empirische Verteilungsfunktion (kumulierte Häufigkeitsverteilung) $F(X \le x_i)$ von 1000 zweifachen Münzwürfen
+#| fig-cap: Empirische Verteilungsfunktion (kumulierte Häufigkeitsverteilung) $F(X \le x_i)$ von 1000 fünffachen Münzwürfen
 #| label: fig-kum-h-vert-emp
 p_F_emp 
 ```
@@ -1757,7 +1739,7 @@ Wählen Sie eine Antwort aus und klicken Sie auf das Häkchen, um sie zu überpr
 library(exams2forms)
 
 quiz_wskt_files <- list(
-  "exr/maechtigkeit-augensumme-schoice/maechtigkeit-augensumme-schoice.Rmd",
+  "exr/maechtigkeit-anzahl-kopf-schoice/maechtigkeit-anzahl-kopf-schoice.Rmd",
   "exr/vollstaendiges-ereignissystem-schoice/vollstaendiges-ereignissystem-schoice.Rmd",
   "exr/disjunkte-ereignisse-schoice/disjunkte-ereignisse-schoice.Rmd",
   "exr/kolmogorov-axiome-schoice/kolmogorov-axiome-schoice.Rmd",
