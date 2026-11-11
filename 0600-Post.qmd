@@ -1443,16 +1443,16 @@ ohne dass jemand die Post-Verteilung ausrechnet.
 
 Die Post-Verteilung berechnen wir mit dem Satz von Bayes:
 
-$$\text{Post}(p \mid D) = \frac{\text{Prior}(p) \cdot \text{Likelihood}(D \mid p)}{\sum_{p'} \text{Prior}(p') \cdot \text{Likelihood}(D \mid p')}$$
+$$\text{Post}(\pi \mid D) = \frac{\text{Prior}(\pi) \cdot \text{Likelihood}(D \mid \pi)}{\sum_{\pi'} \text{Prior}(\pi') \cdot \text{Likelihood}(D \mid \pi')}$$
 
-Dabei steht $p$ für einen konkreten Parameterwert, etwa den Wasseranteil $p = 0{,}5$.
+Dabei steht $\pi$ für einen konkreten Parameterwert, etwa den Wasseranteil $\pi = 0{,}5$.
 Die Formel berechnet, wie wahrscheinlich genau dieser Wert nach den Daten ist.
-Die Laufvariable $p'$ im Nenner durchläuft dagegen *alle* möglichen Parameterwerte, also $0, 0{,}1, 0{,}2, \dots, 1$.
+Die Laufvariable $\pi'$ im Nenner durchläuft dagegen *alle* möglichen Parameterwerte, also $0, 0{,}1, 0{,}2, \dots, 1$.
 Sie steht nur für „irgendein Wert“ und könnte genauso anders heißen.
 
 Der Zähler ist für jeden Parameterwert leicht auszurechnen:
 Man multipliziert Prior und Likelihood.
-Der Nenner dagegen summiert diesen Ausdruck über alle möglichen Parameterwerte $p'$.
+Der Nenner dagegen summiert diesen Ausdruck über alle möglichen Parameterwerte $\pi'$.
 Bei stetigen Parametern wird aus der Summe ein Integral.
 Der Nenner ist nur eine Konstante, die dafür sorgt, dass die Fläche unter der Post-Kurve genau 1 ergibt.
 Trotzdem müssen wir ihn kennen, wenn wir die Post-Verteilung exakt ausrechnen wollen,
@@ -1483,22 +1483,22 @@ Der Wanderer geht nun so vor:
 5. Das wiederholt er tausende Male.
 
 Die Regel für Schritt 3 lässt sich formal fassen.
-Sei $h(p)$ die Höhe an der Stelle $p$ (also Prior mal Likelihood) und $p^*$ der vorgeschlagene Schritt.
+Sei $h(\pi)$ die Höhe an der Stelle $\pi$ (also Prior mal Likelihood) und $\pi^*$ der vorgeschlagene Schritt.
 Der Wanderer geht mit der Wahrscheinlichkeit
 
-$$\alpha = \min\left(1, \frac{h(p^*)}{h(p)}\right)$$
+$$\alpha = \min\left(1, \frac{h(\pi^*)}{h(\pi)}\right)$$
 
-nach $p^*$.
+nach $\pi^*$.
 Der Quotient sagt also: Wie viel höher (oder tiefer) liegt der Vorschlag im Vergleich zur aktuellen Stelle?
 Ist der Vorschlag höher, ist der Quotient größer als 1, und das Minimum macht daraus eine Wahrscheinlichkeit von 1: Der Wanderer geht immer.
 Liegt der Vorschlag tiefer, ist der Quotient kleiner als 1.
 Ein Wert von 0,5 bedeutet etwa, dass der Vorschlag halb so hoch liegt; dann geht der Wanderer nur in der Hälfte der Fälle dorthin.
 Je tiefer es hinunterginge, desto kleiner der Quotient und desto seltener der Schritt.
 Hier zeigt sich der Kern der Sache:
-Schreiben wir $h(p) = Z \cdot \text{Post}(p \mid D)$, wobei $Z$ der unbekannte Nenner ist,
+Schreiben wir $h(\pi) = Z \cdot \text{Post}(\pi \mid D)$, wobei $Z$ der unbekannte Nenner ist,
 dann kürzt sich $Z$ im Bruch heraus:
 
-$$\frac{h(p^*)}{h(p)} = \frac{Z \cdot \text{Post}(p^* \mid D)}{Z \cdot \text{Post}(p \mid D)} = \frac{\text{Post}(p^* \mid D)}{\text{Post}(p \mid D)}$$
+$$\frac{h(\pi^*)}{h(\pi)} = \frac{Z \cdot \text{Post}(\pi^* \mid D)}{Z \cdot \text{Post}(\pi \mid D)} = \frac{\text{Post}(\pi^* \mid D)}{\text{Post}(\pi \mid D)}$$
 
 Der Wanderer braucht also nur das *Verhältnis* zweier Höhen.
 Den Nenner muss er nie kennen.
@@ -1506,7 +1506,7 @@ Den Nenner muss er nie kennen.
 Die Standorte, die der Wanderer notiert hat, bilden eine Stichprobe aus der Post-Verteilung:
 Dort, wo die Landschaft hoch ist, war der Wanderer oft; dort, wo sie niedrig ist, nur selten.
 Auch das Abzählen der Standorte funktioniert wie beim Lostrommel-Beispiel oben:
-Den Anteil der Standorte über $p = 0.5$ zählen wir einfach aus.
+Den Anteil der Standorte über $\pi = 0.5$ zählen wir einfach aus.
 
 Man nennt das Verfahren *Markov-Chain-Monte-Carlo*, kurz MCMC.
 Das *Monte Carlo* steht für den Zufall in den Schritten,
