@@ -158,7 +158,7 @@ bayesbox_6w_9v  |>
            y = .2668,
            color = "#E69F00",
            alpha = .7,
-           size = 5)
+           size = 7)
   
 p_d
 ```
@@ -379,7 +379,7 @@ Die Anzahl der Zeilen wäre einfach zu groß.
 
 
 
-Hier erstmal die ersten 100 gesampelten Parameterwerte (`p_grid`) aus `samples_6w_9v`:
+Hier erst mal die ersten 100 Parameterwerte (`p_grid`) aus den Stichproben-Daten `samples_6w_9v`:
 
 ```{r QM2-Thema3-Teil1-2}
 #| echo: false
@@ -661,6 +661,7 @@ Die Post-Verteilung ist das zentrale Ergebnis einer Bayes-Analyse.
 Wir können viele nützliche Fragen an sie stellen.
 :::
 
+
 Es gibt zwei Arten von Fragen:
 
 A. nach Wahrscheinlichkeiten (p)
@@ -670,25 +671,25 @@ B. nach Parameterwerten (Quantilen, q)
 
 
 
-
 :::{#exm-post}
+
 ### Beispiele für Fragen an die Post-Verteilung
 
-A. Fragen nach Wahrscheinlichkeiten (p):
+#### Fragen nach Wahrscheinlichkeiten (p):
 
 - Mit welcher Wahrscheinlichkeit liegt der Parameter unter einem bestimmten Wert?
 - Mit welcher Wahrscheinlichkeit liegt der Parameter über einem bestimmten Wert?
 - Mit welcher Wahrscheinlichkeit liegt der Parameter zwischen zwei bestimmten Werten?
 
 
-B. Fragen nach Parameterwerten (Quantilen, q):
+#### Fragen nach Parameterwerten (Quantilen, q):
 
 - Welcher Wert wird mit 95 % Wahrscheinlichkeit nicht überschritten?
 - Mit 5 % Wahrscheinlichkeit liegt der Parameterwert nicht unter welchem Wert?
 - Welcher Parameterwert hat die höchste Wahrscheinlichkeit?
 - Wie ungewiss ist das Modell über die Parameterwerte?
 
-etc. $\square$
+$\square$
 :::
 
 
@@ -715,9 +716,9 @@ plot_ask_for_probability()
 
 
 Im *linken* Teildiagramm von @fig-p-vs-q fragen wir:
-"Welcher Wasseranteil wird mit einer gegebenen Wahrscheinlichkeit *p* nicht überschritten?" -- Wir suchen also einen Parameterwert (Quantil, q).
+"Welcher Wasseranteil $\pi$ wird mit einer gegebenen Wahrscheinlichkeit *p* nicht überschritten?" -- Wir suchen also einen Parameterwert (Quantil, q).
 Im *rechten* Teildiagramm fragen wir:
-"Wie wahrscheinlich ist ein Wasseranteil von höchstens q?" -- Wir suchen also eine Wahrscheinlichkeit (p).
+"Wie wahrscheinlich ist ein Wasseranteil $\pi$ von höchstens q?" -- Wir suchen also eine Wahrscheinlichkeit (p).
 
 
 
@@ -742,10 +743,10 @@ samples_6w_9v |>
   count(p_grid < .5) 
 ```
 
-Wenn wir insgesamt 10000 (1e4) Stichproben gezogen haben, 
+Wenn wir insgesamt 10000 (`1e4`) Stichproben gezogen haben, 
 können wir noch durch diese Zahl teilen, um einen Anteil zu bekommen.
 Dieser Anteil ist die Antwort auf die Forschungsfrage:
-Wie wahrscheinlich ist (laut Modell) ein Wasseranteil kleiner als 50 %?
+Wie wahrscheinlich ist (laut unserem Modell) ein Wasseranteil kleiner als $pi=1/2$ (also 50 %)?
 In unseren Daten ist die Wahrscheinlichkeit ca. 10 %.
 
 
@@ -781,7 +782,7 @@ Natürlich gibt es verschiedene Wege, die gleiche Frage zu beantworten.
 ```{r QM2-Thema3-Post-befragen-6}
 bayesbox_6w_9v |>
   filter(p_grid < .5) |>
-  summarise(sum = sum(post))
+  summarise(Anzahl = n())  # n() zählt die Anzahl der Zeilen
 ```
 
 :::
@@ -798,14 +799,15 @@ bayesbox_6w_9v |>
 ### Wasseranteil zwischen 50 und 75 %?
 
 Noch eine Forschungsfrage:
-*Mit welcher Wahrscheinlichkeit liegt der Parameter (Wasseranteil) zwischen 0.5 und 0.75?*
+*Mit welcher Wahrscheinlichkeit liegt der Parameter $\pi$ (Wasseranteil) zwischen 0.5 und 0.75?*
 
 
-Wir zählen die Stichproben, die diesen Kriterien entsprechen.
+Um diese Frage zu beantworten, zählen wir die Stichproben, die diesen Kriterien entsprechen.
 
 ```{r QM2-Thema3-Post-befragen-8}
 samples_6w_9v |> 
-  count(p_grid > .5 & p_grid < .75)
+  filter(p_grid > .5 & p_grid < .75) |> 
+  summarise(Anzahl = n())  # n() zählt die Anzahl der Zeilen
 ```
 
 >    🤖 Ich würde empfehlen, die Anzahl noch in Anteile umzurechnen.
@@ -815,19 +817,20 @@ samples_6w_9v |>
 
 ```{r QM2-Thema3-Post-befragen-8a}
 samples_6w_9v |>
-  count(p_grid > .5 & p_grid < .75) |>
-  mutate(Anteil = n / 1e4,
-         Prozent = 100 * n / 1e4)  # In Prozent
+  summarise(
+    Anteil  = mean(p_grid > .5 & p_grid < .75),
+    Prozent = mean(p_grid > .5 & p_grid < .75) * 100
+  )
 ```
 
-Anstelle von `count()` könnte man, wenn man möchte, auch `filter()` verwenden.
+Anstelle von `count()` oder `summarise()` kann man, wenn man möchte, auch `filter()` verwenden.
 
 
 ```{r}
 samples_6w_9v |> 
   filter(p_grid > .5 & p_grid < .75) |> 
-  summarise(sum     =       n() / 1e4,
-            anteil = 100 * n() / 1e4)  # In Prozent
+  summarise(Anteil     =       n() / 1e4,
+            Prozent    = 100 * n() / 1e4)  # In Prozent
 ```
 
 Fertig 😄 $\square$
@@ -848,8 +851,8 @@ Noch ein Beispiel für eine Forschungsfrage:
 ```{r QM2-Thema3-Post-befragen-9}
 #| eval: false
 samples_6w_9v |>
-  count(p_grid >= .9 & p_grid <= 1) |>
-  mutate(prop = 100 * n / 1e4)  # prop wie "proportion", Anteil
+  filter(p_grid >= .9 & p_grid <= 1) |>
+  summarise(Anteil  = mean(p_grid > .5 & p_grid < .75))
 ```
 ### Output
 ```{r QM2-Thema3-Post-befragen-9a}

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erklärvideo: Bayes-Inferenz, Stichproben & MCMC</title>
+    <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+    <style>
+        .chapter-active {
+            background: rgba(56, 189, 248, 0.15) !important;
+            border-left: 4px solid #38bdf8 !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-6 font-sans">
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-5 gap-4">
+            <div>
+                <span class="inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider text-sky-400 bg-sky-950/60 border border-sky-800/50 rounded-full mb-2">
+                    Erklärvideo • Psychologie • 1./2. Semester
+                </span>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+                    Posteriori-Verteilung via Stichproben & MCMC
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">
+                    Warum die Bayes-Box kollabiert und wie Roboter Stan im Nebel die Verteilung abtastet (5:40 Min)
+                </p>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="renders/bayes_erklaervideo_stichproben_mcmc.mp4" download class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-900 bg-sky-400 hover:bg-sky-300 transition-colors rounded-xl shadow-lg shadow-sky-500/20">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    MP4-Video herunterladen (9.3 MB)
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Video & Chapter Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Video Player (2 Cols) -->
+            <div class="lg:col-span-2 space-y-4">
+                <div class="relative bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl aspect-video">
+                    <video id="mainVideo" controls class="w-full h-full object-contain bg-black">
+                        <source src="renders/bayes_erklaervideo_stichproben_mcmc.mp4" type="video/mp4">
+                        Dein Browser unterstützt das Video-Tag leider nicht.
+                      <track kind="subtitles" src="subtitles/bayes_erklaervideo_stichproben_mcmc.vtt" srclang="de" label="Deutsch (Untertitel)" default>
+                    </video>
+                </div>
+                
+                <!-- Quick Info Box -->
+                <div class="bg-slate-900/80 border border-slate-800/80 rounded-xl p-4 flex items-center justify-between text-xs text-slate-400">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Full-HD 1080p • 25 FPS • Studio-Audio (Neural Voice Killian)</span>
+                    </div>
+                    <span>Bezug: <a href="https://sebastiansauer.github.io/start-bayes/0600-Post.html" target="_blank" class="text-sky-400 hover:underline">start-bayes Kap. 6</a></span>
+                </div>
+            </div>
+
+            <!-- Chapter Navigation (1 Col) -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col h-[520px]">
+                <h2 class="text-base font-bold text-white mb-3 flex items-center gap-2 pb-2 border-b border-slate-800">
+                    <span>📑</span> Kapitelauswahl (10 Szenen)
+                </h2>
+                
+                <div class="space-y-1.5 overflow-y-auto pr-1 flex-1 text-xs" id="chapterList">
+                    
+                    <button onclick="seekTo(0)" class="w-full text-left p-2.5 rounded-lg border border-transparent hover:bg-slate-800/70 transition-all flex items-start justify-between group chapter-active" data-time="0">
+                        <div>
+                            <div class="font-semibold text-slate-200 group-hover:text-sky-300">1. Ausgangspunkt: Bayes-Box</div>
+                            <div class="text-[11px] text-slate-400">Globusversuch W=6, N=9 (11 Zeilen)</div>
+                        </div>
+                        <span class="font-mono text-[10px] text-sky-400">0:00</span>
+                    </button>
+
+                    <button onclick="seekTo(26)" class="w-full text-left p-2.5 rounded-lg border border-transparent hover:bg-slate-800/70 transition-all flex items-start justify-between group" data-time="26">
+                        <div>
+                            <div class="font-semibold text-slate-200 group-hover:text-sky-300">2. Der Fluch der Dimensionen</div>
+                            <div class="text-[11px] text-slate-400">10¹⁰ = 10²⁰ Zeilen bei Regression</div>
+                        </div>
+                        <span class="font-mono text-[10px] text-slate-400">0:26</span>
+                    </button>
+
+                    <button onclick="seekTo(59)" class="w-full text-left p-2.5 rounded-lg border border-transparent hover:bg-slate-800/70 transition-all flex items-start justify-between group" data-time="59">
+                        <div>
+                            <div class="font-semibold text-slate-200 group-hover:text-sky-300">3. Die Sackgasse & Der Kniff</div>
+                            <div class="text-[11px] text-slate-400">Stichproben statt Ausrechnen!</div>
+                        </div>
+                        <span class="font-mono text-[10px] text-slate-400">0:59</span>
+                    </button>
+
+                    <button onclick="seekTo(83)" class="w-full text-left p-2.5 rounded-lg border border-transparent hover:bg-slate-800/70 transition-all flex items-start justify-between group" data-time="83">
+                        <div>
+                            <div class="font-semibold text-slate-200 group-hover:text-sky-300">4. Häufigkeiten statt Wskt.</div>
+                            <div class="text-[11px] text-slate-400">Die Bayes-Lostrommel</div>
+                        </div>
+                        <span class="font-mono text-[10px] text-slate-400">1:23</span>
+                    </button>
+
+                    <button onclick="seekTo(114)" class="w-full text-left p-2.5 rounded-lg border border-transparent hover:bg-slate-800/70 transition-all flex items-start justify-between group" data-time="114">
+                        <div>
+                            <div class="font-semibold text-slate-200 group-hover:text-sky-300">5. Stichproben rekonstruieren Post</div>
+                            <div class="text-[11px] text-slate-400">10.000 Samples bilden Kurve ab</div>
+                        </div>
+                        <span class="font-mono text-[10px] text-slate-400">1:54</span>
+                    </button>
+
+                    <button onclick="seekTo(156)" class="w-full text-left p-2.5 rounded-lg border border-transparent hover:bg-slate-800/70 transition-all flex items-start justify-between group" data-time="156">
+                        <div>
+                            <div class="font-semibold text-slate-200 group-hover:text-sky-300">6. MCMC: Gebirge im Nebel</div>
+                            <div class="text-[11px] text-slate-400">Stan erkundet ohne Landkarte</div>
+                        </div>
+                        <span class="font-mono text-[10px] text-slate-400">2:36</span>
+                    </button>
+
+                    <button onclick="seekTo(189)" class="w-full text-left p-2.5 rounded-lg border border-transparent hover:bg-slate-800/70 transition-all flex items-start justify-between group" data-time="189">
+                        <div>
+                            <div class="font-semibold text-slate-200 group-hover:text-sky-300">7. Stans zwei Schritt-Regeln</div>
+                            <div class="text-[11px] text-slate-400">Bergauf immer, bergab Münzwurf</div>
+                        </div>
+                        <span class="font-mono text-[10px] text-slate-400">3:09</span>
+                    </button>
+
+                    <button onclick="seekTo(224)" class="w-full text-left p-2.5 rounded-lg border border-transparent hover:bg-slate-800/70 transition-all flex items-start justify-between group" data-time="224">
+                        <div>
+                            <div class="font-semibold text-slate-200 group-hover:text-sky-300">8. Die Kette der Schritte</div>
+                            <div class="text-[11px] text-slate-400">Aus Fußspuren wird das Histogramm</div>
+                        </div>
+                        <span class="font-mono text-[10px] text-slate-400">3:44</span>
+                    </button>
+
+                    <button onclick="seekTo(261)" class="w-full text-left p-2.5 rounded-lg border border-transparent hover:bg-slate-800/70 transition-all flex items-start justify-between group" data-time="261">
+                        <div>
+                            <div class="font-semibold text-slate-200 group-hover:text-sky-300">9. Drei goldene Takeaways</div>
+                            <div class="text-[11px] text-slate-400">Zusammenfassung für Klausur & Praxis</div>
+                        </div>
+                        <span class="font-mono text-[10px] text-slate-400">4:21</span>
+                    </button>
+
+                    <button onclick="seekTo(296)" class="w-full text-left p-2.5 rounded-lg border border-transparent hover:bg-slate-800/70 transition-all flex items-start justify-between group" data-time="296">
+                        <div>
+                            <div class="font-semibold text-slate-200 group-hover:text-sky-300">10. Ausblick: Stan in R</div>
+                            <div class="text-[11px] text-slate-400">Paket rstanarm & stan_glm()</div>
+                        </div>
+                        <span class="font-mono text-[10px] text-slate-400">4:56</span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Didactic Highlights Summary -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-800">
+            <div class="bg-slate-900/60 border border-slate-800/70 p-4 rounded-xl">
+                <div class="text-rose-400 font-bold mb-1 flex items-center gap-1.5 text-sm">
+                    <span>❌</span> 1. Das Problem
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Die analytische Bayes-Box kollabiert ab 2 Parametern durch den <i>Fluch der Dimensionen</i> ($10^{20}$ Zeilen bei 10 Parametern).
+                </p>
+            </div>
+            <div class="bg-slate-900/60 border border-slate-800/70 p-4 rounded-xl">
+                <div class="text-sky-400 font-bold mb-1 flex items-center gap-1.5 text-sm">
+                    <span>🎲</span> 2. Der Kniff
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Wir arbeiten mit <i>Häufigkeiten statt Wahrscheinlichkeiten</i>. Stichproben aus der Posteriori-Verteilung bilden die Form 1:1 exakt ab.
+                </p>
+            </div>
+            <div class="bg-slate-900/60 border border-slate-800/70 p-4 rounded-xl">
+                <div class="text-emerald-400 font-bold mb-1 flex items-center gap-1.5 text-sm">
+                    <span>🧗♂️</span> 3. MCMC (Stan)
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Stan wandert im Nebel mit zwei lokalen Regeln (bergauf immer, bergab proportional) und sammelt Stichproben direkt aus den Höhenlagen.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const video = document.getElementById('mainVideo');
+        const chapterButtons = document.querySelectorAll('#chapterList button');
+
+        function seekTo(seconds) {
+            video.currentTime = seconds;
+            video.play();
+        }
+
+        video.addEventListener('timeupdate', () => {
+            const curTime = video.currentTime;
+            let activeIdx = 0;
+            chapterButtons.forEach((btn, idx) => {
+                const btnTime = parseFloat(btn.getAttribute('data-time'));
+                if (curTime >= btnTime) {
+                    activeIdx = idx;
+                }
+            });
+            chapterButtons.forEach((btn, idx) => {
+                if (idx === activeIdx) {
+                    btn.classList.add('chapter-active');
+                } else {
+                    btn.classList.remove('chapter-active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

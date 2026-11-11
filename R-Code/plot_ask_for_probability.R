@@ -4,7 +4,7 @@ plot_ask_for_probability <- function(
   q = 0.5
 ) {
   title <- paste0(
-    "Was ist die Wahrscheinlichkeit eines Wasseranteils von höchstens ",
+    "Was ist die Wahrscheinlichkeit eines Parameterwerts\nvon höchstens",
     q * 100,
     "%?"
   )

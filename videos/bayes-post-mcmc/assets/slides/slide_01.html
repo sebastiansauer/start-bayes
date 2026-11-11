@@ -1,0 +1,120 @@
+<!DOCTYPE html><html><head><style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Fira+Code:wght@500&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    width: 1920px;
+    height: 1080px;
+    background: radial-gradient(circle at 20% 20%, #0f172a 0%, #020617 100%);
+    color: #f8fafc;
+    font-family: 'Inter', -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    padding: 60px 80px;
+    overflow: hidden;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+    border-bottom: 2px solid rgba(56, 189, 248, 0.2);
+    padding-bottom: 25px;
+}
+.badge {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    padding: 8px 18px;
+    border-radius: 9999px;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    margin-bottom: 12px;
+}
+.title { font-size: 46px; font-weight: 800; color: #ffffff; line-height: 1.2; }
+.subtitle { font-size: 24px; color: #94a3b8; margin-top: 8px; }
+.time-pill {
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-size: 20px;
+    font-family: 'Fira Code', monospace;
+    color: #38bdf8;
+}
+.content { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+.card {
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 24px;
+    padding: 35px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+.highlight { color: #38bdf8; font-weight: 700; }
+.accent-amber { color: #fbbf24; }
+.accent-emerald { color: #34d399; }
+.accent-rose { color: #f43f5e; }
+.stat-box {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+}
+.stat-num { font-size: 44px; font-weight: 800; color: #38bdf8; font-family: 'Fira Code', monospace; }
+.stat-label { font-size: 18px; color: #94a3b8; margin-top: 5px; }
+</style></head><body>
+<div class="header">
+    <div>
+        <div class="badge">Bayes-Statistik für Psychologie • Kapitel 6</div>
+        <div class="title">Unser Ausgangspunkt: Die Bayes-Box</div>
+        <div class="subtitle">Exakte Berechnung am Globusversuch (W = 6 Treffer bei N = 9 Würfen)</div>
+    </div>
+    <div class="time-pill">Szene 1 • 0:00 - 0:25</div>
+</div>
+<div class="content">
+    <div class="card" style="display:flex; flex-direction:column; gap:20px;">
+        <h3 style="font-size:26px; color:#38bdf8;">Die Gittermethode („Bayes-Box“)</h3>
+        <p style="font-size:22px; color:#cbd5e1; line-height:1.6;">
+            Für ein Modell mit nur <span class="highlight">1 Parameter</span> (<i>p</i> = Wasseranteil) berechnen wir die Verteilung Zeile für Zeile:
+        </p>
+        <table style="width:100%; border-collapse:collapse; font-size:20px; text-align:center; margin-top:10px;">
+            <tr style="border-bottom:2px solid #334155; color:#94a3b8;">
+                <th style="padding:10px;">Gitter (<i>p</i>)</th><th>Prior</th><th>Likelihood</th><th style="color:#38bdf8;">Post</th>
+            </tr>
+            <tr style="border-bottom:1px solid #1e293b;"><td>0.0</td><td>1</td><td>0.00</td><td>0.00</td></tr>
+            <tr style="border-bottom:1px solid #1e293b;"><td>0.5</td><td>1</td><td>0.16</td><td>0.17</td></tr>
+            <tr style="border-bottom:1px solid #1e293b; background:rgba(56,189,248,0.15); font-weight:700; color:#38bdf8;">
+                <td>0.7 (Gipfel)</td><td>1</td><td>0.27</td><td>0.27</td>
+            </tr>
+            <tr style="border-bottom:1px solid #1e293b;"><td>1.0</td><td>1</td><td>0.00</td><td>0.00</td></tr>
+        </table>
+        <div class="stat-box" style="margin-top:10px;">
+            <div class="stat-label">Gesamte Zeilenanzahl bei 11 Gitterwerten:</div>
+            <div class="stat-num" style="font-size:36px;">11 Zeilen (Sofort gelöst!)</div>
+        </div>
+    </div>
+    <div class="card" style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <h3 style="font-size:26px; color:#38bdf8; margin-bottom:15px;">Posteriori-Verteilung</h3>
+        <svg width="650" height="420" viewBox="0 0 650 420">
+            <!-- Axes -->
+            <line x1="80" y1="350" x2="600" y2="350" stroke="#64748b" stroke-width="3"/>
+            <line x1="80" y1="350" x2="80" y2="60" stroke="#64748b" stroke-width="3"/>
+            <!-- Ticks -->
+            <text x="80" y="380" fill="#94a3b8" font-size="18" text-anchor="middle">0.0</text>
+            <text x="230" y="380" fill="#94a3b8" font-size="18" text-anchor="middle">0.3</text>
+            <text x="413.3" y="380" fill="#38bdf8" font-weight="700" font-size="20" text-anchor="middle">0.67 (Peak)</text>
+            <text x="580" y="380" fill="#94a3b8" font-size="18" text-anchor="middle">1.0</text>
+            <text x="340" y="410" fill="#cbd5e1" font-size="20" text-anchor="middle">Parameter p (Wasseranteil)</text>
+            <!-- Mathematically Exact Posterior Fill & Line -->
+            <path d="M 80.0 350.0 L 85.0 350.0 L 90.0 350.0 L 95.0 350.0 L 100.0 350.0 L 105.0 350.0 L 110.0 350.0 L 115.0 350.0 L 120.0 350.0 L 125.0 350.0 L 130.0 349.9 L 135.0 349.9 L 140.0 349.8 L 145.0 349.8 L 150.0 349.6 L 155.0 349.5 L 160.0 349.3 L 165.0 349.0 L 170.0 348.6 L 175.0 348.2 L 180.0 347.6 L 185.0 346.9 L 190.0 346.0 L 195.0 345.0 L 200.0 343.8 L 205.0 342.4 L 210.0 340.8 L 215.0 338.9 L 220.0 336.7 L 225.0 334.3 L 230.0 331.5 L 235.0 328.5 L 240.0 325.1 L 245.0 321.3 L 250.0 317.2 L 255.0 312.7 L 260.0 307.9 L 265.0 302.6 L 270.0 297.0 L 275.0 291.0 L 280.0 284.7 L 285.0 278.0 L 290.0 270.9 L 295.0 263.6 L 300.0 255.9 L 305.0 248.0 L 310.0 239.9 L 315.0 231.5 L 320.0 223.1 L 325.0 214.5 L 330.0 205.8 L 335.0 197.2 L 340.0 188.6 L 345.0 180.1 L 350.0 171.9 L 355.0 163.8 L 360.0 156.1 L 365.0 148.7 L 370.0 141.8 L 375.0 135.4 L 380.0 129.6 L 385.0 124.4 L 390.0 119.9 L 395.0 116.2 L 400.0 113.3 L 405.0 111.3 L 410.0 110.2 L 415.0 110.1 L 420.0 110.9 L 425.0 112.7 L 430.0 115.5 L 435.0 119.4 L 440.0 124.3 L 445.0 130.1 L 450.0 137.0 L 455.0 144.7 L 460.0 153.4 L 465.0 162.8 L 470.0 173.0 L 475.0 183.8 L 480.0 195.2 L 485.0 207.0 L 490.0 219.1 L 495.0 231.4 L 500.0 243.8 L 505.0 256.0 L 510.0 268.1 L 515.0 279.7 L 520.0 290.8 L 525.0 301.2 L 530.0 310.8 L 535.0 319.4 L 540.0 327.1 L 545.0 333.6 L 550.0 339.0 L 555.0 343.2 L 560.0 346.3 L 565.0 348.3 L 570.0 349.5 L 575.0 349.9 L 580.0 350.0 L 580.0 350.0 L 80.0 350.0 Z" fill="rgba(56,189,248,0.15)"/>
+            <path d="M 80.0 350.0 L 85.0 350.0 L 90.0 350.0 L 95.0 350.0 L 100.0 350.0 L 105.0 350.0 L 110.0 350.0 L 115.0 350.0 L 120.0 350.0 L 125.0 350.0 L 130.0 349.9 L 135.0 349.9 L 140.0 349.8 L 145.0 349.8 L 150.0 349.6 L 155.0 349.5 L 160.0 349.3 L 165.0 349.0 L 170.0 348.6 L 175.0 348.2 L 180.0 347.6 L 185.0 346.9 L 190.0 346.0 L 195.0 345.0 L 200.0 343.8 L 205.0 342.4 L 210.0 340.8 L 215.0 338.9 L 220.0 336.7 L 225.0 334.3 L 230.0 331.5 L 235.0 328.5 L 240.0 325.1 L 245.0 321.3 L 250.0 317.2 L 255.0 312.7 L 260.0 307.9 L 265.0 302.6 L 270.0 297.0 L 275.0 291.0 L 280.0 284.7 L 285.0 278.0 L 290.0 270.9 L 295.0 263.6 L 300.0 255.9 L 305.0 248.0 L 310.0 239.9 L 315.0 231.5 L 320.0 223.1 L 325.0 214.5 L 330.0 205.8 L 335.0 197.2 L 340.0 188.6 L 345.0 180.1 L 350.0 171.9 L 355.0 163.8 L 360.0 156.1 L 365.0 148.7 L 370.0 141.8 L 375.0 135.4 L 380.0 129.6 L 385.0 124.4 L 390.0 119.9 L 395.0 116.2 L 400.0 113.3 L 405.0 111.3 L 410.0 110.2 L 415.0 110.1 L 420.0 110.9 L 425.0 112.7 L 430.0 115.5 L 435.0 119.4 L 440.0 124.3 L 445.0 130.1 L 450.0 137.0 L 455.0 144.7 L 460.0 153.4 L 465.0 162.8 L 470.0 173.0 L 475.0 183.8 L 480.0 195.2 L 485.0 207.0 L 490.0 219.1 L 495.0 231.4 L 500.0 243.8 L 505.0 256.0 L 510.0 268.1 L 515.0 279.7 L 520.0 290.8 L 525.0 301.2 L 530.0 310.8 L 535.0 319.4 L 540.0 327.1 L 545.0 333.6 L 550.0 339.0 L 555.0 343.2 L 560.0 346.3 L 565.0 348.3 L 570.0 349.5 L 575.0 349.9 L 580.0 350.0" fill="none" stroke="#38bdf8" stroke-width="4"/>
+            <!-- Peak Point -->
+            <circle cx="413.3" cy="110" r="9" fill="#fbbf24"/>
+            <text x="413.3" y="80" fill="#fbbf24" font-size="22" font-weight="700" text-anchor="middle">Maximum (MAP = 6/9)</text>
+        </svg>
+    </div>
+</div>
+</body></html>

@@ -1,0 +1,251 @@
+1
+00:00:00,000 --> 00:00:04,433
+Erinnert ihr euch an unseren Globusversuch? Neun Würfe, sechsmal Wasser.
+
+2
+00:00:04,483 --> 00:00:09,976
+Mit der Bayes-Box konnten wir die Posteriori-Verteilung direkt Zeile für Zeile berechnen:
+
+3
+00:00:10,026 --> 00:00:13,899
+Gitter anlegen, Likelihood mal Prior, standardisieren – fertig!
+
+4
+00:00:13,949 --> 00:00:18,818
+Für einfache Modelle mit nur einem einzigen Parameter wie dem Wasseranteil p...
+
+5
+00:00:18,868 --> 00:00:22,990
+...ist diese Gittermethode absolut genial, anschaulich und präzise.
+
+6
+00:00:23,040 --> 00:00:26,856
+Aber was passiert, wenn wir psychologische Phänomene untersuchen –
+
+7
+00:00:26,906 --> 00:00:29,902
+...zum Beispiel in einer Regression mit Prädiktoren?
+
+8
+00:00:29,952 --> 00:00:35,349
+Plötzlich schätzen wir nicht mehr einen, sondern drei, fünf oder zehn Parameter gleichzeitig!
+
+9
+00:00:35,399 --> 00:00:38,864
+Wenn wir für jeden Parameter nur 100 Gitterwerte annehmen...
+
+10
+00:00:38,914 --> 00:00:43,022
+...braucht unsere Bayes-Box bei 3 Parametern schon eine Million Zeilen.
+
+11
+00:00:43,072 --> 00:00:47,416
+Bei einer multiplen Regression mit 10 Parametern sind es 10 hoch 20 Zeilen.
+
+12
+00:00:47,466 --> 00:00:50,930
+Selbst ein Supercomputer rechnet daran bis zum jüngsten Tag.
+
+13
+00:00:50,980 --> 00:00:56,276
+Kurz gesagt: Die Bayes-Box funktioniert für echte psychologische Modelle schlicht nicht mehr.
+
+14
+00:00:56,326 --> 00:01:00,127
+Die Tabelle wird viel zu lang und die Mathematik zu rechenintensiv.
+
+15
+00:01:00,177 --> 00:01:02,598
+Wir stecken in einer scheinbaren Sackgasse.
+
+16
+00:01:02,648 --> 00:01:05,185
+Doch zum Glück gibt es einen genialen Ausweg:
+
+17
+00:01:05,235 --> 00:01:09,036
+Wir verabschieden uns davon, die Kurve exakt ausrechnen zu wollen –
+
+18
+00:01:09,086 --> 00:01:11,910
+...und lassen uns stattdessen Stichproben liefern.
+
+19
+00:01:11,960 --> 00:01:15,271
+Hier kommt der zentrale Trick moderner Bayes-Statistik:
+
+20
+00:01:15,321 --> 00:01:19,977
+Wir arbeiten ab jetzt nicht mehr mit abstrakten Wahrscheinlichkeitsformeln...
+
+21
+00:01:20,027 --> 00:01:22,360
+...sondern mit handfesten Häufigkeiten.
+
+22
+00:01:22,410 --> 00:01:27,310
+Stellt euch vor, wir haben eine Lostrommel. Darin liegen mögliche Parameterwerte.
+
+23
+00:01:27,360 --> 00:01:32,566
+Und je plausibler ein Wert nach den Daten ist, desto häufiger liegt er in der Trommel.
+
+24
+00:01:32,616 --> 00:01:37,760
+Werte um 67 Prozent Wasser ziehen wir ständig; Werte unter 20 Prozent so gut wie nie.
+
+25
+00:01:37,810 --> 00:01:39,843
+Schaut euch diesen Vergleich an:
+
+26
+00:01:39,893 --> 00:01:43,487
+Links die mühsam berechnete, exakte Kurve der Bayes-Box.
+
+27
+00:01:43,537 --> 00:01:47,718
+Rechts ein einfaches Histogramm aus 10.000 gezogenen Stichproben.
+
+28
+00:01:47,768 --> 00:01:51,037
+Seht ihr den Unterschied? Es gibt praktisch keinen!
+
+29
+00:01:51,087 --> 00:01:56,244
+Mit Stichproben können wir alle psychologischen Fragen kinderleicht beantworten:
+
+30
+00:01:56,294 --> 00:01:59,889
+Wie wahrscheinlich ist ein Wasseranteil über 70 Prozent?
+
+31
+00:01:59,939 --> 00:02:04,314
+Wir zählen einfach, wie viele unserer 10.000 Zettel über 0.7 liegen.
+
+32
+00:02:04,364 --> 00:02:07,634
+Kein Integrieren, kein Formelchaos – reines Zählen.
+
+33
+00:02:07,684 --> 00:02:12,580
+Aber: Wie kommen wir an diese Stichproben, wenn wir gar keine Tabelle haben?
+
+34
+00:02:12,630 --> 00:02:16,939
+Genau hier betritt die Geheimwaffe der Bayes-Statistik die Bühne:
+
+35
+00:02:16,989 --> 00:02:22,974
+MCMC – kurz für Monte-Carlo-Markov-Ketten. Klingt furchteinflößend, ist aber ganz einfach.
+
+36
+00:02:23,024 --> 00:02:28,204
+Stellt euch die gesuchte Posteriori-Verteilung wie eine Gebirgslandschaft vor:
+
+37
+00:02:28,254 --> 00:02:34,843
+Wo die Plausibilität hoch ist, ragen mächtige Berge auf; unwahrscheinliche Werte sind flache Täler.
+
+38
+00:02:34,893 --> 00:02:38,598
+Das Problem: Die Landschaft liegt im stockdichten Nebel.
+
+39
+00:02:38,648 --> 00:02:43,560
+Wir haben keine Landkarte und können das Gebirge nicht von oben vermessen.
+
+40
+00:02:43,610 --> 00:02:48,557
+Deshalb schicken wir einen blinden Kundschafter ins Gebirge: Nennen wir ihn Stan.
+
+41
+00:02:48,607 --> 00:02:54,048
+Stan sieht nichts im Nebel, aber er kann an seiner aktuellen Position den Boden abtasten.
+
+42
+00:02:54,098 --> 00:02:59,785
+Er schlägt zufällig eine Richtung für den nächsten Schritt vor und folgt zwei simplen Regeln:
+
+43
+00:02:59,835 --> 00:03:04,721
+Geht der Schritt bergauf in Richtung Gipfel? Dann macht er ihn sofort und immer!
+
+44
+00:03:04,771 --> 00:03:08,792
+Geht der vorgeschlagene Schritt bergab in ein Tal? Dann zögert er:
+
+45
+00:03:08,842 --> 00:03:14,900
+Er wirft eine Münze und geht nur mit einer gewissen Wahrscheinlichkeit – je tiefer, desto seltener.
+
+46
+00:03:14,950 --> 00:03:19,202
+Was passiert durch diese simplen Regeln über Tausende von Schritten?
+
+47
+00:03:19,252 --> 00:03:22,745
+Stan wird nicht für immer auf dem Gipfel festgenagelt...
+
+48
+00:03:22,795 --> 00:03:28,123
+...aber er hält sich ganz automatisch viel häufiger in den Höhenlagen auf als im Tal.
+
+49
+00:03:28,173 --> 00:03:31,666
+An jedem Schritt notiert Stan seinen aktuellen Standort.
+
+50
+00:03:31,716 --> 00:03:36,854
+Und das Geniale ist: Wenn wir nach 10.000 Schritten Stans Notizbuch aufschlagen...
+
+51
+00:03:36,904 --> 00:03:43,054
+...und ein Histogramm all seiner Standorte zeichnen, erhalten wir exakt die Posteriori-Verteilung!
+
+52
+00:03:43,104 --> 00:03:47,230
+Stan hat das Gebirge abgetastet – ganz ohne gigantische Bayes-Box.
+
+53
+00:03:47,280 --> 00:03:50,459
+Fassen wir die drei wichtigsten Punkte zusammen:
+
+54
+00:03:50,509 --> 00:03:57,724
+Erstens: Die Bayes-Box ist super zum Verstehen, aber bei psychologischen Modellen explodiert die Zeilenzahl.
+
+55
+00:03:57,774 --> 00:04:00,617
+Zweitens: MCMC löst dieses Problem elegant.
+
+56
+00:04:00,667 --> 00:04:06,671
+Statt das gesamte Gelände analytisch zu berechnen, schicken wir Stan als Bergwanderer los.
+
+57
+00:04:06,721 --> 00:04:10,371
+Und drittens: Wir brauchen keine komplizierten Formeln.
+
+58
+00:04:10,421 --> 00:04:17,300
+Wir fassen einfach Stans Schritte zusammen, um Schätzbereiche, Mittelwerte und Intervalle zu bestimmen.
+
+59
+00:04:17,350 --> 00:04:22,771
+In den nächsten Kapiteln lernt ihr, wie ihr Stan in R selbst an die Arbeit schickt –
+
+60
+00:04:22,821 --> 00:04:24,465
+...mit dem Paket rstanarm.
+
+61
+00:04:24,515 --> 00:04:29,546
+Ihr gebt einfach euer Modell ein, drückt Enter, und Stan wandert für euch los.
+
+62
+00:04:29,596 --> 00:04:32,672
+Ihr müsst MCMC also nicht selbst programmieren –
+
+63
+00:04:32,722 --> 00:04:38,730
+...ihr müsst nur wissen, wie ihr Stans Notizbuch richtig lest. Viel Erfolg beim Ausprobieren!

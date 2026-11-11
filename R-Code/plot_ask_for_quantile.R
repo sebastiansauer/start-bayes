@@ -22,7 +22,7 @@ plot_ask_for_quantile <- function(
     ggplot(aes(x = p_grid, y = post)) +
     geom_line(color = "grey40") +
     labs(
-      title = "Welcher Wasseranteil wird mit 50% Wahrscheinlichkeit nicht übertroffen?",
+      title = "Welcher Wasseranteil\nwird mit 50% Wahrscheinlichkeit\nnicht übertroffen?",
       x = "Wasseranteil",
       y = "Wahrscheinlichkeitsdichte"
     ) +
