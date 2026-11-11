@@ -1431,6 +1431,94 @@ Der Wasseranteil ist ein Beispiel für einen *Parameter*, einer unbekannten Grö
 
 
 
+## Vertiefung: Warum MCMC? {#sec-mcmc-vertiefung}
+
+Dieser Abschnitt ist nicht prüfungsrelevant.
+Er erklärt, warum die Stichproben aus Stan überhaupt entstehen können,
+ohne dass jemand die Post-Verteilung ausrechnet.
+
+### Das Problem ist der Nenner
+
+Die Post-Verteilung berechnen wir mit dem Satz von Bayes:
+
+$$\text{Post}(p \mid D) = \frac{\text{Prior}(p) \cdot \text{Likelihood}(D \mid p)}{\sum_{p'} \text{Prior}(p') \cdot \text{Likelihood}(D \mid p')}$$
+
+Der Zähler ist für jeden Parameterwert leicht auszurechnen:
+Man multipliziert Prior und Likelihood.
+Der Nenner dagegen summiert diesen Ausdruck über *alle* möglichen Parameterwerte.
+Bei stetigen Parametern wird aus der Summe ein Integral.
+Der Nenner ist nur eine Konstante, die dafür sorgt, dass die Fläche unter der Post-Kurve genau 1 ergibt.
+Trotzdem müssen wir ihn kennen, wenn wir die Post-Verteilung exakt ausrechnen wollen,
+und dafür müssen wir jede Kombination der Parameter durchrechnen.
+
+Beim Globusversuch mit einem Parameter ist das kein Problem:
+Die Bayes-Box hat etwa 100 Zeilen.
+Mit zwei Parametern wird daraus ein Gitter, mit drei Parametern ein Würfel.
+Bei einer Regression mit zehn Parametern und jeweils nur 100 Werten pro Parameter
+hätte die Bayes-Box $100^{10} = 10^{20}$ Zeilen.
+Diese Box rechnet kein Computer zu Ende.
+Die Bayes-Box ist also nicht falsch, sie wird nur zu lang.
+
+### Der Wanderer im Nebel
+
+Stellen Sie sich die Post-Verteilung als Landschaft vor.
+Jede Stelle ist ein möglicher Parameterwert, und die *Höhe* an dieser Stelle
+ist das Produkt aus Prior und Likelihood.
+Über der Landschaft liegt dichter Nebel: Der Wanderer sieht die Landschaft nicht.
+Er kann nur mit einem Höhenmesser prüfen, wie hoch er gerade steht.
+
+Der Wanderer geht nun so vor:
+
+1. Er schlägt einen Schritt in eine zufällige Nachbarrichtung vor und misst dort die Höhe.
+2. Geht es bergauf, geht er immer dorthin.
+3. Geht es bergab, geht er nur *manchmal*. Je tiefer es hinunterginge, desto seltener.
+4. Er notiert seinen Standort, und zwar an jeder Stelle, an der er steht.
+5. Das wiederholt er tausende Male.
+
+Die Regel für Schritt 3 lässt sich formal fassen.
+Sei $h(p)$ die Höhe an der Stelle $p$ (also Prior mal Likelihood) und $p^*$ der vorgeschlagene Schritt.
+Der Wanderer geht mit der Wahrscheinlichkeit
+
+$$\alpha = \min\left(1, \frac{h(p^*)}{h(p)}\right)$$
+
+nach $p^*$.
+Der Quotient sagt also: Wie viel höher (oder tiefer) liegt der Vorschlag im Vergleich zur aktuellen Stelle?
+Ist der Vorschlag höher, ist der Quotient größer als 1, und das Minimum macht daraus eine Wahrscheinlichkeit von 1: Der Wanderer geht immer.
+Liegt der Vorschlag tiefer, ist der Quotient kleiner als 1.
+Ein Wert von 0,5 bedeutet etwa, dass der Vorschlag halb so hoch liegt; dann geht der Wanderer nur in der Hälfte der Fälle dorthin.
+Je tiefer es hinunterginge, desto kleiner der Quotient und desto seltener der Schritt.
+Hier zeigt sich der Kern der Sache:
+Schreiben wir $h(p) = Z \cdot \text{Post}(p \mid D)$, wobei $Z$ der unbekannte Nenner ist,
+dann kürzt sich $Z$ im Bruch heraus:
+
+$$\frac{h(p^*)}{h(p)} = \frac{Z \cdot \text{Post}(p^* \mid D)}{Z \cdot \text{Post}(p \mid D)} = \frac{\text{Post}(p^* \mid D)}{\text{Post}(p \mid D)}$$
+
+Der Wanderer braucht also nur das *Verhältnis* zweier Höhen.
+Den Nenner muss er nie kennen.
+
+Die Standorte, die der Wanderer notiert hat, bilden eine Stichprobe aus der Post-Verteilung:
+Dort, wo die Landschaft hoch ist, war der Wanderer oft; dort, wo sie niedrig ist, nur selten.
+Auch das Abzählen der Standorte funktioniert wie beim Lostrommel-Beispiel oben:
+Den Anteil der Standorte über $p = 0.5$ zählen wir einfach aus.
+
+Man nennt das Verfahren *Markov-Chain-Monte-Carlo*, kurz MCMC.
+Das *Monte Carlo* steht für den Zufall in den Schritten,
+*Markov-Kette* dafür, dass jeder Schritt nur vom aktuellen Standort abhängt
+und nicht von der gesamten bisherigen Wanderung.
+Am Anfang steht der Wanderer oft an einer ungünstigen Stelle;
+diese ersten Standorte verwirft man üblicherweise als *Einlaufphase* (engl. *Warm-up*).
+
+Der entscheidende Punkt: Der Wanderer hat die Landschaft nie gesehen.
+Er brauchte immer nur zwei Höhen, hier und einen Schritt weiter.
+Ob die Landschaft eine Linie ist, wie beim Globus, oder ein Gebirge mit zehn Dimensionen, wie bei einer Regression:
+Für den Wanderer ändert das im Prinzip nichts.
+
+Programme wie Stan setzen eine raffiniertere Variante dieser Idee ein
+(Hamiltonian Monte Carlo), die sich schneller durch die Landschaft bewegt.
+Der Grundgedanke bleibt aber derselbe: Wir lassen wandern und zählen die Standorte.
+
+Eine ausführlichere Einführung in die Hintergründe findet sich bei @mcelreath2020.
+
 ## Aufgaben
 
 
