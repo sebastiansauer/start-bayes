@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="de">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: Inter, sans-serif; color: var(--color-ink, #f2f2f2); }
+        #mc-stage { position: absolute; inset: 0; opacity: 0; }
+        #mc-head { position: absolute; left: 96px; top: 54px; font-size: 56px; font-weight: 700; letter-spacing: -0.02em; }
+        #mc-svg { position: absolute; left: 96px; top: 150px; width: 880px; height: 760px; }
+        #mc-right { position: absolute; left: 1060px; top: 170px; width: 764px; }
+        #mc-name { font-size: 72px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; opacity: 0; }
+        #mc-name .o { color: var(--color-orange, #e69f00); }
+        #mc-short { font-size: 150px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; margin-top: 24px; color: var(--color-orange, #e69f00); opacity: 0; }
+        .mc-line { font-size: 36px; line-height: 1.3; margin-top: 28px; opacity: 0; }
+        .mc-line b { color: var(--color-ink, #f2f2f2); }
+        .mc-line { color: var(--color-muted, #9a9da6); }
+        #mc-result { position: absolute; left: 96px; right: 96px; top: 930px; font-size: 44px; font-weight: 700; text-align: center; opacity: 0; }
+        #mc-result .b { color: var(--color-blue, #56b4e9); }
+        .mc-t { font-family: Inter; }
+      </style>
+      <div id="root" data-composition-id="mcmc" data-width="1920" data-height="1080">
+        <div id="mc-stage">
+          <div id="mc-head">Warum das reicht</div>
+          <svg id="mc-svg" viewBox="0 0 880 760"></svg>
+          <div id="mc-right">
+            <div id="mc-name"><span class="o">M</span>arkov-<span class="o">C</span>hain <span class="o">M</span>onte <span class="o">C</span>arlo</div>
+            <div id="mc-short">MCMC</div>
+            <div class="mc-line" id="mc-l1"><b>Monte Carlo</b> = der Zufall in den Schritten</div>
+            <div class="mc-line" id="mc-l2"><b>Markov-Kette</b> = jeder Schritt hängt nur vom vorigen Standort ab</div>
+          </div>
+          <div id="mc-result">Stichproben aus der Post – <span class="b">ohne die Post auszurechnen</span></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const L = window.__LIB, D = window.__DATA;
+          const S = window.__CUES.scenes.mcmc, C = S.cues, END = S.duration;
+          const tl = gsap.timeline({ paused: true });
+          const svg = document.getElementById("mc-svg");
+
+          // 1-D-Landschaft im Nebel
+          const lx = 40, ly = 40, lw = 800, lh = 300;
+          const px = (p) => lx + lw * p, py = (h) => ly + lh - lh * h;
+          const land = L.el("g", {}, svg);
+          L.el("path", { d: L.curvePath(D.curve, lx, ly, lw, lh, true), fill: "#1E3D52" }, land);
+          const landLine = L.el("path", { d: L.curvePath(D.curve, lx, ly, lw, lh), fill: "none", stroke: "#56B4E9", "stroke-width": 5 }, land);
+          L.el("line", { x1: lx, y1: ly + lh, x2: lx + lw, y2: ly + lh, stroke: "#9A9DA6", "stroke-width": 3 }, land);
+          const fog = L.el("rect", { x: lx - 20, y: ly - 30, width: lw + 40, height: lh + 20, fill: "#F2F2F2", opacity: 0.6 }, svg);
+          const fig = L.el("g", {}, svg);
+          L.el("circle", { cx: 0, cy: -46, r: 12, fill: "#E69F00" }, fig);
+          L.el("line", { x1: 0, y1: -32, x2: 0, y2: -6, stroke: "#E69F00", "stroke-width": 6, "stroke-linecap": "round" }, fig);
+          L.el("path", { d: "M0 -6 L-12 2 M0 -6 L12 2 M-14 -22 L0 -28 L14 -16", fill: "none", stroke: "#E69F00", "stroke-width": 6, "stroke-linecap": "round" }, fig);
+          const p0 = 0.55;
+          fig.setAttribute("transform", `translate(${px(p0)} ${py(L.height(p0))}) scale(1.35)`);
+          // zwei Höhen
+          const two = L.el("g", { opacity: 0 }, svg);
+          const p1 = 0.62;
+          L.el("line", { x1: px(p0), y1: py(L.height(p0)), x2: px(p0), y2: ly + lh, stroke: "#E69F00", "stroke-width": 4 }, two);
+          L.el("line", { x1: px(p1), y1: py(L.height(p1)), x2: px(p1), y2: ly + lh, stroke: "#F2F2F2", "stroke-width": 4, "stroke-dasharray": "10 8" }, two);
+          L.el("circle", { cx: px(p1), cy: py(L.height(p1)), r: 10, fill: "none", stroke: "#F2F2F2", "stroke-width": 3 }, two);
+          L.el("text", { x: px(p0) - 14, y: ly + lh + 36, fill: "#E69F00", "font-size": 28, "text-anchor": "end", class: "mc-t", "font-weight": 700 }, two).textContent = "hier";
+          L.el("text", { x: px(p1) + 14, y: ly + lh + 36, fill: "#F2F2F2", "font-size": 28, class: "mc-t", "font-weight": 700 }, two).textContent = "einen Schritt weiter";
+          // Würfel (klein) + Durchstreichung
+          const cube = L.el("g", { opacity: 0, transform: "translate(560 440)" }, svg);
+          const u = 18, n = 10, side = u * n;
+          L.el("rect", { x: 0, y: 0, width: side, height: side, fill: "#56B4E9", "fill-opacity": 0.4 }, cube);
+          const topF = L.el("g", { transform: "matrix(1 0 0.5 -0.5 0 0)" }, cube);
+          L.el("rect", { x: 0, y: 0, width: side, height: side, fill: "#56B4E9", "fill-opacity": 0.18 }, topF);
+          const sideF = L.el("g", { transform: `matrix(0.5 -0.5 0 1 ${side} 0)` }, cube);
+          L.el("rect", { x: 0, y: 0, width: side, height: side, fill: "#56B4E9", "fill-opacity": 0.3 }, sideF);
+          [topF, sideF, cube].forEach((g) => { for (let i = 0; i <= n; i++) { const t = (side * i) / n; L.el("line", { x1: t, y1: 0, x2: t, y2: side, stroke: "#56B4E9", "stroke-width": 1.5, "stroke-opacity": 0.7 }, g); L.el("line", { x1: 0, y1: t, x2: side, y2: t, stroke: "#56B4E9", "stroke-width": 1.5, "stroke-opacity": 0.7 }, g); } });
+          const cubeLbl = L.el("text", { x: side / 2 + 40, y: side + 40, fill: "#9A9DA6", "font-size": 28, "text-anchor": "middle", class: "mc-t" }, cube);
+          cubeLbl.textContent = "die lange Box";
+          const strike = L.el("line", { x1: -30, y1: side + 10, x2: side + 120, y2: -100, stroke: "#E69F00", "stroke-width": 10, "stroke-linecap": "round" }, cube);
+          const slen = L.dashDraw(strike);
+          // Gebirge (isometrisches Gitter mit Hügel), ersetzt die 1-D-Landschaft
+          const mount = L.el("g", { opacity: 0 }, svg);
+          const gn = 14, gw = 760, gh = 300, mx = 440, my = 60, ch = 220;
+          const z = (u, v) => Math.exp(-(((u - 0.62) ** 2) + ((v - 0.45) ** 2)) / 0.06);
+          const proj = (u, v) => [mx + (u - v) * gw * 0.5, my + (u + v) * gh * 0.5 - z(u, v) * ch];
+          for (let i = 0; i <= gn; i++) {
+            let d1 = "", d2 = "";
+            for (let j = 0; j <= gn; j++) {
+              const [xa, ya] = proj(i / gn, j / gn), [xb, yb] = proj(j / gn, i / gn);
+              d1 += (j ? "L" : "M") + xa.toFixed(1) + " " + ya.toFixed(1);
+              d2 += (j ? "L" : "M") + xb.toFixed(1) + " " + yb.toFixed(1);
+            }
+            L.el("path", { d: d1, fill: "none", stroke: "#56B4E9", "stroke-width": 2, "stroke-opacity": 0.8 }, mount);
+            L.el("path", { d: d2, fill: "none", stroke: "#56B4E9", "stroke-width": 2, "stroke-opacity": 0.8 }, mount);
+          }
+          const [fx, fy] = proj(0.62, 0.45);
+          const fig2 = L.el("g", { transform: `translate(${fx} ${fy}) scale(1.35)` }, mount);
+          L.el("circle", { cx: 0, cy: -46, r: 12, fill: "#E69F00" }, fig2);
+          L.el("line", { x1: 0, y1: -32, x2: 0, y2: -6, stroke: "#E69F00", "stroke-width": 6, "stroke-linecap": "round" }, fig2);
+          L.el("path", { d: "M0 -6 L-12 2 M0 -6 L12 2 M-14 -22 L0 -28 L14 -16", fill: "none", stroke: "#E69F00", "stroke-width": 6, "stroke-linecap": "round" }, fig2);
+          const mountLbl = L.el("text", { x: mx, y: my + gh + 30, fill: "#9A9DA6", "font-size": 28, "text-anchor": "middle", class: "mc-t" }, mount);
+          mountLbl.textContent = "ein Gebirge mit vielen Dimensionen – gleiche Regel";
+
+          // --- Timeline ---
+          tl.fromTo("#mc-stage", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 0);
+          tl.fromTo("#mc-head", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power4.out" }, 0.2);
+          tl.fromTo(fig, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.4);
+          tl.to(two, { opacity: 1, duration: 0.5 }, C.zwei_hoehen);
+          tl.to(cube, { opacity: 1, duration: 0.5 }, C.millionen);
+          tl.fromTo(strike, { strokeDashoffset: slen }, { strokeDashoffset: 0, duration: 0.5, ease: "power3.out" }, C.millionen + 0.9);
+          tl.to(landLine, { attr: { "stroke-width": 9 }, duration: 0.25, yoyo: true, repeat: 1 }, C.linie);
+          tl.to([land, fog, fig, two], { opacity: 0, duration: 0.6 }, C.gebirge);
+          tl.to(mount, { opacity: 1, duration: 0.8, ease: "power2.out" }, C.gebirge + 0.3);
+          tl.to(cube, { opacity: 0, duration: 0.4 }, C.gebirge);
+          tl.fromTo("#mc-name", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power4.out" }, C.heisst);
+          tl.fromTo("#mc-short", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power4.out" }, C.kurz);
+          tl.fromTo("#mc-l1", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.5, ease: "power4.out" }, C.monte_carlo);
+          tl.fromTo("#mc-l2", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.5, ease: "power4.out" }, C.markov);
+          tl.fromTo("#mc-result", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: "power4.out" }, C.ergebnis);
+          tl.to("#mc-stage", { opacity: 0, duration: 0.35, ease: "power3.in" }, END - 0.4);
+
+          window.__timelines["mcmc"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

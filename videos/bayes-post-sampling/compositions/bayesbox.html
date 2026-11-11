@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="de">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: Inter, sans-serif; color: var(--color-ink, #f2f2f2); }
+        #bb-stage { position: absolute; inset: 0; opacity: 0; }
+        #bb-head { position: absolute; left: 96px; top: 64px; font-size: 56px; font-weight: 700; letter-spacing: -0.02em; }
+        #bb-globe { position: absolute; left: 96px; top: 170px; width: 460px; height: 320px; opacity: 0; }
+        #bb-tosses { position: absolute; left: 96px; top: 510px; display: flex; gap: 8px; }
+        .bb-tile { width: 46px; height: 46px; border-radius: 6px; display: grid; place-items: center; font-size: 28px; font-weight: 700; background: var(--color-line, #2a2d35); opacity: 0; }
+        .bb-tile.w { background: var(--color-blue, #56b4e9); color: #0f1a22; }
+        #bb-count { position: absolute; left: 96px; top: 580px; font-size: 40px; font-weight: 700; color: var(--color-blue, #56b4e9); opacity: 0; }
+        #bb-plabel { position: absolute; left: 96px; top: 650px; font-size: 34px; white-space: nowrap; color: var(--color-muted, #9a9da6); opacity: 0; width: 460px; line-height: 1.3; }
+        #bb-plabel b { color: var(--color-ink, #f2f2f2); }
+        #bb-table { position: absolute; left: 640px; top: 170px; width: 640px; border-collapse: separate; border-spacing: 0; font-size: 32px; font-variant-numeric: tabular-nums; }
+        #bb-table th { text-align: right; font-weight: 700; padding: 10px 14px; border-bottom: 3px solid var(--color-muted, #9a9da6); color: var(--color-ink, #f2f2f2); }
+        #bb-table th:first-child, #bb-table td:first-child { text-align: left; }
+        #bb-table td { text-align: right; padding: 8px 14px; border-bottom: 1.5px solid var(--color-line, #2a2d35); color: var(--color-ink, #f2f2f2); }
+        #bb-tbody td, #bb-thead th { opacity: 0; }
+        #bb-table .c-pl { color: var(--color-muted, #9a9da6); opacity: 0; }
+        #bb-table .c-post { color: var(--color-blue, #56b4e9); font-weight: 700; opacity: 0; }
+        #bb-table th.c-post { border-bottom-color: var(--color-blue, #56b4e9); }
+        #bb-formula { position: absolute; left: 640px; top: 880px; font-size: 34px; color: var(--color-muted, #9a9da6); opacity: 0; }
+        #bb-formula .o { color: var(--color-orange, #e69f00); font-weight: 700; }
+        #bb-formula .b { color: var(--color-blue, #56b4e9); font-weight: 700; }
+        #bb-chart { position: absolute; left: 1340px; top: 170px; width: 484px; height: 740px; }
+        #bb-charttitle { position: absolute; left: 1340px; top: 110px; font-size: 32px; color: var(--color-muted, #9a9da6); opacity: 0; }
+        #bb-peak { position: absolute; left: 1540px; top: 230px; font-size: 34px; font-weight: 700; color: var(--color-blue, #56b4e9); opacity: 0; }
+      </style>
+      <div id="root" data-composition-id="bayesbox" data-width="1920" data-height="1080">
+        <div id="bb-stage">
+          <div id="bb-head">Zur Erinnerung: die Bayes-Box</div>
+          <svg id="bb-globe" viewBox="0 0 460 320"></svg>
+          <div id="bb-tosses"></div>
+          <div id="bb-count">6 × Wasser bei 9 Würfen</div>
+          <div id="bb-plabel">Gesucht: Wasseranteil <b>p</b></div>
+          <table id="bb-table"><thead><tr id="bb-thead"><th>p</th><th class="c-pl">Prior</th><th class="c-pl">Likelihood</th><th class="c-post">Post</th></tr></thead><tbody id="bb-tbody"></tbody></table>
+          <div id="bb-formula"><span class="o">Prior · Likelihood</span>, geteilt durch die Summe = <span class="b">Post</span></div>
+          <div id="bb-charttitle">Posteriori-Wahrscheinlichkeit je Zeile</div>
+          <svg id="bb-chart" viewBox="0 0 484 740"></svg>
+          <div id="bb-peak">60–70 %</div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const L = window.__LIB, D = window.__DATA;
+          const S = window.__CUES.scenes.bayesbox, C = S.cues, END = S.duration;
+          const tl = gsap.timeline({ paused: true });
+
+          // Globus: blaue Kugel mit grauen Landflächen
+          const g = document.getElementById("bb-globe");
+          L.el("circle", { cx: 230, cy: 160, r: 150, fill: "#56B4E9" }, g);
+          const land = [
+            "M150 60 C 190 40, 240 60, 230 100 C 220 140, 170 150, 140 120 C 120 100, 125 75, 150 60 Z",
+            "M260 130 C 300 110, 350 140, 340 180 C 330 220, 290 230, 265 205 C 245 185, 240 150, 260 130 Z",
+            "M120 190 C 150 180, 185 200, 175 240 C 165 275, 125 280, 105 250 C 92 230, 98 200, 120 190 Z",
+            "M290 240 C 320 230, 345 250, 335 275 C 325 295, 295 298, 282 280 C 272 265, 275 248, 290 240 Z",
+          ];
+          land.forEach((d) => L.el("path", { d, fill: "#2A2D35" }, g));
+          L.el("circle", { cx: 230, cy: 160, r: 150, fill: "none", stroke: "#9A9DA6", "stroke-width": 2 }, g);
+
+          const tossBox = document.getElementById("bb-tosses");
+          D.tosses.forEach((t) => {
+            const d = document.createElement("div");
+            d.className = "bb-tile" + (t === "W" ? " w" : "");
+            d.textContent = t;
+            tossBox.appendChild(d);
+          });
+
+          // Tabelle
+          const tb = document.getElementById("bb-tbody");
+          D.bayesbox.forEach((r) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${L.pct(r.p)}</td><td class="c-pl">${L.fmtDe(r.prior)}</td><td class="c-pl">${L.fmtDe(r.likelihood)}</td><td class="c-post">${L.fmtDe(r.post)}</td>`;
+            tb.appendChild(tr);
+          });
+
+          // Balken → Kurve
+          const svg = document.getElementById("bb-chart");
+          const x0 = 30, y0 = 40, w = 434, h = 620;
+          L.el("line", { x1: x0, y1: y0 + h, x2: x0 + w, y2: y0 + h, stroke: "#2A2D35", "stroke-width": 3 }, svg);
+          [0, 0.5, 1].forEach((p) => {
+            L.el("text", { x: x0 + w * p, y: y0 + h + 40, fill: "#9A9DA6", "font-size": 28, "text-anchor": "middle", "font-family": "Inter" }, svg).textContent = L.pct(p);
+          });
+          const maxPost = Math.max(...D.bayesbox.map((r) => r.post));
+          const bw = w / 11;
+          const bars = D.bayesbox.map((r, i) => {
+            const bh = (h * r.post) / maxPost;
+            return L.el("rect", { x: x0 + bw * i + 3, y: y0 + h - bh, width: bw - 6, height: Math.max(bh, 0.5), fill: "#56B4E9", rx: 3 }, svg);
+          });
+          const line = L.el("path", { d: L.curvePath(D.curve, x0 + bw / 2, y0, w - bw, h), fill: "none", stroke: "#56B4E9", "stroke-width": 6, "stroke-linecap": "round", "stroke-opacity": 0 }, svg);
+          const len = L.dashDraw(line);
+
+          tl.fromTo("#bb-stage", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 0);
+          tl.fromTo("#bb-head", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power4.out" }, 0.2);
+          tl.fromTo("#bb-globe", { opacity: 0, scale: 0.7, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.7, ease: "power4.out" }, C.globus);
+          tl.fromTo(".bb-tile", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, ease: "power4.out", stagger: 0.09 }, C.wuerfe);
+          tl.fromTo(".bb-tile.w", { scale: 1 }, { scale: 1.18, duration: 0.18, yoyo: true, repeat: 1, stagger: 0.08, transformOrigin: "50% 50%" }, C.sechs);
+          tl.fromTo("#bb-count", { opacity: 0 }, { opacity: 1, duration: 0.4 }, C.sechs + 0.3);
+          tl.fromTo("#bb-plabel", { opacity: 0 }, { opacity: 1, duration: 0.4 }, C.p);
+          // Tabelle
+          tl.fromTo("#bb-thead th", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power4.out", stagger: 0.08 }, C.tabelle);
+          document.querySelectorAll("#bb-tbody tr").forEach((tr, i) => tl.fromTo(tr.querySelectorAll("td:first-child"), { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.35, ease: "power4.out" }, C.zeilen + i * 0.2));
+          tl.fromTo("#bb-table .c-pl", { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.02 }, C.prior_lik);
+          tl.fromTo("#bb-table .c-pl", { color: "#9A9DA6" }, { color: "#E69F00", duration: 0.2, yoyo: true, repeat: 1, repeatDelay: 0.8 }, C.prior_lik + 0.3);
+          tl.fromTo("#bb-formula", { opacity: 0 }, { opacity: 1, duration: 0.4 }, C.prior_lik + 0.2);
+          tl.fromTo("#bb-table td.c-post", { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.06 }, C.summe + 0.2);
+          tl.fromTo("#bb-charttitle", { opacity: 0 }, { opacity: 1, duration: 0.4 }, C.summe + 0.2);
+          tl.fromTo(bars, { scaleY: 0, svgOrigin: (i) => `${x0 + bw * i + bw / 2} ${y0 + h}` }, { scaleY: 1, svgOrigin: (i) => `${x0 + bw * i + bw / 2} ${y0 + h}`, duration: 0.6, ease: "power3.out", stagger: 0.06 }, C.summe + 0.4);
+          tl.fromTo("#bb-table th.c-post", { scale: 1 }, { scale: 1.12, duration: 0.2, yoyo: true, repeat: 1, transformOrigin: "50% 50%" }, C.fertig);
+          // Kurve
+          tl.to(bars, { attr: { "fill-opacity": 0.3 }, duration: 0.5 }, C.kurve);
+          tl.set(line, { attr: { "stroke-opacity": 1 } }, C.kurve);
+          tl.fromTo(line, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: 1.4, ease: "power2.inOut" }, C.kurve);
+          tl.fromTo("#bb-peak", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, C.sechzig);
+          tl.to("#bb-stage", { opacity: 0, duration: 0.35, ease: "power3.in" }, END - 0.4);
+
+          window.__timelines["bayesbox"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

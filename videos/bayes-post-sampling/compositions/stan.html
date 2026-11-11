@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="de">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: Inter, sans-serif; color: var(--color-ink, #f2f2f2); }
+        #st-stage { position: absolute; inset: 0; opacity: 0; }
+        #st-head { position: absolute; left: 96px; top: 54px; font-size: 56px; font-weight: 700; letter-spacing: -0.02em; }
+        #st-stan { position: absolute; left: 96px; top: 150px; font-size: 44px; font-weight: 700; color: var(--color-blue, #56b4e9); opacity: 0; }
+        #st-stan span { color: var(--color-muted, #9a9da6); font-weight: 500; margin-left: 16px; }
+        #st-codebox { position: absolute; left: 96px; top: 220px; width: 1000px; }
+        #st-code { font-family: "JetBrains Mono", monospace; font-size: 40px; background: #0f1115; border: 2px solid var(--color-line, #2a2d35); border-radius: 12px; padding: 22px 30px; white-space: nowrap; display: inline-block; clip-path: inset(0 100% 0 0); }
+        #st-code .fn { color: var(--color-blue, #56b4e9); }
+        #st-code .var { color: var(--color-orange, #e69f00); }
+        #st-table { position: absolute; left: 96px; top: 350px; width: 900px; border-collapse: separate; border-spacing: 0; font-family: "JetBrains Mono", monospace; font-size: 30px; font-variant-numeric: tabular-nums; }
+        #st-table th { text-align: right; padding: 10px 16px; border-bottom: 3px solid var(--color-muted, #9a9da6); font-weight: 700; opacity: 0; }
+        #st-table td { text-align: right; padding: 8px 16px; border-bottom: 1.5px solid var(--color-line, #2a2d35); }
+        #st-table th:first-child, #st-table td:first-child { text-align: left; color: var(--color-muted, #9a9da6); width: 90px; }
+        #st-table tbody td { opacity: 0; }
+        #st-more { position: absolute; left: 96px; top: 885px; font-size: 32px; color: var(--color-muted, #9a9da6); opacity: 0; }
+        #st-more b { color: var(--color-ink, #f2f2f2); }
+        #st-rowlabel { position: absolute; left: 1020px; top: 420px; font-size: 30px; color: var(--color-orange, #e69f00); font-weight: 700; opacity: 0; white-space: nowrap; }
+        #st-drum { position: absolute; left: 1440px; top: 150px; width: 384px; height: 284px; opacity: 0; }
+        #st-words { position: absolute; left: 1280px; top: 520px; font-size: 44px; font-weight: 700; line-height: 1.5; }
+        #st-words div { opacity: 0; }
+        #st-words div span { color: var(--color-muted, #9a9da6); font-weight: 500; font-size: 34px; margin-left: 14px; }
+        #st-merk { position: absolute; left: 96px; right: 96px; top: 400px; font-size: 100px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; text-align: center; }
+        #st-merk div { opacity: 0; }
+        #st-merk .o { color: var(--color-orange, #e69f00); }
+        #st-end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; opacity: 0; }
+        #st-end .t { font-size: 128px; font-weight: 700; letter-spacing: -0.03em; }
+        #st-end .u { font-size: 40px; color: var(--color-blue, #56b4e9); }
+        #st-end .k { font-size: 36px; color: var(--color-muted, #9a9da6); }
+        #st-end .c { font-size: 28px; color: var(--color-muted, #9a9da6); margin-top: 60px; }
+        #st-end .i { font-size: 28px; color: var(--color-muted, #9a9da6); margin-top: 4px; }
+        #st-end .i:first-of-type { margin-top: 36px; }
+      </style>
+      <div id="root" data-composition-id="stan" data-width="1920" data-height="1080">
+        <div id="st-stage">
+          <div id="st-head">In R: der Wanderer heißt Stan</div>
+          <div id="st-stan">Stan<span>rechnet den Wanderer für Sie</span></div>
+          <div id="st-codebox"><div id="st-code"><span class="var">fit</span> &lt;- <span class="fn">stan_glm</span>(punkte ~ lernstunden, data = d)</div></div>
+          <table id="st-table"><thead><tr><th>#</th><th>(Intercept)</th><th>lernstunden</th><th>sigma</th></tr></thead><tbody id="st-tbody"></tbody></table>
+          <div id="st-more">… insgesamt <b>4 000 Zeilen</b>: eine pro Standort des Wanderers</div>
+          <div id="st-rowlabel">← eine Zeile pro Standort</div>
+          <svg id="st-drum" viewBox="0 0 460 340"></svg>
+          <div id="st-words"><div id="st-w1">zählen<span>Anteile ablesen</span></div><div id="st-w2">Anteile bilden<span>z. B. „über 50 %"</span></div><div id="st-w3">Intervalle ablesen<span>wo die Masse liegt</span></div></div>
+          <div id="st-merk"><div id="st-m1">Nicht ausrechnen.</div><div id="st-m2" class="o">Wandern lassen und zählen.</div></div>
+          <div id="st-end"><div class="t">Start:Bayes!</div><div class="u">sebastiansauer.github.io/start-bayes</div><div class="k">Kapitel „Die Post befragen"</div><div class="c">Globusversuch nach McElreath, Statistical Rethinking</div><div class="i">📚 start-bayes • Prof. Dr. Sebastian Sauer • Lizenz: CC-BY-NC-SA 4.0 (Open Access)</div><div class="i">🤖 Stimme KI-synthetisiert (EU AI Act) • Impressum: sebastiansauer.github.io/start-bayes/imprint.html</div></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const L = window.__LIB, D = window.__DATA;
+          const S = window.__CUES.scenes.stan, C = S.cues, END = S.duration;
+          const tl = gsap.timeline({ paused: true });
+
+          const tb = document.getElementById("st-tbody");
+          D.stanRows.forEach((r, i) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${i + 1}</td><td>${L.fmtDe(r.intercept, 1)}</td><td>${L.fmtDe(r.slope, 2)}</td><td>${L.fmtDe(r.sigma, 1)}</td>`;
+            tb.appendChild(tr);
+          });
+          const dr = document.getElementById("st-drum");
+          L.el("rect", { x: 40, y: 100, width: 380, height: 190, rx: 95, fill: "#2A2D35", stroke: "#9A9DA6", "stroke-width": 3 }, dr);
+          L.el("rect", { x: 190, y: 80, width: 80, height: 36, rx: 8, fill: "#16181D", stroke: "#9A9DA6", "stroke-width": 3 }, dr);
+          L.el("line", { x1: 420, y1: 195, x2: 452, y2: 195, stroke: "#9A9DA6", "stroke-width": 6, "stroke-linecap": "round" }, dr);
+          L.el("line", { x1: 452, y1: 195, x2: 452, y2: 150, stroke: "#9A9DA6", "stroke-width": 6, "stroke-linecap": "round" }, dr);
+          for (let i = 0; i < 24; i++) L.el("rect", { x: 80 + (i % 12) * 26 + (i >= 12 ? 10 : 0), y: 250 - Math.floor(i / 12) * 24, width: 20, height: 14, rx: 3, fill: "#E69F00" }, dr);
+
+          tl.fromTo("#st-stage", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 0);
+          tl.fromTo("#st-head", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power4.out" }, 0.2);
+          tl.fromTo("#st-stan", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.5, ease: "power4.out" }, C.stan);
+          tl.fromTo("#st-code", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 1.1, ease: "none" }, C.code);
+          tl.fromTo("#st-table th", { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.08 }, C.tabelle);
+          document.querySelectorAll("#st-tbody tr").forEach((tr, i) => tl.fromTo(tr.querySelectorAll("td"), { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }, C.tabelle + 0.3 + i * 0.12));
+          tl.fromTo("#st-rowlabel", { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.4 }, C.zeile_pro);
+          tl.fromTo("#st-more", { opacity: 0 }, { opacity: 1, duration: 0.4 }, C.zeile_pro + 0.3);
+          tl.fromTo("#st-table th", { color: "#F2F2F2" }, { color: "#E69F00", duration: 0.25, yoyo: true, repeat: 1, repeatDelay: 0.9, stagger: 0.08 }, C.spalte_pro);
+          tl.fromTo("#st-drum", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, C.lostrommel);
+          tl.fromTo(["#st-w1", "#st-w2", "#st-w3"], { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.4, ease: "power4.out", stagger: 0.55 }, C.zaehlen);
+          // Merksatz
+          tl.to(["#st-head", "#st-stan", "#st-codebox", "#st-table", "#st-more", "#st-rowlabel", "#st-drum", "#st-words"], { opacity: 0, duration: 0.5, ease: "power3.in" }, C.weg - 0.4);
+          tl.fromTo("#st-m1", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power4.out" }, C.merksatz);
+          tl.fromTo("#st-m2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power4.out" }, C.wandern);
+          // Abspann
+          const tEnd = S.speechEnd + 1.6;
+          tl.to(["#st-m1", "#st-m2"], { opacity: 0, duration: 0.5, ease: "power3.in" }, tEnd - 0.5);
+          tl.fromTo("#st-end", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "power2.out" }, tEnd);
+          tl.fromTo("#st-end .t", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.6, ease: "power4.out" }, tEnd);
+          tl.fromTo("#st-end .i", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out", stagger: 0.3 }, tEnd + 1.2);
+
+          window.__timelines["stan"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

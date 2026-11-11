@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="de">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: Inter, sans-serif; color: var(--color-ink, #f2f2f2); }
+        #bx-stage { position: absolute; inset: 0; opacity: 0; }
+        #bx-head { position: absolute; left: 96px; top: 64px; font-size: 56px; font-weight: 700; letter-spacing: -0.02em; }
+        #bx-scatter { position: absolute; left: 96px; top: 170px; width: 840px; height: 640px; }
+        #bx-greek { position: absolute; left: 96px; top: 830px; font-size: 34px; color: var(--color-muted, #9a9da6); opacity: 0; }
+        #bx-cube { position: absolute; left: 1000px; top: 170px; width: 824px; height: 620px; }
+        #bx-paramlabel { position: absolute; left: 1000px; top: 150px; font-size: 34px; color: var(--color-muted, #9a9da6); opacity: 0; }
+        #bx-paramlabel b { color: var(--color-ink, #f2f2f2); }
+        #bx-number { position: absolute; left: 1000px; top: 800px; width: 824px; font-size: 48px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; opacity: 0; white-space: nowrap; }
+        #bx-number small { font-size: 34px; font-weight: 500; color: var(--color-muted, #9a9da6); margin-left: 16px; }
+        #bx-pow { position: absolute; left: 1000px; top: 880px; font-size: 40px; color: var(--color-orange, #e69f00); font-weight: 700; opacity: 0; }
+        #bx-final { position: absolute; left: 96px; right: 96px; top: 400px; font-size: 92px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; text-align: center; }
+        #bx-final div { opacity: 0; }
+        #bx-final .o { color: var(--color-orange, #e69f00); }
+        .bx-lbl { font-family: Inter; font-size: 28px; font-weight: 700; }
+      </style>
+      <div id="root" data-composition-id="box" data-width="1920" data-height="1080">
+        <div id="bx-stage">
+          <div id="bx-head">Ein größeres Modell: Lernstunden → Klausurpunkte</div>
+          <svg id="bx-scatter" viewBox="0 0 840 640"></svg>
+          <div id="bx-greek">in Formeln: β₀ · β₁ · σ</div>
+          <div id="bx-paramlabel"><b id="bx-pcount">1 Parameter</b> → <span id="bx-ptext">eine Reihe von Zeilen</span></div>
+          <svg id="bx-cube" viewBox="0 0 824 620"></svg>
+          <div id="bx-number"><span id="bx-digits">10 · 10 · 10 = 1 000</span><small>Zeilen</small></div>
+          <div id="bx-pow">= 10²⁰ Zeilen – eine Eins mit zwanzig Nullen</div>
+          <div id="bx-final"><div id="bx-f1">Die Bayes-Box ist nicht falsch.</div><div id="bx-f2" class="o">Sie wird nur zu lang.</div></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const L = window.__LIB, D = window.__DATA;
+          const S = window.__CUES.scenes.box, C = S.cues, END = S.duration;
+          const tl = gsap.timeline({ paused: true });
+
+          // --- Streudiagramm ---
+          const sv = document.getElementById("bx-scatter");
+          const x0 = 100, y0 = 30, w = 700, h = 520;
+          const px = (hrs) => x0 + (w * hrs) / 32;
+          const py = (pts) => y0 + h - (h * pts) / 100;
+          const axes = L.el("g", { opacity: 0 }, sv);
+          L.el("line", { x1: x0, y1: y0 + h, x2: x0 + w, y2: y0 + h, stroke: "#9A9DA6", "stroke-width": 3 }, axes);
+          L.el("line", { x1: x0, y1: y0, x2: x0, y2: y0 + h, stroke: "#9A9DA6", "stroke-width": 3 }, axes);
+          L.el("text", { x: x0 + w / 2, y: y0 + h + 60, fill: "#9A9DA6", "font-size": 30, "text-anchor": "middle", "font-family": "Inter" }, axes).textContent = "Lernstunden";
+          const yl = L.el("text", { x: 40, y: y0 + h / 2, fill: "#9A9DA6", "font-size": 30, "text-anchor": "middle", "font-family": "Inter", transform: `rotate(-90 40 ${y0 + h / 2})` }, axes);
+          yl.textContent = "Klausurpunkte";
+          const pts = D.regPoints.map((p) => L.el("circle", { cx: px(p.x), cy: py(p.y), r: 9, fill: "#9A9DA6", opacity: 0 }, sv));
+          const { intercept: b0, slope: b1, sigma } = D.regLine;
+          const line = L.el("line", { x1: px(0), y1: py(b0), x2: px(32), y2: py(b0 + b1 * 32), stroke: "#56B4E9", "stroke-width": 6, "stroke-linecap": "round" }, sv);
+          const llen = L.dashDraw(line);
+          // Marker 1: Start
+          const m1 = L.el("g", { opacity: 0 }, sv);
+          L.el("circle", { cx: px(0), cy: py(b0), r: 16, fill: "#E69F00" }, m1);
+          L.el("text", { x: px(0) + 30, y: py(b0) + 10, fill: "#E69F00", class: "bx-lbl" }, m1).textContent = "Start der Geraden";
+          // Marker 2: Steigung (Dreieck)
+          const m2 = L.el("g", { opacity: 0 }, sv);
+          const ax = 16, bx = 24;
+          L.el("path", { d: `M${px(ax)} ${py(b0 + b1 * ax)} L${px(bx)} ${py(b0 + b1 * ax)} L${px(bx)} ${py(b0 + b1 * bx)} Z`, fill: "none", stroke: "#E69F00", "stroke-width": 5, "stroke-dasharray": "10 8" }, m2);
+          L.el("text", { x: px(bx) + 16, y: py(b0 + b1 * ax) + 6, fill: "#E69F00", class: "bx-lbl" }, m2).textContent = "Steigung";
+          // Marker 3: Streuung (Band)
+          const m3 = L.el("g", { opacity: 0 }, sv);
+          [1, -1].forEach((s) => L.el("line", { x1: px(0), y1: py(b0 + s * sigma), x2: px(32), y2: py(b0 + b1 * 32 + s * sigma), stroke: "#E69F00", "stroke-width": 3, "stroke-dasharray": "14 10" }, m3));
+          L.el("text", { x: px(27), y: py(b0 + b1 * 27 + sigma) - 18, fill: "#E69F00", class: "bx-lbl", "text-anchor": "end" }, m3).textContent = "Streuung";
+
+          // --- Würfel (kavaliersperspektive) ---
+          const cv = document.getElementById("bx-cube");
+          const unit = 40, n = 10, side = unit * n;
+          const fx = 60, fy = 200; // Front-Fläche oben links
+          const front = L.el("g", {}, cv);
+          const rowCells = [];
+          for (let c = 0; c < n; c++)
+            rowCells.push(L.el("rect", { x: fx + c * unit + 2, y: fy + 2, width: unit - 4, height: unit - 4, rx: 4, fill: "#56B4E9", opacity: 0 }, front));
+          const gridCells = [];
+          for (let r = 1; r < n; r++)
+            for (let c = 0; c < n; c++)
+              gridCells.push(L.el("rect", { x: fx + c * unit + 2, y: fy + r * unit + 2, width: unit - 4, height: unit - 4, rx: 4, fill: "#56B4E9", "fill-opacity": 0.55, opacity: 0 }, front));
+          // Top- und Seitenfläche als Gitterlinien
+          const faceLines = (g, nn, op) => {
+            for (let i = 0; i <= nn; i++) {
+              const t = (side * i) / nn;
+              L.el("line", { x1: t, y1: 0, x2: t, y2: side, stroke: "#56B4E9", "stroke-width": 2, "stroke-opacity": op }, g);
+              L.el("line", { x1: 0, y1: t, x2: side, y2: t, stroke: "#56B4E9", "stroke-width": 2, "stroke-opacity": op }, g);
+            }
+          };
+          const top = L.el("g", { transform: `matrix(1 0 0.5 -0.5 ${fx} ${fy})`, opacity: 0 }, cv);
+          L.el("rect", { x: 0, y: 0, width: side, height: side, fill: "#56B4E9", "fill-opacity": 0.18 }, top);
+          const topLines = L.el("g", {}, top); faceLines(topLines, n, 0.8);
+          const topFine = L.el("g", { opacity: 0 }, top); faceLines(topFine, 50, 0.35);
+          const sideG = L.el("g", { transform: `matrix(0.5 -0.5 0 1 ${fx + side} ${fy})`, opacity: 0 }, cv);
+          L.el("rect", { x: 0, y: 0, width: side, height: side, fill: "#56B4E9", "fill-opacity": 0.3 }, sideG);
+          const sideLines = L.el("g", {}, sideG); faceLines(sideLines, n, 0.8);
+          const sideFine = L.el("g", { opacity: 0 }, sideG); faceLines(sideFine, 50, 0.35);
+          const frontFine = L.el("g", { transform: `translate(${fx} ${fy})`, opacity: 0 }, cv); faceLines(frontFine, 50, 0.35);
+          // Geisterwürfel für „zehn Parameter"
+          const ghosts = [1, 2, 3].map((k) =>
+            L.el("rect", { x: fx + side + 40 * k + 60, y: fy - 40 * k, width: side * 0.5, height: side * 0.5, fill: "#56B4E9", "fill-opacity": 0.12, stroke: "#56B4E9", "stroke-opacity": 0.5, "stroke-width": 2, opacity: 0 }, cv),
+          );
+
+          const digits = document.getElementById("bx-digits");
+          const pcount = document.getElementById("bx-pcount"), ptext = document.getElementById("bx-ptext");
+
+          // --- Timeline ---
+          tl.fromTo("#bx-stage", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 0);
+          tl.fromTo("#bx-head", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power4.out" }, 0.2);
+          tl.to(axes, { opacity: 1, duration: 0.5 }, C.modell);
+          tl.to(pts, { opacity: 1, duration: 0.3, stagger: 0.05 }, C.klausur);
+          tl.fromTo(line, { strokeDashoffset: llen }, { strokeDashoffset: 0, duration: 1.0, ease: "power2.inOut" }, C.drei);
+          tl.to(m1, { opacity: 1, duration: 0.4 }, C.start);
+          tl.to(m2, { opacity: 1, duration: 0.4 }, C.steil);
+          tl.to(m3, { opacity: 1, duration: 0.4 }, C.streuen);
+          tl.fromTo("#bx-greek", { opacity: 0 }, { opacity: 1, duration: 0.4 }, C.streuen + 1.2);
+          // Box wächst
+          tl.fromTo("#bx-paramlabel", { opacity: 0 }, { opacity: 1, duration: 0.3 }, C.ein_param);
+          tl.to(rowCells, { opacity: 1, duration: 0.25, stagger: 0.05 }, C.ein_param + 0.2);
+          tl.add(() => { pcount.textContent = "2 Parameter"; ptext.textContent = "ein Gitter: jede Kombination eine Zeile"; }, C.zwei_param);
+          tl.add(() => { pcount.textContent = "1 Parameter"; ptext.textContent = "eine Reihe von Zeilen"; }, C.zwei_param - 0.01);
+          tl.to(gridCells, { opacity: 1, duration: 0.2, stagger: 0.012 }, C.zwei_param + 0.1);
+          tl.add(() => { pcount.textContent = "3 Parameter"; ptext.textContent = "ein Würfel"; }, C.drei_param);
+          tl.add(() => { pcount.textContent = "2 Parameter"; ptext.textContent = "ein Gitter: jede Kombination eine Zeile"; }, C.drei_param - 0.01);
+          tl.to([top, sideG], { opacity: 1, duration: 0.7, ease: "power3.out" }, C.drei_param + 0.1);
+          tl.fromTo("#bx-number", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, C.tausend);
+          tl.add(() => { digits.textContent = "10 · 10 · 10 = 1 000"; }, C.hundert - 0.01);
+          tl.add(() => { digits.textContent = "100 · 100 · 100 = 1 000 000"; }, C.hundert + 0.6);
+          tl.to([topFine, sideFine, frontFine], { opacity: 1, duration: 0.8 }, C.hundert);
+          tl.fromTo("#bx-number", { scale: 1 }, { scale: 1.06, duration: 0.2, yoyo: true, repeat: 1, transformOrigin: "0% 50%" }, C.million);
+          tl.add(() => { pcount.textContent = "10 Parameter"; ptext.textContent = "eine multiple Regression"; }, C.zehn_param);
+          tl.add(() => { pcount.textContent = "3 Parameter"; ptext.textContent = "ein Würfel"; }, C.zehn_param - 0.01);
+          tl.to(ghosts, { opacity: 1, duration: 0.4, stagger: 0.15 }, C.zehn_param + 0.2);
+          // Eins mit zwanzig Nullen: Ziffern erscheinen nacheinander
+          const zeros = "100 000 000 000 000 000 000";
+          for (let k = 1; k <= zeros.length; k++) {
+            const t = C.zwanzig + 0.1 + (k - 1) * 0.07;
+            tl.add(() => { digits.textContent = zeros.slice(0, k); }, t);
+          }
+          tl.add(() => { digits.textContent = "100 · 100 · 100 = 1 000 000"; }, C.zwanzig + 0.09);
+          tl.fromTo("#bx-pow", { opacity: 0 }, { opacity: 1, duration: 0.4 }, C.zwanzig + 2.2);
+          // Schluss
+          tl.to(["#bx-scatter", "#bx-greek", "#bx-paramlabel", "#bx-cube", "#bx-number", "#bx-pow", "#bx-head"], { opacity: 0, duration: 0.6, ease: "power3.in" }, C.nicht_falsch - 0.5);
+          tl.fromTo("#bx-f1", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power4.out" }, C.nicht_falsch);
+          tl.fromTo("#bx-f2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power4.out" }, C.zu_lang);
+          tl.to("#bx-stage", { opacity: 0, duration: 0.35, ease: "power3.in" }, END - 0.4);
+
+          window.__timelines["box"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
