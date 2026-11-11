@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="de">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: Inter, sans-serif; color: var(--color-ink, #f2f2f2); }
+        #ei-stage { position: absolute; inset: 0; opacity: 0; }
+        #ei-kicker { position: absolute; left: 96px; top: 64px; font-size: 30px; font-weight: 500; color: var(--color-muted, #9a9da6); }
+        #ei-title { position: absolute; left: 96px; top: 120px; font-size: 112px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
+        #ei-tosses { position: absolute; left: 96px; top: 276px; display: flex; gap: 10px; opacity: 0; }
+        .ei-tile { width: 46px; height: 46px; border-radius: 6px; display: grid; place-items: center; font-size: 28px; font-weight: 700; background: var(--color-line, #2a2d35); color: var(--color-ink, #f2f2f2); }
+        .ei-tile.w { background: var(--color-blue, #56b4e9); color: #0f1a22; }
+        #ei-tosslabel { position: absolute; left: 600px; top: 282px; font-size: 30px; color: var(--color-muted, #9a9da6); opacity: 0; }
+        #ei-chart { position: absolute; left: 96px; top: 360px; width: 1100px; height: 560px; }
+        #ei-postlabel { position: absolute; left: 820px; top: 400px; font-size: 40px; font-weight: 700; color: var(--color-blue, #56b4e9); opacity: 0; }
+        .ei-item { position: absolute; left: 1300px; width: 524px; display: flex; gap: 28px; align-items: flex-start; opacity: 0; }
+        .ei-num { font-size: 88px; font-weight: 700; line-height: 1; color: var(--color-orange, #e69f00); width: 70px; }
+        .ei-text { font-size: 42px; font-weight: 500; line-height: 1.25; padding-top: 10px; }
+        #ei-item1 { top: 430px; }
+        #ei-item2 { top: 650px; }
+      </style>
+      <div id="root" data-composition-id="einstieg" data-width="1920" data-height="1080">
+        <div id="ei-stage">
+          <div id="ei-kicker">Start:Bayes! · Kapitel „Die Post befragen"</div>
+          <div id="ei-title">Die Post befragen</div>
+          <div id="ei-tosses"></div>
+          <div id="ei-tosslabel">Daten: 9 Globuswürfe</div>
+          <svg id="ei-chart" viewBox="0 0 1100 560"></svg>
+          <div id="ei-postlabel">die Post-Verteilung</div>
+          <div class="ei-item" id="ei-item1"><div class="ei-num">1</div><div class="ei-text">Stichproben statt Ausrechnen</div></div>
+          <div class="ei-item" id="ei-item2"><div class="ei-num">2</div><div class="ei-text">Warum die Bayes-Box nicht mehr reicht</div></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const L = window.__LIB, D = window.__DATA;
+          const S = window.__CUES.scenes.einstieg, C = S.cues, END = S.duration;
+          const tl = gsap.timeline({ paused: true });
+
+          // Würfe
+          const tossBox = document.getElementById("ei-tosses");
+          D.tosses.forEach((t) => {
+            const d = document.createElement("div");
+            d.className = "ei-tile" + (t === "W" ? " w" : "");
+            d.textContent = t;
+            tossBox.appendChild(d);
+          });
+
+          // Kurve
+          const svg = document.getElementById("ei-chart");
+          const x0 = 20, y0 = 40, w = 1060, h = 460;
+          L.el("line", { x1: x0, y1: y0 + h, x2: x0 + w, y2: y0 + h, stroke: "#2A2D35", "stroke-width": 3 }, svg);
+          [0, 0.5, 1].forEach((p) => {
+            L.el("text", { x: x0 + w * p, y: y0 + h + 44, fill: "#9A9DA6", "font-size": 28, "text-anchor": "middle", "font-family": "Inter" }, svg).textContent = L.pct(p);
+          });
+          const area = L.el("path", { d: L.curvePath(D.curve, x0, y0, w, h, true), fill: "#56B4E9", "fill-opacity": 0, stroke: "none" }, svg);
+          const line = L.el("path", { d: L.curvePath(D.curve, x0, y0, w, h), fill: "none", stroke: "#56B4E9", "stroke-width": 6, "stroke-linecap": "round" }, svg);
+          const len = L.dashDraw(line);
+
+          tl.set("#ei-stage", { opacity: 1 }, 0);
+          tl.fromTo("#ei-kicker", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.4);
+          // Daten: Kacheln
+          tl.fromTo("#ei-tosses", { opacity: 0 }, { opacity: 1, duration: 0.2 }, C.daten);
+          tl.fromTo(".ei-tile", { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power4.out", stagger: 0.06 }, C.daten);
+          tl.fromTo("#ei-tosslabel", { opacity: 0 }, { opacity: 1, duration: 0.4 }, C.daten + 0.6);
+          // Post: Kurve zeichnet
+          tl.fromTo(line, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: 1.4, ease: "power2.inOut" }, C.post);
+          tl.fromTo(area, { attr: { "fill-opacity": 0 } }, { attr: { "fill-opacity": 0.28 }, duration: 0.8, ease: "power2.out" }, C.post + 0.9);
+          tl.fromTo("#ei-postlabel", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.5, ease: "power4.out" }, C.post + 1.2);
+          // zwei Punkte
+          tl.fromTo("#ei-item1", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.6, ease: "power4.out" }, C.erstens);
+          tl.fromTo("#ei-item2", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.6, ease: "power4.out" }, C.zweitens);
+          tl.to("#ei-stage", { opacity: 0, duration: 0.35, ease: "power3.in" }, END - 0.4);
+
+          window.__timelines["einstieg"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

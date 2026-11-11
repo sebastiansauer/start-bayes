@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="de">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: Inter, sans-serif; color: var(--color-ink, #f2f2f2); }
+        #lt-stage { position: absolute; inset: 0; opacity: 0; }
+        #lt-head { position: absolute; left: 96px; top: 64px; font-size: 56px; font-weight: 700; letter-spacing: -0.02em; }
+        #lt-table { position: absolute; left: 96px; top: 170px; width: 440px; border-collapse: collapse; font-size: 30px; font-variant-numeric: tabular-nums; }
+        #lt-table th { text-align: right; font-weight: 700; padding: 8px 12px; border-bottom: 3px solid var(--color-muted, #9a9da6); }
+        #lt-table th:first-child, #lt-table td:first-child { text-align: left; }
+        #lt-table td { text-align: right; padding: 6px 12px; border-bottom: 1.5px solid var(--color-line, #2a2d35); }
+        #lt-table .c-post { color: var(--color-blue, #56b4e9); font-weight: 700; }
+        #lt-table .c-lose { color: var(--color-orange, #e69f00); font-weight: 700; opacity: 0; }
+        #lt-drum { position: absolute; left: 620px; top: 300px; width: 560px; height: 420px; opacity: 0; }
+        #lt-drumlabel { position: absolute; left: 620px; top: 740px; width: 560px; text-align: center; font-size: 34px; color: var(--color-muted, #9a9da6); opacity: 0; }
+        #lt-chart { position: absolute; left: 1280px; top: 170px; width: 544px; height: 760px; }
+        #lt-counter { position: absolute; left: 1280px; top: 110px; font-size: 36px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--color-ink, #f2f2f2); opacity: 0; }
+        #lt-counter span { color: var(--color-muted, #9a9da6); font-weight: 500; }
+        #lt-ylabel { position: absolute; left: 1280px; top: 160px; font-size: 28px; color: var(--color-muted, #9a9da6); opacity: 0; }
+        #lt-switch { position: absolute; left: 620px; top: 170px; width: 560px; text-align: center; font-size: 38px; font-weight: 700; opacity: 0; }
+        #lt-switch .a { color: var(--color-muted, #9a9da6); text-decoration: line-through; text-decoration-thickness: 4px; }
+        #lt-switch .b { color: var(--color-orange, #e69f00); }
+        #lt-question { position: absolute; left: 720px; top: 820px; width: 600px; font-size: 40px; font-weight: 700; opacity: 0; line-height: 1.25; }
+        #lt-answer { position: absolute; left: 720px; top: 890px; width: 640px; font-size: 40px; font-variant-numeric: tabular-nums; opacity: 0; }
+        #lt-answer b { color: var(--color-orange, #e69f00); }
+        #lt-formel { position: absolute; left: 96px; top: 880px; font-size: 44px; font-weight: 700; opacity: 0; }
+        #lt-formel .o { color: var(--color-orange, #e69f00); }
+        .lt-los { position: absolute; left: 0; top: 0; width: 30px; height: 22px; border-radius: 4px; background: var(--color-orange, #e69f00); color: #1c1600; font-size: 15px; font-weight: 700; display: grid; place-items: center; opacity: 0; }
+      </style>
+      <div id="root" data-composition-id="lostrommel" data-width="1920" data-height="1080">
+        <div id="lt-stage">
+          <div id="lt-head">Stichproben aus der Bayes-Box</div>
+          <table id="lt-table"><thead><tr><th>p</th><th class="c-post">Post</th><th class="c-lose">Lose</th></tr></thead><tbody id="lt-tbody"></tbody></table>
+          <div id="lt-switch"><span class="a">Wahrscheinlichkeit</span> → <span class="b">Häufigkeit</span></div>
+          <svg id="lt-drum" viewBox="0 0 560 420"></svg>
+          <div id="lt-drumlabel">Lostrommel: ziehen mit Zurücklegen</div>
+          <div id="lt-counter">n = <span id="lt-n">0</span> <span>von 10 000</span></div>
+          <div id="lt-ylabel">Anzahl gezogener Lose</div>
+          <svg id="lt-chart" viewBox="0 0 544 760"></svg>
+          <div id="lt-question">Wasseranteil über 50 %?</div>
+          <div id="lt-answer"><b id="lt-above">7 378</b> von 10 000 ≈ <b>74 %</b></div>
+          <div id="lt-formel">Keine Formel. <span class="o">Nur zählen.</span></div>
+          <div id="lt-lose" data-layout-ignore></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const L = window.__LIB, D = window.__DATA;
+          const S = window.__CUES.scenes.lostrommel, C = S.cues, END = S.duration;
+          const tl = gsap.timeline({ paused: true });
+
+          // Tabelle (p, Post, Lose)
+          const tb = document.getElementById("lt-tbody");
+          const rowEls = D.bayesbox.map((r, i) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${L.pct(r.p)}</td><td class="c-post">${L.fmtDe(r.post)}</td><td class="c-lose">${D.lose[i]}</td>`;
+            tb.appendChild(tr);
+            return tr;
+          });
+          document.getElementById("lt-above").textContent = L.fmtInt(D.nAbove50);
+          document.getElementById("lt-answer").querySelectorAll("b")[1].textContent = Math.round((D.nAbove50 / D.nDraws) * 100) + " %";
+
+          // Trommel
+          const dr = document.getElementById("lt-drum");
+          L.el("rect", { x: 60, y: 120, width: 440, height: 220, rx: 110, fill: "#2A2D35", stroke: "#9A9DA6", "stroke-width": 3 }, dr);
+          L.el("rect", { x: 230, y: 100, width: 100, height: 40, rx: 8, fill: "#16181D", stroke: "#9A9DA6", "stroke-width": 3 }, dr); // Öffnung
+          L.el("line", { x1: 500, y1: 230, x2: 540, y2: 230, stroke: "#9A9DA6", "stroke-width": 6, "stroke-linecap": "round" }, dr);
+          L.el("line", { x1: 540, y1: 230, x2: 540, y2: 180, stroke: "#9A9DA6", "stroke-width": 6, "stroke-linecap": "round" }, dr); // Kurbel
+          L.el("line", { x1: 120, y1: 340, x2: 100, y2: 400, stroke: "#9A9DA6", "stroke-width": 6, "stroke-linecap": "round" }, dr);
+          L.el("line", { x1: 440, y1: 340, x2: 460, y2: 400, stroke: "#9A9DA6", "stroke-width": 6, "stroke-linecap": "round" }, dr);
+          const drumFill = L.el("g", {}, dr); // Lose in der Trommel
+          const inDrum = [];
+          const fillCols = 16, fillRows = 5;
+          for (let r = 0; r < fillRows; r++)
+            for (let c = 0; c < fillCols; c++) {
+              const n = r * fillCols + c;
+              if (n >= 70) break;
+              inDrum.push(L.el("rect", { x: 100 + c * 24 + (r % 2) * 8, y: 300 - r * 26, width: 20, height: 14, rx: 3, fill: "#E69F00", opacity: 0 }, drumFill));
+            }
+
+          // Stapel-Diagramm
+          const svg = document.getElementById("lt-chart");
+          const x0 = 40, y0 = 60, w = 484, h = 620;
+          const originOf = (i) => `${x0 + bw * i + bw / 2} ${y0 + h}`;
+          L.el("line", { x1: x0, y1: y0 + h, x2: x0 + w, y2: y0 + h, stroke: "#2A2D35", "stroke-width": 3 }, svg);
+          [0, 0.5, 1].forEach((p) => {
+            L.el("text", { x: x0 + w * p, y: y0 + h + 40, fill: "#9A9DA6", "font-size": 28, "text-anchor": "middle", "font-family": "Inter" }, svg).textContent = L.pct(p);
+          });
+          const maxCount = Math.max(...D.counts);
+          const bw = w / 11;
+          const bars = D.counts.map((c, i) => {
+            const bh = (h * c) / maxCount;
+            return L.el("rect", { x: x0 + bw * i + 3, y: y0 + h - bh, width: bw - 6, height: Math.max(bh, 0.5), fill: "#56B4E9", rx: 3 }, svg);
+          });
+          const line = L.el("path", { d: L.curvePath(D.curve, x0 + bw / 2, y0, w - bw, h), fill: "none", stroke: "#F2F2F2", "stroke-width": 4, "stroke-linecap": "round", "stroke-opacity": 0 }, svg);
+          const len = L.dashDraw(line);
+          const cutX = x0 + bw * 6; // Grenze rechts vom Gitterpunkt 0,5
+          const cut = L.el("line", { x1: cutX, y1: y0 - 10, x2: cutX, y2: y0 + h + 10, stroke: "#E69F00", "stroke-width": 4, "stroke-dasharray": "12 10", opacity: 0 }, svg);
+          const cutLabel = L.el("text", { x: cutX + 10, y: y0 + 10, fill: "#E69F00", "font-size": 28, "font-family": "Inter", "font-weight": 700, opacity: 0 }, svg);
+          cutLabel.textContent = "> 50 %";
+
+          // Fliegende Lose: Tabelle → Trommel (je Zeile bis zu 6 Stück), Trommel → Stapel (die ersten 30 Ziehungen)
+          const loseBox = document.getElementById("lt-lose");
+          const flyIn = [];
+          D.lose.forEach((n, i) => {
+            const k = Math.min(n, 6);
+            for (let j = 0; j < k; j++) {
+              const d = document.createElement("div");
+              d.className = "lt-los";
+              d.textContent = L.pct(D.grid[i]);
+              loseBox.appendChild(d);
+              flyIn.push({ el: d, row: i, j });
+            }
+          });
+          const flyOut = D.firstDraws.slice(0, 30).map((k) => {
+            const d = document.createElement("div");
+            d.className = "lt-los";
+            d.textContent = L.pct(D.grid[k]);
+            loseBox.appendChild(d);
+            return { el: d, bin: k };
+          });
+          // Positionen (Pixel im Root): Tabellenzeile i bei y = 170 + 56 + i*45 ; Trommelöffnung bei (900, 410); Stapel-Bin k bei x = 1280 + x0 + bw*(k+0.5)
+          const rowY = (i) => 170 + 60 + i * 45;
+          const drumOpen = { x: 885, y: 400 };
+          const binX = (k) => 1280 + x0 + bw * (k + 0.5) - 15;
+          const chartBottom = 170 + y0 + h;
+
+          // --- Timeline ---
+          tl.fromTo("#lt-stage", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 0);
+          tl.fromTo("#lt-head", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power4.out" }, 0.2);
+          tl.fromTo("#lt-table", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.5, ease: "power4.out" }, 0.3);
+          tl.fromTo("#lt-drum", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power4.out" }, C.trommel);
+          tl.fromTo("#lt-drumlabel", { opacity: 0 }, { opacity: 1, duration: 0.4 }, C.trommel + 0.4);
+          tl.fromTo("#lt-table .c-lose", { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.04 }, C.nicht_jede);
+          // Lose fliegen in die Trommel
+          flyIn.forEach(({ el, row, j }, idx) => {
+            const t = C.oft + idx * 0.05;
+            tl.fromTo(el, { x: 470, y: rowY(row), opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.15 }, t);
+            tl.to(el, { x: drumOpen.x, y: drumOpen.y - 20, duration: 0.55, ease: "power2.in" }, t + 0.15);
+            tl.to(el, { opacity: 0, duration: 0.1 }, t + 0.7);
+          });
+          tl.fromTo(inDrum, { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: 0.03 }, C.oft + 0.6);
+          // Ziehen: Zähler + Lose aus der Trommel auf die Stapel
+          tl.fromTo("#lt-counter", { opacity: 0 }, { opacity: 1, duration: 0.3 }, C.ziehen);
+          tl.fromTo("#lt-ylabel", { opacity: 0 }, { opacity: 1, duration: 0.3 }, C.ziehen);
+          const counter = { n: 0 };
+          const nEl = document.getElementById("lt-n");
+          flyOut.forEach(({ el, bin }, idx) => {
+            const t = C.stapel + idx * 0.14;
+            tl.fromTo(el, { x: drumOpen.x, y: drumOpen.y - 40, opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.12 }, t);
+            tl.to(el, { x: binX(bin), y: chartBottom - 26, duration: 0.5, ease: "power2.inOut" }, t + 0.12);
+            tl.to(el, { opacity: 0, duration: 0.15 }, t + 0.62);
+            // der Stapel wächst ein Stück mit (Vorschau), Zähler zählt mit
+            tl.to(bars[bin], { scaleY: (idx + 1) / 30 * 0.12, svgOrigin: originOf(bin), duration: 0.15 }, t + 0.6);
+            tl.to(counter, { n: idx + 1, duration: 0.14, ease: "none", onUpdate: () => (nEl.textContent = L.fmtInt(counter.n)) }, t + 0.6);
+          });
+          tl.set(bars, { scaleY: 0, svgOrigin: (i) => originOf(i) }, 0);
+          // Zeitraffer bis 10 000
+          const tSchnell = C.schauen;
+          tl.to(counter, { n: D.nDraws, duration: 2.6, ease: "power1.in", onUpdate: () => (nEl.textContent = L.fmtInt(counter.n)) }, tSchnell);
+          tl.to(bars, { scaleY: 1, svgOrigin: (i) => originOf(i), duration: 2.6, ease: "power1.in" }, tSchnell);
+          // Kurve darüber
+          tl.set(line, { attr: { "stroke-opacity": 0.9 } }, C.nachzeichnen);
+          tl.fromTo(line, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: 1.2, ease: "power2.inOut" }, C.nachzeichnen);
+          tl.fromTo("#lt-switch", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, C.haeufigkeit);
+          // Frage + Zählen
+          tl.to("#lt-drum", { opacity: 0.25, duration: 0.4 }, C.frage);
+          tl.to("#lt-drumlabel", { opacity: 0, duration: 0.3 }, C.frage);
+          tl.fromTo("#lt-question", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, C.frage);
+          tl.to(cut, { opacity: 1, duration: 0.3 }, C.rechts);
+          tl.to(cutLabel, { opacity: 1, duration: 0.3 }, C.rechts + 0.2);
+          tl.to(bars.filter((b, i) => D.grid[i] > 0.5), { attr: { fill: "#E69F00" }, duration: 0.4, stagger: 0.05 }, C.rechts + 0.2);
+          tl.fromTo("#lt-answer", { opacity: 0 }, { opacity: 1, duration: 0.5 }, C.teilen);
+          tl.fromTo("#lt-formel", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power4.out" }, C.keine_formel);
+          tl.to("#lt-stage", { opacity: 0, duration: 0.35, ease: "power3.in" }, END - 0.4);
+
+          window.__timelines["lostrommel"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

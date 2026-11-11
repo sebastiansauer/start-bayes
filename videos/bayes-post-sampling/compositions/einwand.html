@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="de">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; font-family: Inter, sans-serif; color: var(--color-ink, #f2f2f2); }
+        #ew-stage { position: absolute; inset: 0; opacity: 0; }
+        #ew-table { position: absolute; left: 96px; top: 170px; width: 440px; border-collapse: collapse; font-size: 30px; font-variant-numeric: tabular-nums; opacity: 0.55; }
+        #ew-table th { text-align: right; font-weight: 700; padding: 8px 12px; border-bottom: 3px solid var(--color-muted, #9a9da6); }
+        #ew-table th:first-child, #ew-table td:first-child { text-align: left; }
+        #ew-table td { text-align: right; padding: 6px 12px; border-bottom: 1.5px solid var(--color-line, #2a2d35); }
+        #ew-table .c-post { color: var(--color-blue, #56b4e9); font-weight: 700; }
+        #ew-tablebox { position: absolute; left: 80px; top: 150px; width: 480px; height: 640px; border: 5px solid transparent; border-radius: 12px; }
+        #ew-chart { position: absolute; left: 1280px; top: 170px; width: 544px; height: 760px; }
+        #ew-bubble { position: absolute; left: 600px; top: 250px; width: 640px; padding: 34px 40px; background: #f2f2f2; color: #16181d; border-radius: 24px; font-size: 40px; font-weight: 700; line-height: 1.25; opacity: 0; }
+        #ew-bubble::after { content: ""; position: absolute; left: -26px; top: 60px; border: 18px solid transparent; border-right-color: #f2f2f2; border-left: 0; }
+        #ew-check { position: absolute; left: 1500px; top: 110px; width: 120px; height: 120px; opacity: 0; }
+        #ew-checklabel { position: absolute; left: 1280px; top: 110px; font-size: 34px; font-weight: 700; color: var(--color-green, #009e73); opacity: 0; }
+        #ew-ziel { position: absolute; left: 96px; right: 96px; top: 400px; font-size: 72px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; opacity: 0; }
+        #ew-ziel .k { color: var(--color-muted, #9a9da6); font-weight: 500; font-size: 48px; display: block; margin-bottom: 20px; }
+        #ew-ziel .o { color: var(--color-orange, #e69f00); }
+      </style>
+      <div id="root" data-composition-id="einwand" data-width="1920" data-height="1080">
+        <div id="ew-stage">
+          <div id="ew-tablebox"></div>
+          <table id="ew-table"><thead><tr><th>p</th><th class="c-post">Post</th></tr></thead><tbody id="ew-tbody"></tbody></table>
+          <svg id="ew-chart" viewBox="0 0 544 760"></svg>
+          <div id="ew-bubble">„Moment – dafür brauchten wir doch die fertige Box?!"</div>
+          <div id="ew-checklabel">nur eine Übung</div>
+          <svg id="ew-check" viewBox="0 0 120 120"><path d="M20 62 L50 92 L100 30" fill="none" stroke="#009E73" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div id="ew-ziel"><span class="k">Das eigentliche Ziel</span>Stichproben aus der Post – <span class="o">ohne</span> die Box je ganz aufzuschreiben.</div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const L = window.__LIB, D = window.__DATA;
+          const S = window.__CUES.scenes.einwand, C = S.cues, END = S.duration;
+          const tl = gsap.timeline({ paused: true });
+
+          const tb = document.getElementById("ew-tbody");
+          D.bayesbox.forEach((r) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${L.pct(r.p)}</td><td class="c-post">${L.fmtDe(r.post)}</td>`;
+            tb.appendChild(tr);
+          });
+          const svg = document.getElementById("ew-chart");
+          const x0 = 40, y0 = 60, w = 484, h = 620;
+          L.el("line", { x1: x0, y1: y0 + h, x2: x0 + w, y2: y0 + h, stroke: "#2A2D35", "stroke-width": 3 }, svg);
+          const maxCount = Math.max(...D.counts);
+          const bw = w / 11;
+          D.counts.forEach((c, i) => {
+            const bh = (h * c) / maxCount;
+            L.el("rect", { x: x0 + bw * i + 3, y: y0 + h - bh, width: bw - 6, height: Math.max(bh, 0.5), fill: "#56B4E9", rx: 3 }, svg);
+          });
+          const check = document.querySelector("#ew-check path");
+          const clen = L.dashDraw(check);
+
+          tl.fromTo("#ew-stage", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 0);
+          tl.fromTo("#ew-bubble", { opacity: 0, scale: 0.9, transformOrigin: "0% 20%" }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.4)" }, C.moment);
+          tl.fromTo("#ew-tablebox", { borderColor: "rgba(230,159,0,0)" }, { borderColor: "#E69F00", duration: 0.3, yoyo: true, repeat: 3, repeatDelay: 0.2 }, C.moment + 0.2);
+          tl.to("#ew-table", { opacity: 1, duration: 0.3 }, C.moment + 0.2);
+          tl.fromTo("#ew-check", { opacity: 0 }, { opacity: 1, duration: 0.2 }, C.uebung);
+          tl.fromTo(check, { strokeDashoffset: clen }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, C.uebung);
+          tl.fromTo("#ew-checklabel", { opacity: 0 }, { opacity: 1, duration: 0.3 }, C.uebung + 0.3);
+          // Ziel
+          tl.to(["#ew-table", "#ew-tablebox", "#ew-chart", "#ew-bubble", "#ew-check", "#ew-checklabel"], { opacity: 0, duration: 0.5, ease: "power3.in" }, C.ziel - 0.3);
+          tl.fromTo("#ew-ziel", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power4.out" }, C.ziel + 0.1);
+          tl.fromTo("#ew-ziel .o", { scale: 1, display: "inline-block" }, { scale: 1.15, duration: 0.25, yoyo: true, repeat: 1, transformOrigin: "50% 60%" }, C.ohne);
+          tl.to("#ew-stage", { opacity: 0, duration: 0.35, ease: "power3.in" }, END - 0.4);
+
+          window.__timelines["einwand"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
