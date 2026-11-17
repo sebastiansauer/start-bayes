@@ -174,7 +174,7 @@ s. @fig-kung-dens.
 plot_density(kung_erwachsen)
 ```
 
-### Wir gehen apriori von normalverteilter Größe der !Kung aus
+### Wir gehen a priori von normalverteilter Größe der !Kung aus
 
 *Forschungsfrage:* Wie groß sind die erwachsenen !Kung im *Durchschnitt*?
 
@@ -216,11 +216,11 @@ p_exp_kung_prior <-
 Hier gehen wir von einer Normalverteilung (synonym: "Gauss-Verteilung") des Populationsmittelwert, $\mu$,
 sowie der tatsächlichen Körpergrößen der einzelnen Personen, $h_i$ (*h* wie *height*) aus.
 
-Zur Erinnerung: Die (unstandardisierte) Post-Verteilung ist das Produkt von Apriori und Likelihood, 
+Zur Erinnerung: Die (unstandardisierte) Post-Verteilung ist das Produkt von Priori und Likelihood, 
 s. @fig-priori-x-lik-is-post.
 Im Folgenden gehen wir diese Bestimmungsstücke der Reihe nach durch, in gewohnter Manier.
 
-![Apriori mal Likelihood ist gleich der unstandardisierten Post-Verteilung](img/apriori_x_lik_is_post.png){#fig-priori-x-lik-is-post}
+![Priori mal Likelihood ist gleich der unstandardisierten Post-Verteilung](img/apriori_x_lik_is_post.png){#fig-priori-x-lik-is-post}
 
 
 Nur dass wir dieses Mal die Bayesbox nicht von Hand berechnen, 
@@ -232,9 +232,9 @@ Stan liefert uns brav eine Stichproben-Post-Verteilung zurück.
 🧑🏫 Toll, dann hab ich ja nix zu tun!
 
 
-### Apriori-Verteilungen
+### Priori-Verteilungen
 
-Wir haben zwei Apriori-Größen (Parameter):
+Wir haben zwei Priori-Größen (Parameter):
 
 1. Den *Mittelwert* der Körpergrößen in der Population, $\mu$. Dieser Parameter beantwortet die Frage: "Wie groß sind die erwachsenen !Kung im Durchschnitt?"
 2. Die *Streuung* der tatsächlichen Körpergrößen um den Mittelwert der Population herum, $\sigma$. Dieser Parameter beantwortet die Frage: "Wie unterschiedlich groß sind die erwachsenen !Kung?"
@@ -242,20 +242,20 @@ Wir haben zwei Apriori-Größen (Parameter):
 
 
 
-Apriori-Verteilung für $\mu$: Der Mittelwert der Körpergröße, $\mu$, sei *normalverteilt* mit $\mu=178$ und $\sigma=20$:
+Priori-Verteilung für $\mu$: Der Mittelwert der Körpergröße, $\mu$, sei *normalverteilt* mit $\mu=178$ und $\sigma=20$:
 
-$$\color{blue}{\mu \sim \mathcal{N}(178, 20)} \qquad{\text{Prior}}$$
+$$\color{blue}{\mu \sim \mathcal{N}(178, 20)} \qquad{\text{Priori}}$$
 
 
-Apriori-Verteilung für $\sigma$: Die Streuung der Größen, $\sigma$, sei *exponentialverteilt* (da notwendig positiv) mit $\lambda = 1/8$.
+Priori-Verteilung für $\sigma$: Die Streuung der Größen, $\sigma$, sei *exponentialverteilt* (da notwendig positiv) mit $\lambda = 1/8$.
 
-$$\color[RGB]{0,158,115}{\sigma \sim \mathcal{E}(1/8)} \qquad{\text{Prior}}$$
+$$\color[RGB]{0,158,115}{\sigma \sim \mathcal{E}(1/8)} \qquad{\text{Priori}}$$
 Warum gerade $\lambda=1/8$?
 Das ist einfach ein grobes Abschätzen mit Blick auf @fig-exps:
 Bei $\lambda=1/8$ liegt der Median bei ca. 5 cm.
 Eine Streuung von ca. 5 cm um den Mittelwert herum erscheint nicht ganz falsch.
 Dann kann man folgern: $95\%KI(\mu): 178 \pm 40$.
-In Worten: Wir halten es apriori zu 95 % für plausibel, dass die *durchschnittliche* Körpergröße der erwachsenen !Kung zwischen 138 cm und 218 cm liegt -- laut unserem Modell (unserer Apriori-Verteilung). Das ist eine Aussage über den unbekannten Mittelwert $\mu$, nicht über die Körpergröße einzelner Personen (dafür ist $\sigma$ zuständig).
+In Worten: Wir halten es a priori zu 95 % für plausibel, dass die *durchschnittliche* Körpergröße der erwachsenen !Kung zwischen 138 cm und 218 cm liegt -- laut unserem Modell (unserer Priori-Verteilung). Das ist eine Aussage über den unbekannten Mittelwert $\mu$, nicht über die Körpergröße einzelner Personen (dafür ist $\sigma$ zuständig).
 Das ist ein ausreichend großer Bereich,
 um Überraschungen zuzulassen, aber eng genug, um biologisch unmögliche Werte auszuschließen.
 
@@ -345,8 +345,8 @@ Weil es so schön ist, schreiben/zeichnen wir es hier noch einmal auf, @eq-mod-k
 
 $$
 \begin{aligned}
-\mu &\sim \mathcal{N}(M=178, S=20) & \text{Prior} \\
-\sigma &\sim \mathcal{E}(1/8) & \text{Prior} \\
+\mu &\sim \mathcal{N}(M=178, S=20) & \text{Priori} \\
+\sigma &\sim \mathcal{E}(1/8) & \text{Priori} \\
 h_i &\sim \mathcal{N}(\mu, \sigma) & \text{Likelihood}  \\
 \end{aligned}
 $$ {#eq-mod-kung1}
@@ -378,8 +378,8 @@ m_kung_post <- as_tibble(m_kung)    # <5>
 names(m_kung_post) <- c("mu", "sigma")  # <6>  
 ```
 1.  Stan berechnet die Post-Verteilung für die Körpergrößen, $h_i$, hier `height` genannt
-2.  Apriori für $\mu$
-3.  Apriori für $\sigma$
+2.  Priori für $\mu$
+3.  Priori für $\sigma$
 4.  Stan soll nicht so geschwätzig sein und alle seine Stichproben am Bildschirm zeigen, sondern nur das Wichtigste zurückmelden.
 5.  Modellergebnis in Tabelle umwandeln
 6.  Schönere Namen für die Spalten geben
@@ -492,7 +492,7 @@ Fassen wir die Ergebnisse dieses Modells zusammen:
 
 -   Wir bekommen eine Wahrscheinlichkeitsverteilung für $\mu$ und eine für $\sigma$ (bzw. eine zweidimensionale Verteilung, für die $\mu,\sigma$-Paare).
 
--   Trotz des eher vagen Priors ist die Streuung der Posteriori-Werte für $\mu$ und $\sigma$ klein: Die große Stichprobe hat die Priori-Werte überstimmt.
+-   Trotz des eher vagen Prioris ist die Streuung der Posteriori-Werte für $\mu$ und $\sigma$ klein: Die große Stichprobe hat die Priori-Werte überstimmt.
 
 -   Ziehen wir Stichproben aus der Posteriori-Verteilung, so können wir interessante Fragen stellen.
 
@@ -540,7 +540,7 @@ y_pointestimate <- round(as.numeric(parameters(m_kung)$Median), 0)
 
 Das Wesentliche: Unser Golem schätzt den Größenmittelwert der Kung auf ca. `r y_pointestimate`cm bzw.
 auf einen Bereich von etwa `r ci_low` bis `r ci_high` (95 %-ETI in der Voreinstellung^[https://easystats.github.io/parameters/reference/model_parameters.brmsfit.html]).
-Informativ ist vielleicht noch, dass wir den `Prior` erfahren, der im Modell verwendet wurde. Dazu später mehr.
+Informativ ist vielleicht noch, dass wir den `Priori` erfahren, der im Modell verwendet wurde. Dazu später mehr.
 
 ::: callout-note
 In dieser Ausgabe sind ein paar Angaben, die wir nicht verstehen, wie `pd`, `Rhat` und `ESS`. 
@@ -737,7 +737,7 @@ Die Voreinstellung ist nicht zwingend; andere Werte wären auch denkbar.
     -   als "Streuung", d. h. $\lambda$ von $h_i$ wird $\frac{1}{sd(Y)}$ angenommen. $\square$
 :::
 
-Eine sinnvolle Strategie ist, einen Prior so zu wählen, dass man nicht übergewiss ist, 
+Eine sinnvolle Strategie ist, einen Priori so zu wählen, dass man nicht übergewiss ist, 
 also nicht zu sicher Dinge behauptet, die dann vielleicht doch passieren 
 (also die Ungewissheit zu gering spezifiziert), andererseits sollte man extreme, 
 unplausible Werte ausschließen.
@@ -940,7 +940,7 @@ height_sim_mean <-
 
 ```
 
-Was denkt der Golem (`m_kung`) *apriori* von der Größe der !Kung?
+Was denkt der Golem (`m_kung`) *a priori* von der Größe der !Kung?
 Ziehen wir mal ein paar Stichproben auf Basis des Modells. Voilà:
 
 ```{r Kung-12}
@@ -979,7 +979,7 @@ anteil_großer_kung
 ```
 
 Sehr große Buschleute? `r sprintf("%.0f", anteil_großer_kung$prop[2] * 100)` Prozent sind größer als 2 Meter. 
-Das ist diskutabel, muss aber nicht zwangsläufig ein schlechter Prior sein.
+Das ist diskutabel, muss aber nicht zwangsläufig ein schlechter Priori sein.
 
 ### Vorhersagen der Priori-Werte
 
@@ -1064,7 +1064,7 @@ sim2 |>
   mutate(prop = n()/n)
 ```
 
-🤔 Das Modell geht apriori von ein paar Prozent Menschen mit *negativer* Größe aus. 
+🤔 Das Modell geht a priori von ein paar Prozent Menschen mit *negativer* Größe aus. 
 Ein Haufen Riesen 👹 werden bei den !Kung auch erwartet.
 
 🤯 Vage (flache, informationslose, "neutrale", "objektive") Priori-Werte machen oft keinen Sinn, 

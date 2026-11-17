@@ -1,5 +1,5 @@
 Probieren Sie die Bayesbox selbst aus:
-Ändern Sie die Daten, die Feinheit des Gitters und die Apriori-Verteilung
+Ändern Sie die Daten, die Feinheit des Gitters und die Priori-Verteilung
 und beobachten Sie, wie sich die Post-Verteilung verändert.
 Die Startwerte entsprechen @lst-gitter1.
 
@@ -10,7 +10,7 @@ viewof bb_k = Inputs.range([0, bb_n], {label: "Treffer k", step: 1, value: Math.
 viewof bb_g = Inputs.range([3, 101], {label: "Gitterwerte", step: 1, value: 11})
 viewof bb_prior = Inputs.radio(
   ["Gleichverteilt", "Eher fair", "Eher viel Wasser", "Nur Extreme"],
-  {label: "Apriori", value: "Gleichverteilt"}
+  {label: "Priori", value: "Gleichverteilt"}
 )
 ```
 
@@ -28,7 +28,7 @@ bb_dbinom = (k, n, p) => {
   return Math.exp(lc + k * Math.log(p) + (n - k) * Math.log(1 - p));
 }
 
-// unnormalisierte Apriori-Gewichte; nur das Verhältnis zählt
+// unnormalisierte Priori-Gewichte; nur das Verhältnis zählt
 bb_gewicht = (p) => {
   switch (bb_prior) {
     case "Gleichverteilt":     return 1;
@@ -49,7 +49,7 @@ bb_box = {
     evidenz,
     zeilen: p.map((x, i) => ({
       p: x,
-      Apriori: w[i] / sw,
+      Priori: w[i] / sw,
       Likelihood: lik[i],
       unstd_Post: unstd[i],
       Post: evidenz > 0 ? unstd[i] / evidenz : NaN
@@ -67,8 +67,8 @@ bb_lik_norm = {
 }
 
 html`<p><b>Evidenz</b> (Summe der unstandardisierten Post-Werte): ${bb_fmt(bb_box.evidenz, 4)}
-${bb_box.evidenz === 0 ? html`<br><i>Evidenz = 0: Der Apriori-Wert ist genau dort 0, wo die Likelihood nicht 0 ist.
-Die Post-Verteilung ist nicht definiert -- ein Apriori von 0 lässt sich durch keine Daten revidieren.</i>` : ""}</p>`
+${bb_box.evidenz === 0 ? html`<br><i>Evidenz = 0: Der Priori-Wert ist genau dort 0, wo die Likelihood nicht 0 ist.
+Die Post-Verteilung ist nicht definiert -- ein Priori von 0 lässt sich durch keine Daten revidieren.</i>` : ""}</p>`
 ```
 
 ```{ojs}
@@ -80,13 +80,13 @@ Plot.plot({
   x: {label: "Wasseranteil p", domain: [0, 1]},
   y: {label: "Wahrscheinlichkeit (Summe je Kurve = 1)", grid: true},
   color: {
-    domain: ["Post", "Apriori", "Likelihood (normiert)"],
+    domain: ["Post", "Priori", "Likelihood (normiert)"],
     range: ["#0072B2", "#E69F00", "#009E73"],
     legend: true
   },
   marks: [
     Plot.ruleY([0]),
-    Plot.line(bb_zeilen, {x: "p", y: "Apriori", stroke: () => "Apriori", strokeWidth: 2, strokeDasharray: "8,5"}),
+    Plot.line(bb_zeilen, {x: "p", y: "Priori", stroke: () => "Priori", strokeWidth: 2, strokeDasharray: "8,5"}),
     Plot.line(bb_zeilen.filter(d => !isNaN(d.Post)), {x: "p", y: "Post", stroke: () => "Post", strokeWidth: 2}),
     Plot.dot(bb_zeilen.filter(d => !isNaN(d.Post)), {x: "p", y: "Post", fill: () => "Post", r: bb_g > 41 ? 2 : 4}),
     Plot.line(bb_lik_norm, {x: "p", y: "wert", stroke: () => "Likelihood (normiert)", strokeWidth: bb_g > 41 ? 2 : 5, strokeDasharray: "0.1,12", strokeLinecap: "round"}),
@@ -98,17 +98,17 @@ Plot.plot({
 **Die Bayesbox als Tabelle**
 
 Hier steht die Bayesbox selbst: Jede Zeile ist eine Hypothese (ein Wasseranteil $p$).
-Die Spalte `unstd_Post` ist das Produkt aus `Apriori` und `Likelihood`;
+Die Spalte `unstd_Post` ist das Produkt aus `Priori` und `Likelihood`;
 teilt man sie durch ihre Summe (die Evidenz), erhält man die Spalte `Post`.
 :::
 
 ```{ojs}
 //| echo: false
 Inputs.table(bb_zeilen, {
-  columns: ["p", "Apriori", "Likelihood", "unstd_Post", "Post"],
+  columns: ["p", "Priori", "Likelihood", "unstd_Post", "Post"],
   format: {
     p: x => bb_fmt(x, 3),
-    Apriori: x => bb_fmt(x, 3),
+    Priori: x => bb_fmt(x, 3),
     Likelihood: x => bb_fmt(x, 3),
     unstd_Post: x => bb_fmt(x, 4),
     Post: x => isNaN(x) ? "n.d." : bb_fmt(x, 3)
