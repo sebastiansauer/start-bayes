@@ -682,8 +682,6 @@ der Likelihood zur Aposteriori-Wahrscheinlichkeit "umbaut".
 <!-- $$D \quad \underrightarrow{Bayes} \quad H$$ -->
 
 
-$$Pr(H|D) = \frac{ Pr(H) \cdot Pr(D|H) }{Pr(D)}$${#eq-bayes3}
-
 ::: {#thm-bayes1}
 
 ### Bayes' Theorem
@@ -700,7 +698,7 @@ Bayes' Theorem (@thm-bayes1) fragt nach $Pr(H|D)$:
 
 >    Was ist die Wahrscheinlichkeit der Hypothese H, jetzt wo wir die Daten kennen?
 
-Und antwortet so (@eq-bayes3):
+Und antwortet so (@thm-bayes1):
 
 >    Diese Wahrscheinlichkeit entspricht der Apriori-Wahrscheinlichkeit der Hypothese mal der Plausibilität (Likelihood) der Daten unter Annahme (gegeben) der Hypothese. Aus Standardisierungsgründen dividiert man noch die totale Wahrscheinlichkeit der Daten über alle Hypothesen (durch die sog. *Evidenz*).
 
@@ -787,11 +785,14 @@ Die $Pr_{Post}$ ist proportional zu $Pr_{unPost} = L \times Pr_{Apriori}$.
 ### Posteriori als Produkt von Priori und Likelihood
 
 Die *unstandardisierte* Post-Wahrscheinlichkeit $Pr_{\text{unPost}}$ ist einfach das Produkt von 
-Likelihood und Priori, s. @eq-unpost.
+Likelihood und Priori, s. @thm-unpost.
 
+:::{#thm-unpost}
+### Unstandardisierte Post-Wahrscheinlichkeit
 $$
-Pr_{\text{unPost}} = L \times \text{Priori}
-$${#eq-unpost}
+Pr_{\text{unPost}} = L \times \text{Priori}\quad \square
+$$
+:::
 
 
 
@@ -830,12 +831,15 @@ Standardisiert man die unstandardisierte Post-Verteilung,
 so erhält man die standardisierte Post-Verteilung.
 Das Standardisieren dient nur dazu, einen Wert zwischen 0 und 1 zu erhalten. 
 Dies erreichen wir, indem wir durch die Summe aller Post-Wahrscheinlichkeiten dividieren.
-Die Summe der Post-Wahrscheinlichkeiten bezeichnet man (auch) als Evidenz, vgl. Gleichung @eq-post.
+Die Summe der Post-Wahrscheinlichkeiten bezeichnet man (auch) als Evidenz, vgl. @thm-post.
 
 
+:::{#thm-post}
+### Standardisierte Post-Wahrscheinlichkeit
 $$
-\text{Posteriori} = \frac{\text{Likelihood} \times \text{Priori}}{\text{Evidenz}}
-$${#eq-post}
+\text{Posteriori} = \frac{\text{Likelihood} \times \text{Priori}}{\text{Evidenz}}\quad \square
+$$
+:::
 
 
 
@@ -973,9 +977,12 @@ Aposteriori-Wahrscheinlichkeit als Produkt von Apriori und Likelihood.
 Um zur *standardisierten* Aposteriori-Wahrscheinlichkeit zu gelangen,
 teilen wir in jeder Zeile der Bayesbox (also für jede Hypothese)
 die unstandardisierte Post-Wahrscheinlichkeit durch die Summe
-der unstandardisierten Post-Wahrscheinlichkeiten, s. @eq-poststand-allgemein.
+der unstandardisierten Post-Wahrscheinlichkeiten, s. @thm-poststand-allgemein.
 
-$$\text{Post} = \frac{\text{Post}_{\text{unstand}}}{\text{Evidenz}} = \frac{Pr(H) \cdot Pr(D|H)}{Pr(D)}$${#eq-poststand-allgemein}
+:::{#thm-poststand-allgemein}
+### Standardisierte Post-Wahrscheinlichkeit in der Bayesbox
+$$\text{Post} = \frac{\text{Post}_{\text{unstand}}}{\text{Evidenz}} = \frac{Pr(H) \cdot Pr(D|H)}{Pr(D)}\quad \square$$
+:::
 
 Dabei haben wir die Apriori-Wahrscheinlichkeit für alle Parameterwerte als gleich angenommen, 
 da wir keinerlei Vorwissen hatten, $Pr(H_i) = 1/11$.
@@ -1380,10 +1387,10 @@ Man kann sich Bayes' Theorem auch wie folgt herleiten:
 
 $Pr(D\cap H) = Pr(H \cap D) = Pr(D) \cdot Pr(H|D) = Pr(H) \cdot Pr(D|H)$
 
-Dann lösen wir nach $P(H|D)$ auf, s. @eq-bayes2.
+Dann lösen wir nach $P(H|D)$ auf und erhalten wieder Bayes' Theorem, s. @thm-bayes3.
 
 
-$$Pr(H|D) = \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}}$${#eq-bayes2}
+$$Pr(H|D) = \frac{\overbrace{Pr(H)}^\text{Apriori-Wahrscheinlichkeit} \cdot \overbrace{Pr(D|H)}^\text{Likelihood}}{\underbrace{Pr(D)}_\text{Evidenz}}$$
 
 
 
@@ -1394,14 +1401,17 @@ Das ist vielleicht ein bisschen fancy,
 aber man kann Bayes' Theorem auch nutzen, um die Wahrscheinlichkeit einer *zusammengesetzten Hypothese* zu berechnen: $H = H_1 \cap H_2$. 
 Ein Beispiel wäre: "Was ist die Wahrscheinlichkeit, dass es Regen ($R$) *und* Blitzeis ($B$) gibt, wenn es kalt ($K$) ist?".
 
-Das sieht dann so aus, @eq-bayes4:
+Das sieht dann so aus, @thm-bayes4:
 
+:::{#thm-bayes4}
+### Bayes' Theorem für zusammengesetzte Hypothesen
 $$
 \begin{aligned}
 Pr(R \cap B |K) &= \frac{ Pr(R \cap B) \cdot Pr(K|R \cap B) }{Pr(K)} \\
 &= \frac{ Pr(R ) \cdot Pr(B|R) \cdot Pr(K|R \cap B) }{Pr(K)}
-\end{aligned}
-$${#eq-bayes4}
+\end{aligned}\quad \square
+$$
+:::
 
 
 Hier haben wir $Pr(R \cap B)$ mit der Kettenregel aufgelöst in $Pr(R) \cdot Pr(B|R)$.
