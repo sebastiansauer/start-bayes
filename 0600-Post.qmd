@@ -85,7 +85,7 @@ Sie ist das zentrale Ergebnis einer Bayes-Analyse.
 :::{#exm-globus69}
 ### Bayesbox für $W=6$ Wasser bei $N=9$ Würfen
 Betrachten wir wieder das Globusmodell mit folgendem Ergebnis: 
-$W=6$ Wasser, $N=9$ Würfen, bei Apriori-Indifferenz gegenüber den Parameterwerten.
+$W=6$ Wasser, $N=9$ Würfen, bei Priori-Indifferenz gegenüber den Parameterwerten.
 Und, sagen wir, $g=11$ Gitterwerten^[Die Anzahl *g* der Gitterwerte ist nicht Teil des Modells;
 die Anzahl der Gitterwerte entscheiden nur über die Genauigkeit der Post-Verteilung.] von 0 bis 1, in Schritten von 0.1, $0.1, 0.2, \ldots, 0.9, 1.0$.
 $\square$
@@ -100,7 +100,7 @@ $\square$
 
 ### Lösung
 
-Aufgrund der Apriori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten den Likelihoods. Die höchste Wahrscheinlichkeit (d. h. Likelihood) hat derjenige Parameterwert, zu dem die Daten am besten passen, und das ist 6/9 = 2/3, s. @lst-bayes1.
+Aufgrund der Priori-Indifferenz entsprechen die Posteriori-Wahrscheinlichkeiten den Likelihoods. Die höchste Wahrscheinlichkeit (d. h. Likelihood) hat derjenige Parameterwert, zu dem die Daten am besten passen, und das ist 6/9 = 2/3, s. @lst-bayes1.
 $\square$
 :::
 ::::
@@ -280,7 +280,7 @@ dann haben wir folgende drei Parameter zu schätzen:
 $\beta_0, \beta_1, \sigma$.
 Hört sich gar nicht so viel an. 
 Aber Moment, wir müssten dann z. B. die Frage beantworten, 
-wie wahrscheinlich die Daten aposteriori sind,
+wie wahrscheinlich die Daten a posteriori sind,
 wenn z. B. $\beta_0 = -3.14$ und $\beta_1 = 2.71$ und $\sigma = 0.70$.
 Wie viele Zeilen brauchen wir dann in der Bayesbox?
 Wenn wir für die drei Parameter jeweils 10 Ausprägungen annehmen, was wenig ist,
@@ -474,8 +474,8 @@ bayesbox_g100 <-
 2. $W=6$ Treffer (Wasser)
 3. $N=9$ Versuche
 4. Bayesbox anlegen mit 100 Zeilen, d. h. verschiedenen 100 Parameterwerten
-5. Apriori indifferent:
-Alle Hypothesen haben die gleiche Apriori-Plausibilität
+5. Priori indifferent:
+Alle Hypothesen haben die gleiche Priori-Plausibilität
 6. Die Likelihood ist binomialverteilt.
 7. Post-Verteilung berechnen wie gewohnt
 
@@ -1441,7 +1441,7 @@ ohne dass jemand die Post-Verteilung ausrechnet.
 
 Die Post-Verteilung berechnen wir mit dem Satz von Bayes:
 
-$$\text{Post}(\pi \mid D) = \frac{\text{Prior}(\pi) \cdot \text{Likelihood}(D \mid \pi)}{\sum_{\pi'} \text{Prior}(\pi') \cdot \text{Likelihood}(D \mid \pi')}$$
+$$\text{Post}(\pi \mid D) = \frac{\text{Priori}(\pi) \cdot \text{Likelihood}(D \mid \pi)}{\sum_{\pi'} \text{Priori}(\pi') \cdot \text{Likelihood}(D \mid \pi')}$$
 
 Dabei steht $\pi$ für einen konkreten Parameterwert, etwa den Wasseranteil $\pi = 0{,}5$.
 Die Formel berechnet, wie wahrscheinlich genau dieser Wert nach den Daten ist.
@@ -1449,7 +1449,7 @@ Die Laufvariable $\pi'$ im Nenner durchläuft dagegen *alle* möglichen Paramete
 Sie steht nur für „irgendein Wert“ und könnte genauso anders heißen.
 
 Der Zähler ist für jeden Parameterwert leicht auszurechnen:
-Man multipliziert Prior und Likelihood.
+Man multipliziert Priori und Likelihood.
 Der Nenner dagegen summiert diesen Ausdruck über alle möglichen Parameterwerte $\pi'$.
 Bei stetigen Parametern wird aus der Summe ein Integral.
 Der Nenner ist nur eine Konstante, die dafür sorgt, dass die Fläche unter der Post-Kurve genau 1 ergibt.
@@ -1468,7 +1468,7 @@ Die Bayes-Box ist also nicht falsch, sie wird nur zu lang.
 
 Stellen Sie sich die Post-Verteilung als Landschaft vor.
 Jede Stelle ist ein möglicher Parameterwert, und die *Höhe* an dieser Stelle
-ist das Produkt aus Prior und Likelihood.
+ist das Produkt aus Priori und Likelihood.
 Über der Landschaft liegt dichter Nebel: Der Wanderer sieht die Landschaft nicht.
 Er kann nur mit einem Höhenmesser prüfen, wie hoch er gerade steht.
 
@@ -1481,7 +1481,7 @@ Der Wanderer geht nun so vor:
 5. Das wiederholt er tausende Male.
 
 Die Regel für Schritt 3 lässt sich formal fassen.
-Sei $h(\pi)$ die Höhe an der Stelle $\pi$ (also Prior mal Likelihood) und $\pi^*$ der vorgeschlagene Schritt.
+Sei $h(\pi)$ die Höhe an der Stelle $\pi$ (also Priori mal Likelihood) und $\pi^*$ der vorgeschlagene Schritt.
 Der Wanderer geht mit der Wahrscheinlichkeit
 
 $$\alpha = \min\left(1, \frac{h(\pi^*)}{h(\pi)}\right)$$
