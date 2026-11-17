@@ -98,18 +98,63 @@ Wir verallgemeinern oder generalisieren von der Stichprobe auf die Grundgesamthe
 
 
 
-:::: {#fig-pop-sample layout-ncol=2}
+```{r}
+#| label: fig-pop-sample
+#| echo: false
+#| layout-ncol: 2
+#| fig-width: 4
+#| fig-height: 3.4
+#| fig-subcap:
+#|   - "Grundgesamtheit (Population)"
+#|   - "Stichprobe (Sample): dunkel = gewählt, hell = nicht gewählt"
+#| fig-cap: "Population vs. Stichprobe. Die Stichprobe entnimmt einen *Teil* der Daten der Population."
+#| fig-alt: "Zwei Raster aus 120 Kacheln mit den Buchstaben A und B. Links die gesamte Population in Dunkelgrau. Rechts die Stichprobe: gewählte Kacheln in Dunkelgrau, nicht gewählte in hellem Grau."
+library(ggplot2)
 
+buchstaben <- c(
+  "AAAABAAAAAAA",
+  "ABAABABABBAB",
+  "AABBAABAAAAA",
+  "BAABAAABABAA",
+  "BABBBAAAAABA",
+  "ABABAAAAAAAB",
+  "BBBBABBABAAA",
+  "AAAABBAAABAA",
+  "ABABBABAAAAA",
+  "BBAAAABBAAAA"
+)
+# gewählte Spalten je Zeile (Stichprobe)
+gewaehlt <- list(1:11, c(4, 6, 8), c(2, 4, 8, 9, 11, 12), c(5, 6, 7, 12),
+                 c(2, 5, 8, 10), c(1, 4, 6, 11, 12), c(3, 4, 5, 9, 10, 11),
+                 c(6, 8, 10, 11, 12), c(7, 8, 11, 12), c(1:5, 8, 10, 11))
 
-![Grundgesamtheit (Population)](img/pvoll.png)
+d_pop <- do.call(rbind, lapply(seq_along(buchstaben), function(i) {
+  data.frame(
+    zeile = i, spalte = 1:12,
+    buchstabe = strsplit(buchstaben[i], "")[[1]],
+    gewaehlt = 1:12 %in% gewaehlt[[i]]
+  )
+}))
 
+# Grautöne: gewählt = dunkel auf hellgrauer Kachel, nicht gewählt = mittelgrau auf fast weiß
+grau <- c(`TRUE` = "#333333", `FALSE` = "#8C8C8C")
+kachel <- c(`TRUE` = "#DDDDDD", `FALSE` = "#F4F4F4")
 
-![Stichprobe (Sample)](img/psti.png)
+plot_raster <- function(d, nur_gewaehlt_hervorheben) {
+  d$status <- if (nur_gewaehlt_hervorheben) as.character(d$gewaehlt) else "TRUE"
+  ggplot(d, aes(spalte, -zeile)) +
+    geom_tile(aes(fill = status), width = 0.94, height = 0.94) +
+    geom_text(aes(label = buchstabe, color = status), size = 7) +
+    scale_fill_manual(values = kachel, guide = "none") +
+    scale_color_manual(values = grau, guide = "none") +
+    coord_equal() +
+    theme_void()
+}
 
+plot_raster(d_pop, FALSE)
+plot_raster(d_pop, TRUE)
+```
 
-
-Population vs. Stichprobe. Die Stichprobe entnimmt einen *Teil* der Daten der Population. Autor: Karsten Lübke. Lizenz: OER.
-::::
 
 
 Häufig ist das praktische Vorgehen recht simpel: 
