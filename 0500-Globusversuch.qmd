@@ -1049,12 +1049,15 @@ Wobei der Bereich von 0.6 bis 0.8 auch recht wahrscheinlich ist.
 #| echo: false
 #| label: fig-post1
 #| out-width: 70%
-#| fig-cap: "Die Post-Verteilung visualisiert. Die Post-Wahrscheinlichkeit ist am höchsten bei $\pi=0.7$. Man beachte, dass sich die Post-Verteilung deutlich von der Priori-Verteilung unterscheidet."
+#| fig-cap: "Die Post-Verteilung visualisiert. Die Post-Wahrscheinlichkeit ist am höchsten bei $\\pi=0.7$. Man beachte, dass sich die Post-Verteilung deutlich von der Priori-Verteilung unterscheidet."
 library(ggpubr)
 
 ggline(bayesbox_globusversuch,
        x = "p",
-       y = "Post")
+       y = "Post") +
+  geom_point(data = dplyr::slice_max(bayesbox_globusversuch, Post, n = 1),
+             aes(x = factor(p), y = Post),
+             color = "#0072B2", size = 5)
 ```
 
 
