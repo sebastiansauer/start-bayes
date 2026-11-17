@@ -260,7 +260,7 @@ plot(graphLayout(mein_modell))
 Auf dieser Basis berechnen wir unser Regressionsmodell mit Stan: `stan_glm(kid_score ~ mom_hs, data = kidiq)`
 
 
-```{r m10-1, echo = TRUE, results = "hide"}
+```{r m10-1, echo = TRUE}
 #| results: "hide"
 m10.1 <- stan_glm(
   kid_score ~ mom_hs, 
@@ -301,7 +301,7 @@ $$ {#eq-m101}
 Mit `parameters(m10.1)` bekommt man die Parameter des Modells, s. @tbl-m101.
 
 
-```{r echo = TRUE}
+```{r}
 #| echo: false
 #| tbl-cap: "Parameter des Modells m10.1 (sigma ist nicht dargestellt, da meistens nicht von hohem Interesse)"
 #| label: tbl-m101
@@ -384,7 +384,7 @@ estimate_relation(m10.1) |> plot()
 ```
 
 
-```{r plot-kidiq}
+```{r}
 #| label: fig-momkid
 #| echo: false
 #| fig-cap: "Kinder, deren Mütter über einen Schulabschluss verfügen (mom_hs=1), haben im Mittel einen höheren Intelligenztestwert (als Kinder, deren Mütter keinen Schulabschluss haben, mom_hs=0), laut dem vorliegenden Modell. Die Regressionsgerade ist als durchgezogene Linie dargestellt. Die Mittelwerte pro Gruppe als Punkte und als gestrichelte, horizontale Linie."
@@ -494,7 +494,7 @@ names(m10.1_post) <- c("Achsenabschnitt", "momhs", "sigma")  # schönere Namen
 Hier sind die ersten paar Zeilen, s. @tbl-m101post.
 
 
-```{r m101post-output}
+```{r}
 #| echo: false
 #| label: tbl-m101post
 #| tbl-cap: "m10.1, Stichprobe aus der Post-Verteilung, ersten paar Zeilen"
@@ -700,7 +700,7 @@ describe_distribution(kidiq)
 ```
 
 
-```{r Thema6-Teil2-2}
+```{r}
 #| tbl-cap: "Variablen und ihre Verteilung im Datensatz kidiq"
 #| echo: false
 #| label: tbl-kidiq1
@@ -717,7 +717,7 @@ Berechnen wir als Erstes folgendes einfaches Modell mit nur einer UV:
 `kid_score ~ mom_iq` (`m10.2`), s. Tab. @tbl-m102.
 
 
-```{r Thema6-Teil2-3, results = "hide"}
+```{r Thema6-Teil2-3}
 #| results: "hide"
 m10.2 <-
   stan_glm(kid_score ~ mom_iq, data = kidiq)
@@ -750,7 +750,7 @@ Visualisieren wir uns noch das Modell m10.2, s. @fig-kidiqmomiq.
 ### mit `ggplot2`
 
 
-```{r Thema6-Teil2-4}
+```{r}
 #| label: fig-kidiqmomiq
 #| fig-cap: "Die Intelligenz eines Kindes als Funktion der Intelligenz der Mutter (m10.2)"
 kidiq |> 
@@ -833,7 +833,7 @@ coef(m10.3)[3]
 @fig-m103 visualisiert das Modell `m10.3`.
 
 
-```{r Thema6-Teil2-5, fig.asp = 0.62}
+```{r fig.asp = 0.62}
 #| label: fig-m103
 #| fig-cap: "Der Effekt von sowohl mütterlicher Intelligenz als auch mütterlichem Schulabschluss."
 
@@ -955,7 +955,7 @@ model_parameters(m10.4) |>
 Mit `estimate_relation(m10.4) |> plot()` kann man  sich das Modell visualisieren, s. @fig-m104.
 
 
-```{r Thema6-Teil2-6, fig.width=8}
+```{r fig.width=8}
 #| echo: false
 #| label: fig-m104
 #| fig-cap: "`m10.4`: Wie `m10.3`, aber mit Interaktionseffekt. Es ist gut zu erkennen, dass der Achsenabschnitt für diese Daten kaum zu interpretieren ist."
@@ -1113,7 +1113,7 @@ Zur Interpretation von `m10.5`:
 Mit `estimate_relation(m10.5) |> plot()` kann man  sich das Modell visualisieren, s. @fig-m105.
 
 
-```{r Thema6-Teil2-6, fig.width=8}
+```{r fig.width=8}
 #| echo: false
 #| label: fig-m105
 #| fig-cap: "m10.5: Mit zentrierten Prädiktoren gibt der Achsenabschnitt den Y-Wert für eine Beobachtung mit mittleren X-Wert an; daher ist der Achsenabschnitt besser zu interpretieren als ohne Zentrierung."
@@ -1186,7 +1186,7 @@ parameters(m10.5) |>
 ```
 
 
-```{r Thema6-Teil2-11}
+```{r}
 #| tbl-cap: "Parameter von m10.5 und HDIs"
 #| label: tbl-m105-hdi
 parameters(m10.5, ci_method = "hdi") |>
@@ -1422,7 +1422,7 @@ Pinguine der Spezies Gentoo sind laut Modell im Mittel gut 1300 g schwerer als
 
 Der Unterschied im mittleren Gewicht von den Gruppen Chinstrap und Gentoo zur Referenzgruppe (Adelie) ist in @fig-m106-params verdeutlicht.
 
-```{r plot-hdi-m106}
+```{r}
 #| fig-cap: "Effekt der UV: Unterschiede zur Referenzgruppe (95%-HDI)"
 #| label: fig-m106-params
 
@@ -1745,7 +1745,7 @@ In @fig-regr-one-pred ist die univariate Regression mit jeweils einem der beiden
 
 
 
-```{r p1-p2}
+```{r}
 #| fig-cap: Zwei univariate Regressionen
 #| label: fig-regr-one-pred
 #| echo: false
@@ -1820,7 +1820,7 @@ Das bedeutet anschaulich, man betrachtet den Zusammenhang einer UV mit der AV, w
 
 In @fig-m109-plotly ist das Modell `m10.9` in 3D dargestellt via [Plotly](https://plotly.com/r/)^[<https://plotly.com/r/>].
 
-```{r m109-plotly, out.width = "100%", fig.align="center"}
+```{r out.width = "100%", fig.align="center"}
 #| echo: false
 #| label: fig-m109-plotly
 #| fig-cap: "3D-Visualisierung von m10.9 (zwei Prädiktoren)"
@@ -1864,7 +1864,7 @@ if (knitr:::is_latex_output()) {
 in der die 3. Dimension durch eine Farbschattierung ersetzt ist.
 
 
-```{r fig-m109-color, fig.asp = .5}
+```{r fig.asp = .5}
 #| echo: false
 #| label: fig-m109-color
 #| fig-cap: "Modell m10.9; die Farbverläufe zeigen der Wert der abhängigen Variablen"
@@ -1893,7 +1893,7 @@ Auf der Achse von mom_iq erkennt man deutlich (anhand der Farbänderung) die Ver
 
 @fig-ten-dims visualisiert den Zusammenhang von 10 Variablen untereinander.
 
-```{r plot-ten-dims, out.width="50%"}
+```{r out.width="50%"}
 #| fig-align: "center"
 #| echo: false
 #| label: fig-ten-dims
@@ -2004,7 +2004,7 @@ kidiq_z <-
 
 
 
-```{r kidiq-stand-print}
+```{r}
 #| label: tbl-kidiq-z
 #| tbl-cap: "z-transformierte Variablen im Datensatz kidiq (erste paar Zeilen und Spalten)"
 #| echo: false
@@ -2040,7 +2040,7 @@ kidiq |>
 ```
 
 
-```{r echo = TRUE}
+```{r}
 #| echo: false
 #| label: tbl-scale-manual
 #| tbl-cap: "Z-Standardisierung ohne Extrapaket; ersten paar Spalten und Zeilen"
@@ -2131,7 +2131,7 @@ parameters(m10.12) |>
 
 
 
-```{r m10-11-params-plot}
+```{r}
 #| label: fig-m1011hdi
 #| fig-cap: "Im Standard wird ein 95%-Intervall gezeigt bzw. berechnet; hier das ETI für m10.12"
 plot(eti(m10.12)) +
@@ -2446,7 +2446,7 @@ m10.12d_plot <-
 ```
 
 
-```{r resid-lm-plot, fig.asp = .619}
+```{r fig.asp = .619}
 #| echo: false
 #| fig-cap: "Bereinigte Regressionskoeffizienten"
 #| label: fig-bereinigt
@@ -2579,7 +2579,7 @@ m13d_plot <-
 ```
 
 
-```{r resid-lm-plot-mtcars}
+```{r}
 #| echo: false
 #| fig-cap: "Prüfung der Voraussetzungen des Modells"
 #| label: fig-resid-lm-plot
