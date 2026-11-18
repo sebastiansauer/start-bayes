@@ -607,7 +607,7 @@ names(m_kung_post) <-
   c("mu", "sigma")  # den Namen "(Intercept)" durch "mu" ersetzen, ist prägnanter
 
 m_kung_post |> 
-  count(mu > 155) |> 
+  count(mu_ueber_155 = mu > 155) |> 
   mutate(prop = n/sum(n))
 ```
 
@@ -626,7 +626,7 @@ names(m_kung_post) <-
   c("mu", "sigma")  # den Namen "(Intercept)" durch "mu" ersetzen, ist prägnanter
 
 m_kung_post |> 
-  count(mu > 165) |> 
+  count(mu_ueber_165 = mu > 165) |> 
   mutate(prop = n/sum(n))
 ```
 
@@ -973,7 +973,7 @@ Anteil $h_i > 200$:
 ```{r Kung-14, echo = TRUE}
 anteil_großer_kung <- 
 sim |> 
-  count( height > 200) |> 
+  count(ueber_200 = height > 200) |> 
   mutate(prop = n/sum(n))
 anteil_großer_kung
 ```
@@ -1060,8 +1060,8 @@ d |>
 
 ```{r Kung-17, echo = FALSE, eval = FALSE}
 sim2 |> 
-  count(height < 0) |> 
-  mutate(prop = n()/n)
+  count(negativ = height < 0) |> 
+  mutate(prop = n/sum(n))
 ```
 
 🤔 Das Modell geht a priori von ein paar Prozent Menschen mit *negativer* Größe aus. 

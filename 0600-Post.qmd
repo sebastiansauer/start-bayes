@@ -781,7 +781,8 @@ Wir zählen, wie oft der Wasseranteil weniger als 50 % beträgt.
 #| label: tbl-pgrid_ge_50
 #| tbl-cap: 'Anteil der Stichproben mit $\pi \ge 1/2$ Wasseranteil'
 samples_6w_9v |>
-  count(p_grid < .5) 
+  count(p_grid < .5) |>
+  gt::gt()  # nur für die Tabellendarstellung
 ```
 :::
 
@@ -868,7 +869,7 @@ samples_6w_9v |>
 ```{r QM2-Thema3-Post-befragen-9a}
 #| echo: false
 samples_6w_9v |>
-  count(p_grid >= .9 & p_grid <= 1) |>
+  count(im_Bereich = p_grid >= .9 & p_grid <= 1) |>
   mutate(prop = n / 1e4,  # prop wie "proportion", Anteil
          prozent = prop * 100)
 ```
@@ -894,7 +895,7 @@ $\square$
 ::: {.callout-tip appearance="minimal" collapse="true"}
 ### Lösung
 ```{r}
-samples_6w_9v |> count(p_grid <= .5)
+samples_6w_9v |> count(kleiner_gleich_50 = p_grid <= .5)
 ```
 :::
 :::
