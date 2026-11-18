@@ -1245,14 +1245,17 @@ p2
 
 Ein *Perzentilintervall* kann bei schiefen Verteilungen den wahrscheinlichsten Parameterwert nicht enthalten, diesen plausiblen Wert also zurückweisen.
 Das macht keinen Sinn.
-
-
 Ein *Highest-Density-Intervall* (HDI^[Auch als *Highest Density Posterior Interval* (HDPI) bezeichnet.]) ist schmäler als das Perzentilintervall und enthält immer den wahrscheinlichsten Parameterwert.
 
 :::: {.columns}
 
 ::: {.column width="50%"}
-Die Grenzwerte dieses ETI (oder jedes beliebig breiten) kann man sich z. B. mit dem Befehl `eti` ausgeben lassen.
+Die Grenzwerte dieses ETI (oder jedes beliebig breiten) kann man sich z. B. mit dem Befehl `eti` ausgeben lassen, s. @tbl-samples3w3v_ci50.
+Der wahrscheinlichste Parameterwert (1) ist *nicht* im Intervall enthalten.
+Das ist ein Nachteil der ETI.
+
+
+
 
 ```{r}
 #| eval: false
@@ -1265,6 +1268,8 @@ samples_3w_3v |>
 ::: {.column width="50%"}
 ```{r}
 #| echo: false
+#| label: tbl-samples3w3v_ci50
+#| tbl-cap: Das 50 %-ETI erstreckt sich von ca. 0.7 bis 0.9.
 samples_3w_3v |> 
   select(p_grid) |> 
   eti(ci = .5)  # Paket `easystats`
@@ -1278,12 +1283,6 @@ samples_3w_3v |>
 
 
 
-Der wahrscheinlichste Parameterwert (1) ist *nicht* im Intervall enthalten.
-Das ist ein Nachteil der ETI.
-
-
-
-
 ### Intervalle höchster Dichte
 
 
@@ -1291,7 +1290,7 @@ Das ist ein Nachteil der ETI.
 
 ### Intervalle höchster Dichte (Highest Density Intervals)
 
-Intervalle höchster Dichte (Highest Density Intervals, HDI oder HDPI) sind definiert als das *schmälste* Intervall, das den gesuchten Parameter enthält (in Bezug auf ein gegebenes Modell).
+Intervalle höchster Dichte (Highest Density Intervals, HDI) sind definiert als das *schmälste* Intervall, das den gesuchten Parameter enthält (in Bezug auf ein gegebenes Modell).
 $\square$
 
 :::
@@ -1302,13 +1301,12 @@ $\square$
 
 
 
-Der wahrscheinlichste Parameterwert ($1$) *ist* im Intervall enthalten, was Sinn macht, s. @fig-schief.
-Bei einem HDI sind die abgeschnittenen Ränder nicht mehr gleich groß,
+Der wahrscheinlichste Parameterwert ($1$) *ist* im HDI enthalten, was Sinn macht, s. @fig-schief.
+Bei einem HDI sind die abgeschnittenen Ränder *nicht* mehr gleich groß,
 im Sinne davon, dass sie nicht (zwangsläufig) die gleiche Wahrscheinlichkeitsmasse enthalten.
 Beim PI ist die Wahrscheinlichkeitsmasse in diesen Rändern hingegen gleich groß.
-
-
-Je unsymmetrischer die Verteilung, desto weiter liegen die Punktschätzer auseinander (und umgekehrt), s. Abb. @fig-post-pointestimates.
+Je unsymmetrischer die Verteilung, desto weiter liegen die Punktschätzer (von $\pi$) auseinander (und umgekehrt), s. Abb. @fig-post-pointestimates.
+Umgekehrt sind Mittelwert, Median und Modus identisch bei einer punktsymmetrischen Verteilung wie einer Normalverteilung.
 
 
 
