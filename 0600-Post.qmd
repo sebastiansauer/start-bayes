@@ -1315,7 +1315,7 @@ Umgekehrt sind Mittelwert, Median und Modus identisch bei einer punktsymmetrisch
 #| fig-cap: "Visualisierung der Punktschätzer bei einer schiefen Post-Verteilung (auf Basis von `samples_3w_3v`)"
 #| label: fig-post-pointestimates
 #| message: false
-#| fig-asp: 0.5
+#| fig-asp: 0.6
 
 point_estimates <-
   bind_rows(samples_3w_3v |> tidybayes::mean_qi(p_grid),
@@ -1337,9 +1337,11 @@ bayesbox_3w_3v |>
             aes(x = x, y = y, label = paste0(.point, " = ", sprintf("%.2f", x))),
             angle = 90,
             hjust = 0) +
-  labs(x = "Anteil Wasser (p)",
+  labs(x = expression("Anteil Wasser (" * pi * ")"),
        y = "Wahrscheinlichkeitsdichte") +
-  theme(panel.grid = element_blank())
+  theme(panel.grid = element_blank(),
+        axis.title.y = element_text(margin = margin(r = 6)),
+        plot.margin = margin(t = 14, r = 8, b = 5.5, l = 5.5))
 
 ```
 
