@@ -46,8 +46,10 @@ echo "Vollstaendiges Log: $logfile"
 # Vorab-Check: Der letzte Schritt pusht per SSH auf GitHub. Ohne geladenen
 # Schluessel (ssh-add) scheitert er erst nach vielen Minuten Rechenzeit --
 # daher jetzt pruefen und notfalls sofort warnen (BatchMode: keine Rueckfrage).
-if ! ssh -o BatchMode=yes -o ConnectTimeout=5 -T git@github.com 2>&1 \
-     | grep -q "successfully authenticated"; then
+# Hinweis: "ssh -T git@github.com" endet immer mit Exit-Code 1 (kein Shell-
+# Zugang), daher die Ausgabe auswerten statt den Exit-Code (pipefail!).
+ssh_probe=$(ssh -o BatchMode=yes -o ConnectTimeout=5 -T git@github.com 2>&1 || true)
+if [[ "$ssh_probe" != *"successfully authenticated"* ]]; then
   printf '\n!! HINWEIS: Kein Zugriff auf GitHub per SSH -- der letzte Schritt (Push auf gh-pages)\n'
   printf '!!          wuerde scheitern. Jetzt in einem Terminal ausfuehren:\n'
   printf '!!            ssh-add ~/.ssh/id_ed25519_github\n\n'
