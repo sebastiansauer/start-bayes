@@ -1121,7 +1121,95 @@ Die 10 %-, 20 %-, ...,
 100 %-Quantile^[d. h. die *Dezile*] (auf Basis von `bayesbox_g100_samples`) sind in @fig-quantiles-anim illustriert.
 
 ::: {.content-visible when-format="html"}
-![Quantile in 10%-Schriten durch die Verteilung von `bayesbox_g100_samples`](img/p_deciles.gif){#fig-quantiles-anim width=50%}
+
+Mit dem Regler wählen Sie die Wahrscheinlichkeit (das Dezil);
+oben sehen Sie die zugehörige Fläche unter der Post-Verteilung,
+unten die kumulierte Verteilung (ECDF):
+Von der Wahrscheinlichkeit auf der senkrechten Achse
+gelangt man zum Quantil auf der waagrechten Achse.
+Der Knopf spielt die Dezile nacheinander ab.
+
+```{r}
+#| echo: false
+#| output: false
+#| cache: false
+ojs_define(post_grid = bayesbox_g100 |> dplyr::select(p = p_grid, post))
+```
+
+```{ojs}
+//| echo: false
+pg = transpose(post_grid).map(d => ({p: d.p, post: d.post}))
+cum = {
+  let s = 0;
+  return pg.map(d => ({p: d.p, post: d.post, cum: (s += d.post)}));
+}
+
+viewof dezil = Inputs.range([10, 100], {label: "Dezil (%)", step: 10, value: 50})
+viewof dezil_play = Inputs.button("Abspielen")
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+{
+  dezil_play;
+  if (dezil_play === 0) return;
+  const el = viewof dezil;
+  let w = 0;
+  const id = setInterval(() => {
+    w += 10;
+    el.value = w;
+    el.dispatchEvent(new Event("input", {bubbles: true}));
+    if (w >= 100) clearInterval(id);
+  }, 700);
+  invalidation.then(() => clearInterval(id));
+}
+```
+
+```{ojs}
+//| echo: false
+q = dezil / 100
+// kleinster Gitterwert, bei dem die kumulierte Wahrscheinlichkeit q erreicht (Toleranz gegen Rundung)
+xq = cum.find(d => d.cum >= q - 1e-9).p
+farbe = "#0072B2"
+```
+
+```{ojs}
+//| echo: false
+//| label: fig-quantiles-anim
+//| fig-cap: "Dezile der Post-Verteilung (auf Basis von `bayesbox_g100`), interaktiv: Dichte (oben) und kumulierte Verteilung (unten)"
+{
+  const dichte = cum.map(d => ({p: d.p, y: d.post * 100}));
+  const ymax = d3.max(dichte, d => d.y) * 1.08;
+  const dezile = d3.range(0.1, 1.0001, 0.1);
+  const plot1 = Plot.plot({
+    width, height: 260, marginLeft: 50,
+    x: {label: null, domain: [0, 1]},
+    y: {label: "Dichte", domain: [0, ymax]},
+    marks: [
+      Plot.areaY(dichte.filter(d => d.p <= xq + 1e-9), {x: "p", y: "y", fill: farbe, fillOpacity: 0.45}),
+      Plot.lineY(dichte, {x: "p", y: "y", stroke: "currentColor"}),
+      Plot.ruleX([xq], {stroke: farbe, strokeWidth: 2}),
+      Plot.text([`${dezil} % der Fläche liegen links von p = ${xq.toFixed(2)}`],
+        {x: 0.02, y: ymax, textAnchor: "start", dy: 12, fill: "currentColor"})
+    ]
+  });
+  const plot2 = Plot.plot({
+    width, height: 260, marginLeft: 50,
+    x: {label: "Anteil Wasser (p)", domain: [0, 1]},
+    y: {label: "Kumulierte Wahrscheinlichkeit", domain: [0, 1], tickFormat: d => (d * 100) + " %"},
+    marks: [
+      Plot.line(cum, {x: "p", y: "cum", curve: "step-after", stroke: "currentColor"}),
+      Plot.ruleY(dezile, {stroke: "currentColor", strokeOpacity: 0.12}),
+      Plot.link([{}], {x1: 0, y1: q, x2: xq, y2: q, stroke: farbe, strokeDasharray: "4,3", strokeWidth: 2}),
+      Plot.link([{}], {x1: xq, y1: q, x2: xq, y2: 0, stroke: farbe, strokeDasharray: "4,3", strokeWidth: 2}),
+      Plot.dot([{p: xq, y: q}], {x: "p", y: "y", fill: farbe, r: 6})
+    ]
+  });
+  return html`<div>${plot1}${plot2}</div>`;
+}
+```
+
 :::
 
 ::: {.content-visible unless-format="html"}
