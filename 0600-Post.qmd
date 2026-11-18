@@ -155,11 +155,9 @@ bayesbox_6w_9v  |>
   geom_line(color = "#0072B2") +
   scale_y_continuous("Posterior-Wahrscheinlichkeit",
                      breaks = NULL) +
-  annotate("point", x = .7,
-           y = .2668,
-           color = "#E69F00",
-           alpha = .7,
-           size = 7)
+  geom_point(data = \(d) dplyr::slice_max(d, post, n = 1),
+             shape = 21, size = 9, stroke = 1.2,
+             fill = "#E69F00", color = "#1A1A1A")
   
 p_d
 ```
@@ -183,6 +181,9 @@ bayesbox_6w_9v  |>
   geom_line(color = "#0072B2") +
   scale_y_continuous("Posterior-Wahrscheinlichkeit",
                      breaks = NULL) +
+  geom_point(data = \(d) dplyr::slice_max(d, post, n = 1),
+             shape = 21, size = 9, stroke = 1.2,
+             fill = "#E69F00", color = "#1A1A1A") +
   labs(x = "Anteil Wasser (p)")
 
 p_d
