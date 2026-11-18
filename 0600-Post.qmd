@@ -495,20 +495,20 @@ bayesbox_g100 |>
 
 
 
-Und daraus ziehen wir uns $n=1000=10^3$ Stichproben:
+Und daraus ziehen wir uns $n=1000=10^3$ (`1e3`) Stichproben:
 
 
 ```{r QM2-Thema3-Teil1-4}
 samples_g100 <-
   bayesbox_g100 |>  # nimmt die Tabelle mit Posteriori-Daten,
   slice_sample(  # Ziehe daraus eine Stichprobe,
-    n = 1000,  # mit insgesamt n=1000 Elementen,
+    n = 1e3,  # mit insgesamt n=1000 Elementen,
     weight_by = post,  # Gewichte nach Spalte mit Post-Wskt.,
     replace = T)  # Ziehe mit Zurücklegen
 ```
 
 
-@fig-post100 zeigt sowohl die exakte Post-Verteilung (farbige, gepunktete Linie) als auch die Post-Verteilung auf Basis von Stichproben (Histogramm). 
+@fig-post100 zeigt sowohl die exakte Post-Verteilung (gepunktete Linie) als auch die Post-Verteilung auf Basis von Stichproben (Histogramm). 
 In beiden Fällen erkennt man gut die zentrale Tendenz: 
 ein Wasseranteil von ca. 70 % scheint der "typische" Wert des Modells zu sein.
 Außerdem erkennt man, dass das Modell durchaus einige Streuung in der Schätzung des Wasseranteils bereithält.
@@ -517,7 +517,7 @@ Das Modell ist sich nicht sehr sicher, könnte man sagen.
 
 ```{r}
 #| echo: false
-#| fig-cap: Post-Verteilung mit 100 Gitterwerten, exakt vs. auf Basis von Stichproben
+#| fig-cap: Post-Verteilung mit 100 Gitterwerten, exakt (gepunktete Linie) vs. auf Basis von Stichproben (Histogramm). Die Y-Achse zeigt die jeweilige Wahrscheinlichkeitsdichte bzw. Häufigkeit pro Wert von $\pi$.
 #| label: fig-post100
 
 
@@ -586,7 +586,7 @@ Das ist gut, denn wir werden in Zukunft nur noch mit dem Stichproben-Verfahren (
 
 
 ::: callout-note
-Mehr Stichproben und mehr Gitterwerte glätten die Stichproben-Post-Verteilung.
+Mehr Stichproben und mehr Gitterwerte glätten die Stichproben-Post-Verteilung, d.h. nähern sie der wahren (exakten) Post-Verteilung an.
 :::
 
 Jetzt die Post-Verteilung noch mal mit mehr Stichproben:
@@ -614,7 +614,7 @@ p_100_samples <-
 ggplot(aes(x = p_grid)) +
   geom_histogram(bins = 101) +
   scale_x_continuous("Anteil Wasser (p)", limits = c(0, 1)) +
-  labs(y = "Wahrscheinlichkeit",
+  labs(y = "Häufigkeit",
        caption = paste0("Modus: ", sprintf("%.2f", mode_rounded), "; MW: ", sprintf("%.2f", mavg), "; Md: ", sprintf("%.2f", md))) +
   geom_vline(xintercept = c(mode_rounded), color = "#E69F00FF")  +
   geom_vline(xintercept = c(mavg), color = "#0072B2FF")  +
