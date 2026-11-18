@@ -153,11 +153,9 @@ bayesbox_6w_9v  |>
   geom_line(color = "#0072B2") +
   scale_y_continuous("Posterior-Wahrscheinlichkeit",
                      breaks = NULL) +
-  annotate("point", x = .7,
-           y = .2668,
-           color = "#E69F00",
-           alpha = .7,
-           size = 7)
+  geom_point(data = \(d) dplyr::slice_max(d, post, n = 1),
+             shape = 21, size = 9, stroke = 1.2,
+             fill = "#E69F00", color = "#1A1A1A")
   
 p_d
 ```
@@ -181,6 +179,9 @@ bayesbox_6w_9v  |>
   geom_line(color = "#0072B2") +
   scale_y_continuous("Posterior-Wahrscheinlichkeit",
                      breaks = NULL) +
+  geom_point(data = \(d) dplyr::slice_max(d, post, n = 1),
+             shape = 21, size = 9, stroke = 1.2,
+             fill = "#E69F00", color = "#1A1A1A") +
   labs(x = "Anteil Wasser (p)")
 
 p_d
@@ -559,19 +560,27 @@ p_samples_exact <-
   geom_point(data = bayesbox_g100, 
              aes(x = p_grid, y = post * 10000), 
              color = ycol, size = 1) +
-  geom_text(
+  # Linie vom Label zum Gipfel der exakten Post-Verteilung
+  geom_segment(
     data = bayesbox_g100 |> dplyr::slice_max(post, n = 1),
-    aes(x = p_grid, y = post * 10000, label = "exakte Post-Verteilung"),
-    vjust = -1, hjust = 0.5, color = ycol, size = 3
+    aes(x = 0.5, xend = p_grid, y = 285, yend = post * 10000),
+    color = ycol, linewidth = 0.5
+  ) +
+  geom_label(
+    data = tibble(x = 0.5, y = 285, label = "exakte Post-Verteilung"),
+    aes(x = x, y = y, label = label),
+    color = "#B36B00", fill = "white", border.colour = ycol,
+    fontface = "bold", size = 3
   ) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+  # Beschriftung des Histogramms: innerhalb der Balken, daher weiss auf grau
   geom_text(
-    data = tibble(x = 0, y = 200,
+    data = tibble(x = 0.65, y = 100,
                   label = "Stichproben aus \nder Post-Verteilung"),
     aes(x = x, y = y, label = label),
-    vjust = 1, hjust = 0, color = "gray30", size = 3
+    vjust = 0.5, hjust = 0.5, color = "white", fontface = "bold", size = 3
   ) +
-  labs(x = "Anteil Wasser (pi)",
+  labs(x = expression("Anteil Wasser (" * pi * ")"),
       y = "Wahrscheinlichkeit/Häufigkeit") 
 
 
