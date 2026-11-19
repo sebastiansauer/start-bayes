@@ -54,7 +54,6 @@ library(easystats)
 library(tidyverse)  # Datenjudo
 library(rstanarm)  # Bayes-Modelle berechnen
 library(easystats)  # Statistik-Komfort
-library(DataExplorer)  # Daten verbildlichen
 library(ggpubr)  # Daten verbildlichen
 library(hexbin)  # stat_bin_hex ggplot2
 ```
@@ -160,14 +159,17 @@ describe_distribution(kung_erwachsen,
   fmt_integer(columns = last_col())
 ```
 
-Die Verteilungen lassen sich mit `plot_density` (aus dem R-Paket `{DataExplorer}`) erstellen, 
+Die Verteilungen lassen sich mit `ggdensity` (aus dem R-Paket `{ggpubr}`) erstellen, 
 s. @fig-kung-dens.
 
 ```{r}
 #| label: fig-kung-dens
 #| fig-cap: Verteilungen der Variablen im Kung-Datensatz. Größe und Gewicht sind recht symmetrisch bzw. normalverteilt; Alter ist rechtsschief.
 
-plot_density(kung_erwachsen)
+kung_erwachsen |> 
+  select(age, height, weight) |> 
+  pivot_longer(everything(), names_to = "Variable", values_to = "Wert") |> 
+  ggdensity(x = "Wert", facet.by = "Variable", scales = "free")
 ```
 
 ### Wir gehen a priori von normalverteilter Größe der !Kung aus
