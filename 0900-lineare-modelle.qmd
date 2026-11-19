@@ -160,13 +160,7 @@ Wie aus @tbl-kung1 abzulesen ist, liegt das mittlere Körpergewicht (`weight`) b
 Wir brauchen explorative Datenanalyse (EDA) nicht wirklich, um einfache Bayes-Regressionen zu verstehen.
 Aber EDA hilft, die Daten zu verstehen,
 was essenziell ist, wenn man Erkenntnisse aus den Daten gewinnen will.
-Das Paket `DataExplorer` hat ein paar nette Hilfen zur explorativen Datenanalyse.
-
-
-```{r}
-#| message: false
-library(DataExplorer)
-```
+Das Paket `ggpubr` und die Pakete des `tidyverse` bieten ein paar nette Hilfen zur explorativen Datenanalyse.
 
 Was man im Rahmen einer EDA stets prüfen sollte, sind fehlende Werte. 
 Gibt es in diesem Datensatz fehlende Werte?
@@ -175,7 +169,10 @@ Nein, s. @fig-na.
 ```{r}
 #| fig-cap: Fehlende Werte -- fehlen.
 #| label: fig-na
-kung_erwachsen |> plot_missing()
+kung_erwachsen |> 
+  summarise(across(everything(), ~ sum(is.na(.x)))) |> 
+  pivot_longer(everything(), names_to = "Variable", values_to = "Fehlende_Werte") |> 
+  ggbarplot(x = "Variable", y = "Fehlende_Werte")
 ```
 
 
@@ -185,7 +182,10 @@ Betrachten wir als Nächstes die Verteilung der *numerischen* Variablen des Date
 
 ```{r}
 #| eval: false
-kung_erwachsen |> plot_histogram()
+kung_erwachsen |> 
+  select(age, height, weight) |> 
+  pivot_longer(everything(), names_to = "Variable", values_to = "Wert") |> 
+  gghistogram(x = "Wert", facet.by = "Variable", scales = "free")
 ```
 
 
@@ -222,7 +222,9 @@ kung_erwachsen |>
 ```{r}
 #| label: fig-kung_erwachsen-bars
 #| fig-cap: "Verteilung (als Balkendiagramme dargestellt) der kategorialen Variablen des Datensatzes"
-kung_erwachsen |> plot_bar()
+kung_erwachsen |> 
+  count(male) |> 
+  ggbarplot(x = "male", y = "n")
 ```
  -->
 
@@ -234,7 +236,10 @@ Die Korrelationen der (numerischen) Variablen sind in @fig-num-korrs dargestellt
 ```{r}
 #| label: fig-num-korrs
 #| fig-cap: "Korrelationsmatrix"
-kung_erwachsen |> plot_correlation()
+kung_erwachsen |> 
+  correlation() |> 
+  summary() |> 
+  plot()
 ```
 
 
@@ -244,7 +249,7 @@ Starke Zusammenhänge finden sich (wenig überraschend) zwischen Größe und Gew
 :::{#exr-Bonus}
 ### Vertiefung: EDA-Bericht
 
-Probieren Sie mal die folgende Funktion aus, die Ihnen einen Bericht zur EDA erstellt: `create_report(kung_erwachsen)`. $\square$
+Probieren Sie mal die folgende Funktion aus, die Ihnen einen Überblick über die Daten erstellt: `describe_distribution(kung_erwachsen)` (aus dem Paket `{datawizard}`, Teil von `{easystats}`). $\square$
 :::
 
 

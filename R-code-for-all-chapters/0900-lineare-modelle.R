@@ -37,15 +37,15 @@ describe_distribution(d2)
 
 describe_distribution(d2) |> display()
 
-library(DataExplorer)
+library(ggpubr)
 
-d2 %>% plot_missing()
+d2 %>% summarise(across(everything(), ~ sum(is.na(.x))))
 
-d2 %>% plot_histogram()
+d2 %>% select(age, height, weight) %>% pivot_longer(everything(), names_to = "Variable", values_to = "Wert") %>% gghistogram(x = "Wert", facet.by = "Variable", scales = "free")
 
-d2 %>% plot_bar()
+d2 %>% count(male) %>% ggbarplot(x = "male", y = "n")
 
-d2 %>% plot_correlation()
+d2 %>% correlation() %>% summary() %>% plot()
 
 d3 <- 
   d2 %>% 

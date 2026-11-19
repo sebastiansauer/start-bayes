@@ -10,7 +10,7 @@ theme_set(theme_modern())
 library(tidyverse)  # Datenjudo
 library(rstanarm)  # Bayes-Modelle berechnen
 library(easystats)  # Statistik-Komfort
-library(DataExplorer)  # Daten verbildlichen
+library(ggpubr)
 library(ggpubr)  # Daten verbildlichen
 
 Kung_path <-  
@@ -32,7 +32,7 @@ describe_distribution(d2) %>%
   fmt_number(columns = c(3:last_col()-1)) %>% 
   fmt_integer(columns = last_col())
 
-plot_density(d2)
+d2 %>% select(age, height, weight) %>% pivot_longer(everything(), names_to = "Variable", values_to = "Wert") %>% ggdensity(x = "Wert", facet.by = "Variable", scales = "free")
 
 p1 <-
   tibble(x = seq(from = 100, to = 250, by = .1)) %>% 
