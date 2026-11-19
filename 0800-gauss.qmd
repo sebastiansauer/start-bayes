@@ -59,7 +59,7 @@ library(hexbin)  # stat_bin_hex ggplot2
 ```
 
 ::: callout-important
-Ab diesem Kapitel benötigen Sie *Stan*, das ist das R-Paket `rstanarm`. $\square$
+Ab diesem Kapitel benötigen Sie *Stan*, eine Software zur Berechnung von Bayes-Modellen. Wir nutzen Stan über das R-Paket `rstanarm`, das Stan in R bereitstellt. $\square$
 :::
 
 
@@ -192,19 +192,19 @@ p_nv_kung_prior <-
   ggplot(aes(x = x, y = dnorm(x, mean = 178, sd = 20))) +
   geom_line(color = beta1col) +
   scale_x_continuous(breaks = seq(from = 100, to = 250, by = 75)) +
-  labs(title = "mu ~ dnorm(178, 20)",
+  labs(title = expression(mu ~ "~ dnorm(178, 20)"),
        y = "",
-       x = "Mittelwert der Körpergröße, mu") +
+       x = expression("Mittelwert der Körpergröße, " * mu)) +
   scale_y_continuous(breaks = NULL)
 
 p_exp_kung_prior <-
   tibble(x = seq(0, 50, by = .01)) |>
-  ggplot(aes(x = x, y = dexp(x, rate = .1))) +
+  ggplot(aes(x = x, y = dexp(x, rate = 1/8))) +
   geom_line(color = errorcol) +
   scale_x_continuous() +
   scale_y_continuous(NULL, breaks = NULL) +
-  labs(title = "sigma ~ dexp(0.1)",
-       x = "Streuung der Körpergrößen, sigma")
+  labs(title = expression(sigma ~ "~ dexp(1/8)"),
+       x = expression("Streuung der Körpergrößen, " * sigma))
 ```
 
 ## Unser Gauss-Modell der !Kung
@@ -232,7 +232,7 @@ Stan liefert uns brav eine Stichproben-Post-Verteilung zurück.
 
 ### Priori-Verteilungen
 
-Wir haben zwei Priori-Größen (Parameter):
+Wir haben zwei Priori-Größen (Parameter), s. @fig-kung-model und @fig-mod-kung1:
 
 1. Den *Mittelwert* der Körpergrößen in der Population, $\mu$. Dieser Parameter beantwortet die Frage: "Wie groß sind die erwachsenen !Kung im Durchschnitt?"
 2. Die *Streuung* der tatsächlichen Körpergrößen um den Mittelwert der Population herum, $\sigma$. Dieser Parameter beantwortet die Frage: "Wie unterschiedlich groß sind die erwachsenen !Kung?"
@@ -252,7 +252,8 @@ Warum gerade $\lambda=1/8$?
 Das ist einfach ein grobes Abschätzen mit Blick auf @fig-exps:
 Bei $\lambda=1/8$ liegt der Median bei ca. 5 cm.
 Eine Streuung von ca. 5 cm um den Mittelwert herum erscheint nicht ganz falsch.
-Dann kann man folgern: $95\%KI(\mu): 178 \pm 40$.
+
+Aus der Priori für $\mu$ folgt: $95\%KI(\mu): 178 \pm 1{,}96 \cdot 20 \approx 178 \pm 40$.
 In Worten: Wir halten es a priori zu 95 % für plausibel, dass die *durchschnittliche* Körpergröße der erwachsenen !Kung zwischen 138 cm und 218 cm liegt -- laut unserem Modell (unserer Priori-Verteilung). Das ist eine Aussage über den unbekannten Mittelwert $\mu$, nicht über die Körpergröße einzelner Personen (dafür ist $\sigma$ zuständig).
 Das ist ein ausreichend großer Bereich,
 um Überraschungen zuzulassen, aber eng genug, um biologisch unmögliche Werte auszuschließen.
@@ -307,16 +308,18 @@ Nehmen wir an, dass die Körpergrößen, $h_i$ normalverteilt sind,
 dann können wir die Likelihood anhand der Quantile der Normalverteilung berechnen.
 Etwa so:
 
-$$L = Pr(h_i = [190;191]\quad |\mu=180, \sigma=10)$$
+$$L = Pr(h_i = [190;191]\quad | \; \mu=180, \sigma=10)$$
 
 Aber da wir das Rechnen an Stan geben,
-begnügen wir uns mit einer Kurz-Schreibweise
+begnügen wir uns mit einer Kurz-Schreibweise für die Likelihood: 
 
 $$\textcolor{orange}{h_i} \sim \mathcal{\textcolor{orange}{N}}(\textcolor{blue}{\mu}, \textcolor{green}{\sigma})
 \qquad
-\textcolor{black}{\textcolor{orange}{Likelihood}}$$
+\textcolor{black}{\textcolor{orange}{Likelihood}} $$ 
 
-Lies: "Die Körpergröße ist normalverteilt mit Mittelwert $\mu$ und Streuung $\sigma$."
+
+Lies: "Die Körpergröße $h$ ist normalverteilt mit Mittelwert $\mu$ und Streuung $\sigma$."
+($h$ wie engl. "height", Größe).
 Stan weiß dann, was er zu tun hat.
 Für die Post-Verteilung muss Stan für alle plausiblen Kombinationen von $\mu$ und $\sigma$ die Likelihoods berechnen, s. @fig-mod-kung1.
 
@@ -340,6 +343,7 @@ source("R-Code/Kruschke-plot3.R")
 Jetzt haben wir unser Modell (`m_kung`) definiert!
 
 Weil es so schön ist, schreiben/zeichnen wir es hier noch einmal auf, @eq-mod-kung1.
+$\mu$ und $\sigma$, sind Parameter, $h_i$ bezeichnet die Likelihood.
 
 $$
 \begin{aligned}
@@ -399,7 +403,7 @@ Betrachten wir die Post-Verteilungen von $\mu$ und von $\sigma$, s. @fig-kung3.
 ```{r}
 #| echo: false
 #| label: fig-kung3
-#| fig-cap: Die beiden Randverteilungen der Post-Verteilungen, d.h. die Verteilungen für mu und für sigma
+#| fig-cap: Die beiden Randverteilungen der Post-Verteilungen, d.h. die Verteilungen für $\mu$ und für $\sigma$
 #| fig-asp: 0.5
 
 m_kung_post |> 
@@ -428,26 +432,30 @@ also die Kombinationen, die "Pärchen" der Werte von Mittelwert und Streuung.
 
 ### Fliesendiagramm
 
-Gemeinsame Post-Verteilung von Mittelwert, $\mu$ und Streuung, $\sigma$
+Die gemeinsame Post-Verteilung von Mittelwert, $\mu$ und Streuung, $\sigma$ als Fliesendiagramm, s. @fig-m_kung_neue_prioris-post-joint.
 
 ```{r}
 #| echo: true
 #| label: fig-m_kung_neue_prioris-post-joint
-#| fig-cap: "Die gemeinsame Post-Verteilung von Mittelwert und Streuung von m_kung_neue_prioris"
+#| fig-cap: "Die gemeinsame Post-Verteilung von Mittelwert und Streuung von m_kung_neue_prioris als Fliesendiagramm"
 
 m_kung_post |> 
   ggplot() +
   aes(x = mu, y = sigma) |> 
   geom_hex() +
-  scale_fill_viridis_c() 
+  scale_fill_viridis_c() +
+  labs(x = expression(mu), y = expression(sigma))
 ```
 
 ### Streudiagramm
 
+@fig-m_kung_neue_prioris-post-anders1 zeigt ein Streudigramm zur gemeinsamen Post-Verteilung von Mittelwert, $\mu$ und Streuung, $\sigma$ 
+sowie die Verteilung von jewils $\mu$ und $\sigma$ als Dichtediagramme am oberen bzw. rechten Rand des Diagramms.
+
 
 ```{r}
 #| echo: false
-#| fig-cap: "Die Postverteilung in unterschiedlicher Darstellung"
+#| fig-cap: "Streudiagramm zur gemeinsamen Verteilung von $\mu$ und $\sigma$"
 #| label: fig-m_kung_neue_prioris-post-anders1
 
 
@@ -455,17 +463,24 @@ p_m_kung_post <-
   m_kung_post |> 
   ggplot() +
   aes(x = mu, y = sigma) +
-  geom_point(alpha = .1) 
+  geom_point(alpha = .1) +
+  labs(x = expression(mu), y = expression(sigma))
 
 p10 <- ggExtra::ggMarginal(p_m_kung_post, type = "density")
 
 p20 <- 
   m_kung_post |> 
   ggplot(aes(x = mu)) + 
-  geom_histogram()
+  geom_histogram() +
+  labs(x = expression(mu))
 
 p10
 ```
+
+
+:::: {.content-visible when-format="html"}
+
+
 
 ### Histogramm
 
@@ -475,16 +490,18 @@ Natürlich können wir auch nur von einem einzelnen Parameter (z. B. Mittelwer
 
 ```{r}
 #| echo: false
-#| fig-cap: Die Post-Verteilung von mu in m_kung_neue_prioris; ein Balkendiagramm bietet sich an.
+#| fig-cap: Die Post-Verteilung von $\mu$ in m_kung_neue_prioris; ein Balkendiagramm bietet sich an.
 #| label: fig-m_kung_neue_prioris-post-anders2
 p20
 ```
 
-:::
+::::
+
 
 Da das Modell *zwei* Parameter hat, können wir auch beide gleichzeitig plotten. Wie man sieht, sind die beiden Parameter unkorreliert. In anderen Modellen können die Parameter korreliert sein.
 @fig-m_kung_neue_prioris-post-joint erlaubt uns, für *jede Kombination von Mittelwert und Streuung* zu fragen, wie wahrscheinlich diese bestimmte Kombination ist.
 
+:::
 
 Fassen wir die Ergebnisse dieses Modells zusammen:
 
@@ -494,9 +511,9 @@ Fassen wir die Ergebnisse dieses Modells zusammen:
 
 -   Ziehen wir Stichproben aus der Posteriori-Verteilung, so können wir interessante Fragen stellen.
 
-## Hallo, Posteriori-Verteilung
+## Fragen an die Posteriori-Verteilung
 
-... wir hätten da mal ein paar Fragen an Sie. 🕵
+Hallo, Posteriori-Verteilung. Wir hätten da mal ein paar Fragen an Sie. 🕵
 
 1.  Mit welcher Wahrscheinlichkeit ist die *mittlere* !Kung-Person größer als 1.55 m?
 2.  Welche mittlere Körpergröße wird mit 95 % Wahrscheinlichkeit nicht überschritten, laut dem Modell?
@@ -512,13 +529,9 @@ Antworten folgen etwas weiter unten.
 Mit `stan_glm()` können wir komfortabel die Posteriori-Verteilung berechnen. 
 Die Gittermethode wird nicht verwendet, aber die Ergebnisse sind -- für unsere Fälle -- ähnlich. 
 Es werden aber auch viele Stichproben simuliert (sog. MCMC-Methode). 
-
 Grob gesagt berechnen wir die Post-Verteilung mit `stan_glm` so: `stan_glm(AV ~ UV, data = meine_daten)`.
-
-
 Wir können, wie wir es oben getan haben, uns die Stichproben der Post-Verteilung ausgeben lassen, 
 und diese z. B. plotten.
-
 Wir können es aber auch komfortabler haben ... 
 Mit dem Befehl `parameters` kann man sich die geschätzten Parameterwerte einfach ausgeben lassen (s. @fig-m_kung_neue_prioris-post-joint).
 
@@ -558,16 +571,17 @@ Außerdem sei an @mcelreath2020 und @gelman2021 verwiesen. $\square$
 ::: {#second-column}
 Hier ein paar Kerninfos zu `stan_glm`:
 
--   *Stan*)^[<https://mc-stan.org/>] ist eine Software zur Berechnung von Bayesmodellen; das Paket `rstanarm` stellt Stan für uns bereit.
+-   *Stan*^[<https://mc-stan.org/>] ist eine Software (genauer: eine Programmiersprache für statistische Modelle) zur Berechnung von Bayes-Modellen. Stan zieht dazu Stichproben aus der Post-Verteilung (MCMC-Verfahren, genauer: Hamiltonian Monte Carlo).
+-   Das R-Paket `rstanarm` stellt Stan für uns bereit: Es bringt vorbereitete Stan-Modelle für gängige Regressionsmodelle mit, sodass wir sie mit der gewohnten R-Formelsyntax aufrufen können, ohne selber Stan-Code zu schreiben.
 -   `stan_glm()` ist für die Berechnung von Regressionsmodellen ausgelegt.
--   Will man nur die Verteilung einer einzelnen Variablen (wie `heights`) schätzen, so hat man ... eine Regression ohne Prädiktor.
+-   Will man nur die Verteilung einer einzelnen Variablen (wie `heights`) schätzen, so hat man ... eine Regression ohne UV.
 -   Eine Regression ohne Prädiktor schreibt man auf Errisch so: `y ~ 1`. Die `1` steht also für die nicht vorhandene UV; `y` meint die AV (`height`).
--   `(Intercept)` (Achsenabschnitt) gibt den Mittelwert an.
+-   `(Intercept)` (Achsenabschnitt) gibt den Mittelwert der AV an.
 :::
 ::::
 
 
-Mehr findet sich in der [Dokumentation von RstanArm](https://mc-stan.org/rstanarm/)^[<https://mc-stan.org/rstanarm/>].
+Mehr findet sich in der [Dokumentation von RstanArm](https://mc-stan.org/rstanarm/).^[<https://mc-stan.org/rstanarm/>]
 
 ### Schätzwerte zu den Modellparameter
 
@@ -577,7 +591,7 @@ so dass wir die Likelihood berechnen können.
 Auf dieser Basis schätzen wir dann die Post-Verteilung. 
 Ich sage *schätzen*, um hervorzuheben, dass wir die wahren Werte nicht kennen, 
 sondern nur eine Vermutung haben, unsere Ungewissheit vorab also (wie immer) in der Priori-Verteilung festnageln 
-und unsere Ungewissheit nach Kenntnis der Daten in der Posteriori-Verteilung quantifizieren. 
+und unsere verbleibende Ungewissheit nach Kenntnis der Daten in der Posteriori-Verteilung quantifizieren. 
 Wie gerade gesehen, lassen sich die Modellparameter (bzw. genauer gesagt deren Schätzungen) 
 einfach mit `parameters(modellname)` auslesen.
 
@@ -585,13 +599,16 @@ einfach mit `parameters(modellname)` auslesen.
 
 Wie wir es vom Globusversuch gewohnt sind, können wir aber auch Stichproben aus der Post-Verteilung ziehen.
 
-Hier die ersten paar Zeilen von `m_kung_post`:
+Hier die ersten paar Zeilen von `m_kung_post`, s. @tbl-kung-post-head.
 
 ```{r Kung-26}
+#| echo: false
+#| label: tbl-kung-post-head
+#| tbl-cap: Die ersten paar Zeilen der Post-Verteilung von m_kung_post
 head(m_kung_post)
 ```
 
-In einer Regression ohne Prädiktoren entspricht der Achsenabschnitt dem Mittelwert der AV, daher gibt uns die Spalte `(Intercept)` Aufschluss über unsere Schätzwerte zu $\mu$ (der Körpergröße).
+In einer Regression ohne UV entspricht der Achsenabschnitt dem Mittelwert der AV, daher gibt uns die Spalte `(Intercept)` Aufschluss über unsere Schätzwerte zu $\mu$ (der Körpergröße).
 
 :::: {#exr-kung1}
 ## Mit welcher Wahrscheinlichkeit ist $\mu>155$?
@@ -609,7 +626,8 @@ m_kung_post |>
   mutate(prop = n/sum(n))
 ```
 
-Die Wahrscheinlichkeit ist nicht hoch, aber nicht auszuschließen, dass die Kung im Schnitt größer als 155 cm sind. Wahrscheinlicher ist jedoch, dass sie kleiner als 155 cm sind. $\square$
+Die Wahrscheinlichkeit ist nicht hoch, aber nicht auszuschließen, 
+dass die Kung im Schnitt größer als 155 cm sind. Wahrscheinlicher ist jedoch, dass sie kleiner als 155 cm sind.
 :::
 ::::
 
@@ -628,7 +646,11 @@ m_kung_post |>
   mutate(prop = n/sum(n))
 ```
 
-Oh, diese Hypothese können wir mit an Sicherheit grenzender Wahrscheinlichkeit ausschließen. Aber Achtung: Das war eine Kleine-Welt-Aussage! Die Wahrscheinlichkeit, die Hypothese $\mu > 165$ auszuschließen, ist *nur* dann hoch, wenn das Modell gilt! Wenn also der Golem keinen Mist gebaut hat. Und sind wir mal ehrlich, der Golem tut, was sein:e Herr:in und Meister:in ihm befiehlt. Letztlich liegt es an uns, den Golem auf Spur zu kriegen.
+Oh, diese Hypothese können wir mit an Sicherheit grenzender Wahrscheinlichkeit ausschließen. 
+Aber Achtung: Das war eine Kleine-Welt-Aussage! Die Wahrscheinlichkeit, die Hypothese $\mu > 165$ auszuschließen, 
+ist *nur* dann hoch, wenn das Modell gilt! Wenn also der Golem keinen Mist gebaut hat. 
+Und sind wir mal ehrlich, der Golem tut, was sein:e Herr:in und Meister:in ihm befiehlt. 
+Letztlich liegt es an uns, den Golem auf Spur zu kriegen.
 :::
 ::::
 
@@ -679,7 +701,7 @@ m_kung |>
   print_md()
 ```
 
-Seeing is believing, s. @fig-m_kung-params-intercept.
+Nicht glauben, selber sehen, s. @fig-m_kung-params-intercept.
 
 ```{r}
 #| fig-cap: "Parameter von m_kung, nur einer: der Intercept"
@@ -703,7 +725,6 @@ Das Modell ist sich recht sicher: die Ungewissheit der mittleren Körpergröße 
 :::
 ::::
 
-Ähnliche Fragen bleiben als Übung für die Lesis. 🤓
 
 ### Standard-Prioriwerte bei `stan_glm()`
 
@@ -925,7 +946,7 @@ sim <- tibble(sample_mu  =
             sd   = 20),
     sample_sigma = 
       rexp(n, 
-            rate = 0.1)) |> 
+            rate = 1/8)) |> 
   mutate(height  = 
       rnorm(n, 
             mean = sample_mu, 
@@ -949,7 +970,7 @@ p3 <-
   scale_x_continuous(
     breaks = c(0, 178-3*height_sim_sd, 178, 178+3*height_sim_sd)) +
   scale_y_continuous(NULL, breaks = NULL) +
-  labs(title = "height ~ dnorm(mu, sigma)",
+  labs(title = expression("height ~ dnorm(" * mu * ", " * sigma * ")"),
        caption = "X-Achse zeigt MW±3SD",
        x = "Größe") +
   theme(panel.grid = element_blank()) 
@@ -961,7 +982,7 @@ p3
 
 ### Priori-Werte prüfen
 
--   Die simulierten Beobachtungen (`sim`) beruhen (nur) auf den Priori-Annahmen: $h_i \sim \mathcal{N}(\mu, \sigma),$ $\mu \sim \mathcal{N}(178, 20),$ $\sigma \sim \mathcal{E}(0.1)$
+-   Die simulierten Beobachtungen (`sim`) beruhen (nur) auf den Priori-Annahmen: $h_i \sim \mathcal{N}(\mu, \sigma),$ $\mu \sim \mathcal{N}(178, 20),$ $\sigma \sim \mathcal{E}(1/8)$
 -   So können wir prüfen, ob die Priori-Werte vernünftig sind.
 
 Die Abbildung oben zeigt, dass unsere Priori-Werte ziemlich vage sind, also einen zu breiten Bereich an Größenwerten zulassen.
@@ -1036,7 +1057,9 @@ p4 <-
   scale_x_continuous(breaks = breaks, 
                      limits = c(-400, 700)) +
   scale_y_continuous(NULL, breaks = NULL) +
-  labs(title = "height ~ dnorm(mu, sigma)\nmu ~ dnorm(178, 100)\nsigma ~ E(0.01)",
+  labs(title = expression(atop(atop("height ~ dnorm(" * mu * ", " * sigma * ")",
+                                  mu ~ "~ dnorm(178, 100)"),
+                             sigma ~ "~ E(0.01)")),
        x = "Größe",
        caption = "X-Achse zeigt MW±3SD") +
   theme(panel.grid = element_blank()) 
