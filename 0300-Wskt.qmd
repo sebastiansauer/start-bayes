@@ -1311,11 +1311,8 @@ fivecoins <- tibble(
   mutate(p_cum = cumsum(p))
 
 p_fivecoins <-
-  ggplot(fivecoins, aes(x = Anzahl_Kopf, y = p)) +
-  geom_col(fill = mittelgrau) +
-  geom_label(aes(y = p, label = sprintf("%.2f", p)), vjust = 0) +
-  scale_x_continuous(breaks = 0:5) +
-  labs(x = "Anzahl Kopf (k)", y = "Wahrscheinlichkeit (Pr)")
+  tufte_bars(fivecoins, "Anzahl_Kopf", "p", sprintf("%.2f", fivecoins$p),
+             x_lab = "Anzahl Kopf (k)")
 ```
 
 
@@ -1340,12 +1337,8 @@ results_count <-
          prop_cum = cumsum(prop))
 
 p_sim5coins <-
-  ggplot(results_count) +
-  aes(x = Anzahl_Kopf, y = n) +
-  geom_col(fill = mittelgrau) +
-  geom_label(aes(y = n, label = sprintf("%.2f", prop))) +
-  scale_x_continuous(breaks = 0:5) +
-  labs(x = "Anzahl Kopf (k)", y = "Häufigkeit (n)")
+  tufte_bars(results_count, "Anzahl_Kopf", "n", sprintf("%.2f", results_count$prop),
+             x_lab = "Anzahl Kopf (k)")
 ```
 
 
@@ -1465,24 +1458,15 @@ $F(x) = \sum_{x_i \le x} Pr(X=x_i).$
 ```{r}
 #| echo: false
 p_F <- 
-  ggplot(fivecoins, aes(x = Anzahl_Kopf, y = p_cum)) +
-  geom_col(fill = mittelgrau) +
-  geom_line(color = dunkelgrau) +
-  geom_label(aes(label = sprintf("%.2f", p_cum))) +
-  scale_x_continuous(breaks = 0:5) +
-  labs(x = "Anzahl Kopf (k)", y = "Kumulierte Wahrscheinlichkeit (F)")
+  tufte_bars(fivecoins, "Anzahl_Kopf", "p_cum", sprintf("%.2f", fivecoins$p_cum),
+             x_lab = "Anzahl Kopf (k)")
 
 
 y_lab <- "empirische Verteilungsfunktion F emp."
 
 p_F_emp <-
-  ggplot(results_count) +
-  aes(x = Anzahl_Kopf, y = prop_cum) +
-  geom_col(fill = mittelgrau) +
-  geom_line(color = dunkelgrau) +
-  geom_label(aes(y = prop_cum, label = sprintf("%.2f", prop_cum))) +
-  labs(x = "Anzahl Kopf (k)", y = y_lab) +
-  scale_x_continuous(breaks = 0:5)
+  tufte_bars(results_count, "Anzahl_Kopf", "prop_cum", sprintf("%.2f", results_count$prop_cum),
+             x_lab = "Anzahl Kopf (k)")
 ```
 
 
