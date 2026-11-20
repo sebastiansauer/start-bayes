@@ -31,27 +31,18 @@ d2<-
 #   ungroup() %>%
 #   count(people_fully_vaccinated_per_hundred)
 
+source("funs/binomial_plot.R")
+d2 <- ungroup(d2)
+
 plot_covid1 <-
-  d2 %>%
-  ggplot(aes(x = Land,
-             y = people_fully_vaccinated_per_hundred)) +
-  geom_col(fill = mittelgrau) +
-  labs(title = "Anteil komplett geimpfter Personen",
-       subtitle = "2021-09-23",
-       x = "Land",
-       y = "Vollständig Geimpfte (je 100 Einwohner)")
-
-
+  tufte_bars(d2, "Land", "people_fully_vaccinated_per_hundred",
+             sprintf("%.1f", d2$people_fully_vaccinated_per_hundred),
+             x_lab = "Land: Anteil vollständig Geimpfter (je 100 Einwohner)")
 
 
 plot_covid2 <-
-  d2 %>%
-  ggplot(aes(x = Land,
-             y = total_deaths_per_million)) +
-  geom_col(fill = mittelgrau) +
-  labs(title = "Corona-Tote pro Million",
-       subtitle = "2021-09-23",
-       x = "Land",
-       y = "Corona-Tote (je Million Einwohner)")
+  tufte_bars(d2, "Land", "total_deaths_per_million",
+             sprintf("%.0f", d2$total_deaths_per_million),
+             x_lab = "Land: Corona-Tote (je Million Einwohner)")
 
 

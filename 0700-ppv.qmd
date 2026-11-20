@@ -110,6 +110,7 @@ p_stripro_vert <-
   ggplot() +
   aes(x = Trefferzahl, fill = signifikant) +
   geom_bar() +
+  scale_fill_manual(values = c("FALSE" = "#E69F00", "TRUE" = "#0072B2")) +
   scale_x_continuous(breaks = 0:10) +
   theme(legend.position = c(0.1, 0.8)) +
   geom_vline(xintercept = 9) +
@@ -600,13 +601,12 @@ Schauen wir uns ein Histogramm aller Trefferzahlen an, s. @fig-ppv2.^[Es kann au
 #| fig-cap: Die PPV für unseren Standard-Globusversuch (N=9)
 #| label: fig-ppv2
 #| echo: false
+source("funs/binomial_plot.R")
+ppv_n <- count(ppv, value)
+
 ppv_plot2 <-
-  ppv %>% 
-  ggplot() +
-  aes(x = value) +
-  geom_bar() +
-  scale_x_continuous(
-    breaks = 0:9)
+  tufte_bars(ppv_n, "value", "n", sprintf("%d", ppv_n$n),
+             x_lab = "Anzahl Treffer (k)", breaks = 0:9)
 
 ppv_plot2
 ```

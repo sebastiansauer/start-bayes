@@ -31,7 +31,8 @@ binomial_plot <- function(n, p){
 
 # Allgemeines Tufte-Balkendiagramm für diskrete Verteilungen (Münzwurf-Beispiele):
 # d: Datensatz mit den Spalten x und y; label: Text über dem Balken.
-tufte_bars <- function(d, x, y, label, x_lab, linie = FALSE){
+# x numerisch (diskrete Werte) oder Kategorie (Faktor/Text).
+tufte_bars <- function(d, x, y, label, x_lab, linie = FALSE, breaks = sort(unique(d[[x]]))){
   ymax <- max(d[[y]])
   p <- ggplot(d, aes(x = .data[[x]], y = .data[[y]])) +
     geom_col(fill = mittelgrau, width = 0.5)
@@ -40,7 +41,7 @@ tufte_bars <- function(d, x, y, label, x_lab, linie = FALSE){
     geom_hline(yintercept = setdiff(pretty(c(0, ymax), n = 4), 0),
                color = "white", linewidth = 0.6) +
     geom_text(aes(label = label), vjust = -0.5, size = 3.5, color = "#1A1A1A") +
-    scale_x_continuous(breaks = 0:5) +
+    (if (is.numeric(d[[x]])) scale_x_continuous(breaks = breaks) else scale_x_discrete()) +
     scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
     labs(x = x_lab, y = NULL) +
     theme(
