@@ -32,15 +32,13 @@ rope_hdi_panel <- function(tag, decision, mu, sigma, hdi_lo, hdi_hi,
     ggplot2::labs(title = paste0(tag, ")  ", decision),
                   x = "Parameterwert", y = NULL) +
     ggplot2::scale_y_continuous(limits = c(-0.2 * y_max, y_max * 1.15)) +
-    theme_med(plot_medium()) +
+    theme_med(plot_medium(), grid = "none") +
     ggplot2::theme(
       plot.title = ggplot2::element_text(size = 10, face = "italic"),
       axis.text.y = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
       axis.text.x = ggplot2::element_blank(),
-      axis.ticks = ggplot2::element_blank(),
-      panel.grid.minor = ggplot2::element_blank(),
-      panel.grid.major = ggplot2::element_blank()
+      axis.ticks = ggplot2::element_blank()
     )
 }
 
