@@ -315,6 +315,12 @@ ggplot2::update_geom_defaults("point", list(colour = dunkelgrau))
 ggplot2::update_geom_defaults("line",  list(colour = dunkelgrau))
 ggplot2::update_geom_defaults("path",  list(colour = dunkelgrau))
 ggplot2::update_geom_defaults("smooth", list(colour = dunkelgrau))
+# Fuellung (1 Gruppe) standardmaessig mittelgrau. Bewusst NICHT fuer geom_density:
+# dessen Default ist fill = NA (reine Linie); viele Dichten im Buch sind
+# Umrisse. Gefuellte Dichten setzen fill = mittelgrau explizit.
+ggplot2::update_geom_defaults("area", list(fill = mittelgrau))
+ggplot2::update_geom_defaults("col",  list(fill = mittelgrau))
+ggplot2::update_geom_defaults("bar",  list(fill = mittelgrau))
 
 # Linien-/Text-Farbfolgen ab 3 Gruppen (Reihenfolge: Orange, Blau, ...)
 okabe_linie <- c("#E69F00", "#0072B2", "#009E73", "#56B4E9", "#D55E00", "#CC79A7")

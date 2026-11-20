@@ -5,7 +5,7 @@ uniform_Plot <- function(a, b){
          aes(x = x)) + xlim(c(a, b)) + ylim(0, 1/(b - a)) +
     stat_function(fun = dunif, args = list(min = a, max = b), 
                   geom = "area", 
-                  fill = "#999999FF", alpha = 0.75) + 
+                  fill = mittelgrau, alpha = 0.75) + 
     stat_function(fun = dunif, args = list(min = a, max = b), color = "#0072B2FF") +
     labs(x = "Wert (x)", y = "Wahrscheinlichkeitsdichte (d)")  +
     geom_vline(xintercept = a, linetype = "dashed", colour = "grey") +
