@@ -93,6 +93,9 @@ y_label_nach_oben <- function(plot) {
 # geom_line, die eine berechnete Kurve statt Beobachtungen zeigt.
 .tufte_streu_min_n <- 10
 .tufte_rug_x_max_n <- 50
+# Ab so vielen Punkten verschmilzt der Rug zu einem grauen Balken und zeigt
+# nichts mehr: dann nur Range-Frame, kein Rug (Streu- und Liniendiagramme)
+.tufte_rug_max_n <- 500
 
 # Erster Layer der angegebenen Geoms mit genug Zeilen und passenden Daten
 # (X numerisch oder Datum/Zeit, Y numerisch). NULL, wenn keiner passt.
@@ -127,8 +130,14 @@ tufte_streu <- function(plot) {
   # Hex-Fliesen: Range-Frame + Ticks im Datenbereich, ohne Rug (die Fliesen sind
   # schon die Dichte); Fuellung bleibt viridis
   hex <- any(gtypes == "GeomHex")
-  res <- if (hex) .tufte_layer_daten(plot, "GeomHex") else
-    .tufte_layer_daten(plot, "GeomPoint")
+  # Symbole per geom_text (z. B. ✓/✗ als Marker) zaehlen als Streudiagramm,
+  # wenn es keinen Punkt-Layer gibt (sonst sind Texte nur Beschriftungen)
+  res <- if (hex) .tufte_layer_daten(plot, "GeomHex") else {
+    r <- .tufte_layer_daten(plot, "GeomPoint")
+    if (is.null(r) && !"GeomPoint" %in% gtypes)
+      r <- .tufte_layer_daten(plot, "GeomText")
+    r
+  }
   rug_seiten <- if (hex) "" else "bl"
   if (hex && !is.null(res) && is.null(plot@scales$get_scales("fill")))
     plot <- plot + ggplot2::scale_fill_viridis_c()
@@ -150,6 +159,7 @@ tufte_streu <- function(plot) {
     }
   }
   if (is.null(res)) return(plot)
+  if (length(res$x) > .tufte_rug_max_n) rug_seiten <- ""
 
   grau <- "#4D4D4D"
   lw <- if (identical(plot_medium(), "folien")) 0.6 else 0.4
