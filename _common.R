@@ -75,8 +75,74 @@ y_label_nach_oben <- function(plot) {
                    plot.subtitle = ggplot2::element_text(hjust = 0,
                                                          margin = ggplot2::margin(b = 6)))
 }
+# Tufte-Stil fuer Streudiagramme (Rohdaten als Punkte, X und Y kontinuierlich,
+# mind. 10 Zeilen): keine Gitterlinien, Achsenlinien nur im Datenbereich
+# (Range-Frame, ggthemes::geom_rangeframe) und ein grauer Rug an beiden Achsen.
+# Ausnahmen (bleiben unveraendert): coord_flip(), Plots, die schon geom_rug()/
+# geom_rangeframe() enthalten, Heatmaps (geom_raster/tile/hex), Punkt-Layer mit
+# < 10 Zeilen (Hervorhebungspunkte).
+# Abschalten: options(tufte_streu = FALSE).
+.tufte_streu_min_n <- 10
+tufte_streu <- function(plot) {
+  if (!isTRUE(getOption("tufte_streu", TRUE))) return(plot)
+  if (inherits(plot@coordinates, "CoordFlip")) return(plot)
+  gtypes <- vapply(plot@layers, function(l) class(l$geom)[1], character(1))
+  if (any(gtypes %in% c("GeomRug", "GeomRangeFrame"))) return(plot)
+  # Heatmaps/Flaechen-Layer (Raster, Tile, Hex, Konturflaechen): kein Streudiagramm
+  if (any(gtypes %in% c("GeomRaster", "GeomTile", "GeomHex", "GeomContourFilled",
+                        "GeomDensity2dFilled"))) return(plot)
+  res <- tryCatch({
+    for (l in plot@layers) {
+      if (!inherits(l$geom, "GeomPoint")) next
+      d <- l$data
+      if (inherits(d, "waiver") || is.null(d)) d <- plot@data
+      else if (is.function(d)) d <- d(plot@data)
+      if (!is.data.frame(d) || nrow(d) < .tufte_streu_min_n) next
+      m <- if (isFALSE(l$inherit.aes)) l$mapping else
+        ggplot2::aes(!!!utils::modifyList(as.list(plot@mapping), as.list(l$mapping)))
+      if (is.null(m$x) || is.null(m$y)) next
+      x <- rlang::eval_tidy(m$x, d); y <- rlang::eval_tidy(m$y, d)
+      if (!is.numeric(x) || !is.numeric(y) || length(x) < .tufte_streu_min_n) next
+      return_val <- list(d = d, m = ggplot2::aes(x = !!m$x, y = !!m$y), x = x, y = y)
+      break
+    }
+    if (exists("return_val", inherits = FALSE)) return_val else NULL
+  }, error = function(e) NULL)
+  if (is.null(res)) return(plot)
+
+  grau <- "#4D4D4D"
+  lw <- if (identical(plot_medium(), "folien")) 0.6 else 0.4
+  # Breaks nur innerhalb des Datenbereichs (runde Breaks, aber keine Ticks
+  # ueber die Achsenlinie hinaus); nur wenn der Plot keine eigene Skala setzt.
+  nur_im_bereich <- function(v) {
+    r <- range(v, na.rm = TRUE)
+    function(lims) {
+      b <- scales::extended_breaks()(lims)
+      b[b >= r[1] - 1e-9 & b <= r[2] + 1e-9]
+    }
+  }
+  if (is.null(plot@scales$get_scales("x")))
+    plot <- plot + ggplot2::scale_x_continuous(breaks = nur_im_bereich(res$x))
+  if (is.null(plot@scales$get_scales("y")))
+    plot <- plot + ggplot2::scale_y_continuous(breaks = nur_im_bereich(res$y))
+
+  plot +
+    ggthemes::geom_rangeframe(data = res$d, mapping = res$m, inherit.aes = FALSE,
+                              color = grau, size = lw) +
+    ggplot2::geom_rug(data = res$d, mapping = res$m, inherit.aes = FALSE,
+                      sides = "bl", color = grau, alpha = 0.3, linewidth = 0.3,
+                      length = grid::unit(0.02, "npc")) +
+    ggplot2::theme(panel.grid = ggplot2::element_blank(),
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.major.x = ggplot2::element_blank(),
+                   panel.grid.major.y = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   axis.ticks = ggplot2::element_line(color = grau, linewidth = lw),
+                   axis.ticks.length = grid::unit(3, "pt"))
+}
+
 base::registerS3method("ggplot_build", "ggplot2::ggplot",
-                 function(plot) .ggplot_build_orig(y_label_nach_oben(plot)),
+                 function(plot) .ggplot_build_orig(tufte_streu(y_label_nach_oben(plot))),
                  envir = asNamespace("ggplot2"))
 
 knitr::opts_chunk$set(tidy = FALSE,
