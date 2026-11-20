@@ -1279,6 +1279,20 @@ Hier z. B. ein 50 %-Perzentilintervall, s. Abb. @fig-schief, (a).
 #|   - Perzentilintervall (PI)
 #|   - Höchste-Dichte-Intervall (HDI)
 
+
+# Tufte-Stil fuer Dichte-/Flaechendiagramme: Range-Frame, kein Gitter
+tufte_dichte <- function(p, d) {
+  p +
+    ggthemes::geom_rangeframe(data = d, aes(x = p_grid, y = post_33),
+                              color = dunkelgrau, size = 0.4) +
+    scale_y_continuous(breaks = c(0, max(d$post_33))) +
+    theme(panel.grid = element_blank(),
+          panel.grid.major.x = element_blank(),
+          panel.grid.major.y = element_blank(),
+          axis.ticks = element_line(color = dunkelgrau, linewidth = 0.4),
+          axis.ticks.length = grid::unit(3, "pt"))
+}
+
 qi_50_low <- eti(samples_3w_3v$p_grid, ci = .5)$CI_low
 qi_50_up <- eti(samples_3w_3v$p_grid, ci = .5)$CI_high
 
@@ -1328,8 +1342,8 @@ p2 <-
            hjust = 1, size = 5)
 
 
-p1
-p2
+tufte_dichte(p1, bayesbox_3w_3v)
+tufte_dichte(p2, bayesbox_3w_3v)
 ```
 
 Ein *Perzentilintervall* kann bei schiefen Verteilungen den wahrscheinlichsten Parameterwert nicht enthalten, diesen plausiblen Wert also zurückweisen.
