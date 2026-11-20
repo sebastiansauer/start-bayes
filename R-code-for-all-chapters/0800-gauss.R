@@ -77,7 +77,7 @@ d %>%
                  y = prob)) +
   labs(
        caption = "Vertikale Striche zeigen die Quantile für 5%, 25%, 50%, 75%, 95%",
-       y = "Dichte")
+       y = "Wahrscheinlichkeitsdichte")
 
 gg_exp <- function(r, max_x = 50) {
   med_exp <- round(log(2) / r, 2)

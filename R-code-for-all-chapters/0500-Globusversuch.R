@@ -59,7 +59,7 @@ dbinom(x = 9, size = 9, prob = 1/2)
 ##                   geom = "area",
 ##                   fill = "green", alpha = 0.35) +
 ##     stat_function(fun = dunif, args = list(min = a, max = b)) +
-##     labs(x = "X", y = "Dichte")  +
+##     labs(x = "X", y = "Wahrscheinlichkeitsdichte")  +
 ##     geom_vline(xintercept = a, linetype = "dashed", colour = "red") +
 ##     geom_vline(xintercept = b, linetype = "dashed", colour = "red")
 ## 
