@@ -85,7 +85,7 @@ y_label_nach_oben <- function(plot) {
 #   unregelmaessigen X-Abstaenden oder < 50 Punkten (ein dichtes, regelmaessiges
 #   Raster waere nur ein grauer Balken), Y immer.
 # Ausnahmen (bleiben unveraendert): coord_flip(), Plots, die schon geom_rug()/
-# geom_rangeframe() enthalten, Heatmaps (geom_raster/tile/hex), Punkt-Layer mit
+# geom_rangeframe() enthalten, Heatmaps (geom_raster/tile); geom_hex bekommt Range-Frame ohne Rug (Fuellung viridis), Punkt-Layer mit
 # < 10 Zeilen (Hervorhebungspunkte). Dichten, Flaechen und stat_function sind
 # keine Punkt-/Linien-Layer und werden nicht beruehrt.
 # Abschalten: options(tufte_streu = FALSE) (alles) bzw.
@@ -121,11 +121,17 @@ tufte_streu <- function(plot) {
   if (inherits(plot@coordinates, "CoordFlip")) return(plot)
   gtypes <- vapply(plot@layers, function(l) class(l$geom)[1], character(1))
   if (any(gtypes %in% c("GeomRug", "GeomRangeFrame"))) return(plot)
-  # Heatmaps/Flaechen-Layer (Raster, Tile, Hex, Konturflaechen): kein Streudiagramm
-  if (any(gtypes %in% c("GeomRaster", "GeomTile", "GeomHex", "GeomContourFilled",
+  # Heatmaps/Flaechen-Layer (Raster, Tile, Konturflaechen): kein Streudiagramm
+  if (any(gtypes %in% c("GeomRaster", "GeomTile", "GeomContourFilled",
                         "GeomDensity2dFilled"))) return(plot)
-  res <- .tufte_layer_daten(plot, "GeomPoint")
-  rug_seiten <- "bl"
+  # Hex-Fliesen: Range-Frame + Ticks im Datenbereich, ohne Rug (die Fliesen sind
+  # schon die Dichte); Fuellung bleibt viridis
+  hex <- any(gtypes == "GeomHex")
+  res <- if (hex) .tufte_layer_daten(plot, "GeomHex") else
+    .tufte_layer_daten(plot, "GeomPoint")
+  rug_seiten <- if (hex) "" else "bl"
+  if (hex && !is.null(res) && is.null(plot@scales$get_scales("fill")))
+    plot <- plot + ggplot2::scale_fill_viridis_c()
   # Liniendiagramm nur ohne Flaechen-Layer (Flaechen/Dichten = berechnete Formen)
   # und ohne Opt-out per "+ tufte_aus()"
   linie_ok <- isTRUE(getOption("tufte_linie", TRUE)) &&
@@ -164,9 +170,11 @@ tufte_streu <- function(plot) {
   plot +
     ggthemes::geom_rangeframe(data = res$d, mapping = res$m, inherit.aes = FALSE,
                               color = grau, size = lw) +
-    ggplot2::geom_rug(data = res$d, mapping = res$m, inherit.aes = FALSE,
-                      sides = rug_seiten, color = grau, alpha = 0.3, linewidth = 0.3,
-                      length = grid::unit(0.02, "npc")) +
+    (if (nzchar(rug_seiten))
+      ggplot2::geom_rug(data = res$d, mapping = res$m, inherit.aes = FALSE,
+                        sides = rug_seiten, color = grau, alpha = 0.3, linewidth = 0.3,
+                        length = grid::unit(0.02, "npc"))
+     else NULL) +
     ggplot2::theme(panel.grid = ggplot2::element_blank(),
                    panel.grid.major = ggplot2::element_blank(),
                    panel.grid.major.x = ggplot2::element_blank(),
