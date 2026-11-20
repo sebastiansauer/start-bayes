@@ -1332,12 +1332,25 @@ penguins |>
 #| echo: false
 #| tbl-cap: "Die Verteilung des Körpergewichts pro Spezies der Pinguine"
 #| label: tbl-penguins
-penguins |> 
-  select(body_mass_g, species) |> 
+# Artnamen in den Farben der Violinen aus @fig-penguines1 (Okabe-Ito 5, 7, 4);
+# Amber ist als Schrift auf Weiß kaum lesbar, daher ein dunklerer Ton derselben Farbe
+species_farben <- c(Adelie = "#0072B2", Chinstrap = "#CC79A7", Gentoo = "#C9A000")
+faerbe_species <- function(x) {
+  farbe <- species_farben[as.character(x)]
+  if (knitr::is_latex_output()) {
+    paste0("\\textcolor[HTML]{", sub("#", "", farbe), "}{\\textbf{", x, "}}")
+  } else {
+    paste0('<span style="color:', farbe, '; font-weight:bold;">', x, "</span>")
+  }
+}
+
+penguins |>
+  select(body_mass_g, species) |>
   group_by(species) |>
   describe_distribution() |>
   as.data.frame() |>
   select(-Skewness, -Kurtosis, -n_Missing, -Variable) |>
+  mutate(species = faerbe_species(species)) |>
   knitr::kable()
 ```
 
