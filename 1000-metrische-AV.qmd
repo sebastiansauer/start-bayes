@@ -401,7 +401,7 @@ ggplot(kidiq) +
               intercept = coef(m10.1)[1],
               color = okabeito_colors()[5], size = 2) +
   scale_x_continuous(breaks = c(0, 1)) +
-  stat_summary(geom = "point", fun = mean, color = okabeito_colors()[4], size = 9, alpha = .7) +
+  stat_summary(geom = "point", fun = mean, color = okabeito_colors()[1], size = 9, alpha = .7) +
   geom_hline(yintercept = mean(kidiq$kid_score[kidiq$mom_hs == 0]), 
              linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = mean(kidiq$kid_score[kidiq$mom_hs == 1]), 
@@ -442,8 +442,8 @@ Fazit: Wir verwerfen die Praktisch-Null-Hypothese. Adios!
 #|   - "Diagramm mit rope(m10.1) |> plot()"
 #|   - "Diagramm mit parameters(m10.1) |> plot()"
 rope(m10.1, range = c(-5, 5)) |> plot() +
-  # order = c(5, 1): Blau/Orange statt Blau/Amber -- Amber (okabeito-Index 4,
-  # "#F5C710") ist ein zu gelbliches Orange; Index 1 ist das korrekte
+  # order = c(5, 1): Blau/Orange statt Blau/Gelb -- okabeito-Index 4
+  # ("#F0E442") ist Gelb, nicht Orange; Index 1 ist das korrekte
   # Okabe-Ito-Orange ("#E69F00"), konsistent mit den Standardfarben des Buchs
   scale_fill_okabeito(order = c(5, 1))
 parameters(m10.1) |> 
@@ -856,10 +856,10 @@ pred <- estimate_relation(m10.3a)
 
 plot(pred) +
   geom_point(data = kidiq2, aes(x = mom_iq, y = kid_score, color = mom_hs)) +
-  # order = c(5, 4): Blau/Amber statt Orange/Hellblau, da Letztere im
+  # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
   # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_color_okabeito(order = c(5, 4)) +
-  scale_fill_okabeito(order = c(5, 4)) +
+  scale_color_okabeito(order = c(5, 1)) +
+  scale_fill_okabeito(order = c(5, 1)) +
   labs(x = "IQ der Mutter (mom_iq)",
        y = "IQ des Kindes (kid_score)",
        color = "Schulabschluss der Mutter (mom_hs)",
@@ -980,10 +980,10 @@ kidiq |>
   geom_abline(slope = coef(m10.4)[2]+coef(m10.4)[4],
               intercept = coef(m10.4)[1] + coef(m10.4)[3],
               linewidth = 2,
-              color = okabeito_colors()[4]) +
-  # order = c(5, 4): Blau/Amber statt Orange/Hellblau, da Letztere im
+              color = okabeito_colors()[1]) +
+  # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
   # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_color_okabeito(order = c(5, 4)) +
+  scale_color_okabeito(order = c(5, 1)) +
   scale_x_continuous(limits = c(0, 140)) +
   labs(x = "IQ der Mutter (mom_iq)",
        y = "IQ des Kindes (kid_score)",
@@ -1141,10 +1141,10 @@ kidiq |>
   geom_abline(slope = coef(m10.5)[2]+coef(m10.5)[4],
               intercept = coef(m10.5)[1] + coef(m10.5)[3],
               linewidth = 2,
-              color = okabeito_colors()[4]) +
-  # order = c(5, 4): Blau/Amber statt Orange/Hellblau, da Letztere im
+              color = okabeito_colors()[1]) +
+  # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
   # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_color_okabeito(order = c(5, 4)) +
+  scale_color_okabeito(order = c(5, 1)) +
   labs(x = "Zentrierter IQ der Mutter (mom_iq_c)",
        y = "IQ des Kindes (kid_score)",
        color = "Schulabschluss der Mutter (mom_hs)") +
@@ -1362,9 +1362,9 @@ ggviolin(penguins,
           x = "species",
          fill = "species",  # Füllfarbe nach `species`
           y = "body_mass_g") +
-  # order = c(5, 7, 4): Blau/Lila/Amber statt Orange/Hellblau/Grün, da
+  # order = c(5, 7, 1): Blau/Lila/Orange statt Orange/Hellblau/Grün, da
   # Orange und Hellblau im Graustufendruck fast identisch hell sind
-  scale_fill_okabeito(order = c(5, 7, 4)) +
+  scale_fill_okabeito(order = c(5, 7, 1)) +
   labs(x = "Pinguinart (species)",
        y = "Körpergewicht [g] (body_mass_g)") +
   theme(legend.position = "none")  # Legende überflüssig: Arten stehen auf der x-Achse
@@ -1425,9 +1425,9 @@ Der Unterschied im mittleren Gewicht von den Gruppen Chinstrap und Gentoo zur Re
 #| label: fig-m106-params
 
 plot(hdi(m10.6)) +
-  # order = c(5, 4): Blau/Amber statt Orange/Hellblau, da Letztere im
+  # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
   # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_fill_okabeito(order = c(5, 4))
+  scale_fill_okabeito(order = c(5, 1))
 ```
 
 
@@ -2138,9 +2138,9 @@ parameters(m10.12) |>
 #| label: fig-m1011hdi
 #| fig-cap: "Im Standard wird ein 95%-Intervall gezeigt bzw. berechnet; hier das ETI für m10.12"
 plot(eti(m10.12)) +
-  # order = c(5, 4): Blau/Amber statt Orange/Hellblau, da Letztere im
+  # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
   # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_fill_okabeito(order = c(5, 4))
+  scale_fill_okabeito(order = c(5, 1))
 ```
 
 
