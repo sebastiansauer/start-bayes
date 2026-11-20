@@ -549,7 +549,7 @@ samples_g100 |>
   geom_histogram(bins = 11) +
   scale_x_continuous(name = expression("Wasseranteil (" * pi * ")"), 
                      limits = c(0, 1)) +
-  labs(y = "Dichte (d)",
+  labs(y = "Wahrscheinlichkeitsdichte (d)",
        title = "Stichproben \naus der Post")
 
 p_samples_exact <-
@@ -1067,7 +1067,7 @@ plot(eti_80) +
                      round(eti_80$CI_low, 2), " und ", 
                      round(eti_80$CI_high, 2)),
   x = "Wasseranteil",
-  y = "Wahrscheinlichkeit",
+  y = "Wahrscheinlichkeitsdichte",
   fill = "") +
     theme(legend.position = "none")
 ```
@@ -1100,7 +1100,8 @@ d_anim |>
   ggplot(aes(x = p_grid)) +
   geom_density(data = d_anim2) + 
   geom_vline(aes(xintercept = post_max)) +
-  geom_label(aes(label = decile2, x = post_max), y = 0)
+  geom_label(aes(label = decile2, x = post_max), y = 0) +
+  labs(y = "Wahrscheinlichkeitsdichte")
 
 ```
 
@@ -1189,7 +1190,7 @@ farbe = "#0072B2"
   const plot1 = Plot.plot({
     width, height: 260, marginLeft: 50,
     x: {label: null, domain: [0, 1]},
-    y: {label: "Dichte", domain: [0, ymax]},
+    y: {label: "Wahrscheinlichkeitsdichte", domain: [0, ymax]},
     marks: [
       Plot.areaY(dichte.filter(d => d.p <= xq + 1e-9), {x: "p", y: "y", fill: farbe, fillOpacity: 0.45}),
       Plot.lineY(dichte, {x: "p", y: "y", stroke: "currentColor"}),

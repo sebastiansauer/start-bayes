@@ -5,7 +5,7 @@ p1 <-
   ggplot(aes(x = position)) +
   geom_line(stat = "density", color = "dodgerblue1") +
   labs(title = "4 Wiederholungen",
-       y = "Dichte")
+       y = "Wahrscheinlichkeitsdichte")
 
 # Figure 4.2.b.
 p2 <-
@@ -14,7 +14,7 @@ p2 <-
   ggplot(aes(x = position)) +
   geom_density(color = "dodgerblue2", outline.type = "full") +
   labs(title = "8 Wiederholungen",
-       y = "Dichte")
+       y = "Wahrscheinlichkeitsdichte")
 
 # this is an intermediary step to get an SD value
 sd <-
@@ -33,7 +33,7 @@ p3 <-
                 linetype = 2) +
   geom_density(color = "transparent", fill = "dodgerblue3", alpha = 1/2) +
   labs(title = "16 Wiederholungen",
-       y = "Dichte")
+       y = "Wahrscheinlichkeitsdichte")
 
 library(patchwork)
 

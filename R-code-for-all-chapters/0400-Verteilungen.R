@@ -422,7 +422,7 @@ source(paste0(here::here(),"/R-Code/img14.R"))
 
 ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
   stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1), color = "#E69F00FF") +
-  labs(y = "Dichte", x = "Merkmal, X") +
+  labs(y = "Wahrscheinlichkeitsdichte", x = "Merkmal, X") +
   stat_function(fun = dt, n = 101, args = list(df = 1, ncp =0), color = "#56B4E9FF") +
   labs(caption = "orange: Normalverteilung\n blau: randlastige Verteilung (t-Verteilung mit df=1)")
 
@@ -521,7 +521,7 @@ p1 <-
   ggplot(NULL, aes(c(60,145))) +
   geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 100)) +
   geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "X", y = "Dichte",
+  labs(x = "X", y = "Wahrscheinlichkeitsdichte",
        title = "50%-Quantil: 100;\nVerteilungsfunktion von 100:50%") +
   scale_y_continuous(breaks = NULL)
 
@@ -529,7 +529,7 @@ p2 <-
     ggplot(NULL, aes(c(60,145))) +
   geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 125)) +
   geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "X", y = "Dichte",
+  labs(x = "X", y = "Wahrscheinlichkeitsdichte",
        title = "95%-Quantil: 125;\nVerteilungsfunktion von 125:95%") +
   scale_y_continuous(breaks = NULL)
 
@@ -543,7 +543,7 @@ q_p50 <-
   ggplot(NULL, aes(c(60,145))) +
   geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, 100)) +
   geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "IQ", y = "Dichte",
+  labs(x = "IQ", y = "Wahrscheinlichkeitsdichte",
        title = "50%-Quantil: 100") +
   scale_y_continuous(breaks = NULL)
 
@@ -555,7 +555,7 @@ q_p25 <-
   ggplot(NULL, aes(c(60,145))) +
   geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
   geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "IQ", y = "Dichte",
+  labs(x = "IQ", y = "Wahrscheinlichkeitsdichte",
        title = paste0(q_inv,"-Quantil: ",round(q_p)),
        caption = "MW-0.68sd") +
   scale_y_continuous(breaks = NULL)
@@ -567,7 +567,7 @@ q_p95 <-
   ggplot(NULL, aes(c(60,145))) +
   geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
   geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "IQ", y = "Dichte",
+  labs(x = "IQ", y = "Wahrscheinlichkeitsdichte",
        title = paste0(q_inv,"-Quantil: ",round(q_p)),
        caption = "MW+1.64sd") +
   scale_y_continuous(breaks = NULL)
@@ -580,7 +580,7 @@ q_p975 <-
   ggplot(NULL, aes(c(60,145))) +
   geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
   geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "IQ", y = "Dichte",
+  labs(x = "IQ", y = "Wahrscheinlichkeitsdichte",
        title = paste0(q_inv,"-Quantil: ",round(q_p)),
        caption = "MW+2SD") +
   scale_y_continuous(breaks = NULL)
@@ -593,7 +593,7 @@ q_p84 <-
   ggplot(NULL, aes(c(60,145))) +
   geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
   geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "IQ", y = "Dichte",
+  labs(x = "IQ", y = "Wahrscheinlichkeitsdichte",
        title = paste0(q_inv,"-Quantil: ",round(q_p)),
        caption = "MW+1sd") +
   scale_y_continuous(breaks = NULL)
@@ -606,7 +606,7 @@ q_p69 <-
   ggplot(NULL, aes(c(60,145))) +
   geom_area(stat = "function", fun = dnorm, fill = "grey", args = list(mean=100,sd = 15), xlim= c(60, q_p)) +
   geom_line(stat = "function", fun = dnorm, args = list(mean=100,sd = 15)) +
-  labs(x = "IQ", y = "Dichte",
+  labs(x = "IQ", y = "Wahrscheinlichkeitsdichte",
        title = paste0(q_inv,"-Quantil: ",round(q_p)),
        caption = "MW+0.5sd") +
   scale_y_continuous(breaks = NULL)
@@ -615,7 +615,7 @@ q_p69 <-
 
 ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
   stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1)) +
-  labs(y = "Dichte", x = "Merkmal, X") +
+  labs(y = "Wahrscheinlichkeitsdichte", x = "Merkmal, X") +
   theme_modern()
 
 knitr::include_graphics("img/10_Deutsche_Mark_-_detail.png")

@@ -202,7 +202,8 @@ kung_erwachsen |>
   geom_histogram(aes(y = after_stat(density)), fill = mittelgrau) +  # Histogram with density scaling
   geom_density(color = blue, size = 1) +  # Density plot in blue
   facet_wrap(~ variable, scales = "free") + # Faceting by variable, free scales for each facet
-  scale_y_continuous(breaks = NULL)
+  scale_y_continuous(breaks = NULL) +
+  labs(y = "Wahrscheinlichkeitsdichte")
 ```
 
 Wie man in @fig-kung_erwachsen-hists sieht, ist Alter (`age`) rechtsschief verteilt,
@@ -895,7 +896,7 @@ um einen Überblick über Lage- und Streuungsmaße der Post-Verteilung zu bekomm
 m_kung_starkes_beta1_post |>
   ggplot(aes(x = weight_c)) +
   geom_density(fill = beta1col) +
-  labs(x = expression("Steigungskoeffizient für Gewicht [cm/kg] (" * beta[1] * ")"), y = "Dichte (d)")
+  labs(x = expression("Steigungskoeffizient für Gewicht [cm/kg] (" * beta[1] * ")"), y = "Wahrscheinlichkeitsdichte (d)")
 ```
 
 
@@ -926,7 +927,7 @@ Die Daten haben die Priori-Verteilung "überstimmt".
 m_kung_starkes_beta1_post |>
   ggplot(aes(x = sigma)) +
   geom_density(fill = errorcol) +
-  labs(x = expression("Streuung der Körpergröße [cm] (" * sigma * ")"), y = "Dichte (d)")
+  labs(x = expression("Streuung der Körpergröße [cm] (" * sigma * ")"), y = "Wahrscheinlichkeitsdichte (d)")
 ```
 
 
@@ -1242,7 +1243,7 @@ plot_m_kung_post <-
   aes(x = mu) +
   geom_density(fill = "grey60") +
   labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"),
-       y = "Dichte (d)",
+       y = "Wahrscheinlichkeitsdichte (d)",
        title = TeX("Posteriori-Verteilung für $\\mu$, m42")) +
   scale_y_continuous(breaks = NULL)
 ```
@@ -1439,7 +1440,7 @@ p_post_at <-
   labs(
        caption = "Horizontale Balken zeigen MW±2sd",
        x = "Körpergröße [cm] (h)",
-       y = "Posteriori-Dichte (d)") +
+       y = "Wahrscheinlichkeitsdichte (d)") +
   geom_point(data = m_kung_gewicht_c_post_long_summary,
              aes(x = m,
                  y = 0),
@@ -1498,7 +1499,8 @@ mu45 <-
 
 mu45 |>
   ggplot(aes(x = mu45)) +
-  geom_density()
+  geom_density() +
+  labs(y = "Wahrscheinlichkeitsdichte")
 ```
 
 
