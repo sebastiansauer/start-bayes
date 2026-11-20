@@ -194,7 +194,7 @@ p_nv_kung_prior <-
   scale_x_continuous(breaks = seq(from = 100, to = 250, by = 75)) +
   labs(title = expression(mu ~ "~ dnorm(178, 20)"),
        y = "",
-       x = expression("Mittelwert der Körpergröße, " * mu)) +
+       x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")")) +
   scale_y_continuous(breaks = NULL)
 
 p_exp_kung_prior <-
@@ -204,7 +204,7 @@ p_exp_kung_prior <-
   scale_x_continuous() +
   scale_y_continuous(NULL, breaks = NULL) +
   labs(title = expression(sigma ~ "~ dexp(1/8)"),
-       x = expression("Streuung der Körpergrößen, " * sigma))
+       x = expression("Streuung der Körpergröße [cm] (" * sigma * ")"))
 ```
 
 ## Unser Gauss-Modell der !Kung
@@ -444,7 +444,8 @@ m_kung_post |>
   aes(x = mu, y = sigma) |> 
   geom_hex() +
   scale_fill_viridis_c() +
-  labs(x = expression(mu), y = expression(sigma))
+  labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"),
+       y = expression("Streuung der Körpergröße [cm] (" * sigma * ")"))
 ```
 
 ### Streudiagramm
@@ -464,7 +465,8 @@ p_m_kung_post <-
   ggplot() +
   aes(x = mu, y = sigma) +
   geom_point(alpha = .1) +
-  labs(x = expression(mu), y = expression(sigma))
+  labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"),
+       y = expression("Streuung der Körpergröße [cm] (" * sigma * ")"))
 
 p10 <- ggExtra::ggMarginal(p_m_kung_post, type = "density")
 
@@ -472,7 +474,7 @@ p20 <-
   m_kung_post |> 
   ggplot(aes(x = mu)) + 
   geom_histogram() +
-  labs(x = expression(mu))
+  labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"), y = "Häufigkeit")
 
 p10
 ```
@@ -872,7 +874,8 @@ m_kung_neue_prioris_tibble |>
 #| label: intercept-hist-ggplot
 m_kung_neue_prioris_tibble |>
   ggplot(aes(x = `(Intercept)`)) +  # Aus dem Paket `ggplot2`
-  geom_histogram()
+  geom_histogram() +
+  labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"), y = "Häufigkeit")
 ```
 :::
 
@@ -973,7 +976,7 @@ p3 <-
   scale_y_continuous(NULL, breaks = NULL) +
   labs(title = expression("height ~ dnorm(" * mu * ", " * sigma * ")"),
        caption = "X-Achse zeigt MW±3SD",
-       x = "Größe") +
+       x = "Körpergröße [cm] (height)") +
   theme(panel.grid = element_blank()) 
 
 p3
@@ -1061,7 +1064,7 @@ p4 <-
   labs(title = expression(atop(atop("height ~ dnorm(" * mu * ", " * sigma * ")",
                                   mu ~ "~ dnorm(178, 100)"),
                              sigma ~ "~ E(0.01)")),
-       x = "Größe",
+       x = "Körpergröße [cm] (height)",
        caption = "X-Achse zeigt MW±3SD") +
   theme(panel.grid = element_blank()) 
 

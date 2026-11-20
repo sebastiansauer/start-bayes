@@ -177,12 +177,12 @@ bayesbox_6w_9v  |>
   aes(x = p_grid, y = post) +
   geom_point(alpha = .5, size = 3, color = "#4D4D4D") +
   geom_line(color = "#0072B2") +
-  scale_y_continuous("Posterior-Wahrscheinlichkeit",
+  scale_y_continuous("Posteriori-Wahrscheinlichkeit (Post)",
                      breaks = NULL) +
   geom_point(data = \(d) dplyr::slice_max(d, post, n = 1),
              shape = 21, size = 9, stroke = 1.2,
              fill = "#E69F00", color = "#1A1A1A") +
-  labs(x = "Anteil Wasser (p)")
+  labs(x = expression("Wasseranteil (" * pi * ")"))
 
 p_d
 ```
@@ -407,7 +407,8 @@ So sieht unsere "Stichproben-Bayesbox" als Balkendiagramm aus, s. @fig-samples1.
 #| fig-asp: 0.4
 samples_6w_9v |> 
   count(p_grid) |> 
-  ggbarplot(x = "p_grid", y = "n")  # aus ggpubr
+  ggbarplot(x = "p_grid", y = "n",
+            xlab = "Wasseranteil (pi)", ylab = "Häufigkeit")  # aus ggpubr
 ```
 
 
@@ -421,7 +422,8 @@ samples_6w_9v |>
 
 samples_6w_9v |> 
   count(p_grid) |> 
-  ggbarplot(x = "p_grid", y = "n") 
+  ggbarplot(x = "p_grid", y = "n",
+            xlab = "Wasseranteil (pi)", ylab = "Häufigkeit") 
 ```
 :::
 
@@ -528,26 +530,26 @@ p0 <-
   geom_line(color = "#0072B2") +
   geom_point(color = "#4D4D4D") +
   labs(title = "Post-Verteilung \nexakt",
-  y = "Wahrscheinlichkeit",
-  x = "Wasseranteil")
+  y = "Posteriori-Wahrscheinlichkeit (Post)",
+  x = expression("Wasseranteil (" * pi * ")"))
 
 p1 <-
   samples_g100 |> 
   mutate(sample_number = 1:n()) |> 
   ggplot(aes(y = sample_number, x = p_grid)) +
   geom_point2(alpha = 1/8) +
-  scale_x_continuous("Wasseranteil", 
+  scale_x_continuous(name = expression("Wasseranteil (" * pi * ")"), 
                      limits = c(0, 1)) +
-  labs(y = "Nummer der Stichprobe",
+  labs(y = "Nummer der Stichprobe (sample_number)",
        title = "Stichproben \naus der Post")
 
 p2 <-
 samples_g100 |> 
   ggplot(aes(x = p_grid)) +
   geom_histogram(bins = 11) +
-  scale_x_continuous("Anteil Wasser (p)", 
+  scale_x_continuous(name = expression("Wasseranteil (" * pi * ")"), 
                      limits = c(0, 1)) +
-  labs(y = "Wahrscheinlichkeitsdichte",
+  labs(y = "Dichte (d)",
        title = "Stichproben \naus der Post")
 
 p_samples_exact <-

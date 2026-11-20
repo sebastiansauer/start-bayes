@@ -255,8 +255,8 @@ p_ali_streudiagramm <-
 ggplot(noten2) +
   aes(x, y) +
   geom_point(color = dunkelgrau) +
-  labs(x = "Lernzeit (Stunden)",
-       y = "Klausurpunkte (von 100)") +
+  labs(x = "Lernzeit [h] (x)",
+       y = "Klausurpunkte (y)") +
   theme_large_text()
 
 p_ali_punktschaetzung <- 
@@ -273,8 +273,8 @@ p_ali_punktschaetzung <-
   annotate("point", x = 42, y = ali_punkte, color = ycol,
            alpha = .7, size = 3) +
   scale_x_continuous(breaks = c(20, 40, 60, 80, 100)) +
-  labs(x = "Lernzeit (Stunden)",
-       y = "Klausurpunkte (von 100)") +
+  labs(x = "Lernzeit [h] (x)",
+       y = "Klausurpunkte (y)") +
   theme_large_text() +
   geom_label_repel(data = data.frame(x = 42, y = ali_punkte), label = "Ali",
        force = 20,
@@ -889,7 +889,8 @@ mtcars$am <- factor(mtcars$am)
 ggplot(mtcars) +
   aes(x = hp, y = mpg) +
   geom_point(color = dunkelgrau) +
-  geom_smooth(method = "lm", color = blue, fill = mittelgrau)
+  geom_smooth(method = "lm", color = blue, fill = mittelgrau) +
+  labs(x = "Motorleistung [PS] (hp)", y = "Kraftstoffeffizienz [mpg] (mpg)")
 
 # Statt ggplot-Standard-Legende (ausserhalb des Diagramms) steht die
 # Zuordnung Farbe/Gruppe direkt an den Linienenden, in den buchweit
@@ -918,6 +919,7 @@ ggplot(mtcars) +
     show.legend = FALSE
   ) +
   scale_color_manual(values = am_colors, guide = "none") +
+  labs(x = "Motorleistung [PS] (hp)", y = "Kraftstoffeffizienz [mpg] (mpg)", color = "Getriebeart (am)") +
   coord_cartesian(clip = "off") +
   theme(plot.margin = margin(5.5, 44, 5.5, 5.5))
 ```

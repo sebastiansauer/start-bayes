@@ -7,7 +7,7 @@ uniform_Plot <- function(a, b){
                   geom = "area", 
                   fill = "#999999FF", alpha = 0.75) + 
     stat_function(fun = dunif, args = list(min = a, max = b), color = "#0072B2FF") +
-    labs(x = "X", y = "Dichte")  +
+    labs(x = "Wert (x)", y = "Dichte (d)")  +
     geom_vline(xintercept = a, linetype = "dashed", colour = "grey") +
     geom_vline(xintercept = b, linetype = "dashed", colour = "grey")
   

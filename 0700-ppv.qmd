@@ -113,7 +113,10 @@ p_stripro_vert <-
   scale_x_continuous(breaks = 0:10) +
   theme(legend.position = c(0.1, 0.8)) +
   geom_vline(xintercept = 9) +
-  labs(title = "Stichprobenverteilung für p=0.5")
+  labs(title = "Stichprobenverteilung für p=0.5",
+       x = "Anzahl Treffer (k)",
+       y = "Häufigkeit",
+       fill = "Signifikant")
 ```
 
 Die *Stichprobenverteilung* zeigt, wie wahrscheinlich die empirischen Daten $D$ (z. B. 9 von 10 Treffer) sind, *gegeben* eines Parameterwerts $\pi$ (z. B. $p=0.5$): $Pr(D|\pi)$^[Das griechische kleine $p$ wird "pi" genannt und $\pi$ geschrieben. Zur Erinnerung: Parameter- oder Populationskennwerte werden in der Statistik häufig mit griechischen Buchstaben benannt, um sie von Stichprobenkennwerten abzugrenzen.].
@@ -168,7 +171,8 @@ samples_zwielicht %>%
   labs(title = "Posteriori-Verteilung für p",
        subtitle = "Priori: Gleichverteilung; Daten: 9 von 10 Treffern, binomialverteilt",
        caption = "Das Dreieck zeigt die Wskt. eines Treffers bei einer fairen Münze",
-       x = "Gewinnchance der Münze") +
+       x = expression("Gewinnchance der Münze (" * pi * ")"),
+       y = "Häufigkeit") +
   annotate("point", x = .5, y = 0, size = 5, color = "grey40", shape = 17)
 
 p_samples_zwielicht
@@ -422,7 +426,7 @@ draws %>%
   ggplot(aes(x = draws)) +
   geom_histogram(binwidth = 1, center = 0,
                  color = "grey92", size = 1/10) +
-  scale_x_continuous("Anzahl Wasser (W) pro Versuch",
+  scale_x_continuous("Anzahl Treffer [Wasser] (k)",
                      breaks = seq(from = 0, to = 9, by = 1)) +
   scale_y_continuous("Häufigkeit",
                      labels = scales::scientific) +
@@ -777,7 +781,7 @@ d_small %>%
   ggplot(aes(x = draws)) +
   geom_histogram(binwidth = 1, center = 0,
                  color = "grey92") +
-  scale_x_continuous("Wasser", breaks = seq(from = 0, to = 9, by = 3)) +
+  scale_x_continuous("Treffer (k)", breaks = seq(from = 0, to = 9, by = 3)) +
   scale_y_continuous(NULL, breaks = NULL) +
   labs(subtitle = "Stichprobenverteilungen") +
   coord_cartesian(xlim = c(0, 9)) +

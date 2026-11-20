@@ -289,7 +289,8 @@ kung_erwachsen |>
   ggplot(
        aes(x = weight, y = height)) +
   geom_point(alpha = .7) +
-  geom_smooth(method = "lm")
+  geom_smooth(method = "lm") +
+  labs(x = "Körpergewicht [kg] (weight)", y = "Körpergröße [cm] (height)")
 ```
 
 
@@ -299,6 +300,7 @@ kung_erwachsen |>
 #| eval: false
 ggscatter(kung_erwachsen,
           x = "weight", y = "height",
+          xlab = "Körpergewicht [kg] (weight)", ylab = "Körpergröße [cm] (height)",
           add = "reg.line")
 ```
 
@@ -341,7 +343,8 @@ aequivalenten Darstellungen als normale Abbildung. -->
 kung_erwachsen |>
   ggplot(aes(x = weight, y = height)) +
   geom_point(alpha = .7) +
-  geom_smooth(method = "lm")
+  geom_smooth(method = "lm") +
+  labs(x = "Körpergewicht [kg] (weight)", y = "Körpergröße [cm] (height)")
 ```
 
 :::
@@ -889,7 +892,8 @@ um einen Überblick über Lage- und Streuungsmaße der Post-Verteilung zu bekomm
 #| fig-cap: "Die Postverteilung für den Parameter Gewicht (zentriert); die plausiblen Werte liegen zwischen 0.8 und 1.0 cm pro Kilogramm Gewicht"
 m_kung_starkes_beta1_post |>
   ggplot(aes(x = weight_c)) +
-  geom_density(fill = beta1col)
+  geom_density(fill = beta1col) +
+  labs(x = expression("Steigungskoeffizient für Gewicht [cm/kg] (" * beta[1] * ")"), y = "Dichte (d)")
 ```
 
 
@@ -919,7 +923,8 @@ Die Daten haben die Priori-Verteilung "überstimmt".
 
 m_kung_starkes_beta1_post |>
   ggplot(aes(x = sigma)) +
-  geom_density(fill = errorcol)
+  geom_density(fill = errorcol) +
+  labs(x = expression("Streuung der Körpergröße [cm] (" * sigma * ")"), y = "Dichte (d)")
 ```
 
 
@@ -991,7 +996,8 @@ kung_zentriert |>
       slice_head(n = 10),
     aes(slope = weight_c,
         intercept = `(Intercept)`),
-    alpha = .3)
+    alpha = .3) +
+  labs(x = "Gewicht zentriert [kg] (weight_c)", y = "Körpergröße [cm] (height)")
 ```
 
 ### 100
@@ -1008,7 +1014,8 @@ kung_zentriert |>
       slice_head(n = 100),
      aes(slope = weight_c,
         intercept = `(Intercept)`),
-    alpha = .1)
+    alpha = .1) +
+  labs(x = "Gewicht zentriert [kg] (weight_c)", y = "Körpergröße [cm] (height)")
 ```
 
 
@@ -1026,7 +1033,8 @@ kung_zentriert |>
       slice_head(n = 1e3),
      aes(slope = weight_c,
         intercept = `(Intercept)`),
-    alpha = .01)
+    alpha = .01) +
+  labs(x = "Gewicht zentriert [kg] (weight_c)", y = "Körpergröße [cm] (height)")
 ```
 
 
@@ -1066,7 +1074,8 @@ kung_zentriert |>
   geom_abline(
     data = m_kung_starkes_beta1_post |> slice_head(n = 10),
     aes(slope = weight_c, intercept = `(Intercept)`),
-    alpha = .3)
+    alpha = .3) +
+  labs(x = "Gewicht zentriert [kg] (weight_c)", y = "Körpergröße [cm] (height)")
 
 kung_zentriert |>
   ggplot(aes(x = weight_c, y = height)) +
@@ -1074,7 +1083,8 @@ kung_zentriert |>
   geom_abline(
     data = m_kung_starkes_beta1_post |> slice_head(n = 100),
     aes(slope = weight_c, intercept = `(Intercept)`),
-    alpha = .1)
+    alpha = .1) +
+  labs(x = "Gewicht zentriert [kg] (weight_c)", y = "Körpergröße [cm] (height)")
 
 kung_zentriert |>
   ggplot(aes(x = weight_c, y = height)) +
@@ -1082,7 +1092,8 @@ kung_zentriert |>
   geom_abline(
     data = m_kung_starkes_beta1_post |> slice_head(n = 1e3),
     aes(slope = weight_c, intercept = `(Intercept)`),
-    alpha = .01)
+    alpha = .01) +
+  labs(x = "Gewicht zentriert [kg] (weight_c)", y = "Körpergröße [cm] (height)")
 ```
 
 :::
@@ -1228,7 +1239,8 @@ plot_m_kung_post <-
   ggplot() +
   aes(x = mu) +
   geom_density(fill = "grey60") +
-  labs(x = expression(mu),
+  labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"),
+       y = "Dichte (d)",
        title = TeX("Posteriori-Verteilung für $\\mu$, m42")) +
   scale_y_continuous(breaks = NULL)
 ```
@@ -1253,9 +1265,9 @@ plot_condition <-
   geom_point(alpha = .7) +
   geom_smooth(method = "lm") +
   geom_point(aes(color = as.factor(weight)), data = d_pred, size = 5, alpha = .5) +
-  labs(color = "Gewicht",
-       x = "Gewicht (weight)",
-       y = "Größe (height)") +
+  labs(color = "Körpergewicht [kg] (weight)",
+       x = "Körpergewicht [kg] (weight)",
+       y = "Körpergröße [cm] (height)") +
   # order = c(5, 3, 8, 4): Blau/Grün/Grau/Amber statt der Standardreihenfolge,
   # da Orange und Hellblau im Graustufendruck fast identisch hell sind
   scale_color_okabeito(order = c(5, 3, 8, 4))
@@ -1424,8 +1436,8 @@ p_post_at <-
   scale_y_continuous(breaks = NULL) +
   labs(
        caption = "Horizontale Balken zeigen MW±2sd",
-       x = "Größe",
-       y = "Post-Wskt") +
+       x = "Körpergröße [cm] (h)",
+       y = "Posteriori-Dichte (d)") +
   geom_point(data = m_kung_gewicht_c_post_long_summary,
              aes(x = m,
                  y = 0),
