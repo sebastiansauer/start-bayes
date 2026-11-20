@@ -396,10 +396,10 @@ ggplot(kidiq) +
   aes(x = mom_hs, y = kid_score) +
   geom_violin(aes(group = mom_hs), width = 0.6, fill = "#999999",
               color = NA, alpha = .35) +
-  geom_jitter(width = 0.1, alpha = .5) +
+  geom_jitter(width = 0.1, alpha = .25, size = 1) +
   geom_abline(slope = coef(m10.1)[2],
               intercept = coef(m10.1)[1],
-              color = okabeito_colors()[5], size = 2) +
+              color = okabeito_colors()[5], linewidth = 2) +
   scale_x_continuous(breaks = c(0, 1)) +
   stat_summary(geom = "point", fun = mean, color = okabeito_colors()[1], size = 9, alpha = .7) +
   geom_hline(yintercept = mean(kidiq$kid_score[kidiq$mom_hs == 0]), 
@@ -758,10 +758,10 @@ Visualisieren wir uns noch das Modell m10.2, s. @fig-kidiqmomiq.
 #| fig-cap: "Die Intelligenz eines Kindes als Funktion der Intelligenz der Mutter (m10.2)"
 kidiq |> 
   ggplot(aes(x = mom_iq, y = kid_score)) +
-  geom_point(alpha = .7) +
+  geom_point(alpha = .25, size = 1) +
   geom_abline(slope = coef(m10.2)[2],
               intercept = coef(m10.2)[1],
-              color = beta1col) +
+              color = beta1col, linewidth = 1.5) +
   labs(x = "IQ der Mutter (mom_iq)", y = "IQ des Kindes (kid_score)")
 ```
 
@@ -774,7 +774,8 @@ mit Hilfe des R-Pakets `easystats`, s. @fig-m102-a.
 #| label: fig-m102-a
 #| fig-cap: "Die geschätzten Erwartungswerte von m10.2 visualisiert"
 plot(estimate_relation(m10.2)) +
-  geom_point(data = kidiq, aes(x = mom_iq, y = kid_score)) +
+  geom_point(data = kidiq, aes(x = mom_iq, y = kid_score),
+             alpha = .25, size = 1) +
   labs(x = "IQ der Mutter (mom_iq)", y = "IQ des Kindes (kid_score)")
 ```
 
@@ -856,7 +857,7 @@ pred <- estimate_relation(m10.3a)
 
 plot(pred) +
   geom_point(data = kidiq2, aes(x = mom_iq, y = kid_score, color = mom_hs),
-             alpha = .5) +  # gegen Overplotting
+             alpha = .4, size = 1) +  # gegen Overplotting
   # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
   # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
   scale_color_okabeito(order = c(5, 1)) +
@@ -973,14 +974,14 @@ Mit `estimate_relation(m10.4) |> plot()` kann man  sich das Modell visualisieren
 kidiq |> 
   mutate(mom_hs = factor(mom_hs)) |>  
   ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
-  geom_point2(alpha = .7) +
+  geom_point2(alpha = .6, size = 1.5) +
   geom_abline(slope = coef(m10.4)[2],
               intercept = coef(m10.4)[1],
-              linewidth = 1,
+              linewidth = 1.5,
               color =  okabeito_colors()[5] ) +
   geom_abline(slope = coef(m10.4)[2]+coef(m10.4)[4],
               intercept = coef(m10.4)[1] + coef(m10.4)[3],
-              linewidth = 2,
+              linewidth = 1.5,
               color = okabeito_colors()[1]) +
   # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
   # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
@@ -988,7 +989,7 @@ kidiq |>
   scale_x_continuous(limits = c(0, 140)) +
   labs(x = "IQ der Mutter (mom_iq)",
        y = "IQ des Kindes (kid_score)",
-       color = "Schulabschluss der Mutter (mom_hs)") +
+       color = "Schulabschluss\nder Mutter\n(mom_hs)") +
   theme(legend.position = c(0.9, 0.2))
 ```
 
@@ -1134,21 +1135,21 @@ Mit `estimate_relation(m10.5) |> plot()` kann man  sich das Modell visualisieren
 kidiq |> 
   mutate(mom_hs = factor(mom_hs)) |>  
   ggplot(aes(x = mom_iq_c, y = kid_score, color = mom_hs)) +
-  geom_point2(alpha = .7) +
+  geom_point2(alpha = .6, size = 1.5) +
   geom_abline(slope = coef(m10.5)[2],
               intercept = coef(m10.5)[1],
-              linewidth = 1,
+              linewidth = 1.5,
               color =  okabeito_colors()[5] ) +
   geom_abline(slope = coef(m10.5)[2]+coef(m10.5)[4],
               intercept = coef(m10.5)[1] + coef(m10.5)[3],
-              linewidth = 2,
+              linewidth = 1.5,
               color = okabeito_colors()[1]) +
   # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
   # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
   scale_color_okabeito(order = c(5, 1)) +
   labs(x = "Zentrierter IQ der Mutter (mom_iq_c)",
        y = "IQ des Kindes (kid_score)",
-       color = "Schulabschluss der Mutter (mom_hs)") +
+       color = "Schulabschluss\nder Mutter\n(mom_hs)") +
   theme(legend.position = c(0.9, 0.2))  +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40")
 ```
@@ -1764,24 +1765,24 @@ In @fig-regr-one-pred ist die univariate Regression mit jeweils einem der beiden
 p1 <- 
   kidiq |> 
   ggplot(aes(x = mom_iq, y = kid_score)) +
-  geom_point() +
+  geom_point(alpha = .25, size = 1) +
   geom_abline(intercept = coef(m10.7)[1],
               slope = coef(m10.7)[2],
-              color = beta1col) +
-  labs(x = "IQ der Mutter (mom_iq)", y = "IQ des Kindes (kid_score)")
+              color = beta1col, linewidth = 1.5) +
+  labs(title = "m10.7: IQ der Mutter",
+       x = "IQ der Mutter (mom_iq)", y = "IQ des Kindes (kid_score)")
 
-p2 <- 
+p2 <-
 kidiq |> 
   ggplot(aes(x = mom_age, y = kid_score)) +
-  geom_point() +
+  geom_point(alpha = .25, size = 1) +
   geom_abline(intercept = coef(m10.8)[1],
               slope = coef(m10.8)[2],
-              color = beta1col) +
-  labs(x = "Alter der Mutter [Jahre] (mom_age)", y = "IQ des Kindes (kid_score)")
+              color = beta1col, linewidth = 1.5) +
+  labs(title = "m10.8: Alter der Mutter",
+       x = "Alter der Mutter [Jahre] (mom_age)", y = "IQ des Kindes (kid_score)")
 
-plots(p1, p2,
-      title = c("m10.7: Die univariate Regression mit dem Alter der Mutter als Prädiktor",
-        "m10.8: Die univariate Regression mit dem IQ der Mutter als Prädiktor"))
+plots(p1, p2)
 ```
 
 
@@ -2405,10 +2406,10 @@ m10.12a_plot <-
   kidiq3 |> 
   ggplot() +
   aes(x = mom_iq_z, y = mom_age_z) +
-  geom_point(alpha = .5) +
+  geom_point(alpha = .25, size = 1) +
   geom_abline(slope = coef(m10.12a)[2],
               intercept = coef(m10.12a)[1],
-              color = beta1col) +
+              color = beta1col, linewidth = 1.5) +
   geom_segment(aes(y = predict(m10.12a),
                    x = mom_iq_z,
                    xend = mom_iq_z,
@@ -2424,10 +2425,10 @@ m10.12b_plot <-
   kidiq3 |> 
   ggplot() +
   aes(y = mom_iq_z, x = mom_age_z) +
-  geom_point(alpha = .5) +
+  geom_point(alpha = .25, size = 1) +
   geom_abline(slope = coef(m10.12b)[2],
               intercept = coef(m10.12b)[1],
-              color = beta1col) +
+              color = beta1col, linewidth = 1.5) +
   geom_segment(aes(y = predict(m10.12b),
                    x = mom_age_z,
                    xend = mom_age_z,
@@ -2443,10 +2444,10 @@ m10.12c_plot <-
   kidiq3 |>
   ggplot() +
   aes(x = mom_age_resid, y = kid_score_z) +
-  geom_point(alpha = .5) +
+  geom_point(alpha = .25, size = 1) +
   geom_abline(slope = coef(m10.12c)[2],
               intercept = coef(m10.12c)[1],
-              color = beta1col)   +
+              color = beta1col, linewidth = 1.5)   +
   scale_x_continuous(limits = c(-3, 3)) +
   scale_y_continuous(limits = c(-2, 2)) +
   labs(x = "Residuen Alter Mutter", y = "IQ Kind (kid_score_z)")
@@ -2457,10 +2458,10 @@ m10.12d_plot <-
   kidiq3 |> 
   ggplot() +
   aes(x = mom_iq_resid, y = kid_score_z) +
-  geom_point(alpha = .5) +
+  geom_point(alpha = .25, size = 1) +
   geom_abline(slope = coef(m10.12d)[2],
               intercept = coef(m10.12d)[1],
-              color = beta1col)  +
+              color = beta1col, linewidth = 1.5)  +
   scale_x_continuous(limits = c(-3, 3)) +
   scale_y_continuous(limits = c(-2, 2)) +
   labs(x = "Residuen IQ Mutter", y = "IQ Kind (kid_score_z)")
@@ -2700,10 +2701,10 @@ Ab `mpg_z = `r sprintf("%.2f", (0.5 - coef(m14)[1]) / coef(m14)[2])`` sagt das M
 mtcars2 |> 
   ggplot(aes(x = mpg_z, y = am)) +
   geom_hline(yintercept = 0.5, color = "white", size = 2) +
-  geom_point() +
+  geom_point(alpha = .4, size = 1) +
   geom_abline(intercept = coef(m14)[1],
               slope = coef(m14)[2],
-              color = beta1col) +
+              color = beta1col, linewidth = 1.5) +
   labs(x = "Standardisierte Kraftstoffeffizienz (mpg_z)", y = "Getriebeart (am)") 
 ```
 
