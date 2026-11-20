@@ -79,7 +79,8 @@ y_label_nach_oben <- function(plot) {
 # mind. 10 Zeilen): keine Gitterlinien, Achsenlinien nur im Datenbereich
 # (Range-Frame, ggthemes::geom_rangeframe) und ein grauer Rug an beiden Achsen.
 # Ausnahmen (bleiben unveraendert): coord_flip(), Plots, die schon geom_rug()/
-# geom_rangeframe() enthalten, Punkt-Layer mit < 10 Zeilen (Hervorhebungspunkte).
+# geom_rangeframe() enthalten, Heatmaps (geom_raster/tile/hex), Punkt-Layer mit
+# < 10 Zeilen (Hervorhebungspunkte).
 # Abschalten: options(tufte_streu = FALSE).
 .tufte_streu_min_n <- 10
 tufte_streu <- function(plot) {
@@ -87,6 +88,9 @@ tufte_streu <- function(plot) {
   if (inherits(plot@coordinates, "CoordFlip")) return(plot)
   gtypes <- vapply(plot@layers, function(l) class(l$geom)[1], character(1))
   if (any(gtypes %in% c("GeomRug", "GeomRangeFrame"))) return(plot)
+  # Heatmaps/Flaechen-Layer (Raster, Tile, Hex, Konturflaechen): kein Streudiagramm
+  if (any(gtypes %in% c("GeomRaster", "GeomTile", "GeomHex", "GeomContourFilled",
+                        "GeomDensity2dFilled"))) return(plot)
   res <- tryCatch({
     for (l in plot@layers) {
       if (!inherits(l$geom, "GeomPoint")) next
