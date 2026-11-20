@@ -35,7 +35,7 @@ post_at_plot <-
   labs(
     caption = "Horizontale Balken zeigen MW±2sd",
     x = "Größe",
-    y = "Post-Wskt") +
+    y = "Wahrscheinlichkeitsdichte (d)") +
   geom_point(data = ppv_m43_summary,
              aes(x = m,
                  y = 0),
