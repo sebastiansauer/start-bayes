@@ -45,6 +45,40 @@ plot_medium <- function() {
 
 ggplot2::theme_set(theme_med(plot_medium()))
 
+# Tufte-Stil: Y-Achsenbeschriftung horizontal ueber dem Panel (V1) statt vertikal
+# daneben. Technik: Beim Bauen jedes ggplots wird der Y-Titel als erste Zeile
+# des Untertitels (bzw. als Untertitel) direkt ueber das Panel gesetzt und der
+# normale Y-Achsentitel ausgeblendet. Ausnahmen (bleiben unveraendert):
+# coord_flip(), Plots ohne/mit bereits ausgeblendetem Y-Titel.
+# Abschalten: options(y_label_oben = FALSE) bzw. pro Plot theme(axis.title.y = ...)
+# Guard: _common.R wird mehrfach gesourct (.Rprofile + Kapitel); Original nur einmal sichern.
+if (!exists(".ggplot_build_orig", envir = globalenv(), inherits = FALSE)) {
+  assign(".ggplot_build_orig", utils::getS3method("ggplot_build", "ggplot2::ggplot", envir = asNamespace("ggplot2")), envir = globalenv())
+}
+.y_label_busy <- new.env()  # Re-Entranz-Schutz: get_labs() baut den Plot selbst
+y_label_nach_oben <- function(plot) {
+  if (!isTRUE(getOption("y_label_oben", TRUE))) return(plot)
+  if (isTRUE(.y_label_busy$on)) return(plot)
+  .y_label_busy$on <- TRUE
+  on.exit(.y_label_busy$on <- FALSE)
+  if (inherits(plot@coordinates, "CoordFlip")) return(plot)
+  ti <- plot@theme$axis.title.y
+  if (is.null(ti)) ti <- ggplot2::theme_get()$axis.title.y
+  if (inherits(ti, "ggplot2::element_blank")) return(plot)
+  ylab <- ggplot2::get_labs(plot)$y
+  if (is.null(ylab) || !is.character(ylab) || !nzchar(ylab[1])) return(plot)
+  sub <- ggplot2::get_labs(plot)$subtitle
+  plot +
+    ggplot2::labs(subtitle = if (is.null(sub)) ylab else paste0(sub, "\n", ylab)) +
+    ggplot2::theme(axis.title.y = ggplot2::element_blank(),
+                   plot.title.position = "panel",
+                   plot.subtitle = ggplot2::element_text(hjust = 0,
+                                                         margin = ggplot2::margin(b = 6)))
+}
+base::registerS3method("ggplot_build", "ggplot2::ggplot",
+                 function(plot) .ggplot_build_orig(y_label_nach_oben(plot)),
+                 envir = asNamespace("ggplot2"))
+
 knitr::opts_chunk$set(tidy = FALSE,
                       width = 60,
                       fig.retina = 2,
