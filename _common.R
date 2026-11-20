@@ -314,7 +314,13 @@ gitterfarbe <- "#D9D9D9"  # Gitterlinien
 ggplot2::update_geom_defaults("point", list(colour = dunkelgrau))
 ggplot2::update_geom_defaults("line",  list(colour = dunkelgrau))
 ggplot2::update_geom_defaults("path",  list(colour = dunkelgrau))
-ggplot2::update_geom_defaults("smooth", list(colour = dunkelgrau))
+# Regressionsgerade/Trend (geom_smooth, 1 Gruppe) ist die Kernaussage: als
+# Hervorhebung in Okabe-Ito-Dunkelblau, etwas kraeftiger, Band blau getoent.
+# So hebt sie sich von der grauen Punktwolke ab (Pop-out), auch dort, wo sich
+# halbtransparente Punkte zu fast schwarzen Flaechen addieren.
+trendfarbe <- "#0072B2"
+ggplot2::update_geom_defaults("smooth", list(colour = trendfarbe, fill = trendfarbe,
+                                             alpha = 0.2, linewidth = 1.2))
 # Fuellung (1 Gruppe) standardmaessig mittelgrau. Bewusst NICHT fuer geom_density:
 # dessen Default ist fill = NA (reine Linie); viele Dichten im Buch sind
 # Umrisse. Gefuellte Dichten setzen fill = mittelgrau explizit.
