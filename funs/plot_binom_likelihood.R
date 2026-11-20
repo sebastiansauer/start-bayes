@@ -16,8 +16,8 @@ plot_binom_likelihood <- function(x, n, p_step = 0.1) {
     labs(
       title = paste("Likelihood-Funktion für Binomialverteilung"),
       subtitle = paste(x, "Treffer bei", n, "Versuchen"),
-      x = "p",
-      y = "L(p)"
+      x = expression(pi),
+      y = expression(L(pi))
     )
 }
 
