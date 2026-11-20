@@ -889,7 +889,7 @@ mtcars$am <- factor(mtcars$am)
 ggplot(mtcars) +
   aes(x = hp, y = mpg) +
   geom_point(color = dunkelgrau) +
-  geom_smooth(method = "lm", color = dunkelgrau, fill = mittelgrau) +
+  geom_smooth(method = "lm") +
   labs(x = "Motorleistung [PS] (hp)", y = "Kraftstoffeffizienz [mpg] (mpg)")
 
 # Statt ggplot-Standard-Legende (ausserhalb des Diagramms) steht die
@@ -909,7 +909,7 @@ am_labels <-
   mutate(label = paste0("am = ", am))
 
 ggplot(mtcars) +
-  aes(x = hp, y = mpg, color = am) +
+  aes(x = hp, y = mpg, color = am, fill = am) +
   geom_point() +
   geom_smooth(method = "lm") +
   geom_text(
@@ -919,6 +919,7 @@ ggplot(mtcars) +
     show.legend = FALSE
   ) +
   scale_color_manual(values = am_colors, guide = "none") +
+  scale_fill_manual(values = am_colors, guide = "none") +
   labs(x = "Motorleistung [PS] (hp)", y = "Kraftstoffeffizienz [mpg] (mpg)", color = "Getriebeart (am)") +
   coord_cartesian(clip = "off") +
   theme(plot.margin = margin(5.5, 44, 5.5, 5.5))
