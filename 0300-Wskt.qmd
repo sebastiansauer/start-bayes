@@ -716,11 +716,13 @@ wuerfel_tab |>
   slice_head(n = 1e3) |> 
   ggplot() +
   aes(x = id, y = ist_6_cumsum) +
-  geom_hline(yintercept = 1/6, color = "grey80", size = 3) +
+  geom_hline(yintercept = 1/6, color = "#999999", linewidth = 0.4,
+             linetype = "dashed") +
   geom_line() +
+  annotate("text", x = 1000, y = 1/6, label = sprintf("1/6 = %.2f", 1/6),
+           hjust = 1, vjust = -0.6, color = "#4D4D4D", fontface = "bold") +
   labs(x = "Nummer des Würfelwurfs",
-       y = "Kumulierte Häufigkeit einer Sechs") +
-  annotate("label", x = 1000, y = 1/6, label = "0.17")
+       y = "Kumulierte Häufigkeit einer Sechs")
 ```
 
 Hm, auf den ersten Blick ist kein (starkes) Anzeichen für Schummeln bzw. einen gezinkten Würfel zu finden.
@@ -1465,7 +1467,7 @@ $F(x) = \sum_{x_i \le x} Pr(X=x_i).$
 p_F <- 
   ggplot(fivecoins, aes(x = Anzahl_Kopf, y = p_cum)) +
   geom_col(fill = mittelgrau) +
-  geom_line(color = blue) +
+  geom_line(color = dunkelgrau) +
   geom_label(aes(label = sprintf("%.2f", p_cum))) +
   scale_x_continuous(breaks = 0:5) +
   labs(x = "Anzahl Kopf (k)", y = "Kumulierte Wahrscheinlichkeit (F)")
@@ -1477,7 +1479,7 @@ p_F_emp <-
   ggplot(results_count) +
   aes(x = Anzahl_Kopf, y = prop_cum) +
   geom_col(fill = mittelgrau) +
-  geom_line(color = blue) +
+  geom_line(color = dunkelgrau) +
   geom_label(aes(y = prop_cum, label = sprintf("%.2f", prop_cum))) +
   labs(x = "Anzahl Kopf (k)", y = y_lab) +
   scale_x_continuous(breaks = 0:5)
