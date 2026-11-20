@@ -169,8 +169,29 @@ s. @fig-kung-dens.
 kung_erwachsen |> 
   select(age, height, weight) |> 
   pivot_longer(everything(), names_to = "Variable", values_to = "Wert") |> 
-  ggdensity(x = "Wert", facet.by = "Variable", scales = "free",
-            ylab = "Wahrscheinlichkeitsdichte")
+  ggplot(aes(x = Wert)) +
+  # Daten tragend: Dichtekurve (dunkelgrau, kräftig) + Rohdaten als Rug
+  geom_density(fill = "#999999", alpha = 0.25, color = "#4D4D4D", linewidth = 0.8) +
+  geom_rug(color = "#4D4D4D", alpha = 0.2, linewidth = 0.3, length = unit(0.03, "npc")) +
+  facet_wrap(~ Variable, scales = "free") +
+  labs(x = NULL, y = "Wahrscheinlichkeitsdichte") +
+  # Struktur (Achsen, Ticks, Facettentitel) hellgrau und zurückgenommen
+  theme(panel.background = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(color = "grey80", linewidth = 0.3),
+        axis.ticks = element_line(color = "grey80", linewidth = 0.3),
+        axis.text = element_text(color = "grey55"),
+        axis.title = element_text(color = "grey55"),
+        plot.subtitle = element_text(color = "grey45"),
+        axis.title.y = element_text(color = "grey55"),
+        strip.background = element_blank(),
+        strip.text = element_text(color = "grey35", hjust = 0, face = "plain"),
+        panel.spacing.x = unit(1.2, "lines"))
 ```
 
 ### Wir gehen a priori von normalverteilter Größe der !Kung aus
