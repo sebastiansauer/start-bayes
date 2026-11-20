@@ -6,7 +6,7 @@ base_family <- "Lato Regular"
 
 
 # Grossschrift-Variante (z.B. fuer Abbildungen mit viel Text): nutzt das
-# Folien-Preset von theme_med() (base_size 19), siehe .claude/skills/ggplot-diagramme.
+# Folien-Preset von theme_med() (base_size 19), siehe globaler Skill ggplot-diagramme (~/.claude/skills).
 theme_large_text <- function() {
   theme_med("folien")
 }
@@ -14,7 +14,7 @@ theme_large_text <- function() {
 
 
 # ggplot-Diagramme-Skill: zentrales Theme + Mediumerkennung (HTML/PDF/Folien),
-# siehe .claude/skills/ggplot-diagramme. Ersetzt das bisherige see::theme_modern().
+# siehe globaler Skill ggplot-diagramme (~/.claude/skills). Ersetzt das bisherige see::theme_modern().
 theme_med <- function(medium = c("html", "pdf", "folien"),
                        grid = c("both", "h", "v", "none")) {
   medium <- match.arg(medium)
@@ -75,25 +75,31 @@ y_label_nach_oben <- function(plot) {
                    plot.subtitle = ggplot2::element_text(hjust = 0,
                                                          margin = ggplot2::margin(b = 6)))
 }
-# Tufte-Stil fuer Streudiagramme (Rohdaten als Punkte, X und Y kontinuierlich,
-# mind. 10 Zeilen): keine Gitterlinien, Achsenlinien nur im Datenbereich
-# (Range-Frame, ggthemes::geom_rangeframe) und ein grauer Rug an beiden Achsen.
+# Tufte-Stil fuer Streu- und Liniendiagramme: keine Gitterlinien, Achsenlinien
+# nur im Datenbereich (Range-Frame, ggthemes::geom_rangeframe) und ein grauer
+# Rug (Datenpunkte als Striche statt klassischer Ticks).
+# - Streudiagramme: Rohdaten als Punkte (geom_point), X und Y kontinuierlich,
+#   mind. 10 Zeilen. Rug an beiden Achsen.
+# - Liniendiagramme: geom_line/geom_path, mind. 10 Zeilen, X numerisch oder
+#   Datum, Y numerisch. Rug pro Achse nur, wenn er etwas zeigt: X nur bei
+#   unregelmaessigen X-Abstaenden oder < 50 Punkten (ein dichtes, regelmaessiges
+#   Raster waere nur ein grauer Balken), Y immer.
 # Ausnahmen (bleiben unveraendert): coord_flip(), Plots, die schon geom_rug()/
 # geom_rangeframe() enthalten, Heatmaps (geom_raster/tile/hex), Punkt-Layer mit
-# < 10 Zeilen (Hervorhebungspunkte).
-# Abschalten: options(tufte_streu = FALSE).
+# < 10 Zeilen (Hervorhebungspunkte). Dichten, Flaechen und stat_function sind
+# keine Punkt-/Linien-Layer und werden nicht beruehrt.
+# Abschalten: options(tufte_streu = FALSE) (alles) bzw.
+# options(tufte_linie = FALSE) (nur Liniendiagramme), z. B. pro Chunk fuer eine
+# geom_line, die eine berechnete Kurve statt Beobachtungen zeigt.
 .tufte_streu_min_n <- 10
-tufte_streu <- function(plot) {
-  if (!isTRUE(getOption("tufte_streu", TRUE))) return(plot)
-  if (inherits(plot@coordinates, "CoordFlip")) return(plot)
-  gtypes <- vapply(plot@layers, function(l) class(l$geom)[1], character(1))
-  if (any(gtypes %in% c("GeomRug", "GeomRangeFrame"))) return(plot)
-  # Heatmaps/Flaechen-Layer (Raster, Tile, Hex, Konturflaechen): kein Streudiagramm
-  if (any(gtypes %in% c("GeomRaster", "GeomTile", "GeomHex", "GeomContourFilled",
-                        "GeomDensity2dFilled"))) return(plot)
-  res <- tryCatch({
+.tufte_rug_x_max_n <- 50
+
+# Erster Layer der angegebenen Geoms mit genug Zeilen und passenden Daten
+# (X numerisch oder Datum/Zeit, Y numerisch). NULL, wenn keiner passt.
+.tufte_layer_daten <- function(plot, geoms) {
+  tryCatch({
     for (l in plot@layers) {
-      if (!inherits(l$geom, "GeomPoint")) next
+      if (!inherits(l$geom, geoms)) next
       d <- l$data
       if (inherits(d, "waiver") || is.null(d)) d <- plot@data
       else if (is.function(d)) d <- d(plot@data)
@@ -102,12 +108,41 @@ tufte_streu <- function(plot) {
         ggplot2::aes(!!!utils::modifyList(as.list(plot@mapping), as.list(l$mapping)))
       if (is.null(m$x) || is.null(m$y)) next
       x <- rlang::eval_tidy(m$x, d); y <- rlang::eval_tidy(m$y, d)
-      if (!is.numeric(x) || !is.numeric(y) || length(x) < .tufte_streu_min_n) next
-      return_val <- list(d = d, m = ggplot2::aes(x = !!m$x, y = !!m$y), x = x, y = y)
-      break
+      x_ok <- is.numeric(x) || inherits(x, c("Date", "POSIXct"))
+      if (!x_ok || !is.numeric(y) || length(x) < .tufte_streu_min_n) next
+      return(list(d = d, m = ggplot2::aes(x = !!m$x, y = !!m$y), x = x, y = y))
     }
-    if (exists("return_val", inherits = FALSE)) return_val else NULL
+    NULL
   }, error = function(e) NULL)
+}
+
+tufte_streu <- function(plot) {
+  if (!isTRUE(getOption("tufte_streu", TRUE))) return(plot)
+  if (inherits(plot@coordinates, "CoordFlip")) return(plot)
+  gtypes <- vapply(plot@layers, function(l) class(l$geom)[1], character(1))
+  if (any(gtypes %in% c("GeomRug", "GeomRangeFrame"))) return(plot)
+  # Heatmaps/Flaechen-Layer (Raster, Tile, Hex, Konturflaechen): kein Streudiagramm
+  if (any(gtypes %in% c("GeomRaster", "GeomTile", "GeomHex", "GeomContourFilled",
+                        "GeomDensity2dFilled"))) return(plot)
+  res <- .tufte_layer_daten(plot, "GeomPoint")
+  rug_seiten <- "bl"
+  # Liniendiagramm nur ohne Flaechen-Layer (Flaechen/Dichten = berechnete Formen)
+  # und ohne Opt-out per "+ tufte_aus()"
+  linie_ok <- isTRUE(getOption("tufte_linie", TRUE)) &&
+    !isTRUE(plot@meta$tufte_aus) &&
+    !any(gtypes %in% c("GeomArea", "GeomRibbon", "GeomDensity", "GeomPolygon"))
+  if (is.null(res) && linie_ok) {
+    res <- .tufte_layer_daten(plot, c("GeomLine", "GeomPath"))
+    if (!is.null(res)) {
+      xu <- sort(unique(as.numeric(res$x)))
+      # "regelmaessig": Abstaende schwanken um < 15 % (auch Monatsdaten, 28-31 Tage)
+      regelmaessig <- length(xu) > 2 && {
+        dx <- diff(xu); max(dx) <= 1.15 * min(dx)
+      }
+      rug_x <- length(xu) < .tufte_rug_x_max_n || !regelmaessig
+      rug_seiten <- if (rug_x) "bl" else "l"
+    }
+  }
   if (is.null(res)) return(plot)
 
   grau <- "#4D4D4D"
@@ -121,7 +156,7 @@ tufte_streu <- function(plot) {
       b[b >= r[1] - 1e-9 & b <= r[2] + 1e-9]
     }
   }
-  if (is.null(plot@scales$get_scales("x")))
+  if (is.null(plot@scales$get_scales("x")) && is.numeric(res$x))
     plot <- plot + ggplot2::scale_x_continuous(breaks = nur_im_bereich(res$x))
   if (is.null(plot@scales$get_scales("y")))
     plot <- plot + ggplot2::scale_y_continuous(breaks = nur_im_bereich(res$y))
@@ -130,7 +165,7 @@ tufte_streu <- function(plot) {
     ggthemes::geom_rangeframe(data = res$d, mapping = res$m, inherit.aes = FALSE,
                               color = grau, size = lw) +
     ggplot2::geom_rug(data = res$d, mapping = res$m, inherit.aes = FALSE,
-                      sides = "bl", color = grau, alpha = 0.3, linewidth = 0.3,
+                      sides = rug_seiten, color = grau, alpha = 0.3, linewidth = 0.3,
                       length = grid::unit(0.02, "npc")) +
     ggplot2::theme(panel.grid = ggplot2::element_blank(),
                    panel.grid.major = ggplot2::element_blank(),
@@ -140,6 +175,16 @@ tufte_streu <- function(plot) {
                    axis.ticks = ggplot2::element_line(color = grau, linewidth = lw),
                    axis.ticks.length = grid::unit(3, "pt"))
 }
+
+# Opt-out pro Plot: "+ tufte_aus()" laesst Streu-/Linien-Stil fuer diesen Plot weg
+# (z. B. geom_line, die eine berechnete Kurve statt Beobachtungen zeigt).
+tufte_aus <- function() structure(list(), class = "tufte_aus")
+base::registerS3method("ggplot_add", "tufte_aus",
+                       function(object, plot, object_name) {
+                         plot@meta$tufte_aus <- TRUE
+                         plot
+                       },
+                       envir = asNamespace("ggplot2"))
 
 base::registerS3method("ggplot_build", "ggplot2::ggplot",
                  function(plot) .ggplot_build_orig(tufte_streu(y_label_nach_oben(plot))),
@@ -250,10 +295,18 @@ orange <- "#E69F00FF"
 green <- errorcol
 
 # ggplot-Diagramme-Skill: feste Farbwerte fuer 1/2 Gruppen, Punkte, Flaechen,
-# Gitter -- siehe .claude/skills/ggplot-diagramme.
+# Gitter -- siehe globaler Skill ggplot-diagramme (~/.claude/skills).
 dunkelgrau <- "#4D4D4D"   # Punkte bei 1 Gruppe
 mittelgrau <- "#999999"   # Fuellung bei 1 Gruppe
 gitterfarbe <- "#D9D9D9"  # Gitterlinien
+
+# Tufte-Stil: Punkte und Linien (1 Gruppe) standardmaessig dunkelgrau; Hervorhebung
+# nur bewusst in Orange/Dunkelblau (Okabe-Ito). Gilt nur fuer Layer ohne eigene
+# Farbe; explizit gesetzte Farben bleiben unveraendert.
+ggplot2::update_geom_defaults("point", list(colour = dunkelgrau))
+ggplot2::update_geom_defaults("line",  list(colour = dunkelgrau))
+ggplot2::update_geom_defaults("path",  list(colour = dunkelgrau))
+ggplot2::update_geom_defaults("smooth", list(colour = dunkelgrau))
 
 # Linien-/Text-Farbfolgen ab 3 Gruppen (Reihenfolge: Orange, Blau, ...)
 okabe_linie <- c("#E69F00", "#0072B2", "#009E73", "#56B4E9", "#D55E00", "#CC79A7")
