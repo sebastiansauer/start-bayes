@@ -1,0 +1,24 @@
+name: pages-nightly-build
+
+# Stößt nachts einen GitHub-Pages-Build für den aktuellen gh-pages-Stand an,
+# auch wenn der lokale PC aus ist. Ändert keine Inhalte, stößt nur einen
+# neuen Build an.
+
+on:
+  schedule:
+    - cron: "0 2 * * *"   # täglich 02:00 UTC
+  workflow_dispatch:       # manuell auslösbar über "Run workflow"
+
+permissions:
+  pages: write
+
+jobs:
+  request-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request GitHub Pages build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh api -X POST "repos/${REPO}/pages/builds" --jq '{status, url}'
