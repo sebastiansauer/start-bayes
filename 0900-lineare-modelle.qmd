@@ -171,8 +171,10 @@ Nein, s. @fig-na.
 #| label: fig-na
 kung_erwachsen |> 
   summarise(across(everything(), ~ sum(is.na(.x)))) |> 
-  pivot_longer(everything(), names_to = "Variable", values_to = "Fehlende_Werte") |> 
-  ggbarplot(x = "Variable", y = "Fehlende_Werte")
+  pivot_longer(everything(), names_to = "Variable", values_to = "Fehlende Werte") |>
+  mutate(Variable = recode(Variable, height = "Größe", weight = "Gewicht",
+                           age = "Alter", male = "Geschlecht")) |>
+  ggbarplot(x = "Variable", y = "Fehlende Werte")
 ```
 
 
