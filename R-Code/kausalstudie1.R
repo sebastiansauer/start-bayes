@@ -1,6 +1,5 @@
 library(ggplot2)
 library(scales)
-library(see)
 
 # Daten vorbereiten: pro Medikamentengruppe x Geschlecht x Status ("überlebt"/"nicht überlebt")
 # Zahlen entsprechen Tabelle 2.1 (tbl-studie-a)
@@ -29,37 +28,45 @@ df$Status <- factor(df$Status, levels = c("nicht überlebt", "überlebt"))
 df$Summe <- ave(df$Anzahl, df$Gruppe, df$Geschlecht, FUN = sum)
 df$Prozent <- df$Anzahl / df$Summe
 
+# Beschriftung direkt im Balken (statt Legende und y-Achse):
+# Kategorie, Anteil und (beim Überlebt-Segment) die absoluten Zahlen
 df$Label <- ifelse(
   df$Status == "überlebt",
   paste0(
-    df$Anzahl,
-    "/",
-    df$Summe,
-    "\n(",
-    percent(df$Prozent, accuracy = 1),
-    ")"
+    "überlebt\n", percent(df$Prozent, accuracy = 1),
+    "\n(", df$Anzahl, "/", df$Summe, ")"
   ),
-  ""
+  paste0("nicht überlebt ", percent(df$Prozent, accuracy = 1))
 )
 
-# Plot: pro Medikamentengruppe (Facette) die Überlebensrate je Geschlecht
+# Textfarbe je Füllung: weiß auf Dunkelblau, fast schwarz auf Orange
+df$Textfarbe <- ifelse(df$Status == "überlebt", "#FFFFFF", "#1A1A1A")
+
+# Gestapelte Balken: weiße Trennlinie, Werte im Balken, keine Legende,
+# keine y-Achse, kein Gitter (Tufte). Okabe-Ito: Dunkelblau / Orange.
 plot_kausalstudie_a <-
   ggplot(df, aes(x = Geschlecht, y = Prozent, fill = Status)) +
-  geom_bar(stat = "identity", position = "fill") +
+  geom_col(position = "fill", color = "white", linewidth = 1.2, width = 0.85) +
   geom_text(
-    aes(label = Label),
-    color = "white",
-    fontface = "bold",
-    position = position_stack(0.5),
-    lineheight = 0.8,
-    size = 3.2
+    aes(label = Label, color = Textfarbe),
+    position = position_stack(vjust = 0.5),
+    lineheight = 0.9,
+    size = 3.4,
+    fontface = "bold"
   ) +
   facet_wrap(~Gruppe) +
-  scale_y_continuous(labels = scales::percent) +
-  scale_fill_okabeito(order = c(1, 2)) +
+  scale_fill_manual(values = c("nicht überlebt" = "#E69F00", "überlebt" = "#0072B2")) +
+  scale_color_identity() +
   labs(
-    x = "",
-    y = "Anteil",
-    fill = "",
+    x = NULL, y = NULL,
     title = "Überlebensrate nach Geschlecht, mit/ohne Medikament"
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.spacing.x = unit(1.5, "lines"),
+    axis.text.x = element_text(size = rel(1.05)),
+    strip.text = element_text(face = "bold")
   )
