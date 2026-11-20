@@ -868,7 +868,11 @@ Auf Errisch sind das die Backticks, die wir um den Namen rumwickeln müssen, s. 
 
 ```{r}
 m_kung_neue_prioris_tibble |> 
-  gghistogram(x = "`(Intercept)`")  # Aus dem Paket "ggpubr"
+  gghistogram(x = "`(Intercept)`", fill = "#999999", color = "white", alpha = 1) +  # Aus dem Paket "ggpubr"
+  labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"), y = "Häufigkeit") +
+  theme(axis.line = element_line(color = "#4D4D4D", linewidth = 0.4),
+        axis.ticks = element_line(color = "#4D4D4D", linewidth = 0.4),
+        axis.text = element_text(color = "#4D4D4D"))
 ```
 
 ### Mit `{ggplot}`
@@ -877,8 +881,9 @@ m_kung_neue_prioris_tibble |>
 #| label: intercept-hist-ggplot
 m_kung_neue_prioris_tibble |>
   ggplot(aes(x = `(Intercept)`)) +  # Aus dem Paket `ggplot2`
-  geom_histogram() +
-  labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"), y = "Häufigkeit")
+  geom_histogram(fill = "#999999", color = "white") +
+  labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"), y = "Häufigkeit") +
+  theme(panel.grid.major.x = element_blank())  # nur Werteachse (y) mit Gitter
 ```
 :::
 
