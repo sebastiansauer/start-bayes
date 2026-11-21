@@ -1,3 +1,10 @@
+---
+filters:
+  - webr
+webr:
+  show-startup-message: false
+---
+
 # Verteilungen
 <!-- spellcheck: 2026-08-25 -->
 
@@ -403,6 +410,19 @@ dbinom(x = <Anzahl der Treffer>,
        prob = <Wahrscheinlichkeit eines Treffers>)
 ```
 
+::: {.content-visible when-format="html"}
+::: {.callout-tip}
+## 🖥️ Selbst ausprobieren: R im Browser
+
+Der folgende Code läuft direkt hier im Browser (mit [webR](https://docs.r-wasm.org/webr/latest/)), ohne dass Sie R installieren müssen. Beim ersten Klick auf *Run Code* wird R geladen; das dauert einige Sekunden. Ändern Sie die Zahlen und führen Sie den Code erneut aus.
+
+```{webr}
+# Wskt. für 2 Treffer bei 3 Zügen, Trefferwahrscheinlichkeit 2/5:
+dbinom(x = 2, size = 3, prob = 2/5)
+```
+:::
+:::
+
 {{< include children/binomial-sim.qmd >}}
 
 
@@ -751,6 +771,20 @@ pbinom(q = 15, size = 20, prob = .5)
 Die Wahrscheinlichkeit, höchstens 15 Treffer (d. h. 0, 1, 2, ...
 15 Treffer) zu erzielen, liegt für `prob = 0.5` laut Binomialverteilung mit `pbinom` bei gut 99 %.
 
+::: {.content-visible when-format="html"}
+::: {.callout-tip}
+## 🖥️ Selbst ausprobieren: R im Browser
+
+Wie wahrscheinlich ist es, durch Raten *mindestens* 15 Fragen richtig zu haben? Und was ändert sich, wenn Sie ein wenig Ahnung haben und mit `prob = .6` richtig liegen?
+
+```{webr}
+dbinom(x = 15, size = 20, prob = .5)      # genau 15 richtig
+pbinom(q = 15, size = 20, prob = .5)      # höchstens 15 richtig
+1 - pbinom(q = 14, size = 20, prob = .5)  # mindestens 15 richtig
+```
+:::
+:::
+
 
 :::
 
@@ -918,6 +952,20 @@ anzahl_pfade_2_aus_4
 
 choose(4, 2)
 ```
+
+::: {.content-visible when-format="html"}
+::: {.callout-tip}
+## 🖥️ Selbst ausprobieren: R im Browser
+
+Berechnen Sie selbst einige Binomialkoeffizienten, z. B. die Anzahl der Lotto-Kombinationen (6 aus 49) aus @exm-binkoeff2.
+
+```{webr}
+factorial(4) / (factorial(2) * factorial(4 - 2))
+choose(4, 2)
+choose(49, 6)  # Lotto: 6 aus 49
+```
+:::
+:::
 
 
 $\square$
@@ -1090,6 +1138,27 @@ pbinom(q = 4, size = 7, prob = .95)  # höchstens 4 Lüfter laufen, Ausfall der 
 `size = 7` meint die Stichprobengröße, hier 7 Lüfter;
 `prob` gibt die Trefferwahrscheinlichkeit an.
 $\square$
+
+::: {.content-visible when-format="html"}
+::: {.callout-tip}
+## 🖥️ Selbst ausprobieren: R im Browser
+
+Spielen Sie mit dem Lüfter-Beispiel: Wie verändert sich die Ausfallwahrscheinlichkeit, wenn ein Lüfter nur mit 90 % Wahrscheinlichkeit läuft (`p_lauf <- .90`)? Oder wenn der Schrank 8 Lüfter hat?
+
+```{webr}
+n_luefter <- 7    # Anzahl Lüfter
+p_lauf <- .95     # Wskt., dass ein Lüfter läuft
+
+# Wskt., dass genau k = 0, ..., n Lüfter laufen:
+ps <- dbinom(x = 0:n_luefter, size = n_luefter, prob = p_lauf)
+round(ps, 3)
+barplot(ps, names.arg = 0:n_luefter, xlab = "Anzahl laufender Lüfter (k)")
+
+# Ausfall der Kühlung: höchstens 4 Lüfter laufen
+pbinom(q = 4, size = n_luefter, prob = p_lauf)
+```
+:::
+:::
 
 
 
@@ -1448,6 +1517,23 @@ Die Grenzen der inneren 95 % dieser Verteilung kann man sich auch ausgeben.
 ```{r}
 qexp(p = c(0.025, .975), rate = 1/8)
 ```
+
+::: {.content-visible when-format="html"}
+::: {.callout-tip}
+## 🖥️ Selbst ausprobieren: R im Browser
+
+Probieren Sie verschiedene Werte für die Rate $\lambda$ aus und beobachten Sie, wie sich Kurve und Quantile verändern.
+
+```{webr}
+lambda <- 1/8
+
+qexp(p = c(0.025, .50, .975), rate = lambda)  # 2,5%-, 50%-, 97,5%-Quantil
+
+curve(dexp(x, rate = lambda), from = 0, to = qexp(.99, rate = lambda),
+      xlab = "x", ylab = "Dichte")
+```
+:::
+:::
 
 Tabelle @tbl-exp zeigt ausgewählte Perzentile (50 %, 95 %) einiger Exponentialverteilungen,
 d. h. Exponentialverteilungen mit verschiedenen Werten für $\lambda$.
