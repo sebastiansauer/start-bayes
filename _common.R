@@ -1,8 +1,6 @@
 
 set.seed(42)
 
-base_size <- 18
-base_family <- "Lato Regular"
 
 
 # Grossschrift-Variante (z.B. fuer Abbildungen mit viel Text): nutzt das
@@ -91,11 +89,16 @@ y_label_nach_oben <- function(plot) {
 # Abschalten: options(tufte_streu = FALSE) (alles) bzw.
 # options(tufte_linie = FALSE) (nur Liniendiagramme), z. B. pro Chunk fuer eine
 # geom_line, die eine berechnete Kurve statt Beobachtungen zeigt.
+# --- Schwellenwerte des Diagrammstils (alle an einer Stelle) ---
+# Ab so vielen Zeilen gilt ein Punkt-/Linien-Layer als Streu-/Liniendiagramm
 .tufte_streu_min_n <- 10
+# Liniendiagramm: X-Rug nur unter so vielen Punkten (oder bei unregelmaessigen X)
 .tufte_rug_x_max_n <- 50
 # Ab so vielen Punkten verschmilzt der Rug zu einem grauen Balken und zeigt
 # nichts mehr: dann nur Range-Frame, kein Rug (Streu- und Liniendiagramme)
 .tufte_rug_max_n <- 500
+# Overplotting-Alpha fuer Punkt-Layer: Zeilen im Layer -> alpha (darunter alpha 1)
+.tufte_alpha_stufen <- c(`100` = 0.6, `300` = 0.35, `1000` = 0.15)
 
 # Erster Layer der angegebenen Geoms mit genug Zeilen und passenden Daten
 # (X numerisch oder Datum/Zeit, Y numerisch). NULL, wenn keiner passt.
@@ -128,7 +131,8 @@ tufte_streu <- function(plot) {
   if (any(gtypes %in% c("GeomRaster", "GeomTile", "GeomContourFilled",
                         "GeomDensity2dFilled"))) return(plot)
   # Hex-Fliesen: Range-Frame + Ticks im Datenbereich, ohne Rug (die Fliesen sind
-  # schon die Dichte); Fuellung bleibt viridis
+  # schon die Dichte); Fuellung als graue Sequenzskala (hell = wenige, dunkel =
+  # viele Punkte), passend zum Grau der Punkte und ohne Gelb
   hex <- any(gtypes == "GeomHex")
   # Symbole per geom_text (z. B. ✓/✗ als Marker) zaehlen als Streudiagramm,
   # wenn es keinen Punkt-Layer gibt (sonst sind Texte nur Beschriftungen)
@@ -140,7 +144,7 @@ tufte_streu <- function(plot) {
   }
   rug_seiten <- if (hex) "" else "bl"
   if (hex && !is.null(res) && is.null(plot@scales$get_scales("fill")))
-    plot <- plot + ggplot2::scale_fill_viridis_c()
+    plot <- plot + ggplot2::scale_fill_gradient(low = "#E5E5E5", high = "#4D4D4D")
   # Liniendiagramm nur ohne Flaechen-Layer (Flaechen/Dichten = berechnete Formen)
   # und ohne Opt-out per "+ tufte_aus()"
   linie_ok <- isTRUE(getOption("tufte_linie", TRUE)) &&
@@ -208,8 +212,8 @@ base::registerS3method("ggplot_add", "tufte_aus",
 # leicht durchsichtig, damit dichte Bereiche dunkler erscheinen. Gilt nur, wenn
 # alpha weder fest gesetzt (geom_point(alpha = ...)) noch gemappt ist.
 # Stufen (Zeilen im Layer -> alpha): < 100 -> 1 (unveraendert), ab 100 -> 0.6,
-# ab 300 -> 0.35, ab 1000 -> 0.15. Abschalten: options(tufte_alpha = FALSE).
-.tufte_alpha_stufen <- c(`100` = 0.6, `300` = 0.35, `1000` = 0.15)
+# ab 300 -> 0.35, ab 1000 -> 0.15 (.tufte_alpha_stufen, oben bei den
+# Schwellenwerten). Abschalten: options(tufte_alpha = FALSE).
 tufte_alpha <- function(plot) {
   if (!isTRUE(getOption("tufte_alpha", TRUE))) return(plot)
   for (i in seq_along(plot@layers)) {
@@ -334,17 +338,25 @@ options(
 
    
 
-ycol <- "#E69F00"
-modelcol <- "#56B4E9"
-errorcol <- "#009E73"
-beta0col <- "#D55E00"
-beta1col <- "#0072B2"
-xcol <- "#CC79A7"
+# --- Farben (Okabe-Ito, farbenblind-sicher; Gelb #F0E442 bewusst nicht) ---
+# Folge ab 3 Gruppen (Reihenfolge: Orange, Blau, Gruen, Himmelblau, Zinnober,
+# Rotviolett) und die abgedunkelten Textvarianten (fett, Kontrast auf Weiss).
+okabe_linie <- c("#E69F00", "#0072B2", "#009E73", "#56B4E9", "#D55E00", "#CC79A7")
+okabe_text  <- c("#B36B00", "#0072B2", "#007A59", "#2B7FB0", "#D55E00", "#A5527F")
 
-yellow <- "#F0E442FF"
-blue <- "#0072B2FF"
-orange <- "#E69F00FF"
-green <- errorcol
+# Kurznamen fuer die Okabe-Ito-Farben
+orange <- okabe_linie[1]
+blue   <- okabe_linie[2]
+green  <- okabe_linie[3]
+
+# Bedeutungsfarben fuer Modell-Abbildungen (Regression): feste Rolle je Farbe,
+# alle aus okabe_linie
+ycol     <- okabe_linie[1]  # beobachtetes Y
+beta1col <- okabe_linie[2]  # Steigung beta1
+errorcol <- okabe_linie[3]  # Fehler/Residuen
+modelcol <- okabe_linie[4]  # Modellvorhersage
+beta0col <- okabe_linie[5]  # Achsenabschnitt beta0
+xcol     <- okabe_linie[6]  # Praediktor X
 
 # ggplot-Diagramme-Skill: feste Farbwerte fuer 1/2 Gruppen, Punkte, Flaechen,
 # Gitter -- siehe globaler Skill ggplot-diagramme (~/.claude/skills).
@@ -372,10 +384,6 @@ ggplot2::update_geom_defaults("area", list(fill = mittelgrau))
 ggplot2::update_geom_defaults("col",  list(fill = mittelgrau))
 ggplot2::update_geom_defaults("bar",  list(fill = mittelgrau))
 
-# Linien-/Text-Farbfolgen ab 3 Gruppen (Reihenfolge: Orange, Blau, ...)
-okabe_linie <- c("#E69F00", "#0072B2", "#009E73", "#56B4E9", "#D55E00", "#CC79A7")
-okabe_text  <- c("#B36B00", "#0072B2", "#007A59", "#2B7FB0", "#D55E00", "#A5527F")
-
 # Fuegt Linien- und Textfarbe als Spalten hinzu (Reihenfolge = Faktorstufen),
 # fuer Linien, die direkt am Linienende beschriftet werden (ggrepel), statt
 # ueber eine Legende.
@@ -387,7 +395,6 @@ add_farben <- function(d, gruppe) {
 }
 
 
-labeltextsize <- 8
 
 
 
