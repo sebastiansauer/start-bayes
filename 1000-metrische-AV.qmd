@@ -855,17 +855,43 @@ m10.3a <-
 
 pred <- estimate_relation(m10.3a)
 
-plot(pred) +
-  geom_point(data = kidiq2, aes(x = mom_iq, y = kid_score, color = mom_hs),
-             alpha = .4, size = 1) +  # gegen Overplotting
-  # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
-  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_color_okabeito(order = c(5, 1)) +
-  scale_fill_okabeito(order = c(5, 1)) +
-  labs(x = "IQ der Mutter (mom_iq)",
-       y = "IQ des Kindes (kid_score)",
-       color = "Schulabschluss der Mutter (mom_hs)",
-       fill = "Schulabschluss der Mutter (mom_hs)")
+# Gruppen per Farbe UND Symbol; Blau/Orange statt Orange/Hellblau, da
+# Letztere im Graustufendruck fast identisch hell sind.
+# Legende entfällt: Labels direkt an den Geraden, Schlüssel im y-Titel.
+farben_hs <- c("0" = blue, "1" = orange)
+formen_hs <- c("0" = 16, "1" = 17)  # Kreis, Dreieck
+
+labels_hs <-
+  as.data.frame(pred) |>
+  group_by(mom_hs) |>
+  filter(mom_iq == max(mom_iq)) |>
+  ungroup() |>
+  mutate(label = ifelse(mom_hs == "1", "mit Abschluss", "ohne Abschluss"),
+         textfarbe = ifelse(mom_hs == "1", okabe_text[1], okabe_text[2]))
+
+ggplot(as.data.frame(pred), aes(x = mom_iq)) +
+  geom_ribbon(aes(ymin = CI_low, ymax = CI_high, fill = mom_hs), alpha = .2) +
+  geom_point(data = kidiq2,
+             aes(y = kid_score, color = mom_hs, shape = mom_hs),
+             alpha = .4, size = 1.3) +  # gegen Overplotting
+  geom_line(aes(y = Predicted, color = mom_hs), linewidth = 1.2) +
+  geom_label(data = labels_hs,  # weißer Grund: lesbar über den Punkten
+             aes(y = Predicted, label = label, color = I(textfarbe)),
+             hjust = 0, nudge_x = 1.5, fontface = "bold", size = 3.8,
+             fill = alpha("white", .85), label.size = 0) +
+  scale_color_manual(values = farben_hs, guide = "none") +
+  scale_fill_manual(values = farben_hs, guide = "none") +
+  scale_shape_manual(values = formen_hs, guide = "none") +
+  scale_x_continuous(expand = expansion(mult = c(0.02, 0.25))) +
+  labs(x = "IQ der Mutter (mom_iq)", y = NULL,
+       subtitle = paste0(
+         "IQ des Kindes (kid_score); Mutter ",
+         "<b style='color:", okabe_text[2], "'>&#9679; ohne</b> / ",
+         "<b style='color:", okabe_text[1], "'>&#9650; mit</b> ",
+         "Schulabschluss (mom_hs)")) +
+  theme(plot.subtitle = ggtext::element_markdown(hjust = 0,
+                                                 margin = margin(b = 6)),
+        legend.position = "none")
 ```
 
 
