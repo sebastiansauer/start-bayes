@@ -467,6 +467,9 @@ d_eignung2 <-
   d_eignung |>
   mutate(studium = factor(studium, labels = c("kein Studium", "Studium")))
 
+farben_studium <- c("kein Studium" = blue, "Studium" = orange)
+formen_studium <- c("kein Studium" = 16, "Studium" = 17)
+
 # Endpunkte der Regressionsgeraden je Gruppe, um die Labels dort zu platzieren
 label_data <-
   d_eignung2 |>
@@ -482,15 +485,20 @@ label_data <-
 p2 <-
 d_eignung2 |>
   ggplot(aes(x = fleiss, y = iq, color = studium)) +
-  geom_point(alpha = .25) +
+  geom_point(aes(shape = studium), alpha = .25) +
   geom_smooth(method = "lm", se = FALSE) +
-  geom_label_repel(data = label_data, aes(label = studium),
+  geom_label_repel(data = label_data,
+                   aes(label = studium,
+                       color = I(textfarbe(farben_studium[as.character(studium)]))),
                    fontface = "bold", direction = "y", hjust = 0,
                    nudge_x = .3, segment.color = NA) +
-  # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
-  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_color_okabeito(order = c(5, 1)) +
-  scale_fill_okabeito(order = c(5, 1)) +
+  # Blau/Orange statt Orange/Hellblau, da Letztere im
+  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast);
+  # Gruppen zusätzlich per Symbol, Schlüssel im y-Titel
+  scale_color_manual(values = farben_studium) +
+  scale_shape_manual(values = formen_studium) +
+  labs(y = paste0("iq; ", gruppen_schluessel(names(farben_studium),
+                                             farben_studium, formen_studium))) +
   theme(legend.position = "none")
 
 

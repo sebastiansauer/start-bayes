@@ -896,6 +896,7 @@ ggplot(mtcars) +
 # Zuordnung Farbe/Gruppe direkt an den Linienenden, in den buchweit
 # verwendeten Standardfarben Dunkelblau/Orange.
 am_colors <- c("0" = orange, "1" = blue)
+am_shapes <- c("0" = 16, "1" = 17)  # Gruppen auch per Symbol (Kreis, Dreieck)
 
 am_labels <-
   mtcars %>%
@@ -906,21 +907,26 @@ am_labels <-
     tibble(hp = hp_max, mpg = predict(fit, newdata = tibble(hp = hp_max)))
   }) %>%
   ungroup() %>%
-  mutate(label = paste0("am = ", am))
+  mutate(label = paste0("am = ", am),
+         textfarbe = textfarbe(am_colors[as.character(am)]))
 
 ggplot(mtcars) +
   aes(x = hp, y = mpg, color = am, fill = am) +
-  geom_point() +
+  geom_point(aes(shape = am)) +
   geom_smooth(method = "lm") +
   geom_text(
     data = am_labels,
-    aes(x = hp, y = mpg, label = label),
+    aes(x = hp, y = mpg, label = label, color = I(textfarbe)),
     hjust = 0, nudge_x = 5, fontface = "bold", size = 5,
     show.legend = FALSE
   ) +
   scale_color_manual(values = am_colors, guide = "none") +
   scale_fill_manual(values = am_colors, guide = "none") +
-  labs(x = "Motorleistung [PS] (hp)", y = "Kraftstoffeffizienz [mpg] (mpg)", color = "Getriebeart (am)") +
+  scale_shape_manual(values = am_shapes, guide = "none") +
+  # Schlüssel (Symbol + Farbe je Gruppe) im y-Titel, s. gruppen_schluessel() in _common.R
+  labs(x = "Motorleistung [PS] (hp)",
+       y = paste0("Kraftstoffeffizienz [mpg] (mpg); Getriebeart ",
+                  gruppen_schluessel(c("am = 0", "am = 1"), am_colors, am_shapes))) +
   coord_cartesian(clip = "off") +
   theme(plot.margin = margin(5.5, 44, 5.5, 5.5))
 ```

@@ -855,17 +855,40 @@ m10.3a <-
 
 pred <- estimate_relation(m10.3a)
 
-plot(pred) +
-  geom_point(data = kidiq2, aes(x = mom_iq, y = kid_score, color = mom_hs),
-             alpha = .4, size = 1) +  # gegen Overplotting
-  # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
-  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_color_okabeito(order = c(5, 1)) +
-  scale_fill_okabeito(order = c(5, 1)) +
+# Gruppen per Farbe UND Symbol; Blau/Orange statt Orange/Hellblau, da
+# Letztere im Graustufendruck fast identisch hell sind.
+# Legende entfällt: Labels direkt an den Geraden, Schlüssel im y-Titel.
+farben_hs <- c("0" = blue, "1" = orange)
+formen_hs <- c("0" = 16, "1" = 17)  # Kreis, Dreieck
+namen_hs  <- c("0" = "ohne", "1" = "mit")
+
+labels_hs <-
+  as.data.frame(pred) |>
+  group_by(mom_hs) |>
+  filter(mom_iq == max(mom_iq)) |>
+  ungroup() |>
+  mutate(label = paste(namen_hs[as.character(mom_hs)], "Abschluss"),
+         textfarbe = textfarbe(farben_hs[as.character(mom_hs)]))
+
+ggplot(as.data.frame(pred), aes(x = mom_iq)) +
+  geom_ribbon(aes(ymin = CI_low, ymax = CI_high, fill = mom_hs), alpha = .2) +
+  geom_point(data = kidiq2,
+             aes(y = kid_score, color = mom_hs, shape = mom_hs),
+             alpha = .4, size = 1.3) +  # gegen Overplotting
+  geom_line(aes(y = Predicted, color = mom_hs), linewidth = 1.2) +
+  geom_label(data = labels_hs,  # weißer Grund: lesbar über den Punkten
+             aes(y = Predicted, label = label, color = I(textfarbe)),
+             hjust = 0, nudge_x = 1.5, fontface = "bold", size = 3.8,
+             fill = alpha("white", .85), label.size = 0) +
+  scale_color_manual(values = farben_hs, guide = "none") +
+  scale_fill_manual(values = farben_hs, guide = "none") +
+  scale_shape_manual(values = formen_hs, guide = "none") +
+  scale_x_continuous(expand = expansion(mult = c(0.02, 0.25))) +
   labs(x = "IQ der Mutter (mom_iq)",
-       y = "IQ des Kindes (kid_score)",
-       color = "Schulabschluss der Mutter (mom_hs)",
-       fill = "Schulabschluss der Mutter (mom_hs)")
+       # Schlüssel (Symbol + Farbe je Gruppe) im y-Titel, s. _common.R
+       y = paste0("IQ des Kindes (kid_score); Mutter ",
+                  gruppen_schluessel(namen_hs, farben_hs, formen_hs),
+                  " Schulabschluss (mom_hs)"))
 ```
 
 
@@ -967,30 +990,51 @@ model_parameters(m10.4) |>
 Mit `estimate_relation(m10.4) |> plot()` kann man  sich das Modell visualisieren, s. @fig-m104.
 
 
+```{r}
+#| echo: false
+# Streudiagramm mit je einer Regressionsgeraden pro Schulabschluss-Gruppe:
+# Gruppen per Farbe und Symbol, Label am Geradenende, Schlüssel im y-Titel.
+# Die Geraden kommen aus model.matrix() %*% coef(), damit die Koeffizienten
+# per Name statt per Position zugeordnet werden (die Reihenfolge der
+# Koeffizienten hängt von der Formel ab).
+plot_hs_geraden <- function(modell, daten, xvar, xbereich, xlab) {
+  daten <- mutate(daten, mom_hs = factor(mom_hs))
+  linien <-
+    expand_grid(mom_hs = c(0, 1), x = xbereich) |>
+    rename("{xvar}" := x)
+  linien$kid_score <-
+    drop(model.matrix(delete.response(terms(modell)), linien) %*% coef(modell))
+  linien <- mutate(linien, mom_hs = factor(mom_hs))
+  enden <-
+    linien |>
+    filter(.data[[xvar]] == max(.data[[xvar]])) |>
+    mutate(label = paste(namen_hs[as.character(mom_hs)], "Abschluss"),
+           textfarbe = textfarbe(farben_hs[as.character(mom_hs)]))
+
+  ggplot(daten, aes(x = .data[[xvar]], y = kid_score)) +
+    geom_point(aes(color = mom_hs, shape = mom_hs), alpha = .5, size = 1.5) +
+    geom_line(data = linien, aes(color = mom_hs), linewidth = 1.5) +
+    geom_label(data = enden,
+               aes(label = label, color = I(textfarbe)),
+               hjust = 0, nudge_x = diff(xbereich) * .015,
+               fontface = "bold", size = 3.8,
+               fill = alpha("white", .85), label.size = 0) +
+    scale_color_manual(values = farben_hs, guide = "none") +
+    scale_shape_manual(values = formen_hs, guide = "none") +
+    scale_x_continuous(expand = expansion(mult = c(0.02, 0.25))) +
+    labs(x = xlab,
+         y = paste0("IQ des Kindes (kid_score); Mutter ",
+                    gruppen_schluessel(namen_hs, farben_hs, formen_hs),
+                    " Schulabschluss (mom_hs)"))
+}
+```
+
 ```{r fig.width=8}
 #| echo: false
 #| label: fig-m104
 #| fig-cap: "`m10.4`: Wie `m10.3`, aber mit Interaktionseffekt. Es ist gut zu erkennen, dass der Achsenabschnitt für diese Daten kaum zu interpretieren ist."
-kidiq |> 
-  mutate(mom_hs = factor(mom_hs)) |>  
-  ggplot(aes(x = mom_iq, y = kid_score, color = mom_hs)) +
-  geom_point2(alpha = .6, size = 1.5) +
-  geom_abline(slope = coef(m10.4)[2],
-              intercept = coef(m10.4)[1],
-              linewidth = 1.5,
-              color =  okabeito_colors()[5] ) +
-  geom_abline(slope = coef(m10.4)[2]+coef(m10.4)[4],
-              intercept = coef(m10.4)[1] + coef(m10.4)[3],
-              linewidth = 1.5,
-              color = okabeito_colors()[1]) +
-  # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
-  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_color_okabeito(order = c(5, 1)) +
-  scale_x_continuous(limits = c(0, 140)) +
-  labs(x = "IQ der Mutter (mom_iq)",
-       y = "IQ des Kindes (kid_score)",
-       color = "Schulabschluss\nder Mutter\n(mom_hs)") +
-  theme(legend.position = c(0.9, 0.2))
+plot_hs_geraden(m10.4, kidiq, "mom_iq", c(0, 140),
+                xlab = "IQ der Mutter (mom_iq)")
 ```
 
 
@@ -1132,25 +1176,8 @@ Mit `estimate_relation(m10.5) |> plot()` kann man  sich das Modell visualisieren
 #| echo: false
 #| label: fig-m105
 #| fig-cap: "m10.5: Mit zentrierten Prädiktoren gibt der Achsenabschnitt den Y-Wert für eine Beobachtung mit mittleren X-Wert an; daher ist der Achsenabschnitt besser zu interpretieren als ohne Zentrierung."
-kidiq |> 
-  mutate(mom_hs = factor(mom_hs)) |>  
-  ggplot(aes(x = mom_iq_c, y = kid_score, color = mom_hs)) +
-  geom_point2(alpha = .6, size = 1.5) +
-  geom_abline(slope = coef(m10.5)[2],
-              intercept = coef(m10.5)[1],
-              linewidth = 1.5,
-              color =  okabeito_colors()[5] ) +
-  geom_abline(slope = coef(m10.5)[2]+coef(m10.5)[4],
-              intercept = coef(m10.5)[1] + coef(m10.5)[3],
-              linewidth = 1.5,
-              color = okabeito_colors()[1]) +
-  # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
-  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_color_okabeito(order = c(5, 1)) +
-  labs(x = "Zentrierter IQ der Mutter (mom_iq_c)",
-       y = "IQ des Kindes (kid_score)",
-       color = "Schulabschluss\nder Mutter\n(mom_hs)") +
-  theme(legend.position = c(0.9, 0.2))  +
+plot_hs_geraden(m10.5, kidiq, "mom_iq_c", range(kidiq$mom_iq_c),
+                xlab = "Zentrierter IQ der Mutter (mom_iq_c)") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40")
 ```
 
