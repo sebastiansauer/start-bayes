@@ -11,9 +11,9 @@ library(patchwork)
 
 # bp <- beyonce_palette(127)[]
 # beyonce_palette(1)
-col1 <- "grey20"
-col2 <- "black"
-col3 <- "grey80"
+col1 <- fast_schwarz  # Text
+col2 <- dunkelgrau    # Achsenlinie, Pfeile
+col3 <- gitterfarbe   # Flaechen
 
 # Normal density
 p1 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |>
@@ -32,7 +32,7 @@ p1 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |>
     color = col1, family = "Times", parse = TRUE, size = 7
   ) +
   scale_x_continuous(expand = c(0, 0)) +
-  theme_void() +
+  theme_leer() +
   theme(axis.line.x = element_line(color = col2, linewidth = 0.5))
 
 # Half-normal density
@@ -55,7 +55,7 @@ p2 <- tibble(
     color = col1, family = "Times", parse = TRUE, size = 7
   ) +
   scale_x_continuous(expand = c(0, 0)) +
-  theme_void() +
+  theme_leer() +
   theme(axis.line.x = element_line(color = col2, linewidth = 0.5))
 
 
@@ -76,7 +76,7 @@ p2a <- tibble(x = seq(from = 0, to = 1, by = 0.01)) |>
     color = col1, family = "Times", parse = TRUE, size = 7
   ) +
   scale_x_continuous(expand = c(0, 0)) +
-  theme_void() +
+  theme_leer() +
   theme(axis.line.x = element_line(color = col2, linewidth = 0.5))
 
 
@@ -102,7 +102,7 @@ p3 <- tibble(
     color = col1, family = "Times", parse = TRUE, size = 10
   ) +
   xlim(0, 2) +
-  theme_void()
+  theme_leer()
 
 # A second normal density
 p4 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |>
@@ -121,7 +121,7 @@ p4 <- tibble(x = seq(from = -3, to = 3, by = 0.1)) |>
     color = col1, family = "Times", parse = TRUE, size = 7
   ) +
   scale_x_continuous(expand = c(0, 0)) +
-  theme_void() +
+  theme_leer() +
   theme(axis.line.x = element_line(color = col2, linewidth = 0.5))
 
 # The final annotated arrow
@@ -138,7 +138,7 @@ p5 <- tibble(
     arrow = my_arrow, color = col2
   ) +
   xlim(0, 1) +
-  theme_void()
+  theme_leer()
 
 # Some text
 p6 <- tibble(
@@ -149,7 +149,7 @@ p6 <- tibble(
   ggplot(aes(x = x, y = y, label = label)) +
   geom_text(color = col1, family = "Times", parse = TRUE, size = 7) +
   xlim(0, 1) +
-  theme_void()
+  theme_leer()
 
 # Define the layout
 layout <- c(

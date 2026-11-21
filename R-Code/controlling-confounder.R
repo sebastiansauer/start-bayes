@@ -22,8 +22,8 @@ d_sim <-
 p_konf1 <-
   d_sim %>%
   ggplot(aes(x = x, y = y)) +
-  geom_point(color = dunkelgrau) +
-  geom_smooth(method = "lm", color = "#0072B2") +
+  geom_point() +
+  geom_smooth(method = "lm") +
   labs(title = "Ohne Kontrolle der Konfundierungsvariablen")
 
 d_sim <- add_farben(d_sim, group)

@@ -11,14 +11,14 @@ d <-
 p1 <-
   d %>%
   ggplot(aes(x = p_grid, y = posterior)) +
-  geom_point(color = "#4D4D4D") +
-  geom_line(color = "#0072B2") +
+  geom_point() +
+  geom_line(color = blue) +
   labs(
     subtitle = "20 Parameterwerte",
     x = "\u03c0",
     y = ""
   ) +
-  theme(panel.grid = element_blank(), panel.grid.major.x = element_blank(), panel.grid.minor = element_blank()) +
+  ohne_gitter() +
   scale_x_continuous(
     breaks = d$p_grid, # show tick marks at all grid points
     labels = function(x) ifelse(x %in% c(0, 0.5, 1), x, "") # label only 0, .5, 1
@@ -31,10 +31,10 @@ p2 <-
   mutate(unstd_posterior = likelihood * prior) %>%
   mutate(posterior = unstd_posterior / sum(unstd_posterior)) %>%
   ggplot(aes(x = p_grid, y = posterior)) +
-  geom_point(color = "#4D4D4D") +
-  geom_line(color = "#0072B2") +
+  geom_point() +
+  geom_line(color = blue) +
   labs(subtitle = "10 Parameterwerte", x = "\u03c0", y = "") +
-  theme(panel.grid = element_blank(), panel.grid.major.x = element_blank(), panel.grid.minor = element_blank()) +
+  ohne_gitter() +
   scale_x_continuous(
     breaks = d$p_grid, # show tick marks at all grid points
     labels = function(x) ifelse(x %in% c(0, 0.5, 1), x, "") # label only 0, .5, 1
@@ -49,10 +49,10 @@ p3 <-
   mutate(posterior = unstd_posterior / sum(unstd_posterior)) %>%
 
   ggplot(aes(x = p_grid, y = posterior)) +
-  geom_point(color = "#4D4D4D") +
-  geom_line(color = "#0072B2") +
+  geom_point() +
+  geom_line(color = blue) +
   labs(subtitle = "5 Parameterwerte", x = "\u03c0", y = "") +
-  theme(panel.grid = element_blank(), panel.grid.major.x = element_blank(), panel.grid.minor = element_blank()) +
+  ohne_gitter() +
   scale_x_continuous(
     breaks = d$p_grid, # show tick marks at all grid points
     labels = function(x) ifelse(x %in% c(0, 0.5, 1), x, "") # label only 0, .5, 1
@@ -68,9 +68,9 @@ p4 <-
 
   ggplot(aes(x = p_grid, y = posterior)) +
   #  geom_point() +
-  geom_line(color = "#0072B2") +
+  geom_line(color = blue) +
   labs(subtitle = "Unendlich viele Parameterwerte", x = "\u03c0", y = "") +
-  theme(panel.grid = element_blank(), panel.grid.major.x = element_blank(), panel.grid.minor = element_blank()) +
+  ohne_gitter() +
   scale_x_continuous(
     breaks = d$p_grid, # show tick marks at all grid points
     labels = function(x) ifelse(x %in% c(0, 0.5, 1), x, "") # label only 0, .5, 1

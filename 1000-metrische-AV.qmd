@@ -394,18 +394,14 @@ m10.1_g2_mean <- as.numeric(coef(m10.1)[1] + coef(m10.1)[2]) |> round(0)
 
 ggplot(kidiq) +
   aes(x = mom_hs, y = kid_score) +
-  geom_violin(aes(group = mom_hs), width = 0.6, fill = "#999999",
-              color = NA, alpha = .35) +
-  geom_jitter(width = 0.1, alpha = .25, size = 1) +
+  geom_violin(aes(group = mom_hs), width = 0.6, color = NA, alpha = .35) +
+  geom_jitter(width = 0.1) +
   geom_abline(slope = coef(m10.1)[2],
               intercept = coef(m10.1)[1],
-              color = okabeito_colors()[5], linewidth = 2) +
+              color = trendfarbe, linewidth = trend_linienbreite) +
   scale_x_continuous(breaks = c(0, 1)) +
-  stat_summary(geom = "point", fun = mean, color = okabeito_colors()[1], size = 9, alpha = .7) +
-  geom_hline(yintercept = mean(kidiq$kid_score[kidiq$mom_hs == 0]), 
-             linetype = "dashed", color = "grey40") +
-  geom_hline(yintercept = mean(kidiq$kid_score[kidiq$mom_hs == 1]), 
-             linetype = "dashed", color = "grey40") +
+  stat_summary(geom = "point", fun = mean, color = orange, size = 9, alpha = .7) +
+  referenzlinie(yintercept = tapply(kidiq$kid_score, kidiq$mom_hs, mean)) +
   scale_y_continuous(breaks = c(m10.1_g1_mean, m10.1_g2_mean)) +
   labs(x = "Schulabschluss der Mutter (mom_hs)", y = "IQ des Kindes (kid_score)")
 
@@ -442,10 +438,7 @@ Fazit: Wir verwerfen die Praktisch-Null-Hypothese. Adios!
 #|   - "Diagramm mit rope(m10.1) |> plot()"
 #|   - "Diagramm mit parameters(m10.1) |> plot()"
 rope(m10.1, range = c(-5, 5)) |> plot() +
-  # order = c(5, 1): Blau/Orange statt Blau/Gelb -- okabeito-Index 4
-  # ("#F0E442") ist Gelb, nicht Orange; Index 1 ist das korrekte
-  # Okabe-Ito-Orange ("#E69F00"), konsistent mit den Standardfarben des Buchs
-  scale_fill_okabeito(order = c(5, 1))
+  scale_fill_intervall()
 parameters(m10.1) |> 
   plot() +
   geom_rect(aes(xmin = 0-2, xmax = 0+2, ymin = -Inf, ymax = Inf),
@@ -758,10 +751,10 @@ Visualisieren wir uns noch das Modell m10.2, s. @fig-kidiqmomiq.
 #| fig-cap: "Die Intelligenz eines Kindes als Funktion der Intelligenz der Mutter (m10.2)"
 kidiq |> 
   ggplot(aes(x = mom_iq, y = kid_score)) +
-  geom_point(alpha = .25, size = 1) +
+  geom_point() +
   geom_abline(slope = coef(m10.2)[2],
               intercept = coef(m10.2)[1],
-              color = beta1col, linewidth = 1.5) +
+              color = beta1col, linewidth = trend_linienbreite) +
   labs(x = "IQ der Mutter (mom_iq)", y = "IQ des Kindes (kid_score)")
 ```
 
@@ -774,8 +767,7 @@ mit Hilfe des R-Pakets `easystats`, s. @fig-m102-a.
 #| label: fig-m102-a
 #| fig-cap: "Die geschätzten Erwartungswerte von m10.2 visualisiert"
 plot(estimate_relation(m10.2)) +
-  geom_point(data = kidiq, aes(x = mom_iq, y = kid_score),
-             alpha = .25, size = 1) +
+  geom_point(data = kidiq, aes(x = mom_iq, y = kid_score)) +
   labs(x = "IQ der Mutter (mom_iq)", y = "IQ des Kindes (kid_score)")
 ```
 
@@ -875,11 +867,10 @@ ggplot(as.data.frame(pred), aes(x = mom_iq)) +
   geom_point(data = kidiq2,
              aes(y = kid_score, color = mom_hs, shape = mom_hs),
              alpha = .4, size = 1.3) +  # gegen Overplotting
-  geom_line(aes(y = Predicted, color = mom_hs), linewidth = 1.2) +
+  geom_line(aes(y = Predicted, color = mom_hs), linewidth = trend_linienbreite) +
   geom_label(data = labels_hs,  # weißer Grund: lesbar über den Punkten
              aes(y = Predicted, label = label, color = I(textfarbe)),
-             hjust = 0, nudge_x = 1.5, fontface = "bold", size = 3.8,
-             fill = alpha("white", .85), label.size = 0) +
+             hjust = 0, nudge_x = 1.5, fontface = "bold", size = 3.8) +
   scale_color_manual(values = farben_hs, guide = "none") +
   scale_fill_manual(values = farben_hs, guide = "none") +
   scale_shape_manual(values = formen_hs, guide = "none") +
@@ -1013,12 +1004,11 @@ plot_hs_geraden <- function(modell, daten, xvar, xbereich, xlab) {
 
   ggplot(daten, aes(x = .data[[xvar]], y = kid_score)) +
     geom_point(aes(color = mom_hs, shape = mom_hs), alpha = .5, size = 1.5) +
-    geom_line(data = linien, aes(color = mom_hs), linewidth = 1.5) +
+    geom_line(data = linien, aes(color = mom_hs), linewidth = trend_linienbreite) +
     geom_label(data = enden,
                aes(label = label, color = I(textfarbe)),
                hjust = 0, nudge_x = diff(xbereich) * .015,
-               fontface = "bold", size = 3.8,
-               fill = alpha("white", .85), label.size = 0) +
+               fontface = "bold", size = 3.8) +
     scale_color_manual(values = farben_hs, guide = "none") +
     scale_shape_manual(values = formen_hs, guide = "none") +
     scale_x_continuous(expand = expansion(mult = c(0.02, 0.25))) +
@@ -1178,7 +1168,7 @@ Mit `estimate_relation(m10.5) |> plot()` kann man  sich das Modell visualisieren
 #| fig-cap: "m10.5: Mit zentrierten Prädiktoren gibt der Achsenabschnitt den Y-Wert für eine Beobachtung mit mittleren X-Wert an; daher ist der Achsenabschnitt besser zu interpretieren als ohne Zentrierung."
 plot_hs_geraden(m10.5, kidiq, "mom_iq_c", range(kidiq$mom_iq_c),
                 xlab = "Zentrierter IQ der Mutter (mom_iq_c)") +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40")
+  referenzlinie(xintercept = 0)
 ```
 
 
@@ -1360,9 +1350,9 @@ penguins |>
 #| echo: false
 #| tbl-cap: "Die Verteilung des Körpergewichts pro Spezies der Pinguine"
 #| label: tbl-penguins
-# Artnamen in den Farben der Violinen aus @fig-penguines1 (Okabe-Ito 5, 7, 4);
-# Amber ist als Schrift auf Weiß kaum lesbar, daher ein dunklerer Ton derselben Farbe
-species_farben <- c(Adelie = "#0072B2", Chinstrap = "#CC79A7", Gentoo = "#C9A000")
+# Artnamen in den Farben der Violinen aus @fig-penguines1 (lesbare Textvariante)
+species_linie <- c(Adelie = blue, Chinstrap = rotviolett, Gentoo = orange)
+species_farben <- setNames(textfarbe(species_linie), names(species_linie))
 faerbe_species <- function(x) {
   farbe <- species_farben[as.character(x)]
   if (knitr::is_latex_output()) {
@@ -1404,9 +1394,7 @@ ggviolin(penguins,
           x = "species",
          fill = "species",  # Füllfarbe nach `species`
           y = "body_mass_g") +
-  # order = c(5, 7, 1): Blau/Lila/Orange statt Orange/Hellblau/Grün, da
-  # Orange und Hellblau im Graustufendruck fast identisch hell sind
-  scale_fill_okabeito(order = c(5, 7, 1)) +
+  scale_fill_manual(values = species_linie) +  # wie in @tbl-penguins
   labs(x = "Pinguinart (species)",
        y = "Körpergewicht [g] (body_mass_g)") +
   theme(legend.position = "none")  # Legende überflüssig: Arten stehen auf der x-Achse
@@ -1467,9 +1455,7 @@ Der Unterschied im mittleren Gewicht von den Gruppen Chinstrap und Gentoo zur Re
 #| label: fig-m106-params
 
 plot(hdi(m10.6)) +
-  # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
-  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_fill_okabeito(order = c(5, 1))
+  scale_fill_intervall()
 ```
 
 
@@ -1792,20 +1778,20 @@ In @fig-regr-one-pred ist die univariate Regression mit jeweils einem der beiden
 p1 <- 
   kidiq |> 
   ggplot(aes(x = mom_iq, y = kid_score)) +
-  geom_point(alpha = .25, size = 1) +
+  geom_point() +
   geom_abline(intercept = coef(m10.7)[1],
               slope = coef(m10.7)[2],
-              color = beta1col, linewidth = 1.5) +
+              color = beta1col, linewidth = trend_linienbreite) +
   labs(title = "m10.7: IQ der Mutter",
        x = "IQ der Mutter (mom_iq)", y = "IQ des Kindes (kid_score)")
 
 p2 <-
 kidiq |> 
   ggplot(aes(x = mom_age, y = kid_score)) +
-  geom_point(alpha = .25, size = 1) +
+  geom_point() +
   geom_abline(intercept = coef(m10.8)[1],
               slope = coef(m10.8)[2],
-              color = beta1col, linewidth = 1.5) +
+              color = beta1col, linewidth = trend_linienbreite) +
   labs(title = "m10.8: Alter der Mutter",
        x = "Alter der Mutter [Jahre] (mom_age)", y = "IQ des Kindes (kid_score)")
 
@@ -1880,7 +1866,7 @@ plot_ly(width = 800, height = 500,
             x=~mom_iq, y=~mom_age, z=~kid_score, 
             mode="markers", 
             type="scatter3d",
-            marker = list(color="#00998a", 
+            marker = list(color = green, 
                           opacity=0.7, 
                           size = 1,
                           symbol=105)) |> 
@@ -1921,9 +1907,10 @@ grid1 <- expand_grid(mom_iq = x1_seq, mom_age =  x2_seq) |>
 ggplot(aes(x = mom_iq, y = mom_age), data = grid1) +
   geom_raster(aes(fill = pred_m10.9)) +
  # geom_point(aes(color = kid_score_pred)) +
+  # Ausnahme: blaue statt graue Sequenzskala, damit die grauen Datenpunkte
+  # auch auf den dunklen Kacheln sichtbar bleiben
   scale_fill_distiller(palette = "Blues", direction = 1) +
-  scale_color_distiller(palette = "Blues", direction = 1) +
-  geom_point(data = kidiq,  alpha = .3, size = .7) +
+  geom_point(data = kidiq) +
   labs(x = "IQ der Mutter (mom_iq)",
        y = "Alter der Mutter [Jahre] (mom_age)",
        fill = "Vorhergesagter IQ des Kindes (pred_m10.9)")
@@ -1944,7 +1931,7 @@ Auf der Achse von mom_iq erkennt man deutlich (anhand der Farbänderung) die Ver
 #| label: fig-ten-dims
 #| fig-cap: "So sieht der Zusammenhang im 10-dimensionalen Raum aus"
 ggplot(data.frame(x=NA, y=NA)) +
-  theme(panel.background = element_rect(fill = 'lightblue'))
+  theme(panel.background = element_rect(fill = himmelblau, colour = NA))
 ```
 
 Leider macht mein Hirn hier nicht mit. Unsere Schwäche, eine große Zahl an Dimensionen zu visualisieren, ist der Grund, warum wir mathematische Modelle brauchen.
@@ -2180,9 +2167,7 @@ parameters(m10.12) |>
 #| label: fig-m1011hdi
 #| fig-cap: "Im Standard wird ein 95%-Intervall gezeigt bzw. berechnet; hier das ETI für m10.12"
 plot(eti(m10.12)) +
-  # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
-  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_fill_okabeito(order = c(5, 1))
+  scale_fill_intervall()
 ```
 
 
@@ -2361,12 +2346,9 @@ kidiq <-
 #| fig-cap: "Die Verteilung der Fehler scheint keinem starken Trend (in Abhängigkeit zum vorhergesagten Wert) zu folgen, was ein gutes Zeichen ist."
 kidiq |> 
   ggplot(aes(x = m10.12_pred, y = m10.12_resid)) +
-  geom_hline(color="white", yintercept = 0, size = 2) +
-  geom_hline(color = "grey40", 
-             yintercept = c(-1,1), 
-             size = 1, 
-             linetype = "dashed") +
-  geom_point(alpha = .7) +
+  geom_hline(color = "white", yintercept = 0, linewidth = 2) +
+  referenzlinie(yintercept = c(-1, 1)) +
+  geom_point() +
   geom_smooth() +
   labs(x = "Vorhergesagte Werte (m10.12_pred)", y = "Residuen (m10.12_resid)")
 ```
@@ -2433,10 +2415,10 @@ m10.12a_plot <-
   kidiq3 |> 
   ggplot() +
   aes(x = mom_iq_z, y = mom_age_z) +
-  geom_point(alpha = .25, size = 1) +
+  geom_point() +
   geom_abline(slope = coef(m10.12a)[2],
               intercept = coef(m10.12a)[1],
-              color = beta1col, linewidth = 1.5) +
+              color = beta1col, linewidth = trend_linienbreite) +
   geom_segment(aes(y = predict(m10.12a),
                    x = mom_iq_z,
                    xend = mom_iq_z,
@@ -2452,10 +2434,10 @@ m10.12b_plot <-
   kidiq3 |> 
   ggplot() +
   aes(y = mom_iq_z, x = mom_age_z) +
-  geom_point(alpha = .25, size = 1) +
+  geom_point() +
   geom_abline(slope = coef(m10.12b)[2],
               intercept = coef(m10.12b)[1],
-              color = beta1col, linewidth = 1.5) +
+              color = beta1col, linewidth = trend_linienbreite) +
   geom_segment(aes(y = predict(m10.12b),
                    x = mom_age_z,
                    xend = mom_age_z,
@@ -2471,10 +2453,10 @@ m10.12c_plot <-
   kidiq3 |>
   ggplot() +
   aes(x = mom_age_resid, y = kid_score_z) +
-  geom_point(alpha = .25, size = 1) +
+  geom_point() +
   geom_abline(slope = coef(m10.12c)[2],
               intercept = coef(m10.12c)[1],
-              color = beta1col, linewidth = 1.5)   +
+              color = beta1col, linewidth = trend_linienbreite)   +
   scale_x_continuous(limits = c(-3, 3)) +
   scale_y_continuous(limits = c(-2, 2)) +
   labs(x = "Residuen Alter Mutter", y = "IQ Kind (kid_score_z)")
@@ -2485,10 +2467,10 @@ m10.12d_plot <-
   kidiq3 |> 
   ggplot() +
   aes(x = mom_iq_resid, y = kid_score_z) +
-  geom_point(alpha = .25, size = 1) +
+  geom_point() +
   geom_abline(slope = coef(m10.12d)[2],
               intercept = coef(m10.12d)[1],
-              color = beta1col, linewidth = 1.5)  +
+              color = beta1col, linewidth = trend_linienbreite)  +
   scale_x_continuous(limits = c(-3, 3)) +
   scale_y_continuous(limits = c(-2, 2)) +
   labs(x = "Residuen IQ Mutter", y = "IQ Kind (kid_score_z)")
@@ -2727,11 +2709,11 @@ Ab `mpg_z = `r sprintf("%.2f", (0.5 - coef(m14)[1]) / coef(m14)[2])`` sagt das M
 ```{r}
 mtcars2 |> 
   ggplot(aes(x = mpg_z, y = am)) +
-  geom_hline(yintercept = 0.5, color = "white", size = 2) +
-  geom_point(alpha = .4, size = 1) +
+  geom_hline(yintercept = 0.5, color = "white", linewidth = 2) +
+  geom_point() +
   geom_abline(intercept = coef(m14)[1],
               slope = coef(m14)[2],
-              color = beta1col, linewidth = 1.5) +
+              color = beta1col, linewidth = trend_linienbreite) +
   labs(x = "Standardisierte Kraftstoffeffizienz (mpg_z)", y = "Getriebeart (am)") 
 ```
 

@@ -11,30 +11,30 @@ rope_hdi_panel <- function(tag, decision, mu, sigma, hdi_lo, hdi_hi,
 
   ggplot2::ggplot(d, ggplot2::aes(x, y)) +
     ggplot2::geom_vline(xintercept = c(rope_lo, rope_hi),
-                         color = "#D55E00", linewidth = 0.9) +
-    ggplot2::geom_area(fill = "#0072B2", alpha = 0.3) +
-    ggplot2::geom_line(color = "#0072B2", linewidth = 0.8) +
+                         color = zinnober, linewidth = 0.9) +
+    ggplot2::geom_area(fill = blue, alpha = 0.3) +
+    ggplot2::geom_line(color = blue, linewidth = 0.8) +
     ggplot2::annotate("segment",
                        x = hdi_lo, xend = hdi_hi,
                        y = -0.04 * y_max, yend = -0.04 * y_max,
-                       linewidth = 3, color = "black") +
+                       linewidth = 3, color = fast_schwarz) +
     ggplot2::annotate("segment",
                        x = null_value, xend = null_value,
                        y = 0, yend = -0.08 * y_max,
-                       linewidth = 0.4, color = "#4D4D4D") +
+                       linewidth = .duenne_linie(), color = dunkelgrau) +
     ggplot2::annotate("text", x = null_value, y = -0.16 * y_max,
-                       label = "Nullwert", size = 3, color = "#4D4D4D") +
+                       label = "Nullwert", size = 3, color = dunkelgrau) +
     ggplot2::annotate("text", x = mean(c(rope_lo, rope_hi)), y = y_max * 1.05,
-                       label = "ROPE", size = 3.2, color = "#D55E00",
+                       label = "ROPE", size = 3.2, color = textfarbe(zinnober),
                        fontface = "bold") +
     ggplot2::annotate("text", x = mean(c(hdi_lo, hdi_hi)), y = 0.5 * y_max,
-                       label = "HDI", size = 3.2, color = "black") +
+                       label = "HDI", size = 3.2, color = fast_schwarz) +
     ggplot2::labs(title = paste0(tag, ")  ", decision),
                   x = "Parameterwert", y = NULL) +
     ggplot2::scale_y_continuous(limits = c(-0.2 * y_max, y_max * 1.15)) +
     theme_med(plot_medium(), grid = "none") +
     ggplot2::theme(
-      plot.title = ggplot2::element_text(size = 10, face = "italic"),
+      plot.title = ggplot2::element_text(size = ggplot2::rel(0.8), face = "italic"),
       axis.text.y = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
       axis.text.x = ggplot2::element_blank(),

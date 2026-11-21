@@ -170,28 +170,11 @@ kung_erwachsen |>
   select(age, height, weight) |> 
   pivot_longer(everything(), names_to = "Variable", values_to = "Wert") |> 
   ggplot(aes(x = Wert)) +
-  # Daten tragend: Dichtekurve (dunkelgrau, kräftig) + Rohdaten als Rug
-  geom_density(fill = "#999999", alpha = 0.25, color = "#4D4D4D", linewidth = 0.8) +
-  geom_rug(color = "#4D4D4D", alpha = 0.2, linewidth = 0.3, length = unit(0.03, "npc")) +
+  # Dichtekurve + Rohdaten als Rug
+  geom_density(fill = mittelgrau, alpha = 0.25) +
+  tufte_rug() +
   facet_wrap(~ Variable, scales = "free") +
-  labs(x = NULL, y = "Wahrscheinlichkeitsdichte") +
-  # Struktur (Achsen, Ticks, Facettentitel) hellgrau und zurückgenommen
-  theme(panel.background = element_blank(),
-        panel.border = element_blank(),
-        panel.grid = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.major.x = element_blank(),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.line = element_line(color = "grey80", linewidth = 0.3),
-        axis.ticks = element_line(color = "grey80", linewidth = 0.3),
-        axis.text = element_text(color = "grey55"),
-        axis.title = element_text(color = "grey55"),
-        plot.subtitle = element_text(color = "grey45"),
-        axis.title.y = element_text(color = "grey55"),
-        strip.background = element_blank(),
-        strip.text = element_text(color = "grey35", hjust = 0, face = "plain"),
-        panel.spacing.x = unit(1.2, "lines"))
+  labs(x = NULL, y = "Wahrscheinlichkeitsdichte")
 ```
 
 ### Wir gehen a priori von normalverteilter Größe der !Kung aus
@@ -212,7 +195,7 @@ Der Einfachheit halber gehen wir davon aus, dass Frauen und Männer im Schnitt g
 p_nv_kung_prior <-
   tibble(x = seq(from = 100, to = 250, by = .1)) |> 
   ggplot(aes(x = x, y = dnorm(x, mean = 178, sd = 20))) +
-  geom_line(color = dunkelgrau) +
+  geom_line() +
   tufte_aus() +
   scale_x_continuous(breaks = seq(from = 100, to = 250, by = 75)) +
   labs(title = expression(mu ~ "~ dnorm(178, 20)"),
@@ -223,7 +206,7 @@ p_nv_kung_prior <-
 p_exp_kung_prior <-
   tibble(x = seq(0, 50, by = .01)) |>
   ggplot(aes(x = x, y = dexp(x, rate = 1/8))) +
-  geom_line(color = dunkelgrau) +
+  geom_line() +
   tufte_aus() +
   scale_x_continuous() +
   scale_y_continuous(NULL, breaks = NULL) +
@@ -436,10 +419,6 @@ m_kung_post |>
   geom_density(fill = mittelgrau) +
   scale_y_continuous(NULL, breaks = NULL) +
   xlab(NULL) +
-  theme(
-    panel.grid = element_blank(),
-    strip.text = element_text(size = 16)  # increase facet header font size
-  ) +
   facet_wrap(~ name, scales = "free", 
              labeller = label_parsed,
              ncol = 2)
@@ -888,11 +867,8 @@ Auf Errisch sind das die Backticks, die wir um den Namen rumwickeln müssen, s. 
 
 ```{r}
 m_kung_neue_prioris_tibble |> 
-  gghistogram(x = "`(Intercept)`", fill = "#999999", color = "white", alpha = 1) +  # Aus dem Paket "ggpubr"
-  labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"), y = "Häufigkeit") +
-  theme(axis.line = element_line(color = "#4D4D4D", linewidth = 0.4),
-        axis.ticks = element_line(color = "#4D4D4D", linewidth = 0.4),
-        axis.text = element_text(color = "#4D4D4D"))
+  gghistogram(x = "`(Intercept)`", fill = mittelgrau, color = "white") +  # Aus dem Paket "ggpubr"
+  labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"), y = "Häufigkeit")
 ```
 
 ### Mit `{ggplot}`
@@ -901,9 +877,8 @@ m_kung_neue_prioris_tibble |>
 #| label: intercept-hist-ggplot
 m_kung_neue_prioris_tibble |>
   ggplot(aes(x = `(Intercept)`)) +  # Aus dem Paket `ggplot2`
-  geom_histogram(fill = "#999999", color = "white") +
-  labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"), y = "Häufigkeit") +
-  theme(panel.grid.major.x = element_blank())  # nur Werteachse (y) mit Gitter
+  geom_histogram() +
+  labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"), y = "Häufigkeit")
 ```
 :::
 
@@ -1004,8 +979,7 @@ p3 <-
   scale_y_continuous(NULL, breaks = NULL) +
   labs(title = expression("height ~ dnorm(" * mu * ", " * sigma * ")"),
        caption = "X-Achse zeigt MW±3SD",
-       x = "Körpergröße [cm] (height)") +
-  theme(panel.grid = element_blank()) 
+       x = "Körpergröße [cm] (height)")
 
 p3
 ```
@@ -1085,7 +1059,7 @@ p4 <-
   geom_vline(xintercept = 272, color = "white", linetype = 3) +
   geom_text(data = text,
             aes(y = y, label = label, angle = angle),
-            color = "grey92") +
+            color = hellgrau) +
   scale_x_continuous(breaks = breaks, 
                      limits = c(-400, 700)) +
   scale_y_continuous(NULL, breaks = NULL) +
@@ -1093,8 +1067,7 @@ p4 <-
                                   mu ~ "~ dnorm(178, 100)"),
                              sigma ~ "~ E(0.01)")),
        x = "Körpergröße [cm] (height)",
-       caption = "X-Achse zeigt MW±3SD") +
-  theme(panel.grid = element_blank()) 
+       caption = "X-Achse zeigt MW±3SD")
 
 p4
 ```

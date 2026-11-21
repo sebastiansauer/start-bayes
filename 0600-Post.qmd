@@ -149,12 +149,12 @@ p_d <-
 bayesbox_6w_9v  |>
   ggplot() +
   aes(x = p_grid, y = post) +
-  geom_point(alpha = .5, size = 3, color = "#4D4D4D") +
-  geom_line(color = dunkelgrau) +
+  geom_point(alpha = .5, size = 3) +
+  geom_line() +
   scale_y_continuous("Posterior-Wahrscheinlichkeit",
                      breaks = NULL) +
   see::geom_point2(data = \(d) dplyr::slice_max(d, post, n = 1),
-             size = 9, color = "#E69F00")
+             size = 9, color = orange)
   
 p_d
 ```
@@ -174,12 +174,12 @@ p_d <-
 bayesbox_6w_9v  |> 
   ggplot() +
   aes(x = p_grid, y = post) +
-  geom_point(alpha = .5, size = 3, color = "#4D4D4D") +
-  geom_line(color = dunkelgrau) +
+  geom_point(alpha = .5, size = 3) +
+  geom_line() +
   scale_y_continuous("Posteriori-Wahrscheinlichkeit (Post)",
                      breaks = NULL) +
   see::geom_point2(data = \(d) dplyr::slice_max(d, post, n = 1),
-             size = 9, color = "#E69F00") +
+             size = 9, color = orange) +
   labs(x = expression("Wasseranteil (" * pi * ")"))
 
 p_d
@@ -525,8 +525,8 @@ Das Modell ist sich nicht sehr sicher, könnte man sagen.
 p0 <- 
   bayesbox_g100 |> 
   ggplot(aes(x = p_grid, y = post)) +
-  geom_line(color = dunkelgrau) +
-  geom_point(color = "#4D4D4D") +
+  geom_line() +
+  geom_point() +
   labs(title = "Post-Verteilung \nexakt",
   y = "Posteriori-Wahrscheinlichkeit (Post)",
   x = expression("Wasseranteil (" * pi * ")"))
@@ -569,7 +569,7 @@ p_samples_exact <-
   geom_label(
     data = tibble(x = 0.5, y = 285, label = "exakte Post-Verteilung"),
     aes(x = x, y = y, label = label),
-    color = "#B36B00", fill = "white", border.colour = ycol,
+    color = textfarbe(ycol), fill = "white", border.colour = ycol, linewidth = 0.25,
     fontface = "bold", size = 3
   ) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
@@ -625,13 +625,16 @@ ggplot(aes(x = p_grid)) +
   scale_x_continuous("Anteil Wasser (p)", limits = c(0, 1)) +
   labs(y = "Häufigkeit",
        caption = paste0("Modus: ", sprintf("%.2f", mode_rounded), "; MW: ", sprintf("%.2f", mavg), "; Md: ", sprintf("%.2f", md))) +
-  geom_vline(xintercept = c(mode_rounded), color = "#E69F00FF")  +
-  geom_vline(xintercept = c(mavg), color = "#0072B2FF")  +
-  geom_vline(xintercept = c(md), color = "#009E73FF")  +
+  geom_vline(xintercept = c(mode_rounded), color = orange)  +
+  geom_vline(xintercept = c(mavg), color = blue)  +
+  geom_vline(xintercept = c(md), color = green)  +
   annotate("label", x = mode_rounded, y = 0,
-    label = glue::glue("Modus: {sprintf('%.2f', mode_rounded)}"), fill = "#E69F00FF") +
-  annotate("label", x = mavg, y = 10000, label = glue::glue("MW: {sprintf('%.2f', mavg)}"), fill = "#0072B2FF") +
-  annotate("label", x = md, y = 20000, label = glue::glue("Median: {sprintf('%.2f', md)}"), fill = "#009E73FF")
+    label = glue::glue("Modus: {sprintf('%.2f', mode_rounded)}"),
+    fill = orange, color = balken_textfarbe(orange)) +
+  annotate("label", x = mavg, y = 10000, label = glue::glue("MW: {sprintf('%.2f', mavg)}"),
+    fill = blue, color = balken_textfarbe(blue)) +
+  annotate("label", x = md, y = 20000, label = glue::glue("Median: {sprintf('%.2f', md)}"),
+    fill = green, color = balken_textfarbe(green))
 
 p_100_samples
 ```
@@ -1058,12 +1061,10 @@ Intervalle (Bereiche), die die "abzuschneidende" Wahrscheinlichkeitsmasse hälft
 
 eti_80 <- eti(bayesbox_g100_samples$p_grid, ci = .8)
 plot(eti_80) +
-  # order = c(5, 1): Blau/Orange statt Orange/Hellblau, da Letztere im
-  # Graustufendruck fast identisch hell sind (schlechter S/W-Kontrast)
-  scale_fill_okabeito(order = c(5, 1))  +
+  scale_fill_intervall()  +
   labs(caption = paste0("80%-ETI: Die mittleren 80% der Wahrscheinlichkeit \nliegen zwischen ", 
-                     round(eti_80$CI_low, 2), " und ", 
-                     round(eti_80$CI_high, 2)),
+                     sprintf("%.2f", eti_80$CI_low), " und ", 
+                     sprintf("%.2f", eti_80$CI_high)),
   x = "Wasseranteil",
   y = "Wahrscheinlichkeitsdichte",
   fill = "") +
@@ -1283,14 +1284,8 @@ Hier z. B. ein 50 %-Perzentilintervall, s. Abb. @fig-schief, (a).
 # Tufte-Stil fuer Dichte-/Flaechendiagramme: Range-Frame, kein Gitter
 tufte_dichte <- function(p, d) {
   p +
-    ggthemes::geom_rangeframe(data = d, aes(x = p_grid, y = post_33),
-                              color = dunkelgrau, size = 0.4) +
-    scale_y_continuous(breaks = c(0, max(d$post_33))) +
-    theme(panel.grid = element_blank(),
-          panel.grid.major.x = element_blank(),
-          panel.grid.major.y = element_blank(),
-          axis.ticks = element_line(color = dunkelgrau, linewidth = 0.4),
-          axis.ticks.length = grid::unit(3, "pt"))
+    tufte_rahmen(d, aes(x = p_grid, y = post_33)) +
+    scale_y_continuous(breaks = c(0, max(d$post_33)))
 }
 
 qi_50_low <- eti(samples_3w_3v$p_grid, ci = .5)$CI_low
@@ -1303,16 +1298,15 @@ p1 <-
   # check out our sweet `qi()` indexing
   geom_area(data = bayesbox_3w_3v |>
               filter(p_grid > qi_50_low &
-                    p_grid < qi_50_up),
-            fill = "#999999") +
-  geom_line(color = dunkelgrau) +
+                    p_grid < qi_50_up)) +
+  geom_line() +
   scale_x_continuous(breaks = seq(from = 0, to = 1, by = .1)) +
   labs(y = "Wahrscheinlichkeit",
     x = "Wasseranteil") +
   annotate("point", x = 1, y = max(bayesbox_3w_3v$post_33),
-           shape = 16, color = "#E69F00", size = 6) +
+           shape = 16, color = orange, size = 6) +
   annotate("text", x = 0.96, y = max(bayesbox_3w_3v$post_33),
-           label = "MAP", color = "#B36B00", fontface = "bold",
+           label = "MAP", color = textfarbe(orange), fontface = "bold",
            hjust = 1, size = 5)
 
 
@@ -1330,15 +1324,14 @@ p2 <-
   ggplot(aes(x = p_grid, y = post_33)) +
   geom_area(data = bayesbox_3w_3v |>
               filter(p_grid > hdi_50_low &
-                     p_grid <= hdi_50_up),
-            fill = "#999999") +
-  geom_line(color = dunkelgrau)  +
+                     p_grid <= hdi_50_up)) +
+  geom_line()  +
   labs(y = "Wahrscheinlichkeit",
     x = "Wasseranteil") +
   annotate("point", x = 1, y = max(bayesbox_3w_3v$post_33),
-           shape = 16, color = "#E69F00", size = 6) +
+           shape = 16, color = orange, size = 6) +
   annotate("text", x = 0.96, y = max(bayesbox_3w_3v$post_33),
-           label = "MAP", color = "#B36B00", fontface = "bold",
+           label = "MAP", color = textfarbe(orange), fontface = "bold",
            hjust = 1, size = 5)
 
 
@@ -1431,10 +1424,9 @@ point_estimates <-
 
 bayesbox_3w_3v |> 
   ggplot(aes(x = p_grid)) +
-  geom_area(aes(y = post_33),
-            fill = "#999999") +
+  geom_area(aes(y = post_33)) +
   annotate("point", x = 1, y = max(bayesbox_3w_3v$post_33),
-           color = "#E69F00", size = 3) +
+           color = orange, size = 3) +
   geom_vline(xintercept = point_estimates$p_grid) +
   geom_text(data = point_estimates,
             aes(x = x, y = y, label = paste0(.point, " = ", sprintf("%.2f", x))),
@@ -1442,9 +1434,8 @@ bayesbox_3w_3v |>
             hjust = 0) +
   labs(x = expression("Anteil Wasser (" * pi * ")"),
        y = "Wahrscheinlichkeitsdichte") +
-  theme(panel.grid = element_blank(),
-        axis.title.y = element_text(margin = margin(r = 6)),
-        plot.margin = margin(t = 14, r = 8, b = 5.5, l = 5.5))
+  ohne_gitter() +
+  theme(plot.margin = margin(t = 14, r = 8, b = 5.5, l = 5.5))
 
 ```
 

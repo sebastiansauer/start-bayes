@@ -6,9 +6,8 @@ uniform_plot <- function(a, b){
     stat_function(fun = dunif, args = list(min = a, max = b),
                   geom = "area",
                   fill = mittelgrau, alpha = 0.35) +
-    stat_function(fun = dunif, args = list(min = a, max = b), color = "#0072B2") +
+    stat_function(fun = dunif, args = list(min = a, max = b), color = blue) +
     labs(x = "Wert (x)", y = "Wahrscheinlichkeitsdichte (d)")  +
-    geom_vline(xintercept = a, linetype = "dashed", colour = "#4D4D4D") +
-    geom_vline(xintercept = b, linetype = "dashed", colour = "#4D4D4D")
+    referenzlinie(xintercept = c(a, b))
   
 }

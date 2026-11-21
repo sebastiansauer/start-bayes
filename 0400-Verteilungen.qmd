@@ -90,13 +90,6 @@ source("funs/binomial_plot.R")
 
 
 
-```{r r-setup}
-#| echo: false
-#| message: false
-#scale_color_okabeito()
-scale_colour_discrete <- function(...)
-  scale_color_okabeito(order = c(1, 2))
-```
 
 
 
@@ -369,12 +362,12 @@ d <- tibble(id = 1:5,
 p_urn <- 
   ggplot(d) +
   aes(x = id, label = id) +
-  annotate("rect", xmin = 0, xmax = 6, ymin = 0, ymax = 2, fill = "grey80", alpha = .8) +
+  annotate("rect", xmin = 0, xmax = 6, ymin = 0, ymax = 2, fill = gitterfarbe) +
   geom_point(size = 10, y = 1, aes(color = event) )+
   geom_text(aes(label = id), y = 1) +
   theme(axis.text = element_blank()) +
   labs(x = "", color = "") +
-  scale_color_okabeito(order = c(5, 1))
+  scale_colour_gruppen(c(2, 1))
 
 d2 <-
   tibble(id = 1:1e3,
@@ -385,9 +378,8 @@ p_urn2 <-
   ggplot(d2) +
   aes(color = Treffer) +
   geom_jitter(aes(x = 1, y = 1)) +
-  scale_color_okabeito(order = c(5, 1)) +
-  theme_void() +
-  theme(legend.position = "bottom")
+  scale_colour_gruppen(c(2, 1)) +
+  theme_leer()
 
 p_urn2
 ```
@@ -1202,16 +1194,10 @@ df_left  <- subset(df, x <= 0)
 df_right <- subset(df, x >= 0)
 
 ggplot(df, aes(x, y)) +
-  geom_area(data = df_left, aes(x, y), fill = "grey90") +
-  geom_area(data = df_right, aes(x, y), fill = "grey80") +
+  geom_area(data = df_left, aes(x, y), fill = hellgrau) +
+  geom_area(data = df_right, aes(x, y), fill = gitterfarbe) +
   #geom_line(size = 1) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  theme(
-    axis.title.y = element_blank(),
-    axis.text.y  = element_blank(),
-    axis.ticks.y = element_blank(),
-    axis.line.y  = element_blank()
-  ) +
+  ohne_y_achse() +
   scale_x_continuous(limits = c(0, 4))
 ```
 
@@ -1270,24 +1256,18 @@ df$y_exp <- dexp(df$x, rate = 1)       # Exponential density (λ = 1)
 
 ggplot(df, aes(x)) +
   # Filled areas
-  geom_area(aes(y = y_halfnorm), fill = okabeito_colors()[1], alpha = 0.4) +
-  geom_area(aes(y = y_exp), fill = okabeito_colors()[5], alpha = 0.4) +
+  geom_area(aes(y = y_halfnorm), fill = orange, alpha = 0.4) +
+  geom_area(aes(y = y_exp), fill = blue, alpha = 0.4) +
   # Curves
-  geom_line(aes(y = y_halfnorm), color = okabeito_colors()[1], size = 1) +
-  geom_line(aes(y = y_exp), color = okabeito_colors()[5], size = 1) +
+  geom_line(aes(y = y_halfnorm), color = orange, linewidth = trend_linienbreite) +
+  geom_line(aes(y = y_exp), color = blue, linewidth = trend_linienbreite) +
   # Labels
   annotate("label", x = 3.2, y = dnorm(3.2) * 2 + 0.02,
-           label = "Halbe Normal", color = "#B36B00", fontface = "bold", hjust = 0) +
+           label = "Halbe Normal", color = textfarbe(orange), fontface = "bold", hjust = 0) +
   annotate("label", x = 2.5, y = dexp(2.5, rate = 1) + 0.02,
-           label = "Exponenzial", color = okabeito_colors()[5], fontface = "bold", hjust = 0) +
+           label = "Exponenzial", color = textfarbe(blue), fontface = "bold", hjust = 0) +
   # Theme adjustments
-  scale_y_continuous(NULL, breaks = NULL) +
-  theme(
-    axis.title.y = element_blank(),
-    axis.text.y  = element_blank(),
-    axis.ticks.y = element_blank(),
-    axis.line.y  = element_blank()
-  ) +
+  ohne_y_achse() +
   scale_x_continuous(limits = c(0, 4))
 
 ```
@@ -1313,10 +1293,8 @@ y_vals <- dexp(x_vals, rate = rate) # Density values
 data <- data.frame(x = x_vals, y = y_vals)
 
 ggplot(data, aes(x = x, y = y)) +
-  geom_line(color = okabeito_colors()[1], size = 1) +
+  geom_line(color = orange, linewidth = trend_linienbreite) +
   tufte_aus() +
- # labs(title = "Exponential Distribution", x = "", y = "Density") +
-  theme(plot.title = element_text(hjust = 0.5)) +
   # Add emojis as text annotations
   annotate("text", x = 0, y = 0, label = "🌳", size = 12, vjust = 0) +
   annotate("text", x = 1, y = 0, label = "🍎", size = 6, vjust = 0) +
@@ -1381,7 +1359,6 @@ gg_exp <- function(r, max_x = NULL, probs = c(0.05, .25, .50, .75, .95)) {
     ggplot(NULL, aes(c(0, max_x))) +
     geom_area(stat = "function",
               fun = dexp,
-              fill = "#999999",
               args = list(rate = r))  +
     labs(title = paste0("Exp(", r, ")"),
          x = expression("Streuungsparameter (" * sigma * ")"),
@@ -1396,12 +1373,8 @@ gg_exp <- function(r, max_x = NULL, probs = c(0.05, .25, .50, .75, .95)) {
              size = 5,
              direction = "x",
              seed = 42) +
-    scale_y_continuous(breaks = NULL) +
-    theme(plot.caption = element_text(size = 12),
-          axis.text.y = element_blank(),
-          axis.ticks.y = element_blank(),
-          axis.title.y = element_blank(),
-          plot.margin = margin(2, 4, 2, 4))
+    ohne_y_achse() +
+    theme(plot.margin = margin(2, 4, 2, 4))
 
 }
 ```

@@ -43,19 +43,19 @@ plot_titanic_anteil <- function(var, xlab = NULL, x_labels = waiver()) {
       anteil = n / sum(n),
       status = if_else(Survived == "1", "überlebt", "gestorben"),
       label = sprintf("%s %.2f", status, anteil),
-      textfarbe = if_else(Survived == "1", "#FFFFFF", "#1A1A1A")
+      textfarbe = balken_textfarbe(if_else(Survived == "1", blue, orange))
     ) |>
     ungroup()
 
   ggplot(d, aes(x = {{ var }}, y = anteil, fill = status)) +
-    geom_col(position = "fill", color = "white", linewidth = 1.2, width = 0.85) +
+    geom_balken(position = "fill") +
     geom_text(
       aes(label = label, color = textfarbe),
       position = position_stack(vjust = 0.5),
       fontface = "bold",
       size = 3.6
     ) +
-    geom_hline(yintercept = prop_surv, linetype = "dashed", color = "#4D4D4D") +
+    referenzlinie(yintercept = prop_surv, colour = dunkelgrau) +
     annotate(
       "label",
       x = Inf,
@@ -64,16 +64,11 @@ plot_titanic_anteil <- function(var, xlab = NULL, x_labels = waiver()) {
       label = sprintf("Pr(Ü) = %.2f", prop_surv),
       size = 4
     ) +
-    scale_fill_manual(values = c("gestorben" = "#E69F00", "überlebt" = "#0072B2")) +
+    scale_fill_manual(values = c("gestorben" = orange, "überlebt" = blue)) +
     scale_color_identity() +
     scale_x_discrete(labels = x_labels) +
     labs(y = "Anteil Überlebende", x = xlab) +
-    theme(
-      legend.position = "none",
-      axis.text.y = element_blank(),
-      panel.grid.major.x = element_blank(),
-      panel.grid.major.y = element_blank()
-    )
+    theme_balken()
 }
 
 plottitanic1 <- plot_titanic_anteil(Pclass, xlab = "Passagierklasse")

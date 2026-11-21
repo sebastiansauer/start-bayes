@@ -35,10 +35,9 @@ plot_maschine_schrott_ALT <-
     y = "Anteil"
   ) +
   scale_fill_manual(
-    values = c("Schrott" = "#E69F00", "ok" = "#0072B2"),
+    values = c("Schrott" = orange, "ok" = blue),
     labels = c("Ausschuss", "OK")
-  ) +
-  theme(legend.position = "bottom")
+  )
 
 
 # Pakete laden
@@ -84,18 +83,13 @@ d_schrott <-
 
 plot_maschine_schrott <-
   ggplot(data = df, aes(x = Maschine, y = Prob, fill = Status)) +
-  geom_col(position = "stack", color = "white", linewidth = 1.2, width = 0.85) +
+  geom_balken(position = "stack") +
   geom_text(data = d_ok, aes(label = sprintf("OK %.3f", Prob)),
             position = position_stack(vjust = 0.5),
-            color = "#FFFFFF", fontface = "bold", size = 3.6) +
+            color = balken_textfarbe(blue), fontface = "bold", size = 3.6) +
   geom_text(data = d_schrott, aes(y = oben, label = sprintf("Ausschuss %.3f", Prob)),
-            vjust = -0.4, color = "#B36B00", fontface = "bold", size = 3.6) +
-  scale_fill_manual(values = c(Schrott = "#E69F00", ok = "#0072B2")) +
+            vjust = -0.4, color = orange_text, fontface = "bold", size = 3.6) +
+  scale_fill_manual(values = c(Schrott = orange, ok = blue)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
   labs(x = "Maschine", y = "Anteil an der Produktion") +
-  theme(
-    legend.position = "none",
-    axis.text.y = element_blank(),
-    panel.grid.major.x = element_blank(),
-    panel.grid.major.y = element_blank()
-  )
+  theme_balken()

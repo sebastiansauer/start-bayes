@@ -11,7 +11,7 @@ plot_binom_likelihood <- function(x, n, p_step = 0.1) {
 
   # Plot
   ggplot(df, aes(x = p, y = likelihood)) +
-    geom_line(color = "grey80") +
+    geom_line(color = mittelgrau) +
     geom_point(aes(x = p, y = likelihood), color = blue, size = 2) +
     labs(
       title = paste("Likelihood-Funktion für Binomialverteilung"),

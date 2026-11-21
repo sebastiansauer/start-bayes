@@ -39,14 +39,15 @@ df$Label <- ifelse(
   paste0("nicht überlebt ", percent(df$Prozent, accuracy = 1))
 )
 
-# Textfarbe je Füllung: weiß auf Dunkelblau, fast schwarz auf Orange
-df$Textfarbe <- ifelse(df$Status == "überlebt", "#FFFFFF", "#1A1A1A")
+# Füllfarben; Textfarbe je Füllung: weiß auf Dunkelblau, fast schwarz auf Orange
+farben_status <- c("nicht überlebt" = orange, "überlebt" = blue)
+df$Textfarbe <- balken_textfarbe(farben_status[as.character(df$Status)])
 
 # Gestapelte Balken: weiße Trennlinie, Werte im Balken, keine Legende,
 # keine y-Achse, kein Gitter (Tufte). Okabe-Ito: Dunkelblau / Orange.
 plot_kausalstudie_a <-
   ggplot(df, aes(x = Geschlecht, y = Prozent, fill = Status)) +
-  geom_col(position = "fill", color = "white", linewidth = 1.2, width = 0.85) +
+  geom_balken(position = "fill") +
   geom_text(
     aes(label = Label, color = Textfarbe),
     position = position_stack(vjust = 0.5),
@@ -55,18 +56,10 @@ plot_kausalstudie_a <-
     fontface = "bold"
   ) +
   facet_wrap(~Gruppe) +
-  scale_fill_manual(values = c("nicht überlebt" = "#E69F00", "überlebt" = "#0072B2")) +
+  scale_fill_manual(values = farben_status) +
   scale_color_identity() +
   labs(
     x = NULL, y = NULL,
     title = "Überlebensrate nach Geschlecht, mit/ohne Medikament"
   ) +
-  theme(
-    legend.position = "none",
-    axis.text.y = element_blank(),
-    panel.grid.major.x = element_blank(),
-    panel.grid.major.y = element_blank(),
-    panel.spacing.x = unit(1.5, "lines"),
-    axis.text.x = element_text(size = rel(1.05)),
-    strip.text = element_text(face = "bold")
-  )
+  theme_balken()

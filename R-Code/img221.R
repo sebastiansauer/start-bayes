@@ -43,11 +43,11 @@ d %>%
   # Priori-/Posteriori-Linien über 9 Panels leichter unterscheidbar macht und
   # im Graustufendruck weiterhin guten Kontrast hat
   ggplot(aes(x = p_water)) +
-  geom_line(aes(y = prior), linetype = 2, color = "#E69F00") +
-  geom_line(aes(y = likelihood), color = "#0072B2") +
+  geom_line(aes(y = prior), linetype = 2, color = orange) +
+  geom_line(aes(y = likelihood), color = blue) +
   scale_x_continuous("Anteil Wasser", breaks = c(0, .5, 1)) +
   scale_y_continuous("Plausibilität", breaks = NULL) +
-  theme(panel.grid = element_blank()) +
+  ohne_gitter() +
   facet_wrap(~strip, scales = "free_y") +
   labs(caption= "Gestrichelte Linie: Priori-Verteilung (vor den Daten);\nDurchgezogene Linie: Posteriori-Verteilung (nach Daten)")
 

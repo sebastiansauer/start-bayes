@@ -4,16 +4,16 @@ plot16a <-
                     B = c(0, 1))) +
   aes(x = A, y = B) +
   annotate("rect", xmin = 0, xmax = 1, ymin = 0, ymax = .5,
-           color = "#009E73FF", alpha = .7, fill = NA) +
+           color = green, alpha = .7, fill = NA) +
   annotate("rect", xmin = 0, xmax = 1, ymin = 0.5, ymax = 1,
-           color = NA, alpha = .5, fill = "#009E73FF") +
+           color = NA, alpha = .5, fill = green) +
   annotate("rect", xmin = 0, xmax =0.5, ymin = 0, ymax = 1,
-           color = "#56B4E9FF", alpha = .7, fill = NA) +
+           color = himmelblau, alpha = .7, fill = NA) +
   annotate("rect", xmin = 0.5, xmax = 1, ymin = 0, ymax = 1,
-           color = "#56B4E9FF", alpha = .5, fill = "#56B4E9FF") +
+           color = himmelblau, alpha = .5, fill = himmelblau) +
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
-  theme(axis.text = element_text(size = 18)) +
+  achsentext_gross() +
   labs(x = "", y = "")
 
 
@@ -24,11 +24,11 @@ plot_pr_b <-
   annotate("rect", xmin = 0, xmax = 1, ymin = 0, ymax = .5,
            color = dunkelgrau, alpha = .7, fill = NA) +
   annotate("rect", xmin = 0, xmax = 1, ymin = 0.5, ymax = 1,
-           color = NA, alpha = .5, fill = "#009E73FF") +
+           color = NA, alpha = .5, fill = green) +
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
   annotate("label", x = .5, y = .75, label = "Pr(B) = 50%") +
-  theme(axis.text = element_text(size = 18)) +
+  achsentext_gross() +
   labs(x = "", y = "")
 
 plot_pr_a <-
@@ -38,11 +38,11 @@ plot_pr_a <-
   annotate("rect", xmin = 0, xmax =0.5, ymin = 0, ymax = 1,
            color = dunkelgrau, alpha = .7, fill = NA) +
   annotate("rect", xmin = 0.5, xmax = 1, ymin = 0, ymax = 1,
-           color = "#56B4E9FF", alpha = .5, fill = "#56B4E9FF") +
+           color = himmelblau, alpha = .5, fill = himmelblau) +
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
   annotate("label", x = .75, y = .5, label = "Pr(A) = 50%") +
-  theme(axis.text = element_text(size = 18)) +
+  achsentext_gross() +
   labs(x = "", y = "")
 
 
@@ -51,19 +51,19 @@ plot_pr_ab <-
                     B = c(0, 1))) +
   aes(x = A, y = B) +
   annotate("rect", xmin = 0, xmax = 1, ymin = 0, ymax = .5,
-           color = "#009E73FF", alpha = .7, fill = NA) +
+           color = green, alpha = .7, fill = NA) +
   annotate("rect", xmin = 0, xmax = 1, ymin = 0.5, ymax = 1,
-           color = NA, alpha = .5, fill = "#009E73FF") +
+           color = NA, alpha = .5, fill = green) +
   annotate("rect", xmin = 0, xmax =0.5, ymin = 0, ymax = 1,
-           color = "#56B4E9FF", alpha = .7, fill = NA) +
+           color = himmelblau, alpha = .7, fill = NA) +
   annotate("rect", xmin = 0.5, xmax = 1, ymin = 0, ymax = 1,
-           color = "#56B4E9FF", alpha = .5, fill = "#56B4E9FF") +
+           color = himmelblau, alpha = .5, fill = himmelblau) +
   annotate("rect", xmin = 0.5, xmax = 1, ymin = 0.5, ymax = 1,
-           color = "#E69F00FF", alpha = .7, fill = NA, linewidth = 2) +
+           color = orange, alpha = .7, fill = NA, linewidth = 2) +
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
-  annotate(geom = "label", x = .75, y = 0.75, label = "A,B", color = "#E69F00FF") +
-  theme(axis.text = element_text(size = 18)) +
+  annotate(geom = "label", x = .75, y = 0.75, label = "A,B", color = textfarbe(orange)) +
+  achsentext_gross() +
   labs(x = "", y = "")
 
 
@@ -76,18 +76,18 @@ plot_pr_b_geg_a <-
                     B = c(0, 1))) +
   aes(x = A, y = B) +
   annotate("rect", xmin = 0, xmax = 1, ymin = 0.5, ymax = 1,
-           color = "#009E73FF", alpha = .3, fill = NA, linewidth = 1) +
+           color = green, alpha = .3, fill = NA, linewidth = 1) +
   annotate("rect", xmin = 0, xmax = 1, ymin = 0.5, ymax = 1,
-           color = NA, alpha = .5, fill = "NA") +
+           color = NA, alpha = .5, fill = NA) +
   # annotate("rect", xmin = 0, xmax =0.5, ymin = 0, ymax = 1,
-  #          color = "#56B4E9FF", alpha = .7, fill = NA) +
+  #          color = himmelblau, alpha = .7, fill = NA) +
   annotate("rect", xmin = 0.5, xmax = 1, ymin = 0, ymax = 1,
-           color = "#56B4E9FF", alpha = .5, fill = "#56B4E9FF", linewidth = 2) +
+           color = himmelblau, alpha = .5, fill = himmelblau, linewidth = 2) +
   annotate("rect", xmin = 0.5, xmax = 1, ymin = 0.5, ymax = 1,
-           color = "#E69F00FF", alpha = .7, fill = "#E69F00FF", linewidth = 2) +
+           color = orange, alpha = .7, fill = orange, linewidth = 2) +
   scale_x_continuous(breaks = c(0.25, 0.75), labels = c("¬A", "A")) +
   scale_y_continuous(breaks = c(0.25, 0.75), labels = c("¬B", "B")) +
-  annotate(geom = "label", x = .75, y = 0.75, label = "B|A", color = "#E69F00FF")  +
-  theme(axis.text = element_text(size = 18)) +
+  annotate(geom = "label", x = .75, y = 0.75, label = "B|A", color = textfarbe(orange))  +
+  achsentext_gross() +
   labs(x = "", y = "")
 

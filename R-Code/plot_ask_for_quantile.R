@@ -20,7 +20,7 @@ plot_ask_for_quantile <- function(
   p_quantile <-
     data %>%
     ggplot(aes(x = p_grid, y = post)) +
-    geom_line(color = "grey40") +
+    geom_line() +
     labs(
       title = "Welcher Wasseranteil\nwird mit 50% Wahrscheinlichkeit\nnicht übertroffen?",
       x = "Wasseranteil",
@@ -35,17 +35,13 @@ plot_ask_for_quantile <- function(
     scale_x_continuous(
       breaks = c(0, 1 / 2, as.numeric(q), 1)
     ) +
-    geom_vline(
-      xintercept = as.numeric(q),
-      color = "grey40",
-      linetype = "dashed"
-    ) +
+    referenzlinie(xintercept = as.numeric(q)) +
     annotate(
       "label",
       x = as.numeric(q),
       y = .01,
       label = paste0("prob=", p),
-      color = blue
+      color = textfarbe(blue)
     )
 
   print(p_quantile)

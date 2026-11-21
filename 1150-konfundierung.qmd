@@ -772,7 +772,7 @@ estimate_means(m2, by = "bedrooms", length = 7)
 estimate_means(m2, by = "bedrooms", length = 7) |>
   ggplot() +
   aes(x = bedrooms, y = Median) +
-  geom_line(color = dunkelgrau) +
+  geom_line() +
   geom_point(alpha = .7, color = dunkelgrau) +
   labs(x = "Anzahl Schlafzimmer (bedrooms)", y = "Hauspreis [USD] (price)")
 ```
@@ -843,12 +843,12 @@ size_group_labs <-
 
 d_size_group |>
   ggplot(aes(x = bedrooms, y = price)) +
-  geom_jitter(alpha = .3, color = dunkelgrau) +
+  geom_jitter() +
   geom_abline(data = d_m2a,
               aes(intercept = intercept,
                   slope = slope),
-              color = "#0072B2",
-              linewidth = 2) +
+              color = trendfarbe,
+              linewidth = trend_linienbreite) +
   facet_wrap(~ size_group, nrow = 1, labeller = as_labeller(size_group_labs)) +
   labs(x = "Schlafzimmer (bedrooms)", y = "Hauspreis [USD] (price)",
        caption = "Facetten zeigen Quartile der Variable 'Wohnfläche'")

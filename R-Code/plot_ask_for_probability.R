@@ -12,12 +12,12 @@ plot_ask_for_probability <- function(
   pi <- as.numeric(q)
 
   F <- ecdf(samples$p_grid)
-  q2 <- F(as.numeric(pi)) |> round(2)
+  q2 <- sprintf("%.2f", F(as.numeric(pi)))
 
   p_probability <-
     data |>
     ggplot(aes(x = p_grid, y = post)) +
-    geom_line(color = "grey40") +
+    geom_line() +
     labs(
       title = title,
       x = "Wasseranteil",
@@ -30,13 +30,13 @@ plot_ask_for_probability <- function(
     ) +
     geom_point() +
     scale_x_continuous(breaks = c(0, 1 / 2, 1)) +
-    geom_vline(xintercept = 1 / 2, color = "grey40", linetype = "dashed") +
+    referenzlinie(xintercept = 1 / 2) +
     annotate(
       "label",
       x = 1 / 2,
       y = .01,
       label = paste0("p= ", q2),
-      color = blue
+      color = textfarbe(blue)
     )
 
   print(p_probability)

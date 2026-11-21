@@ -30,38 +30,32 @@ p1 <-
   d %>%
   filter(row == "flat") %>%
   ggplot(aes(x = probability, y = value)) +
-  geom_line(color = "#0072B2") +
+  geom_line(color = blue) +
   scale_x_continuous(NULL, breaks = NULL) +
   scale_y_continuous(NULL, breaks = NULL) +
-  theme(panel.grid = element_blank()) +
+  ohne_gitter() +
   facet_wrap(~name, scales = "free_y")
 
 p2 <-
   d %>%
   filter(row == "stepped") %>%
   ggplot(aes(x = probability, y = value)) +
-  geom_line(color = "#0072B2") +
+  geom_line(color = blue) +
   scale_x_continuous(NULL, breaks = NULL) +
   scale_y_continuous(NULL, breaks = NULL) +
-  theme(
-    panel.grid = element_blank(),
-    strip.background = element_blank(),
-    strip.text = element_blank()
-  ) +
+  ohne_gitter() +
+  theme(strip.text = element_blank()) +
   facet_wrap(~name, scales = "free_y")
 
 p3 <-
   d %>%
   filter(row == "Laplace") %>%
   ggplot(aes(x = probability, y = value)) +
-  geom_line(color = "#0072B2") +
+  geom_line(color = blue) +
   scale_x_continuous(NULL, breaks = c(0, .5, 1)) +
   scale_y_continuous(NULL, breaks = NULL) +
-  theme(
-    panel.grid = element_blank(),
-    strip.background = element_blank(),
-    strip.text = element_blank()
-  ) +
+  ohne_gitter() +
+  theme(strip.text = element_blank()) +
   facet_wrap(~name, scales = "free_y")
 
 # combine

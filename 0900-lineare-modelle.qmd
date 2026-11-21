@@ -199,8 +199,8 @@ kung_erwachsen |>
   select(age, height, weight) |>  # Fixed duplicate 'age' column
   pivot_longer(cols = everything(), names_to = "variable", values_to = "value") |>  # Pivot to long format
   ggplot(aes(x = value)) +
-  geom_histogram(aes(y = after_stat(density)), fill = mittelgrau) +  # Histogram with density scaling
-  geom_density(color = blue, size = 1) +  # Density plot in blue
+  geom_histogram(aes(y = after_stat(density))) +  # Histogram with density scaling
+  geom_density(color = trendfarbe, linewidth = trend_linienbreite) +  # Dichte als Kernaussage (blau)
   facet_wrap(~ variable, scales = "free") + # Faceting by variable, free scales for each facet
   scale_y_continuous(breaks = NULL) +
   labs(y = "Wahrscheinlichkeitsdichte")
@@ -429,17 +429,14 @@ Der Mittelwert von `weight_c` (das zentrierte Gewicht) liegt jetzt bei 0, s. @fi
 kung_zentriert |> 
   select(weight, weight_c) |> 
   ggplot() +
-  geom_histogram(aes(x = weight), fill = mittelgrau) +
-  geom_histogram(aes(x = weight_c), fill = "black") +
+  geom_histogram(aes(x = weight)) +
+  geom_histogram(aes(x = weight_c), fill = dunkelgrau) +
   geom_segment(x = mean(kung_zentriert$weight),
                xend = 0, 
                y = 20, yend = 20, 
                arrow = arrow(length = unit(0.2, "cm"), type = "closed"),
-               color = okabeito_colors()[1], size = 2) +
-  geom_vline(xintercept = mean(kung_zentriert$weight), color = okabeito_colors()[1], 
-             linetype = "dashed") +
-  geom_vline(xintercept = 0, color = okabeito_colors()[1],
-             linetype = "dashed") +
+               color = orange, linewidth = trend_linienbreite) +
+  referenzlinie(xintercept = c(0, mean(kung_zentriert$weight)), colour = orange) +
   annotate("label", x = 0, y = 5, label = "Gewicht zentriert") +
   annotate("label", x = mean(kung_zentriert$weight), y = 5, label = "Gewicht")  +
   labs(caption = "Die vertikalen gepunkteten Linien zeigen die Mittelwerte der Verteilungen.")
@@ -896,7 +893,7 @@ um einen Überblick über Lage- und Streuungsmaße der Post-Verteilung zu bekomm
 #| fig-cap: "Die Postverteilung für den Parameter Gewicht (zentriert); die plausiblen Werte liegen zwischen 0.8 und 1.0 cm pro Kilogramm Gewicht"
 m_kung_starkes_beta1_post |>
   ggplot(aes(x = weight_c)) +
-  geom_density(fill = "grey80") +
+  geom_density(fill = mittelgrau) +
   labs(x = expression("Steigungskoeffizient für Gewicht [cm/kg] (" * beta[1] * ")"), y = "Wahrscheinlichkeitsdichte (d)")
 ```
 
@@ -1440,7 +1437,7 @@ p_post_at <-
   geom_segment(data = m_kung_gewicht_c_post_long_summary |> 
                  mutate(Gewicht = sub("mu", "", Gewicht)),
                aes(x = ci_low, xend = ci_high, y = 0, yend = 0),
-               color = "#4D4D4D", linewidth = 1.2) +
+               color = dunkelgrau, linewidth = 1.2) +
   geom_text(data = m_kung_gewicht_c_post_long_summary |> 
               mutate(Gewicht = sub("mu", "", Gewicht),
                      farbe_text = okabe_text[1:4]),
