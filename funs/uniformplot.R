@@ -6,7 +6,7 @@ uniform_Plot <- function(a, b){
     stat_function(fun = dunif, args = list(min = a, max = b), 
                   geom = "area", 
                   fill = mittelgrau, alpha = 0.75) + 
-    stat_function(fun = dunif, args = list(min = a, max = b), color = "#0072B2FF") +
+    stat_function(fun = dunif, args = list(min = a, max = b), color = "#4D4D4D") +
     labs(x = "Wert (x)", y = "Wahrscheinlichkeitsdichte (d)")  +
     geom_vline(xintercept = a, linetype = "dashed", colour = "grey") +
     geom_vline(xintercept = b, linetype = "dashed", colour = "grey")
