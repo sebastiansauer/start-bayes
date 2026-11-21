@@ -622,13 +622,48 @@ Man könnte auch sagen: Wir haben praktisch kein Vorwissen, wir sind erstmal (a 
 jeder Parameterwert erscheint uns erstmal gleich wahrscheinlich, 
 s. @fig-unif01.
 
+::: {.content-visible when-format="html"}
 
+Zur Erinnerung, was $\pi$ eigentlich ist:
+Jeder Wurf landet entweder auf Wasser oder auf Land.
+$\pi$ ist der Anteil Wasser, der Rest $1-\pi$ ist Land -- zusammen immer 100 %.
+Stellen Sie in @fig-wasser-land mit dem Regler einen Wert für $\pi$ ein; die Land-Säule passt sich entsprechend an.
+Jede Reglerstellung ist eine Hypothese über die Erde.
+Die Priori-Verteilung sagt, wie plausibel uns jede dieser Hypothesen *vor* den Daten erscheint --
+bei der Gleichverteilung ist jede Reglerstellung gleich plausibel.
 
+::: {#fig-wasser-land}
 
+```{ojs}
+//| echo: false
+viewof pi_wasser = Inputs.range([0, 1], {label: "Wasseranteil π", step: 0.01, value: 0.5})
 
+Plot.plot({
+  width: Math.min(width, 420),
+  height: 300,
+  marginTop: 30,
+  x: {label: null, domain: ["Wasser (π)", "Land (1 − π)"], padding: 0.3},
+  y: {label: "Anteil", domain: [0, 1], tickFormat: "%", grid: true},
+  marks: [
+    Plot.barY(
+      [{seite: "Wasser (π)", anteil: pi_wasser}, {seite: "Land (1 − π)", anteil: 1 - pi_wasser}],
+      {x: "seite", y: "anteil", fill: "seite"}
+    ),
+    Plot.text(
+      [{seite: "Wasser (π)", anteil: pi_wasser}, {seite: "Land (1 − π)", anteil: 1 - pi_wasser}],
+      {x: "seite", y: "anteil", text: d => `${Math.round(d.anteil * 100)} %`, dy: -10, fontSize: 14}
+    ),
+    Plot.ruleY([0])
+  ],
+  color: {domain: ["Wasser (π)", "Land (1 − π)"], range: ["#0072B2", "#E69F00"]}
+})
+```
 
+Der Parameter $\pi$ teilt die Erdoberfläche in Wasser ($\pi$) und Land ($1-\pi$); beide Anteile ergeben zusammen 100 %. Interaktiv: Stellen Sie $\pi$ mit dem Regler ein.
 
+:::
 
+:::
 
 ```{r}
 #| echo: false
