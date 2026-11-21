@@ -204,8 +204,42 @@ base::registerS3method("ggplot_add", "tufte_aus",
                        },
                        envir = asNamespace("ggplot2"))
 
+# Overplotting: Punkt-Layer (geom_point/geom_jitter) mit vielen Zeilen werden
+# leicht durchsichtig, damit dichte Bereiche dunkler erscheinen. Gilt nur, wenn
+# alpha weder fest gesetzt (geom_point(alpha = ...)) noch gemappt ist.
+# Stufen (Zeilen im Layer -> alpha): < 100 -> 1 (unveraendert), ab 100 -> 0.6,
+# ab 300 -> 0.35, ab 1000 -> 0.15. Abschalten: options(tufte_alpha = FALSE).
+.tufte_alpha_stufen <- c(`100` = 0.6, `300` = 0.35, `1000` = 0.15)
+tufte_alpha <- function(plot) {
+  if (!isTRUE(getOption("tufte_alpha", TRUE))) return(plot)
+  for (i in seq_along(plot@layers)) {
+    l <- plot@layers[[i]]
+    if (!inherits(l$geom, "GeomPoint")) next
+    if (!is.null(l$aes_params$alpha) || !is.null(l$mapping$alpha) ||
+        (!isFALSE(l$inherit.aes) && !is.null(plot@mapping$alpha))) next
+    d <- tryCatch({
+      d <- l$data
+      if (inherits(d, "waiver") || is.null(d)) plot@data
+      else if (is.function(d)) d(plot@data) else d
+    }, error = function(e) NULL)
+    if (!is.data.frame(d)) next
+    grenzen <- as.numeric(names(.tufte_alpha_stufen))
+    stufe <- sum(nrow(d) >= grenzen)
+    if (stufe == 0) next
+    plot@layers[[i]] <- .layer_mit_alpha(l, unname(.tufte_alpha_stufen[stufe]))
+  }
+  plot
+}
+# Kopie des Layers (ggproto-Kind), damit das Plot-Objekt selbst unveraendert
+# bleibt. Eigene Funktion, weil ggproto() den Eltern-Layer erst spaeter in der
+# aufrufenden Umgebung auswertet -- in einer Schleife zeigte er sonst auf den
+# zuletzt durchlaufenen Layer.
+.layer_mit_alpha <- function(eltern, alpha) {
+  ggplot2::ggproto(NULL, eltern, aes_params = c(eltern$aes_params, list(alpha = alpha)))
+}
+
 base::registerS3method("ggplot_build", "ggplot2::ggplot",
-                 function(plot) .ggplot_build_orig(tufte_streu(y_label_nach_oben(plot))),
+                 function(plot) .ggplot_build_orig(tufte_alpha(tufte_streu(y_label_nach_oben(plot)))),
                  envir = asNamespace("ggplot2"))
 
 knitr::opts_chunk$set(tidy = FALSE,
