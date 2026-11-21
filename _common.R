@@ -68,13 +68,17 @@ y_label_nach_oben <- function(plot) {
   ylab <- ggplot2::get_labs(plot)$y
   if (is.null(ylab) || !is.character(ylab) || !nzchar(ylab[1])) return(plot)
   sub <- ggplot2::get_labs(plot)$subtitle
+  # y-Titel mit HTML (z. B. gruppen_schluessel()) per ggtext rendern
+  md <- .ist_markdown(ylab[1])
+  el <- if (md) ggtext::element_markdown else ggplot2::element_text
   plot +
-    ggplot2::labs(subtitle = if (is.null(sub)) ylab else paste0(sub, "\n", ylab)) +
+    ggplot2::labs(subtitle = if (is.null(sub)) ylab else
+                    paste0(sub, if (md) "<br>" else "\n", ylab)) +
     ggplot2::theme(axis.title.y = ggplot2::element_blank(),
                    plot.title.position = "panel",
-                   plot.subtitle = ggplot2::element_text(hjust = 0,
-                                                         margin = ggplot2::margin(b = 6)))
+                   plot.subtitle = el(hjust = 0, margin = ggplot2::margin(b = 6)))
 }
+.ist_markdown <- function(x) is.character(x) && grepl("<b|<span|&#", x)
 # Tufte-Stil fuer Streu- und Liniendiagramme: keine Gitterlinien, Achsenlinien
 # nur im Datenbereich (Range-Frame, ggthemes::geom_rangeframe) und ein grauer
 # Rug (Datenpunkte als Striche statt klassischer Ticks).
@@ -352,6 +356,29 @@ add_farben <- function(d, gruppe) {
   d
 }
 
+# Gruppen-Schluessel fuer den y-Titel (statt Legende, Skill ggplot-diagramme):
+# je Gruppe Symbol + Name in der Textfarbe der Gruppe, fett. Liefert HTML;
+# y_label_nach_oben() rendert es per ggtext::element_markdown. Beispiel:
+#   labs(y = paste0("IQ des Kindes; Mutter ",
+#                   gruppen_schluessel(c("ohne", "mit"), c(blue, orange)),
+#                   " Schulabschluss"))
+# `formen` wie in scale_shape_manual (16 Kreis, 17 Dreieck, 15 Quadrat, 18 Raute);
+# Linienfarben werden automatisch auf die lesbare Textfarbe (okabe_text) abgebildet.
+gruppen_formen <- c(16, 17, 15, 18)
+.form_zeichen <- c(`16` = "&#9679;", `19` = "&#9679;", `17` = "&#9650;",
+                   `15` = "&#9632;", `18` = "&#9670;")
+textfarbe <- function(farbe) {
+  f <- toupper(sub("^(#[0-9A-Fa-f]{6})FF$", "\\1", farbe))
+  i <- match(f, okabe_linie)
+  ifelse(is.na(i), f, okabe_text[i])
+}
+gruppen_schluessel <- function(namen, farben,
+                               formen = gruppen_formen[seq_along(namen)],
+                               trenner = " / ") {
+  paste0("<b style='color:", textfarbe(farben), "'>",
+         .form_zeichen[as.character(formen)], " ", namen, "</b>",
+         collapse = trenner)
+}
 
 labeltextsize <- 8
 

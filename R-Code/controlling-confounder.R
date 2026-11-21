@@ -37,7 +37,7 @@ d_sim_label <-
 p_konf2 <-
   d_sim %>%
   ggplot(aes(x = x, y = y)) +
-  geom_point(aes(color = farbe_linie)) +
+  geom_point(aes(color = farbe_linie, shape = group)) +
   geom_smooth(aes(color = farbe_linie, group = group), method = "lm", se = FALSE) +
   geom_text_repel(
     data = d_sim_label,
@@ -46,7 +46,11 @@ p_konf2 <-
     segment.color = NA, show.legend = FALSE
   ) +
   scale_color_identity() +
+  # Gruppen auch per Symbol; Schlüssel (Symbol + Farbe) im y-Titel
+  scale_shape_manual(values = c(A = 16, B = 17), guide = "none") +
   scale_x_continuous(expand = expansion(mult = c(0.02, 0.2))) +
+  labs(y = paste0("y; Gruppe ",
+                  gruppen_schluessel(c("A", "B"), okabe_linie[1:2], c(16, 17)))) +
   theme(legend.position = "none")
 
 
