@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 <meta charset="UTF-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.11.9">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="keywords" content="Statistik, Bayes, Wahrscheinlichkeit, Inferenz, R, Kausalität">
 <meta name="description" content="Start:Bayes! ist die erste deutschsprachige Einführung in die Bayes-Statistik, die anwendungsnah, mit modernen Werkzeugen (R) und mit mehr Lockerheit als oft üblich vermittelt wird. Statt p-Werten steht eine Idee im Zentrum, die näher am gesunden Menschenverstand ist: Wir starten mit einer Annahme, sammeln Daten und aktualisieren unser Wissen entsprechend. Das Buch richtet sich an alle, die Bayes-Modelle nicht nur verstehen, sondern selbst berechnen und interpretieren wollen. Der Aufbau folgt der Logik der Sache: von Wahrscheinlichkeit und Verteilungen über den Kern der Bayes-Statistik am Beispiel des Globus-Versuchs bis zu linearen Modellen und Kausalität.">
@@ -10,10 +10,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -90,18 +93,19 @@ div.csl-indent {
 <link href="./img/Golem_hex-small.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-447e42e69aaa9833c0ba1b986f430b20.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a4c491303f69927a1321bd3546903061.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-2dc673c3628f6ea71864dee0e7890cee.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-a4c491303f69927a1321bd3546903061.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dbf57ad83c13ae4f422b554da963db29.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-94c3ff760a031db47e09d51bd2e9d7bf.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-dbf57ad83c13ae4f422b554da963db29.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -134,7 +138,7 @@ div.csl-indent {
 <script src="site_libs/quarto-diagram/mermaid.min.js"></script><script src="site_libs/quarto-diagram/mermaid-init.js"></script><link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script><link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -162,7 +166,7 @@ window.Quarto = {
 </script><link rel="stylesheet" href="specifics/styles.css">
 <link rel="stylesheet" href="specifics/webex.css">
 </head>
-<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Zum Hauptinhalt springen</a><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -185,6 +189,7 @@ window.Quarto = {
       for (let i=0; i < toggles.length; i++) {
         const toggle = toggles[i];
         if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
           if (alternate) {
             toggle.classList.add("alternate");
           } else {
@@ -214,13 +219,19 @@ window.Quarto = {
       manageTransitions('#quarto-margin-sidebar .nav-link', true);
       // Switch the toggles
       setColorSchemeToggle(alternate)
-      // Hack to workaround the fact that safari doesn't
-      // properly recolor the scrollbar when toggling (#1455)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
       if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
         manageTransitions("body", false);
-        window.scrollTo(0, 1);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
         setTimeout(() => {
-          window.scrollTo(0, 0);
+          window.scrollTo(0, scrollY);
           manageTransitions("body", true);
         }, 40);
       }
@@ -314,6 +325,7 @@ window.Quarto = {
       // Read the current dark / light value
       let toAlternate = !hasAlternateSentinel();
       toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
       setStyleSentinel(toAlternate);
       toggleGiscusIfUsed(toAlternate, darkModeDefault);
       window.dispatchEvent(new Event('resize'));
@@ -327,12 +339,12 @@ window.Quarto = {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" aria-label="Symbolleiste"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./0200-zielarten.html">Grundlagen</a></li><li class="breadcrumb-item"><a href="./0300-Wskt.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Hallo, Wahrscheinlichkeit</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Seitenleiste umschalten" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <nav class="quarto-page-breadcrumbs" aria-label="Pfad"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./0200-zielarten.html">Grundlagen</a></li><li class="breadcrumb-item"><a href="./0300-Wskt.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Hallo, Wahrscheinlichkeit</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Suchen" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
@@ -340,14 +352,14 @@ window.Quarto = {
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Website"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./img/Golem_hex-small.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="./img/Golem_hex-small.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Start:Bayes!</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="https://github.com/sebastiansauer/start-bayes" title="Quellcode" class="quarto-navigation-tool px-1" aria-label="Quellcode"><i class="bi bi-github"></i></a>
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Dunkelmodus umschalten"><i class="bi"></i></a>
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Dunkelmodus umschalten" aria-label="Dunkelmodus umschalten"><i class="bi"></i></button>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Lesemodus umschalten">
   <div class="quarto-reader-toggle-btn">
   <i class="bi"></i>
@@ -377,13 +389,10 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Grundlagen</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Grundlagen</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./0200-zielarten.html" class="sidebar-item-text sidebar-link">
@@ -418,13 +427,10 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Bayes</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">Bayes</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./0500-Globusversuch.html" class="sidebar-item-text sidebar-link">
@@ -441,13 +447,10 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Lineare Modelle</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">Lineare Modelle</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./0800-gauss.html" class="sidebar-item-text sidebar-link">
@@ -476,13 +479,10 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">Kausalität</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">Kausalität</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./1150-konfundierung.html" class="sidebar-item-text sidebar-link">
@@ -505,13 +505,10 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Anhang</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Abschnitt umschalten">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-controls="quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-5-label">Anhang</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+      <ul id="quarto-sidebar-section-5" aria-labelledby="quarto-sidebar-section-5-label" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./1200-abschluss.html" class="sidebar-item-text sidebar-link">
@@ -543,7 +540,7 @@ window.Quarto = {
 </nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99"><h2 id="toc-title">Inhaltsverzeichnis</h2>
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active" data-toc-expanded="99"><h2 id="toc-title">Inhaltsverzeichnis</h2>
    
   <ul>
 <li>
@@ -604,7 +601,7 @@ window.Quarto = {
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/sebastiansauer/start-bayes/blob/main/0300-Wskt.qmd" class="toc-action"><i class="bi bi-github"></i>Quellcode anzeigen</a></li><li><a href="https://github.com/sebastiansauer/start-bayes/issues/new" class="toc-action"><i class="bi empty"></i>Problem melden</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./0200-zielarten.html">Grundlagen</a></li><li class="breadcrumb-item"><a href="./0300-Wskt.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Hallo, Wahrscheinlichkeit</span></a></li></ol></nav><div class="quarto-title">
+<main class="content" id="quarto-document-content" tabindex="-1"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Pfad"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./0200-zielarten.html">Grundlagen</a></li><li class="breadcrumb-item"><a href="./0300-Wskt.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Hallo, Wahrscheinlichkeit</span></a></li></ol></nav><div class="quarto-title">
 <h1 class="title">
 <span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Hallo, Wahrscheinlichkeit</span>
 </h1>
@@ -789,6 +786,7 @@ Abbildung&nbsp;4.1: Ein (sechsseitiger) Würfel, Bildquelle: Peter Steinberg, Wi
 <div id="fig-baummuenz1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-baummuenz1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
+
 <pre class="mermaid mermaid-js" data-label="fig-baummuenz1">flowchart LR
  M[Sie werfen die Münze] --&gt; T["T (Treffer) 🥳"]
   M --&gt; N["N (Niete) 📚"]
@@ -1906,6 +1904,7 @@ Tabelle&nbsp;4.1: Schorschs Zufallsexperiment, Auszug der 16 Elementarereignisse
 <div id="fig-zv" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-zv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
+
 <pre class="mermaid mermaid-js" data-label="fig-zv">%%{init: {'themeVariables': {'fontSize': '14px'}, 'flowchart': {'diagramPadding': 10, 'nodeSpacing': 20, 'rankSpacing': 30}}}%%
 flowchart LR
   subgraph O["Ereignisraum Ω"]
@@ -2296,8 +2295,8 @@ Abbildung&nbsp;4.32: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Beim <em>fünffachen</em> Münzwurf wird das Ergebnis als geordnete Folge erfasst, z. B. <span class="math inline">\((K,Z,Z,K,K)\)</span>. Wie groß ist die Mächtigkeit <span class="math inline">\(|\Omega|\)</span> des zugehörigen Ergebnisraums, und wie viele mögliche Realisationen hat die Zufallsvariable <span class="math inline">\(X\)</span> = “Anzahl Kopf”?</p>
-<div id="webex-41893c4260161c58e5b40bb2b502ab55" class="webex-radiogroup" data-answer="bwAUCR9TGAIaAGw=">
-<label><input type="radio" autocomplete="off" name="41893c4260161c58e5b40bb2b502ab55"><span><span class="math inline">\(|\Omega| = 32\)</span>; <span class="math inline">\(X\)</span> hat 6 mögliche Realisationen (0 bis 5).</span></label><label><input type="radio" autocomplete="off" name="41893c4260161c58e5b40bb2b502ab55"><span><span class="math inline">\(|\Omega| = 6\)</span>; <span class="math inline">\(X\)</span> hat ebenfalls 6 mögliche Realisationen.</span></label><label><input type="radio" autocomplete="off" name="41893c4260161c58e5b40bb2b502ab55"><span><span class="math inline">\(|\Omega| = 32\)</span>; <span class="math inline">\(X\)</span> hat 32 mögliche Realisationen.</span></label><label><input type="radio" autocomplete="off" name="41893c4260161c58e5b40bb2b502ab55"><span><span class="math inline">\(|\Omega| = 5\)</span>; <span class="math inline">\(X\)</span> hat 6 mögliche Realisationen.</span></label><label><input type="radio" autocomplete="off" name="41893c4260161c58e5b40bb2b502ab55"><span><span class="math inline">\(|\Omega| = 10\)</span>; <span class="math inline">\(X\)</span> hat 10 mögliche Realisationen.</span></label>
+<div id="webex-a3a1d66ded1e0431de6dcaedc3cb3cb2" class="webex-radiogroup" data-answer="OgJNAUgGGlRJVGw=">
+<label><input type="radio" autocomplete="off" name="a3a1d66ded1e0431de6dcaedc3cb3cb2"><span><span class="math inline">\(|\Omega| = 32\)</span>; <span class="math inline">\(X\)</span> hat 6 mögliche Realisationen (0 bis 5).</span></label><label><input type="radio" autocomplete="off" name="a3a1d66ded1e0431de6dcaedc3cb3cb2"><span><span class="math inline">\(|\Omega| = 6\)</span>; <span class="math inline">\(X\)</span> hat ebenfalls 6 mögliche Realisationen.</span></label><label><input type="radio" autocomplete="off" name="a3a1d66ded1e0431de6dcaedc3cb3cb2"><span><span class="math inline">\(|\Omega| = 32\)</span>; <span class="math inline">\(X\)</span> hat 32 mögliche Realisationen.</span></label><label><input type="radio" autocomplete="off" name="a3a1d66ded1e0431de6dcaedc3cb3cb2"><span><span class="math inline">\(|\Omega| = 5\)</span>; <span class="math inline">\(X\)</span> hat 6 mögliche Realisationen.</span></label><label><input type="radio" autocomplete="off" name="a3a1d66ded1e0431de6dcaedc3cb3cb2"><span><span class="math inline">\(|\Omega| = 10\)</span>; <span class="math inline">\(X\)</span> hat 10 mögliche Realisationen.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2319,8 +2318,8 @@ Abbildung&nbsp;4.32: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Beim einfachen Würfelwurf gilt <span class="math inline">\(\Omega = \{1,2,3,4,5,6\}\)</span>. Welche der folgenden Zerlegungen in zwei Ereignisse <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> bildet ein <em>vollständiges Ereignissystem</em>?</p>
-<div id="webex-d65e2e0a7f6e9b5488fd8207896b66d7" class="webex-radiogroup" data-answer="PwcZVR5VHFEbVms=">
-<label><input type="radio" autocomplete="off" name="d65e2e0a7f6e9b5488fd8207896b66d7"><span><span class="math inline">\(A = \{1,2,3\}\)</span>, <span class="math inline">\(B = \{4,5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="d65e2e0a7f6e9b5488fd8207896b66d7"><span><span class="math inline">\(A = \{1,2,3,4,5,6\}\)</span>, <span class="math inline">\(B = \{1,2,3\}\)</span></span></label><label><input type="radio" autocomplete="off" name="d65e2e0a7f6e9b5488fd8207896b66d7"><span><span class="math inline">\(A = \{1,2,3,4\}\)</span>, <span class="math inline">\(B = \{4,5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="d65e2e0a7f6e9b5488fd8207896b66d7"><span><span class="math inline">\(A = \{1,2,3\}\)</span>, <span class="math inline">\(B = \{4,5\}\)</span></span></label><label><input type="radio" autocomplete="off" name="d65e2e0a7f6e9b5488fd8207896b66d7"><span><span class="math inline">\(A = \{2,4,6\}\)</span>, <span class="math inline">\(B = \{2,4,6\}\)</span></span></label>
+<div id="webex-2b174951bb3c2a5762da4e06a088b024" class="webex-radiogroup" data-answer="aVMdBxgJGQFOUm4=">
+<label><input type="radio" autocomplete="off" name="2b174951bb3c2a5762da4e06a088b024"><span><span class="math inline">\(A = \{1,2,3\}\)</span>, <span class="math inline">\(B = \{4,5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="2b174951bb3c2a5762da4e06a088b024"><span><span class="math inline">\(A = \{1,2,3,4,5,6\}\)</span>, <span class="math inline">\(B = \{1,2,3\}\)</span></span></label><label><input type="radio" autocomplete="off" name="2b174951bb3c2a5762da4e06a088b024"><span><span class="math inline">\(A = \{1,2,3,4\}\)</span>, <span class="math inline">\(B = \{4,5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="2b174951bb3c2a5762da4e06a088b024"><span><span class="math inline">\(A = \{1,2,3\}\)</span>, <span class="math inline">\(B = \{4,5\}\)</span></span></label><label><input type="radio" autocomplete="off" name="2b174951bb3c2a5762da4e06a088b024"><span><span class="math inline">\(A = \{2,4,6\}\)</span>, <span class="math inline">\(B = \{2,4,6\}\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2342,8 +2341,8 @@ Abbildung&nbsp;4.32: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Beim einfachen Würfelwurf betrachten wir die Ereignisse <span class="math inline">\(A\)</span> = “gerade Augenzahl” (<span class="math inline">\(A=\{2,4,6\}\)</span>) und <span class="math inline">\(C\)</span> = “Augenzahl mindestens 5” (<span class="math inline">\(C=\{5,6\}\)</span>). Sind <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> disjunkt?</p>
-<div id="webex-3e5462ac566ad45427b87d9908e3793e" class="webex-radiogroup" data-answer="aFUZBRoCTVMZBms=">
-<label><input type="radio" autocomplete="off" name="3e5462ac566ad45427b87d9908e3793e"><span>Nein, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind nicht disjunkt, weil <span class="math inline">\(A \cup C \neq \Omega\)</span> gilt.</span></label><label><input type="radio" autocomplete="off" name="3e5462ac566ad45427b87d9908e3793e"><span>Nein, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind nicht disjunkt, da <span class="math inline">\(A \cap C = \{6\} \neq \emptyset\)</span>.</span></label><label><input type="radio" autocomplete="off" name="3e5462ac566ad45427b87d9908e3793e"><span>Ja, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind disjunkt, weil es sich um zwei unterschiedlich definierte Ereignisse handelt.</span></label><label><input type="radio" autocomplete="off" name="3e5462ac566ad45427b87d9908e3793e"><span>Diese Frage lässt sich nicht beantworten, ohne die Wahrscheinlichkeiten von <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> zu kennen.</span></label><label><input type="radio" autocomplete="off" name="3e5462ac566ad45427b87d9908e3793e"><span>Ja, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind disjunkt, da <span class="math inline">\(A \cap C = \emptyset\)</span>.</span></label>
+<div id="webex-7049bffee6b166cbfd87678ad8f2c56c" class="webex-radiogroup" data-answer="bAAYCE5WSlVJBj8=">
+<label><input type="radio" autocomplete="off" name="7049bffee6b166cbfd87678ad8f2c56c"><span>Nein, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind nicht disjunkt, weil <span class="math inline">\(A \cup C \neq \Omega\)</span> gilt.</span></label><label><input type="radio" autocomplete="off" name="7049bffee6b166cbfd87678ad8f2c56c"><span>Nein, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind nicht disjunkt, da <span class="math inline">\(A \cap C = \{6\} \neq \emptyset\)</span>.</span></label><label><input type="radio" autocomplete="off" name="7049bffee6b166cbfd87678ad8f2c56c"><span>Ja, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind disjunkt, weil es sich um zwei unterschiedlich definierte Ereignisse handelt.</span></label><label><input type="radio" autocomplete="off" name="7049bffee6b166cbfd87678ad8f2c56c"><span>Diese Frage lässt sich nicht beantworten, ohne die Wahrscheinlichkeiten von <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> zu kennen.</span></label><label><input type="radio" autocomplete="off" name="7049bffee6b166cbfd87678ad8f2c56c"><span>Ja, <span class="math inline">\(A\)</span> und <span class="math inline">\(C\)</span> sind disjunkt, da <span class="math inline">\(A \cap C = \emptyset\)</span>.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2365,8 +2364,8 @@ Abbildung&nbsp;4.32: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Seien <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> zwei disjunkte Ereignisse. Welche der folgenden Zuordnungen von Wahrscheinlichkeiten zu <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span> und <span class="math inline">\(A \cup B\)</span> ist mit <em>allen drei</em> Kolmogorov-Axiomen (Nichtnegativität, Normierung, Additivität) vereinbar?</p>
-<div id="webex-acd20d07da9c7f1c88edbeda0a43431e" class="webex-radiogroup" data-answer="OlNIAhxVHAdIUWQ=">
-<label><input type="radio" autocomplete="off" name="acd20d07da9c7f1c88edbeda0a43431e"><span><span class="math inline">\(Pr(A) = 0.6\)</span>, <span class="math inline">\(Pr(B) = 0.6\)</span>, <span class="math inline">\(Pr(A \cup B) = 1.2\)</span></span></label><label><input type="radio" autocomplete="off" name="acd20d07da9c7f1c88edbeda0a43431e"><span><span class="math inline">\(Pr(A) = 0.3\)</span>, <span class="math inline">\(Pr(B) = 0.4\)</span>, <span class="math inline">\(Pr(A \cup B) = 0.5\)</span></span></label><label><input type="radio" autocomplete="off" name="acd20d07da9c7f1c88edbeda0a43431e"><span><span class="math inline">\(Pr(A) = 0.3\)</span>, <span class="math inline">\(Pr(B) = 0.4\)</span>, <span class="math inline">\(Pr(A \cup B) = 0.7\)</span></span></label><label><input type="radio" autocomplete="off" name="acd20d07da9c7f1c88edbeda0a43431e"><span><span class="math inline">\(Pr(\Omega) = 0.9\)</span>, <span class="math inline">\(Pr(A) = 0.3\)</span>, <span class="math inline">\(Pr(B) = 0.4\)</span></span></label><label><input type="radio" autocomplete="off" name="acd20d07da9c7f1c88edbeda0a43431e"><span><span class="math inline">\(Pr(A) = -0.2\)</span>, <span class="math inline">\(Pr(B) = 0.5\)</span>, <span class="math inline">\(Pr(A \cup B) = 0.3\)</span></span></label>
+<div id="webex-4ff9142d67580cbbce6860f1652012a3" class="webex-radiogroup" data-answer="b1ZKCR0FHlQaB2g=">
+<label><input type="radio" autocomplete="off" name="4ff9142d67580cbbce6860f1652012a3"><span><span class="math inline">\(Pr(A) = 0.6\)</span>, <span class="math inline">\(Pr(B) = 0.6\)</span>, <span class="math inline">\(Pr(A \cup B) = 1.2\)</span></span></label><label><input type="radio" autocomplete="off" name="4ff9142d67580cbbce6860f1652012a3"><span><span class="math inline">\(Pr(A) = 0.3\)</span>, <span class="math inline">\(Pr(B) = 0.4\)</span>, <span class="math inline">\(Pr(A \cup B) = 0.5\)</span></span></label><label><input type="radio" autocomplete="off" name="4ff9142d67580cbbce6860f1652012a3"><span><span class="math inline">\(Pr(A) = 0.3\)</span>, <span class="math inline">\(Pr(B) = 0.4\)</span>, <span class="math inline">\(Pr(A \cup B) = 0.7\)</span></span></label><label><input type="radio" autocomplete="off" name="4ff9142d67580cbbce6860f1652012a3"><span><span class="math inline">\(Pr(\Omega) = 0.9\)</span>, <span class="math inline">\(Pr(A) = 0.3\)</span>, <span class="math inline">\(Pr(B) = 0.4\)</span></span></label><label><input type="radio" autocomplete="off" name="4ff9142d67580cbbce6860f1652012a3"><span><span class="math inline">\(Pr(A) = -0.2\)</span>, <span class="math inline">\(Pr(B) = 0.5\)</span>, <span class="math inline">\(Pr(A \cup B) = 0.3\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2388,8 +2387,8 @@ Abbildung&nbsp;4.32: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Ein Glücksspielautomat hat eine unbekannte Gewinnwahrscheinlichkeit; man hat <em>keinen</em> Grund anzunehmen, dass Gewinn und Verlust gleich wahrscheinlich sind (der Automat könnte so programmiert sein, dass er seltener gewinnt als verliert). Welche Vorgehensweise zur Schätzung der Gewinnwahrscheinlichkeit ist hier angemessen?</p>
-<div id="webex-bc85f40838172dbfba0ab2d3a73f04c0" class="webex-radiogroup" data-answer="OVMUBUoFHAgfCGw=">
-<label><input type="radio" autocomplete="off" name="bc85f40838172dbfba0ab2d3a73f04c0"><span>Indifferenzprinzip: Da man nichts Genaues über die Gewinnwahrscheinlichkeit weiß, geht man automatisch davon aus, dass Gewinn und Verlust gleich wahrscheinlich sind, also <span class="math inline">\(Pr(\text{Gewinn})=0.5\)</span>.</span></label><label><input type="radio" autocomplete="off" name="bc85f40838172dbfba0ab2d3a73f04c0"><span>Laplace-Formel: <span class="math inline">\(Pr(\text{Gewinn}) = \dfrac{\text{Anzahl Gewinn-Symbole}}{\text{Anzahl aller möglichen Symbolkombinationen}}\)</span>, unabhängig davon, wie oft tatsächlich gespielt wurde.</span></label><label><input type="radio" autocomplete="off" name="bc85f40838172dbfba0ab2d3a73f04c0"><span>Frequentistischer Ansatz: Das Spiel (gedanklich oder tatsächlich) sehr oft wiederholen bzw. Daten aus vielen Spielen sammeln und den relativen Anteil der Gewinne als Schätzwert für die Wahrscheinlichkeit verwenden.</span></label><label><input type="radio" autocomplete="off" name="bc85f40838172dbfba0ab2d3a73f04c0"><span>Man kann grundsätzlich keine Wahrscheinlichkeit angeben, da der innere Mechanismus des Automaten unbekannt ist.</span></label><label><input type="radio" autocomplete="off" name="bc85f40838172dbfba0ab2d3a73f04c0"><span>Die Kolmogorov-Axiome direkt anwenden, um die exakte Gewinnwahrscheinlichkeit ganz ohne Datenerhebung zu berechnen.</span></label>
+<div id="webex-d7b47f6b11ef58fddfcb8887de1e79f2" class="webex-radiogroup" data-answer="PwdOBBtXGlIdATg=">
+<label><input type="radio" autocomplete="off" name="d7b47f6b11ef58fddfcb8887de1e79f2"><span>Indifferenzprinzip: Da man nichts Genaues über die Gewinnwahrscheinlichkeit weiß, geht man automatisch davon aus, dass Gewinn und Verlust gleich wahrscheinlich sind, also <span class="math inline">\(Pr(\text{Gewinn})=0.5\)</span>.</span></label><label><input type="radio" autocomplete="off" name="d7b47f6b11ef58fddfcb8887de1e79f2"><span>Laplace-Formel: <span class="math inline">\(Pr(\text{Gewinn}) = \dfrac{\text{Anzahl Gewinn-Symbole}}{\text{Anzahl aller möglichen Symbolkombinationen}}\)</span>, unabhängig davon, wie oft tatsächlich gespielt wurde.</span></label><label><input type="radio" autocomplete="off" name="d7b47f6b11ef58fddfcb8887de1e79f2"><span>Frequentistischer Ansatz: Das Spiel (gedanklich oder tatsächlich) sehr oft wiederholen bzw. Daten aus vielen Spielen sammeln und den relativen Anteil der Gewinne als Schätzwert für die Wahrscheinlichkeit verwenden.</span></label><label><input type="radio" autocomplete="off" name="d7b47f6b11ef58fddfcb8887de1e79f2"><span>Man kann grundsätzlich keine Wahrscheinlichkeit angeben, da der innere Mechanismus des Automaten unbekannt ist.</span></label><label><input type="radio" autocomplete="off" name="d7b47f6b11ef58fddfcb8887de1e79f2"><span>Die Kolmogorov-Axiome direkt anwenden, um die exakte Gewinnwahrscheinlichkeit ganz ohne Datenerhebung zu berechnen.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2411,8 +2410,8 @@ Abbildung&nbsp;4.32: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Ein unbedarfter Spieler geht von <span class="math inline">\(Pr(Z\mid F) = 0.5\)</span> aus (Wahrscheinlichkeit für “Zahl”, gegeben seiner Annahme <span class="math inline">\(F\)</span>, dass die Münze fair ist). Ein Betrüger, der die Münze präpariert hat, geht von <span class="math inline">\(Pr(Z\mid B) = 0.75\)</span> aus (gegeben seines Wissens <span class="math inline">\(B\)</span> über die Präparation). Welche Aussage beschreibt am besten, warum dies <em>kein</em> Widerspruch ist?</p>
-<div id="webex-26e91d05d4f7fe1698402df4a3fcf464" class="webex-radiogroup" data-answer="aQZJCR1UHARIBDs=">
-<label><input type="radio" autocomplete="off" name="26e91d05d4f7fe1698402df4a3fcf464"><span>Die Wahrscheinlichkeit hängt hier ausschließlich davon ab, wie oft die Münze bisher geworfen wurde, nicht vom Wissen der beteiligten Personen.</span></label><label><input type="radio" autocomplete="off" name="26e91d05d4f7fe1698402df4a3fcf464"><span>Da die beiden angegebenen Werte unterschiedlich sind, verstößt mindestens eine der beiden Aussagen gegen das Normierungsaxiom von Kolmogorov.</span></label><label><input type="radio" autocomplete="off" name="26e91d05d4f7fe1698402df4a3fcf464"><span>Genau eine der beiden Personen muss sich irren, da eine Münze objektiv nur eine einzige “wahre” Wahrscheinlichkeit für Zahl haben kann.</span></label><label><input type="radio" autocomplete="off" name="26e91d05d4f7fe1698402df4a3fcf464"><span>Wahrscheinlichkeit ist kein objektives Merkmal des Ereignisses selbst, sondern abhängig vom jeweiligen Hintergrundwissen; <span class="math inline">\(Pr(Z\mid F)=0.5\)</span> und <span class="math inline">\(Pr(Z\mid B)=0.75\)</span> können daher gleichzeitig korrekt sein, bezogen auf das jeweilige Wissen.</span></label><label><input type="radio" autocomplete="off" name="26e91d05d4f7fe1698402df4a3fcf464"><span>Wahrscheinlichkeit ist in diesem Beispiel gar nicht sinnvoll definierbar, da die Münze entweder wirklich fair ist oder nicht – ein Drittes gibt es nicht.</span></label>
+<div id="webex-75356b11268db90af5392da08fd5abe9" class="webex-radiogroup" data-answer="bAUfBRpSHQAeBmU=">
+<label><input type="radio" autocomplete="off" name="75356b11268db90af5392da08fd5abe9"><span>Die Wahrscheinlichkeit hängt hier ausschließlich davon ab, wie oft die Münze bisher geworfen wurde, nicht vom Wissen der beteiligten Personen.</span></label><label><input type="radio" autocomplete="off" name="75356b11268db90af5392da08fd5abe9"><span>Da die beiden angegebenen Werte unterschiedlich sind, verstößt mindestens eine der beiden Aussagen gegen das Normierungsaxiom von Kolmogorov.</span></label><label><input type="radio" autocomplete="off" name="75356b11268db90af5392da08fd5abe9"><span>Genau eine der beiden Personen muss sich irren, da eine Münze objektiv nur eine einzige “wahre” Wahrscheinlichkeit für Zahl haben kann.</span></label><label><input type="radio" autocomplete="off" name="75356b11268db90af5392da08fd5abe9"><span>Wahrscheinlichkeit ist kein objektives Merkmal des Ereignisses selbst, sondern abhängig vom jeweiligen Hintergrundwissen; <span class="math inline">\(Pr(Z\mid F)=0.5\)</span> und <span class="math inline">\(Pr(Z\mid B)=0.75\)</span> können daher gleichzeitig korrekt sein, bezogen auf das jeweilige Wissen.</span></label><label><input type="radio" autocomplete="off" name="75356b11268db90af5392da08fd5abe9"><span>Wahrscheinlichkeit ist in diesem Beispiel gar nicht sinnvoll definierbar, da die Münze entweder wirklich fair ist oder nicht – ein Drittes gibt es nicht.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2434,8 +2433,8 @@ Abbildung&nbsp;4.32: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Die Wartezeit <span class="math inline">\(X\)</span> auf einen Bus sei gleichverteilt zwischen 0 und 10 Minuten, mit konstanter Wahrscheinlichkeitsdichte <span class="math inline">\(f(x) = 1/10\)</span> für <span class="math inline">\(0 &lt; x &lt; 10\)</span>. Welche der folgenden Aussagen zur stetigen Zufallsvariable <span class="math inline">\(X\)</span> ist korrekt?</p>
-<div id="webex-1bb3f927664e20ae156182bae7a3102a" class="webex-radiogroup" data-answer="alJOA0oIHgcaBmk=">
-<label><input type="radio" autocomplete="off" name="1bb3f927664e20ae156182bae7a3102a"><span><span class="math inline">\(Pr(0 &lt; X &lt; 5) = 0\)</span>, da alle einzelnen Punktwahrscheinlichkeiten in diesem Intervall Null sind.</span></label><label><input type="radio" autocomplete="off" name="1bb3f927664e20ae156182bae7a3102a"><span>Da <span class="math inline">\(X\)</span> stetig ist, lässt sich für <span class="math inline">\(X\)</span> grundsätzlich keine sinnvolle Wahrscheinlichkeitsaussage treffen.</span></label><label><input type="radio" autocomplete="off" name="1bb3f927664e20ae156182bae7a3102a"><span><span class="math inline">\(Pr(X=3) = 0\)</span>, obwohl die Wahrscheinlichkeitsdichte an der Stelle <span class="math inline">\(x=3\)</span> den positiven Wert <span class="math inline">\(f(3) = 0.1\)</span> hat.</span></label><label><input type="radio" autocomplete="off" name="1bb3f927664e20ae156182bae7a3102a"><span>Da <span class="math inline">\(Pr(X=3) = 0\)</span> ist, muss auch die Wahrscheinlichkeitsdichte <span class="math inline">\(f(3) = 0\)</span> sein.</span></label><label><input type="radio" autocomplete="off" name="1bb3f927664e20ae156182bae7a3102a"><span><span class="math inline">\(Pr(X=3) = f(3) = 0.1\)</span>.</span></label>
+<div id="webex-5b665a4ef73639eeac64ea6276174277" class="webex-radiogroup" data-answer="blIaBhlQGFVKB24=">
+<label><input type="radio" autocomplete="off" name="5b665a4ef73639eeac64ea6276174277"><span><span class="math inline">\(Pr(0 &lt; X &lt; 5) = 0\)</span>, da alle einzelnen Punktwahrscheinlichkeiten in diesem Intervall Null sind.</span></label><label><input type="radio" autocomplete="off" name="5b665a4ef73639eeac64ea6276174277"><span>Da <span class="math inline">\(X\)</span> stetig ist, lässt sich für <span class="math inline">\(X\)</span> grundsätzlich keine sinnvolle Wahrscheinlichkeitsaussage treffen.</span></label><label><input type="radio" autocomplete="off" name="5b665a4ef73639eeac64ea6276174277"><span><span class="math inline">\(Pr(X=3) = 0\)</span>, obwohl die Wahrscheinlichkeitsdichte an der Stelle <span class="math inline">\(x=3\)</span> den positiven Wert <span class="math inline">\(f(3) = 0.1\)</span> hat.</span></label><label><input type="radio" autocomplete="off" name="5b665a4ef73639eeac64ea6276174277"><span>Da <span class="math inline">\(Pr(X=3) = 0\)</span> ist, muss auch die Wahrscheinlichkeitsdichte <span class="math inline">\(f(3) = 0\)</span> sein.</span></label><label><input type="radio" autocomplete="off" name="5b665a4ef73639eeac64ea6276174277"><span><span class="math inline">\(Pr(X=3) = f(3) = 0.1\)</span>.</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2457,8 +2456,8 @@ Abbildung&nbsp;4.32: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Beim einfachen Würfelwurf sei <span class="math inline">\(A = \{1,2,3,4\}\)</span> (“kleine Zahlen”) und <span class="math inline">\(B = \{3,4,5,6\}\)</span> (“große Zahlen”). Was ergibt sich für die logischen Differenzen <span class="math inline">\(A \setminus B\)</span> und <span class="math inline">\(B \setminus A\)</span>?</p>
-<div id="webex-b36f27db427e5874240a23c606a5fe26" class="webex-radiogroup" data-answer="OQMaVh4GSFIYAmo=">
-<label><input type="radio" autocomplete="off" name="b36f27db427e5874240a23c606a5fe26"><span><span class="math inline">\(A \setminus B = \{1,2,3,4\}\)</span> und <span class="math inline">\(B \setminus A = \{3,4,5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="b36f27db427e5874240a23c606a5fe26"><span><span class="math inline">\(A \setminus B = \{5,6\}\)</span> und <span class="math inline">\(B \setminus A = \{1,2\}\)</span></span></label><label><input type="radio" autocomplete="off" name="b36f27db427e5874240a23c606a5fe26"><span><span class="math inline">\(A \setminus B = \{1,2\}\)</span> und <span class="math inline">\(B \setminus A = \{5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="b36f27db427e5874240a23c606a5fe26"><span><span class="math inline">\(A \setminus B = B \setminus A = \{3,4\}\)</span></span></label><label><input type="radio" autocomplete="off" name="b36f27db427e5874240a23c606a5fe26"><span><span class="math inline">\(A \setminus B = B \setminus A = \emptyset\)</span>, da sich <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> überschneiden</span></label>
+<div id="webex-be66c5576a29a443d050b4080d8d4eb1" class="webex-radiogroup" data-answer="OVUaBk8EGQcaUW8=">
+<label><input type="radio" autocomplete="off" name="be66c5576a29a443d050b4080d8d4eb1"><span><span class="math inline">\(A \setminus B = \{1,2,3,4\}\)</span> und <span class="math inline">\(B \setminus A = \{3,4,5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="be66c5576a29a443d050b4080d8d4eb1"><span><span class="math inline">\(A \setminus B = \{5,6\}\)</span> und <span class="math inline">\(B \setminus A = \{1,2\}\)</span></span></label><label><input type="radio" autocomplete="off" name="be66c5576a29a443d050b4080d8d4eb1"><span><span class="math inline">\(A \setminus B = \{1,2\}\)</span> und <span class="math inline">\(B \setminus A = \{5,6\}\)</span></span></label><label><input type="radio" autocomplete="off" name="be66c5576a29a443d050b4080d8d4eb1"><span><span class="math inline">\(A \setminus B = B \setminus A = \{3,4\}\)</span></span></label><label><input type="radio" autocomplete="off" name="be66c5576a29a443d050b4080d8d4eb1"><span><span class="math inline">\(A \setminus B = B \setminus A = \emptyset\)</span>, da sich <span class="math inline">\(A\)</span> und <span class="math inline">\(B\)</span> überschneiden</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2480,8 +2479,8 @@ Abbildung&nbsp;4.32: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Eine Münze wird dreimal geworfen (K = Kopf, Z = Zahl). Der Ergebnisraum ist <span class="math inline">\(\Omega = \{KKK, KKZ, KZK, KZZ, ZKK, ZKZ, ZZK, ZZZ\}\)</span>, also <span class="math inline">\(|\Omega| = 8\)</span>. Welches der folgenden Ereignisse ist ein <em>Elementarereignis</em>?</p>
-<div id="webex-29022c949608c1e5b8789c5e7954189f" class="webex-radiogroup" data-answer="aQkcAh5SFQQVBm0=">
-<label><input type="radio" autocomplete="off" name="29022c949608c1e5b8789c5e7954189f"><span><span class="math inline">\(E = \Omega\)</span> (das sichere Ereignis)</span></label><label><input type="radio" autocomplete="off" name="29022c949608c1e5b8789c5e7954189f"><span><span class="math inline">\(B\)</span> = “genau einmal Kopf” <span class="math inline">\(= \{KZZ, ZKZ, ZZK\}\)</span></span></label><label><input type="radio" autocomplete="off" name="29022c949608c1e5b8789c5e7954189f"><span><span class="math inline">\(A = \{KKZ\}\)</span></span></label><label><input type="radio" autocomplete="off" name="29022c949608c1e5b8789c5e7954189f"><span><span class="math inline">\(D\)</span> = “höchstens zweimal Kopf” (alle Ausgänge außer <span class="math inline">\(KKK\)</span>)</span></label><label><input type="radio" autocomplete="off" name="29022c949608c1e5b8789c5e7954189f"><span><span class="math inline">\(C\)</span> = “mindestens einmal Kopf” (alle Ausgänge außer <span class="math inline">\(ZZZ\)</span>)</span></label>
+<div id="webex-3fc404c340e0b7a359cb754055cc1394" class="webex-radiogroup" data-answer="aFZPBBwFTwMYADg=">
+<label><input type="radio" autocomplete="off" name="3fc404c340e0b7a359cb754055cc1394"><span><span class="math inline">\(E = \Omega\)</span> (das sichere Ereignis)</span></label><label><input type="radio" autocomplete="off" name="3fc404c340e0b7a359cb754055cc1394"><span><span class="math inline">\(B\)</span> = “genau einmal Kopf” <span class="math inline">\(= \{KZZ, ZKZ, ZZK\}\)</span></span></label><label><input type="radio" autocomplete="off" name="3fc404c340e0b7a359cb754055cc1394"><span><span class="math inline">\(A = \{KKZ\}\)</span></span></label><label><input type="radio" autocomplete="off" name="3fc404c340e0b7a359cb754055cc1394"><span><span class="math inline">\(D\)</span> = “höchstens zweimal Kopf” (alle Ausgänge außer <span class="math inline">\(KKK\)</span>)</span></label><label><input type="radio" autocomplete="off" name="3fc404c340e0b7a359cb754055cc1394"><span><span class="math inline">\(C\)</span> = “mindestens einmal Kopf” (alle Ausgänge außer <span class="math inline">\(ZZZ\)</span>)</span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -2503,8 +2502,8 @@ Abbildung&nbsp;4.32: Verteilungsfunktion F für X=“Wartezeit auf den Bus”
 <div class="webex-question">
 <div class="webex-check webex-box">
 <p>Sei <span class="math inline">\(X\)</span> die Augenzahl beim einfachen Wurf eines fairen Würfels (<span class="math inline">\(X \in \{1,2,3,4,5,6\}\)</span>, jede Zahl mit Wahrscheinlichkeit <span class="math inline">\(1/6\)</span>). Wie groß ist der Wert der Verteilungsfunktion <span class="math inline">\(F(4)\)</span>?</p>
-<div id="webex-6b19a27502a7ad7ef465bdfe66624ba8" class="webex-radiogroup" data-answer="bVIdCE0CGwUcAjw=">
-<label><input type="radio" autocomplete="off" name="6b19a27502a7ad7ef465bdfe66624ba8"><span><span class="math inline">\(F(4)\)</span> lässt sich nicht berechnen, ohne die tatsächliche Verteilung des Würfels empirisch zu bestimmen.</span></label><label><input type="radio" autocomplete="off" name="6b19a27502a7ad7ef465bdfe66624ba8"><span><span class="math inline">\(F(4) = Pr(X \le 4) = 4/6 = 2/3 \approx 0.67\)</span></span></label><label><input type="radio" autocomplete="off" name="6b19a27502a7ad7ef465bdfe66624ba8"><span><span class="math inline">\(F(4) = Pr(X = 4) = 1/6 \approx 0.17\)</span></span></label><label><input type="radio" autocomplete="off" name="6b19a27502a7ad7ef465bdfe66624ba8"><span><span class="math inline">\(F(4) = Pr(X \ge 4) = 3/6 = 0.5\)</span></span></label><label><input type="radio" autocomplete="off" name="6b19a27502a7ad7ef465bdfe66624ba8"><span><span class="math inline">\(F(4) = 4\)</span></span></label>
+<div id="webex-ec009d0a44d08f3a1636d3316b05ab05" class="webex-radiogroup" data-answer="PlMcARVUHFEYBDk=">
+<label><input type="radio" autocomplete="off" name="ec009d0a44d08f3a1636d3316b05ab05"><span><span class="math inline">\(F(4)\)</span> lässt sich nicht berechnen, ohne die tatsächliche Verteilung des Würfels empirisch zu bestimmen.</span></label><label><input type="radio" autocomplete="off" name="ec009d0a44d08f3a1636d3316b05ab05"><span><span class="math inline">\(F(4) = Pr(X \le 4) = 4/6 = 2/3 \approx 0.67\)</span></span></label><label><input type="radio" autocomplete="off" name="ec009d0a44d08f3a1636d3316b05ab05"><span><span class="math inline">\(F(4) = Pr(X = 4) = 1/6 \approx 0.17\)</span></span></label><label><input type="radio" autocomplete="off" name="ec009d0a44d08f3a1636d3316b05ab05"><span><span class="math inline">\(F(4) = Pr(X \ge 4) = 3/6 = 0.5\)</span></span></label><label><input type="radio" autocomplete="off" name="ec009d0a44d08f3a1636d3316b05ab05"><span><span class="math inline">\(F(4) = 4\)</span></span></label>
 </div>
 </div>
 <div class="webex-solution">
@@ -3169,15 +3168,50 @@ window.onload = function() {
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-      const a = window.document.createElement('a');
-      a.classList.add('top-right');
-      a.classList.add('quarto-color-scheme-toggle');
-      a.href = "";
-      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "Dunkelmodus umschalten");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
       const i = window.document.createElement("i");
       i.classList.add('bi');
-      a.appendChild(i);
-      window.document.body.appendChild(a);
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "Dunkelmodus umschalten");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
     }
     setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
@@ -3256,7 +3290,8 @@ window.onload = function() {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -3265,8 +3300,69 @@ window.onload = function() {
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -3280,6 +3376,7 @@ window.onload = function() {
         interactiveBorder: 10,
         theme: 'quarto',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;
@@ -3442,44 +3539,54 @@ window.onload = function() {
           const lineIds = lines.map((line) => {
             return targetCell + "-" + line;
           })
-          let top = null;
-          let height = null;
-          let parent = null;
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
           if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
             }
+            placeBand(gutterDiv, el, lastEl);
             selectedAnnoteEl = annoteEl;
           }
         };
@@ -3556,6 +3663,7 @@ window.onload = function() {
             interactiveBorder: 10,
             theme: 'quarto',
             placement: 'right',
+            plugins: [hideOnEscAndFocusOut],
             popperOptions: {
               modifiers: [
               {
@@ -3616,7 +3724,9 @@ window.onload = function() {
       }
     }
   });
-  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+  </script><script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollbarer Code","output":"Scrollbare Ausgabe"};
+  </script><nav class="page-navigation" aria-label="Seite"><div class="nav-page nav-page-previous">
       <a href="./0250-inferenz.html" class="pagination-link" aria-label="Populationsinferenz">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Populationsinferenz</span></span>
       </a>          

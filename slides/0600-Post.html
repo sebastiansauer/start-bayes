@@ -6,27 +6,30 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.37">
+  <meta name="generator" content="quarto-1.11.9">
 
   <meta name="author" content="Sebastian Sauer">
   <title>Start:Bayes!</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
     */
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -121,7 +124,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-2740581606dc327e82f18f789b69d8a0.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-00ad5a49dff614330cd349bcec985ec3.css">
   <link rel="stylesheet" href="../specifics/styles.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -228,7 +231,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Sebastian Sauer 
+Sebastian Sauer
 </div>
 </div>
 </div>
@@ -332,9 +335,9 @@ Sebastian Sauer
 <li>Gewichtet nach der Posteriori-Wahrscheinlichkeit (<code>weight_by = post</code>)</li>
 <li>Mit Zurücklegen (<code>replace = TRUE</code>), damit die Wahrscheinlichkeiten konstant bleiben</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>samples_6w_9v <span class="ot">&lt;-</span> bayesbox_6w_9v <span class="sc">%&gt;%</span></span>
-<span id="cb1-2"><a href=""></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="fl">1e4</span>, <span class="at">weight_by =</span> post, <span class="at">replace =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb1-3"><a href=""></a>  <span class="fu">select</span>(p_grid)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-label="1"></a>samples_6w_9v <span class="ot">&lt;-</span> bayesbox_6w_9v <span class="sc">%&gt;%</span></span>
+<span id="cb1-2"><a href="" aria-label="2"></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="fl">1e4</span>, <span class="at">weight_by =</span> post, <span class="at">replace =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href="" aria-label="3"></a>  <span class="fu">select</span>(p_grid)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Ab jetzt arbeiten wir überwiegend mit Post-Verteilungen <strong>auf Stichprobenbasis</strong>, weil das für komplexere Modelle nötig wird.</p>
 <div class="footer">
 <p>Mit Stichproben die Post-Verteilung zusammenfassen</p>
@@ -464,7 +467,7 @@ Sebastian Sauer
 <li>Wir zählen, wie viele Stichproben die Bedingung erfüllen</li>
 <li>Und teilen durch die Gesamtzahl der Stichproben</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>samples_6w_9v <span class="sc">%&gt;%</span> <span class="fu">count</span>(p_grid <span class="sc">&lt;</span> .<span class="dv">5</span>)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="" aria-label="1"></a>samples_6w_9v <span class="sc">%&gt;%</span> <span class="fu">count</span>(p_grid <span class="sc">&lt;</span> .<span class="dv">5</span>)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Ergebnis: ca. <strong>10 %</strong> Wahrscheinlichkeit für einen Wasseranteil unter 50 %.</p>
 <div class="footer">
 <p>Die Post-Verteilung befragen</p>
@@ -473,9 +476,9 @@ Sebastian Sauer
 <section id="weitere-p-fragen" class="slide level2">
 <h2>Weitere p-Fragen</h2>
 <p><em>Wie wahrscheinlich liegt der Wasseranteil zwischen 0.5 und 0.75?</em></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>samples_6w_9v <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href=""></a>  <span class="fu">count</span>(p_grid <span class="sc">&gt;</span> .<span class="dv">5</span> <span class="sc">&amp;</span> p_grid <span class="sc">&lt;</span> .<span class="dv">75</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">Anteil =</span> n <span class="sc">/</span> <span class="fl">1e4</span>, <span class="at">Prozent =</span> <span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="fl">1e4</span>)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="" aria-label="1"></a>samples_6w_9v <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="" aria-label="2"></a>  <span class="fu">count</span>(p_grid <span class="sc">&gt;</span> .<span class="dv">5</span> <span class="sc">&amp;</span> p_grid <span class="sc">&lt;</span> .<span class="dv">75</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="" aria-label="3"></a>  <span class="fu">mutate</span>(<span class="at">Anteil =</span> n <span class="sc">/</span> <span class="fl">1e4</span>, <span class="at">Prozent =</span> <span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="fl">1e4</span>)</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 <p><em>Wie wahrscheinlich liegt der Wasseranteil zwischen 0.9 und 1?</em></p>
 <ul>
 <li>Ergebnis: sehr unwahrscheinlich, dass der Wasseranteil mindestens 90 % beträgt</li>
@@ -512,7 +515,7 @@ Sebastian Sauer
 </div>
 </div>
 <p>Frage: <em>Welcher Parameterwert wird mit 90 % Wahrscheinlichkeit nicht überschritten?</em></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>samples_6w_9v <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">quantil90 =</span> <span class="fu">quantile</span>(p_grid, <span class="at">p =</span> .<span class="dv">9</span>))</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="" aria-label="1"></a>samples_6w_9v <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">quantil90 =</span> <span class="fu">quantile</span>(p_grid, <span class="at">p =</span> .<span class="dv">9</span>))</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Antwort: Wir können zu 90 % sicher sein, dass der Wasseranteil kleiner als ca. 78 % ist.</p>
 <div class="footer">
 <p>Die Post-Verteilung befragen</p>
@@ -524,9 +527,9 @@ Sebastian Sauer
 <ul>
 <li>Links und rechts je 5 % der extremsten Stichproben abschneiden</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>samples_6w_9v <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href=""></a>  <span class="fu">summarise</span>(<span class="at">quant_05 =</span> <span class="fu">quantile</span>(p_grid, <span class="fl">0.05</span>),</span>
-<span id="cb5-3"><a href=""></a>            <span class="at">quant_95 =</span> <span class="fu">quantile</span>(p_grid, <span class="fl">0.95</span>))</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="" aria-label="1"></a>samples_6w_9v <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="" aria-label="2"></a>  <span class="fu">summarise</span>(<span class="at">quant_05 =</span> <span class="fu">quantile</span>(p_grid, <span class="fl">0.05</span>),</span>
+<span id="cb5-3"><a href="" aria-label="3"></a>            <span class="at">quant_95 =</span> <span class="fu">quantile</span>(p_grid, <span class="fl">0.95</span>))</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Solche Fragen lassen sich mit <strong>Quantilen</strong> beantworten.</p>
 <div class="footer">
 <p>Die Post-Verteilung befragen</p>
@@ -539,7 +542,6 @@ Sebastian Sauer
 </section>
 <section id="definition-perzentilintervall-pi" class="slide level2 smaller">
 <h2>Definition: Perzentilintervall (PI)</h2>
-<div title="Definition: Perzentilintervall (PI)">
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -550,7 +552,6 @@ Sebastian Sauer
 </div>
 <div class="callout-content">
 <p>Intervalle, die die “abzuschneidende” Wahrscheinlichkeitsmasse hälftig auf beide Ränder aufteilen, nennt man <strong>Perzentilintervalle</strong> (PI) oder (synonym) <strong>Equal-Tails-Intervalle</strong> (ETI).</p>
-</div>
 </div>
 </div>
 </div>
@@ -589,7 +590,6 @@ Sebastian Sauer
 </section>
 <section id="definition-intervalle-höchster-dichte-hdi" class="slide level2">
 <h2>Definition: Intervalle höchster Dichte (HDI)</h2>
-<div title="Definition: Intervalle höchster Dichte (HDI)">
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -600,7 +600,6 @@ Sebastian Sauer
 </div>
 <div class="callout-content">
 <p>Intervalle höchster Dichte (Highest Density Intervals, HDI oder HDPI) sind definiert als das <strong>schmälste</strong> Intervall, das den gesuchten Parameter enthält (bezogen auf ein gegebenes Modell).</p>
-</div>
 </div>
 </div>
 </div>
@@ -627,9 +626,9 @@ Sebastian Sauer
 </section>
 <section id="hdi-berechnen" class="slide level2">
 <h2>HDI berechnen</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>samples_6w_9v <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href=""></a>  <span class="fu">select</span>(p_grid) <span class="sc">%&gt;%</span></span>
-<span id="cb6-3"><a href=""></a>  <span class="fu">hdi</span>(<span class="at">ci =</span> .<span class="dv">5</span>)  <span class="co"># aus dem Paket easystats</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="" aria-label="1"></a>samples_6w_9v <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="" aria-label="2"></a>  <span class="fu">select</span>(p_grid) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="" aria-label="3"></a>  <span class="fu">hdi</span>(<span class="at">ci =</span> .<span class="dv">5</span>)  <span class="co"># aus dem Paket easystats</span></span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Ergebnis: Das Modell ist sich zu 50 % sicher, dass der Wasseranteil im Bereich von ca. 0.67 bis 0.78 liegt (HDI-basiert).</p>
 <div class="footer">
 <p>Visualisierung der Verteilungen</p>
@@ -656,9 +655,9 @@ Sebastian Sauer
 <h2>Zusammenfassung am Beispiel</h2>
 <p>Globusversuch: 6 Treffer bei 9 Würfen (<code>samples_6w_9v</code>)</p>
 <p><strong>Lageparameter</strong> — welcher mittlere Wasseranteil ist zu erwarten?</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>samples_6w_9v <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(p_grid), <span class="at">median =</span> <span class="fu">median</span>(p_grid))</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="" aria-label="1"></a>samples_6w_9v <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(p_grid), <span class="at">median =</span> <span class="fu">median</span>(p_grid))</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Streuungsparameter</strong> — wie unsicher ist die Schätzung?</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>samples_6w_9v <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">p_sd =</span> <span class="fu">sd</span>(p_grid), <span class="at">p_iqr =</span> <span class="fu">IQR</span>(p_grid), <span class="at">p_mad =</span> <span class="fu">mad</span>(p_grid))</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="" aria-label="1"></a>samples_6w_9v <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">p_sd =</span> <span class="fu">sd</span>(p_grid), <span class="at">p_iqr =</span> <span class="fu">IQR</span>(p_grid), <span class="at">p_mad =</span> <span class="fu">mad</span>(p_grid))</span></code></pre></div><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Üblicher als reine Streuungsmaße: ein HDI oder PI für den Parameter angeben.</p>
 <div class="footer">
 <p>Fazit</p>
@@ -746,7 +745,7 @@ McElreath, R. (2020). <em>Statistical Rethinking: A <span>Bayesian</span> Course
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"\u003ci class=\"fas fa-gear\">\u003c/i>","content":"\u003cul class=\"slide-menu-items\">\n\u003cli class=\"slide-tool-item active\" data-item=\"0\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\">\u003ckbd>f\u003c/kbd> Fullscreen\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"1\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\">\u003ckbd>s\u003c/kbd> Speaker View\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"2\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\">\u003ckbd>o\u003c/kbd> Slide Overview\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"3\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\">\u003ckbd>e\u003c/kbd> PDF Export Mode\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"4\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\">\u003ckbd>r\u003c/kbd> Scroll View Mode\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"5\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\">\u003ckbd>b\u003c/kbd> Toggle Chalkboard\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"6\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\">\u003ckbd>c\u003c/kbd> Toggle Notes Canvas\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"7\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\">\u003ckbd>d\u003c/kbd> Download Drawings\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"8\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\">\u003ckbd>?\u003c/kbd> Keyboard Help\u003c/a>\u003c/li>\n\u003c/ul>"}],"openButton":true,"openButtonLabel":"Slide menu"},
 'chalkboard': {"buttons":true},
 'smaller': false,
  
@@ -1002,7 +1001,8 @@ McElreath, R. (2020). <em>Statistical Rethinking: A <span>Bayesian</span> Course
               return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
           }
           // Inspect non-navigation links and adorn them if external
-         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          window.quartoDecorateExternalLinks = function (root) {
+         var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
           for (var i=0; i<links.length; i++) {
             const link = links[i];
             if (!isInternal(link.href)) {
@@ -1011,8 +1011,69 @@ McElreath, R. (2020). <em>Statistical Rethinking: A <span>Bayesian</span> Course
               if (link.dataset.originalHref !== undefined) {
                 link.href = link.dataset.originalHref;
               }
+              if (!link.classList.contains('no-external-icon')) {
+              }
             }
           }
+          };
+          window.quartoDecorateExternalLinks(window.document);
+        // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+        // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+        const hideOnEscAndFocusOut = {
+          name: 'hideOnEscAndFocusOut',
+          defaultValue: true,
+          fn(instance) {
+            const dismiss = () => {
+              // A show scheduled by the trigger delay would otherwise reopen it
+              instance.clearDelayTimeouts();
+              instance.hide();
+            };
+            const onKeyDown = (event) => {
+              if (event.key !== 'Escape') {
+                return;
+              }
+              // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+              // except an open reveal.js slide menu, which Esc should close too.
+              // The menu handles keys only when its keyboard option is on.
+              const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+                window.Reveal.getConfig().menu?.keyboard !== false;
+              if (!menuHandlesEsc) {
+                event.stopPropagation();
+              }
+              if (instance.popper.contains(window.document.activeElement)) {
+                // Disabled while refocusing so the focus trigger does not reopen it
+                instance.disable();
+                instance.reference.focus();
+                instance.enable();
+              }
+              dismiss();
+            };
+            const onFocusOut = (event) => {
+              const target = event.relatedTarget;
+              if (target && !instance.reference.contains(target) &&
+                  !instance.popper.contains(target)) {
+                dismiss();
+              }
+            };
+            // On the trigger too: a click trigger (code-annotations: select) has no
+            // blur handling. Attached for the instance's lifetime so leaving the
+            // trigger also cancels a show still pending on the trigger delay.
+            instance.reference.addEventListener('focusout', onFocusOut);
+            return {
+              onShow() {
+                window.document.addEventListener('keydown', onKeyDown, true);
+                instance.popper.addEventListener('focusout', onFocusOut);
+              },
+              onHide() {
+                window.document.removeEventListener('keydown', onKeyDown, true);
+                instance.popper.removeEventListener('focusout', onFocusOut);
+              },
+              onDestroy() {
+                instance.reference.removeEventListener('focusout', onFocusOut);
+              },
+            };
+          },
+        };
         function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
           const config = {
             allowHTML: true,
@@ -1026,6 +1087,7 @@ McElreath, R. (2020). <em>Statistical Rethinking: A <span>Bayesian</span> Course
             interactiveBorder: 10,
             theme: 'light-border',
             placement: 'bottom-start',
+            plugins: [hideOnEscAndFocusOut],
           };
           if (contentFn) {
             config.content = contentFn;
