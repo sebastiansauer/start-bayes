@@ -179,16 +179,16 @@
           { mu: 165, sg: 4, n: 8 },
         ];
         // abstrakte Form der Likelihood im Überblick (wie Abb. 9.4)
-        var ABS = { m: 178, s: 14, h: 180 };
-        var HK = 960; // Höhe der Likelihood-Kurve = HK / sigma (Fläche konstant)
+        var ABS = { m: 178, s: 14, h: 170 };
+        var HK = 800; // Höhe der Likelihood-Kurve = HK / sigma (Fläche konstant)
 
         // ---------- Geometrie ----------
         var MX0 = 160, MX1 = 900, MD = [118, 238];   // mu- und h-Achse (gleiche Skala)
         var SX0 = 1080, SX1 = 1760, SD = [0, 40];    // sigma-Achse
         var YP = 270, HP = 190;                      // Basislinie und Höhe der Prioris
-        var YL = 760;                                // Basislinie der Likelihood
-        var YDATA = 885;                             // Zeile der h_i
-        var SIG_LABEL = { x: 985, y: 612 };          // Lage von "sigma" an der Likelihood
+        var YL = 700;                                // Basislinie der Likelihood
+        var YDATA = 870;                             // Zeile der h_i
+        var SIG_LABEL = { x: 985, y: 552 };          // Lage von "sigma" an der Likelihood
 
         function lerp(a, b, t) { return a + (b - a) * t; }
         function clamp01(t) { return t < 0 ? 0 : t > 1 ? 1 : t; }
@@ -319,14 +319,19 @@
 
         // ---------- Pfeile und "~" ----------
         var arrMu = el("line", { x1: XM(M), x2: XM(M), y1: YP + 64, y2: YL - 248, stroke: DARK, "stroke-width": 2.5, "marker-end": "url(#arrowhead)" }, GARR);
-        var tilMu = txt("~", { x: XM(M) - 58, y: 448, class: "tilde", "text-anchor": "middle" }, GARR);
+        var tilMu = txt("~", { x: XM(M) - 58, y: 410, class: "tilde", "text-anchor": "middle" }, GARR);
         var a2 = { x1: XS(12), y1: YP + 64, x2: SIG_LABEL.x + 30, y2: SIG_LABEL.y - 32 };
         var arrSig = el("line", { x1: a2.x1, y1: a2.y1, x2: a2.x2, y2: a2.y2, stroke: DARK, "stroke-width": 2.5, "marker-end": "url(#arrowhead)" }, GARR);
         var tilSig = txt("~", { x: (a2.x1 + a2.x2) / 2 - 40, y: (a2.y1 + a2.y2) / 2 - 18, class: "tilde", "text-anchor": "middle" }, GARR);
-        var arrI = el("line", { x1: 110, x2: 110, y1: YL + 14, y2: YDATA - 42, stroke: DARK, "stroke-width": 2.5, "marker-end": "url(#arrowhead)" }, GARR);
-        var tilI = txt("~", { x: 74, y: YL + 76, class: "tilde", "text-anchor": "middle" }, GARR);
-        txt("i", { x: 140, y: YL + 66, class: "sym", "text-anchor": "middle" }, GARR);
-        txtSub("h", "i", "", { x: 106, y: YDATA + 14, class: "sym", "text-anchor": "middle" }, GARR);
+        // Pfeil zu den h_i: mittig unter der Likelihood (wie Abb. 9.4),
+        // unterhalb der Tick-Beschriftung der h-Achse
+        var arrI = el("line", { x1: XM(M), x2: XM(M), y1: YL + 60, y2: YDATA - 40, stroke: DARK, "stroke-width": 2.5, "marker-end": "url(#arrowhead)" }, GARR);
+        var tilI = txt("~", { x: XM(M) - 40, y: YL + 112, class: "tilde", "text-anchor": "middle" }, GARR);
+        txt("i", { x: XM(M) + 30, y: YL + 102, class: "sym", "text-anchor": "middle" }, GARR);
+        // h_i: mittig unter dem Pfeil; solange simulierte h_i zu sehen sind,
+        // steht die Beschriftung links als Zeilenlabel
+        var hMid = txtSub("h", "i", "", { x: XM(M), y: YDATA + 20, class: "sym", "text-anchor": "middle" }, GARR);
+        var hLeft = txtSub("h", "i", "", { x: MX0 - 40, y: YDATA + 14, class: "sym", "text-anchor": "middle", opacity: 0, "data-layout-allow-overlap": "" }, GARR);
 
         // ---------- Likelihood: N(mu, sigma) ----------
         var likFill = el("path", { fill: FILL, d: "" }, GLIK);
@@ -460,6 +465,9 @@
               c.setAttribute("opacity", f2(S.dOn * (p > 0 ? 0.6 : 0)));
             });
           });
+
+          hMid.setAttribute("opacity", f2(1 - S.dOn));
+          hLeft.setAttribute("opacity", f2(S.dOn));
 
           // Hervorhebung von Pfeilen und "~"
           [arrMu, arrSig, arrI].forEach(function (a) { a.setAttribute("stroke-width", f2(2.5 + 2.5 * S.hl)); });
