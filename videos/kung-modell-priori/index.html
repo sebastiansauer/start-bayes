@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Start:Bayes! — Das Kung-Modell: Prioris und Likelihood</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <!--
+      Erklärvideo zu Abb. 9.4 (Kap. 0800, #fig-mod-kung1): Kruschke-Diagramm
+      des Kung-Modells
+        mu    ~ N(178, 20)   (Priori)
+        sigma ~ Exp(1/8)     (Priori)
+        h_i   ~ N(mu, sigma) (Likelihood)
+      Ablauf: Überblick -> Priori mu -> Priori sigma -> drei Ziehungen
+      (mu, sigma) mit je einigen simulierten h_i -> zurück zum Überblick.
+      Farben wie R-Code/Kruschke-plot3.R bzw. _common.R.
+    -->
+    <style>
+      @font-face {
+        font-family: "Liberation Sans";
+        src: url("assets/fonts/LiberationSans-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Liberation Sans";
+        src: url("assets/fonts/LiberationSans-Bold.ttf") format("truetype");
+        font-weight: 700;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Liberation Serif";
+        src: url("assets/fonts/LiberationSerif-Italic.ttf") format("truetype");
+        font-weight: 400;
+        font-style: italic;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+        font-family: "Liberation Sans", sans-serif;
+        overflow: hidden;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+        overflow: hidden;
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+      }
+      svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .tick {
+        font-size: 26px;
+        fill: #4d4d4d;
+      }
+      .axtitle {
+        font-size: 26px;
+        fill: #4d4d4d;
+      }
+      .dist {
+        font-size: 36px;
+        fill: #1a1a1a;
+      }
+      .sym {
+        font-family: "Liberation Serif", serif;
+        font-style: italic;
+        font-size: 44px;
+        fill: #1a1a1a;
+      }
+      .tilde {
+        font-family: "Liberation Serif", serif;
+        font-size: 60px;
+        fill: #1a1a1a;
+      }
+      .num {
+        font-size: 32px;
+        font-weight: 700;
+        paint-order: stroke;
+        stroke: #ffffff;
+        stroke-width: 7px;
+        stroke-linejoin: round;
+      }
+      .hint {
+        font-size: 26px;
+        font-weight: 700;
+        paint-order: stroke;
+        stroke: #ffffff;
+        stroke-width: 6px;
+        stroke-linejoin: round;
+      }
+      .caption-row {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 935px;
+        height: 130px;
+      }
+      .caption {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 120px;
+        font-size: 36px;
+        line-height: 1.3;
+        color: #262626;
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="kung-modell-priori"
+      data-start="0"
+      data-width="1920"
+      data-height="1080"
+      data-duration="46"
+    >
+      <div id="scene" class="clip" data-start="0" data-duration="46" data-track-index="0">
+        <svg id="plot" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#4D4D4D" />
+            </marker>
+          </defs>
+          <g id="gMu"></g>
+          <g id="gSig"></g>
+          <g id="gArr"></g>
+          <g id="gLik"></g>
+          <g id="gTop"></g>
+        </svg>
+
+        <div class="caption-row">
+          <div class="caption" id="cap-1">Das Modell der Körpergröße: drei Verteilungen, verbunden durch Pfeile</div>
+          <div class="caption" id="cap-2">Priori für μ: Die mittlere Größe liegt vermutlich um 178 cm, mit 95 % Wahrscheinlichkeit zwischen 138 und 218 cm</div>
+          <div class="caption" id="cap-3">Priori für σ: Die Streuung ist positiv, meist klein, im Mittel 8 cm (λ = 1/8)</div>
+          <div class="caption" id="cap-4">Ziehe je einen Wert für μ und σ: Zusammen legen sie die Verteilung der Körpergrößen fest</div>
+          <div class="caption" id="cap-5">Aus dieser Verteilung entstehen die einzelnen Körpergrößen h<sub>i</sub></div>
+          <div class="caption" id="cap-6">Andere Ziehung, andere Verteilung: Die Prioris legen fest, welche Werte wir für plausibel halten</div>
+          <div class="caption" id="cap-7">„~“ heißt „ist verteilt wie“, ein Pfeil heißt „liefert den Parameter“</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var NS = "http://www.w3.org/2000/svg";
+
+        // ---------- Farben (aus _common.R) ----------
+        var ORANGE = "#E69F00", BLUE = "#0072B2", GREEN = "#009E73"; // okabe_linie[1:3]
+        var ORANGE_T = "#B36B00", GREEN_T = "#007A59";               // okabe_text[1], [3]
+        var DARK = "#4D4D4D";   // dunkelgrau: Achsen, Pfeile, Punkte
+        var FILL = "#D9D9D9";   // gitterfarbe: Flächen (wie Kruschke-plot3.R)
+
+        // ---------- Modell ----------
+        var M = 178, S_MU = 20, LAMBDA = 1 / 8;
+        // Ziehungen (fest gewählt, damit das Video reproduzierbar bleibt)
+        var DRAWS = [
+          { mu: 175, sg: 7, n: 10 },
+          { mu: 192, sg: 15, n: 8 },
+          { mu: 165, sg: 4, n: 8 },
+        ];
+        // abstrakte Form der Likelihood im Überblick (wie Abb. 9.4)
+        var ABS = { m: 178, s: 14, h: 180 };
+        var HK = 960; // Höhe der Likelihood-Kurve = HK / sigma (Fläche konstant)
+
+        // ---------- Geometrie ----------
+        var MX0 = 160, MX1 = 900, MD = [118, 238];   // mu- und h-Achse (gleiche Skala)
+        var SX0 = 1080, SX1 = 1760, SD = [0, 40];    // sigma-Achse
+        var YP = 270, HP = 190;                      // Basislinie und Höhe der Prioris
+        var YL = 760;                                // Basislinie der Likelihood
+        var YDATA = 885;                             // Zeile der h_i
+        var SIG_LABEL = { x: 985, y: 612 };          // Lage von "sigma" an der Likelihood
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+        function clamp01(t) { return t < 0 ? 0 : t > 1 ? 1 : t; }
+        function f2(v) { return v.toFixed(2); }
+        function XM(v) { return MX0 + ((v - MD[0]) / (MD[1] - MD[0])) * (MX1 - MX0); }
+        function XS(v) { return SX0 + ((v - SD[0]) / (SD[1] - SD[0])) * (SX1 - SX0); }
+
+        // simulierte h_i (deterministisch: mulberry32 + Box-Muller)
+        function rng(seed) {
+          return function () {
+            seed |= 0; seed = (seed + 0x6d2b79f5) | 0;
+            var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+            t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+          };
+        }
+        DRAWS.forEach(function (d, k) {
+          var r = rng(42 + 17 * k);
+          d.h = [];
+          while (d.h.length < d.n) {
+            var u1 = r(), u2 = r();
+            var z = Math.sqrt(-2 * Math.log(u1 + 1e-12)) * Math.cos(2 * Math.PI * u2);
+            var v = d.mu + d.sg * z;
+            if (v > MD[0] + 2 && v < MD[1] - 2) d.h.push(v);
+          }
+        });
+
+        // ---------- Hilfen zum Erzeugen ----------
+        function el(tag, attrs, parent) {
+          var e = document.createElementNS(NS, tag);
+          for (var k in attrs) e.setAttribute(k, attrs[k]);
+          if (parent) parent.appendChild(e);
+          return e;
+        }
+        function txt(content, attrs, parent) {
+          var e = el("text", attrs, parent);
+          e.textContent = content;
+          return e;
+        }
+        // Text mit tiefgestelltem Teil, z. B. S_mu, h_i
+        function txtSub(main, sub, rest, attrs, parent) {
+          var e = el("text", attrs, parent);
+          e.appendChild(document.createTextNode(main));
+          var s = el("tspan", { "baseline-shift": "sub", "font-size": "70%" }, e);
+          s.textContent = sub;
+          if (rest) {
+            var r = el("tspan", { "baseline-shift": "0" }, e);
+            r.textContent = rest;
+          }
+          return e;
+        }
+        function areaPath(xs, ys, base) {
+          var d = "M " + f2(xs[0]) + " " + f2(base);
+          for (var i = 0; i < xs.length; i++) d += " L " + f2(xs[i]) + " " + f2(ys[i]);
+          return d + " L " + f2(xs[xs.length - 1]) + " " + f2(base) + " Z";
+        }
+        function linePath(xs, ys) {
+          var d = "M " + f2(xs[0]) + " " + f2(ys[0]);
+          for (var i = 1; i < xs.length; i++) d += " L " + f2(xs[i]) + " " + f2(ys[i]);
+          return d;
+        }
+        function axis(g, x0, x1, y, ticks, X, title) {
+          var ga = el("g", { opacity: 0 }, g);
+          ticks.forEach(function (t) {
+            el("line", { x1: X(t), x2: X(t), y1: y, y2: y + 12, stroke: DARK, "stroke-width": 2 }, ga);
+            txt(String(t), { x: X(t), y: y + 42, class: "tick", "text-anchor": "middle" }, ga);
+          });
+          txt(title, { x: x1, y: y + 42, class: "axtitle", "text-anchor": "end" }, ga);
+          return ga;
+        }
+
+        var GMU = document.getElementById("gMu");
+        var GSIG = document.getElementById("gSig");
+        var GARR = document.getElementById("gArr");
+        var GLIK = document.getElementById("gLik");
+        var GTOP = document.getElementById("gTop");
+
+        // ---------- Priori mu: N(178, 20) ----------
+        var muX = [], muY = [];
+        for (var v = MD[0]; v <= MD[1] + 1e-9; v += 0.5) {
+          muX.push(XM(v));
+          muY.push(YP - HP * Math.exp(-0.5 * Math.pow((v - M) / S_MU, 2)));
+        }
+        el("path", { d: areaPath(muX, muY, YP), fill: FILL }, GMU);
+        // 95-%-Bereich (M ± 2 S)
+        var bX = [], bY = [];
+        for (var v2 = M - 2 * S_MU; v2 <= M + 2 * S_MU + 1e-9; v2 += 0.5) {
+          bX.push(XM(v2));
+          bY.push(YP - HP * Math.exp(-0.5 * Math.pow((v2 - M) / S_MU, 2)));
+        }
+        var muBand = el("path", { d: areaPath(bX, bY, YP), fill: BLUE, "fill-opacity": 0.28, opacity: 0 }, GMU);
+        el("path", { d: linePath(muX, muY), fill: "none", stroke: BLUE, "stroke-width": 4 }, GMU);
+        el("line", { x1: MX0, x2: MX1, y1: YP, y2: YP, stroke: DARK, "stroke-width": 2.5 }, GMU);
+        var axMu = axis(GMU, MX0, MX1, YP, [140, 160, 180, 200, 220], XM, "μ (cm)");
+        txt("Normal", { x: XM(M), y: YP - 28, class: "dist", "text-anchor": "middle" }, GMU);
+        // Symbole (Kruschke) und Zahlen
+        var symMu = el("g", {}, GMU);
+        txt("M", { x: XM(M), y: YP - 112, class: "sym", "text-anchor": "middle" }, symMu);
+        txtSub("S", "μ", "", { x: XM(206), y: YP - 128, class: "sym", "text-anchor": "start" }, symMu);
+        var numMu = el("g", { opacity: 0, "data-layout-allow-overlap": "" }, GMU);
+        txt("M = 178", { x: XM(M), y: YP - 112, class: "num", fill: BLUE, "text-anchor": "middle" }, numMu);
+        txtSub("S", "μ", " = 20", { x: XM(204), y: YP - 140, class: "num", fill: BLUE, "text-anchor": "start" }, numMu);
+        // Band-Beschriftung
+        var bandLab = el("g", { opacity: 0 }, GMU);
+        el("line", { x1: XM(M), x2: XM(M), y1: YP, y2: YP - HP, stroke: BLUE, "stroke-width": 2.5, "stroke-dasharray": "8 6" }, bandLab);
+        txt("138", { x: XM(138) - 10, y: YP - 38, class: "hint", fill: BLUE, "text-anchor": "end" }, bandLab);
+        txt("218", { x: XM(218) + 10, y: YP - 38, class: "hint", fill: BLUE, "text-anchor": "start" }, bandLab);
+        txt("95 %", { x: XM(201), y: YP - 62, class: "hint", fill: BLUE, "text-anchor": "middle" }, bandLab);
+
+        // ---------- Priori sigma: Exp(1/8) ----------
+        var sgX = [], sgY = [];
+        for (var s = SD[0]; s <= SD[1] + 1e-9; s += 0.25) {
+          sgX.push(XS(s));
+          sgY.push(YP - HP * Math.exp(-LAMBDA * s));
+        }
+        el("path", { d: areaPath(sgX, sgY, YP), fill: FILL }, GSIG);
+        el("path", { d: linePath(sgX, sgY), fill: "none", stroke: GREEN, "stroke-width": 4 }, GSIG);
+        el("line", { x1: SX0, x2: SX1, y1: YP, y2: YP, stroke: DARK, "stroke-width": 2.5 }, GSIG);
+        var axSig = axis(GSIG, SX0, SX1, YP, [0, 10, 20, 30], XS, "σ (cm)");
+        txt("exp", { x: XS(22), y: YP - 28, class: "dist", "text-anchor": "middle" }, GSIG);
+        var symSig = el("g", {}, GSIG);
+        txt("λ", { x: XS(22), y: YP - 112, class: "sym", "text-anchor": "middle" }, symSig);
+        var numSig = el("g", { opacity: 0, "data-layout-allow-overlap": "" }, GSIG);
+        txt("λ = 1/8", { x: XS(22), y: YP - 112, class: "num", fill: GREEN_T, "text-anchor": "middle" }, numSig);
+        var meanLab = el("g", { opacity: 0 }, GSIG);
+        el("line", { x1: XS(8), x2: XS(8), y1: YP, y2: YP - HP * Math.exp(-1), stroke: GREEN, "stroke-width": 2.5, "stroke-dasharray": "8 6" }, meanLab);
+        txt("Mittelwert 1/λ = 8", { x: XS(8) + 14, y: YP - HP * Math.exp(-1) - 14, class: "hint", fill: GREEN_T, "text-anchor": "start" }, meanLab);
+
+        // ---------- Pfeile und "~" ----------
+        var arrMu = el("line", { x1: XM(M), x2: XM(M), y1: YP + 64, y2: YL - 248, stroke: DARK, "stroke-width": 2.5, "marker-end": "url(#arrowhead)" }, GARR);
+        var tilMu = txt("~", { x: XM(M) - 58, y: 448, class: "tilde", "text-anchor": "middle" }, GARR);
+        var a2 = { x1: XS(12), y1: YP + 64, x2: SIG_LABEL.x + 30, y2: SIG_LABEL.y - 32 };
+        var arrSig = el("line", { x1: a2.x1, y1: a2.y1, x2: a2.x2, y2: a2.y2, stroke: DARK, "stroke-width": 2.5, "marker-end": "url(#arrowhead)" }, GARR);
+        var tilSig = txt("~", { x: (a2.x1 + a2.x2) / 2 - 40, y: (a2.y1 + a2.y2) / 2 - 18, class: "tilde", "text-anchor": "middle" }, GARR);
+        var arrI = el("line", { x1: 110, x2: 110, y1: YL + 14, y2: YDATA - 42, stroke: DARK, "stroke-width": 2.5, "marker-end": "url(#arrowhead)" }, GARR);
+        var tilI = txt("~", { x: 74, y: YL + 76, class: "tilde", "text-anchor": "middle" }, GARR);
+        txt("i", { x: 140, y: YL + 66, class: "sym", "text-anchor": "middle" }, GARR);
+        txtSub("h", "i", "", { x: 106, y: YDATA + 14, class: "sym", "text-anchor": "middle" }, GARR);
+
+        // ---------- Likelihood: N(mu, sigma) ----------
+        var likFill = el("path", { fill: FILL, d: "" }, GLIK);
+        var likLine = el("path", { fill: "none", stroke: ORANGE, "stroke-width": 4, d: "" }, GLIK);
+        el("line", { x1: MX0, x2: MX1, y1: YL, y2: YL, stroke: DARK, "stroke-width": 2.5 }, GLIK);
+        var axH = axis(GLIK, MX0, MX1, YL, [140, 160, 180, 200, 220], XM, "h (cm)");
+        var muGuide = el("line", { stroke: BLUE, "stroke-width": 2.5, "stroke-dasharray": "8 6", opacity: 0 }, GLIK);
+        var sgBr = el("line", { stroke: GREEN, "stroke-width": 4, "stroke-linecap": "round", opacity: 0 }, GLIK);
+        var likDist = txt("Normal", { class: "dist", "text-anchor": "middle" }, GLIK);
+        var likMuSym = txt("μ", { class: "sym", "text-anchor": "middle" }, GLIK);
+        var likMuNum = txt("", { class: "num", fill: BLUE, "text-anchor": "middle", opacity: 0, "data-layout-allow-overlap": "" }, GLIK);
+        var likSgSym = txt("σ", { x: SIG_LABEL.x, y: SIG_LABEL.y, class: "sym", "text-anchor": "middle" }, GLIK);
+        var likSgNum = txt("", { x: SIG_LABEL.x + 10, y: SIG_LABEL.y + 4, class: "num", fill: GREEN_T, "text-anchor": "middle", opacity: 0, "data-layout-allow-overlap": "" }, GLIK);
+
+        // simulierte h_i (je Ziehung eine Gruppe)
+        var dataEls = DRAWS.map(function (d) {
+          return d.h.map(function () {
+            return el("circle", { r: 9, cx: XM(M), cy: YDATA, fill: DARK, opacity: 0 }, GLIK);
+          });
+        });
+
+        // ---------- gezogene Werte als Punkte ----------
+        var muDot = el("circle", { r: 13, fill: BLUE, stroke: "#fff", "stroke-width": 3, opacity: 0 }, GTOP);
+        var sgDot = el("circle", { r: 13, fill: GREEN, stroke: "#fff", "stroke-width": 3, opacity: 0 }, GTOP);
+        // Herkunft der gezogenen Werte auf den Priori-Achsen
+        var muOrig = el("circle", { r: 8, fill: BLUE, opacity: 0 }, GMU);
+        var sgOrig = el("circle", { r: 8, fill: GREEN, opacity: 0 }, GSIG);
+        var muDrop = el("line", { stroke: BLUE, "stroke-width": 2.5, "stroke-dasharray": "4 6", opacity: 0 }, GMU);
+
+        // ---------- Zustand (wird von der Timeline getrieben) ----------
+        var INIT = {
+          oMu: 0, oSig: 0, oArr: 0, oLik: 0,  // Sichtbarkeit / Abblenden der Teile
+          axMu: 0, axSig: 0, axH: 0,          // Achsen
+          numMu: 0, numSig: 0, numL: 0,       // Zahlen statt Symbole
+          band: 0, mean: 0,                   // Hervorhebungen der Prioris
+          m: ABS.m, s: ABS.s, h: ABS.h,       // aktuelle Likelihood-Kurve
+          k: 0,                               // Index der aktuellen Ziehung
+          dot: 0, pm: 0, ps: 0,               // Punkte für mu und sigma, Weg 0..1
+          guide: 0, br: 0,                    // mu-Linie und sigma-Strecke an der Likelihood
+          dOn: 0, dd: 0,                      // simulierte h_i
+          hl: 0,                              // Hervorhebung von Pfeilen und "~"
+        };
+        var S = Object.assign({}, INIT);
+
+        function likY(x, m, s, h) {
+          return YL - h * Math.exp(-0.5 * Math.pow((x - m) / s, 2));
+        }
+
+        function draw() {
+          GMU.setAttribute("opacity", f2(S.oMu));
+          GSIG.setAttribute("opacity", f2(S.oSig));
+          GARR.setAttribute("opacity", f2(S.oArr));
+          GLIK.setAttribute("opacity", f2(S.oLik));
+
+          axMu.setAttribute("opacity", f2(S.axMu));
+          axSig.setAttribute("opacity", f2(S.axSig));
+          axH.setAttribute("opacity", f2(S.axH));
+
+          symMu.setAttribute("opacity", f2(1 - S.numMu));
+          numMu.setAttribute("opacity", f2(S.numMu));
+          symSig.setAttribute("opacity", f2(1 - S.numSig));
+          numSig.setAttribute("opacity", f2(S.numSig));
+          muBand.setAttribute("opacity", f2(S.band));
+          bandLab.setAttribute("opacity", f2(S.band));
+          meanLab.setAttribute("opacity", f2(S.mean));
+
+          // Likelihood-Kurve
+          var xs = [], ys = [];
+          for (var v = MD[0]; v <= MD[1] + 1e-9; v += 0.25) {
+            xs.push(XM(v));
+            ys.push(likY(v, S.m, S.s, S.h));
+          }
+          likFill.setAttribute("d", areaPath(xs, ys, YL));
+          likLine.setAttribute("d", linePath(xs, ys));
+          var xm = XM(S.m);
+          likDist.setAttribute("x", f2(xm));
+          likDist.setAttribute("y", f2(YL - 26));
+          likDist.setAttribute("opacity", f2(1 - S.numL));
+          likMuSym.setAttribute("x", f2(xm));
+          likMuSym.setAttribute("y", f2(YL - S.h + 56));
+          likMuSym.setAttribute("opacity", f2(1 - S.numL));
+          likMuNum.textContent = "μ = " + Math.round(S.m);
+          likMuNum.setAttribute("x", f2(xm));
+          likMuNum.setAttribute("y", f2(YL - S.h - 18));
+          likMuNum.setAttribute("opacity", f2(S.numL));
+          likSgSym.setAttribute("opacity", f2(1 - S.numL));
+          likSgNum.textContent = "σ = " + Math.round(S.s);
+          likSgNum.setAttribute("opacity", f2(S.numL));
+
+          // mu-Linie und sigma-Strecke (mu bis mu + sigma, auf Höhe von 1 SD)
+          muGuide.setAttribute("x1", f2(xm)); muGuide.setAttribute("x2", f2(xm));
+          muGuide.setAttribute("y1", f2(YL)); muGuide.setAttribute("y2", f2(YL - S.h));
+          muGuide.setAttribute("opacity", f2(S.guide));
+          var yb = YL - S.h * Math.exp(-0.5);
+          sgBr.setAttribute("x1", f2(xm)); sgBr.setAttribute("x2", f2(XM(S.m + S.s)));
+          sgBr.setAttribute("y1", f2(yb)); sgBr.setAttribute("y2", f2(yb));
+          sgBr.setAttribute("opacity", f2(S.br));
+
+          // gezogene Werte: mu fällt senkrecht auf die h-Achse,
+          // sigma wandert zum sigma der Likelihood
+          var D = DRAWS[Math.round(S.k)];
+          var ym = lerp(YP, YL, S.pm);
+          muDot.setAttribute("cx", f2(XM(D.mu)));
+          muDot.setAttribute("cy", f2(ym));
+          muDot.setAttribute("opacity", f2(S.dot));
+          muDot.setAttribute("r", f2(13 * Math.min(1, S.dot * 1.3)));
+          muOrig.setAttribute("cx", f2(XM(D.mu))); muOrig.setAttribute("cy", f2(YP));
+          muOrig.setAttribute("opacity", f2(S.dot));
+          sgOrig.setAttribute("cx", f2(XS(D.sg))); sgOrig.setAttribute("cy", f2(YP));
+          sgOrig.setAttribute("opacity", f2(S.dot));
+          muDrop.setAttribute("x1", f2(XM(D.mu))); muDrop.setAttribute("x2", f2(XM(D.mu)));
+          muDrop.setAttribute("y1", f2(YP)); muDrop.setAttribute("y2", f2(ym));
+          muDrop.setAttribute("opacity", f2(S.dot * (S.pm > 0 ? 0.7 : 0)));
+          var e = S.ps * S.ps * (3 - 2 * S.ps);
+          sgDot.setAttribute("cx", f2(lerp(XS(D.sg), SIG_LABEL.x + 10, e)));
+          sgDot.setAttribute("cy", f2(lerp(YP, SIG_LABEL.y - 12, e)));
+          sgDot.setAttribute("opacity", f2(S.dot * (1 - clamp01((S.ps - 0.85) / 0.15))));
+          sgDot.setAttribute("r", f2(13 * Math.min(1, S.dot * 1.3)));
+
+          // simulierte h_i fallen nacheinander aus der Kurve
+          var kk = Math.round(S.k);
+          dataEls.forEach(function (els, k) {
+            var Dk = DRAWS[k];
+            els.forEach(function (c, i) {
+              if (k !== kk) { c.setAttribute("opacity", "0"); return; }
+              var p = clamp01(S.dd * 2.2 - (i / els.length) * 1.2);
+              var q = p * p;
+              var y0 = likY(Dk.h[i], S.m, S.s, S.h);
+              c.setAttribute("cx", f2(XM(Dk.h[i])));
+              c.setAttribute("cy", f2(lerp(y0, YDATA, q)));
+              c.setAttribute("opacity", f2(S.dOn * (p > 0 ? 0.6 : 0)));
+            });
+          });
+
+          // Hervorhebung von Pfeilen und "~"
+          [arrMu, arrSig, arrI].forEach(function (a) { a.setAttribute("stroke-width", f2(2.5 + 2.5 * S.hl)); });
+          [tilMu, tilSig, tilI].forEach(function (t) {
+            t.setAttribute("font-size", f2(60 + 24 * S.hl));
+            t.setAttribute("fill", S.hl > 0.01 ? ORANGE_T : "#1A1A1A");
+          });
+        }
+
+        draw();
+
+        // ---------- Timeline ----------
+        var tl = gsap.timeline({ paused: true });
+        function tw(props, dur, at, ease) {
+          var from = {};
+          for (var k in props) from[k] = S[k];
+          // Startwerte explizit, damit Vor- und Zurückspulen deterministisch bleiben
+          var to = Object.assign({}, props, { duration: dur, ease: ease || "power2.inOut", onUpdate: draw, immediateRender: false });
+          tl.fromTo(S, from, to, at);
+          for (var k2 in props) S[k2] = props[k2];
+        }
+        function set(props, at) { tw(props, 0.01, at, "none"); }
+
+        // Untertitel: Überblendung an den Szenengrenzen
+        var CUTS = [0, 4, 11, 18, 26, 32, 42];
+        CUTS.forEach(function (t0, i) {
+          var sel = "#cap-" + (i + 1);
+          tl.fromTo(sel, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out", immediateRender: false }, t0 + 0.2);
+          if (i < CUTS.length - 1) {
+            tl.fromTo(sel, { opacity: 1 }, { opacity: 0, duration: 0.25, ease: "power1.in", immediateRender: false }, CUTS[i + 1]);
+          } else {
+            tl.fromTo(sel, { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "power1.in", immediateRender: false }, 45.6);
+          }
+        });
+
+        var DIM = 0.22;
+
+        // 1 (0–4 s): Überblick – das Diagramm baut sich auf
+        tw({ oMu: 1 }, 0.6, 0.2, "sine.out");
+        tw({ oSig: 1 }, 0.6, 0.6, "sine.out");
+        tw({ oArr: 1 }, 0.6, 1.0, "sine.out");
+        tw({ oLik: 1 }, 0.6, 1.4, "sine.out");
+
+        // 2 (4–11 s): Priori für mu
+        tw({ oSig: DIM, oArr: DIM, oLik: DIM }, 0.6, 4.2);
+        tw({ axMu: 1 }, 0.6, 4.6, "sine.out");
+        tw({ numMu: 1 }, 0.6, 5.4);
+        tw({ band: 1 }, 1.0, 6.6, "sine.out");
+
+        // 3 (11–18 s): Priori für sigma
+        tw({ oMu: DIM, oSig: 1 }, 0.6, 11.2);
+        tw({ axSig: 1 }, 0.6, 11.6, "sine.out");
+        tw({ numSig: 1 }, 0.6, 12.4);
+        tw({ mean: 1 }, 1.0, 13.6, "sine.out");
+
+        // 4 (18–26 s): erste Ziehung
+        tw({ oMu: 1, oArr: 1, oLik: 1, band: 0, mean: 0 }, 0.6, 18.2);
+        tw({ axH: 1 }, 0.6, 18.6, "sine.out");
+        set({ k: 0, pm: 0, ps: 0 }, 18.0);
+        tw({ dot: 1 }, 0.5, 19.2, "back.out(2)");
+        tw({ pm: 1, ps: 1 }, 1.6, 20.0, "power2.inOut");
+        tw({ m: DRAWS[0].mu, s: DRAWS[0].sg, h: HK / DRAWS[0].sg, numL: 1, guide: 1 }, 1.4, 21.6);
+        tw({ br: 1 }, 0.5, 23.2, "sine.out");
+
+        // 5 (26–32 s): simulierte h_i
+        set({ dd: 0 }, 26.0);
+        tw({ dOn: 1 }, 0.2, 26.3, "none");
+        tw({ dd: 1 }, 3.0, 26.4, "none");
+
+        // 6 (32–42 s): zwei weitere Ziehungen
+        [1, 2].forEach(function (k, j) {
+          var t = 32 + 5 * j;
+          tw({ dOn: 0, dot: 0, br: 0 }, 0.4, t);
+          set({ k: k, pm: 0, ps: 0, dd: 0 }, t + 0.45);
+          tw({ dot: 1 }, 0.4, t + 0.5, "back.out(2)");
+          tw({ pm: 1, ps: 1 }, 1.1, t + 0.9, "power2.inOut");
+          tw({ m: DRAWS[k].mu, s: DRAWS[k].sg, h: HK / DRAWS[k].sg }, 1.0, t + 2.0);
+          tw({ br: 1 }, 0.4, t + 2.8, "sine.out");
+          tw({ dOn: 1 }, 0.2, t + 2.9, "none");
+          tw({ dd: 1 }, 1.9, t + 3.0, "none");
+        });
+
+        // 7 (42–46 s): zurück zum Überblick, Pfeile und "~" hervorheben
+        tw({ dOn: 0, dot: 0, br: 0, guide: 0, numL: 0, numMu: 0, numSig: 0, axMu: 0, axSig: 0, axH: 0 }, 0.6, 42.1);
+        tw({ m: ABS.m, s: ABS.s, h: ABS.h }, 1.0, 42.4);
+        tw({ hl: 1 }, 0.5, 43.4, "sine.out");
+        tw({ hl: 0 }, 0.5, 45.2, "sine.in");
+
+        // Anfangszustand wiederherstellen (tw() hat S auf die Endwerte gesetzt)
+        Object.assign(S, INIT);
+        draw();
+
+        window.__timelines["kung-modell-priori"] = tl;
+        tl.seek(0);
+      })();
+    </script>
+  </body>
+</html>
