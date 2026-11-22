@@ -1221,7 +1221,7 @@ $\square$
 
 
 Komfort pur: Unser Modell erlaubt uns für jeden beliebigen Wert des Prädiktors eine Post-Verteilung (von $\mu$) zu berechnen.
-Hier am Beispiel von `m_kung_post`, s. @fig-post42.
+Hier am Beispiel von `m_kung_gewicht_c`, s. @fig-post42.
 
 ```{r m42-read-from-disk}
 #| echo: false
@@ -1252,86 +1252,8 @@ plot_m_kung_post <-
 
 ```{r Plot-condition}
 #| echo: false
-lm1 <- lm(height ~ weight, data = kung_erwachsen)
-
 # Eine Farbe pro Gewichtswert, gemeinsam für Abb. A und B (Okabe-Ito, ohne Gelb)
 farben_gewicht <- setNames(okabe_linie[1:4], c("40", "45", "50", "55"))
-
-d_pred <-
-  tibble(weight = c(40, 45, 50, 55),
-         height = predict(lm1, newdata = data.frame(weight)))
-
-
-
-plot_condition <- 
-  kung_erwachsen |> 
-  #select(weight, height) |> 
-  #drop_na() |> 
-  ggplot(
-       aes(x = weight, y = height)) +
-  geom_point(alpha = .4) +
-  geom_smooth(method = "lm") +
-  geom_point(aes(color = as.factor(weight)), data = d_pred, size = 3) +
-  labs(x = "Körpergewicht [kg] (weight)",
-       y = "Körpergröße [cm] (height)") +
-  scale_color_manual(values = farben_gewicht, guide = "none")
-
-
-k <- 3
-n <- 50
-sigma <- sigma(lm1)
-ab <- coef(lm1); a <- ab[1]; b <- ab[2]
-
-x <- seq(-k*sigma, k*sigma, length.out = n)
-y <- dnorm(x, 0, sigma)/dnorm(0, 0, sigma) * 1
-
-x0 <- 40
-y0 <- a+b*x0
-path1 <- data.frame(x = y + x0, y = x + y0)
-segment1 <- data.frame(x = x0, y = y0 - k*sigma, xend = x0, yend = y0 + k*sigma)
-
-x0 <- 45
-y0 <- a+b*x0
-path2 <- data.frame(x = y + x0, y = x + y0)
-segment2 <- data.frame(x = x0, y = y0 - k*sigma, xend = x0, yend = y0 + k*sigma)
-
-x0 <- 50
-y0 <- a+b*x0
-path3 <- data.frame(x = y + x0, y = x + y0)
-segment3 <- data.frame(x = x0, y = y0 - k*sigma, xend = x0, yend = y0 + k*sigma)
-
-
-x0 <- 55
-y0 <- a+b*x0
-path4 <- data.frame(x = y + x0, y = x + y0)
-segment4 <- data.frame(x = x0, y = y0 - k*sigma, xend = x0, yend = y0 + k*sigma)
-
-plot_condition_with_cond_post <- 
-plot_condition +
-  geom_path(aes(x,y), data = path1, 
-            color = farben_gewicht[1]) +
-  geom_segment(aes(x=x,y=y,xend=xend,yend=yend), 
-               data = segment1,
-               color = farben_gewicht[1]) +
-  
-  geom_path(aes(x,y), data = path2, 
-            color = farben_gewicht[2]) +
-  geom_segment(aes(x=x,y=y,xend=xend,yend=yend), 
-               data = segment2,
-               color = farben_gewicht[2]) +
-  
-   geom_path(aes(x,y), data = path3, 
-            color = farben_gewicht[3]) +
-  geom_segment(aes(x=x,y=y,xend=xend,yend=yend), 
-               data = segment3,
-               color = farben_gewicht[3]) +
-  
-   geom_path(aes(x,y), data = path4, 
-            color = farben_gewicht[4]) +
-  geom_segment(aes(x=x,y=y,xend=xend,yend=yend), 
-               data = segment4,
-               color = farben_gewicht[4]) 
-
 ```
 
 ```{r m3}
@@ -1458,15 +1380,77 @@ p_post_at <-
 
 
 
+```{r plot-condition-post}
+#| echo: false
+# Panel A: Gerade und 95%-Band aus der Post-Verteilung von m_kung_gewicht_c,
+# dazu die Post-Verteilungen von mu bei 40, 45, 50, 55 kg -- dieselben wie in Panel B,
+# nur horizontal überhöht (sonst wären sie unsichtbar schmal)
+ueberhoehung_kg <- 2.5
+
+mu_band <-
+  tibble(weight = seq(min(kung_erwachsen$weight), max(kung_erwachsen$weight),
+                      length.out = 100)) |>
+  mutate(mu = map(weight, \(w) m_kung_gewicht_c_post$`(Intercept)` +
+                    m_kung_gewicht_c_post$weight_c * (w - 45)),
+         m  = map_dbl(mu, mean),
+         lo = map_dbl(mu, \(x) quantile(x, .025)),
+         hi = map_dbl(mu, \(x) quantile(x, .975)))
+
+dichte_tab <- function(h) {
+  d <- density(h, n = 128)
+  tibble(h = d$x, dichte = d$y)
+}
+
+dichten_A <-
+  m_kung_gewicht_c_post_long |>
+  group_by(Gewicht) |>
+  reframe(dichte_tab(h)) |>
+  mutate(Gewicht = sub("mu", "", Gewicht),
+         w = as.numeric(Gewicht),
+         x = w + dichte / max(dichte) * ueberhoehung_kg)
+
+mu_punkte <-
+  m_kung_gewicht_c_post_long_summary |>
+  mutate(Gewicht = sub("mu", "", Gewicht),
+         w = as.numeric(Gewicht))
+
+plot_condition_with_cond_post <-
+  kung_erwachsen |>
+  ggplot(aes(x = weight, y = height)) +
+  geom_point(alpha = .4) +
+  geom_ribbon(data = mu_band, aes(x = weight, ymin = lo, ymax = hi),
+              inherit.aes = FALSE, fill = trendfarbe, alpha = .2) +
+  geom_line(data = mu_band, aes(x = weight, y = m), inherit.aes = FALSE,
+            color = trendfarbe, linewidth = 1.2) +
+  geom_polygon(data = dichten_A, aes(x = x, y = h, fill = Gewicht, group = Gewicht),
+               inherit.aes = FALSE, alpha = .35) +
+  geom_path(data = dichten_A, aes(x = x, y = h, color = Gewicht, group = Gewicht),
+            inherit.aes = FALSE) +
+  geom_point(data = mu_punkte, aes(x = w, y = m, color = Gewicht),
+             inherit.aes = FALSE, size = 3) +
+  scale_color_manual(values = farben_gewicht, guide = "none") +
+  scale_fill_manual(values = farben_gewicht, guide = "none") +
+  labs(x = "Körpergewicht [kg] (weight)",
+       y = "Körpergröße [cm] (height)",
+       caption = "Blaues Band: 95 % der Post-Verteilung von μ; Breite der Verteilungen überhöht")
+```
+
+
 ```{r out.width="100%", fig.width=9}
 #| echo: false
 #| fig-asp: 1
 #| label: fig-post42
-#| fig-cap: "Für jeden beliebigen Prädiktorwert kann man eine Post-Verteilung bekommen. A: Regressionsmodell mit einigen ausgewählten Gewichtswerten. Es ist jeweils die Wahrscheinlichkeitsverteilung für den vorhergesagten Y-Wert dargestellt (hier sind die Verteilungen zu groß dargestellt zur besseren Sichtbarkeit). B: Für jeden beliebigen Gewichtswert (X) bekommt man eine (auf diesen X-Wert bedingte) Post-Verteilung des Mittelwerts der Körpergröße (μ)."
-
-
-plots(plot_condition_with_cond_post, p_post_at, 
-      n_rows = 2, tags = "A")
+#| fig-cap: "Für jeden beliebigen Prädiktorwert kann man eine Post-Verteilung des Mittelwerts μ bekommen. A: Regressionsgerade mit 95 %-Band der Post-Verteilung von μ; bei 40, 45, 50 und 55 kg ist jeweils die Post-Verteilung von μ eingezeichnet (horizontal überhöht, sonst wäre sie kaum zu sehen). B: Dieselben vier Post-Verteilungen, vergrößert. Am Rand der Daten (55 kg) ist μ unsicherer als in der Mitte (45 kg)."
+if (knitr::is_html_output()) {
+  # Animation: wie sich die Post-Verteilungen von mu an der Geraden aufbauen
+  # (Quelle: videos/post-mu-regression/, Standbild = Abbildung unten im PDF)
+  knitr::asis_output(paste0(
+    '<video src="img/post-mu-regression.mp4" poster="img/post-mu-regression-poster.png" ',
+    'autoplay loop muted playsinline controls style="width:100%;height:auto;"></video>'))
+} else {
+  plots(plot_condition_with_cond_post, p_post_at,
+        n_rows = 2, tags = "A")
+}
 ```
 
 
