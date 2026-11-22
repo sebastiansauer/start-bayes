@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Start:Bayes! — Post-Verteilung von μ an der Regressionsgeraden</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <!-- Daten aus m_kung_gewicht_c (Kap. 0900), erzeugt von scripts/export-data.R -->
+    <script src="data.js"></script>
+    <style>
+      @font-face {
+        font-family: "Liberation Sans";
+        src: url("assets/fonts/LiberationSans-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Liberation Sans";
+        src: url("assets/fonts/LiberationSans-Bold.ttf") format("truetype");
+        font-weight: 700;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Liberation Sans";
+        src: url("assets/fonts/LiberationSans-Italic.ttf") format("truetype");
+        font-weight: 400;
+        font-style: italic;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+        font-family: "Liberation Sans", sans-serif;
+        overflow: hidden;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+        overflow: hidden;
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+      }
+      svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .tick {
+        font-size: 24px;
+        fill: #4d4d4d;
+      }
+      .title {
+        font-size: 28px;
+        fill: #262626;
+      }
+      .panel {
+        font-size: 32px;
+        font-weight: 700;
+        fill: #262626;
+      }
+      .hint {
+        font-size: 22px;
+        font-style: italic;
+        fill: #595959;
+      }
+      .glabel {
+        font-size: 28px;
+        font-weight: 700;
+        paint-order: stroke;
+        stroke: #ffffff;
+        stroke-width: 7px;
+        stroke-linejoin: round;
+      }
+      .caption-row {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 960px;
+        height: 80px;
+      }
+      .caption {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+        color: #262626;
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="post-mu-regression"
+      data-start="0"
+      data-width="1920"
+      data-height="1080"
+      data-duration="20"
+    >
+      <div id="scene" class="clip" data-start="0" data-duration="20" data-track-index="0">
+        <svg id="plot" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="clipB">
+              <rect x="1240" y="130" width="680" height="730" />
+            </clipPath>
+          </defs>
+          <g id="layerA"></g>
+          <g id="layerB" clip-path="url(#clipB)"></g>
+          <g id="layerTop"></g>
+        </svg>
+
+        <div class="caption-row">
+          <div class="caption" id="cap-1">Die Daten: Gewicht und Größe von 346 Erwachsenen</div>
+          <div class="caption" id="cap-2">Das Modell: μ = α + β · Gewicht</div>
+          <div class="caption" id="cap-3">Für jedes Gewicht gibt es eine Post-Verteilung für μ – zusammen ergeben sie das Band</div>
+          <div class="caption" id="cap-4">Vier Gewichte genauer betrachtet</div>
+          <div class="caption" id="cap-5">Gleiche Höhe: B zeigt dieselben Verteilungen von der Seite</div>
+          <div class="caption" id="cap-6">Vergrößert: Am Rand der Daten ist μ unsicherer</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var D = window.DATA;
+        var NS = "http://www.w3.org/2000/svg";
+
+        // ---------- Farben (aus _common.R) ----------
+        var COL = ["#E69F00", "#0072B2", "#009E73", "#56B4E9"]; // okabe_linie[1:4]
+        var TXT = ["#B36B00", "#0072B2", "#007A59", "#2B7FB0"]; // okabe_text[1:4]
+        var BLUE = "#0072B2";
+        var DARK = "#4D4D4D";
+        var GRID = "#E0E0E0";
+
+        // ---------- Geometrie ----------
+        // Panel A
+        var AX0 = 170, AX1 = 1130, AY0 = 150, AY1 = 840;
+        var AXD = [30.5, 64], AYD = [134, 181.5];
+        // Panel B (gedreht: μ vertikal, Dichte nach rechts)
+        var BX0 = 1340, BW = 360;
+        var BZOOM = [148, 166.5];
+        var WA = 130; // horizontale Überhöhung der Dichten in A [px]
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+        function clamp01(t) { return t < 0 ? 0 : t > 1 ? 1 : t; }
+        function XA(w) { return AX0 + ((w - AXD[0]) / (AXD[1] - AXD[0])) * (AX1 - AX0); }
+        function YA(h) { return AY1 - ((h - AYD[0]) / (AYD[1] - AYD[0])) * (AY1 - AY0); }
+        function f2(v) { return v.toFixed(2); }
+
+        // globale Dichte-Höhe: höchster Gipfel der vier Fokus-Dichten
+        var DMAX = 0;
+        D.focus.forEach(function (f) { f.d.forEach(function (v) { if (v > DMAX) DMAX = v; }); });
+
+        // ---------- Hilfen zum Erzeugen ----------
+        function el(tag, attrs, parent) {
+          var e = document.createElementNS(NS, tag);
+          for (var k in attrs) e.setAttribute(k, attrs[k]);
+          if (parent) parent.appendChild(e);
+          return e;
+        }
+        function txt(content, attrs, parent) {
+          var e = el("text", attrs, parent);
+          e.textContent = content;
+          return e;
+        }
+        var LA = document.getElementById("layerA");
+        var LB = document.getElementById("layerB");
+        var LT = document.getElementById("layerTop");
+
+        // ---------- Panel A: Achsen (Tufte-Range-Frame) ----------
+        var xs = D.points.map(function (p) { return p.x; });
+        var ys = D.points.map(function (p) { return p.y; });
+        var xmin = Math.min.apply(null, xs), xmax = Math.max.apply(null, xs);
+        var ymin = Math.min.apply(null, ys), ymax = Math.max.apply(null, ys);
+
+        var gAxesA = el("g", { id: "axesA", opacity: 0 }, LA);
+        txt("A", { x: 40, y: 70, class: "panel" }, gAxesA);
+        txt("Körpergröße [cm] (height)", { x: 70, y: 115, class: "title" }, gAxesA);
+        txt("Körpergewicht [kg] (weight)", { x: (AX0 + AX1) / 2, y: 948, class: "title", "text-anchor": "middle" }, gAxesA);
+        // x-Achse
+        var xAxisY = AY1 + 26;
+        el("line", { x1: XA(xmin), x2: XA(xmax), y1: xAxisY, y2: xAxisY, stroke: DARK, "stroke-width": 1.5 }, gAxesA);
+        [40, 50, 60].forEach(function (t) {
+          el("line", { x1: XA(t), x2: XA(t), y1: xAxisY, y2: xAxisY + 10, stroke: DARK, "stroke-width": 1.5 }, gAxesA);
+          txt(String(t), { x: XA(t), y: xAxisY + 36, class: "tick", "text-anchor": "middle" }, gAxesA);
+        });
+        // y-Achse
+        var yAxisX = AX0 - 26;
+        el("line", { x1: yAxisX, x2: yAxisX, y1: YA(ymin), y2: YA(ymax), stroke: DARK, "stroke-width": 1.5 }, gAxesA);
+        [140, 150, 160, 170].forEach(function (t) {
+          el("line", { x1: yAxisX - 10, x2: yAxisX, y1: YA(t), y2: YA(t), stroke: DARK, "stroke-width": 1.5 }, gAxesA);
+          txt(String(t), { x: yAxisX - 16, y: YA(t) + 8, class: "tick", "text-anchor": "end" }, gAxesA);
+        });
+
+        // ---------- Panel A: Punkte + Rug ----------
+        // Reihenfolge des Einblendens: von links nach rechts mit fester Zitterung
+        var order = D.points.map(function (p, i) { return { i: i, k: p.x + ((i * 7919) % 97) / 97 * 6 }; });
+        order.sort(function (a, b) { return a.k - b.k; });
+        var rank = [];
+        order.forEach(function (o, r) { rank[o.i] = r; });
+        var NP = D.points.length;
+
+        var gPts = el("g", { id: "points" }, LA);
+        var gRug = el("g", { id: "rug" }, LA);
+        var ptEls = D.points.map(function (p) {
+          return el("circle", { cx: f2(XA(p.x)), cy: f2(YA(p.y)), r: 6, fill: DARK, opacity: 0 }, gPts);
+        });
+        var rugEls = D.points.map(function (p) {
+          var gx = el("line", { x1: f2(XA(p.x)), x2: f2(XA(p.x)), y1: AY1 + 6, y2: AY1 + 18, stroke: DARK, "stroke-width": 1, opacity: 0 }, gRug);
+          var gy = el("line", { x1: AX0 - 18, x2: AX0 - 6, y1: f2(YA(p.y)), y2: f2(YA(p.y)), stroke: DARK, "stroke-width": 1, opacity: 0 }, gRug);
+          return [gx, gy];
+        });
+
+        // ---------- Panel A: Band, Gerade, Sweep-Dichte ----------
+        var bandEl = el("path", { id: "band", fill: BLUE, "fill-opacity": 0.22, d: "" }, LA);
+        var lineEl = el("path", { id: "regline", fill: "none", stroke: BLUE, "stroke-width": 5, "stroke-linecap": "round", d: "" }, LA);
+        var sweepFill = el("path", { fill: BLUE, "fill-opacity": 0.18, d: "" }, LA);
+        var sweepLine = el("path", { fill: "none", stroke: BLUE, "stroke-width": 3, d: "" }, LA);
+        var sweepDot = el("circle", { r: 9, fill: BLUE, stroke: "#fff", "stroke-width": 2.5, opacity: 0 }, LA);
+
+        var hintWidth = txt("Breite der Verteilungen überhöht", { x: AX1, y: AY0 - 10, class: "hint", "text-anchor": "end", opacity: 0 }, LA);
+
+        // ---------- Panel B: Achse ----------
+        var gAxesB = el("g", { id: "axesB", opacity: 0 }, LT);
+        txt("B", { x: 1235, y: 70, class: "panel" }, gAxesB);
+        txt("Mittlere Körpergröße [cm] (μ)", { x: 1250, y: 115, class: "title" }, gAxesB);
+        txt("Wahrscheinlichkeitsdichte →", { x: BX0, y: 948, class: "title" }, gAxesB);
+        el("line", { x1: BX0, x2: BX0, y1: AY0, y2: AY1, stroke: DARK, "stroke-width": 1.5 }, gAxesB);
+
+        var gGridB = el("g", { id: "gridB", opacity: 0 }, LB);
+        var bTicks = [];
+        for (var t = 135; t <= 180; t += 5) {
+          var gl = el("line", { x1: BX0, x2: BX0 + BW + 80, stroke: GRID, "stroke-width": 1.5 }, gGridB);
+          var tk = el("line", { x1: BX0 - 10, x2: BX0, stroke: DARK, "stroke-width": 1.5 }, gGridB);
+          var tl_ = txt(String(t), { x: BX0 - 16, class: "tick", "text-anchor": "end" }, gGridB);
+          bTicks.push({ v: t, gl: gl, tk: tk, tx: tl_ });
+        }
+
+        var hintBars = txt("Graue Balken: Mittelwert ± 2 SD der Post-Verteilung", { x: 1900, y: 880, class: "hint", "text-anchor": "end", opacity: 0 }, LT);
+
+        // ---------- Fokus-Dichten (40/45/50/55 kg) ----------
+        var foc = D.focus.map(function (f, i) {
+          var g = el("g", { opacity: 0 }, LT);
+          return {
+            f: f,
+            g: g,
+            fill: el("path", { fill: COL[i], "fill-opacity": 0.35, d: "" }, g),
+            line: el("path", { fill: "none", stroke: COL[i], "stroke-width": 3, "stroke-linejoin": "round", d: "" }, g),
+            bar: el("line", { stroke: DARK, "stroke-width": 9, "stroke-linecap": "butt", opacity: 0 }, LT),
+            dot: el("circle", { r: 10, fill: COL[i], stroke: "#fff", "stroke-width": 2.5, opacity: 0 }, LT),
+            label: txt(f.w + " kg", { class: "glabel", fill: TXT[i], opacity: 0 }, LT),
+          };
+        });
+
+        // ---------- Zustand (wird von der Timeline getrieben) ----------
+        var S = {
+          axesA: 0, pts: 0, line: 0,
+          sweep: 0, sweepOn: 0,
+          axesB: 0,
+          k0: 0, k1: 0, k2: 0, k3: 0, hintW: 0,
+          g0: 0, g1: 0, g2: 0, g3: 0,
+          zoom: 0, bars: 0, hintB: 0,
+        };
+
+        function mean(w) { return D.a + D.b * (w - D.w_mean); }
+
+        // Interpolierte Sweep-Dichte bei Gewicht w
+        function sweepAt(w) {
+          var sw = D.sweep;
+          var p = (w - sw[0].w) / (sw[1].w - sw[0].w);
+          var i = Math.max(0, Math.min(sw.length - 2, Math.floor(p)));
+          var u = clamp01(p - i);
+          var A = sw[i], B = sw[i + 1];
+          var y = [], d = [];
+          for (var j = 0; j < A.y.length; j++) {
+            y.push(lerp(A.y[j], B.y[j], u));
+            d.push(lerp(A.d[j], B.d[j], u));
+          }
+          return { y: y, d: d, m: lerp(A.m, B.m, u) };
+        }
+
+        // Pfad einer liegenden Dichte: Basis bei x0, Breite wpx (= DMAX), y-Abbildung Y
+        function densPaths(y, d, x0, wpx, Y) {
+          var line = "M " + f2(x0 + (d[0] / DMAX) * wpx) + " " + f2(Y(y[0]));
+          for (var j = 1; j < y.length; j++) line += " L " + f2(x0 + (d[j] / DMAX) * wpx) + " " + f2(Y(y[j]));
+          var fill = "M " + f2(x0) + " " + f2(Y(y[0])) + " " + line.replace("M", "L") + " L " + f2(x0) + " " + f2(Y(y[y.length - 1])) + " Z";
+          // Basislinie mitzeichnen
+          line = "M " + f2(x0) + " " + f2(Y(y[0])) + " L " + f2(x0) + " " + f2(Y(y[y.length - 1])) + " " + line;
+          return { line: line, fill: fill };
+        }
+
+        function draw() {
+          // Achsen A
+          gAxesA.setAttribute("opacity", f2(S.axesA));
+
+          // Punkte + Rug
+          var shown = S.pts * (NP + 25);
+          for (var i = 0; i < NP; i++) {
+            var o = clamp01((shown - rank[i]) / 25);
+            ptEls[i].setAttribute("opacity", (0.4 * o).toFixed(3));
+            rugEls[i][0].setAttribute("opacity", (0.5 * o).toFixed(3));
+            rugEls[i][1].setAttribute("opacity", (0.5 * o).toFixed(3));
+          }
+
+          // Gerade (von links nach rechts gezeichnet)
+          var w0 = D.band[0].w, w1 = D.band[D.band.length - 1].w;
+          if (S.line > 0) {
+            var we = lerp(w0, w1, S.line);
+            lineEl.setAttribute("d", "M " + f2(XA(w0)) + " " + f2(YA(mean(w0))) + " L " + f2(XA(we)) + " " + f2(YA(mean(we))));
+          } else lineEl.setAttribute("d", "");
+
+          // Band bis zur Sweep-Position
+          var ws = lerp(w0, w1, S.sweep);
+          if (S.sweep > 0) {
+            var up = [], lo = [];
+            D.band.forEach(function (b) {
+              if (b.w <= ws) { up.push([b.w, b.hi]); lo.push([b.w, b.lo]); }
+            });
+            var sa = sweepAt(ws);
+            var bLast = (function () {
+              var sw = D.band, p = (ws - sw[0].w) / (sw[1].w - sw[0].w);
+              var i = Math.max(0, Math.min(sw.length - 2, Math.floor(p))), u = clamp01(p - i);
+              return { hi: lerp(sw[i].hi, sw[i + 1].hi, u), lo: lerp(sw[i].lo, sw[i + 1].lo, u) };
+            })();
+            up.push([ws, bLast.hi]); lo.push([ws, bLast.lo]);
+            var dd = "M " + up.map(function (p) { return f2(XA(p[0])) + " " + f2(YA(p[1])); }).join(" L ");
+            dd += " L " + lo.reverse().map(function (p) { return f2(XA(p[0])) + " " + f2(YA(p[1])); }).join(" L ") + " Z";
+            bandEl.setAttribute("d", dd);
+
+            var sp = densPaths(sa.y, sa.d, XA(ws), WA, YA);
+            sweepFill.setAttribute("d", sp.fill);
+            sweepLine.setAttribute("d", sp.line);
+            sweepDot.setAttribute("cx", f2(XA(ws)));
+            sweepDot.setAttribute("cy", f2(YA(sa.m)));
+          } else {
+            bandEl.setAttribute("d", "");
+            sweepFill.setAttribute("d", "");
+            sweepLine.setAttribute("d", "");
+          }
+          sweepFill.setAttribute("opacity", f2(S.sweepOn));
+          sweepLine.setAttribute("opacity", f2(S.sweepOn));
+          sweepDot.setAttribute("opacity", f2(S.sweepOn));
+          hintWidth.setAttribute("opacity", f2(S.hintW));
+
+          // Panel B: Achse, Gitter, Zoom
+          gAxesB.setAttribute("opacity", f2(S.axesB));
+          gGridB.setAttribute("opacity", f2(S.axesB));
+          var z = S.zoom;
+          var dlo = lerp(AYD[0], BZOOM[0], z), dhi = lerp(AYD[1], BZOOM[1], z);
+          function YB(h) { return AY1 - ((h - dlo) / (dhi - dlo)) * (AY1 - AY0); }
+          bTicks.forEach(function (bt) {
+            var y = YB(bt.v);
+            var inside = y >= AY0 - 2 && y <= AY1 + 2;
+            // vor dem Zoom nur die Zehner, beim Zoom kommen die Fünfer dazu
+            var minor = bt.v % 10 !== 0;
+            var op = inside ? (minor ? z : 1) : 0;
+            bt.gl.setAttribute("y1", f2(y)); bt.gl.setAttribute("y2", f2(y));
+            bt.tk.setAttribute("y1", f2(y)); bt.tk.setAttribute("y2", f2(y));
+            bt.tx.setAttribute("y", f2(y + 8));
+            bt.gl.setAttribute("opacity", f2(op)); bt.tk.setAttribute("opacity", f2(op)); bt.tx.setAttribute("opacity", f2(op));
+          });
+
+          // Fokus-Dichten
+          foc.forEach(function (o, i) {
+            var k = S["k" + i];
+            var g = S["g" + i];
+            var f = o.f;
+            // Position: von A (x = Gewicht) nach B (Basislinie)
+            var x0 = lerp(XA(f.w), BX0, g);
+            var wpx = lerp(WA, BW, g) * k;
+            // y-Abbildung: in A und während des Gleitens wie A; danach Zoom in B
+            var Y = g < 1 ? YA : YB;
+            var p = densPaths(f.y, f.d, x0, Math.max(wpx, 0.01), Y);
+            o.fill.setAttribute("d", p.fill);
+            o.line.setAttribute("d", p.line);
+            o.g.setAttribute("opacity", f2(Math.min(1, k * 1.5)));
+
+            // Punkt auf der Geraden (bleibt in A)
+            o.dot.setAttribute("cx", f2(XA(f.w)));
+            o.dot.setAttribute("cy", f2(YA(f.m)));
+            o.dot.setAttribute("opacity", f2(k));
+
+            // Label: in A über der Dichte, in B rechts vom Gipfel
+            var pk = 0, pky = f.m;
+            f.d.forEach(function (v, j) { if (v > pk) { pk = v; pky = f.y[j]; } });
+            var lxA = XA(f.w) + 6, lyA = YA(f.y[f.y.length - 1]) - 14;
+            var lxB = BX0 + (pk / DMAX) * BW + 14, lyB = Y(pky) + 9;
+            o.label.setAttribute("x", f2(lerp(lxA, lxB, g)));
+            o.label.setAttribute("y", f2(lerp(lyA, lyB, g)));
+            o.label.setAttribute("text-anchor", "start");
+            o.label.setAttribute("opacity", f2(k));
+
+            // ±2-SD-Balken auf der B-Basislinie
+            var bh = S.bars;
+            o.bar.setAttribute("x1", f2(BX0)); o.bar.setAttribute("x2", f2(BX0));
+            o.bar.setAttribute("y1", f2(YB(f.m - 2 * f.s * bh)));
+            o.bar.setAttribute("y2", f2(YB(f.m + 2 * f.s * bh)));
+            o.bar.setAttribute("opacity", f2(bh > 0 ? 1 : 0));
+          });
+          hintBars.setAttribute("opacity", f2(S.hintB));
+        }
+
+        draw();
+
+        // ---------- Timeline ----------
+        var tl = gsap.timeline({ paused: true });
+        function tw(props, dur, at, ease) {
+          var from = {};
+          for (var k in props) from[k] = S[k];
+          // Startwerte explizit, damit Vor- und Zurückspulen deterministisch bleiben
+          var to = Object.assign({}, props, { duration: dur, ease: ease || "power2.inOut", onUpdate: draw, immediateRender: false });
+          tl.fromTo(S, from, to, at);
+          for (var k2 in props) S[k2] = props[k2];
+        }
+
+        // Untertitel: Überblendung genau an den Clip-Grenzen,
+        // damit jeder Phasen-Clip mit seinem Untertitel endet
+        var CUTS = [0, 3, 5.5, 9.5, 12.5, 15];
+        CUTS.forEach(function (t0, i) {
+          var sel = "#cap-" + (i + 1);
+          tl.fromTo(sel, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out", immediateRender: false }, t0 + 0.2);
+          if (i < CUTS.length - 1) {
+            tl.fromTo(sel, { opacity: 1 }, { opacity: 0, duration: 0.25, ease: "power1.in", immediateRender: false }, CUTS[i + 1]);
+          }
+        });
+
+        // Clip 1 (0–3 s): Daten
+        tw({ axesA: 1 }, 0.5, 0.1, "sine.out");
+        tw({ pts: 1 }, 2.2, 0.4, "power1.inOut");
+
+        // Clip 2 (3–5,5 s): Gerade
+        tw({ line: 1 }, 1.6, 3.3, "power2.inOut");
+
+        // Clip 3 (5,5–9,5 s): Sweep malt das Band, B-Achse entsteht
+        tw({ sweepOn: 1 }, 0.3, 5.7, "sine.out");
+        tw({ sweep: 1 }, 3.0, 5.8, "sine.inOut");
+        tw({ axesB: 1 }, 0.8, 6.2, "sine.out");
+        tw({ sweepOn: 0 }, 0.4, 8.9, "sine.in");
+
+        // Clip 4 (9,5–12,5 s): vier Gewichte rasten ein
+        [0, 1, 2, 3].forEach(function (i) {
+          var o = {}; o["k" + i] = 1;
+          tw(o, 0.6, 9.8 + i * 0.4, "back.out(1.6)");
+        });
+        tw({ hintW: 1 }, 0.5, 11.6, "sine.out");
+
+        // Clip 5 (12,5–15 s): Gleiten nach B (gleiche Höhe)
+        tw({ hintW: 0 }, 0.4, 12.6, "sine.in");
+        [0, 1, 2, 3].forEach(function (i) {
+          var o = {}; o["g" + i] = 1;
+          tw(o, 1.5, 12.8 + i * 0.12, "power2.inOut");
+        });
+
+        // Clip 6 (15–20 s): Zoom, dann ±2-SD-Balken
+        tw({ zoom: 1 }, 1.5, 15.3, "power2.inOut");
+        tw({ bars: 1 }, 0.6, 17.0, "power2.out");
+        tw({ hintB: 1 }, 0.5, 17.3, "sine.out");
+
+        // Anfangszustand wiederherstellen (tw() hat S auf die Endwerte gesetzt)
+        for (var key in S) S[key] = 0;
+        draw();
+
+        window.__timelines["post-mu-regression"] = tl;
+        tl.seek(0);
+      })();
+    </script>
+  </body>
+</html>
