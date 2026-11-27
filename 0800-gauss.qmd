@@ -1117,6 +1117,80 @@ Ein Haufen Riesen 👹 werden bei den !Kung auch erwartet.
 🤯 Vage (flache, informationslose, "neutrale", "objektive") Priori-Werte machen oft keinen Sinn, 
 weil sie extreme, unplausible Werte zulassen. -->
 
+## Vertiefung
+
+### Halbe Normalverteilung als Priori für $\sigma$
+
+Für $\sigma$ haben wir bisher eine Exponentialverteilung als Priori verwendet.
+Das ist nicht die einzige sinnvolle Wahl.
+Es kommt jede Verteilung in Frage, die nur positive Werte zulässt,
+denn eine Streuung kann nicht negativ sein.
+Eine beliebte Alternative ist die *halbe Normalverteilung*, s. @sec-halbe-nv.
+Im Vergleich zur Exponentialverteilung hat sie dünnere Ränder:
+Sehr große Werte für $\sigma$ hält sie a priori für noch unwahrscheinlicher, s. @fig-exp-hnv.
+
+In `stan_glm()` gibt es kein eigenes Schlüsselwort für die halbe Normalverteilung.
+Wir geben bei `prior_aux` einfach eine Normalverteilung mit Mittelwert 0 an.
+Da Stan weiß, dass $\sigma$ positiv sein muss,
+schneidet er den negativen Teil der Normalverteilung ab:
+Aus `normal(0, 8)` wird automatisch eine halbe Normalverteilung.[^0800-gauss-hnv]
+
+[^0800-gauss-hnv]: Das Gleiche gilt für `student_t()` und `cauchy()`: Bei `prior_aux` werden daraus die halbe t-Verteilung bzw. die halbe Cauchy-Verteilung.
+
+Unser Modell lautet dann:
+
+$$
+\begin{aligned}
+\mu &\sim \mathcal{N}(M=178, S=20) & \text{Priori} \\
+\sigma &\sim \mathcal{N}^{+}(0, 8) & \text{Priori (halbe Normalverteilung)} \\
+h_i &\sim \mathcal{N}(\mu, \sigma) & \text{Likelihood}  \\
+\end{aligned}
+$$ {#eq-mod-kung-hnv}
+
+Warum gerade $S=8$?
+Der Median einer halben Normalverteilung liegt bei etwa $0{,}67 \cdot S$,
+hier also bei ca. 5 cm.
+Damit ist diese Priori im "Zentrum" vergleichbar mit unserer Exponentialverteilung $\mathcal{E}(1/8)$,
+deren Median ebenfalls bei ca. 5 cm liegt.
+Der Unterschied liegt in den Rändern.
+
+```{r}
+#| results: hide
+m_kung_hnv <-
+  stan_glm(height ~ 1,
+           prior_intercept = normal(178, 20),
+           prior_aux = normal(0, 8),  # wird zur halben Normalverteilung
+           refresh = 0,
+           data = kung_erwachsen)
+```
+
+Mit `prior_summary()` sehen wir, dass Stan die Priori für $\sigma$ wie gewünscht als halbe Normalverteilung (`half-normal`) verwendet hat:
+
+```{r}
+prior_summary(m_kung_hnv)
+```
+
+Vergleichen wir die Post-Verteilung von $\sigma$ in beiden Modellen, s. @tbl-kung-sigma-vergleich.
+
+```{r}
+#| label: tbl-kung-sigma-vergleich
+#| tbl-cap: "Post-Verteilung von sigma: Exponential- vs. halbe Normalverteilung als Priori (Median und 95 %-PI)"
+bind_rows(
+  Exponential = as_tibble(m_kung),
+  `Halbe Normal` = as_tibble(m_kung_hnv),
+  .id = "Priori_sigma") |>
+  group_by(Priori_sigma) |>
+  summarise(Median = median(sigma),
+            PI_unten = quantile(sigma, 0.025),
+            PI_oben = quantile(sigma, 0.975)) |>
+  mutate(across(where(is.numeric), \(x) round(x, 1)))
+```
+
+Die Ergebnisse sind praktisch identisch.
+Das liegt daran, dass wir viele Daten haben (`r nrow(kung_erwachsen)` Personen):
+Die Likelihood überstimmt die (ohnehin recht ähnlichen) Prioris.
+Bei kleinen Stichproben kann die Wahl der Priori für $\sigma$ dagegen einen spürbaren Unterschied machen. $\square$
+
 ## Aufgaben
 
 ### Papier-und-Bleistift-Aufgaben
