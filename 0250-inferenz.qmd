@@ -484,31 +484,165 @@ stipro3 <- sample_n(flights, size = 100)
 ```
 
 
+::: {.content-visible when-format="html"}
+
 ```{r}
 #| echo: false
-#| fig-cap: Regressionsanalysen mit verschiedenen Koeffizienten aufgrund der Zufälligkeit des Stichprobenziehens
-#| label: fig-regr-div
-#| layout-ncol: 3
-#| fig-subcap: 
-#|   - Stichprobe 1
-#|   - Stichprobe 2
-#|   - Stichprobe 3
+#| output: false
+#| cache: false
+# Daten fuer die Animation: viele Stichproben (n = 100) aus allen Fluegen,
+# je Stichprobe Punkte, Regressionsgerade und 95%-Konfidenzband.
+library(tidyverse)
+library(nycflights13)
+flights_pop <- flights |>
+  select(air_time, arr_delay) |>
+  drop_na()
+lm_pop <- lm(arr_delay ~ air_time, data = flights_pop)
 
+anim_k <- 40
+anim_x <- seq(20, 400, length.out = 40)
+set.seed(42)
+anim_stipros <- map(1:anim_k, \(i) slice_sample(flights_pop, n = 100))
+
+anim_punkte <- map2_dfr(anim_stipros, 1:anim_k, \(d, i) mutate(d, stipro = i))
+anim_koef <- map2_dfr(anim_stipros, 1:anim_k, \(d, i) {
+  b <- coef(lm(arr_delay ~ air_time, data = d))
+  tibble(stipro = i, b0 = b[[1]], b1 = b[[2]])
+})
+anim_band <- map2_dfr(anim_stipros, 1:anim_k, \(d, i) {
+  m <- lm(arr_delay ~ air_time, data = d)
+  vh <- predict(m, newdata = tibble(air_time = anim_x), interval = "confidence")
+  tibble(stipro = i, x = anim_x, lwr = vh[, "lwr"], upr = vh[, "upr"])
+})
+
+ojs_define(
+  anim_punkte = anim_punkte,
+  anim_koef = anim_koef,
+  anim_band = anim_band,
+  pop_b0 = coef(lm_pop)[[1]],
+  pop_b1 = coef(lm_pop)[[2]],
+  farbe_trend = trendfarbe,
+  farbe_punkte = dunkelgrau
+)
+```
+
+Mit dem Regler wählen Sie eine Stichprobe (je 100 Flüge);
+der Knopf zieht die Stichproben nacheinander.
+Die blassen Linien zeigen die Regressionsgeraden der bisherigen Stichproben,
+die gestrichelte Linie die Regressionsgerade in der Population (alle Flüge).
+Sehr große Verspätungen (über 150 min) liegen außerhalb des Bildausschnitts.
+Unten sammeln sich die Steigungen $b_1$ der bisherigen Stichproben.
+
+```{ojs}
+//| echo: false
+ap = transpose(anim_punkte)
+ak = transpose(anim_koef)
+ab = transpose(anim_band)
+anim_n = ak.length
+
+viewof stipro_nr = Inputs.range([1, anim_n], {label: "Stichprobe Nr.", step: 1, value: 1})
+viewof stipro_play = Inputs.button("Stichproben ziehen (Abspielen)")
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+{
+  stipro_play;
+  if (stipro_play === 0) return;
+  const el = viewof stipro_nr;
+  let k = 0;
+  const id = setInterval(() => {
+    k += 1;
+    el.value = k;
+    el.dispatchEvent(new Event("input", {bubbles: true}));
+    if (k >= anim_n) clearInterval(id);
+  }, 700);
+  invalidation.then(() => clearInterval(id));
+}
+```
+
+```{ojs}
+//| echo: false
+//| label: fig-regr-div
+//| fig-cap: "Regressionsanalysen mit verschiedenen Koeffizienten aufgrund der Zufälligkeit des Stichprobenziehens (interaktiv): oben die aktuelle Stichprobe mit Regressionsgerade und Konfidenzband, unten die Steigungen aller bisher gezogenen Stichproben"
+{
+  const xd = [20, 400], yd = [-60, 150];
+  const fmt = (z, d) => z.toLocaleString("de-DE", {minimumFractionDigits: d, maximumFractionDigits: d});
+  const akt = ak[stipro_nr - 1];
+  const bisher = ak.filter(d => d.stipro < stipro_nr);
+  const gerade = d => [{x: xd[0], y: d.b0 + d.b1 * xd[0], s: d.stipro},
+                       {x: xd[1], y: d.b0 + d.b1 * xd[1], s: d.stipro}];
+  const plot1 = Plot.plot({
+    width, height: 340, marginLeft: 50,
+    x: {label: "Flugdauer [min] (air_time)", domain: xd},
+    y: {label: "Verspätung [min] (arr_delay)", domain: yd},
+    marks: [
+      Plot.line(bisher.flatMap(gerade), {x: "x", y: "y", z: "s", stroke: farbe_trend, strokeOpacity: 0.2, clip: true}),
+      Plot.areaY(ab.filter(d => d.stipro === stipro_nr), {x: "x", y1: "lwr", y2: "upr", fill: farbe_trend, fillOpacity: 0.2, clip: true}),
+      Plot.dot(ap.filter(d => d.stipro === stipro_nr), {x: "air_time", y: "arr_delay", fill: farbe_punkte, fillOpacity: 0.6, r: 2.5, clip: true}),
+      Plot.line(gerade({b0: pop_b0, b1: pop_b1, stipro: 0}), {x: "x", y: "y", stroke: "currentColor", strokeDasharray: "5,4", strokeWidth: 1.5}),
+      Plot.line(gerade(akt), {x: "x", y: "y", stroke: farbe_trend, strokeWidth: 2.5, clip: true}),
+      Plot.text([`Stichprobe ${stipro_nr}: b0 = ${fmt(akt.b0, 1)}, b1 = ${fmt(akt.b1, 3)}   (Population: b1 = ${fmt(pop_b1, 3)})`],
+        {frameAnchor: "top-left", dx: 4, dy: 4, fill: "currentColor"})
+    ]
+  });
+  const b1max = Math.max(0.05, d3.max(ak, d => Math.abs(d.b1)) * 1.1);
+  const plot2 = Plot.plot({
+    width, height: 140, marginLeft: 50, marginTop: 10,
+    x: {label: "Steigung b1 der Stichproben", domain: [-b1max, b1max]},
+    y: {axis: null},
+    marks: [
+      Plot.ruleX([pop_b1], {stroke: "currentColor", strokeDasharray: "5,4", strokeWidth: 1.5}),
+      Plot.dotX(ak.filter(d => d.stipro <= stipro_nr), Plot.dodgeY({x: "b1", r: 4,
+        fill: d => d.stipro === stipro_nr ? farbe_trend : farbe_punkte,
+        fillOpacity: d => d.stipro === stipro_nr ? 1 : 0.5}))
+    ]
+  });
+  return html`<div>${plot1}${plot2}</div>`;
+}
+```
+
+:::
+
+::: {.content-visible unless-format="html"}
+
+::: {#fig-regr-div layout-ncol=3}
+
+```{r}
+#| echo: false
+#| label: fig-regr-div-1
+#| fig-cap: Stichprobe 1
 ggplot(stipro1, aes(x = air_time, y = arr_delay)) +
   geom_point() +
   geom_smooth(method = "lm") +
   labs(x = "Flugdauer [min] (air_time)", y = "Verspätung [min] (arr_delay)")
+```
 
+```{r}
+#| echo: false
+#| label: fig-regr-div-2
+#| fig-cap: Stichprobe 2
 ggplot(stipro2, aes(x = air_time, y = arr_delay)) +
   geom_point() +
   geom_smooth(method = "lm") +
   labs(x = "Flugdauer [min] (air_time)", y = "Verspätung [min] (arr_delay)")
+```
 
+```{r}
+#| echo: false
+#| label: fig-regr-div-3
+#| fig-cap: Stichprobe 3
 ggplot(stipro3, aes(x = air_time, y = arr_delay)) +
   geom_point() +
   geom_smooth(method = "lm") +
   labs(x = "Flugdauer [min] (air_time)", y = "Verspätung [min] (arr_delay)")
 ```
+
+Regressionsanalysen mit verschiedenen Koeffizienten aufgrund der Zufälligkeit des Stichprobenziehens
+:::
+
+:::
 
 
 Der Grund für die Schwankungen der Modellparameter zwischen den Stichproben ist die *Zufälligkeit* des *Stichprobenziehens.* 
