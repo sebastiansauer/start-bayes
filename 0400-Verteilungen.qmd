@@ -1546,6 +1546,23 @@ d_exp |> knitr::kable(col.names = c("lambda ($\\lambda$)", "p50", "p95"))
 ```
 
 
+## Fazit
+
+In diesem Kapitel haben Sie einige wichtige Verteilungen kennengelernt: die Gleichverteilung, die Binomialverteilung, die halbe Normalverteilung und die Exponentialverteilung.
+Die große Botschaft: Eine Verteilung legt fest, wie wahrscheinlich die möglichen Ausprägungen einer Zufallsvariablen sind – und welche Verteilung passt, hängt davon ab, was Sie über das Phänomen wissen (oder eben nicht wissen).
+Im nächsten Kapitel, dem Globus-Versuch, kommt die Binomialverteilung gleich wieder zum Einsatz: Mit ihr berechnen Sie, wie wahrscheinlich die beobachteten Daten unter einer bestimmten Hypothese sind.
+
+Das Wichtigste in Kürze:
+
+- **Zufallsvariable**: Eine Zufallsvariable wie $X$, z. B. die Anzahl der Treffer, kann diskret oder stetig sein; ihre Verteilung gibt an, wie wahrscheinlich ihre Ausprägungen sind.
+- **Gleichverteilung**: Jede Ausprägung ist gleich wahrscheinlich, definierendes Kennzeichen ist die *konstante Dichte* – passend, wenn Sie keinen hinreichenden Grund haben, eine Ausprägung für plausibler als eine andere zu halten.
+- **Binomialverteilung**: $X \sim \text{Bin}(n, p)$ beschreibt die Anzahl $k$ der Treffer bei $n$ Wiederholungen eines Zufallsexperiments mit zwei Ergebnissen, wobei die Trefferwahrscheinlichkeit $p$ gleich bleibt und die Wiederholungen unabhängig sind („iid“), s. @def-binvert.
+- **Anzahl Pfade mal Pfad-Wahrscheinlichkeit**: $Pr(X=k|p,n) = \binom{n}{k} \cdot p^k(1-p)^{n-k}$ (@thm-binomial); der Binomialkoeffizient $\tbinom{n}{k}= \frac{n!}{k!\cdot (n-k)!}$ zählt, auf wie vielen Arten man $k$ aus $n$ Objekten ziehen kann (ohne Zurücklegen und ohne Beachtung der Reihenfolge), in R mit `choose()`.
+- **Wahrscheinlichkeitsfunktion und Verteilungsfunktion in R**: `dbinom()` liefert die Wahrscheinlichkeit für *genau* $k$ Treffer, $Pr(X=k)$; die Verteilungsfunktion `pbinom()` summiert auf und liefert die (kumulierte) Wahrscheinlichkeit für *höchstens* $k$ Treffer, $Pr(X \le k)$.
+- **Halbe Normalverteilung**: Spiegelt man die negative Seite einer Normalverteilung mit Mittelwert 0 auf die positive, erhält man die halbe Normalverteilung – passend für normalverteilte Werte, die größer als Null sein müssen; ihr einziger Parameter ist die Streuung (SD).
+- **Exponentialverteilung**: Sie ist nur für positive Werte definiert, hat nur einen Parameter, die Rate $\lambda$, und $\frac{1}{\lambda}$ gibt Mittelwert und Streuung an; im Vergleich zur halben Normalverteilung sind Extremwerte wahrscheinlicher.
+- **Quantile und Wahl der Verteilung**: Mit `qexp()` erhalten Sie Quantile, z. B. mit `p = 0.5` den Median; im Zweifel wählen Sie lieber eine liberale Verteilung, die einen breiteren Raum an möglichen Werten zulässt – aber keine absurden Extremwerte.
+
 ## Vertiefung
 
 @bourier2011, Kap. 6.2 und 7.1 erläutert einige (grundlegende) theoretische Hintergründe 
