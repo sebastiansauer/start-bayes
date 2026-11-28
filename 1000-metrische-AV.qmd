@@ -245,6 +245,7 @@ Y hat, laut unserem Modell, zwei Ursachen:
 ```{r out.width = "75%", fig.asp = .5}
 #| label: fig-binuv
 #| fig-cap: "DAG für `kid_iq ~ mom_hs`"
+#| fig-alt: "Kausalgraph (DAG) mit drei Knoten: Pfeile führen von mom_hs und von u (unbekannte Einflüsse) jeweils zu kid_score; zwischen mom_hs und u gibt es keinen Pfeil."
 #| echo: false
 
 mein_modell <- "dag{
@@ -388,6 +389,7 @@ estimate_relation(m10.1) |> plot()
 #| label: fig-momkid
 #| echo: false
 #| fig-cap: "Kinder, deren Mütter über einen Schulabschluss verfügen (mom_hs=1), haben im Mittel einen höheren Intelligenztestwert (als Kinder, deren Mütter keinen Schulabschluss haben, mom_hs=0), laut dem vorliegenden Modell. Die Regressionsgerade ist als durchgezogene Linie dargestellt. Die Mittelwerte pro Gruppe als Punkte und als gestrichelte, horizontale Linie."
+#| fig-alt: "Violin- und Streudiagramm: IQ des Kindes für Mütter ohne (mom_hs = 0) und mit Schulabschluss (mom_hs = 1). Die Gruppenmittelwerte (große orange Punkte, gestrichelte Linien) liegen auf der steigenden blauen Regressionsgeraden; die Gruppe mit Abschluss liegt höher, die Streuung innerhalb beider Gruppen ist groß."
 
 m10.1_g1_mean <- as.numeric(coef(m10.1)[1]) |> round(0)
 m10.1_g2_mean <- as.numeric(coef(m10.1)[1] + coef(m10.1)[2]) |> round(0)
@@ -437,6 +439,9 @@ Fazit: Wir verwerfen die Praktisch-Null-Hypothese. Adios!
 #| fig-subcap: 
 #|   - "Diagramm mit rope(m10.1) |> plot()"
 #|   - "Diagramm mit parameters(m10.1) |> plot()"
+#| fig-alt:
+#|   - "Dichte der Posteriori-Verteilung des Effekts von mom_hs, das 95 %-Intervall blau, die Ränder orange eingefärbt. Das grau-blaue ROPE-Band von −5 bis 5 liegt links davon und überlappt nicht mit dem 95 %-Intervall."
+#|   - "Punktschätzer mit Intervallbalken für den Koeffizienten mom_hs: Der Punkt liegt deutlich rechts von null, der ganze Balken weit außerhalb des schmalen hellblauen Bands um null (von −2 bis 2)."
 rope(m10.1, range = c(-5, 5)) |> plot() +
   scale_fill_intervall()
 parameters(m10.1) |> 
@@ -672,6 +677,7 @@ was man daran erkennt, dass es keine Pfeile zwischen den beiden Variablen gibt.]
 ```{r out.width = "75%", fig.asp = .5}
 #| label: fig-yxb
 #| fig-cap: "DAG für `y ~ b`"
+#| fig-alt: "Kausalgraph (DAG): Pfeile führen von mom_hs, mom_iq und u (unbekannte Einflüsse) jeweils zu kid_score; zwischen diesen drei Ursachen gibt es keine Pfeile."
 #| echo: false
 
 mein_modell <- "dag{
@@ -749,6 +755,7 @@ Visualisieren wir uns noch das Modell m10.2, s. @fig-kidiqmomiq.
 ```{r}
 #| label: fig-kidiqmomiq
 #| fig-cap: "Die Intelligenz eines Kindes als Funktion der Intelligenz der Mutter (m10.2)"
+#| fig-alt: "Streudiagramm IQ der Mutter (x-Achse) gegen IQ des Kindes (y-Achse) mit blauer Regressionsgerade aus m10.2; die Gerade steigt, die Punkte streuen breit um sie herum."
 kidiq |> 
   ggplot(aes(x = mom_iq, y = kid_score)) +
   geom_point() +
@@ -766,6 +773,7 @@ mit Hilfe des R-Pakets `easystats`, s. @fig-m102-a.
 ```{r}
 #| label: fig-m102-a
 #| fig-cap: "Die geschätzten Erwartungswerte von m10.2 visualisiert"
+#| fig-alt: "Vorhergesagte Erwartungswerte von m10.2 als steigende Linie mit schmalem Unsicherheitsband über dem IQ der Mutter, dazu die Datenpunkte (IQ des Kindes), die deutlich breiter um die Linie streuen."
 plot(estimate_relation(m10.2)) +
   geom_point(data = kidiq, aes(x = mom_iq, y = kid_score)) +
   labs(x = "IQ der Mutter (mom_iq)", y = "IQ des Kindes (kid_score)")
@@ -834,6 +842,7 @@ coef(m10.3)[3]
 ```{r fig.asp = 0.62}
 #| label: fig-m103
 #| fig-cap: "Der Effekt von sowohl mütterlicher Intelligenz als auch mütterlichem Schulabschluss."
+#| fig-alt: "Streudiagramm IQ der Mutter gegen IQ des Kindes, getrennt nach Schulabschluss der Mutter (blaue Kreise: ohne, orange Dreiecke: mit). Zwei parallele, steigende Regressionsgeraden mit Unsicherheitsbändern; die Gerade für Mütter mit Abschluss liegt durchgehend etwas höher."
 
 kidiq2 <-
   kidiq |> 
@@ -924,6 +933,7 @@ Der DAG zur Modellformel ist in @fig-yxbi dargestellt (`momiqmom_hs` bezeichnet 
 ```{r out.width = "75%", fig.asp = .5}
 #| label: fig-yxbi
 #| fig-cap: "DAG für `y ~ x + b + x:b`"
+#| fig-alt: "Kausalgraph (DAG): Pfeile führen von mom_iq, mom_hs, dem Interaktionsterm momiqmom_hs und u (unbekannte Einflüsse) jeweils zu kid_score."
 #| echo: false
 
 mein_modell <- "dag{
@@ -1023,6 +1033,7 @@ plot_hs_geraden <- function(modell, daten, xvar, xbereich, xlab) {
 #| echo: false
 #| label: fig-m104
 #| fig-cap: "`m10.4`: Wie `m10.3`, aber mit Interaktionseffekt. Es ist gut zu erkennen, dass der Achsenabschnitt für diese Daten kaum zu interpretieren ist."
+#| fig-alt: "Streudiagramm IQ der Mutter (x-Achse ab 0) gegen IQ des Kindes, getrennt nach Schulabschluss (blaue Kreise: ohne, orange Dreiecke: mit), mit je einer bis IQ 0 verlängerten Regressionsgeraden. Die Geraden sind nicht parallel, die blaue ist steiler; sie kreuzen sich im Datenbereich und liegen bei IQ 0 weit auseinander, fernab aller Daten."
 plot_hs_geraden(m10.4, kidiq, "mom_iq", c(0, 140),
                 xlab = "IQ der Mutter (mom_iq)")
 ```
@@ -1166,6 +1177,7 @@ Mit `estimate_relation(m10.5) |> plot()` kann man  sich das Modell visualisieren
 #| echo: false
 #| label: fig-m105
 #| fig-cap: "m10.5: Mit zentrierten Prädiktoren gibt der Achsenabschnitt den Y-Wert für eine Beobachtung mit mittleren X-Wert an; daher ist der Achsenabschnitt besser zu interpretieren als ohne Zentrierung."
+#| fig-alt: "Dasselbe Streudiagramm mit zentriertem IQ der Mutter auf der x-Achse; eine gestrichelte senkrechte Linie markiert 0, also den mittleren IQ. Die nicht parallelen Geraden (blau, steiler: ohne Abschluss; orange: mit Abschluss) schneiden diese Linie mitten in der Punktwolke."
 plot_hs_geraden(m10.5, kidiq, "mom_iq_c", range(kidiq$mom_iq_c),
                 xlab = "Zentrierter IQ der Mutter (mom_iq_c)") +
   referenzlinie(xintercept = 0)
@@ -1305,6 +1317,7 @@ Der DAG zur Modellformel ist in @fig-yg dargestellt.
 ```{r out.width = "75%", fig.asp = .5}
 #| label: fig-yg
 #| fig-cap: "DAG für `y ~ g`"
+#| fig-alt: "Kausalgraph (DAG): Pfeile führen von g (Gruppe) und von u (unbekannte Einflüsse) jeweils zu y."
 #| echo: false
 
 mein_modell <- "dag{
@@ -1332,7 +1345,7 @@ Alternativ können wir  die Hypothese prüfen, ob die Mittelwerte "praktisch" gl
 Werfen wir einen Blick in den Datensatz `penguins`.
 Hier ist die Verteilung des Gewichts jeder Spezies im Datensatz, @tbl-penguins.
 
-![Palmer Penguins](img/penguins-logo.png){width="25%"}
+![Palmer Penguins](img/penguins-logo.png){width="25%" fig-alt="Sechseckiges Logo des R-Pakets palmerpenguins: drei gezeichnete Pinguine vor hellblauem Hintergrund mit dem Schriftzug „palmer penguins“."}
 
 Datenquelle und Beschreibung des Datensatzes: [@rdatasets2024penguins]
 
@@ -1389,6 +1402,7 @@ s. @fig-penguines1?
 #| echo: false
 #| label: fig-penguines1
 #| fig-cap: "Verteilung des Körpergewichts dreier Arten von Pinguinen -- Geom Violine"
+#| fig-alt: "Violindiagramm des Körpergewichts für die drei Pinguinarten Adelie, Chinstrap und Gentoo (je eigene Farbe); Adelie und Chinstrap liegen ähnlich tief, Gentoo ist deutlich schwerer."
 library(ggpubr)
 ggviolin(penguins,
           x = "species",
@@ -1452,6 +1466,7 @@ Der Unterschied im mittleren Gewicht von den Gruppen Chinstrap und Gentoo zur Re
 
 ```{r}
 #| fig-cap: "Effekt der UV: Unterschiede zur Referenzgruppe (95%-HDI)"
+#| fig-alt: "Posteriori-Dichten der Unterschiede zur Referenzart Adelie, das 95 %-HDI blau eingefärbt: Chinstrap liegt um null und überdeckt die gepunktete Nulllinie, Gentoo liegt weit rechts bei gut 1300 g."
 #| label: fig-m106-params
 
 plot(hdi(m10.6)) +
@@ -1717,6 +1732,7 @@ Nützlich ist auch die Visualisierung der Korrelationstabelle als Heatmap, @fig-
 ```{r echo = TRUE}
 #| label: fig-kidiq-heatmap
 #| fig-cap: "Visualisierung der Korrelationsmatrix als Heatmap"
+#| fig-alt: "Heatmap der paarweisen Korrelationen der Variablen in kidiq (u. a. kid_score, mom_hs, mom_iq, mom_age) als Dreiecksmatrix mit Werten in den Kacheln; je dunkler das Blau, desto stärker die Korrelation. kid_score hängt deutlich mit dem IQ der Mutter zusammen, kaum mit ihrem Alter."
 kidiq |> 
   correlation() |> 
   summary() |> 
@@ -1773,6 +1789,7 @@ In @fig-regr-one-pred ist die univariate Regression mit jeweils einem der beiden
 
 ```{r}
 #| fig-cap: Zwei univariate Regressionen
+#| fig-alt: "Zwei Streudiagramme nebeneinander, y-Achse jeweils IQ des Kindes, mit blauer Regressionsgerade: links gegen den IQ der Mutter (m10.7) mit deutlich steigender Geraden, rechts gegen das Alter der Mutter (m10.8) mit nur schwach steigender, fast flacher Geraden."
 #| label: fig-regr-one-pred
 #| echo: false
 p1 <- 
@@ -1896,6 +1913,7 @@ in der die 3. Dimension durch eine Farbschattierung ersetzt ist.
 #| echo: false
 #| label: fig-m109-color
 #| fig-cap: "Modell m10.9; die Farbverläufe zeigen der Wert der abhängigen Variablen"
+#| fig-alt: "Rasterdiagramm mit IQ der Mutter auf der x-Achse und Alter der Mutter auf der y-Achse; Blautöne zeigen den vorhergesagten IQ des Kindes, darüber die Datenpunkte. Die Farbe wird mit steigendem IQ der Mutter deutlich dunkler, entlang des Alters ändert sie sich kaum."
 kidiq <-
   kidiq |>
   mutate(pred_m10.9 = predict(m10.9))
@@ -1930,6 +1948,7 @@ Auf der Achse von mom_iq erkennt man deutlich (anhand der Farbänderung) die Ver
 #| echo: false
 #| label: fig-ten-dims
 #| fig-cap: "So sieht der Zusammenhang im 10-dimensionalen Raum aus"
+#| fig-alt: "Eine leere, einheitlich hellblaue Fläche ohne Achsen oder Daten – ein Scherz: Zusammenhänge im 10-dimensionalen Raum kann man sich nicht bildlich vorstellen."
 ggplot(data.frame(x=NA, y=NA)) +
   theme(panel.background = element_rect(fill = himmelblau, colour = NA))
 ```
@@ -2166,6 +2185,7 @@ parameters(m10.12) |>
 ```{r}
 #| label: fig-m1011hdi
 #| fig-cap: "Im Standard wird ein 95%-Intervall gezeigt bzw. berechnet; hier das ETI für m10.12"
+#| fig-alt: "Posteriori-Dichten der standardisierten Koeffizienten von m10.12 mit blau eingefärbtem 95 %-ETI: mom_age_z liegt nahe null und überdeckt die gepunktete Nulllinie, mom_iq_z liegt klar im positiven Bereich."
 plot(eti(m10.12)) +
   scale_fill_intervall()
 ```
@@ -2344,6 +2364,7 @@ kidiq <-
 ```{r fig.asp = .5}
 #| label: fig-kidiqresiduum
 #| fig-cap: "Die Verteilung der Fehler scheint keinem starken Trend (in Abhängigkeit zum vorhergesagten Wert) zu folgen, was ein gutes Zeichen ist."
+#| fig-alt: "Streudiagramm der Residuen von m10.12 gegen die vorhergesagten Werte, mit gestrichelten Referenzlinien bei −1 und 1 und blauer Glättungskurve samt Band. Die Punkte streuen gleichmäßig um null; die Kurve verläuft nahezu flach und fällt nur am linken Rand etwas ab."
 kidiq |> 
   ggplot(aes(x = m10.12_pred, y = m10.12_resid)) +
   geom_hline(color = "white", yintercept = 0, linewidth = 2) +
@@ -2365,6 +2386,7 @@ Mit der PPV kann man die Güte des Modells prüfen.
 
 
 ```{r m10-11-pp-check, echo = TRUE, fig.asp = .5}
+#| fig-alt: "Posteriori-prädiktiver Check: viele dünne hellblaue Dichtekurven simulierter Daten (y_rep) und eine dicke dunkelblaue Dichtekurve der beobachteten Daten (y). Die beobachtete Kurve ist gegenüber den simulierten nach rechts verschoben, ihr Gipfel liegt rechts von deren Gipfeln."
 pp_check(m10.12)
 ```
 
@@ -2481,6 +2503,7 @@ m10.12d_plot <-
 ```{r fig.asp = .619}
 #| echo: false
 #| fig-cap: "Bereinigte Regressionskoeffizienten"
+#| fig-alt: "Vier Streudiagramme (A–D) z-standardisierter Variablen mit blauen Regressionsgeraden. Oben A (Alter gegen IQ der Mutter) und B (IQ gegen Alter der Mutter), jeweils mit flacher Geraden und orangen Residuenstrichen. Unten IQ des Kindes gegen die Residuen: C (Residuen Alter) mit fast flacher, D (Residuen IQ) mit deutlich steigender Geraden."
 #| label: fig-bereinigt
 plots(m10.12a_plot, m10.12b_plot, m10.12c_plot, m10.12d_plot, 
       n_rows = 2, tags = "A",
@@ -2707,6 +2730,7 @@ Ab `mpg_z = `r sprintf("%.2f", (0.5 - coef(m14)[1]) / coef(m14)[2])`` sagt das M
 
 
 ```{r}
+#| fig-alt: "Streudiagramm Getriebeart (am, nur 0 oder 1) gegen standardisierte Kraftstoffeffizienz (mpg_z); die Punkte liegen auf zwei Linien bei 0 und 1. Eine steigende blaue Regressionsgerade verläuft quer dazwischen und sagt am linken Rand Werte unter 0 voraus."
 mtcars2 |> 
   ggplot(aes(x = mpg_z, y = am)) +
   geom_hline(yintercept = 0.5, color = "white", linewidth = 2) +
@@ -2738,6 +2762,7 @@ Wir waren fleißig ...
 
 ```{r}
 #| echo: false
+#| fig-alt: "Animiertes GIF: Kermit der Frosch tippt hektisch auf einer alten Schreibmaschine – augenzwinkernd zum Motto „Wir waren fleißig“."
 if (knitr:::is_html_output()) {
   knitr::include_graphics("https://media.giphy.com/media/XIqCQx02E1U9W/giphy.gif")
 }
@@ -2854,7 +2879,7 @@ exams2forms(quiz_metrische_av_files, n = 1)
 
 
 
-![](img/outro-10.jpg){width=100%}
+![](img/outro-10.jpg){width=100% fig-alt="Nahaufnahme eines verblühten, nassen Blütenkopfs: dunkelrote, glänzende Mitte, umgeben von vertrockneten, bräunlich-orangen Hüllblättchen."}
 
 
 

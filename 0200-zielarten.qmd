@@ -19,7 +19,7 @@ library(knitr)
 
 
 ::: {.content-visible when-format="html"}
-![Bayes:Start!](img/Golem_hex.png){width=10%}
+![Bayes:Start!](img/Golem_hex.png){width=10% fig-alt="Logo des Buchs: ein gezeichneter grau-blauer Roboter (Golem) mit großen Augen in einem lila Sechseck mit hellgrünem Rand, darüber der Schriftzug „Bayes“."}
 :::
 
 
@@ -151,10 +151,10 @@ Mittelwert, Korrelation und Regressionskoeffizienten sind typische Kennzahlen ("
 
 ::: {#fig-beschreiben layout-ncol=2}
 
-![Die deskriptive Statistik fasst eine Spalte zu einer einzelnen Zahl zusammen.](img/desk-stats-zsmnfassen-crop.svg){#fig-desk width=50%}
+![Die deskriptive Statistik fasst eine Spalte zu einer einzelnen Zahl zusammen.](img/desk-stats-zsmnfassen-crop.svg){#fig-desk width=50% fig-alt="Schema: links eine senkrechte Spalte aus zehn Zellen, in der Mitte ein Pfeil, rechts ein einzelnes leeres Kästchen. Viele Werte einer Variablen werden zu einer einzigen Kennzahl verdichtet."}
 
 
-![Zwei Spalten werden zu einer Zahl zusammengefasst](img/desk-stats-zsmnfassen-cor-crop.svg){#fig-desk2 width=50%}
+![Zwei Spalten werden zu einer Zahl zusammengefasst](img/desk-stats-zsmnfassen-cor-crop.svg){#fig-desk2 width=50% fig-alt="Schema: zwei nebeneinanderstehende Spalten aus je zehn Zellen, ein Pfeil zeigt auf ein einzelnes leeres Kästchen. Zwei Variablen werden zu einer Kennzahl wie der Korrelation zusammengefasst."}
 
 Beschreibende Statistik fasst eine oder mehr Variablen eines Datensatzes zu einer einzelnen Kennzahl zusammen.
 :::
@@ -239,6 +239,9 @@ ali_vorhersageintervall <- predict(lm_ali, newdata =  data.frame(x=42),
 #| fig-subcap: 
 #|   - "Regressionsgerade mit Punkt‑Vorhersage für Ali"
 #|   - "Regressionsgerade mit Vorhersagebereich (und herangezoomt) für Ali"
+#| fig-alt:
+#|   - "Streudiagramm mit Lernzeit in Stunden (x) und Klausurpunkten (y); die Punkte steigen von links unten nach rechts oben. Gestrichelte Linien markieren die Mittelwerte beider Variablen, eine blaue Regressionsgerade steigt an, und ein Pfeil mit der Beschriftung Ali zeigt auf einen orangen Punkt auf der Geraden bei 42 Stunden."
+#|   - "Herangezoomter Ausschnitt desselben Streudiagramms um 42 Stunden Lernzeit: Auf der blauen Regressionsgeraden liegt Alis oranger Vorhersagepunkt, durch den ein langer oranger Fehlerbalken von etwa 62 bis 104 Punkten verläuft. Der Vorhersagebereich ist also sehr breit."
 #| fig.asp: 0.8
 
 #noten2 <- read.csv(noten2, "data/noten2.csv")
@@ -374,6 +377,7 @@ studie_a |>
 ```{r}
 #| label: fig-studie-a
 #| fig-cap: "Überlebensrate je Geschlecht, mit bzw. ohne Medikament"
+#| fig-alt: "Gestapelte Balken in zwei Panels (mit und ohne Medikament), je ein Balken für Frauen und Männer; blau der Anteil Überlebender, orange der Rest. Mit Medikament überleben 73 % der Frauen und 93 % der Männer, ohne Medikament 69 % bzw. 87 %; in beiden Gruppen schneidet das Medikament besser ab."
 #| echo: false
 
 source("R-Code/kausalstudie1.R")
@@ -409,6 +413,7 @@ ist in @fig-dag-studie-a dargestellt.
 #| echo: false
 #| label: fig-dag-studie-a
 #| fig-cap: "Zwei direkte Effekte (gender, drug) und ein indirekter Effekt (gender über drug) auf recovery"
+#| fig-alt: "Kausaldiagramm mit drei Knoten: Pfeile führen von gender zu drug, von drug zu recovery und von gender direkt zu recovery. Das Geschlecht beeinflusst also sowohl die Medikamenteneinnahme als auch die Heilung."
 #| out-width: "50%"
 
 
@@ -506,6 +511,7 @@ Das Kausalmodell von Studie B ist in @fig-dag-studie-b dargestellt.
 #| echo: false
 #| label: fig-dag-studie-b
 #| fig-cap: "Drug hat keinen direkten, aber zwei indirekte Effekt auf recovery, einer davon ist heilsam, einer schädlich"
+#| fig-alt: "Kausaldiagramm mit vier Knoten: Von drug führen Pfeile zu pressure (oben) und zu toxic (unten), von beiden weiter zu recovery. Einen direkten Pfeil von drug zu recovery gibt es nicht."
 #| out-width: "50%"
 dag_studie_b <-
   dagitty("dag{
@@ -733,7 +739,7 @@ Zur Umsetzung von Modellierung in eine konkrete statistische Analyse bietet sich
 ::::: {.content-visible when-format="html"}
 Einflussreiche Leute schwören auf die Regressionsanalyse (@fig-gandalf).
 
-![Eine Regression](img/einring.jpg){width="50%" #fig-gandalf fig-align="center"}
+![Eine Regression](img/einring.jpg){width="50%" #fig-gandalf fig-align="center" fig-alt="Meme: Gandalf der Weiße mit Stab und ernstem Blick. Oben steht „Eine Regression“, unten die abgewandelte Ringinschrift aus Herr der Ringe: Die eine Regression knechtet, findet und bindet alle anderen Verfahren."}
 
 
 
@@ -805,9 +811,9 @@ Regression + Inferenz = 💖
 
 :::{#fig-regr-oder-wald layout-ncol=2}
 
-![Die eine Regression](img/regr.png){#fig-regrtext}
+![Die eine Regression](img/regr.png){#fig-regrtext fig-alt="Skizze einer steigenden Regressionsgeraden im Koordinatensystem: β0 markiert den Schnittpunkt mit der y-Achse. Zwischen den Punkten P bei x0 und Q bei x0 + 1 zeigt ein grau gefülltes Steigungsdreieck, dass y um β1 wächst, wenn x um 1 zunimmt."}
 
-![Wald von anderen Verfahren](img/choose-test.png){#fig-choose-test}
+![Wald von anderen Verfahren](img/choose-test.png){#fig-choose-test fig-alt="Ausschnitt eines riesigen, verzweigten Entscheidungsbaums für statistische Tests: Fragen nach Anzahl der Stichproben, Abhängigkeit, Verteilung oder Varianzen führen zu Dutzenden Verfahren wie t-Tests, Varianzanalysen und Rangtests. Das Ganze wirkt unübersichtlich."}
 
 Wähle die Regression. Oder die Wahl der Verfahren. Spoiler: Nimm lieber die Regression.
 :::
@@ -874,6 +880,9 @@ Eine Regressionsgerade ist durch zwei Parameter festgelegt: den Achsenabschnitt,
 #| fig-subcap: 
 #|   - "Einfache Regression (eine UV: hp)"
 #|   - "Multiple Regression (zwei UV: hp und am)"
+#| fig-alt:
+#|   - "Streudiagramm der mtcars-Autos mit Motorleistung in PS (x) und Kraftstoffeffizienz in Meilen pro Gallone (y). Die Punkte fallen von links oben nach rechts unten; eine blaue Regressionsgerade mit Unsicherheitsband verläuft deutlich negativ."
+#|   - "Dasselbe Streudiagramm getrennt nach Getriebeart: orange Kreise für am = 0, blaue Dreiecke für am = 1, jeweils mit eigener fallender Regressionsgerade und Unsicherheitsband. Die Gerade für am = 1 liegt höher, diese Autos fahren bei gleicher Leistung also sparsamer."
 data(mtcars)
 
 mtcars$am <- factor(mtcars$am)
@@ -998,7 +1007,7 @@ exams2forms(quiz_inferenz_files, n = 1)
 
 
 
-![](img/outro-02.jpg){width=100%}
+![](img/outro-02.jpg){width=100% fig-alt="Nahaufnahme einer verwelkten Sonnenblume: eingerollte, vertrocknete Blütenblätter in Gelb, Orange und Rot umgeben die dunkle Samenscheibe."}
 
 
 

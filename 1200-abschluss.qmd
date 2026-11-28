@@ -109,6 +109,7 @@ und zwar so, dass mind. $p$ kleiner oder gleich dem $p$-Quantil sind. s. @fig-qu
 ```{r}
 #| echo: false
 #| fig-cap: "50%-Quantil"
+#| fig-alt: "Glockenförmige Dichtekurve der Standardnormalverteilung; die Fläche links von x=0 ist grau eingefärbt. Auf der x-Achse ist nur der Wert 0 markiert, das 50%-Quantil, das die Fläche in zwei gleich große Hälften teilt."
 #| label: fig-quantil
 funcShaded_low <- function(x, lower_bound) {
     y = dnorm(x, mean = 0, sd = 1)
@@ -146,6 +147,7 @@ dass $X$ einen Wert kleiner oder gleich $x$ annimmt, s. @fig-F.
 #| echo: false
 #| label: fig-F
 #| fig-cap: "Verteilungsfunktion F(x=0)=1/2"
+#| fig-alt: "Dieselbe Standardnormalverteilung mit grau eingefärbter Fläche links von x=0. Die graue Fläche entspricht dem Wert der Verteilungsfunktion an der Stelle 0, also der Hälfte der Gesamtfläche."
 ggplot(tibble(x = -3:3)) +
   aes(x) + 
   stat_function(fun = dnorm, n = 100) +
@@ -195,6 +197,7 @@ parameters(m2) |>
 ```{r}
 #| label: fig-m2-params
 #| fig-cap: "Parameter von m2 visualisiert"
+#| fig-alt: "Punktdiagramm der Koeffizienten von m2 (ohne Achsenabschnitt) mit Schätzintervallen, gestrichelte Nulllinie. hp und hp:vs liegen praktisch bei null; vs liegt bei etwa 14 mit einem breiten Intervall, das deutlich rechts der Null liegt."
 plot(parameters(m2))
 ```
 
@@ -317,6 +320,7 @@ Und schauen wir uns die Post-Verteilung an, mit eingezeichnetem HDI, s. @fig-pos
 ```{r echo = FALSE}
 #| label: fig-post-m3
 #| fig-cap: "Post-Verteilung (HDI) von m3"
+#| fig-alt: "Dichtekurve der Post-Verteilung des Koeffizienten hp in m3; der Bereich des 95%-HDI ist farbig hervorgehoben, die Ränder in einer zweiten Farbe. Die gesamte Verteilung liegt im negativen Bereich, klar links der gestrichelten Nulllinie."
 plot(hdi(m3)) +
   scale_fill_intervall()
 ```
@@ -381,6 +385,7 @@ Puh, jetzt kommt ein wilder DAG, s. @fig-dag-wild.
 ```{r}
 #| echo: false
 #| fig-cap: "Ein DAG mit doppelter Konfundierung. Ist hier noch zu helfen?"
+#| fig-alt: "DAG mit fünf Knoten: A links oben, B rechts oben, Z in der Mitte, E links unten (UV), D rechts unten (AV). Pfeile von A zu E und zu Z, von B zu Z und zu D, von Z zu E und zu D sowie von E zu D."
 #| label: fig-dag-wild
 dag2_raw <-
   'dag {
@@ -426,6 +431,7 @@ Ihr DAG auch komplex, s. @fig-dag-komplex.
 #| echo: false
 #| label: fig-dag-komplex
 #| fig-cap: "Ein DAG mit vielen Variablen"
+#| fig-alt: "DAG mit 17 Knoten: E (UV) zeigt auf D (AV). Links führt eine lange Kette von 8 über 7, 6, 5, 4, 3, 2 und 1 zu E, zusätzlich zeigt 7 direkt auf E; rechts führt eine Kette von 15 über 14 bis 9 zu 8. 8 und 15 zeigen außerdem direkt auf D."
 dag3_raw <-
   'dag {
 1 [pos="-5.600,2.115"]
@@ -509,6 +515,7 @@ um den kausalen Effekt der UV auf die AV zu identifizieren!
 #| echo: false
 #| label: fig-van-kampen
 #| fig-cap: "Ein DAG zu den Symptomen der Schizophrenie"
+#| fig-alt: "Komplexer DAG mit zwölf Symptomen als Knoten und vielen Pfeilen, u. a. SAN, AIS, AFF, ALN, APA, CDR, FTW, PER, DET, HOS. SUS (UV) zeigt auf EGC (AV); AIS und ALN wirken jeweils auf SUS und (direkt oder über FTW) auf EGC."
 dad_van_kampen_raw <-
   'dag {
 AFF [pos="0.262,0.477"]
@@ -656,7 +663,7 @@ exams2forms(quiz_abschluss_files, n = 1)
 
 
 
-![](img/outro-05.jpg){width=100%}
+![](img/outro-05.jpg){width=100% fig-alt="Nahaufnahme einer Blüte des Purpur-Sonnenhuts: stacheliger, dunkelroter Blütenkopf mit herabhängenden rosa Blütenblättern vor unscharfem grünem Hintergrund."}
 
 
 :::

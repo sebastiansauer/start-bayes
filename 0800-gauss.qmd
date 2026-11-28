@@ -2,7 +2,7 @@
 <!-- spellcheck: 2026-08-25 -->
 
 ::: {.content-visible when-format="html"}
-![Bayes:Start!](img/Golem_hex.png){width="10%"}
+![Bayes:Start!](img/Golem_hex.png){width="10%" fig-alt="Logo des Buchs: gezeichneter grau-blauer Roboter-Golem mit großen Augen in einem violetten Sechseck mit hellgrünem Rand, darüber der Schriftzug „Bayes“."}
 :::
 
 ## Lernsteuerung
@@ -165,6 +165,7 @@ s. @fig-kung-dens.
 ```{r}
 #| label: fig-kung-dens
 #| fig-cap: Verteilungen der Variablen im Kung-Datensatz. Größe und Gewicht sind recht symmetrisch bzw. normalverteilt; Alter ist rechtsschief.
+#| fig-alt: "Drei Dichtediagramme nebeneinander mit Rug-Strichen für die Rohwerte der erwachsenen !Kung: Alter (age) mit Gipfel um 30 bis 40 Jahre und langem rechten Ausläufer bis 90; Größe (height) mit Gipfel um 150 bis 160 cm; Gewicht (weight) mit Gipfel um 45 kg."
 
 kung_erwachsen |> 
   select(age, height, weight) |> 
@@ -184,7 +185,7 @@ kung_erwachsen |>
 Wir interessieren uns also für den Mittelwert der Körpergröße einer erwachsenen !Kung-Person, $\mu$.
 Der Einfachheit halber gehen wir davon aus, dass Frauen und Männer im Schnitt gleich groß sind.
 
-![Mensch; Bildquelle: @madhero88human](img/human.png){width="5%"}
+![Mensch; Bildquelle: @madhero88human](img/human.png){width="5%" fig-alt="Schwarze Silhouette eines stehenden Menschen von vorn."}
 
 
 
@@ -225,7 +226,7 @@ Zur Erinnerung: Die (unstandardisierte) Post-Verteilung ist das Produkt von Prio
 s. @fig-priori-x-lik-is-post.
 Im Folgenden gehen wir diese Bestimmungsstücke der Reihe nach durch, in gewohnter Manier.
 
-![Priori mal Likelihood ist gleich der unstandardisierten Post-Verteilung](img/apriori_x_lik_is_post.png){#fig-priori-x-lik-is-post}
+![Priori mal Likelihood ist gleich der unstandardisierten Post-Verteilung](img/apriori_x_lik_is_post.png){#fig-priori-x-lik-is-post fig-alt="Drei gleich aussehende Glockenkurven nebeneinander, beschriftet mit Apriori, Likelihood und Aposteriori; dazwischen ein Malzeichen und ein Gleichheitszeichen."}
 
 
 Nur dass wir dieses Mal die Bayesbox nicht von Hand berechnen, 
@@ -275,6 +276,9 @@ In @fig-kung-model sind unsere Priori-Verteilungen visualisiert.
 #| fig-subcap: 
 #|   - Priori der mittleren Körpergröße
 #|   - Priori der Schätzungenauigkeit
+#| fig-alt:
+#|   - "Glockenförmige Dichtekurve der Priori-Verteilung μ ~ dnorm(178, 20) über dem Mittelwert der Körpergröße in cm von 100 bis 250, mit Gipfel bei 178."
+#|   - "Dichtekurve der Priori-Verteilung σ ~ dexp(1/8) über der Streuung der Körpergröße in cm von 0 bis 50: am höchsten bei 0 und dann stetig abfallend, ab etwa 30 cm fast null."
 
 p_nv_kung_prior
 p_exp_kung_prior
@@ -346,12 +350,14 @@ source("R-Code/Kruschke-plot3.R")
 #| echo: false
 #| label: fig-mod-kung1
 #| out-width: 75%
+#| fig-alt: "Modelldiagramm: Oben links eine Normalverteilung mit den Parametern M und S_μ, oben rechts eine Exponentialverteilung mit λ. Pfeile mit Tilde führen von beiden zu einer Normalverteilung mit μ und σ darunter, von der wiederum ein Pfeil zu den Körpergrößen h_i führt."
 #| fig-cap: !expr 'paste0("Das Modell der Körpergröße: Die Priori-Verteilungen von $\\mu$ (Normalverteilung) und $\\sigma$ (Exponentialverteilung) legen die Normalverteilung der Körpergrößen $h_i$ fest.", if (knitr::is_html_output()) " Die Animation zieht beispielhaft Werte für $\\mu$ und $\\sigma$ und zeigt, welche Verteilung der Körpergrößen daraus folgt." else "")'
 if (knitr::is_html_output()) {
   # Erklärvideo ohne Ton, mit Untertiteln
   # (Quelle: videos/kung-modell-priori/, Standbild = Abbildung unten im PDF)
   knitr::asis_output(paste0(
     '<video src="img/kung-modell-priori.mp4" poster="img/kung-modell-priori-poster.png" ',
+    'aria-label="Animation ohne Ton zum Modelldiagramm: Aus den Priori-Verteilungen von μ und σ werden nacheinander Beispielwerte gezogen; darunter erscheint jeweils die daraus folgende Normalverteilung der Körpergrößen." ',
     'autoplay loop muted playsinline controls style="width:100%;height:auto;"></video>'))
 } else {
   knitr::include_graphics("img/kruschke_plot3.png")
@@ -425,6 +431,7 @@ Betrachten wir die Post-Verteilungen von $\mu$ und von $\sigma$, s. @fig-kung3.
 #| echo: false
 #| label: fig-kung3
 #| fig-cap: Die beiden Randverteilungen der Post-Verteilungen, d.h. die Verteilungen für $\mu$ und für $\sigma$
+#| fig-alt: "Zwei grau gefüllte Dichtekurven nebeneinander: links die Post-Verteilung von μ, eingipflig und schmal um etwa 155 cm; rechts die von σ, ebenfalls eingipflig und schmal, um knapp 8 cm."
 #| fig-asp: 0.5
 
 m_kung_post |> 
@@ -455,6 +462,7 @@ Die gemeinsame Post-Verteilung von Mittelwert, $\mu$ und Streuung, $\sigma$ als 
 #| echo: true
 #| label: fig-m_kung_neue_prioris-post-joint
 #| fig-cap: "Die gemeinsame Post-Verteilung von Mittelwert und Streuung von m_kung_neue_prioris als Fliesendiagramm"
+#| fig-alt: "Hexagon-Diagramm mit μ (Mittelwert der Körpergröße, etwa 154 bis 156 cm) auf der x-Achse und σ (Streuung, etwa 7 bis 8,5 cm) auf der y-Achse; die Grauintensität zeigt die Anzahl der Stichproben. Eine rundliche, nicht schräg liegende Wolke mit dunklem Zentrum: μ und σ sind unkorreliert."
 
 m_kung_post |> 
   ggplot() +
@@ -474,6 +482,7 @@ sowie die Verteilung von jewils $\mu$ und $\sigma$ als Dichtediagramme am oberen
 #| echo: false
 #| fig-cap: "Streudiagramm zur gemeinsamen Verteilung von $\\mu$ und $\\sigma$"
 #| label: fig-m_kung_neue_prioris-post-anders1
+#| fig-alt: "Streudiagramm der Post-Stichproben mit μ auf der x-Achse und σ auf der y-Achse, halbtransparente Punkte bilden eine runde, nicht geneigte Wolke. Am oberen und rechten Rand zeigen Dichtekurven die eingipfligen Randverteilungen von μ und σ."
 
 
 p_m_kung_post <- 
@@ -510,6 +519,7 @@ Natürlich können wir auch nur von einem einzelnen Parameter (z. B. Mittelwer
 #| echo: false
 #| fig-cap: Die Post-Verteilung von $\mu$ in m_kung_neue_prioris; ein Balkendiagramm bietet sich an.
 #| label: fig-m_kung_neue_prioris-post-anders2
+#| fig-alt: "Histogramm der Post-Stichproben des Mittelwerts der Körpergröße μ (x-Achse, etwa 153 bis 156 cm) mit der Häufigkeit auf der y-Achse: symmetrisch und glockenförmig mit Gipfel knapp unter 155 cm."
 p20
 ```
 
@@ -583,7 +593,7 @@ Außerdem sei an @mcelreath2020 und @gelman2021 verwiesen. $\square$
 
 :::: {layout="[ 20, 80 ]"}
 ::: {#first-column}
-![Hallo Leute, hier ist Stan!](img/Golem_hex.png){width="50%"}
+![Hallo Leute, hier ist Stan!](img/Golem_hex.png){width="50%" fig-alt="Gezeichneter grau-blauer Roboter-Golem mit großen Augen in einem violetten Sechseck mit hellgrünem Rand, darüber der Schriftzug „Bayes“: Stan stellt sich vor."}
 :::
 
 ::: {#second-column}
@@ -724,6 +734,7 @@ Nicht glauben, selber sehen, s. @fig-m_kung-params-intercept.
 ```{r}
 #| fig-cap: "Parameter von m_kung, nur einer: der Intercept"
 #| label: fig-m_kung-params-intercept
+#| fig-alt: "Punktdiagramm mit dem Koeffizienten auf der x-Achse von 0 bis gut 150 und einer einzigen Zeile (Intercept): Der blaue Punkt liegt bei etwa 155; ein Fehlerbalken ist bei dieser Achsenskala nicht erkennbar, so klein ist die Ungewissheit. Eine gepunktete Linie markiert die Null."
 m_kung |> 
   parameters() |> 
   plot(show_intercept = TRUE)
@@ -882,6 +893,7 @@ Auf Errisch sind das die Backticks, die wir um den Namen rumwickeln müssen, s. 
 ### Mit `{ggpubr}`
 
 ```{r}
+#| fig-alt: "Mit ggpubr erstelltes Histogramm der Post-Stichproben des Intercepts, also der mittleren Körpergröße μ (x-Achse, etwa 153 bis 156 cm), Häufigkeit auf der y-Achse: symmetrisch und glockenförmig mit Gipfel knapp unter 155 cm."
 m_kung_neue_prioris_tibble |> 
   gghistogram(x = "`(Intercept)`", fill = mittelgrau, color = "white") +  # Aus dem Paket "ggpubr"
   labs(x = expression("Mittelwert der Körpergröße [cm] (" * mu * ")"), y = "Häufigkeit")
@@ -891,6 +903,7 @@ m_kung_neue_prioris_tibble |>
 
 ```{r}
 #| label: intercept-hist-ggplot
+#| fig-alt: "Mit ggplot2 erstelltes Histogramm derselben Post-Stichproben der mittleren Körpergröße μ (x-Achse) mit Häufigkeit (y-Achse): symmetrisch und glockenförmig mit Gipfel knapp unter 155 cm."
 m_kung_neue_prioris_tibble |>
   ggplot(aes(x = `(Intercept)`)) +  # Aus dem Paket `ggplot2`
   geom_histogram() +
@@ -937,6 +950,9 @@ Wir können uns diese Verteilung auch komfortabel von R ausgeben lassen, s. @fig
 #| fig-subcap:
 #|   - "Die dunkle, dicke Dichtekurve zeigt die tatsächliche Verteilung der Körpergrößen im Datensatz. Die hellen, leichten Dichtekurven zeigen die Verteilungen laut der Post-Verteilung unseres Modells."
 #|   - "Der wahre Wert einer Test-Statistik (T), hier der Mittelwert der Körpergrößen, wird mit der Verteilung der Körpergrößen in Bezug gesetzt."
+#| fig-alt:
+#|   - "Dichtekurven der Körpergröße (x-Achse, etwa 130 bis 185 cm): eine dicke dunkelblaue Kurve y für die beobachteten Daten und viele dünne hellblaue Kurven y_rep für vom Modell simulierte Datensätze. Die simulierten Kurven decken sich weitgehend mit der beobachteten."
+#|   - "Hellblaues Histogramm der Mittelwerte der simulierten Datensätze, T(y_rep), über der Körpergröße von etwa 153 bis 157 cm; eine dicke dunkelblaue senkrechte Linie für den beobachteten Mittelwert T(y) liegt mitten im Gipfel des Histogramms."
 pp_check(m_kung)
 pp_check(m_kung, "stat")
 ```
@@ -1258,6 +1274,6 @@ exams2forms(quiz_gauss_files, n = 1)
 
 ## ---
 
-![](img/outro-08.jpg){width="100%"}
+![](img/outro-08.jpg){width="100%" fig-alt="Foto in Nahaufnahme: verwittertes, hellgraues Totholz mit rissiger Oberfläche, durchzogen von dunklen, geschwungenen Linien; rechts ein Stück dunkler, knorriger Rinde."}
 
 :::

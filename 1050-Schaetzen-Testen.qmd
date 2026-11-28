@@ -65,7 +65,7 @@ library(dagitty)
 
 Wir benötigen den Datensatz `palmerpenguins`.
 
-![Possierlich: Die Pinguine [@horst_statistics_2024]](img/penguins.png){#fig-penguins width="50%"}
+![Possierlich: Die Pinguine [@horst_statistics_2024]](img/penguins.png){#fig-penguins width="50%" fig-alt="Zeichnung von drei Pinguinen vor bunten Farbklecksen: links ein Zügelpinguin (Chinstrap) vor Lila, in der Mitte ein Eselspinguin (Gentoo) mit ausgebreiteten Flügeln vor Petrol, rechts ein Adeliepinguin vor Orange."}
 
 :::{#exr-peng-start}
 ### Machen Sie sich mit den Pinguinen vertraut
@@ -379,6 +379,7 @@ Nullhypothesen sind fast immer falsch, s. @fig-nullmeme.
 #| echo: false
 #| label: fig-nullmeme
 #| fig-cap: "Du testest EXAKTE Nullhypothesen?"
+#| fig-alt: "Meme im Vier-Felder-Format mit Anakin und Padmé aus Star Wars: Er sagt „I bet there's zero correlation“, sie fragt lächelnd „About zero, right?“; er schaut nur schweigend, sie fragt verunsichert „Exactly zero?“."
 knitr::include_graphics("img/5v5531.jpg")
 ```
 
@@ -503,6 +504,7 @@ Im der Voreinstellung umfasst die Größe des ROPE ±10 % der SD der AV. $\squ
 #| fig-height: 7
 #| fig-cap: "Die Entscheidungsregeln zum ROPE illustriert [@kruschke2018]; A: Verwerfen der ROPE-Hypothese; B und C: Akzeptieren; D-F: Unklare Datenlage, keine Entscheidung zur ROPE-Hypothese"
 #| label: fig-kruschke-rope
+#| fig-alt: "Sechs Panels (a–f), je eine Posteriori-Dichte mit schwarzem HDI-Balken und zwei orangen senkrechten Linien als ROPE-Grenzen um den Nullwert. a: HDI komplett außerhalb des ROPE (verwerfen); b, c: HDI komplett innerhalb (akzeptieren); d–f: HDI und ROPE überlappen nur teilweise (unentschieden)."
 source("funs/plot_rope_hdi.R")
 rope_hdi_grid()
 ```
@@ -577,6 +579,9 @@ Aber können wir umgekehrt sagen, dass ein Großteil außerhalb liegt? Das erken
 #| fig-subcap: 
 #|   - "Diagramm mit `rope(m_penguins_species) |> plot()`"
 #|   - "Diagramm mit `parameters(m_penguins_species) |> plot()`"
+#| fig-alt:
+#|   - "Posteriori-Dichten der Unterschiede von Chinstrap und Gentoo zur Referenzart Adelie, mit grau-blauem ROPE-Band um null. Die Chinstrap-Dichte liegt zu einem großen Teil, aber nicht vollständig im ROPE; die Gentoo-Dichte liegt weit rechts davon, ohne Überlappung."
+#|   - "Punktschätzer mit Intervallbalken für Chinstrap und Gentoo, dazu ein hellblaues Band von −80 bis 80 g um null: Der Chinstrap-Balken schneidet das Band, reicht aber darüber hinaus; Gentoo liegt weit rechts außerhalb."
 plot(rope(m_penguins_species)) +
   scale_fill_intervall()
 
@@ -617,6 +622,7 @@ Sagen wir, 200 Gramm sind unsere Grenze für einen vernachlässigbaren Effekt, s
 ```{r echo = TRUE, results="hide"}
 #| label: fig-rope-range
 #| fig-cap: "ROPE mit selber eingestellter Grenze von ±200 (Gramm)"
+#| fig-alt: "Posteriori-Dichten für Chinstrap und Gentoo, nun mit breiterem ROPE-Band von −200 bis 200 g: Das 95 %-Intervall von Chinstrap liegt jetzt innerhalb des ROPE, Gentoo weiterhin weit rechts außerhalb."
 plot(rope(m_penguins_species, range = c(-200, 200))) +
   scale_fill_intervall()
 ```
@@ -736,6 +742,7 @@ Die Post-Verteilung von $R^2$ kann man sich wie folgt ausgeben lassen, s. @fig-m
 
 ```{r}
 #| fig.cap: "Die Verteilung von R-Quadrat im Modell m_penguins_species"
+#| fig-alt: "Posteriori-Dichte von R² für m_penguins_species mit farbig markiertem 95 %-HDI; die Verteilung ist schmal und liegt weit entfernt von null im deutlich positiven Bereich."
 #| label: fig-m106-r2
 m_penguins_species_r2 <-
   m_penguins_species |> 

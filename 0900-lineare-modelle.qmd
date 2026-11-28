@@ -168,6 +168,7 @@ Nein, s. @fig-na.
 
 ```{r}
 #| fig-cap: Fehlende Werte -- fehlen.
+#| fig-alt: "Balkendiagramm der Anzahl fehlender Werte (y-Achse) für die Variablen Größe, Gewicht, Alter und Geschlecht (x-Achse): Es ist kein einziger Balken zu sehen, alle Anzahlen sind null."
 #| label: fig-na
 kung_erwachsen |> 
   summarise(across(everything(), ~ sum(is.na(.x)))) |> 
@@ -195,6 +196,7 @@ kung_erwachsen |>
 #| label: fig-kung_erwachsen-hists
 #| echo: false
 #| fig-cap: "Verteilung (als Histogramme dargestellt) der numerischen Variablen des Datensatzes"
+#| fig-alt: "Drei Histogramme mit blauer Dichtekurve nebeneinander: Alter (age) rechtsschief mit langem Ausläufer zu hohen Werten; Größe (height) recht symmetrisch, aber mit zwei Gipfeln um 150 und 160 cm; Gewicht (weight) annähernd symmetrisch mit Gipfel um 45 kg."
 kung_erwachsen |> 
   select(age, height, weight) |>  # Fixed duplicate 'age' column
   pivot_longer(cols = everything(), names_to = "variable", values_to = "value") |>  # Pivot to long format
@@ -239,6 +241,7 @@ Die Korrelationen der (numerischen) Variablen sind in @fig-num-korrs dargestellt
 ```{r}
 #| label: fig-num-korrs
 #| fig-cap: "Korrelationsmatrix"
+#| fig-alt: "Farbige Korrelationsmatrix (Heatmap) der Variablen height, weight, age und male; blaue Kacheln stehen für positive, rote für negative Korrelationen. Kräftig blau sind height mit weight (0,75) und height mit male (0,70), mittel blau weight mit male (0,53); Alter korreliert nur schwach (−0,19 bis 0,01)."
 kung_erwachsen |> 
   correlation() |> 
   summary() |> 
@@ -288,6 +291,7 @@ Laden wir die !Kung-Daten und visualisieren wir uns den Zusammenhang zwischen *G
 
 ```{r}
 #| label: kung-zshg-ggplot
+#| fig-alt: "Streudiagramm Körpergewicht in kg (x-Achse, etwa 31 bis 63) gegen Körpergröße in cm (y-Achse, etwa 136 bis 180) mit blauer Regressionsgerade samt hellblauem Unsicherheitsband: Die Punktwolke steigt deutlich linear an."
 kung_erwachsen |>
   ggplot(
        aes(x = weight, y = height)) +
@@ -309,6 +313,7 @@ ggscatter(kung_erwachsen,
 
 ```{r}
 #| echo: false
+#| fig-alt: "Mit ggpubr erstelltes Streudiagramm weight (x-Achse) gegen height (y-Achse) mit blauer Regressionsgerade: dieselbe deutlich ansteigende Punktwolke wie in der ggplot2-Variante."
 ggscatter(kung_erwachsen,
           x = "weight", y = "height",
           add = "reg.line",
@@ -343,6 +348,7 @@ aequivalenten Darstellungen als normale Abbildung. -->
 #| echo: false
 #| label: fig-kung-zshg
 #| fig-cap: "Der Zusammenhang zwischen Gewicht (X) und Größe (Y)"
+#| fig-alt: "Streudiagramm Körpergewicht in kg (x-Achse) gegen Körpergröße in cm (y-Achse) mit Regressionsgerade samt Unsicherheitsband: Die Punktwolke steigt deutlich linear an."
 kung_erwachsen |>
   ggplot(aes(x = weight, y = height)) +
   geom_point(alpha = .4) +
@@ -425,6 +431,7 @@ Der Mittelwert von `weight_c` (das zentrierte Gewicht) liegt jetzt bei 0, s. @fi
 #| echo: false
 #| label: fig-kung_zentriert-center
 #| fig-cap: 'Das Zentrieren ändert die Verteilungsform nicht, sondern "schiebt" die Verteilung nur zur Seite. Der resultierende Mittelwert ist dann Null. Die zentrierten Werte zeigen, wie weit ein Messwert vom Mittelwert entfernt ist (hier in der Einheit kg).'
+#| fig-alt: "Zwei gleich geformte Histogramme auf einer gemeinsamen x-Achse: rechts das Gewicht in Hellgrau um seinen Mittelwert von etwa 45 kg, links das zentrierte Gewicht in Dunkelgrau um 0. Ein orangefarbener Pfeil führt vom Mittelwert des Gewichts zur Null; gestrichelte orange Linien markieren beide Mittelwerte."
 
 kung_zentriert |> 
   select(weight, weight_c) |> 
@@ -491,7 +498,7 @@ sich aus dem linearen Modell (unserer Regressionsformel).
 @thm-modm42 stellt die Modelldefinition dar.
 @fig-kruschke_regr_one_predictor zeigt, wie die drei Parameter zusammen die Likelihood definieren.
 
-![](img/kruschke_regr_1UV.png){#fig-kruschke_regr_one_predictor width=75%}
+![](img/kruschke_regr_1UV.png){#fig-kruschke_regr_one_predictor width=75% fig-alt="Modelldiagramm der einfachen Regression: Zwei Normalverteilungen (mit M_0, S_0 bzw. M_1, S_1) liefern per Tilde-Pfeil β_0 und β_1, die über β_0 + β_1·x_i gleich μ_i ergeben. Eine Exponentialverteilung mit λ liefert σ. μ_i und σ bestimmen eine Normalverteilung, aus der die Werte y_i stammen."}
 
 
 @thm-modm42 stellt @fig-kruschke_regr_one_predictor als Modellgleichung dar.
@@ -501,7 +508,7 @@ $\mu$ (vorhergesagte Körpergröße) beruht auf dem jeweiligen $X$-Wert (d. h.
 zusammen mit der Streuung der Körpergrößen um den Mittelwert ($\sigma$)
 ergibt sich dann die Normalverteilung der Körpergrößen, $y_i$ (AV).
 
-![Die Körpergrößen, $Y$ (AV) sind abhängig vom Wert des Körpergewichts, $X$, (UV)](img/regression-normal-dist-gray.png){#fig-regression-normal-dist-gray width=75%}
+![Die Körpergrößen, $Y$ (AV) sind abhängig vom Wert des Körpergewichts, $X$, (UV)](img/regression-normal-dist-gray.png){#fig-regression-normal-dist-gray width=75% fig-alt="Schema mit x- und y-Achse und einer ansteigenden Regressionsgerade. An einer Stelle sitzt ein Punkt μ auf der Geraden; senkrecht darum ist eine Normalverteilungskurve gezeichnet, deren Breite mit σ beschriftet ist."}
 
 
 ::: {#thm-modm42}
@@ -809,6 +816,7 @@ Wir werden uns aber mit diesen beiden Kennwerten nicht weiter beschäftigen in d
 ```{r}
 #| fig-cap: Diagramm zur Probability of Direction, Modell m_kung_starkes_beta1
 #| label: fig-pd1
+#| fig-alt: "Rot gefüllte Dichtekurve der Post-Verteilung des Koeffizienten weight_c über möglichen Parameterwerten von 0 bis gut 1: Die gesamte Verteilung liegt um 0,9 und damit weit rechts der gepunkteten Null-Linie; der Effekt ist eindeutig positiv."
 plot(p_direction(m_kung_starkes_beta1))
 ```
 
@@ -831,6 +839,7 @@ Wir können z. B. ein Lagemaß wie den Median hernehmen, um die "mittlere" Reg
 #| echo: true
 #| label: fig-kung-zentiert-regr-line
 #| fig-cap: "Die mittlere Regressionsgerade, unser 'Best-Guess' zum Zusammenhang von Gewicht und Größe"
+#| fig-alt: "Streudiagramm zentriertes Gewicht weight_c (x-Achse, etwa −14 bis 18 kg) gegen Körpergröße height (y-Achse) mit einer blauen Geraden mit Achsenabschnitt 154 und Steigung 0,9, die mitten durch die ansteigende Punktwolke läuft."
 #| eval: true
 kung_zentriert |> 
   ggplot() +
@@ -891,6 +900,7 @@ um einen Überblick über Lage- und Streuungsmaße der Post-Verteilung zu bekomm
 #| label: fig-m_kung_starkes_beta1-post
 #| echo: false
 #| fig-cap: "Die Postverteilung für den Parameter Gewicht (zentriert); die plausiblen Werte liegen zwischen 0.8 und 1.0 cm pro Kilogramm Gewicht"
+#| fig-alt: "Grau gefüllte Dichtekurve der Post-Verteilung des Steigungskoeffizienten β_1 in cm/kg (x-Achse): eingipflig und annähernd symmetrisch mit Gipfel bei etwa 0,9; Mittelwert, Median und Modus liegen eng beieinander."
 m_kung_starkes_beta1_post |>
   ggplot(aes(x = weight_c)) +
   geom_density(fill = mittelgrau) +
@@ -921,6 +931,7 @@ Die Daten haben die Priori-Verteilung "überstimmt".
 ```{r}
 #| label: fig-m_kung_starkes_beta1-post2
 #| fig-cap: "Die Post-Verteilung für den Parameter sigma, m_kung_starkes_beta1; die plausiblen Werte liegen zwischen 4.7 cm und 5.5 cm."
+#| fig-alt: "Grün gefüllte Dichtekurve der Post-Verteilung von σ, der Streuung der Körpergröße in cm (x-Achse): glockenförmig und annähernd symmetrisch mit Gipfel bei etwa 5,1 cm, also nicht mehr exponentialverteilt wie die Priori."
 
 m_kung_starkes_beta1_post |>
   ggplot(aes(x = sigma)) +
@@ -935,6 +946,7 @@ gleich mit Intervallgrenzen, z. B. 95 %, s. @fig-m_kung_starkes_beta1-plot.
 ```{r}
 #| label: fig-m_kung_starkes_beta1-plot
 #| fig-cap: "Die Parameter Gewicht (zentriert) Modells m_kung_starkes_beta1"
+#| fig-alt: "Dichtekurve der Post-Verteilung von weight_c mit Gipfel um 0,9, weit rechts der gepunkteten Null-Linie. Der mittlere Bereich, das 95 %-HDI, ist rot gefüllt; die schmalen Ränder außerhalb sind blau."
 m_kung_starkes_beta1_hdi <- 
   m_kung_starkes_beta1_post |> 
   select(weight_c) |>  # analog für `select(sigma)`
@@ -988,6 +1000,7 @@ auf ein 90 %- oder 89 %-Intervall auszuweichen, aufgrund der besseren numeri
 Die ersten 10 Stichproben:
 
 ```{r Post-Regression-befragen-10, echo = FALSE}
+#| fig-alt: "Streudiagramm zentriertes Gewicht (x-Achse) gegen Körpergröße (y-Achse) mit 10 halbtransparenten Regressionsgeraden aus der Post-Verteilung: Alle steigen an und liegen eng beieinander, an den Rändern fächern sie leicht auf."
 kung_zentriert |>
   ggplot(aes(x = weight_c,
              y = height)) +
@@ -1006,6 +1019,7 @@ kung_zentriert |>
 Die ersten 100 Stichproben:
 
 ```{r Post-Regression-befragen-11-ersten-1000, echo = FALSE}
+#| fig-alt: "Dasselbe Streudiagramm mit 100 sehr blassen Regressionsgeraden aus der Post-Verteilung: Sie bilden ein schmales, ansteigendes Bündel, das in der Mitte am engsten und an den Rändern etwas breiter ist."
 kung_zentriert |>
   ggplot(aes(x = weight_c,
              y = height)) +
@@ -1025,6 +1039,7 @@ kung_zentriert |>
 Die ersten `1e3` Stichproben:
 
 ```{r Post-Regression-befragen-11-die-ersten-1000, echo = FALSE}
+#| fig-alt: "Dasselbe Streudiagramm mit 1000 fast durchsichtigen Regressionsgeraden aus der Post-Verteilung: Sie verschmelzen zu einem dunklen, schmalen, ansteigenden Band, das zu den Rändern hin leicht breiter wird."
 kung_zentriert |>
   ggplot(aes(x = weight_c,
              y = height)) +
@@ -1069,6 +1084,10 @@ hat ohnehin kein Bild. -->
 #|   - "10 Stichproben"
 #|   - "100 Stichproben"
 #|   - "1000 Stichproben"
+#| fig-alt:
+#|   - "Streudiagramm zentriertes Gewicht (x-Achse) gegen Körpergröße (y-Achse) mit 10 halbtransparenten Regressionsgeraden aus der Post-Verteilung, die alle ansteigen und eng beieinander liegen."
+#|   - "Dasselbe Streudiagramm mit 100 blassen Regressionsgeraden: ein schmales, ansteigendes Bündel, an den Rändern etwas breiter als in der Mitte."
+#|   - "Dasselbe Streudiagramm mit 1000 fast durchsichtigen Regressionsgeraden, die zu einem schmalen, ansteigenden Band verschmelzen."
 kung_zentriert |>
   ggplot(aes(x = weight_c, y = height)) +
   geom_point() +
@@ -1105,6 +1124,7 @@ Einfacher ist die Visualisierung mit `estimate_expectation`, s. @fig-m_kung_star
 ```{r}
 #| fig-cap: Schätzbereich für die bedingten mittleren Körpergröße, also die Regressionsgerade mit Unsicherheitsintervall
 #| label: fig-m_kung_starkes_beta1-estimate-expectation
+#| fig-alt: "Streudiagramm zentriertes Gewicht weight_c (x-Achse) gegen vorhergesagte Körpergröße (y-Achse) mit dunkelgrauer ansteigender Regressionsgerade und hellgrauem Unsicherheitsband, das in der Mitte am schmalsten ist und zu den Rändern hin breiter wird."
 estimate_expectation(m_kung_starkes_beta1, by = "weight_c") |>  # Regressionsgerade
   plot() +
   geom_point(data = kung_zentriert, aes(x = weight_c, y = height)) # Punkte
@@ -1204,7 +1224,7 @@ Die Wahrscheinlichkeit beträgt `r wskt_klein`.
 
 @fig-bayes-nutzer zeigt einen typischen Bayes-Nutzer bei der Arbeit.
 
-![Typischer Bayes-Nutzer, der ein Ungewissheitsintervall berechnet. Bildquelle: @easystats2026bayestestr](img/bayesianMaster.jpg){#fig-bayes-nutzer width="50%" fig-align="center"}
+![Typischer Bayes-Nutzer, der ein Ungewissheitsintervall berechnet. Bildquelle: @easystats2026bayestestr](img/bayesianMaster.jpg){#fig-bayes-nutzer width="50%" fig-align="center" fig-alt="Foto: Ein Shaolin-Mönch in orangefarbener Hose macht vor einem Wasserfall einen tiefen Spagat mit ausgestreckten Armen; zwischen seinen Händen ist ein orange-gelber Bogen eingezeichnet. Der Witz: Das Ungewissheitsintervall wird mit kunstvoller Körperbeherrschung aufgespannt."}
 
 $\square$
 :::
@@ -1439,12 +1459,14 @@ plot_condition_with_cond_post <-
 #| echo: false
 #| fig-asp: 1
 #| label: fig-post42
+#| fig-alt: "Zwei Panels. A: Streudiagramm Körpergewicht gegen Körpergröße mit blauer Regressionsgerade und schmalem hellblauem Band; bei 40, 45, 50 und 55 kg sitzt je ein farbiger Punkt auf der Geraden mit einer seitlich eingezeichneten Glockenkurve. B: Dieselben vier farbigen Dichtekurven der mittleren Körpergröße μ, von links nach rechts bei etwa 150, 155, 159 und 164 cm; die Kurve bei 45 kg ist am schmalsten, die bei 55 kg am breitesten."
 #| fig-cap: "Für jeden beliebigen Prädiktorwert kann man eine Post-Verteilung des Mittelwerts μ bekommen. A: Regressionsgerade mit 95 %-Band der Post-Verteilung von μ; bei 40, 45, 50 und 55 kg ist jeweils die Post-Verteilung von μ eingezeichnet (horizontal überhöht, sonst wäre sie kaum zu sehen). B: Dieselben vier Post-Verteilungen, vergrößert. Am Rand der Daten (55 kg) ist μ unsicherer als in der Mitte (45 kg)."
 if (knitr::is_html_output()) {
   # Animation: wie sich die Post-Verteilungen von mu an der Geraden aufbauen
   # (Quelle: videos/post-mu-regression/, Standbild = Abbildung unten im PDF)
   knitr::asis_output(paste0(
     '<video src="img/post-mu-regression.mp4" poster="img/post-mu-regression-poster.png" ',
+    'aria-label="Animation: Entlang der Regressionsgeraden von Körpergröße auf Körpergewicht bauen sich bei 40, 45, 50 und 55 kg nacheinander die Post-Verteilungen der mittleren Körpergröße μ auf." ',
     'autoplay loop muted playsinline controls style="width:100%;height:auto;"></video>'))
 } else {
   plots(plot_condition_with_cond_post, p_post_at,
@@ -1473,6 +1495,7 @@ Erstellen wir uns dazu eine Tabelle und plotten diese, s. @fig-mu-at-45.
 
 ```{r mu-at-45-def, echo = TRUE}
 #| results: hide
+#| fig-alt: "Dichtekurve der Post-Verteilung von mu45, der mittleren Körpergröße bei 45 kg Gewicht (x-Achse): eingipflig und schmal, um etwa 154,5 cm, mit Wahrscheinlichkeitsdichte auf der y-Achse."
 mu45 <-
   m_kung_gewicht_c_post |>
   mutate(mu45 = `(Intercept)`)
@@ -1488,6 +1511,7 @@ mu45 |>
 ```{r}
 #| echo: false
 #| label: fig-mu-at-45
+#| fig-alt: "Dichtekurve der mittleren Körpergröße bei 45 kg Gewicht auf einer x-Achse von 150 bis 160 cm: ein schmaler, eingipfliger Berg um etwa 155 cm."
 #| fig-cap: "Post-Verteilung der Größe (laut unserem Modell) bei einem Gewicht von 45kg"
 mu45 |>
   ggplot(aes(x = mu45)) +
@@ -1526,6 +1550,7 @@ head(mu50)
 ```{r}
 #| echo: false
 #| label: fig-mu-at-50
+#| fig-alt: "Dichtekurve der mittleren Körpergröße bei 50 kg Gewicht auf einer x-Achse von 150 bis 160 cm: ein schmaler Gipfel weit rechts, knapp unter 160 cm, also höher als bei 45 kg."
 #| fig-cap: Post-Verteilung der mittleren Größe (laut unserem Modell) bedingt auf ein Gewicht von 50 kg
 mu50 |>
   ggplot(aes(x = mu50)) +
@@ -1670,7 +1695,7 @@ exams2forms(quiz_lineare_modelle_files, n = 1)
 
 
 
-![](img/outro-09.jpg){width=100%}
+![](img/outro-09.jpg){width=100% fig-alt="Foto: nasses braunes Herbstlaub auf dem Boden, vor allem Eichenblätter, auf einem hellen Blatt in der Mitte liegen Wassertropfen."}
 
 
 

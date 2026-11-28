@@ -105,6 +105,7 @@ und für hohe Intelligenzwerte sieht es genauso aus.
 #| out-width: "50%"
 #| label: fig-iq-schoen
 #| fig-cap: "Kein Zusammenhang von Schlauheit und Schönheit in den Daten"
+#| fig-alt: "Streudiagramm mit Schönheit auf der x-Achse und Schlauheit auf der y-Achse, beide zwischen 0 und 1. Die Punkte füllen das Quadrat gleichmäßig aus, ohne erkennbaren Trend."
 
 myf <- function(x) -x+0.75
 
@@ -150,6 +151,7 @@ s. @fig-dates-beauty.
 #| echo: false
 #| label: fig-dates-beauty
 #| fig-cap: Ihre Datingpartner sind komischerweise entweder schlau oder schön (aber nicht beides), zumindest in der Tendenz.
+#| fig-alt: "Dieselbe Punktwolke aus Schönheit (x) und Schlauheit (y), jeder Punkt als Häkchen (Date, blau) oder Kreuz (kein Date, orange). Die Dates bilden ein diagonales Band von links oben nach rechts unten; innerhalb der Dates hängen Schönheit und Schlauheit also negativ zusammen."
 #| out-width: "75%"
 
 d2 <- d2 |> 
@@ -190,6 +192,7 @@ Der DAG in @fig-coll1-dag bietet eine rettende Erklärung.
 ```{r}
 #| echo: false
 #| fig-cap: "Date als gemeinsame Wirkung von Schönheit und Intelligenz. Stratifiziert man die gemeinsame Wirkung (dates), so kommt es zu einer Scheinkorrelation zwischen Schönheit und Intelligenz."
+#| fig-alt: "DAG mit drei Knoten: Pfeile von Looks zu date und von Talent zu date; zwischen Looks und Talent kein Pfeil. date ist damit ein Kollider."
 #| out-width: "50%"
 #| label: fig-coll1-dag
 
@@ -211,6 +214,7 @@ Eine ähnliche Visualisierung des gleichen Sachverhalts zeigt @fig-coll2-dag.
 #| echo: false
 #| label: fig-coll2-dag
 #| fig-cap: "Durch Kontrolle der gemeinsamen Wirkung entsteht eine Scheinkorrelation zwischen den Ursachen"
+#| fig-alt: "Kollider-DAG: Pfeile von Looks und von Talent zu date. date ist als adjustiert markiert (Quadrat); eine gestrichelte Bogenlinie zwischen Looks und Talent zeigt die durch die Adjustierung des Kolliders aktivierte Verbindung, beide Knoten sind als d-verbunden eingefärbt."
 p_coll_dag2 <-
   collider_triangle(x = "Looks",
                   y = "Talent",
@@ -330,6 +334,7 @@ Sagen wir, über die *Eignung* für ein Studium würden nur (die individuellen A
 #| echo: false
 #| label: fig-coll3-dag
 #| fig-cap: Kollisionsstruktur im Dag zur Studiumseignung
+#| fig-alt: "DAG mit drei Knoten: Pfeile von Fleiss zu Studium und von Intelligenz zu Studium; zwischen Fleiss und Intelligenz kein Pfeil."
 coll2_dag <- ggdag::dagify(s ~ d + iq,
                       outcome = "s",
                       labels = c("s" = "Studium",
@@ -414,6 +419,7 @@ hdi(m_eignung) |> display()
 #| echo: false
 #| label: fig-eignung
 #| fig-cap: "Der Zusammenhang von Fleiss und IQ"
+#| fig-alt: "Streudiagramm nur der Studierenden mit Fleiss auf der x-Achse und IQ auf der y-Achse. Die blaue Regressionsgerade fällt deutlich: Bei Studierenden geht mehr Fleiß mit geringerem IQ einher."
 
 d_eignung |>
   filter(studium == 1) |>
@@ -456,6 +462,7 @@ Nur durch das Stratifizieren (Aufteilen in Subgruppen, Kontrollieren, Adjustiere
 #| echo: false
 #| fig-cap: "Stratifizierung und Scheinkorrelation. A: Keine Stratifizierung und keine Scheinkorrelation. B: Stratifizierung und Scheinkorrelation"
 #| label: fig-eignung-strat
+#| fig-alt: "Zwei Streudiagramme von IQ gegen Fleiss. A: alle Personen als runde Punktwolke mit flacher Regressionsgerade, also kein Zusammenhang. B: dieselben Daten nach kein Studium und Studium durch Farbe und Symbol getrennt; die Gruppen liegen links unten bzw. rechts oben einer Diagonale, und in beiden Gruppen fällt die Regressionsgerade."
 p1 <- d_eignung |>
  ggplot(aes(x = fleiss, y = iq)) +
   geom_point(alpha = .15, color = dunkelgrau) +
@@ -548,6 +555,7 @@ Wir sind v. a. interessiert an $G \rightarrow K$, dem *direkten kausalen* Effe
 #| echo: false
 #| label: fig-dag-grannies
 #| fig-cap: "Der kausale Effekt von Großeltern auf Enkel. Ein verlorener Fall, zumindest was den DAG betrifft"
+#| fig-alt: "DAG mit drei Knoten: G links oben, E rechts oben, K rechts unten. Pfeile von G zu E, von E zu K und von G direkt zu K."
 dag_coords <-
   tibble(name = c("G", "E", "K"),
          x    = c(1, 2, 2),
@@ -584,6 +592,7 @@ Oder sammele mehr Daten."
 #| echo: false
 #| label: fig-dag-ghost
 #| fig-cap: "Der Gespenster-DAG: Eine Identifikation der Kausaleffekt ist nicht (vollständig) möglich."
+#| fig-alt: "DAG mit vier Knoten: Pfeile von G zu E, von G zu K und von E zu K. Ein zusätzlicher, farbig umrandeter ungemessener Knoten U rechts hat Pfeile zu E und zu K; E wird so zum Kollider zwischen G und U."
 #| out-width: "50%"
 
 source("funs/gg_fancy_dag.R")
@@ -670,6 +679,7 @@ Das Kausalmodell ist in @fig-dag-don1 dargestellt.
 #| echo: false
 #| label: fig-dag-don1
 #| fig-cap: "Der Preis wird sowohl von der Zimmerzahl als auch der Wohnfläche beeinflusst"
+#| fig-alt: "DAG mit drei Knoten: a oben in der Mitte, b links unten, p rechts unten. Pfeile von a zu b, von a zu p und von b zu p; a öffnet damit eine Hintertür von b zu p."
 #| out-width: "50%"
 
 source("funs/gg_simple_dag.R")
@@ -711,6 +721,7 @@ so kann eine Konfundierung ausgeschlossen werden.
 ```{r}
 #| echo: false
 #| label: fig-dag-tuer-zu
+#| fig-alt: "DAG mit drei Knoten: a oben in der Mitte, b links unten, p rechts unten. Pfeile von a zu p und von b zu p; zwischen a und b gibt es keinen Pfeil mehr, in b führt also kein Pfeil hinein."
 #| fig-cap: "Unverzerrte Schätzung des kausalen Effekts unserer UV (Zimmerzahl). Das Regressionsgewicht ist hier der unverzerrte Kausaleffekt. Es spielt keine Rolle, ob der andere Prädiktor im Modell enthalten ist. Da die beiden Prädiktoren unkorreliert sind, hat die Aufnahme des einen Prädiktors keinen Einfluss auf das Regressionsgewicht des anderen."
 #| out-width: "50%"
 dag_coords <-
@@ -829,6 +840,7 @@ p_desc <-
 #| echo: false
 #| label: fig-four-atoms
 #| fig-cap: Die vier Atome der Kausalinferenz
+#| fig-alt: "Vier kleine DAGs im Raster. Konfundierung: z mit Pfeilen zu x und y. Mediation: x zeigt auf m, m auf y. Kollision: x und y zeigen beide auf m. Nachfahre: x und y zeigen auf m, und m zeigt auf d."
 #| fig-width: 9
 plots(p_conf, p_med, p_coll, p_desc, n_rows = 2)
 ```
@@ -858,6 +870,7 @@ wie der Psychologie.
 #| echo: false
 #| label: fig-med1
 #| fig-cap: Das Kausalmodell der Mediation mit x als UV, m als Mediator und Y als AV.
+#| fig-alt: "DAG mit drei Knoten: m oben in der Mitte, x links unten, y rechts unten. Pfeile von x zu m und von m zu y; zwischen x und y kein direkter Pfeil."
 p_med
 ```
 
@@ -909,6 +922,7 @@ Ein Effekt, der nur aus dem Pfad $x\rightarrow y$ besteht, also ohne Zwischengli
 ```{r}
 #| label: fig-part-med
 #| fig-cap: "Partielle Mediation: Es gibt einen direkten Effekt (X->Y) und einen indirekten Effekt (X->M->Y)."
+#| fig-alt: "DAG mit drei Knoten: m oben in der Mitte, x links unten, y rechts unten. Pfeile von x zu m, von m zu y und zusätzlich direkt von x zu y."
 #| echo: false
 dag <- 
   dagitty('
@@ -947,6 +961,7 @@ Hier wird das Kontrollieren von `d` den Pfad von `x` nach `y` teilweise öffnen,
 #| echo: false
 #| label: fig-dag-nachfahre
 #| fig-cap: "Ein Nachfahre verhält sich ähnlich wie sein Vorfahre..."
+#| fig-alt: "DAG mit vier Knoten: x und y zeigen beide auf den Kollider m, und von m führt ein Pfeil zu seinem Nachfahren d."
 #| out-width: "50%"
 p_desc
 ```
@@ -1013,6 +1028,7 @@ UV: $X$, AV: $Y$, drei Kovariaten (A, B, C) und ein ungemessene Variable, U
 #| echo: false
 #| label: fig-dag-fancy
 #| fig-cap: "Puh, ein schon recht komplizierter DAG"
+#| fig-alt: "DAG mit sechs Knoten: Pfeile von A zu U und zu C, von U zu X und zu B, von C zu B und zu Y sowie von X zu Y. U ist als ungemessene Variable farbig umrandet."
 dag_coords <-
   tibble(name = c("A", "B", "C", "U", "X", "Y"),
          x    = c(2, 2, 3, 1, 1, 3),
@@ -1053,6 +1069,7 @@ S. DAG in @fig-dag-bsp2: UV: $W$, AV: $D$
 #| label: fig-dag-bsp2
 #| fig-asp: 0.5
 #| fig-cap: "Welche Variablen muss man kontrollieren, um den Effekt von W auf D zu bestimmen?"
+#| fig-alt: "DAG mit fünf Knoten: Pfeile von S zu A, zu M und zu W; von A zu M und zu D; von M zu D und von W zu D. S steht links oben, W rechts oben, M in der Mitte, A links unten, D rechts unten."
 dag_coords <-
   tibble(name = c("A", "D", "M", "S", "W"),
          x    = c(1, 3, 2, 1, 3),
@@ -1226,7 +1243,7 @@ exams2forms(quiz_kausalatome_files, n = 1)
 
 
 
-![](img/outro-14.jpg){width=100%}
+![](img/outro-14.jpg){width=100% fig-alt="Nahaufnahme einer violetten Witwenblume vor unscharfem Hintergrund aus grünen Berghängen und einem wolkenverhangenen Tal."}
 
 
 

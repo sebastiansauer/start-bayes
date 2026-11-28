@@ -167,6 +167,7 @@ ist in @fig-dag-studie-a dargestellt.
 #| echo: false
 #| label: fig-dag-studie-a
 #| fig-cap: "Zwei direkte Effekte (gender, drug) und ein indirekter Effekt (gender über drug) auf recovery"
+#| fig-alt: "DAG mit drei Knoten: Pfeile von gender zu drug, von gender zu recovery und von drug zu recovery. gender ist damit eine gemeinsame Ursache von drug und recovery (Konfundierer)."
 #| out-width: "50%"
 
 
@@ -264,6 +265,7 @@ Das Kausalmodell von Studie B ist in @fig-dag-studie-b dargestellt.
 #| echo: false
 #| label: fig-dag-studie-b
 #| fig-cap: "Drug hat keinen direkten, aber zwei indirekte Effekt auf recovery, einer davon ist heilsam, einer schädlich"
+#| fig-alt: "DAG mit vier Knoten: Von drug führen Pfeile zu pressure und zu toxic, von pressure und von toxic jeweils ein Pfeil zu recovery. Zwischen drug und recovery gibt es keinen direkten Pfeil."
 #| out-width: "50%"
 dag_studie_b <-
   dagitty("dag{
@@ -390,6 +392,7 @@ Oder lieber nicht kontrollieren?
 ```{r}
 #| echo: false
 #| fig-cap: "DAG zur Nierenstein-Studie"
+#| fig-alt: "DAG mit drei Knoten: Pfeile von size zu treatment, von size zu recovery und von treatment zu recovery; size steht links oben, treatment links unten, recovery rechts."
 #| out-width: "50%"
 #| label: fig-dag-studie-c
 dag_studie_c <-
@@ -414,6 +417,7 @@ plot(dag_studie_c)
 ```{r}
 #| echo: false
 #| fig-cap: "DAG zur Nierenstein-Studie in zweiter Darstellungsform"
+#| fig-alt: "Derselbe DAG wie zuvor, anders angeordnet: size steht oben in der Mitte, treatment links unten, recovery rechts unten; Pfeile von size zu treatment, von size zu recovery und von treatment zu recovery."
 #| out-width: "50%"
 #| label: fig-dag-studie-c2
 coordinates(dag_studie_c) <-
@@ -561,6 +565,7 @@ Modell 1 (`m1`) modelliert den Hauspreis als Funktion der Zimmerzahl, s. @fig-m1
 #| message: false
 #| label: fig-m1
 #| fig-cap: "Modell m1"
+#| fig-alt: "Streudiagramm mit Anzahl Schlafzimmer auf der x-Achse und Hauspreis in USD auf der y-Achse, Punkte leicht verwackelt. Die blaue Regressionsgerade steigt: Mehr Schlafzimmer gehen mit höherem Preis einher."
 d |>
   ggplot() +
   aes(x = bedrooms, y = price) +
@@ -784,6 +789,7 @@ estimate_means(m2, by = "bedrooms", length = 7)
 #| label: fig-m2-preds
 #| fig-asp: 0.3
 #| fig-cap: "Hauspreis als Funktion der Zimmerzahl, laut m2"
+#| fig-alt: "Flaches Liniendiagramm mit Punkten: x-Achse Anzahl Schlafzimmer, y-Achse vorhergesagter Hauspreis in USD laut m2, gemittelt über die Wohnfläche. Die Linie fällt gleichmäßig: Mehr Zimmer gehen bei gleicher Wohnfläche mit geringerem Preis einher."
 estimate_means(m2, by = "bedrooms", length = 7) |>
   ggplot() +
   aes(x = bedrooms, y = Median) +
@@ -824,6 +830,7 @@ Angie 👩:   **"Ne-Ga-Tiv!"**
 ```{r}
 #| label: fig-m2-negativ
 #| fig-cap: "Hauspreis stratifizieren"
+#| fig-alt: "Vier nebeneinanderliegende Streudiagramme, je eins pro Quartil der Wohnfläche (sehr kleine bis sehr große Häuser), mit Schlafzimmerzahl auf der x-Achse und Hauspreis auf der y-Achse. Die Regressionsgeraden liegen bei größeren Häusern höher, verlaufen aber in jedem Panel flach bis leicht fallend."
 #| fig-asp: 0.5
 #| out-width: "100%"
 #| warning: false
@@ -960,6 +967,7 @@ Das Kausalmodell `km1` ist in @fig-km1 dargestellt; vgl. @fig-m2-negativ.
 #| warning: false
 #| label: fig-km1
 #| fig-cap: "Kausalmodell km1 -- Eine Erklärung (von mehreren) für m1 bzw. die Daten, die m1 zugrunde liegen"
+#| fig-alt: "DAG mit drei Knoten: living area oben in der Mitte mit Pfeilen zu bedrooms (links unten) und zu price (rechts unten); zwischen bedrooms und price kein Pfeil. Eine Legende kennzeichnet die Knoten als d-verbunden."
 km1 <- confounder_triangle(x = "bedrooms",
                           y = "price",
                           z = "living area") |> 
@@ -1007,6 +1015,7 @@ Angie 👩:   Wir müssen die Konfundierungsvariable kontrollieren.
 #| warning: false
 #| label: fig-km1-controlled
 #| fig-cap: "Durch Kontrolle von living area wird die Assoziation von price und bedrooms aufgehoben."
+#| fig-alt: "Derselbe Konfundierungs-DAG: living area mit Pfeilen zu bedrooms und zu price. living area ist als adjustiert markiert (Quadrat statt Kreis); bedrooms und price sind farblich als d-separiert gekennzeichnet."
 confounder_triangle(x = "bedrooms",
                           y = "price",
                           z = "living area") |> 
@@ -1055,6 +1064,9 @@ Es wird (fälschlich) eine Korrelation zwischen `x` und `y`  angezeigt: Scheinko
 #|   - "Ohne Kontrolle der Konfundierungsvariablen: Konfundierung tritt auf."
 #|   - "Mit Kontrolle der Konfundierungsvariablen: Konfundierung tritt nicht auf."
 #| label: fig-p-konf1
+#| fig-alt:
+#|   - "Streudiagramm von y gegen x aus zwei simulierten Punktwolken, die gemeinsam dargestellt werden. Eine Regressionsgerade über alle Punkte steigt deutlich an: scheinbarer Zusammenhang von x und y."
+#|   - "Dieselben Daten, nun nach Gruppe A und B durch Farbe und Symbol getrennt, mit je einer eigenen Regressionsgerade. Gruppe B liegt rechts oben von Gruppe A; innerhalb jeder Gruppe verlaufen die Geraden etwa flach."
 p_konf1
 p_konf2
 ```
@@ -1075,7 +1087,7 @@ rechnet man die Unterschiede zwischen den Gruppen heraus.
 Übrig bleibt nur die Streuung *innerhalb* der Gruppen --
 und dort hängen `x` und `y` nicht zusammen: Die Trendgerade wird flach.
 
-![Was heißt "Kontrollieren"? Die Gruppenunterschiede werden herausgerechnet; der scheinbare Zusammenhang von x und y verschwindet.](img/konfounder-kontrollieren-anim.gif){#fig-konf-anim width=90%}
+![Was heißt "Kontrollieren"? Die Gruppenunterschiede werden herausgerechnet; der scheinbare Zusammenhang von x und y verschwindet.](img/konfounder-kontrollieren-anim.gif){#fig-konf-anim width=90% fig-alt="Animiertes Streudiagramm von y gegen x in mehreren Schritten: Zunächst zeigen die Rohdaten eine steigende Trendgerade. Dann werden zwei Gruppen markiert und von jedem Punkt sein Gruppenmittelwert abgezogen; danach verläuft die Trendgerade flach."}
 :::
 
 
@@ -1128,6 +1140,7 @@ Man nennt die mittlere Variable einer Wirkkette auch einen *Mediator* und den Pf
 ```{r}
 #| echo: false
 #| fig-cap: "Der Effekt von livingArea wird über den Mediator bedrooms auf price vermittelt."
+#| fig-alt: "DAG mit drei Knoten: Pfeile von area zu bedrooms, von bedrooms zu price und von area direkt zu price. area wirkt also direkt und über den Mediator bedrooms auf price."
 #| label: fig-m1-mediation
 km_med <-
   dagitty("dag{
@@ -1161,6 +1174,7 @@ So sieht Dons Kausalmodell aus, s. @fig-km3.
 #| out-width: "75%"
 #| label: fig-km3
 #| fig-cap: "Dons Kausalmodell"
+#| fig-alt: "DAG mit drei Knoten: Pfeile von bedrooms und von livingArea jeweils zu price; zwischen bedrooms und livingArea kein Pfeil. price ist also gemeinsame Wirkung (Kollider) der beiden anderen Variablen."
 km3 <- collider_triangle(x = "bedrooms",
                           y = "livingArea",
                           m = "price") |> 
@@ -1313,6 +1327,7 @@ wären sie längst erkannt, und alle Probleme der Menschheit gelöst.
 #| echo: false
 #| label: fig-kms
 #| fig-cap: "Kausalmodelle, die potenziell geeignet sind für Dons Fragestellung"
+#| fig-alt: "Drei nummerierte DAGs mit den Knoten a, b und p nebeneinander. 1: a ist Ursache von b und p. 2: p wirkt auf a, a wirkt auf b. 3: b wirkt auf a, a wirkt auf p. In allen dreien gibt es keinen Pfeil zwischen b und p."
 
 # dag_coords <-
 #   tibble(name = c("A", "D", "M", "S", "W"),
@@ -1391,6 +1406,7 @@ Der "Schoki-DAG" in @fig-schoki-dag zeigt den DAG für das Schokoloaden-Nobelpre
 #| echo: false
 #| label: fig-schoki-dag
 #| fig-cap: "Macht Schokolade Nobelpreise?"
+#| fig-alt: "DAG mit drei Knoten: Entwicklungsstand mit Pfeilen zu Schoki und zu Nobelpreise; zwischen Schoki und Nobelpreise kein Pfeil. Der Entwicklungsstand eines Landes konfundiert also den Zusammenhang."
 confounder_triangle(x = "Schoki",
                           y = "Nobelpreise",
                           z = "Entwicklungsstand") |> 
@@ -1457,6 +1473,7 @@ zwischen der Höhe des Schokoladenkonsums eines Landes und der Anzahl der Nobelp
 #| fig-align: "center"
 #| label: fig-schoki
 #| fig-cap: "Je mehr Schoki, desto mehr Nobelpreise"
+#| fig-alt: "Streudiagramm aus einer Publikation: x-Achse Schokoladenkonsum in kg pro Jahr und Kopf, y-Achse Nobelpreisträger pro 10 Millionen Einwohner, jedes Land als Flagge. Die Punkte steigen deutlich an, mit der Schweiz und Schweden oben und China unten; im Bild steht r=0.791."
 knitr::include_graphics("img/correlation_550.png")
 ```
 
@@ -1549,7 +1566,7 @@ exams2forms(quiz_konfundierung_files, n = 1)
 
 
 
-![](img/outro-11.jpg){width=100%}
+![](img/outro-11.jpg){width=100% fig-alt="Stimmungsvolles Landschaftsfoto: knorrige Kiefern und Heidekraut an einem Pfad, von rechts oben scheint die tiefstehende Sonne mit Strahlen durch die Zweige."}
 
 
 

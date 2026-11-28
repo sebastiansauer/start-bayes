@@ -5,7 +5,7 @@
 
 
 ::: {.content-visible when-format="html"}
-![Bayes:Start!](img/Golem_hex.png){width=10%}
+![Bayes:Start!](img/Golem_hex.png){width=10% fig-alt="Logo des Buchs: gezeichneter grau-blauer Roboter-Golem mit großen Augen in einem violetten Sechseck mit hellgrünem Rand, darüber der Schriftzug „Bayes“."}
 :::
 
 
@@ -145,6 +145,7 @@ vor allem ist die Post-Verteilung wichtig.
 #| echo: false
 #| label: fig-post1b
 #| fig-cap: Die Postverteilung für $W=6$, $N=9$; der wahrscheinlichste Parameterwert ist farblich hervorgehoben
+#| fig-alt: "Punkt-Linien-Diagramm der Post-Wahrscheinlichkeit (y-Achse) für die 11 Gitterwerte von 0 bis 1 (x-Achse): eingipflige Kurve, nahe 0 bei kleinen Werten, Gipfel bei 0,7, dort ein großer orangefarbener Punkt; bei 1 wieder null."
 p_d <-
 bayesbox_6w_9v  |>
   ggplot() +
@@ -168,6 +169,7 @@ vor allem ist die Post-Verteilung wichtig.
 #| echo: false
 #| label: fig-post1a
 #| fig-cap: Die Postverteilung für W=6, N=9; der wahrscheinlichste Parameterwert ist farblich hervorgehoben
+#| fig-alt: "Punkt-Linien-Diagramm der Post-Wahrscheinlichkeit (y-Achse) für die 11 Gitterwerte des Wasseranteils π von 0 bis 1 (x-Achse): eingipflige Kurve mit Gipfel bei 0,7, dort ein großer orangefarbener Punkt."
 #
 
 p_d <-
@@ -414,6 +416,7 @@ samples_6w_9v |>
 #| echo: false
 #| message: false
 #| fig-cap: Stichprobenverteilung auf Basis von Stichproben
+#| fig-alt: "Balkendiagramm der Häufigkeit der 10.000 gezogenen Parameterwerte (y-Achse) je Wasseranteil von 0,2 bis 0,9 (x-Achse): höchste Balken bei 0,6 und 0,7, nach links und rechts abfallend; bei 0,2 fast kein Balken."
 #| label: fig-samples1
 
 samples_6w_9v |> 
@@ -518,6 +521,7 @@ Das Modell ist sich nicht sehr sicher, könnte man sagen.
 #| echo: false
 #| fig-cap: Post-Verteilung mit 100 Gitterwerten, exakt (gepunktete Linie) vs. auf Basis von Stichproben (Histogramm). Die Y-Achse zeigt die jeweilige Wahrscheinlichkeitsdichte bzw. Häufigkeit pro Wert von $\pi$.
 #| label: fig-post100
+#| fig-alt: "Histogramm der 1000 Stichproben aus der Post-Verteilung über dem Wasseranteil π von 0 bis 1, überlagert von einer orangefarbenen Punkt-Linien-Kurve der exakten Post-Verteilung. Beide haben dieselbe eingipflige Form mit Gipfel um 0,7; das Histogramm folgt der exakten Kurve gut."
 
 
 p0 <- 
@@ -603,6 +607,7 @@ $n=10^6$ Stichproben bei $g=101$ Gitterwerten aus der Posteriori-Verteilung, s. 
 #| echo: false
 #| label: fig-post-dk100
 #| fig-cap: "Post-Verteilung mit einer Million Stichproben und 100 Parameterwerten (Gitterwerten): schön 'glatt'. Mittelwert (MW), Modus und Median (Md) liegen eng nebeneinander, da die Verteilung recht symmetrisch ist."
+#| fig-alt: "Feines Histogramm mit 101 Balken: Häufigkeit (y-Achse) über dem Anteil Wasser von 0 bis 1 (x-Achse), glockenförmig mit Gipfel knapp unter 0,7. Drei senkrechte farbige Linien mit Beschriftung markieren Modus (ca. 0,67), Mittelwert und Median (beide ca. 0,64)."
 
 set.seed(42)
 bayesbox_g100_samples <- 
@@ -714,6 +719,9 @@ Der Unterschied zwischen beiden Arten von Fragen ist in  @fig-p-vs-q schematisch
 #| fig-subcap: 
 #|  - "Fragen nach Parameterwerten (q)" 
 #|  - "Fragen nach Wahrscheinlichkeiten (p)"  
+#| fig-alt:
+#|   - "Dichtekurve der Post-Verteilung über dem Wasseranteil (x-Achse) mit der Titelfrage, welcher Wasseranteil mit 50 % Wahrscheinlichkeit nicht übertroffen wird. Die linke Fläche bis zu einer gestrichelten Linie bei 0,64 ist blau eingefärbt und mit prob=0.5 beschriftet: gesucht ist der x-Wert."
+#|   - "Dieselbe Dichtekurve mit der Titelfrage, wie wahrscheinlich ein Wasseranteil von höchstens 50 % ist. Die Fläche links der gestrichelten Linie bei 0,5 ist blau eingefärbt und mit p= 0.18 beschriftet: gesucht ist der Flächenanteil."
 source("R-Code/plot_ask_for_quantile.R") 
 source("R-Code/plot_ask_for_probability.R") 
 
@@ -1056,6 +1064,7 @@ Intervalle (Bereiche), die die "abzuschneidende" Wahrscheinlichkeitsmasse hälft
 #| echo: false
 #| fig-cap: "Perzentilintervalle: Das Intervall umfasst die mittleren 80% der Wahrscheinlichkeit"
 #| label: fig-eti-hdi
+#| fig-alt: "Geglättete Dichtekurve der Post-Verteilung über dem Wasseranteil von 0 bis 1, eingipflig mit Gipfel knapp unter 0,7. Die mittleren 80 % der Fläche sind blau gefüllt, die beiden äußeren Ränder (je 10 %) orange; laut Beschriftung reicht das Intervall von 0,45 bis 0,81."
 
 eti_80 <- eti(bayesbox_g100_samples$p_grid, ci = .8)
 plot(eti_80) +
@@ -1215,7 +1224,7 @@ farbe = "#0072B2"
 :::
 
 ::: {.content-visible unless-format="html"}
-![Quantile in 10%-Schriten durch die Verteilung von `bayesbox_g100_samples`](img/p_deciles-static.png){#fig-quantiles-anim width=90%}
+![Quantile in 10%-Schriten durch die Verteilung von `bayesbox_g100_samples`](img/p_deciles-static.png){#fig-quantiles-anim width=90% fig-alt="Zehn kleine Panels mit derselben eingipfligen Dichtekurve über p_grid; in jedem markiert eine senkrechte Linie ein Dezil, von Dezil 1 links im Anstieg der Kurve bis Dezil 10 am rechten Rand."}
 :::
 
 ### Schiefe Posteriori-Verteilungen sind möglich
@@ -1277,6 +1286,9 @@ Hier z. B. ein 50 %-Perzentilintervall, s. Abb. @fig-schief, (a).
 #| fig-subcap: 
 #|   - Perzentilintervall (PI)
 #|   - Höchste-Dichte-Intervall (HDI)
+#| fig-alt:
+#|   - "Stark rechtssteile Post-Verteilung für 3 Treffer bei 3 Würfen: Die Kurve steigt von 0 bis zum Maximum bei Wasseranteil 1, dort ein orangefarbener MAP-Punkt. Das graue 50 %-Perzentilintervall reicht nur von etwa 0,7 bis 0,9 und schließt den MAP bei 1 aus."
+#|   - "Dieselbe ansteigende Post-Verteilung mit MAP-Punkt bei Wasseranteil 1. Das graue 50 %-HDI ist schmaler, liegt ganz rechts und reicht bis 1, enthält also den MAP."
 
 
 # Tufte-Stil fuer Dichte-/Flaechendiagramme: Range-Frame, kein Gitter
@@ -1408,6 +1420,7 @@ Umgekehrt sind Mittelwert, Median und Modus identisch bei einer punktsymmetrisch
 #| echo: false
 #| fig-cap: "Visualisierung der Punktschätzer bei einer schiefen Post-Verteilung (auf Basis von `samples_3w_3v`)"
 #| label: fig-post-pointestimates
+#| fig-alt: "Grau gefüllte, nach rechts ansteigende Dichtekurve über dem Wasseranteil π mit Maximum bei 1 (orangefarbener Punkt). Drei senkrechte Linien markieren Mittelwert, Median und Modus: Der Mittelwert liegt am weitesten links, der Median dazwischen, der Modus bei 1."
 #| message: false
 #| fig-asp: 0.6
 
@@ -1705,7 +1718,7 @@ exams2forms(quiz_post_files, n = 1)
 
 
 
-![](img/outro-06.jpg){width=100%}
+![](img/outro-06.jpg){width=100% fig-alt="Foto: dichtes Laub eines Ahornbaums in leuchtendem Herbstgelb, von der Sonne beschienen, dazwischen dunkle Äste."}
 
 
 

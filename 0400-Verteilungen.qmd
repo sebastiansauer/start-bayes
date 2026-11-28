@@ -15,7 +15,7 @@ webr:
 
 
 ::: {.content-visible when-format="html"}
-![Bayes:Start!](img/Golem_hex.png){width=10%}
+![Bayes:Start!](img/Golem_hex.png){width=10% fig-alt="Logo des Buchs: ein gezeichneter grau-blauer Roboter-Golem mit großen Augen in einem violetten Sechseck mit hellgrünem Rand, darüber der Schriftzug „Bayes“."}
 :::
 
 
@@ -156,6 +156,9 @@ Abb. @fig-uniform zeigt ein Beispiel für eine (stetige) Gleichverteilung.
 #| fig-subcap: 
 #|   - "Beispiel a: Gleichverteilung min=-1, max=1. Dichte: 1/2"
 #|   - "Beispiel b: Gleichverteilung min=0, max=3. Dichte: 1/3"
+#| fig-alt:
+#|   - "Dichte der stetigen Gleichverteilung zwischen -1 und 1: eine waagerechte blaue Linie auf Höhe 0.5 über einer grau gefüllten Rechteckfläche, die Grenzen sind gestrichelt markiert. Die Fläche beträgt 1."
+#|   - "Dichte der stetigen Gleichverteilung zwischen 0 und 3: eine waagerechte blaue Linie auf Höhe 1/3 über einer grau gefüllten Rechteckfläche, die Grenzen sind gestrichelt markiert. Das breitere Intervall führt zu einer niedrigeren Dichte."
 #| label: fig-uniform
 #| layout-ncol: 2
 #
@@ -234,7 +237,7 @@ Bei $p=0.2$ fällt Zahl selten, bei $p=0.5$ (faire Münze) etwa jedes zweite Mal
 @fig-muenzwurf-video zeigt das für je 10 Würfe. $\square$
 
 ::: {#fig-muenzwurf-video}
-{{< video img/muenzwurf-wahrscheinlichkeit.mp4 width="450" height="253" >}}
+{{< video img/muenzwurf-wahrscheinlichkeit.mp4 width="450" height="253" title="Animation: Münzwürfe mit unterschiedlicher Trefferwahrscheinlichkeit p" >}}
 
 Münzwurf mit unterschiedlicher Trefferwahrscheinlichkeit $p$: Je größer $p$, desto größer der Anteil der Würfe mit "Zahl".
 :::
@@ -353,6 +356,7 @@ davon 2 Treffer zu erzielen (egal in welcher Reihenfolge)?
 ```{r}
 #| fig-asp: 0.3
 #| echo: false  
+#| fig-alt: "Punktwolke aus 1000 zufällig angeordneten farbigen Punkten, die Lose in einem Kästchen darstellen: etwa 2/5 sind Treffer, 3/5 Nieten, die beiden Sorten sind gut durchmischt."
 
 
 
@@ -831,6 +835,9 @@ options(digits = 2)
 #| fig-subcap: 
 #|   - "n=3, p=1/2"
 #|   - "n=9, p=.7"
+#| fig-alt:
+#|   - "Balkendiagramm der Binomialverteilung für n = 3 und p = 1/2 mit der Trefferzahl 0 bis 3 auf der x-Achse und der Wahrscheinlichkeit als Zahl über jedem Balken. Die Verteilung ist symmetrisch: 1 und 2 Treffer sind mit je 3/8 am wahrscheinlichsten, 0 und 3 Treffer haben je 1/8."
+#|   - "Balkendiagramm der Binomialverteilung für n = 9 und p = 0.7 mit der Trefferzahl 0 bis 9 auf der x-Achse und der Wahrscheinlichkeit als Zahl über jedem Balken. Die Verteilung ist schief: Die höchsten Balken liegen bei 6 und 7 Treffern, wenige Treffer sind sehr unwahrscheinlich."
 
 binomial_plot(3, 1/2)
 
@@ -1097,6 +1104,7 @@ Das sind also `r sprintf("%.2f", p_weniger_als_4 * 100)`% Wahrscheinlichkeit, da
 ```{r}
 #| echo: false
 #| fig-cap: "Wahrscheinlichkeit, dass genau k = 0..7 Lüfter laufen"
+#| fig-alt: "Balkendiagramm der Binomialverteilung mit n = 7 und p = 0.95: Lüfterzahl k von 0 bis 7 auf der x-Achse, Wahrscheinlichkeit als Zahl über jedem Balken. Fast die ganze Wahrscheinlichkeit liegt bei 7 laufenden Lüftern (etwa 0.70), gefolgt von 6 (etwa 0.26) und 5 (etwa 0.04); 0 bis 4 Lüfter sind praktisch unmöglich."
 #| label: fig-luefter
 
 font_size <- 6
@@ -1184,6 +1192,7 @@ Ein Spezialfall der Normalverteilung ist die *halbe* (oder halbseitige) Normalve
 
 ```{r}
 #| fig-cap: "Die halbe Normalverteilung"
+#| fig-alt: "Grau gefüllte Dichtekurve über x von 0 bis 4 ohne y-Achse: die rechte Hälfte einer Standardnormalverteilung. Die Dichte ist bei 0 am höchsten und fällt glockenförmig ab, ab etwa 3 ist sie nahezu null."
 #| label: fig-halbe-nv
 #| echo: false
 df <- data.frame(x = seq(-4, 4, length.out = 500))
@@ -1247,6 +1256,7 @@ als die Exponentialverteilung.
 #| fig-asp: 0.5
 #| label: fig-exp-hnv
 #| fig-cap: "Exponentialverteilung (blau, Rate = 1) vs. halbe Normalverteilung (sd = 1)"
+#| fig-alt: "Zwei überlagerte Dichtekurven über x von 0 bis 4: die Exponentialverteilung in Blau und die halbe Normalverteilung in Orange. Die Exponentialkurve beginnt höher und fällt sofort steil ab, die halbe Normalverteilung startet flacher; rechts von etwa 2 liegt die Exponentialkurve höher, ihre Extremwerte sind also wahrscheinlicher."
 #| echo: false
 
 
@@ -1391,6 +1401,7 @@ gg_exp <- function(r, max_x = NULL, probs = c(0.05, .25, .50, .75, .95)) {
 
 ```{r}
 #| echo: false
+#| fig-alt: "Grau gefüllte Dichtekurve der Exponentialverteilung Exp(2) mit dem Streuungsparameter σ auf der x-Achse; die Kurve fällt von links nach rechts ab. Senkrechte Linien markieren die Quantile 0.05, 0.25, 0.50, 0.75 und 0.95; der Median liegt bei 0.35."
 gg_exp(r = 2) + labs(subtitle = "lambda = 2")
 ```
 
@@ -1399,6 +1410,7 @@ gg_exp(r = 2) + labs(subtitle = "lambda = 2")
 
 ```{r}
 #| label: exp-lambda1
+#| fig-alt: "Grau gefüllte Dichtekurve der Exponentialverteilung Exp(1) mit dem Streuungsparameter σ auf der x-Achse; die Kurve fällt von links nach rechts ab. Senkrechte Linien markieren die Quantile 0.05, 0.25, 0.50, 0.75 und 0.95; der Median liegt bei 0.69."
 #| echo: false
 gg_exp(r = 1) + labs(subtitle = "lambda = 1")
 ```
@@ -1407,6 +1419,7 @@ gg_exp(r = 1) + labs(subtitle = "lambda = 1")
 
 ```{r}
 #| echo: false
+#| fig-alt: "Grau gefüllte Dichtekurve der Exponentialverteilung Exp(1/2) mit dem Streuungsparameter σ auf der x-Achse; die Kurve fällt von links nach rechts ab. Senkrechte Linien markieren die Quantile 0.05, 0.25, 0.50, 0.75 und 0.95; der Median liegt bei 1.39."
 gg_exp(r = 1/2) + labs(subtitle = "lambda = 1/2")
 ```
 
@@ -1415,6 +1428,7 @@ gg_exp(r = 1/2) + labs(subtitle = "lambda = 1/2")
 
 ```{r}
 #| echo: false
+#| fig-alt: "Grau gefüllte Dichtekurve der Exponentialverteilung Exp(1/4) mit dem Streuungsparameter σ auf der x-Achse; die Kurve fällt von links nach rechts ab. Senkrechte Linien markieren die Quantile 0.05, 0.25, 0.50, 0.75 und 0.95; der Median liegt bei 2.77."
 gg_exp(r = 1/4) + labs(subtitle = "lambda = 1/4")
 ```
 
@@ -1424,6 +1438,7 @@ gg_exp(r = 1/4) + labs(subtitle = "lambda = 1/4")
 
 ```{r}
 #| echo: false
+#| fig-alt: "Grau gefüllte Dichtekurve der Exponentialverteilung Exp(1/8) mit dem Streuungsparameter σ auf der x-Achse; die Kurve fällt von links nach rechts ab. Senkrechte Linien markieren die Quantile 0.05, 0.25, 0.50, 0.75 und 0.95; der Median liegt bei 5.55."
 gg_exp(r = 1/8) + labs(subtitle = "lambda = 1/8")
 ```
 
@@ -1451,6 +1466,12 @@ Die Zahlen an den vertikalen Linien geben die jeweiligen Quantile an (z. B. 0.
 #|   - "lambda = 1/2"
 #|   - "lambda = 1/4"
 #|   - "lambda = 1/8"
+#| fig-alt:
+#|   - "Grau gefüllte Dichtekurve der Exponentialverteilung Exp(2) mit dem Streuungsparameter σ auf der x-Achse; die Kurve fällt von links nach rechts ab. Senkrechte Linien markieren die Quantile 0.05, 0.25, 0.50, 0.75 und 0.95; der Median liegt bei 0.35."
+#|   - "Grau gefüllte Dichtekurve der Exponentialverteilung Exp(1) mit dem Streuungsparameter σ auf der x-Achse; die Kurve fällt von links nach rechts ab. Senkrechte Linien markieren die Quantile 0.05, 0.25, 0.50, 0.75 und 0.95; der Median liegt bei 0.69."
+#|   - "Grau gefüllte Dichtekurve der Exponentialverteilung Exp(1/2) mit dem Streuungsparameter σ auf der x-Achse; die Kurve fällt von links nach rechts ab. Senkrechte Linien markieren die Quantile 0.05, 0.25, 0.50, 0.75 und 0.95; der Median liegt bei 1.39."
+#|   - "Grau gefüllte Dichtekurve der Exponentialverteilung Exp(1/4) mit dem Streuungsparameter σ auf der x-Achse; die Kurve fällt von links nach rechts ab. Senkrechte Linien markieren die Quantile 0.05, 0.25, 0.50, 0.75 und 0.95; der Median liegt bei 2.77."
+#|   - "Grau gefüllte Dichtekurve der Exponentialverteilung Exp(1/8) mit dem Streuungsparameter σ auf der x-Achse; die Kurve fällt von links nach rechts ab. Senkrechte Linien markieren die Quantile 0.05, 0.25, 0.50, 0.75 und 0.95; der Median liegt bei 5.55."
 gg_exp(r = 2) + labs(subtitle = "lambda = 2")
 gg_exp(r = 1) + labs(subtitle = "lambda = 1")
 gg_exp(r = 1/2) + labs(subtitle = "lambda = 1/2")
@@ -1632,7 +1653,7 @@ exams2forms(quiz_verteilungen_files, n = 1)
 
 
 
-![](img/outro-04.jpg){width=100%}
+![](img/outro-04.jpg){width=100% fig-alt="Dekoratives Foto zum Kapitelende: ein in Nebel gehüllter Hang mit Weinbergreihen, oben von Wald gesäumt."}
 
 
 
